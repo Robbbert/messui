@@ -323,7 +323,7 @@ END
 
 3 TEXTINCLUDE MOVEABLE PURE
 BEGIN
-    "#include ""umevers.rc"" // Version block\r\n"
+    "#include ""mamevers.rc"" // Version block\r\n"
     "\r\n"
     "\0"
 END
@@ -338,7 +338,7 @@ END
 
 // Icon with lowest ID value placed first to ensure application icon
 // remains consistent on all systems.
-IDI_MAMEUI_ICON         ICON                    "res\\umeui.ico"
+IDI_MAMEUI_ICON         ICON                    "res\\mame.ico"
 IDI_WIN_ROMS            ICON                    "res\\win_roms.ico"
 IDI_WIN_NOROMS          ICON                    "res\\win_noro.ico"
 IDI_WIN_UNKNOWN         ICON                    "res\\win_unkn.ico"
@@ -1538,7 +1538,7 @@ END
 //
 // Generated from the TEXTINCLUDE 3 resource.
 //
-#include "umevers.rc" // Version block
+#include "mamevers.rc" // Version block
 
 
 /////////////////////////////////////////////////////////////////////////////

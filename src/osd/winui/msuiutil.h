@@ -1,3 +1,5 @@
+// For licensing and usage information, read docs/winui_license.txt
+//****************************************************************************
 #ifndef MSUIUTIL_H
 #define MSUIUTIL_H
 

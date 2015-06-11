@@ -1,3 +1,5 @@
+// For licensing and usage information, read docs/winui_license.txt
+//****************************************************************************
 #ifndef DEVVIEW_H
 #define DEVVIEW_H
 

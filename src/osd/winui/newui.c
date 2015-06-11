@@ -1,3 +1,5 @@
+// For licensing and usage information, read docs/winui_license.txt
+//****************************************************************************
 //============================================================
 //
 //  newui.c - This is the NEWUI Windows dropdown menu system

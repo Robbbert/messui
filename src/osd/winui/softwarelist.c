@@ -1,3 +1,5 @@
+// For licensing and usage information, read docs/winui_license.txt
+//****************************************************************************
 //============================================================
 //
 //  softwarelist.c - MESS's softwarelist picker
@@ -148,8 +150,8 @@ BOOL SoftwareList_AddFile(HWND hwndPicker,LPCSTR pszName, LPCSTR pszListname, LP
 	int nIndex, nSize;
 
 	// first check to see if it is already here
-	if (SoftwareList_LookupIndex(hwndPicker, pszName) >= 0)
-		return TRUE;
+	//if (SoftwareList_LookupIndex(hwndPicker, pszName) >= 0)
+	//	return TRUE;
 
 	pPickerInfo = GetSoftwareListInfo(hwndPicker);
 

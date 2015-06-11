@@ -1,3 +1,5 @@
+// For licensing and usage information, read docs/winui_license.txt
+//****************************************************************************
 #ifndef __MESSUI_H__
 #define __MESSUI_H__
 

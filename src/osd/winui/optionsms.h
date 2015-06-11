@@ -1,3 +1,5 @@
+// For licensing and usage information, read docs/winui_license.txt
+//****************************************************************************
 #ifndef OPTIONSMS_H
 #define OPTIONSMS_H
 

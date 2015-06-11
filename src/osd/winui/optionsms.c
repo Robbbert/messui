@@ -1,3 +1,5 @@
+// For licensing and usage information, read docs/winui_license.txt
+//****************************************************************************
 #define WIN32_LEAN_AND_MEAN
 #include <assert.h>
 #include <string.h>

@@ -1,3 +1,5 @@
+// For licensing and usage information, read docs/winui_license.txt
+//****************************************************************************
 //============================================================
 //
 //  messui.c - MESS extensions to src/osd/winui/winui.c
