@@ -278,7 +278,7 @@ const options_entry windows_options::s_option_entries[] =
 
 	// video options
 	{ NULL,                                           NULL,       OPTION_HEADER,     "WINDOWS VIDEO OPTIONS" },
-	{ WINOPTION_MENU,                                 "0",        OPTION_BOOLEAN,    "enable menu bar if available by UI implementation" },
+	{ WINOPTION_MENU,    /* MESSUI */                 "1",        OPTION_BOOLEAN,    "enable menu bar if available by UI implementation" },
 
 	// DirectDraw-specific options
 	{ NULL,                                           NULL,       OPTION_HEADER,     "DIRECTDRAW-SPECIFIC OPTIONS" },

@@ -29,7 +29,7 @@ const options_entry emu_options::s_option_entries[] =
 	// config options
 	{ NULL,                                              NULL,        OPTION_HEADER,     "CORE CONFIGURATION OPTIONS" },
 	{ OPTION_READCONFIG ";rc",                           "1",         OPTION_BOOLEAN,    "enable loading of configuration files" },
-	{ OPTION_WRITECONFIG ";wc",                          "0",         OPTION_BOOLEAN,    "writes configuration to (driver).ini on exit" },
+	{ OPTION_WRITECONFIG ";wc",       /* MESSUI */       "1",         OPTION_BOOLEAN,    "writes configuration to (driver).ini on exit" },
 
 	// seach path options
 	{ NULL,                                              NULL,        OPTION_HEADER,     "CORE SEARCH PATH OPTIONS" },
@@ -420,6 +420,8 @@ void emu_options::parse_standard_inis(std::string &error_string)
 	const game_driver *cursystem = system();
 	if (cursystem == NULL)
 		return;
+//MESSUI
+#if 0
 
 	// parse "vertical.ini" or "horizont.ini"
 	if (cursystem->flags & ORIENTATION_SWAP_XY)
@@ -464,6 +466,8 @@ void emu_options::parse_standard_inis(std::string &error_string)
 		parse_one_ini(driver_list::driver(gparent).name, OPTION_PRIORITY_GPARENT_INI, &error_string);
 	if (parent != -1)
 		parse_one_ini(driver_list::driver(parent).name, OPTION_PRIORITY_PARENT_INI, &error_string);
+//MESSUI
+#endif
 	parse_one_ini(cursystem->name, OPTION_PRIORITY_DRIVER_INI, &error_string);
 
 	// Re-evaluate slot options after loading ini files
