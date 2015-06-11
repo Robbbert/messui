@@ -11,8 +11,16 @@
 #include "pool.h"
 #include "screenshot.h"
 
-
+/////////////////////// This must be commented out manually as there is no compile define
+#define MESS
+#ifdef MESS
 #define MAMENAME "MESS"
+#define UI_INI_FILENAME "MESSUI.ini"
+#else
+#define MAMENAME "MAMEMESS"
+#define UI_INI_FILENAME "MAMEUI.ini"
+#endif
+
 #ifdef PTR64
 #define MAMEUINAME MAMENAME "UI64"
 #else

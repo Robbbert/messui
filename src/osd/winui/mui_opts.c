@@ -84,7 +84,6 @@ static void ui_parse_ini_file(windows_options &opts, const char *name);
     Internal defines
  ***************************************************************************/
 
-#define UI_INI_FILENAME					MAMENAME "UI.ini"
 #define DEFAULT_OPTIONS_INI_FILENAME			CONFIGNAME ".ini"
 
 #define MUIOPTION_LIST_MODE				"list_mode"
