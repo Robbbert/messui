@@ -40,13 +40,14 @@
 #include "zippath.h"
 #include "emuopts.h"
 #include "drivenum.h"
+#include "xmlfile.h"
 
 
 //============================================================
 //  PARAMETERS
 //============================================================
 
-#define LOG_SOFTWARE	0
+#define LOG_SOFTWARE 0
 
 
 //============================================================
@@ -57,7 +58,7 @@ typedef struct _mess_image_type mess_image_type;
 struct _mess_image_type
 {
 	const device_image_interface *dev;
-    char *ext;
+	char *ext;
 	const char *dlgname;
 };
 
@@ -122,6 +123,7 @@ static const LPCTSTR mess_column_names[] =
 	TEXT(""), // Manufacturer
 	TEXT(""), // Year
 	TEXT(""), // Playable
+	TEXT(""),
 };
 
 // columns for software list
@@ -132,6 +134,7 @@ static const LPCTSTR softlist_column_names[] =
 	TEXT("Description"),
 	TEXT("Year"),
 	TEXT("Publisher"),
+	TEXT("Usage"),
 };
 
 
@@ -290,13 +293,13 @@ BOOL CreateMessIcons(void)
 	HIMAGELIST hLarge;
 
 	// create the icon index, if we havn't already
-    if (!mess_icon_index)
+	if (!mess_icon_index)
 	{
 		mess_icon_index = (int*)pool_malloc_lib(GetMameUIMemoryPool(), driver_list::total() * IO_COUNT * sizeof(*mess_icon_index));
-    }
+	}
 
-    for (i = 0; i < (driver_list::total() * IO_COUNT); i++)
-        mess_icon_index[i] = 0;
+	for (i = 0; i < (driver_list::total() * IO_COUNT); i++)
+		mess_icon_index[i] = 0;
 
 	// Associate the image lists with the list view control.
 	hwndSoftwareList = GetDlgItem(GetMainWindow(), IDC_SWLIST);
@@ -311,23 +314,23 @@ BOOL CreateMessIcons(void)
 
 static int GetMessIcon(int drvindex, int nSoftwareType)
 {
-    int the_index = 0;
-    int nIconPos = 0;
-    HICON hIcon = 0;
-    const game_driver *drv;
-    char buffer[256];
+	int the_index = 0;
+	int nIconPos = 0;
+	HICON hIcon = 0;
+	const game_driver *drv;
+	char buffer[256];
 	const char *iconname;
 
 	assert(drvindex >= 0);
 	assert(drvindex < driver_list::total());
 
-    if ((nSoftwareType >= 0) && (nSoftwareType < IO_COUNT))
+	if ((nSoftwareType >= 0) && (nSoftwareType < IO_COUNT))
 	{
 		iconname = device_image_interface::device_brieftypename((iodevice_t)nSoftwareType);
-        the_index = (drvindex * IO_COUNT) + nSoftwareType;
+		the_index = (drvindex * IO_COUNT) + nSoftwareType;
 
-        nIconPos = mess_icon_index[the_index];
-        if (nIconPos >= 0)
+		nIconPos = mess_icon_index[the_index];
+		if (nIconPos >= 0)
 		{
 			drv = &driver_list::driver(drvindex);
 			while (drv)
@@ -348,9 +351,9 @@ static int GetMessIcon(int drvindex, int nSoftwareType)
 				if (nIconPos != -1)
 					mess_icon_index[the_index] = nIconPos;
 			}
-        }
-    }
-    return nIconPos;
+		}
+	}
+	return nIconPos;
 }
 
 static BOOL AddSoftwarePickerDirs(HWND hwndPicker, LPCSTR pszDirectories, LPCSTR pszSubDir)
@@ -491,7 +494,7 @@ void MyFillSoftwareList(int drvindex, BOOL bForce)
 //		}
 //	}
 
-	windows_options options;
+//	windows_options options;
 	software_list_device_iterator iter(config.root_device());
 	for (software_list_device *swlistdev = iter.first(); swlistdev; swlistdev = iter.next())
 	{
@@ -508,7 +511,13 @@ void MyFillSoftwareList(int drvindex, BOOL bForce)
 				{
 					if (swpart->matches_interface(interface))
 					{
-						SoftwareList_AddFile(hwndSoftwareList, swinfo->shortname(), swlistdev->list_name(), swinfo->longname(), swinfo->publisher(), swinfo->year(), image->brief_instance_name());
+						// Extract the Usage data from the "info" fields.
+						const char* usage = NULL;
+						for (feature_list_item *flist = swinfo->other_info(); flist; flist = flist->next())
+							if (strcmp(flist->name(), "usage") == 0)
+								usage = flist->value();
+						// Now actually add the item
+						SoftwareList_AddFile(hwndSoftwareList, swinfo->shortname(), swlistdev->list_name(), swinfo->longname(), swinfo->publisher(), swinfo->year(), usage, image->brief_instance_name());
 						break;
 					}
 				}
@@ -810,67 +819,67 @@ void InitMessPicker(void)
 
 static BOOL CommonFileImageDialog(LPTSTR the_last_directory, common_file_dialog_proc cfd, LPTSTR filename, const machine_config *config, mess_image_type *imagetypes)
 {
-    BOOL success = 0;
-    OPENFILENAME of;
-    char szFilter[2048];
-    LPSTR s;
+	BOOL success = 0;
+	OPENFILENAME of;
+	char szFilter[2048];
+	LPSTR s;
 	const char *typname;
-    int i = 0;
-    TCHAR* t_filter;
-    TCHAR* t_buffer;
+	int i = 0;
+	TCHAR* t_filter;
+	TCHAR* t_buffer;
 
 	s = szFilter;
-    *filename = 0;
+	*filename = 0;
 
-    // Common image types
-    strcpy(s, "Common image types");
-    s += strlen(s);
-    *(s++) = '|';
-    for (i = 0; imagetypes[i].ext; i++)
+	// Common image types
+	strcpy(s, "Common image types");
+	s += strlen(s);
+	*(s++) = '|';
+	for (i = 0; imagetypes[i].ext; i++)
 	{
-        *(s++) = '*';
-        *(s++) = '.';
-        strcpy(s, imagetypes[i].ext);
-        s += strlen(s);
-        *(s++) = ';';
-    }
-    *(s++) = '|';
+		*(s++) = '*';
+		*(s++) = '.';
+		strcpy(s, imagetypes[i].ext);
+		s += strlen(s);
+		*(s++) = ';';
+	}
+	*(s++) = '|';
 
-    // All files
-    strcpy(s, "All files (*.*)");
-    s += strlen(s);
-    *(s++) = '|';
-    strcpy(s, "*.*");
-    s += strlen(s);
-    *(s++) = '|';
+	// All files
+	strcpy(s, "All files (*.*)");
+	s += strlen(s);
+	*(s++) = '|';
+	strcpy(s, "*.*");
+	s += strlen(s);
+	*(s++) = '|';
 
-    // The others
-    for (i = 0; imagetypes[i].ext; i++)
+	// The others
+	for (i = 0; imagetypes[i].ext; i++)
 	{
 		if (!imagetypes[i].dev)
 			typname = "Compressed images";
 		else
 			typname = imagetypes[i].dlgname;
 
-        strcpy(s, typname);
-        s += strlen(s);
-        strcpy(s, " (*.");
-        s += strlen(s);
-        strcpy(s, imagetypes[i].ext);
-        s += strlen(s);
-        *(s++) = ')';
-        *(s++) = '|';
-        *(s++) = '*';
-        *(s++) = '.';
-        strcpy(s, imagetypes[i].ext);
-        s += strlen(s);
-        *(s++) = '|';
-    }
-    *(s++) = '|';
+		strcpy(s, typname);
+		s += strlen(s);
+		strcpy(s, " (*.");
+		s += strlen(s);
+		strcpy(s, imagetypes[i].ext);
+		s += strlen(s);
+		*(s++) = ')';
+		*(s++) = '|';
+		*(s++) = '*';
+		*(s++) = '.';
+		strcpy(s, imagetypes[i].ext);
+		s += strlen(s);
+		*(s++) = '|';
+	}
+	*(s++) = '|';
 
-    t_buffer = tstring_from_utf8(szFilter);
-    if( !t_buffer )
-	    return FALSE;
+	t_buffer = tstring_from_utf8(szFilter);
+	if( !t_buffer )
+		return FALSE;
 
 	// convert a pipe-char delimited string into a NUL delimited string
 	t_filter = (LPTSTR) alloca((_tcslen(t_buffer) + 2) * sizeof(*t_filter));
@@ -880,34 +889,34 @@ static BOOL CommonFileImageDialog(LPTSTR the_last_directory, common_file_dialog_
 	t_filter[i++] = '\0';
 	osd_free(t_buffer);
 
-    of.lStructSize = sizeof(of);
-    of.hwndOwner = GetMainWindow();
-    of.hInstance = NULL;
-    of.lpstrFilter = t_filter;
-    of.lpstrCustomFilter = NULL;
-    of.nMaxCustFilter = 0;
-    of.nFilterIndex = 1;
-    of.lpstrFile = filename;
-    of.nMaxFile = MAX_PATH;
-    of.lpstrFileTitle = NULL;
-    of.nMaxFileTitle = 0;
-    of.lpstrInitialDir = the_last_directory;
-    of.lpstrTitle = NULL;
-    of.Flags = OFN_EXPLORER | OFN_NOCHANGEDIR | OFN_PATHMUSTEXIST | OFN_HIDEREADONLY;
-    of.nFileOffset = 0;
-    of.nFileExtension = 0;
-    of.lpstrDefExt = TEXT("rom");
-    of.lCustData = 0;
-    of.lpfnHook = NULL;
-    of.lpTemplateName = NULL;
+	of.lStructSize = sizeof(of);
+	of.hwndOwner = GetMainWindow();
+	of.hInstance = NULL;
+	of.lpstrFilter = t_filter;
+	of.lpstrCustomFilter = NULL;
+	of.nMaxCustFilter = 0;
+	of.nFilterIndex = 1;
+	of.lpstrFile = filename;
+	of.nMaxFile = MAX_PATH;
+	of.lpstrFileTitle = NULL;
+	of.nMaxFileTitle = 0;
+	of.lpstrInitialDir = the_last_directory;
+	of.lpstrTitle = NULL;
+	of.Flags = OFN_EXPLORER | OFN_NOCHANGEDIR | OFN_PATHMUSTEXIST | OFN_HIDEREADONLY;
+	of.nFileOffset = 0;
+	of.nFileExtension = 0;
+	of.lpstrDefExt = TEXT("rom");
+	of.lCustData = 0;
+	of.lpfnHook = NULL;
+	of.lpTemplateName = NULL;
 
-    success = cfd(&of);
-    if (success)
-    {
-        //GetDirectory(filename,last_directory,sizeof(last_directory));
-    }
+	success = cfd(&of);
+	if (success)
+	{
+		//GetDirectory(filename,last_directory,sizeof(last_directory));
+	}
 
-    return success;
+	return success;
 }
 
 
@@ -915,19 +924,19 @@ static BOOL CommonFileImageDialog(LPTSTR the_last_directory, common_file_dialog_
 /* Specify IO_COUNT for type if you want all types */
 static void SetupImageTypes(const machine_config *config, mess_image_type *types, int count, BOOL bZip, const device_image_interface *dev)
 {
-    int num_extensions = 0;
+	int num_extensions = 0;
 
 	memset(types, 0, sizeof(*types) * count);
-    count--;
+	count--;
 
-    if (bZip)
+	if (bZip)
 	{
 		/* add the ZIP extension */
 		types[num_extensions].ext = core_strdup("zip");
 		types[num_extensions].dev = NULL;
 		types[num_extensions].dlgname = NULL;
 		num_extensions++;
-    }
+	}
 
 	if (dev == NULL)
 	{
@@ -1234,8 +1243,8 @@ static int SoftwarePicker_GetItemImage(HWND hwndPicker, int nItem)
 					nIcon = FindIconIndex(IDI_WIN_UNKNOWN);
 				break;
 		}
-    }
-    return nIcon;
+	}
+	return nIcon;
 }
 
 
@@ -1323,8 +1332,8 @@ static int SoftwareList_GetItemImage(HWND hwndPicker, int nItem)
 					nIcon = FindIconIndex(IDI_WIN_UNKNOWN);
 				break;
 		}
-    }
-    return nIcon;
+	}
+	return nIcon;
 }
 
 

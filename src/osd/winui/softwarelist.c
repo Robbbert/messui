@@ -45,6 +45,7 @@ struct _file_info
 	char publisher[MAX_PATH];
 	char year[10];
 	char full_name[MAX_PATH*2];
+	char usage[MAX_PATH*2];
 
 	char device[MAX_PATH];
 };
@@ -140,7 +141,7 @@ void SoftwareList_SetDriver(HWND hwndPicker, const software_config *config)
 }
 
 
-BOOL SoftwareList_AddFile(HWND hwndPicker,LPCSTR pszName, LPCSTR pszListname, LPCSTR pszDescription, LPCSTR pszPublisher, LPCSTR pszYear, LPCSTR pszDevice)
+BOOL SoftwareList_AddFile(HWND hwndPicker,LPCSTR pszName, LPCSTR pszListname, LPCSTR pszDescription, LPCSTR pszPublisher, LPCSTR pszYear, LPCSTR pszUsage, LPCSTR pszDevice)
 {
 	Picker_ResetIdle(hwndPicker);
 
@@ -168,6 +169,7 @@ BOOL SoftwareList_AddFile(HWND hwndPicker,LPCSTR pszName, LPCSTR pszListname, LP
 	strcpy(pInfo->description, pszDescription);
 	strcpy(pInfo->publisher, pszPublisher);
 	strcpy(pInfo->year, pszYear);
+	if (pszUsage) strcpy(pInfo->usage, pszUsage);
 	strcpy(pInfo->device, pszDevice);
 	sprintf(pInfo->full_name,"%s:%s", pszListname,pszName);
 
@@ -276,6 +278,14 @@ LPCTSTR SoftwareList_GetItemString(HWND hwndPicker, int nRow, int nColumn, TCHAR
 			break;
 		case 4:
 			t_buf = tstring_from_utf8(pFileInfo->publisher);
+			if( !t_buf )
+				return s;
+			_sntprintf(pszBuffer, nBufferLength, TEXT("%s"), t_buf);
+			s = pszBuffer;
+			osd_free(t_buf);
+			break;
+		case 5:
+			t_buf = tstring_from_utf8(pFileInfo->usage);
 			if( !t_buf )
 				return s;
 			_sntprintf(pszBuffer, nBufferLength, TEXT("%s"), t_buf);
