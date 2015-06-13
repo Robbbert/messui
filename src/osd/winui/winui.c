@@ -4618,12 +4618,12 @@ static BOOL MameCommand(HWND hwnd,int id, HWND hwndCtl, UINT codeNotify)
 		{
 			if (g_helpInfo[i].nMenuItem == id)
 			{
-				if (i == 1) // NEW MESS FEATURES : get current messnew.txt from mamedev.org
+				if (i == 1) // NEW MESS FEATURES : get current whatsnew.txt from mamedev.org
 				{
 					std::string version = std::string(build_version); // turn version string into std
 					version.erase(1,1); // take out the decimal point
 					version.erase(4, std::string::npos); // take out the date
-					std::string url = "http://mamedev.org/releases/messnew_" + version + ".txt"; // construct url
+					std::string url = "http://mamedev.org/releases/whatsnew_" + version + ".txt"; // construct url
 					std::wstring stemp = s2ws(url); // convert to wide string (yeah, typical c++ mess)
 					LPCWSTR result = stemp.c_str(); // then convert to const wchar_t*
 					ShellExecute(hMain, TEXT("open"), result, TEXT(""), NULL, SW_SHOWNORMAL); // show web page

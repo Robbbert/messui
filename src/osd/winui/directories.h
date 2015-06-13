@@ -18,6 +18,9 @@
 
 #define DIRLIST_NEWENTRYTEXT "<               >"
 
+#include "mui_opts.h"
+#include "optionsms.h"
+
 typedef struct
 {
 	LPCSTR   lpName;
@@ -28,8 +31,36 @@ typedef struct
 }
 DIRECTORYINFO;
 
-/* in layout[ms].c */
-extern const DIRECTORYINFO g_directoryInfo[];
+const DIRECTORYINFO g_directoryInfo[] =
+{
+	{ "ROMs",                  GetRomDirs,         SetRomDirs,         TRUE,  DIRDLG_ROMS },
+	{ "Samples",               GetSampleDirs,      SetSampleDirs,      TRUE,  DIRDLG_SAMPLES },
+	{ "Software",              GetSoftwareDirs,    SetSoftwareDirs,    TRUE,  DIRDLG_SOFTWARE },
+	{ "Artwork",               GetArtDir,          SetArtDir,          TRUE, 0 },
+	{ "Cabinets",              GetCabinetDir,      SetCabinetDir,      FALSE, 0 },
+	{ "Cheats",                GetCheatDir,        SetCheatDir,        TRUE, DIRDLG_CHEAT },
+	{ "Comment Files",         GetCommentDir,      SetCommentDir,      TRUE, DIRDLG_COMMENT },
+	{ "Config",                GetCfgDir,          SetCfgDir,          FALSE, DIRDLG_CFG },
+	{ "Control Panels",        GetControlPanelDir, SetControlPanelDir, FALSE, 0 },
+	{ "Controller Files",      GetCtrlrDir,        SetCtrlrDir,        TRUE, DIRDLG_CTRLR },
+	{ "Crosshairs",            GetCrosshairDir,    SetCrosshairDir,    TRUE, 0 },
+	{ "Folders",               GetFolderDir,       SetFolderDir,       FALSE, 0 },
+	{ "Fonts",                 GetFontDir,         SetFontDir,         TRUE, 0 },
+	{ "Flyers",                GetFlyerDir,        SetFlyerDir,        FALSE, 0 },
+	{ "Hash",                  GetHashDirs,        SetHashDirs,        TRUE, 0 },
+	{ "Hard Drive Difference", GetDiffDir,         SetDiffDir,         TRUE, 0 },
+	{ "Icons",                 GetIconsDir,        SetIconsDir,        FALSE, 0 },
+	{ "Ini Files",             GetIniDir,          SetIniDir,          FALSE, DIRDLG_INI },
+	{ "Input files",           GetInpDir,          SetInpDir,          TRUE, DIRDLG_INP },
+	{ "Marquees",              GetMarqueeDir,      SetMarqueeDir,      FALSE, 0 },
+	{ "NVRAM",                 GetNvramDir,        SetNvramDir,        TRUE, 0 },
+	{ "PCBs",                  GetPcbDir,          SetPcbDir,          FALSE, 0 },
+	{ "Snapshots",             GetImgDir,          SetImgDir,          FALSE, DIRDLG_IMG },
+	{ "State",                 GetStateDir,        SetStateDir,        TRUE, 0 },
+	{ "Titles",                GetTitlesDir,       SetTitlesDir,       FALSE, 0 },
+	{ NULL }
+};
+
 
 INT_PTR CALLBACK DirectoriesDialogProc(HWND hDlg, UINT Msg, WPARAM wParam, LPARAM lParam);
 

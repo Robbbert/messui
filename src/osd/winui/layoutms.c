@@ -11,29 +11,21 @@
 #define WIN32_LEAN_AND_MEAN
 #include <windows.h>
 #include <windowsx.h>
-#include <shellapi.h>
 #include <commctrl.h>
-#include <stdio.h>  /* for sprintf */
-#include <stdlib.h> /* For malloc and free */
-#include <string.h>
 
 #include "emu.h"
 #include "bitmask.h"
 #include "TreeView.h"
 #include "mui_util.h"
 #include "resource.h"
-#include "directories.h"
+#include "resourcems.h"
 #include "mui_opts.h"
 #include "splitters.h"
 #include "help.h"
 #include "mui_audit.h"
-#include "screenshot.h"
+#include "msuiutil.h"
 #include "winui.h"
 #include "properties.h"
-#include "optionsms.h"
-
-#include "msuiutil.h"
-#include "resourcems.h"
 #include "propertiesms.h"
 
 static BOOL FilterAvailable(int driver_index);
@@ -82,36 +74,6 @@ extern const FILTER_ITEM g_filterList[] =
 	{ 0 }
 };
 
-extern const DIRECTORYINFO g_directoryInfo[] =
-{
-	{ "ROMs",                  GetRomDirs,         SetRomDirs,         TRUE,  DIRDLG_ROMS },
-	{ "Samples",               GetSampleDirs,      SetSampleDirs,      TRUE,  DIRDLG_SAMPLES },
-	{ "Software",              GetSoftwareDirs,    SetSoftwareDirs,    TRUE,  DIRDLG_SOFTWARE },
-	{ "Artwork",               GetArtDir,          SetArtDir,          TRUE, 0 },
-	{ "Cabinets",              GetCabinetDir,      SetCabinetDir,      FALSE, 0 },
-	{ "Cheats",                GetCheatDir,        SetCheatDir,        TRUE, DIRDLG_CHEAT },
-	{ "Comment Files",         GetCommentDir,      SetCommentDir,      TRUE, DIRDLG_COMMENT },
-	{ "Config",                GetCfgDir,          SetCfgDir,          FALSE, DIRDLG_CFG },
-	{ "Control Panels",        GetControlPanelDir, SetControlPanelDir, FALSE, 0 },
-	{ "Controller Files",      GetCtrlrDir,        SetCtrlrDir,        FALSE, DIRDLG_CTRLR },
-	{ "Crosshairs",            GetCrosshairDir,    SetCrosshairDir,    FALSE, 0 },
-	{ "Folders",               GetFolderDir,       SetFolderDir,       FALSE, 0 },
-	{ "Fonts",                 GetFontDir,         SetFontDir,         FALSE, 0 },
-	{ "Flyers",                GetFlyerDir,        SetFlyerDir,        FALSE, 0 },
-	{ "Hash",                  GetHashDirs,        SetHashDirs,        FALSE, 0 },
-	{ "Hard Drive Difference", GetDiffDir,         SetDiffDir,         FALSE, 0 },
-	{ "Icons",                 GetIconsDir,        SetIconsDir,        FALSE, 0 },
-	{ "Ini Files",             GetIniDir,          SetIniDir,          FALSE, DIRDLG_INI },
-	{ "Input files",           GetInpDir,          SetInpDir,          FALSE, DIRDLG_INP },
-	{ "Marquees",              GetMarqueeDir,      SetMarqueeDir,      FALSE, 0 },
-	{ "NVRAM",                 GetNvramDir,        SetNvramDir,        FALSE, 0 },
-	{ "PCBs",                  GetPcbDir,          SetPcbDir,          FALSE, 0 },
-	{ "Snapshots",             GetImgDir,          SetImgDir,          FALSE, DIRDLG_IMG },
-	{ "State",                 GetStateDir,        SetStateDir,        FALSE, 0 },
-	{ "Titles",                GetTitlesDir,       SetTitlesDir,       FALSE, 0 },
-	{ NULL }
-};
-
 extern const SPLITTERINFO g_splitterInfo[] =
 {
 	{ 0.2,	IDC_SPLITTER,	IDC_TREE,	IDC_LIST,	AdjustSplitter1Rect },
@@ -120,6 +82,7 @@ extern const SPLITTERINFO g_splitterInfo[] =
 	{ -1 }
 };
 
+// this doesn't seem to be used
 extern const MAMEHELPINFO g_helpInfo[] =
 {
 	//{ ID_HELP_CONTENTS,	TRUE,	TEXT("messui.chm::/windows/main.htm") },
