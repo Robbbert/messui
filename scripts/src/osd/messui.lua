@@ -182,6 +182,7 @@ project ("osd_" .. _OPTIONS["osd"])
 		MAME_DIR .. "src/osd/winui/tabview.c",
 		MAME_DIR .. "src/osd/winui/treeview.c",
 		MAME_DIR .. "src/osd/winui/winui.c",
+		MAME_DIR .. "src/osd/winui/win_options.c",
 	}
 
 project ("ocore_" .. _OPTIONS["osd"])

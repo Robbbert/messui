@@ -32,7 +32,7 @@ software_config *software_config_alloc(int driver_index) //, hashfile_error_func
 
 	// allocate the machine config
 	windows_options pCurrentOpts;
-	load_options(pCurrentOpts, OPTIONS_GLOBAL, driver_index);
+	load_options(pCurrentOpts, driver_index);
 	config->mconfig = global_alloc(machine_config(driver_list::driver(driver_index),pCurrentOpts));
 
 	// other stuff

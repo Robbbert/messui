@@ -38,51 +38,8 @@ enum
 	COLUMN_MAX
 };
 
-
-// can't be the same as the VerifyRomSet() results, listed in audit.h
-enum
-{
-	UNKNOWN	= -1
-};
-
-/* Default input */
-enum
-{
-	INPUT_LAYOUT_STD,
-	INPUT_LAYOUT_HR,
-	INPUT_LAYOUT_HRSE
-};
-
-// clean stretch types
-enum
-{
-	// these must match array of strings clean_stretch_long_name in options.c
-	CLEAN_STRETCH_NONE = 0,
-	CLEAN_STRETCH_AUTO = 1,
-
-	MAX_CLEAN_STRETCH = 5,
-};
-
 #define FOLDER_OPTIONS	-2
 #define GLOBAL_OPTIONS	-1
-
-// d3d effect types
-enum
-{
-	// these must match array of strings d3d_effects_long_name in options.c
-	D3D_EFFECT_NONE = 0,
-	D3D_EFFECT_AUTO = 1,
-
-	MAX_D3D_EFFECTS = 17,
-};
-
-// d3d prescale types
-enum
-{
-	D3D_PRESCALE_NONE = 0,
-	D3D_PRESCALE_AUTO = 1,
-	MAX_D3D_PRESCALE = 10,
-};
 
 typedef struct
 {
@@ -96,8 +53,6 @@ typedef struct
 	char* resolution;
 	char* view;
 } ScreenParams;
-
-
 
 // List of artwork types to display in the screen shot area
 enum
@@ -138,8 +93,10 @@ void OptionsExit(void);
 #define OPTIONS_TYPE_GLOBAL		-1
 #define OPTIONS_TYPE_FOLDER		-2
 
-void load_options(windows_options &opts, OPTIONS_TYPE opt_type, int game_num);
-void save_options(windows_options &opts, OPTIONS_TYPE opt_type, int game_num);
+void SetDirectories(windows_options &opts);
+
+void load_options(windows_options &opts, int game_num);
+void save_options(windows_options &opts, int game_num);
 
 //void AddOptions(winui_options *opts, const options_entry *entrylist, BOOL is_global);
 void CreateGameOptions(windows_options &opts, int driver_index);
@@ -151,6 +108,8 @@ void LoadFolderFlags(void);
 const char* GetFolderNameByID(UINT nID);
 
 void SaveOptions(void);
+void SaveDefaultOptions(void);
+void SaveGameListOptions(void);
 
 void ResetGUI(void);
 void ResetGameDefaults(void);
@@ -368,6 +327,9 @@ void ResetGameOptions(int driver_index);
 int GetRomAuditResults(int driver_index);
 void SetRomAuditResults(int driver_index, int audit_results);
 
+int GetSampleAuditResults(int driver_index);
+void SetSampleAuditResults(int driver_index, int audit_results);
+
 void IncrementPlayCount(int driver_index);
 int GetPlayCount(int driver_index);
 void ResetPlayCount(int driver_index);
@@ -477,6 +439,10 @@ void SetRunFullScreen(BOOL fullScreen);
 
 void ColumnEncodeStringWithCount(const int *value, char *str, int count);
 void ColumnDecodeStringWithCount(const char* str, int *value, int count);
+
+int GetDriverCache(int driver_index);
+void SetDriverCache(int driver_index, int val);
+BOOL RequiredDriverCache(void);
 
 #endif
 

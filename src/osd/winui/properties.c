@@ -111,7 +111,7 @@ b) Exit the dialog.
 #include "mui_audit.h"
 #include "mui_opts.h"
 #include "resource.h"
-#include "dijoystick.h"     /* For DIJoystick avalibility. */
+#include "dijoystick.h"     /* For DIJoystick availability. */
 #include "mui_util.h"
 #include "datamap.h"
 #include "help.h"
@@ -423,9 +423,9 @@ void InitDefaultPropertyPage(HINSTANCE hInst, HWND hWnd)
 	g_nGame = GLOBAL_OPTIONS;
 
 	/* Get default options to populate property sheets */
-	load_options(pCurrentOpts, OPTIONS_GLOBAL, g_nGame);
-	load_options(pOrigOpts, OPTIONS_GLOBAL, g_nGame);
-	load_options(pDefaultOpts, OPTIONS_GLOBAL, g_nGame);
+	load_options(pCurrentOpts, g_nGame);
+	load_options(pOrigOpts, g_nGame);
+	load_options(pDefaultOpts, g_nGame);
 
 	/* Stash the result for comparing later */
 	CreateGameOptions(pOrigOpts, OPTIONS_TYPE_GLOBAL);
@@ -454,14 +454,14 @@ void InitDefaultPropertyPage(HINSTANCE hInst, HWND hWnd)
 	{
 		char temp[100];
 		DWORD dwError = GetLastError();
-		sprintf(temp, "Propery Sheet Error %d %X", (int)dwError, (int)dwError);
+		sprintf(temp, "Property Sheet Error %d %X", (int)dwError, (int)dwError);
 		win_message_box_utf8(0, temp, "Error", IDOK);
 	}
 
 	free(pspage);
 }
 
-/* Initilize the property pages for anything but the Default option set */
+/* Initialize the property pages for anything but the Default option set */
 void InitPropertyPage(HINSTANCE hInst, HWND hWnd, HICON hIcon, OPTIONS_TYPE opt_type, int folder_id, int game_num)
 {
 	InitPropertyPageToPage(hInst, hWnd, hIcon, opt_type, folder_id, game_num, PROPERTIES_PAGE);
@@ -483,18 +483,18 @@ void InitPropertyPageToPage(HINSTANCE hInst, HWND hWnd, HICON hIcon, OPTIONS_TYP
 	// Initialize the options
 
 	// Load the current options, this will pickup the highest priority option set.
-///	load_options(pCurrentOpts, opt_type, game_num);
+///	load_options(pCurrentOpts, game_num);
 
 	// Load the default options, pickup the next lower options set than the current level.
 ///	if (opt_type > OPTIONS_GLOBAL)
 ///		default_type = (OPTIONS_TYPE)(default_type-1); /// need to code this as GLOBAL, COMPAT, PARENT, GAME
 ///	default_type = OPTIONS_GLOBAL;
 
-///	load_options(pDefaultOpts, default_type, game_num);
+///	load_options(pDefaultOpts, game_num);
 
-		load_options(pCurrentOpts, OPTIONS_GAME, game_num);
-		load_options(pOrigOpts, OPTIONS_GAME, game_num);
-		load_options(pDefaultOpts, OPTIONS_GLOBAL, 0);
+		load_options(pCurrentOpts, game_num);
+		load_options(pOrigOpts, game_num);
+		load_options(pDefaultOpts, -1);
 
 	// Copy current_options to original options
 ///	CreateGameOptions(pOrigOpts, OPTIONS_TYPE_GLOBAL);
@@ -1021,9 +1021,9 @@ INT_PTR CALLBACK GameOptionsProc(HWND hDlg, UINT Msg, WPARAM wParam, LPARAM lPar
 
 		UpdateProperties(hDlg, properties_datamap, pCurrentOpts);
 
-		//load_options(pCurrentOpts, OPTIONS_GAME, g_nGame);
-		//load_options(pOrigOpts, OPTIONS_GAME, g_nGame);
-		//load_options(pDefaultOpts, OPTIONS_GLOBAL, 0);
+		//load_options(pCurrentOpts, g_nGame);
+		//load_options(pOrigOpts, g_nGame);
+		//load_options(pDefaultOpts, -1);
 		g_bUseDefaults = (pCurrentOpts != pDefaultOpts);
 		g_bReset = (pCurrentOpts != pOrigOpts);
 
@@ -1264,7 +1264,7 @@ INT_PTR CALLBACK GameOptionsProc(HWND hDlg, UINT Msg, WPARAM wParam, LPARAM lPar
 				EnableWindow(GetDlgItem(hDlg, IDC_PROP_RESET), g_bReset);
 
 				// Save the current options
-				save_options(pOrigOpts, g_nPropertyMode, g_nGame);
+				save_options(pCurrentOpts, g_nGame);
 
 				// Disable apply button
 				PropSheet_UnChanged(GetParent(hDlg), hDlg);
@@ -2272,7 +2272,7 @@ static void BuildDataMap(void)
 	datamap_add(properties_datamap, IDC_KEEPASPECT,				DM_BOOL,	OSDOPTION_KEEPASPECT);
 	datamap_add(properties_datamap, IDC_PRESCALE,				DM_INT,		OSDOPTION_PRESCALE);
 	datamap_add(properties_datamap, IDC_PRESCALEDISP,			DM_INT,		OSDOPTION_PRESCALE);
-	// datamap_add(properties_datamap, IDC_EFFECT,                  DM_STRING,  OPTION_EFFECT);
+	datamap_add(properties_datamap, IDC_EFFECT,				DM_STRING,	OPTION_EFFECT);
 	datamap_add(properties_datamap, IDC_WAITVSYNC,				DM_BOOL,	OSDOPTION_WAITVSYNC);
 	datamap_add(properties_datamap, IDC_SYNCREFRESH,			DM_BOOL,	OSDOPTION_SYNCREFRESH);
 

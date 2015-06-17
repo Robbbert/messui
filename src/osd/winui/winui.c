@@ -250,7 +250,7 @@ static LRESULT CALLBACK MameWindowProc(HWND hwnd,UINT message,WPARAM wParam,LPAR
 
 static void             SetView(int menu_id);
 static void             ResetListView(void);
-static void             UpdateGameList(BOOL bUpdateRomAudit);
+static void             UpdateGameList(BOOL bUpdateRomAudit, BOOL bUpdateSampleAudit);
 static void             DestroyIcons(void);
 static void             ReloadIcons(void);
 static void             PollGUIJoystick(void);
@@ -899,7 +899,7 @@ static DWORD RunMAME(int nGameIndex, const play_options *playopts)
 //  mame_opts = mame_options_init(mame_win_options);
 
 	// Tell mame where to get the INIs
-	mame_opts.set_value(OPTION_INIPATH, GetIniDir(), OPTION_PRIORITY_CMDLINE,error_string);
+	SetDirectories(mame_opts);   // mame_opts.set_value(OPTION_INIPATH, GetIniDir(), OPTION_PRIORITY_CMDLINE,error_string);
 
 	// add image specific device options
 	mame_opts.set_system_name(driver_list::driver(nGameIndex).name);
@@ -1777,7 +1777,10 @@ static BOOL Win32UI_init(HINSTANCE hInstance, LPWSTR lpCmdLine, int nCmdShow)
 
 	s_pWatcher = DirWatcher_Init(hMain, WM_MAME32_FILECHANGED);
 	if (s_pWatcher)
+	{
 		DirWatcher_Watch(s_pWatcher, 0, GetRomDirs(), TRUE);
+		DirWatcher_Watch(s_pWatcher, 1, GetSampleDirs(), TRUE);
+	}
 
 	SetMainTitle();
 	hTabCtrl = GetDlgItem(hMain, IDC_SSTAB);
@@ -2075,7 +2078,8 @@ static void Win32UI_exit()
 	DirectDraw_Close();
 
 	SetSavedFolderID(GetCurrentFolderID());
-
+	SaveGameListOptions();
+	//SaveDefaultOptions();   causes all changes to ini\mess.ini to be reverted
 	SaveOptions();
 
 	FreeFolders();
@@ -2349,6 +2353,10 @@ static LRESULT CALLBACK MameWindowProc(HWND hWnd, UINT message, WPARAM wParam, L
 					pfnGetAuditResults = GetRomAuditResults;
 					pfnSetAuditResults = SetRomAuditResults;
 					break;
+				case 1:
+					pfnGetAuditResults = GetSampleAuditResults;
+					pfnSetAuditResults = SetSampleAuditResults;
+					break;
 			}
 
 			if (pfnGetAuditResults && pfnSetAuditResults)
@@ -2392,6 +2400,9 @@ static LRESULT CALLBACK MameWindowProc(HWND hWnd, UINT message, WPARAM wParam, L
 			{
 				case 0:
 					MameUIVerifyRomSet(nGameIndex, 0);
+					break;
+				case 1:
+					MameUIVerifySampleSet(nGameIndex);
 					break;
 			}
 
@@ -2521,6 +2532,12 @@ static BOOL FolderCheck(void)
 			changed = TRUE;
 		}
 
+		if (GetSampleAuditResults(nGameIndex) == UNKNOWN)
+		{
+			MameUIVerifySampleSet(nGameIndex);
+			changed = TRUE;
+		}
+
 		lvfi.flags	= LVFI_PARAM;
 		lvfi.lParam = nGameIndex;
 
@@ -2568,6 +2585,12 @@ static BOOL GameCheck(void)
 	if (GetRomAuditResults(game_index) == UNKNOWN)
 	{
 		MameUIVerifyRomSet(game_index, 0);
+		changed = TRUE;
+	}
+
+	if (GetSampleAuditResults(game_index) == UNKNOWN)
+	{
+		MameUIVerifySampleSet(game_index);
 		changed = TRUE;
 	}
 
@@ -3793,12 +3816,14 @@ static void ResetListView()
 	b_res++;
 }
 
-static void UpdateGameList(BOOL bUpdateRomAudit)
+static void UpdateGameList(BOOL bUpdateRomAudit, BOOL bUpdateSampleAudit)
 {
 	for (int i = 0; i < driver_list::total(); i++)
 	{
 		if (bUpdateRomAudit && DriverUsesRoms(i))
 			SetRomAuditResults(i, UNKNOWN);
+		if (bUpdateSampleAudit && DriverUsesSamples(i))
+			SetSampleAuditResults(i, UNKNOWN);
 	}
 
 	idle_work	 = TRUE;
@@ -4346,7 +4371,7 @@ static BOOL MameCommand(HWND hwnd,int id, HWND hwndCtl, UINT codeNotify)
 		break;
 
 	case ID_UPDATE_GAMELIST:
-		UpdateGameList(TRUE);
+		UpdateGameList(TRUE, TRUE);
 		break;
 
 	case ID_OPTIONS_FONT:
@@ -4370,16 +4395,20 @@ static BOOL MameCommand(HWND hwnd,int id, HWND hwndCtl, UINT codeNotify)
 	case ID_OPTIONS_DIR:
 		{
 			BOOL bUpdateRoms = 0;
+			BOOL bUpdateSamples;
 			BOOL bUpdateSoftware = 0;
 
 			int nResult = DialogBox(GetModuleHandle(NULL),
-								MAKEINTRESOURCE(IDD_DIRECTORIES),
-								hMain,
-								DirectoriesDialogProc);
+					MAKEINTRESOURCE(IDD_DIRECTORIES),
+					hMain,
+					DirectoriesDialogProc);
 
+			SaveDefaultOptions();
+			SaveOptions();
 			//SaveDefaultOptions();   leave out; kills users Default Game Settings
 
 			bUpdateRoms    = ((nResult & DIRDLG_ROMS) == DIRDLG_ROMS) ? TRUE : FALSE;
+			bUpdateSamples = ((nResult & DIRDLG_SAMPLES) == DIRDLG_SAMPLES) ? TRUE : FALSE;
 			bUpdateSoftware = ((nResult & DIRDLG_SOFTWARE) == DIRDLG_SOFTWARE) ? TRUE : FALSE;
 
 			if (bUpdateSoftware)
@@ -4389,11 +4418,13 @@ static BOOL MameCommand(HWND hwnd,int id, HWND hwndCtl, UINT codeNotify)
 			{
 				if (bUpdateRoms)
 					DirWatcher_Watch(s_pWatcher, 0, GetRomDirs(), TRUE);
+				if (bUpdateSamples)
+					DirWatcher_Watch(s_pWatcher, 1, GetSampleDirs(), TRUE);
 			}
 
 			/* update game list */
-			if (bUpdateRoms == TRUE)
-				UpdateGameList(bUpdateRoms);
+			if (bUpdateRoms == TRUE || bUpdateSamples == TRUE)
+				UpdateGameList(bUpdateRoms, bUpdateSamples);
 
 			SetFocus(hwndList);
 		}
@@ -4405,6 +4436,7 @@ static BOOL MameCommand(HWND hwnd,int id, HWND hwndCtl, UINT codeNotify)
         {
 			// these may have been changed
 			SaveDefaultOptions();
+			SaveOptions();
 			DestroyWindow(hwnd);
 			PostQuitMessage(0);
 		} else {
@@ -4417,6 +4449,7 @@ static BOOL MameCommand(HWND hwnd,int id, HWND hwndCtl, UINT codeNotify)
 		DialogBox(GetModuleHandle(NULL), MAKEINTRESOURCE(IDD_INTERFACE_OPTIONS),
 				  hMain, InterfaceDialogProc);
 		//SaveDefaultOptions();   leave out; kills users Default Game Settings
+		SaveOptions();
 
 		KillTimer(hMain, SCREENSHOT_TIMER);
 		if( GetCycleScreenshot() > 0)
@@ -4717,7 +4750,15 @@ static const TCHAR *GamePicker_GetItemString(HWND hwndPicker, int nItem, int nCo
 		case COLUMN_ROMS:
 			utf8_s = GetAuditString(GetRomAuditResults(nItem));
 			break;
-
+#ifdef COLUMN_SAMPLES
+		case COLUMN_SAMPLES:
+			/* Samples */
+			if (DriverUsesSamples(nItem))
+				s = TEXT("Yes");
+			else
+				s = TEXT("No");
+			break;
+#endif
 		case COLUMN_DIRECTORY:
 			/* Driver name (directory) */
 			utf8_s = driver_list::driver(nItem).name;
@@ -5114,6 +5155,41 @@ static int GamePicker_Compare(HWND hwndPicker, int index1, int index2, int sort_
 		nTemp2 = DriverIsVertical(index2) ? 1 : 0;
 		value = nTemp1 - nTemp2;
 		break;
+
+#ifdef COLUMN_SAMPLES
+	case COLUMN_SAMPLES:
+		nTemp1 = -1;
+		if (DriverUsesSamples(index1))
+		{
+			int audit_result = GetSampleAuditResults(index1);
+			if (IsAuditResultKnown(audit_result))
+			{
+				if (IsAuditResultYes(audit_result))
+					nTemp1 = 1;
+				else
+					nTemp1 = 0;
+			}
+			else
+				nTemp1 = 2;
+		}
+
+		nTemp2 = -1;
+		if (DriverUsesSamples(index2))
+		{
+			int audit_result = GetSampleAuditResults(index1);
+			if (IsAuditResultKnown(audit_result))
+			{
+				if (IsAuditResultYes(audit_result))
+					nTemp2 = 1;
+				else
+					nTemp2 = 0;
+			}
+			else
+				nTemp2 = 2;
+		}
+		value = nTemp2 - nTemp1;
+		break;
+#endif
 
 	case COLUMN_DIRECTORY:
 		value = core_stricmp(driver_list::driver(index1).name, driver_list::driver(index2).name);

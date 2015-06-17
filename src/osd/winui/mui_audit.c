@@ -185,7 +185,7 @@ int MameUIVerifySampleSet(int game)
 	// output the summary of the audit
 	DetailsPrintf("%s", summary_string.c_str());
 
-	//SetSampleAuditResults(game, summary);
+	SetSampleAuditResults(game, summary);
 	return summary;
 }
 

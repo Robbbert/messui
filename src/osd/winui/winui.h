@@ -32,6 +32,7 @@
 
 enum
 {
+	UNKNOWN = -1,
 	TAB_PICKER = 0,
 	TAB_DISPLAY,
 	TAB_MISC,

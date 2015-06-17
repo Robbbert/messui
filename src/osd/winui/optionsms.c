@@ -218,9 +218,9 @@ void SetSelectedSoftware(int driver_index, const machine_config *config, const d
 			dev, driver_list::driver(driver_index).name, software);
 	}
 
-	load_options(o, OPTIONS_GAME, driver_index);
+	load_options(o, driver_index);
 	o.set_value(opt_name, software, OPTION_PRIORITY_CMDLINE,error_string);
-	save_options(o, OPTIONS_GAME, driver_index);
+	save_options(o, driver_index);
 }
 
 // this is buggy - do not use
@@ -229,7 +229,7 @@ const char *GetSelectedSoftware(int driver_index, const machine_config *config, 
 	const char *opt_name = dev->instance_name();
 	windows_options o;
 
-	load_options(o,OPTIONS_GAME, driver_index);
+	load_options(o, driver_index);
 	return o.value(opt_name);
 }
 

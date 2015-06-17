@@ -556,7 +556,7 @@ BOOL MessApproveImageList(HWND hParent, int drvindex)
 //		if (dev->must_be_loaded())
 //		{
 //			const char *opt_name = dev->instance_name();
-//			load_options(o,OPTIONS_GAME, drvindex);
+//			load_options(o, drvindex);
 //			s = o.value(opt_name);
 //			if (!s || !*s)
 //			{
@@ -590,7 +590,7 @@ static void InternalSetSelectedSoftware(int drvindex, const machine_config *conf
 	const char *s, *opt_name = device->instance_name();
 	windows_options o;
 
-	load_options(o,OPTIONS_GAME, drvindex);
+	load_options(o, drvindex);
 	s = o.value(opt_name);
 	// only call SetSelectedSoftware() if this value is different
 	if (strcmp(s, pszSoftware))
@@ -613,7 +613,7 @@ static void MessSpecifyImage(int drvindex, const device_image_interface *device,
 {
 	const char *s, *file_extension;
 	windows_options o;
-	load_options(o,OPTIONS_GAME, drvindex);
+	load_options(o, drvindex);
 
 	if (LOG_SOFTWARE)
 		dprintf("MessSpecifyImage(): device=%p pszFilename='%s'\n", device, pszFilename);
@@ -700,7 +700,7 @@ static void MessRemoveImage(int drvindex, const char *pszFilename)
 	for (device_image_interface *dev = iter.first(); dev; dev = iter.next())
 	{
 		const char *opt_name = dev->instance_name();
-		load_options(o,OPTIONS_GAME, drvindex);
+		load_options(o, drvindex);
 		s = o.value(opt_name);
 		if ((s != NULL) && !strcmp(pszFilename, s))
 			MessSpecifyImage(drvindex, dev, NULL);
@@ -741,7 +741,7 @@ static void MessRefreshPicker(void)
 	{
 		const char *opt_name = dev->instance_name(); // get name of device slot
 
-		load_options(o,OPTIONS_GAME, s_config->driver_index);
+		load_options(o, s_config->driver_index);
 		s = o.value(opt_name); // get name of software in the slot
 
 		if (s[0]) // if software is loaded
@@ -1040,7 +1040,7 @@ static BOOL DevView_GetOpenFileName(HWND hwndDevView, const machine_config *conf
 	std::string as;
 	const char *s, *opt_name = dev->instance_name();
 	windows_options o;
-	load_options(o,OPTIONS_GAME, drvindex);
+	load_options(o, drvindex);
 	s = o.value(opt_name);
 
 	/* Get the path to the currently mounted image */
@@ -1195,7 +1195,7 @@ static LPCTSTR DevView_GetSelectedSoftware(HWND hwndDevView, int nDriverIndex,
 	const char *opt_name = dev->instance_name();
 	windows_options o;
 
-	load_options(o,OPTIONS_GAME, nDriverIndex);
+	load_options(o, nDriverIndex);
 	s = o.value(opt_name);
 
 	t_s = tstring_from_utf8(s);
