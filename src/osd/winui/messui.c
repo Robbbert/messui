@@ -1558,7 +1558,7 @@ BOOL MessCommand(HWND hwnd,int id, HWND hwndCtl, UINT codeNotify)
 static LPCSTR s_tabs[] =
 {
 	"picker\0Picker",
-	"devview\0Device View",
+	"devview\0Media View",
 	"softlist\0Software",
 };
 

@@ -23,7 +23,8 @@
 #include "mui_util.h"
 #include "drivenum.h"
 
-#define DEVVIEW_PADDING	10
+#define DEVVIEW_PADDING 10
+#define DEVVIEW_SPACING 21
 
 
 struct DevViewInfo
@@ -97,7 +98,8 @@ static void DevView_GetColumns(HWND hwndDevView, int *pnStaticPos, int *pnStatic
 	*pnButtonWidth = 25;
 	*pnButtonPos = (r.right - r.left) - *pnButtonWidth - DEVVIEW_PADDING;
 
-	*pnEditPos = *pnStaticPos + *pnStaticWidth + DEVVIEW_PADDING;
+//	*pnEditPos = *pnStaticPos + *pnStaticWidth + DEVVIEW_PADDING;
+	*pnEditPos = DEVVIEW_PADDING;
 	*pnEditWidth = *pnButtonPos - *pnEditPos - DEVVIEW_PADDING;
 	if (*pnEditWidth < 0)
 		*pnEditWidth = 0;
@@ -181,7 +183,6 @@ static LRESULT CALLBACK DevView_EditWndProc(HWND hwndEdit, UINT nMessage, WPARAM
 BOOL DevView_SetDriver(HWND hwndDevView, const software_config *config)
 {
 	struct DevViewInfo *pDevViewInfo;
-//	const device_image_interface *dev = NULL;
 	struct DevViewEntry *pEnt;
 	int i = 0;
 	int y = 0, nHeight = 0, nDevCount = 0;
@@ -204,12 +205,9 @@ BOOL DevView_SetDriver(HWND hwndDevView, const software_config *config)
 	// count total amount of devices
 	nDevCount = 0;
 
-	{
-		image_interface_iterator iter(pDevViewInfo->config->mconfig->root_device());
-		for (device_image_interface *dev = iter.first(); dev != NULL; dev = iter.next())
-//		for (bool gotone = pDevViewInfo->config->mconfig->devicelist().first(dev); gotone; gotone = dev->next(dev))
-			nDevCount++;
-	}
+	image_interface_iterator iter(pDevViewInfo->config->mconfig->root_device());
+	for (device_image_interface *dev = iter.first(); dev; dev = iter.next())
+		nDevCount++;
 
 	if (nDevCount > 0)
 	{
@@ -217,8 +215,7 @@ BOOL DevView_SetDriver(HWND hwndDevView, const software_config *config)
 		ppszDevices = (LPTSTR *) alloca(nDevCount * sizeof(*ppszDevices));
 		i = 0;
 		image_interface_iterator iter(pDevViewInfo->config->mconfig->root_device());
-		for (device_image_interface *dev = iter.first(); dev != NULL; dev = iter.next())
-//		for (bool gotone = pDevViewInfo->config->mconfig->devicelist().first(dev); gotone; gotone = dev->next(dev))
+		for (device_image_interface *dev = iter.first(); dev; dev = iter.next())
 		{
 			t_s = tstring_from_utf8(dev->device().name());
 			ppszDevices[i] = (TCHAR*)alloca((_tcslen(t_s) + 1) * sizeof(TCHAR));
@@ -247,33 +244,31 @@ BOOL DevView_SetDriver(HWND hwndDevView, const software_config *config)
 		memset(pEnt, 0, sizeof(struct DevViewEntry) * (nDevCount + 1));
 		pDevViewInfo->pEntries = pEnt;
 
-		y = 10;
-		nHeight = 21;
+		y = DEVVIEW_PADDING;
+		nHeight = DEVVIEW_SPACING;
 		DevView_GetColumns(hwndDevView, &nStaticPos, &nStaticWidth,
 			&nEditPos, &nEditWidth, &nButtonPos, &nButtonWidth);
 
-//		image_interface_iterator iter(pDevViewInfo->config->mconfig->root_device());
-		for (device_image_interface *dev = iter.first(); dev != NULL; dev = iter.next())
-//		for (bool gotone = pDevViewInfo->config->mconfig->devicelist().first(dev); gotone; gotone = dev->next(dev))
+		for (device_image_interface *dev = iter.first(); dev; dev = iter.next())
 		{
 			pEnt->dev = dev;
 
 			pEnt->hwndStatic = win_create_window_ex_utf8(0, "STATIC", dev->device().name(),
-				WS_VISIBLE | WS_CHILD, nStaticPos, y, nStaticWidth, nHeight,
-				hwndDevView, NULL, NULL, NULL);
+				WS_VISIBLE | WS_CHILD, nStaticPos,
+				y, nStaticWidth, nHeight, hwndDevView, NULL, NULL, NULL);
+			y += nHeight;
 
 			pEnt->hwndEdit = win_create_window_ex_utf8(0, "EDIT", "",
-				WS_VISIBLE | WS_CHILD | WS_BORDER | ES_AUTOHSCROLL, nEditPos, y, nEditWidth, nHeight,
-				hwndDevView, NULL, NULL, NULL);
+				WS_VISIBLE | WS_CHILD | WS_BORDER | ES_AUTOHSCROLL, nEditPos,
+				y, nEditWidth, nHeight, hwndDevView, NULL, NULL, NULL);
 
 			pEnt->hwndBrowseButton = win_create_window_ex_utf8(0, "BUTTON", "...",
-				WS_VISIBLE | WS_CHILD, nButtonPos, y, nButtonWidth, nHeight,
-				hwndDevView, NULL, NULL, NULL);
+				WS_VISIBLE | WS_CHILD, nButtonPos,
+				y, nButtonWidth, nHeight, hwndDevView, NULL, NULL, NULL);
 
 			if (pEnt->hwndStatic)
-			{
 				SendMessage(pEnt->hwndStatic, WM_SETFONT, (WPARAM) pDevViewInfo->hFont, TRUE);
-			}
+
 			if (pEnt->hwndEdit)
 			{
 				SendMessage(pEnt->hwndEdit, WM_SETFONT, (WPARAM) pDevViewInfo->hFont, TRUE);
@@ -282,11 +277,11 @@ BOOL DevView_SetDriver(HWND hwndDevView, const software_config *config)
 				pEnt->pfnEditWndProc = (WNDPROC) l;
 				SetWindowLongPtr(pEnt->hwndEdit, GWLP_USERDATA, (LONG_PTR) pEnt);
 			}
-			if (pEnt->hwndBrowseButton)
-			{
-				SetWindowLongPtr(pEnt->hwndBrowseButton, GWLP_USERDATA, (LONG_PTR) pEnt);
-			}
 
+			if (pEnt->hwndBrowseButton)
+				SetWindowLongPtr(pEnt->hwndBrowseButton, GWLP_USERDATA, (LONG_PTR) pEnt);
+
+			y += nHeight;
 			y += nHeight;
 			pEnt++;
 		}
@@ -329,12 +324,12 @@ static void DevView_ButtonClick(HWND hwndDevView, struct DevViewEntry *pEnt, HWN
 	switch(rc)
 	{
 		case 1:
-			b = pDevViewInfo->pCallbacks->pfnGetOpenFileName(hwndDevView, pDevViewInfo->config->mconfig, pEnt->dev,
-				szPath, ARRAY_LENGTH(szPath));
+			b = pDevViewInfo->pCallbacks->pfnGetOpenFileName(hwndDevView,
+			pDevViewInfo->config->mconfig, pEnt->dev, szPath, ARRAY_LENGTH(szPath));
 			break;
 		case 2:
-			b = pDevViewInfo->pCallbacks->pfnGetCreateFileName(hwndDevView, pDevViewInfo->config->mconfig, pEnt->dev,
-				szPath, ARRAY_LENGTH(szPath));
+			b = pDevViewInfo->pCallbacks->pfnGetCreateFileName(hwndDevView,
+			pDevViewInfo->config->mconfig, pEnt->dev, szPath, ARRAY_LENGTH(szPath));
 			break;
 		case 3:
 			memset(szPath, 0, sizeof(szPath));
@@ -364,8 +359,7 @@ static BOOL DevView_Setup(HWND hwndDevView)
 	SetWindowLongPtr(hwndDevView, GWLP_USERDATA, (LONG_PTR) pDevViewInfo);
 
 	// create and specify the font
-	pDevViewInfo->hFont = CreateFont(10, 0, 0, 0, FW_NORMAL, 0, 0, 0, 0, 0,
-		0, 0, 0, TEXT("MS Sans Serif"));
+	pDevViewInfo->hFont = CreateFont(10, 0, 0, 0, FW_NORMAL, 0, 0, 0, 0, 0, 0, 0, 0, TEXT("MS Sans Serif"));
 	SendMessage(hwndDevView, WM_SETFONT, (WPARAM) pDevViewInfo->hFont, FALSE);
 	return TRUE;
 }
@@ -444,9 +438,10 @@ static LRESULT CALLBACK DevView_WndProc(HWND hwndDevView, UINT nMessage, WPARAM 
 				{
 					GetClientRect(pEnt->hwndStatic, &r);
 					MapWindowPoints(pEnt->hwndStatic, hwndDevView, ((POINT *) &r), 2);
-					MoveWindow(pEnt->hwndStatic, nStaticPos, r.top, nStaticWidth, r.bottom - r.top, FALSE);
-					MoveWindow(pEnt->hwndEdit, nEditPos, r.top, nEditWidth, r.bottom - r.top, FALSE);
-					MoveWindow(pEnt->hwndBrowseButton, nButtonPos, r.top, nButtonWidth, r.bottom - r.top, FALSE);
+					//MoveWindow(pEnt->hwndStatic, nStaticPos, r.top, nStaticWidth, r.bottom - r.top, FALSE); // has its own line, no need to move
+					// On next line, so need DEVVIEW_SPACING to put them down there.
+					MoveWindow(pEnt->hwndEdit, nEditPos, r.top+DEVVIEW_SPACING, nEditWidth, r.bottom - r.top, FALSE);
+					MoveWindow(pEnt->hwndBrowseButton, nButtonPos, r.top+DEVVIEW_SPACING, nButtonWidth, r.bottom - r.top, FALSE);
 					pEnt++;
 				}
 			}
