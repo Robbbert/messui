@@ -254,6 +254,7 @@ enum
 static int joystick_menu_setup = 0;
 static char state_filename[MAX_PATH];
 static int add_filter_entry(char *dest, size_t dest_len, const char *description, const char *extensions);
+static const char* software_dir;
 
 struct file_dialog_params
 {
@@ -2926,8 +2927,12 @@ static void change_device(HWND wnd, device_image_interface *image, int is_save)
 	else
 		filename[0] = '\0';
 
-	// use image directory, if it is there
-	initial_dir = image->working_directory();
+	// get the working directory, but if it is ".", then use the one specified in comments_path
+	char *dst = NULL;
+	osd_get_full_path(&dst,"."); // turn local directory into full path
+	initial_dir = image->working_directory(); // get working directory from diimage.c
+	if (strcmp(dst, initial_dir) == 0)  // same?
+		initial_dir = software_dir;
 
 	// add custom dialog elements, if appropriate
 	if (is_save
@@ -3929,6 +3934,9 @@ static HMODULE win_resource_module(void)
 
 int win_create_menu(running_machine &machine, HMENU *menus)
 {
+	// if this is invalid, then windows chooses whatever directory it used last.
+	software_dir = machine.options().emu_options::comment_directory();
+
 	HMENU menu_bar = NULL;
 	HMODULE module;
 
