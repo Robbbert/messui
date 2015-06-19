@@ -417,18 +417,19 @@ void InitDefaultPropertyPage(HINSTANCE hInst, HWND hWnd)
 	PROPSHEETHEADER pshead;
 	PROPSHEETPAGE   *pspage;
 
-	// clear globals
-	//pCurrentOpts = NULL;
-
+	// We are at Global level
 	g_nGame = GLOBAL_OPTIONS;
+
+	// Need to clean out old opts remnants and devices from when editing a game's properties.
+	windows_options dummy;
+	pCurrentOpts = dummy;
+	pOrigOpts = dummy;
+	pDefaultOpts = dummy;
 
 	/* Get default options to populate property sheets */
 	load_options(pCurrentOpts, g_nGame);
 	load_options(pOrigOpts, g_nGame);
-	load_options(pDefaultOpts, g_nGame);
-
-	/* Stash the result for comparing later */
-	CreateGameOptions(pOrigOpts, OPTIONS_TYPE_GLOBAL);
+	load_options(pDefaultOpts, -2);
 
 	g_nPropertyMode = OPTIONS_GLOBAL;
 	BuildDataMap();
@@ -472,7 +473,6 @@ void InitPropertyPageToPage(HINSTANCE hInst, HWND hWnd, HICON hIcon, OPTIONS_TYP
 	PROPSHEETHEADER pshead;
 	PROPSHEETPAGE   *pspage;
 	TCHAR*          t_description = 0;
-///	OPTIONS_TYPE    default_type = opt_type;
 
 	if (highlight_brush == NULL)
 		highlight_brush = CreateSolidBrush(HIGHLIGHT_COLOR);
@@ -481,28 +481,17 @@ void InitPropertyPageToPage(HINSTANCE hInst, HWND hWnd, HICON hIcon, OPTIONS_TYP
 		background_brush = CreateSolidBrush(GetSysColor(COLOR_3DFACE));
 
 	// Initialize the options
-
-	// Load the current options, this will pickup the highest priority option set.
-///	load_options(pCurrentOpts, game_num);
-
-	// Load the default options, pickup the next lower options set than the current level.
-///	if (opt_type > OPTIONS_GLOBAL)
-///		default_type = (OPTIONS_TYPE)(default_type-1); /// need to code this as GLOBAL, COMPAT, PARENT, GAME
-///	default_type = OPTIONS_GLOBAL;
-
-///	load_options(pDefaultOpts, game_num);
-
-		load_options(pCurrentOpts, game_num);
-		load_options(pOrigOpts, game_num);
-		load_options(pDefaultOpts, -1);
-
-	// Copy current_options to original options
-///	CreateGameOptions(pOrigOpts, OPTIONS_TYPE_GLOBAL);
+	load_options(pCurrentOpts, game_num);
+	load_options(pOrigOpts, game_num);
+	if (game_num == GLOBAL_OPTIONS)
+		load_options(pDefaultOpts, -2); // base opts is the backup for global
+	else
+		load_options(pDefaultOpts, -1); // global is the backup for games
 
 	// Copy icon to use for the property pages
 	g_hIcon = CopyIcon(hIcon);
 
-	// These MUST be valid, they are used as indicies
+	// These MUST be valid, they are used as indexes
 	g_nGame = game_num;
 	g_nFolder = folder_id;
 
@@ -516,18 +505,17 @@ void InitPropertyPageToPage(HINSTANCE hInst, HWND hWnd, HICON hIcon, OPTIONS_TYP
 
 	ZeroMemory(&pshead, sizeof(PROPSHEETHEADER));
 
-	// Set the game to audit to this game
-	InitGameAudit(game_num);
-
-	// Create the propery sheets
+	// Create the property sheets
 	if( OPTIONS_GAME == opt_type )
+	{
+		InitGameAudit(game_num);
 		pspage = CreatePropSheetPages(hInst, FALSE, &driver_list::driver(game_num), &pshead.nPages, TRUE);
+	}
 	else
 		pspage = CreatePropSheetPages(hInst, FALSE, NULL, &pshead.nPages, FALSE);
 
 	if (!pspage)
 		return;
-
 
 	// Get the description use as the dialog caption.
 	switch( opt_type )
@@ -716,16 +704,16 @@ static char *GameInfoScreen(UINT nIndex)
 }
 
 /* Build color information string */
-static char *GameInfoColors(UINT nIndex)
-{
-	static char buf[1024];
-	machine_config config(driver_list::driver(nIndex),pCurrentOpts);
+//static char *GameInfoColors(UINT nIndex)
+//{
+//	static char buf[1024];
+//	machine_config config(driver_list::driver(nIndex),pCurrentOpts);
 
-	ZeroMemory(buf, sizeof(buf));
-	//sprintf(buf, "%d colors ", config.m_total_colors); // support for this was removed from the core @ r28075
+//	ZeroMemory(buf, sizeof(buf));
+//	sprintf(buf, "%d colors ", config.m_total_colors); // support for this was removed from the core @ r28075
 
-	return buf;
-}
+//	return buf;
+//}
 
 /* Build game status string */
 const char *GameInfoStatus(int driver_index, BOOL bRomStatus)
@@ -986,7 +974,7 @@ HWND hWnd;
 		win_set_window_text_utf8(GetDlgItem(hDlg, IDC_PROP_CPU),           GameInfoCPU(g_nGame));
 		win_set_window_text_utf8(GetDlgItem(hDlg, IDC_PROP_SOUND),         GameInfoSound(g_nGame));
 		win_set_window_text_utf8(GetDlgItem(hDlg, IDC_PROP_SCREEN),        GameInfoScreen(g_nGame));
-		win_set_window_text_utf8(GetDlgItem(hDlg, IDC_PROP_COLORS),        GameInfoColors(g_nGame));
+		//win_set_window_text_utf8(GetDlgItem(hDlg, IDC_PROP_COLORS),        GameInfoColors(g_nGame));
 		win_set_window_text_utf8(GetDlgItem(hDlg, IDC_PROP_CLONEOF),       GameInfoCloneOf(g_nGame));
 		win_set_window_text_utf8(GetDlgItem(hDlg, IDC_PROP_SOURCE),        GameInfoSource(g_nGame));
 
@@ -1008,8 +996,6 @@ HWND hWnd;
 INT_PTR CALLBACK GameOptionsProc(HWND hDlg, UINT Msg, WPARAM wParam, LPARAM lParam)
 {
 	BOOL g_bUseDefaults = 0, g_bReset = 0;
-	//d3d_version = pCurrentOpts.int_value(WINOPTION_D3DVERSION);
-
 
 	switch (Msg)
 	{
@@ -1027,10 +1013,10 @@ INT_PTR CALLBACK GameOptionsProc(HWND hDlg, UINT Msg, WPARAM wParam, LPARAM lPar
 		g_bUseDefaults = (pCurrentOpts != pDefaultOpts);
 		g_bReset = (pCurrentOpts != pOrigOpts);
 
-		// Default button doesn't exist on Default settings
-		if (g_nGame == GLOBAL_OPTIONS)
-			ShowWindow(GetDlgItem(hDlg, IDC_USE_DEFAULT), SW_HIDE);
-		else
+//		// Default button doesn't exist on Default settings
+//		if (g_nGame == GLOBAL_OPTIONS)
+//			ShowWindow(GetDlgItem(hDlg, IDC_USE_DEFAULT), SW_HIDE);
+//		else
 			EnableWindow(GetDlgItem(hDlg, IDC_USE_DEFAULT), g_bUseDefaults);
 
 		// Setup Reset button

@@ -90,9 +90,6 @@ private:
 BOOL OptionsInit(void);
 void OptionsExit(void);
 
-#define OPTIONS_TYPE_GLOBAL		-1
-#define OPTIONS_TYPE_FOLDER		-2
-
 void SetDirectories(windows_options &opts);
 
 void load_options(windows_options &opts, int game_num);
@@ -150,12 +147,6 @@ BOOL GetFilterInherit(void);
 
 void SetOffsetClones(BOOL offset);
 BOOL GetOffsetClones(void);
-
-void SetBroadcast(BOOL broadcast);
-BOOL GetBroadcast(void);
-
-void SetRandomBackground(BOOL random_bg);
-BOOL GetRandomBackground(void);
 
 void SetSavedFolderID(UINT val);
 UINT GetSavedFolderID(void);
