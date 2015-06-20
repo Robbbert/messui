@@ -902,7 +902,8 @@ static DWORD RunMAME(int nGameIndex, const play_options *playopts)
 	SetDirectories(mame_opts);   // mame_opts.set_value(OPTION_INIPATH, GetIniDir(), OPTION_PRIORITY_CMDLINE,error_string);
 
 	// add image specific device options
-	mame_opts.set_system_name(driver_list::driver(nGameIndex).name);
+//	mame_opts.set_system_name(driver_list::driver(nGameIndex).name);
+MessSetupGameOptions(mame_opts, nGameIndex);
 
 	// set any specified play options
 	if (playopts != NULL)
@@ -4394,10 +4395,6 @@ static BOOL MameCommand(HWND hwnd,int id, HWND hwndCtl, UINT codeNotify)
 
 	case ID_OPTIONS_DIR:
 		{
-			BOOL bUpdateRoms = 0;
-			BOOL bUpdateSamples;
-			BOOL bUpdateSoftware = 0;
-
 			int nResult = DialogBox(GetModuleHandle(NULL),
 					MAKEINTRESOURCE(IDD_DIRECTORIES),
 					hMain,
@@ -4407,9 +4404,9 @@ static BOOL MameCommand(HWND hwnd,int id, HWND hwndCtl, UINT codeNotify)
 			SaveOptions();
 			//SaveDefaultOptions();   leave out; kills users Default Game Settings
 
-			bUpdateRoms    = ((nResult & DIRDLG_ROMS) == DIRDLG_ROMS) ? TRUE : FALSE;
-			bUpdateSamples = ((nResult & DIRDLG_SAMPLES) == DIRDLG_SAMPLES) ? TRUE : FALSE;
-			bUpdateSoftware = ((nResult & DIRDLG_SOFTWARE) == DIRDLG_SOFTWARE) ? TRUE : FALSE;
+			BOOL bUpdateRoms    = ((nResult & DIRDLG_ROMS) == DIRDLG_ROMS) ? TRUE : FALSE;
+			BOOL bUpdateSamples = ((nResult & DIRDLG_SAMPLES) == DIRDLG_SAMPLES) ? TRUE : FALSE;
+			BOOL bUpdateSoftware = ((nResult & DIRDLG_SOFTWARE) == DIRDLG_SOFTWARE) ? TRUE : FALSE;
 
 			if (bUpdateSoftware)
 				MessUpdateSoftwareList();

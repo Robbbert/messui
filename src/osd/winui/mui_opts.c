@@ -74,7 +74,7 @@ static const char * EncodeFolderFlags(DWORD value);
 
 static void ResetToDefaults(windows_options &opts, int priority);
 
-static void ui_parse_ini_file(windows_options &opts, const char *name);
+//static void ui_parse_ini_file(windows_options &opts, const char *name);
 
 
 #ifdef _MSC_VER
@@ -85,7 +85,7 @@ static void ui_parse_ini_file(windows_options &opts, const char *name);
     Internal defines
  ***************************************************************************/
 
-#define CORE_INI_FILENAME				"ini\\" MAMENAME ".ini"
+//#define CORE_INI_FILENAME				"ini\\" MAMENAME ".ini"
 #define GAMEINFO_INI_FILENAME				MAMENAME "_g.ini"
 
 #define MUIOPTION_LIST_MODE				"list_mode"
@@ -441,7 +441,7 @@ static void AddOptions(winui_options *opts, const options_entry *entrylist, BOOL
 
 void CreateGameOptions(windows_options &opts, int driver_index)
 {
-	BOOL is_global = (driver_index == OPTIONS_TYPE_GLOBAL);
+	//BOOL is_global = (driver_index == OPTIONS_TYPE_GLOBAL);
 	// create the options
 	//opts = options_create(memory_error);
 
@@ -450,8 +450,8 @@ void CreateGameOptions(windows_options &opts, int driver_index)
 	//AddOptions(opts, mame_win_options, is_global);
 
 	// customize certain options
-	if (is_global)
-		opts.set_default_value(OPTION_INIPATH, "ini");
+	//if (is_global)
+	//	opts.set_default_value(OPTION_INIPATH, "ini");
 
 	MessSetupGameOptions(opts, driver_index);
 }
@@ -497,7 +497,8 @@ BOOL OptionsInit()
 
 	game_opts.add_entries();
 	// set up global options
-	CreateGameOptions(global,OPTIONS_TYPE_GLOBAL);
+//	CreateGameOptions(global,OPTIONS_TYPE_GLOBAL);
+	CreateGameOptions(global, GLOBAL_OPTIONS);
 	// now load the options and settings
 	LoadOptionsAndSettings();
 
@@ -2377,7 +2378,8 @@ static void LoadOptionsAndSettings(void)
 	// parse global options ini/mame32.ini
 //	GetGlobalOptionsFileName(buffer, ARRAY_LENGTH(buffer));
 //	LoadSettingsFile(global, buffer);
-	LoadSettingsFile(global, CORE_INI_FILENAME);
+//	LoadSettingsFile(global, CORE_INI_FILENAME);
+	load_options(global, GLOBAL_OPTIONS);
 }
 
 void SetDirectories(windows_options &opts)
@@ -2622,7 +2624,9 @@ void SaveGameListOptions(void)
 
 void SaveDefaultOptions(void)
 {
-	SaveSettingsFile(global, CORE_INI_FILENAME);
+//	SaveSettingsFile(global, CORE_INI_FILENAME);
+	std::string fname = std::string(GetIniDir()) + PATH_SEPARATOR + std::string(emulator_info::get_configname()).append(".ini");
+	SaveSettingsFile(global, fname.c_str());
 }
 
 const char * GetVersionString(void)
@@ -2672,30 +2676,55 @@ static BOOL IsGlobalOption(const char *option_name)
 
 
 /* ui_parse_ini_file - parse a single INI file */
-static void ui_parse_ini_file(windows_options &opts, const char *name)
-{
-	/* open the file; if we fail, that's ok */
-	std::string fname = std::string(GetIniDir()) + PATH_SEPARATOR + std::string(name) + ".ini";
-	LoadSettingsFile(opts, fname.c_str());
-	SetDirectories(opts);
-}
+//static void ui_parse_ini_file(windows_options &opts, const char *name)
+//{
+//	/* open the file; if we fail, that's ok */
+//	std::string fname = std::string(GetIniDir()) + PATH_SEPARATOR + std::string(name) + ".ini";
+//	LoadSettingsFile(opts, fname.c_str());
+//	SetDirectories(opts);
+//}
 
 
 /*  get options, based on passed in game number. */
 void load_options(windows_options &opts, int game_num)
 {
 	const game_driver *driver = NULL;
-
 	CreateGameOptions(opts, game_num);
-	// Copy over the defaults
-	ui_parse_ini_file(opts, emulator_info::get_configname());
 
-	if (game_num >= 0)
+	// Try base ini first
+	std::string fname = std::string(emulator_info::get_configname()).append(".ini");
+	LoadSettingsFile(opts, fname.c_str());
+
+	if (game_num > -2)
 	{
 		driver = &driver_list::driver(game_num);
-		if (driver != NULL)
-			ui_parse_ini_file(opts, driver->name);
+		// Now try global ini
+		fname = std::string(GetIniDir()) + PATH_SEPARATOR + std::string(emulator_info::get_configname()).append(".ini");
+		LoadSettingsFile(opts, fname.c_str());
+
+		if (game_num > -1)
+		{
+			// Lastly, gamename.ini
+			driver = &driver_list::driver(game_num);
+			if (driver != NULL)
+			{
+				fname = std::string(GetIniDir()) + PATH_SEPARATOR + std::string(driver->name).append(".ini");
+				LoadSettingsFile(opts, fname.c_str());
+			}
+		}
 	}
+	SetDirectories(opts);
+
+//		CreateGameOptions(opts, game_num);
+//	// Copy over the defaults
+//	ui_parse_ini_file(opts, emulator_info::get_configname());
+//
+//	if (game_num >= 0)
+//	{
+//		driver = &driver_list::driver(game_num);
+//		if (driver != NULL)
+//			ui_parse_ini_file(opts, driver->name);
+//	}
 }
 
 /* Save ini file based on game_number. */
@@ -2711,11 +2740,17 @@ void save_options(windows_options &opts, int game_num)
 			filename.assign(driver->name);
 	}
 	else
+	if (game_num == -1)
 		filename = std::string(emulator_info::get_configname());
 
 	if (!filename.empty())
-	{
 		filepath = std::string(GetIniDir()).append(PATH_SEPARATOR).append(filename.c_str()).append(".ini");
+
+	if (game_num == -2)
+		filepath = std::string(emulator_info::get_configname()).append(".ini");
+
+	if (!filepath.empty())
+	{
 		SetDirectories(opts);
 		SaveSettingsFile(opts, filepath.c_str());
 		//printf("Settings saved to %s\n",filepath.c_str());
