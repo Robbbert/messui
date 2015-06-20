@@ -896,12 +896,13 @@ static DWORD RunMAME(int nGameIndex, const play_options *playopts)
 	windows_options mame_opts;
 	std::string error_string;
 	// set up MAME options
+//  mame_opts = mame_options_init(mame_win_options);
 
 	// Tell mame where to get the INIs
 	SetDirectories(mame_opts);   // mame_opts.set_value(OPTION_INIPATH, GetIniDir(), OPTION_PRIORITY_CMDLINE,error_string);
 
 	// add image specific device options
-	MessSetupGameOptions(mame_opts, nGameIndex);
+	mame_opts.set_system_name(driver_list::driver(nGameIndex).name);
 
 	// set any specified play options
 	if (playopts != NULL)
@@ -4393,17 +4394,22 @@ static BOOL MameCommand(HWND hwnd,int id, HWND hwndCtl, UINT codeNotify)
 
 	case ID_OPTIONS_DIR:
 		{
+			BOOL bUpdateRoms = 0;
+			BOOL bUpdateSamples;
+			BOOL bUpdateSoftware = 0;
+
 			int nResult = DialogBox(GetModuleHandle(NULL),
 					MAKEINTRESOURCE(IDD_DIRECTORIES),
 					hMain,
 					DirectoriesDialogProc);
 
-			SaveDefaultOptions();  // safe so far...
+			SaveDefaultOptions();
 			SaveOptions();
+			//SaveDefaultOptions();   leave out; kills users Default Game Settings
 
-			BOOL bUpdateRoms    = ((nResult & DIRDLG_ROMS) == DIRDLG_ROMS) ? TRUE : FALSE;
-			BOOL bUpdateSamples = ((nResult & DIRDLG_SAMPLES) == DIRDLG_SAMPLES) ? TRUE : FALSE;
-			BOOL bUpdateSoftware = ((nResult & DIRDLG_SOFTWARE) == DIRDLG_SOFTWARE) ? TRUE : FALSE;
+			bUpdateRoms    = ((nResult & DIRDLG_ROMS) == DIRDLG_ROMS) ? TRUE : FALSE;
+			bUpdateSamples = ((nResult & DIRDLG_SAMPLES) == DIRDLG_SAMPLES) ? TRUE : FALSE;
+			bUpdateSoftware = ((nResult & DIRDLG_SOFTWARE) == DIRDLG_SOFTWARE) ? TRUE : FALSE;
 
 			if (bUpdateSoftware)
 				MessUpdateSoftwareList();
@@ -4426,16 +4432,14 @@ static BOOL MameCommand(HWND hwnd,int id, HWND hwndCtl, UINT codeNotify)
 
 	case ID_OPTIONS_RESET_DEFAULTS:
 		if (DialogBox(GetModuleHandle(NULL),
-			MAKEINTRESOURCE(IDD_RESET), hMain, ResetDialogProc) == TRUE)
-		{
+					  MAKEINTRESOURCE(IDD_RESET), hMain, ResetDialogProc) == TRUE)
+        {
 			// these may have been changed
 			SaveDefaultOptions();
 			SaveOptions();
 			DestroyWindow(hwnd);
 			PostQuitMessage(0);
-		}
-		else
-		{
+		} else {
 			ResetListView();
 			SetFocus(hwndList);
 		}

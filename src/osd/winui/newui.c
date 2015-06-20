@@ -3934,15 +3934,8 @@ static HMODULE win_resource_module(void)
 
 int win_create_menu(running_machine &machine, HMENU *menus)
 {
-	// Get the path for loose software from <gamename>.ini
 	// if this is invalid, then windows chooses whatever directory it used last.
-	const char* t = machine.options().emu_options::comment_directory();
-	// This pulls out the first path from a multipath field
-	const char * t1 = strtok((char*)t, ";");
-	if (t1)
-		software_dir = t1; // the first path of many
-	else
-		software_dir = t; // the only path
+	software_dir = machine.options().emu_options::comment_directory();
 
 	HMENU menu_bar = NULL;
 	HMODULE module;

@@ -95,19 +95,19 @@ extern const MAMEHELPINFO g_helpInfo[] =
 
 extern const PROPERTYSHEETINFO g_propSheets[] =
 {
-	{ FALSE,	NULL,			IDD_PROP_GAME,		GamePropertiesDialogProc },
-	{ FALSE,	NULL,			IDD_PROP_AUDIT,		GameAuditDialogProc },
-	{ TRUE,		NULL,			IDD_PROP_DISPLAY,	GameOptionsProc },
-	{ TRUE,		NULL,			IDD_PROP_ADVANCED,	GameOptionsProc },
-	{ TRUE,		NULL,			IDD_PROP_SCREEN,	GameOptionsProc },
-	{ TRUE,		NULL,			IDD_PROP_SOUND,		GameOptionsProc },
-	{ TRUE,		NULL,			IDD_PROP_INPUT,		GameOptionsProc },
-	{ TRUE,		NULL,			IDD_PROP_CONTROLLER,	GameOptionsProc },
-	{ TRUE,		NULL,			IDD_PROP_DEBUG,		GameOptionsProc },
-	{ TRUE,		NULL,			IDD_PROP_MISC,		GameOptionsProc },
-	{ FALSE,	NULL,			IDD_PROP_SOFTWARE,	GameMessOptionsProc },
+	{ FALSE,	NULL,					IDD_PROP_GAME,			GamePropertiesDialogProc },
+	{ FALSE,	NULL,					IDD_PROP_AUDIT,			GameAuditDialogProc },
+	{ TRUE,		NULL,					IDD_PROP_DISPLAY,		GameOptionsProc },
+	{ TRUE,		NULL,					IDD_PROP_ADVANCED,		GameOptionsProc },
+	{ TRUE,		NULL,					IDD_PROP_SCREEN,		GameOptionsProc },
+	{ TRUE,		NULL,					IDD_PROP_SOUND,			GameOptionsProc },
+	{ TRUE,		NULL,					IDD_PROP_INPUT,			GameOptionsProc },
+	{ TRUE,		NULL,					IDD_PROP_CONTROLLER,	GameOptionsProc },
+	{ TRUE,		NULL,					IDD_PROP_DEBUG,			GameOptionsProc },
+	{ TRUE,		NULL,					IDD_PROP_MISC,			GameOptionsProc },
+	{ FALSE,	NULL,					IDD_PROP_SOFTWARE,		GameMessOptionsProc },
 	{ FALSE,	PropSheetFilter_Config,	IDD_PROP_CONFIGURATION,	GameMessOptionsProc },
-	{ TRUE,		PropSheetFilter_Vector,	IDD_PROP_VECTOR,	GameOptionsProc },
+	{ TRUE,		PropSheetFilter_Vector,	IDD_PROP_VECTOR,		GameOptionsProc },
 	{ FALSE }
 };
 

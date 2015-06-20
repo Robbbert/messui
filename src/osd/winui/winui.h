@@ -10,12 +10,10 @@
 #include "emu.h"
 #include "pool.h"
 #include "screenshot.h"
-// Make sure all MESS features are included
-#define MESS
 
-/////////////////////// Next line must be commented out manually as there is no compile define
-#define BUILD_MESS
-#ifdef BUILD_MESS
+/////////////////////// This must be commented out manually as there is no compile define
+#define MESS
+#ifdef MESS
 #define MAMENAME "MESS"
 #define UI_INI_FILENAME "MESSUI.ini"
 #else
