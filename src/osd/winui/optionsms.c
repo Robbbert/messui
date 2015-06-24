@@ -242,6 +242,7 @@ void SetExtraSoftwarePaths(int driver_index, const char *extra_paths)
 	snprintf(opt_name, ARRAY_LENGTH(opt_name), "%s_extra_software", driver_list::driver(driver_index).name);
 	std::string error_string;
 	MameUISettings().set_value(opt_name, extra_paths, OPTION_PRIORITY_CMDLINE,error_string);
+	//SetCommentDir(extra_paths); - have to set to write to game, not global
 }
 
 const char *GetExtraSoftwarePaths(int driver_index)
