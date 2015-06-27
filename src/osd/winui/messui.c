@@ -1024,10 +1024,9 @@ static void MessOpenOtherSoftware(const device_image_interface *dev)
 
     Order of priority:
     1. Directory where existing image is already loaded from
-    2. First directory specified in game-specific software tab
-    3. First directory specified in the system-wide software directories
-    4. mess-folder\software
-    5. mess-folder */
+    2. First directory specified in game-specific "comment_directory"
+    3. First directory specified in the global software "comment_directory"
+    4. mess-folder */
 
 static BOOL DevView_GetOpenFileName(HWND hwndDevView, const machine_config *config, const device_image_interface *dev, LPTSTR pszFilename, UINT nFilenameLength)
 {
@@ -1062,8 +1061,8 @@ static BOOL DevView_GetOpenFileName(HWND hwndDevView, const machine_config *conf
 		/* Make sure a folder was specified in the tab, and that it exists */
 		if ((!osd_opendir(as.c_str())) || (as.find(':') == std::string::npos))
 		{
-			/* Get the path from the system-wide software setting in the drop-down directory setup */
-			as = GetSoftwareDirs();
+			// Get the global loose software path
+			as = GetExtraSoftwarePaths(-1);
 
 			/* We only want the first path; throw out the rest */
 			i = as.find(';');
@@ -1075,19 +1074,10 @@ static BOOL DevView_GetOpenFileName(HWND hwndDevView, const machine_config *conf
 			if ((!osd_opendir(as.c_str())) || (as.find(':') == std::string::npos))
 			{
 				char *dst = NULL;
-
 				osd_get_full_path(&dst,".");
 				/* Default to emu directory */
 				osd_free(t_s);
 				t_s = tstring_from_utf8(dst);
-
-				/* If software folder exists, use it instead */
-				zippath_combine(as, dst, "software");
-				if (osd_opendir(as.c_str()))
-				{
-					osd_free(t_s);
-					t_s = tstring_from_utf8(as.c_str());
-				}
 				osd_free(dst);
 			}
 		}
@@ -1106,10 +1096,9 @@ static BOOL DevView_GetOpenFileName(HWND hwndDevView, const machine_config *conf
 /* This is used to Create an image in the device view of MESSUI.
 
     Order of priority:
-    1. First directory specified in game-specific software tab
-    2. First directory specified in the system-wide software directories
-    3. mess-folder\software
-    4. mess-folder */
+    1. First directory specified in game-specific "comment_directory"
+    2. First directory specified in the global software "comment_directory"
+    3. mess-folder */
 
 static BOOL DevView_GetCreateFileName(HWND hwndDevView, const machine_config *config, const device_image_interface *dev, LPTSTR pszFilename, UINT nFilenameLength)
 {
@@ -1133,7 +1122,7 @@ static BOOL DevView_GetCreateFileName(HWND hwndDevView, const machine_config *co
 	if ((!osd_opendir(as.c_str())) || (as.find(':') == std::string::npos))
 	{
 		/* Get the path from the system-wide software setting in the drop-down directory setup */
-		as = GetSoftwareDirs();
+		as = GetExtraSoftwarePaths(-1);
 
 		/* We only want the first path; throw out the rest */
 		i = as.find(';');
@@ -1145,19 +1134,10 @@ static BOOL DevView_GetCreateFileName(HWND hwndDevView, const machine_config *co
 		if ((!osd_opendir(as.c_str())) || (as.find(':') == std::string::npos))
 		{
 			char *dst = NULL;
-
 			osd_get_full_path(&dst,".");
 			/* Default to emu directory */
 			osd_free(t_s);
 			t_s = tstring_from_utf8(dst);
-
-			/* If software folder exists, use it instead */
-			zippath_combine(as, dst, "software");
-			if (osd_opendir(as.c_str()))
-			{
-				osd_free(t_s);
-				t_s = tstring_from_utf8(as.c_str());
-			}
 			osd_free(dst);
 		}
 	}

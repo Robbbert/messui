@@ -247,6 +247,9 @@ void SetExtraSoftwarePaths(int driver_index, const char *extra_paths)
 
 const char *GetExtraSoftwarePaths(int driver_index)
 {
+	if (driver_index == -1)
+		return GetCommentDir();
+
 	char opt_name[256];
 	const char *paths;
 
