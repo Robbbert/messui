@@ -454,7 +454,7 @@ void MyFillSoftwareList(int drvindex, BOOL bForce)
 ///	}
 
 	/// These are the only paths that matter
-	AddSoftwarePickerDirs(hwndSoftwarePicker, GetExtraSoftwarePaths(drvindex), NULL);
+	AddSoftwarePickerDirs(hwndSoftwarePicker, GetExtraSoftwarePaths(drvindex, 1), NULL);
 
 	// set up the software picker
 	SoftwareList_Clear(hwndSoftwareList);
@@ -593,7 +593,7 @@ static void InternalSetSelectedSoftware(int drvindex, const machine_config *conf
 	load_options(o, drvindex);
 	s = o.value(opt_name);
 	// only call SetSelectedSoftware() if this value is different
-	if (strcmp(s, pszSoftware))
+	if (strcmp(s, pszSoftware)!=0)
 	{
 		SetSelectedSoftware(drvindex, config, device, pszSoftware);
 	}
@@ -622,7 +622,7 @@ static void MessSpecifyImage(int drvindex, const device_image_interface *device,
 	if (device == NULL)
 	{
 		image_interface_iterator iter(s_config->mconfig->root_device());
-		for (device_image_interface *dev = iter.first(); dev != NULL; dev = iter.next())
+		for (device_image_interface *dev = iter.first(); dev; dev = iter.next())
 		{
 			const char *opt_name = dev->instance_name();
 			s = o.value(opt_name);
@@ -633,6 +633,7 @@ static void MessSpecifyImage(int drvindex, const device_image_interface *device,
 			}
 		}
 	}
+
 
 	// still not found?  find an empty slot for which the device uses the
 	// same file extension
@@ -645,7 +646,7 @@ static void MessSpecifyImage(int drvindex, const device_image_interface *device,
 		if (file_extension != NULL)
 		{
 			image_interface_iterator iter(s_config->mconfig->root_device());
-			for (device_image_interface *dev = iter.first(); dev != NULL; dev = iter.next())
+			for (device_image_interface *dev = iter.first(); dev; dev = iter.next())
 			{
 				const char *opt_name = dev->instance_name();
 				s = o.value(opt_name);
@@ -663,7 +664,7 @@ static void MessSpecifyImage(int drvindex, const device_image_interface *device,
 		if (file_extension != NULL)
 		{
 			image_interface_iterator iter(s_config->mconfig->root_device());
-			for (device_image_interface *dev = iter.first(); dev != NULL; dev = iter.next())
+			for (device_image_interface *dev = iter.first(); dev; dev = iter.next())
 			{
 				const char *opt_name = dev->instance_name();
 				s = o.value(opt_name);
@@ -1050,7 +1051,7 @@ static BOOL DevView_GetOpenFileName(HWND hwndDevView, const machine_config *conf
 	if ((!osd_opendir(as.c_str())) || (as.find(':') == std::string::npos))
 	{
 		/* Get the path from the software tab */
-		as = GetExtraSoftwarePaths(drvindex);
+		as = GetExtraSoftwarePaths(drvindex, 1);
 
 		/* We only want the first path; throw out the rest */
 		i = as.find(';');
@@ -1062,7 +1063,7 @@ static BOOL DevView_GetOpenFileName(HWND hwndDevView, const machine_config *conf
 		if ((!osd_opendir(as.c_str())) || (as.find(':') == std::string::npos))
 		{
 			// Get the global loose software path
-			as = GetExtraSoftwarePaths(-1);
+			as = GetExtraSoftwarePaths(-1, 0);
 
 			/* We only want the first path; throw out the rest */
 			i = as.find(';');
@@ -1111,7 +1112,7 @@ static BOOL DevView_GetCreateFileName(HWND hwndDevView, const machine_config *co
 	std::string as;
 
 	/* Get the path from the software tab */
-	as = GetExtraSoftwarePaths(drvindex);
+	as = GetExtraSoftwarePaths(drvindex, 1);
 
 	/* We only want the first path; throw out the rest */
 	i = as.find(';');
@@ -1121,8 +1122,8 @@ static BOOL DevView_GetCreateFileName(HWND hwndDevView, const machine_config *co
 	/* Make sure a folder was specified in the tab, and that it exists */
 	if ((!osd_opendir(as.c_str())) || (as.find(':') == std::string::npos))
 	{
-		/* Get the path from the system-wide software setting in the drop-down directory setup */
-		as = GetExtraSoftwarePaths(-1);
+		// Get the global loose software path
+		as = GetExtraSoftwarePaths(-1, 0);
 
 		/* We only want the first path; throw out the rest */
 		i = as.find(';');

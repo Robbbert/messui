@@ -97,13 +97,8 @@ b) Exit the dialog.
 #define WIN32_LEAN_AND_MEAN
 #include <windows.h>
 #include <windowsx.h>
-//#include <commctrl.h>
-//#include <commdlg.h>
 
 // standard C headers
-//#include <stdio.h>
-//#include <string.h>
-//#include <sys/stat.h>
 #include <tchar.h>
 
 // MAME/MAMEUI headers
@@ -118,6 +113,7 @@ b) Exit the dialog.
 #include "winui.h"
 #include "strconv.h"
 #include "winutf8.h"
+#include "directories.h"
 #include "sound/samples.h"
 #include "sound/vlm5030.h"
 
@@ -130,6 +126,8 @@ b) Exit the dialog.
 #include "directdraw.h"    /* has to be after samples.h */
 #include "properties.h"
 #include "drivenum.h"
+#include "machine/ram.h"
+
 
 #if defined(__GNUC__)
 /* fix warning: cast does not match function type */
@@ -429,7 +427,6 @@ void InitDefaultPropertyPage(HINSTANCE hInst, HWND hWnd)
 	/* Get default options to populate property sheets */
 	load_options(pCurrentOpts, g_nGame);
 	load_options(pOrigOpts, g_nGame);
-	//load_options(pDefaultOpts, g_nGame);
 	load_options(pDefaultOpts, -2);
 
 	/* Stash the result for comparing later */
@@ -486,17 +483,6 @@ void InitPropertyPageToPage(HINSTANCE hInst, HWND hWnd, HICON hIcon, OPTIONS_TYP
 		background_brush = CreateSolidBrush(GetSysColor(COLOR_3DFACE));
 
 	// Initialize the options
-
-	// Load the current options, this will pickup the highest priority option set.
-///	load_options(pCurrentOpts, game_num);
-
-	// Load the default options, pickup the next lower options set than the current level.
-///	if (opt_type > OPTIONS_GLOBAL)
-///		default_type = (OPTIONS_TYPE)(default_type-1); /// need to code this as GLOBAL, COMPAT, PARENT, GAME
-///	default_type = OPTIONS_GLOBAL;
-
-///	load_options(pDefaultOpts, game_num);
-
 	load_options(pCurrentOpts, game_num);
 	load_options(pOrigOpts, game_num);
 	if (game_num == GLOBAL_OPTIONS)
@@ -526,7 +512,7 @@ void InitPropertyPageToPage(HINSTANCE hInst, HWND hWnd, HICON hIcon, OPTIONS_TYP
 
 	// Set the game to audit to this game
 
-	// Create the propery sheets
+	// Create the property sheets
 	if( OPTIONS_GAME == opt_type )
 	{
 		InitGameAudit(game_num);
@@ -725,17 +711,6 @@ static char *GameInfoScreen(UINT nIndex)
 	return buf;
 }
 
-/* Build color information string */
-//static char *GameInfoColors(UINT nIndex)
-//{
-//	static char buf[1024];
-//	machine_config config(driver_list::driver(nIndex),pCurrentOpts);
-//
-//	ZeroMemory(buf, sizeof(buf));
-//	//sprintf(buf, "%d colors ", config.m_total_colors); // support for this was removed from the core @ r28075
-//
-//	return buf;
-//}
 
 /* Build game status string */
 const char *GameInfoStatus(int driver_index, BOOL bRomStatus)
@@ -996,7 +971,6 @@ HWND hWnd;
 		win_set_window_text_utf8(GetDlgItem(hDlg, IDC_PROP_CPU),           GameInfoCPU(g_nGame));
 		win_set_window_text_utf8(GetDlgItem(hDlg, IDC_PROP_SOUND),         GameInfoSound(g_nGame));
 		win_set_window_text_utf8(GetDlgItem(hDlg, IDC_PROP_SCREEN),        GameInfoScreen(g_nGame));
-		//win_set_window_text_utf8(GetDlgItem(hDlg, IDC_PROP_COLORS),        GameInfoColors(g_nGame));
 		win_set_window_text_utf8(GetDlgItem(hDlg, IDC_PROP_CLONEOF),       GameInfoCloneOf(g_nGame));
 		win_set_window_text_utf8(GetDlgItem(hDlg, IDC_PROP_SOURCE),        GameInfoSource(g_nGame));
 
@@ -1234,7 +1208,7 @@ INT_PTR CALLBACK GameOptionsProc(HWND hDlg, UINT Msg, WPARAM wParam, LPARAM lPar
 
 	case WM_NOTIFY:
 		{
-			// Set to true if we are exiting the properites dialog
+			// Set to true if we are exiting the properties dialog
 			//BOOL bClosing = ((LPPSHNOTIFY) lParam)->lParam; // indicates OK was clicked rather than APPLY
 
 			switch (((NMHDR *) lParam)->code)
@@ -2145,6 +2119,256 @@ static BOOL ResolutionPopulateControl(datamap *map, HWND dialog, HWND control_, 
 
 //============================================================
 
+//============================================================
+//  DATAMAP HANDLERS FOR MESS
+//============================================================
+
+static void AppendList(HWND hList, LPCTSTR lpItem, int nItem)
+{
+	LV_ITEM Item;
+	HRESULT res;
+	memset(&Item, 0, sizeof(LV_ITEM));
+	Item.mask = LVIF_TEXT;
+	Item.pszText = (LPTSTR) lpItem;
+	Item.iItem = nItem;
+	res = ListView_InsertItem(hList, &Item);
+	res++;
+}
+
+static BOOL DirListReadControl(datamap *map, HWND dialog, HWND control, windows_options *opts, const char *option_name)
+{
+	int directory_count;
+	LV_ITEM lvi;
+	TCHAR buffer[2048];
+	char *utf8_dir_list;
+	int i, pos, driver_index;
+	BOOL res;
+
+	// determine the directory count; note that one item is the "<    >" entry
+	directory_count = ListView_GetItemCount(control);
+	if (directory_count > 0)
+		directory_count--;
+
+	buffer[0] = '\0';
+	pos = 0;
+
+	for (i = 0; i < directory_count; i++)
+	{
+		// append a semicolon, if we're past the first entry
+		if (i > 0)
+			pos += _sntprintf(&buffer[pos], ARRAY_LENGTH(buffer) - pos, TEXT(";"));
+
+		// retrieve the next entry
+		memset(&lvi, '\0', sizeof(lvi));
+		lvi.mask = LVIF_TEXT;
+		lvi.iItem = i;
+		lvi.pszText = &buffer[pos];
+		lvi.cchTextMax = ARRAY_LENGTH(buffer) - pos;
+		res = ListView_GetItem(control, &lvi);
+
+		// advance the position
+		pos += _tcslen(&buffer[pos]);
+	}
+
+	utf8_dir_list = utf8_from_tstring(buffer);
+	if (utf8_dir_list != NULL)
+	{
+		driver_index = PropertiesCurrentGame(dialog);
+		SetExtraSoftwarePaths(driver_index, utf8_dir_list);
+		std::string error_string;
+		pCurrentOpts.set_value(OPTION_COMMENT_DIRECTORY, utf8_dir_list, OPTION_PRIORITY_CMDLINE,error_string);
+		osd_free(utf8_dir_list);
+	}
+	res++;
+	return TRUE;
+}
+
+
+static BOOL DirListPopulateControl(datamap *map, HWND dialog, HWND control, windows_options *opts, const char *option_name)
+{
+	int driver_index, pos, new_pos, current_item;
+	const char *dir_list;
+	TCHAR *t_dir_list;
+	TCHAR *s;
+	LV_COLUMN lvc;
+	RECT r;
+	HRESULT res;
+	BOOL b_res;
+
+	// access the directory list, and convert to TCHARs
+	driver_index = PropertiesCurrentGame(dialog);
+	dir_list = GetExtraSoftwarePaths(driver_index, 0);
+	t_dir_list = tstring_from_utf8(dir_list);
+	if (!t_dir_list)
+		return FALSE;
+
+	// delete all items in the list control
+	b_res = ListView_DeleteAllItems(control);
+
+	// add the column
+	GetClientRect(control, &r);
+	memset(&lvc, 0, sizeof(LVCOLUMN));
+	lvc.mask = LVCF_WIDTH;
+	lvc.cx = r.right - r.left - GetSystemMetrics(SM_CXHSCROLL);
+	res = ListView_InsertColumn(control, 0, &lvc);
+
+	// add each of the directories
+	pos = 0;
+	current_item = 0;
+	while(t_dir_list[pos] != '\0')
+	{
+		// parse off this item
+		s = _tcschr(&t_dir_list[pos], ';');
+		if (s != NULL)
+		{
+			*s = '\0';
+			new_pos = s - t_dir_list + 1;
+		}
+		else
+			new_pos = pos + _tcslen(&t_dir_list[pos]);
+
+		// append this item
+		AppendList(control, &t_dir_list[pos], current_item);
+
+		// advance to next item
+		pos = new_pos;
+		current_item++;
+	}
+
+	// finish up
+	AppendList(control, TEXT(DIRLIST_NEWENTRYTEXT), current_item);
+	ListView_SetItemState(control, 0, LVIS_SELECTED, LVIS_SELECTED);
+	osd_free(t_dir_list);
+	res++;
+	b_res++;
+	return TRUE;
+}
+
+
+
+static const char *messram_string(char *buffer, UINT32 ram)
+{
+	const char *suffix;
+
+	if ((ram % (1024*1024)) == 0)
+	{
+		ram /= 1024*1024;
+		suffix = "m";
+	}
+	else if ((ram % 1024) == 0)
+	{
+		ram /= 1024;
+		suffix = "k";
+	}
+	else
+		suffix = "";
+
+	sprintf(buffer, "%u%s", ram, suffix);
+	return buffer;
+}
+
+static BOOL RamPopulateControl(datamap *map, HWND dialog, HWND control, windows_options *opts, const char *option_name)
+{
+	int i, current_index, driver_index;
+	const game_driver *gamedrv;
+	UINT32 ram, current_ram;
+	const char *this_ram_string;
+	TCHAR* t_ramstring;
+
+	// identify the driver
+	driver_index = PropertiesCurrentGame(dialog);
+	gamedrv = &driver_list::driver(driver_index);
+
+	// clear out the combo box
+	(void)ComboBox_ResetContent(control);
+
+	// allocate the machine config
+	machine_config cfg(*gamedrv,*opts);
+
+	// identify how many options that we have
+	ram_device_iterator iter(cfg.root_device());
+	ram_device *device = iter.first();
+
+	EnableWindow(control, (device != NULL));
+	i = 0;
+
+	// we can only do something meaningful if there is more than one option
+	if (device != NULL)
+	{
+		const ram_device *ramdev = dynamic_cast<const ram_device *>(device);
+
+		// identify the current amount of RAM
+		this_ram_string = opts->value(OPTION_RAMSIZE);
+		current_ram = (this_ram_string != NULL) ? ramdev->parse_string(this_ram_string) : 0;
+		if (current_ram == 0)
+			current_ram = ramdev->default_size();
+
+		// by default, assume index 0
+		current_index = 0;
+
+		{
+			char tmpval[20] ;
+			ram = ramdev->default_size();
+			messram_string(tmpval,ram);
+			t_ramstring = tstring_from_utf8(tmpval);
+			if( !t_ramstring )
+				return FALSE;
+
+			(void)ComboBox_InsertString(control, i, win_tstring_strdup(t_ramstring));
+			(void)ComboBox_SetItemData(control, i, ram);
+
+			osd_free(t_ramstring);
+		}
+		if (ramdev->extra_options() != NULL)
+		{
+			int j;
+			int size = strlen(ramdev->extra_options());
+			char * const s = core_strdup(ramdev->extra_options());
+			char * const e = s + size;
+			char *p = s;
+			for (j=0;j<size;j++)
+				if (p[j]==',')
+					p[j]=0;
+
+			/* try to parse each option */
+			while(p <= e)
+			{
+				i++;
+				// identify this option
+				ram = ramdev->parse_string(p);
+
+				this_ram_string = p;
+
+				t_ramstring = tstring_from_utf8(this_ram_string);
+				if( !t_ramstring )
+					return FALSE;
+
+				// add this option to the combo box
+				(void)ComboBox_InsertString(control, i, win_tstring_strdup(t_ramstring));
+				(void)ComboBox_SetItemData(control, i, ram);
+
+				osd_free(t_ramstring);
+
+				// is this the current option?  record the index if so
+				if (ram == current_ram)
+					current_index = i;
+
+				p+= strlen(p);
+				if (p == e)
+					break;
+
+				p++;
+			}
+
+			osd_free(s);
+		}
+
+		// set the combo box
+		(void)ComboBox_SetCurSel(control, current_index);
+	}
+	return TRUE;
+}
+
 /************************************************************
  * DataMap initializers
  ************************************************************/
@@ -2379,8 +2603,16 @@ static void BuildDataMap(void)
 	datamap_set_trackbar_range(properties_datamap, IDC_CONTRAST, 0.0,  2.0, (float)0.1);
 	datamap_set_trackbar_range(properties_datamap, IDC_PAUSEBRIGHT, 0.00,  1.00, (float)0.05);
 
-	MessBuildDataMap(properties_datamap);
+	// MESS specific stuff
+	datamap_add(properties_datamap, IDC_DIR_LIST,			DM_STRING,	NULL);
+	datamap_add(properties_datamap, IDC_RAM_COMBOBOX,		DM_INT,		OPTION_RAMSIZE);
+
+	// set up callbacks
+	datamap_set_callback(properties_datamap, IDC_DIR_LIST,		DCT_READ_CONTROL,	DirListReadControl);
+	datamap_set_callback(properties_datamap, IDC_DIR_LIST,		DCT_POPULATE_CONTROL,	DirListPopulateControl);
+	datamap_set_callback(properties_datamap, IDC_RAM_COMBOBOX,	DCT_POPULATE_CONTROL,	RamPopulateControl);
 }
+
 
 static void SetSamplesEnabled(HWND hWnd, int nIndex, BOOL bSoundEnabled)
 {

@@ -85,7 +85,6 @@ static void ResetToDefaults(windows_options &opts, int priority);
     Internal defines
  ***************************************************************************/
 
-//#define CORE_INI_FILENAME				"ini\\" MAMENAME ".ini"
 #define GAMEINFO_INI_FILENAME				MAMENAME "_g.ini"
 
 #define MUIOPTION_LIST_MODE				"list_mode"
@@ -2358,12 +2357,6 @@ static void SaveSettingsFile(windows_options &opts, const char *filename)
 
 
 
-//static void GetGlobalOptionsFileName(char *filename, size_t filename_size)
-//{
-	// copy INI directory
-//	snprintf(filename, filename_size, "%s\\%s.ini", GetIniDir(), emulator_info::get_configname());
-//}
-
 /* Register access functions below */
 static void LoadOptionsAndSettings(void)
 {
@@ -2624,7 +2617,6 @@ void SaveGameListOptions(void)
 
 void SaveDefaultOptions(void)
 {
-//	SaveSettingsFile(global, CORE_INI_FILENAME);
 	std::string fname = std::string(GetIniDir()) + PATH_SEPARATOR + std::string(emulator_info::get_configname()).append(".ini");
 	SaveSettingsFile(global, fname.c_str());
 }
@@ -2704,6 +2696,9 @@ void load_options(windows_options &opts, int game_num)
 
 		if (game_num > -1)
 		{
+			// global comment_dir serves a different purpose than for games, so blank it out
+			std::string error_string;
+			opts.set_value(OPTION_COMMENT_DIRECTORY, "", OPTION_PRIORITY_CMDLINE,error_string);
 			// Lastly, gamename.ini
 			driver = &driver_list::driver(game_num);
 			if (driver != NULL)

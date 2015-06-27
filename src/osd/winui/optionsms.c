@@ -223,7 +223,7 @@ void SetSelectedSoftware(int driver_index, const machine_config *config, const d
 	save_options(o, driver_index);
 }
 
-// this is buggy - do not use
+// not used
 const char *GetSelectedSoftware(int driver_index, const machine_config *config, const device_image_interface *dev)
 {
 	const char *opt_name = dev->instance_name();
@@ -233,6 +233,7 @@ const char *GetSelectedSoftware(int driver_index, const machine_config *config, 
 	return o.value(opt_name);
 }
 
+// To be deleted when conversion to "comments_directory" is complete
 void SetExtraSoftwarePaths(int driver_index, const char *extra_paths)
 {
 	char opt_name[256];
@@ -242,10 +243,11 @@ void SetExtraSoftwarePaths(int driver_index, const char *extra_paths)
 	snprintf(opt_name, ARRAY_LENGTH(opt_name), "%s_extra_software", driver_list::driver(driver_index).name);
 	std::string error_string;
 	MameUISettings().set_value(opt_name, extra_paths, OPTION_PRIORITY_CMDLINE,error_string);
-	//SetCommentDir(extra_paths); - have to set to write to game, not global
 }
 
-const char *GetExtraSoftwarePaths(int driver_index)
+// sw = 0 when looking for the path string
+// sw = 1 when doing search for compatible software
+const char *GetExtraSoftwarePaths(int driver_index, bool sw)
 {
 	if (driver_index == -1)
 		return GetCommentDir();
@@ -259,29 +261,53 @@ const char *GetExtraSoftwarePaths(int driver_index)
 	paths = MameUISettings().value(opt_name);
 	if (paths && (paths[0] > 64)) return paths; // must start with a drive letter
 
-	// not specified in driver, try parent if it has one
-	int nParentIndex = -1;
-	if (DriverIsClone(driver_index) == TRUE)
+	// Try comments
+	windows_options o;
+	load_options(o, driver_index);
+	paths = o.value(OPTION_COMMENT_DIRECTORY);
+	if (paths && (paths[0] > 64)) return paths; // must start with a drive letter
+
+	// search deeper when looking for software
+	if (sw)
 	{
-		nParentIndex = GetParentIndex(&driver_list::driver(driver_index));
+		// not specified in driver, try parent if it has one
+		int nParentIndex = -1;
+		if (DriverIsClone(driver_index) == TRUE)
+		{
+			nParentIndex = GetParentIndex(&driver_list::driver(driver_index));
+			if (nParentIndex >= 0)
+			{
+				snprintf(opt_name, ARRAY_LENGTH(opt_name), "%s_extra_software", driver_list::driver(nParentIndex).name);
+				paths = MameUISettings().value(opt_name);
+				if (paths && (paths[0] > 64))
+				{} else
+				{
+					// Try comments
+					load_options(o, nParentIndex);
+					paths = o.value(OPTION_COMMENT_DIRECTORY);
+				}
+			}
+		}
+		if (paths && (paths[0] > 64)) return paths; // must start with a drive letter
+
+		// still nothing, try for a system in the 'compat' field
+		if (nParentIndex >= 0)
+			driver_index = nParentIndex;
+
+		// now recycle variable as a compat system number
+		nParentIndex = GetCompatIndex(&driver_list::driver(driver_index));
 		if (nParentIndex >= 0)
 		{
 			snprintf(opt_name, ARRAY_LENGTH(opt_name), "%s_extra_software", driver_list::driver(nParentIndex).name);
 			paths = MameUISettings().value(opt_name);
+			if (paths && (paths[0] > 64))
+			{} else
+			{
+				// Try comments
+				load_options(o, nParentIndex);
+				paths = o.value(OPTION_COMMENT_DIRECTORY);
+			}
 		}
-	}
-	if (paths && (paths[0] > 64)) return paths; // must start with a drive letter
-
-	// still nothing, try for a system in the 'compat' field
-	if (nParentIndex >= 0)
-		driver_index = nParentIndex;
-
-	// now recycle variable as a compat system number
-	nParentIndex = GetCompatIndex(&driver_list::driver(driver_index));
-	if (nParentIndex >= 0)
-	{
-		snprintf(opt_name, ARRAY_LENGTH(opt_name), "%s_extra_software", driver_list::driver(nParentIndex).name);
-		paths = MameUISettings().value(opt_name);
 	}
 
 	return paths ? paths : "";

@@ -35,7 +35,7 @@ const DIRECTORYINFO g_directoryInfo[] =
 {
 	{ "ROMs",                  GetRomDirs,         SetRomDirs,         TRUE,  DIRDLG_ROMS },
 	{ "Samples",               GetSampleDirs,      SetSampleDirs,      TRUE,  DIRDLG_SAMPLES },
-	{ "Software",              GetSoftwareDirs,    SetSoftwareDirs,    TRUE,  DIRDLG_SOFTWARE },
+	{ "Software",              GetSoftwareDirs,    SetSoftwareDirs,    FALSE, DIRDLG_SOFTWARE },
 	{ "Artwork",               GetArtDir,          SetArtDir,          TRUE, 0 },
 	{ "Cabinets",              GetCabinetDir,      SetCabinetDir,      FALSE, 0 },
 	{ "Cheats",                GetCheatDir,        SetCheatDir,        TRUE, DIRDLG_CHEAT },
