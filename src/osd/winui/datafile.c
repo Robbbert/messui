@@ -27,8 +27,8 @@
  *      token parsing constants
  ****************************************************************************/
 
-#define CR      0x0d    /* '\n' and '\r' meanings are swapped in some */
-#define LF      0x0a    /*     compilers (e.g., Mac compilers) */
+#define CR 0x0d    /* '\n' and '\r' meanings are swapped in some */
+#define LF 0x0a    /*     compilers (e.g., Mac compilers) */
 
 enum
 {
@@ -58,18 +58,9 @@ bool is_historydat = 0;
 /****************************************************************************
  *      private data for parsing functions
  ****************************************************************************/
-static emu_file *fp;				       /* Our file pointer */
-static long dwFilePos;					  /* file position */
-static UINT8 bToken[MAX_TOKEN_LENGTH];	  /* Our current token */
-
-/* an array of driver name/drivers array index sorted by driver name
-   for fast look up by name */
-typedef struct
-{
-    const char *name;
-    int index;
-} driver_data_type;
-static driver_data_type *sorted_drivers = NULL;
+static emu_file *fp;   /* Our file pointer */
+static long dwFilePos;  /* file position */
+static UINT8 bToken[MAX_TOKEN_LENGTH];  /* Our current token */
 static int num_games;
 
 
@@ -81,13 +72,6 @@ static int num_games;
  **************************************************************************
  **************************************************************************/
 
-/*
- * DriverDataCompareFunc -- compare function for GetGameNameIndex
- */
-static int CLIB_DECL DriverDataCompareFunc(const void *arg1,const void *arg2)
-{
-    return strcmp( ((driver_data_type *)arg1)->name, ((driver_data_type *)arg2)->name );
-}
 
 /*
  * GetGameNameIndex -- given a driver name (in lowercase), return
@@ -95,33 +79,7 @@ static int CLIB_DECL DriverDataCompareFunc(const void *arg1,const void *arg2)
  */
 static int GetGameNameIndex(const char *name)
 {
-	driver_data_type *driver_index_info;
-	driver_data_type key;
-	key.name = name;
-
-	if (sorted_drivers == NULL)
-	{
-		/* initialize array of game names/indices */
-		int i;
-
-		sorted_drivers = (driver_data_type *)malloc(sizeof(driver_data_type) * num_games);
-		for (i=0;i<num_games;i++)
-		{
-			sorted_drivers[i].name = driver_list::driver(i).name;
-			sorted_drivers[i].index = i;
-		}
-		qsort(sorted_drivers,num_games,sizeof(driver_data_type),DriverDataCompareFunc);
-	}
-
-	/* uses our sorted array of driver names to get the index in log time */
-	driver_index_info = (driver_data_type *)bsearch(&key,sorted_drivers,num_games,sizeof(driver_data_type),
-								DriverDataCompareFunc);
-
-	if (driver_index_info == NULL)
-		return -1;
-
-	return driver_index_info->index;
-
+	return driver_list::find(name);
 }
 
 /****************************************************************************
@@ -134,12 +92,12 @@ static UINT32 GetNextToken(UINT8 **ppszTokenText, long *pdwPosition)
 {
 	UINT32 dwLength = 0;						/* Length of symbol */
 	long dwPos = 0;						/* Temporary position */
-	UINT8 *pbTokenPtr = bToken;			     /* Point to the beginning */
-	UINT8 bData = 0;						    /* Temporary data byte */
+	UINT8 *pbTokenPtr = bToken;				/* Point to the beginning */
+	UINT8 bData = 0;							/* Temporary data byte */
 
 	while (1)
 	{
-		bData = fp->getc();				  /* Get next character */
+		bData = fp->getc();				/* Get next character */
 
 		/* If we're at the end of the file, bail out */
 
@@ -173,12 +131,12 @@ static UINT32 GetNextToken(UINT8 **ppszTokenText, long *pdwPosition)
 
 			if (bData > ' ')
 			{
-				dwLength = 0;		   /* Assume we're 0 length to start with */
+				dwLength = 0;   /* Assume we're 0 length to start with */
 
 				/* Loop until we've hit something we don't understand */
 
 				while (bData != ',' && bData != '=' && bData != ' '
-						&&bData != '\t' && bData != '\n' && bData != '\r' && fp->eof() == 0)
+					&&bData != '\t' && bData != '\n' && bData != '\r' && fp->eof() == 0)
 				{
 					++dwFilePos;
 					*pbTokenPtr++ = bData;  /* Store our byte */
@@ -215,8 +173,8 @@ static UINT32 GetNextToken(UINT8 **ppszTokenText, long *pdwPosition)
 			{
 				/* Unix style perhaps? */
 
-				bData = fp->getc();	  /* Peek ahead */
-				fp->ungetc(bData);	  /* Force a retrigger if subsequent LF's */
+				bData = fp->getc();  /* Peek ahead */
+				fp->ungetc(bData);  /* Force a retrigger if subsequent LF's */
 
 				if (LF == bData)		/* Two LF's in a row - it's a UNIX hard CR */
 				{
@@ -235,7 +193,7 @@ static UINT32 GetNextToken(UINT8 **ppszTokenText, long *pdwPosition)
 				/* Figure out if it's Mac or MSDOS format */
 
 				++dwFilePos;
-				bData = fp->getc();	  /* Peek ahead */
+				bData = fp->getc();  /* Peek ahead */
 
 				/* We don't need to bother with EOF checking. It will be 0xff if */
 				/* it's the end of the file and will be caught by the outer loop. */
@@ -256,8 +214,8 @@ static UINT32 GetNextToken(UINT8 **ppszTokenText, long *pdwPosition)
 				else
 				if (LF == bData)	/* MSDOS format! */
 				{
-					++dwFilePos;		    /* Our file position to reset to */
-					dwPos = dwFilePos;	      /* Here so we can reposition things */
+					++dwFilePos;			/* Our file position to reset to */
+					dwPos = dwFilePos;		  /* Here so we can reposition things */
 
 					if (is_historydat)
 					{
@@ -384,7 +342,7 @@ static UINT8 ParseSeek(long offset, int whence)
 /**************************************************************************
  **************************************************************************
  *
- *	      Datafile functions
+ *      Datafile functions
  *
  **************************************************************************
  **************************************************************************/
@@ -502,7 +460,7 @@ static int index_datafile (struct tDatafileIndex **_index)
 static int load_datafile_text (const game_driver *drv, char *buffer, int bufsize,
 	struct tDatafileIndex *idx, const char *tag)
 {
-	int     offset = 0;
+	int offset = 0;
 	int found = 0;
 	UINT32  token = TOKEN_SYMBOL;
 	UINT32  prev_token = TOKEN_SYMBOL;
@@ -562,12 +520,12 @@ static int load_datafile_text (const game_driver *drv, char *buffer, int bufsize
 			/* to use the last 30 characters of the buffer  */
 			if ((bufsize - offset) - len <= 45)
 			{
-			    strcpy ((char *)s, " ...[TRUNCATED]");
-			    len = strlen((char *)s);
-			    strcpy (buffer, (char *)s);
-			    buffer += len;
-			    offset += len;
-			    break;
+				strcpy ((char *)s, " ...[TRUNCATED]");
+				len = strlen((char *)s);
+				strcpy (buffer, (char *)s);
+				buffer += len;
+				offset += len;
+				break;
 			}
 
 			/* add this word to the buffer */
@@ -633,13 +591,17 @@ int load_driver_history (const game_driver *drv, char *buffer, int bufsize)
 			{
 				if ( ( gdrv->flags & GAME_IS_BIOS_ROOT) == 1 )
 					break;
-				err = load_datafile_text (gdrv, buffer, bufsize,
-										  hist_idx, DATAFILE_TAG_BIO);
-						int g = driver_list::clone(*gdrv);
-						if (g!=-1) gdrv = &driver_list::driver(g); else gdrv = NULL;
+				err = load_datafile_text (gdrv, buffer, bufsize, hist_idx, DATAFILE_TAG_BIO);
+				int g = driver_list::clone(*gdrv);
+
+				if (g != -1)
+					gdrv = &driver_list::driver(g);
+				else
+					gdrv = NULL;
 			} while (err && gdrv);
 
-			if (err) history = 0;
+			if (err)
+				history = 0;
 		}
 		ParseClose ();
 	}
@@ -667,11 +629,13 @@ int load_driver_history (const game_driver *drv, char *buffer, int bufsize)
 			{
 				if ( (gdrv->flags & GAME_IS_BIOS_ROOT) == 1 )
 					break;
-				err = load_datafile_text (gdrv, buffer+len, bufsize-len,
-										  mame_idx, DATAFILE_TAG_MAME);
+				err = load_datafile_text (gdrv, buffer+len, bufsize-len, mame_idx, DATAFILE_TAG_MAME);
+				int g = driver_list::clone(*gdrv);
 
-					int g = driver_list::clone(*gdrv);
-					if (g!=-1) gdrv = &driver_list::driver(g); else gdrv = NULL;
+				if (g != -1)
+					gdrv = &driver_list::driver(g);
+				else
+					gdrv = NULL;
 			} while (err && gdrv);
 
 			if (err) mameinfo = 0;
