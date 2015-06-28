@@ -3023,7 +3023,7 @@ static BOOL get_menu_item_string(HMENU menu, UINT item, BOOL by_position, HMENU 
 //  find_sub_menu
 //============================================================
 
-static HMENU find_sub_menu(HMENU menu, const char *menutext, int create_sub_menu)
+static HMENU find_sub_menu(HMENU menu, const char *menutext, bool create_sub_menu)
 {
 	TCHAR buf[128];
 	HMENU sub_menu;
@@ -3296,7 +3296,7 @@ static void prepare_menus(HWND wnd)
 	}
 
 	// set up device menu; first remove all existing menu items
-	device_menu = find_sub_menu(menu_bar, "&Devices\0", FALSE);
+	device_menu = find_sub_menu(menu_bar, "&Media\0", FALSE);
 	remove_menu_items(device_menu);
 
 	int cnt = 0;
@@ -3327,9 +3327,9 @@ static void prepare_menus(HWND wnd)
 			cassette_state state;
 			state = (cassette_state)(img->exists() ? (dynamic_cast<cassette_image_device*>(&img->device())->get_state() & CASSETTE_MASK_UISTATE) : CASSETTE_STOPPED);
 			win_append_menu_utf8(sub_menu, MF_SEPARATOR, 0, NULL);
-			win_append_menu_utf8(sub_menu, flags_for_exists	| ((state == CASSETTE_STOPPED)	? MF_CHECKED : 0), new_item + DEVOPTION_CASSETTE_STOPPAUSE, "Pause/Stop");
+			win_append_menu_utf8(sub_menu, flags_for_exists	| ((state == CASSETTE_STOPPED) ? MF_CHECKED : 0), new_item + DEVOPTION_CASSETTE_STOPPAUSE, "Pause/Stop");
 			win_append_menu_utf8(sub_menu, flags_for_exists	| ((state == CASSETTE_PLAY) ? MF_CHECKED : 0), new_item + DEVOPTION_CASSETTE_PLAY, "Play");
-			win_append_menu_utf8(sub_menu, flags_for_writing | ((state == CASSETTE_RECORD)	? MF_CHECKED : 0), new_item + DEVOPTION_CASSETTE_RECORD, "Record");
+			win_append_menu_utf8(sub_menu, flags_for_writing | ((state == CASSETTE_RECORD) ? MF_CHECKED : 0), new_item + DEVOPTION_CASSETTE_RECORD, "Record");
 			win_append_menu_utf8(sub_menu, flags_for_exists, new_item + DEVOPTION_CASSETTE_REWIND, "Rewind");
 			win_append_menu_utf8(sub_menu, flags_for_exists, new_item + DEVOPTION_CASSETTE_FASTFORWARD, "Fast Forward");
 		}

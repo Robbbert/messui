@@ -1377,8 +1377,8 @@ void UpdateScreenShot(void)
 		if (!g_szSelectedItem[0] || !LoadScreenShotEx(Picker_GetSelectedItem(hwndList), g_szSelectedItem,
 			TabView_GetCurrentTab(hTabCtrl)))
 
-		// load and set image, or empty it if we don't have one
-		LoadScreenShot(Picker_GetSelectedItem(hwndList), TabView_GetCurrentTab(hTabCtrl));
+				// load and set image, or empty it if we don't have one
+				LoadScreenShot(Picker_GetSelectedItem(hwndList), TabView_GetCurrentTab(hTabCtrl));
 	}
 
 	// figure out if we have a history or not, to place our other windows properly

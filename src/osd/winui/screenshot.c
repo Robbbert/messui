@@ -416,6 +416,7 @@ BOOL LoadDIB(const char *filename, HGLOBAL *phDIB, HPALETTE *pPal, int pic_type)
 
 	char *system_name = 0;
 	char *file_name = 0;
+	char* dir_name1 = 0;
 	int i,j;
 	bool ok = FALSE; // TRUE indicates split success
 	// allocate space
@@ -426,7 +427,15 @@ BOOL LoadDIB(const char *filename, HGLOBAL *phDIB, HPALETTE *pPal, int pic_type)
 	{
 		dir_name = GetBgDir();
 		filerr = OpenBkgroundFile(dir_name, &file);
-		goto done;
+		if (filerr == FILERR_NONE)
+		{
+			success = png_read_bitmap_gui(file, phDIB, pPal);
+			core_fclose(file);
+		}
+
+		free(system_name);
+		free(file_name);
+		return success;
 	}
 
 	switch (pic_type)
@@ -494,76 +503,89 @@ BOOL LoadDIB(const char *filename, HGLOBAL *phDIB, HPALETTE *pPal, int pic_type)
 		file_name[i] = '\0';
 	}
 
-	//Add handling for the displaying of all the different supported snapshot pattern types
-	//%g
+	// another const workaround
+	dir_name1 = (char*)malloc(strlen(dir_name) + 2);
+	for (i = 0; dir_name[i]; i++)
+		dir_name1[i] = dir_name[i];
+	dir_name1[i++] = ';';
+	dir_name1[i] = '\0';
 
-	// Do software checks first
-	if (ok)
-	{
-		// Try dir/system/game.png
-		fname = std::string(system_name) + PATH_SEPARATOR + std::string(file_name) + ".png";
-		filerr = OpenRawDIBFile(dir_name, fname.c_str(), &file);
+	// Support multiple paths
+	char* dir_one = strtok(dir_name1, ";");
 
-		// Try dir/system.zip/game.png
+	while (dir_one && filerr != FILERR_NONE)
+	{printf("B=%s\\%s\n",dir_one,file_name);
+		//Add handling for the displaying of all the different supported snapshot pattern types
+		//%g
+
+		// Do software checks first
+		if (ok)
+		{
+			// Try dir/system/game.png
+			fname = std::string(system_name) + PATH_SEPARATOR + std::string(file_name) + ".png";
+			filerr = OpenRawDIBFile(dir_one, fname.c_str(), &file);
+
+			// Try dir/system.zip/game.png
+			if (filerr != FILERR_NONE)
+			{
+				fname = std::string(file_name) + ".png";
+				filerr = OpenZipDIBFile(dir_one, system_name, fname.c_str(), &file, &buffer);
+			}
+
+			// Try dir/system.zip/system/game.png
+			if (filerr != FILERR_NONE)
+			{
+				fname = std::string(system_name) + "/" + std::string(file_name) + ".png";
+				filerr = OpenZipDIBFile(dir_one, system_name, fname.c_str(), &file, &buffer);
+			}
+
+			// Try dir/zipfile/system/game.png
+			if (filerr != FILERR_NONE)
+			{
+				filerr = OpenZipDIBFile(dir_one, zip_name, fname.c_str(), &file, &buffer);
+			}
+		}
+
+		// give up on software-specific, try dir/system.png
+		if (filerr != FILERR_NONE)
+		{
+			fname = std::string(system_name) + ".png";
+			filerr = OpenRawDIBFile(dir_one, fname.c_str(), &file);
+		}
+
+		// For SNAPS only, try filenames with 0000.
+		if (pic_type == TAB_SCREENSHOT)
+		{
+			if (filerr != FILERR_NONE)
+			{
+				//%g/%i
+				fname = std::string(system_name) + PATH_SEPARATOR + "0000.png";
+				filerr = OpenRawDIBFile(dir_one, fname.c_str(), &file);
+			}
+			if (filerr != FILERR_NONE)
+			{
+				//%g%i
+				fname = std::string(system_name) + "0000.png";
+				filerr = OpenRawDIBFile(dir_one, fname.c_str(), &file);
+			}
+			if (filerr != FILERR_NONE)
+			{
+				//%g/%g%i
+				fname = std::string(system_name) + PATH_SEPARATOR + std::string(system_name) + "0000.png";
+				filerr = OpenRawDIBFile(dir_one, fname.c_str(), &file);
+			}
+		}
+
+		// Try dir/zipfile/system.png
 		if (filerr != FILERR_NONE)
 		{
 			fname = std::string(file_name) + ".png";
-			filerr = OpenZipDIBFile(dir_name, system_name, fname.c_str(), &file, &buffer);
+			filerr = OpenZipDIBFile(dir_one, zip_name, fname.c_str(), &file, &buffer);
 		}
 
-		// Try dir/system.zip/system/game.png
-		if (filerr != FILERR_NONE)
-		{
-			fname = std::string(system_name) + "/" + std::string(file_name) + ".png";
-			filerr = OpenZipDIBFile(dir_name, system_name, fname.c_str(), &file, &buffer);
-		}
-
-		// Try dir/zipfile/system/game.png
-		if (filerr != FILERR_NONE)
-		{
-			filerr = OpenZipDIBFile(dir_name, zip_name, fname.c_str(), &file, &buffer);
-		}
+		dir_one = strtok(NULL, ";");
 	}
 
-	// give up on software-specific, try dir/system.png
-	if (filerr != FILERR_NONE)
-	{
-		fname = std::string(system_name) + ".png";
-		filerr = OpenRawDIBFile(dir_name, fname.c_str(), &file);
-	}
-
-	// For SNAPS only, try filenames with 0000.
-	// If that fails, try final.png
-	if (pic_type == TAB_SCREENSHOT)
-	{
-		if (filerr != FILERR_NONE)
-		{
-			//%g/%i
-			fname = std::string(system_name) + PATH_SEPARATOR + "0000.png";
-			filerr = OpenRawDIBFile(dir_name, fname.c_str(), &file);
-		}
-		if (filerr != FILERR_NONE)
-		{
-			//%g%i
-			fname = std::string(system_name) + "0000.png";
-			filerr = OpenRawDIBFile(dir_name, fname.c_str(), &file);
-		}
-		if (filerr != FILERR_NONE)
-		{
-			//%g/%g%i
-			fname = std::string(system_name) + PATH_SEPARATOR + std::string(system_name) + "0000.png";
-			filerr = OpenRawDIBFile(dir_name, fname.c_str(), &file);
-		}
-	}
-
-	// Try dir/zipfile/system.png
-	if (filerr != FILERR_NONE)
-	{
-		fname = std::string(file_name) + ".png";
-		filerr = OpenZipDIBFile(dir_name, zip_name, fname.c_str(), &file, &buffer);
-	}
-
-done:
 	if (filerr == FILERR_NONE)
 	{
 		success = png_read_bitmap_gui(file, phDIB, pPal);
@@ -575,6 +597,7 @@ done:
 		free(buffer);
 	free(system_name);
 	free(file_name);
+	free(dir_name1);
 
 	return success;
 }
