@@ -46,6 +46,7 @@ static int   copy_size = 0;
 static char* pixel_ptr = 0;
 static int   row = 0;
 static int   effWidth;
+static BOOL LoadDIB(const char *filename, HGLOBAL *phDIB, HPALETTE *pPal, int pic_type);
 
 /***************************************************************************
     Functions
@@ -402,7 +403,28 @@ static file_error OpenZipDIBFile(const char *dir_name, const char *zip_name, con
 }
 
 // called from winui.c to display the background
-BOOL LoadDIB(const char *filename, HGLOBAL *phDIB, HPALETTE *pPal, int pic_type)
+BOOL LoadDIBBG(HGLOBAL *phDIB, HPALETTE *pPal)
+{
+	file_error filerr = FILERR_NOT_FOUND;
+	core_file *file = NULL;
+	BOOL success = FALSE;
+	const char *dir_name;
+	if (pPal != NULL )
+		DeletePalette(pPal);
+
+	dir_name = GetBgDir();
+	filerr = OpenBkgroundFile(dir_name, &file);
+	if (filerr == FILERR_NONE)
+	{
+		success = png_read_bitmap_gui(file, phDIB, pPal);
+		core_fclose(file);
+	}
+
+	return success;
+}
+
+// display a snap, cabinet, title, flyer, marquee, pcb, control panel
+static BOOL LoadDIB(const char *filename, HGLOBAL *phDIB, HPALETTE *pPal, int pic_type)
 {
 	file_error filerr = FILERR_NOT_FOUND; // defined in osdcore.h
 	core_file *file = NULL;
@@ -422,21 +444,6 @@ BOOL LoadDIB(const char *filename, HGLOBAL *phDIB, HPALETTE *pPal, int pic_type)
 	// allocate space
 	system_name = (char*)malloc(strlen(filename) + 1);
 	file_name = (char*)malloc(strlen(filename) + 1);
-
-	if (pic_type == BACKGROUND)
-	{
-		dir_name = GetBgDir();
-		filerr = OpenBkgroundFile(dir_name, &file);
-		if (filerr == FILERR_NONE)
-		{
-			success = png_read_bitmap_gui(file, phDIB, pPal);
-			core_fclose(file);
-		}
-
-		free(system_name);
-		free(file_name);
-		return success;
-	}
 
 	switch (pic_type)
 	{

@@ -20,7 +20,7 @@ extern int GetScreenShotHeight(void);
 extern void FreeScreenShot(void);
 extern BOOL ScreenShotLoaded(void);
 
-extern BOOL LoadDIB(const char *filename, HGLOBAL *phDIB, HPALETTE *pPal, BOOL flyer);
+extern BOOL LoadDIBBG(HGLOBAL *phDIB, HPALETTE *pPal);
 extern HBITMAP DIBToDDB(HDC hDC, HANDLE hDIB, LPMYBITMAPINFO desc);
 
 #endif
