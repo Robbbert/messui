@@ -2096,8 +2096,8 @@ BOOL TryAddExtraFolderAndChildren(int parent_index)
 					/* create a new folder with this name,
 					   and the flags for this folder as read from the registry */
 					lpTemp = NewFolder(name,current_id,parent_index,
-									   ExtraFolderData[id]->m_nSubIconId,
-									   GetFolderFlags(numFolders) | F_CUSTOM);
+						ExtraFolderData[id]->m_nSubIconId,
+						GetFolderFlags(numFolders) | F_CUSTOM);
 					ExtraFolderData[current_id] = (EXFOLDERDATA*)malloc(sizeof(EXFOLDERDATA));
 					memset(ExtraFolderData[current_id], 0, sizeof(EXFOLDERDATA));
 
@@ -2128,8 +2128,7 @@ BOOL TryAddExtraFolderAndChildren(int parent_index)
 
 			if (lpTemp == NULL)
 			{
-				ErrorMsg("Error parsing %s: missing [folder name] or [ROOT_FOLDER]",
-						 fname);
+				ErrorMsg("Error parsing %s: missing [folder name] or [ROOT_FOLDER]", fname);
 				current_id = lpFolder->m_nFolderId;
 				lpTemp = lpFolder;
 			}

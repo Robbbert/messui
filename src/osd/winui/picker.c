@@ -6,23 +6,14 @@
 #define _WIN32_IE 0x0501
 #include <windows.h>
 #include <windowsx.h>
-#include <shellapi.h>
 #include <commctrl.h>
-#include <commdlg.h>
-#include <wingdi.h>
 
 // standard C headers
-#include <stdio.h>
-#include <ctype.h>
-#include <string.h>
-#include <sys/stat.h>
-#include <time.h>
 #include <tchar.h>
 
 // MAME/MAMEUI headers
 #include "picker.h"
 #include "winui.h"
-#include "mui_util.h" // For dprintf
 #include "mui_opts.h"
 
 
@@ -1630,8 +1621,7 @@ BOOL Picker_SaveColumnWidths(HWND hwndPicker)
 	pPickerInfo->pCallbacks->pfnGetColumnOrder(order);
 
 	/* switch the list view to LVS_REPORT style so column widths reported correctly */
-	SetWindowLong(hwndPicker, GWL_STYLE,
-					(GetWindowLong(hwndPicker, GWL_STYLE) & ~LVS_TYPEMASK) | LVS_REPORT);
+	SetWindowLong(hwndPicker, GWL_STYLE, (GetWindowLong(hwndPicker, GWL_STYLE) & ~LVS_TYPEMASK) | LVS_REPORT);
 
 	nColumnMax = Picker_GetNumColumns(hwndPicker);
 

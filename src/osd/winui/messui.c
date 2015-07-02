@@ -738,10 +738,9 @@ static void MessRefreshPicker(void)
 	ListView_SetItemState(hwndSoftware, -1, 0, LVIS_SELECTED);
 
 	image_interface_iterator iter(s_config->mconfig->root_device());
-	for (device_image_interface *dev = iter.first(); dev != NULL; dev = iter.next())
+	for (device_image_interface *dev = iter.first(); dev; dev = iter.next())
 	{
 		const char *opt_name = dev->instance_name(); // get name of device slot
-
 		load_options(o, s_config->driver_index);
 		s = o.value(opt_name); // get name of software in the slot
 
@@ -1264,7 +1263,7 @@ static void SoftwarePicker_EnteringItem(HWND hwndSoftwarePicker, int nItem)
 
 		// Get the fullname and partialname for this file
 		pszFullName = SoftwarePicker_LookupFilename(hwndSoftwarePicker, nItem);
-		tmp = strchr(pszFullName, '\\');
+		tmp = strrchr(pszFullName, '\\');
 		pszName = tmp ? tmp + 1 : pszFullName;
 
 		// Do the dirty work
@@ -1325,6 +1324,7 @@ static void SoftwareList_LeavingItem(HWND hwndSoftwareList, int nItem)
 	{
 		g_szSelectedSoftware[0] = 0;
 		g_szSelectedDevice[0] = 0;
+		g_szSelectedItem[0] = 0;
 	}
 }
 
@@ -1355,7 +1355,6 @@ static void SoftwareList_EnteringItem(HWND hwndSoftwareList, int nItem)
 		strncpyz(g_szSelectedItem, pszFullName, ARRAY_LENGTH(g_szSelectedItem));
 
 		UpdateScreenShot();
-		g_szSelectedItem[0] = 0; // fixes bug in 145u5
 	}
 	drvindex++;
 }
@@ -1538,9 +1537,9 @@ BOOL MessCommand(HWND hwnd,int id, HWND hwndCtl, UINT codeNotify)
 
 static LPCSTR s_tabs[] =
 {
-	"picker\0Picker",
+	"picker\0SW Files",
 	"devview\0Media View",
-	"softlist\0Software",
+	"softlist\0SW Items",
 };
 
 

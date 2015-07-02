@@ -307,7 +307,7 @@ static void DevView_ButtonClick(HWND hwndDevView, struct DevViewEntry *pEnt, HWN
 	hMenu = CreatePopupMenu();
 
 	if (pDevViewInfo->pCallbacks->pfnGetOpenFileName)
-		AppendMenu(hMenu, MF_STRING, 1, TEXT("Mount..."));
+		AppendMenu(hMenu, MF_STRING, 1, TEXT("Mount File..."));
 
 	if (pEnt->dev->is_creatable())
 	{

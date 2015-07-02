@@ -845,7 +845,7 @@ public:
 			if ((video_config.windowed == 0) && (win_window_list != NULL))
 				winwindow_toggle_full_screen();
 
-			vsnprintf(buffer, ARRAY_LENGTH(buffer), msg, args);printf("%s\n",buffer);
+			vsnprintf(buffer, ARRAY_LENGTH(buffer), msg, args);
 			win_message_box_utf8(win_window_list ? win_window_list->m_hwnd : hMain, buffer, MAMEUINAME, MB_ICONERROR | MB_OK);
 		}
 		else
@@ -1683,8 +1683,7 @@ static BOOL Win32UI_init(HINSTANCE hInstance, LPWSTR lpCmdLine, int nCmdShow)
 	InitCommonControls();
 
 	// Are we using an Old comctl32.dll?
-	dprintf("common controlversion %ld %ld\n",common_control_version >> 16,
-			common_control_version & 0xffff);
+	dprintf("common controlversion %ld %ld\n",common_control_version >> 16, common_control_version & 0xffff);
 
 	oldControl = (common_control_version < PACKVERSION(4,71));
 	xpControl = (common_control_version >= PACKVERSION(6,0));
@@ -4762,6 +4761,9 @@ static void GamePicker_LeavingItem(HWND hwndPicker, int nItem)
 {
 	// leaving item
 	// printf("leaving %s\n",driver_list::driver(nItem).name);
+	g_szSelectedSoftware[0] = 0;
+	g_szSelectedDevice[0] = 0;
+	g_szSelectedItem[0] = 0;
 }
 
 static void GamePicker_EnteringItem(HWND hwndPicker, int nItem)
@@ -5024,7 +5026,7 @@ static void CreateIcons(void)
 	SetWindowLong(hwndList,GWL_STYLE,(dwStyle & ~LVS_TYPEMASK) | LVS_ICON);
 
 	hSmall = ImageList_Create(dwSmallIconSize, dwSmallIconSize,
-							  ILC_COLORDDB | ILC_MASK, icon_count, icon_count + grow);
+		ILC_COLORDDB | ILC_MASK, icon_count, icon_count + grow);
 
 	if (NULL == hSmall) {
 		win_message_box_utf8(hwndList, "Cannot allocate small icon image list", "Allocation error - Exiting", IDOK);
@@ -5032,7 +5034,7 @@ static void CreateIcons(void)
 	}
 
 	hLarge = ImageList_Create(dwLargeIconSize, dwLargeIconSize,
-							  ILC_COLORDDB | ILC_MASK, icon_count, icon_count + grow);
+		ILC_COLORDDB | ILC_MASK, icon_count, icon_count + grow);
 
 	if (NULL == hLarge) {
 		win_message_box_utf8(hwndList, "Cannot allocate large icon image list", "Allocation error - Exiting", IDOK);
@@ -5943,9 +5945,9 @@ static BOOL HandleScreenShotContextMenu(HWND hWnd, WPARAM wParam, LPARAM lParam)
 
 static void UpdateMenu(HMENU hMenu)
 {
-	TCHAR			buf[200];
-	MENUITEMINFO	mItem;
-	int 			nGame = Picker_GetSelectedItem(hwndList);
+	TCHAR buf[200];
+	MENUITEMINFO mItem;
+	int nGame = Picker_GetSelectedItem(hwndList);
 	LPTREEFOLDER lpFolder = GetCurrentFolder();
 	int i = 0;
 	//const char *pParent;
@@ -5963,7 +5965,7 @@ static void UpdateMenu(HMENU hMenu)
 		mItem.fMask 	 = MIIM_TYPE;
 		mItem.fType 	 = MFT_STRING;
 		mItem.dwTypeData = buf;
-		mItem.cch		 = _tcslen(mItem.dwTypeData);
+		mItem.cch = _tcslen(mItem.dwTypeData);
 
 		SetMenuItemInfo(hMenu, ID_FILE_PLAY, FALSE, &mItem);
 
@@ -5973,9 +5975,9 @@ static void UpdateMenu(HMENU hMenu)
 	}
 	else
 	{
-		EnableMenuItem(hMenu, ID_FILE_PLAY, 			MF_GRAYED);
-		EnableMenuItem(hMenu, ID_FILE_PLAY_RECORD,		MF_GRAYED);
-		EnableMenuItem(hMenu, ID_GAME_PROPERTIES,		MF_GRAYED);
+		EnableMenuItem(hMenu, ID_FILE_PLAY, MF_GRAYED);
+		EnableMenuItem(hMenu, ID_FILE_PLAY_RECORD, MF_GRAYED);
+		EnableMenuItem(hMenu, ID_GAME_PROPERTIES, MF_GRAYED);
 		EnableMenuItem(hMenu, ID_CONTEXT_SELECT_RANDOM, MF_GRAYED);
 	}
 
@@ -5988,12 +5990,12 @@ static void UpdateMenu(HMENU hMenu)
 
 	if (lpFolder->m_dwFlags & F_CUSTOM)
 	{
-	    EnableMenuItem(hMenu,ID_CONTEXT_REMOVE_CUSTOM,MF_ENABLED);
+		EnableMenuItem(hMenu,ID_CONTEXT_REMOVE_CUSTOM,MF_ENABLED);
 		EnableMenuItem(hMenu,ID_CONTEXT_RENAME_CUSTOM,MF_ENABLED);
 	}
 	else
 	{
-	    EnableMenuItem(hMenu,ID_CONTEXT_REMOVE_CUSTOM,MF_GRAYED);
+		EnableMenuItem(hMenu,ID_CONTEXT_REMOVE_CUSTOM,MF_GRAYED);
 		EnableMenuItem(hMenu,ID_CONTEXT_RENAME_CUSTOM,MF_GRAYED);
 	}
 	//pParent = GetFolderNameByID(lpFolder->m_nParent+1);
@@ -6004,7 +6006,7 @@ static void UpdateMenu(HMENU hMenu)
 		EnableMenuItem(hMenu,ID_FOLDER_PROPERTIES,MF_GRAYED);
 
 	CheckMenuRadioItem(hMenu, ID_VIEW_TAB_SCREENSHOT, ID_VIEW_TAB_HISTORY,
-					   ID_VIEW_TAB_SCREENSHOT + TabView_GetCurrentTab(hTabCtrl), MF_BYCOMMAND);
+		ID_VIEW_TAB_SCREENSHOT + TabView_GetCurrentTab(hTabCtrl), MF_BYCOMMAND);
 
 	// set whether we're showing the tab control or not
 	if (bShowTabCtrl)
@@ -6113,7 +6115,6 @@ void InitBodyContextMenu(HMENU hBodyContextMenu)
 	mii.cch = _tcslen(mii.dwTypeData);
 	mii.wID = ID_FOLDER_SOURCEPROPERTIES;
 
-
 	// menu in resources has one default item
 	// so overwrite this one
 	SetMenuItemInfo(hBodyContextMenu,ID_FOLDER_SOURCEPROPERTIES,FALSE,&mii);
@@ -6143,25 +6144,25 @@ static LRESULT CALLBACK HistoryWndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPAR
 		switch (uMsg)
 		{
 		case WM_MOUSEMOVE:
-		{
-			if (MouseHasBeenMoved())
-				ShowCursor(TRUE);
-			break;
-		}
+			{
+				if (MouseHasBeenMoved())
+					ShowCursor(TRUE);
+				break;
+			}
 
-		case WM_ERASEBKGND:
-			return TRUE;
-		case WM_PAINT:
-		{
-			POINT p = { 0, 0 };
+			case WM_ERASEBKGND:
+				return TRUE;
+			case WM_PAINT:
+			{
+				POINT p = { 0, 0 };
 
-			/* get base point of background bitmap */
-			MapWindowPoints(hWnd,hTreeView,&p,1);
-			PaintBackgroundImage(hWnd, NULL, p.x, p.y);
-			/* to ensure our parent procedure repaints the whole client area */
-			InvalidateRect(hWnd, NULL, FALSE);
-			break;
-		}
+				/* get base point of background bitmap */
+				MapWindowPoints(hWnd,hTreeView,&p,1);
+				PaintBackgroundImage(hWnd, NULL, p.x, p.y);
+				/* to ensure our parent procedure repaints the whole client area */
+				InvalidateRect(hWnd, NULL, FALSE);
+				break;
+			}
 		}
 	}
 	return CallWindowProc(g_lpHistoryWndProc, hWnd, uMsg, wParam, lParam);
@@ -6172,40 +6173,40 @@ static LRESULT CALLBACK PictureFrameWndProc(HWND hWnd, UINT uMsg, WPARAM wParam,
 	switch (uMsg)
 	{
 	case WM_MOUSEMOVE:
-    {
-		if (MouseHasBeenMoved())
-			ShowCursor(TRUE);
-		break;
-    }
+		{
+			if (MouseHasBeenMoved())
+				ShowCursor(TRUE);
+			break;
+		}
 
-    case WM_NCHITTEST :
-	{
-		POINT pt;
-		RECT  rect;
-		HWND hHistory = GetDlgItem(hMain, IDC_HISTORY);
+	case WM_NCHITTEST :
+		{
+			POINT pt;
+			RECT  rect;
+			HWND hHistory = GetDlgItem(hMain, IDC_HISTORY);
 
-		pt.x = LOWORD(lParam);
-		pt.y = HIWORD(lParam);
-		GetWindowRect(hHistory, &rect);
-		// check if they clicked on the picture area (leave 6 pixel no man's land
-		// by the history window to reduce mistaken clicks)
-		// no more no man's land, the Cursor changes when Edit control is left, should be enough feedback
-		if (have_history &&
-			( ( (TabView_GetCurrentTab(hTabCtrl) == TAB_HISTORY) ||
-			 (TabView_GetCurrentTab(hTabCtrl) == GetHistoryTab() && GetShowTab(TAB_HISTORY) == FALSE) ||
-			(TAB_ALL == GetHistoryTab() && GetShowTab(TAB_HISTORY) == FALSE) ) &&
-//            (rect.top - 6) < pt.y && pt.y < (rect.bottom + 6) ) )
+			pt.x = LOWORD(lParam);
+			pt.y = HIWORD(lParam);
+			GetWindowRect(hHistory, &rect);
+			// check if they clicked on the picture area (leave 6 pixel no man's land
+			// by the history window to reduce mistaken clicks)
+			// no more no man's land, the Cursor changes when Edit control is left, should be enough feedback
+			if (have_history &&
+				( ( (TabView_GetCurrentTab(hTabCtrl) == TAB_HISTORY) ||
+					(TabView_GetCurrentTab(hTabCtrl) == GetHistoryTab() && GetShowTab(TAB_HISTORY) == FALSE) ||
+					(TAB_ALL == GetHistoryTab() && GetShowTab(TAB_HISTORY) == FALSE) ) &&
+//					(rect.top - 6) < pt.y && pt.y < (rect.bottom + 6) ) )
 					PtInRect( &rect, pt ) ) )
 
-		{
-			return HTTRANSPARENT;
+			{
+				return HTTRANSPARENT;
+			}
+			else
+			{
+				return HTCLIENT;
+			}
 		}
-		else
-		{
-			return HTCLIENT;
-		}
-	}
-	break;
+		break;
 	case WM_CONTEXTMENU:
 		if ( HandleScreenShotContextMenu(hWnd, wParam, lParam))
 			return FALSE;
@@ -6219,46 +6220,46 @@ static LRESULT CALLBACK PictureFrameWndProc(HWND hWnd, UINT uMsg, WPARAM wParam,
 		case WM_ERASEBKGND :
 			return TRUE;
 		case WM_PAINT :
-		{
-			RECT rect,nodraw_rect;
-			HRGN region,nodraw_region;
-			POINT p = { 0, 0 };
-
-			/* get base point of background bitmap */
-			MapWindowPoints(hWnd,hTreeView,&p,1);
-
-			/* get big region */
-			GetClientRect(hWnd,&rect);
-			region = CreateRectRgnIndirect(&rect);
-
-			if (IsWindowVisible(GetDlgItem(hMain,IDC_HISTORY)))
 			{
-				/* don't draw over this window */
-				GetWindowRect(GetDlgItem(hMain,IDC_HISTORY),&nodraw_rect);
-				MapWindowPoints(HWND_DESKTOP,hWnd,(LPPOINT)&nodraw_rect,2);
-				nodraw_region = CreateRectRgnIndirect(&nodraw_rect);
-				CombineRgn(region,region,nodraw_region,RGN_DIFF);
-				DeleteObject(nodraw_region);
+				RECT rect,nodraw_rect;
+				HRGN region,nodraw_region;
+				POINT p = { 0, 0 };
+
+				/* get base point of background bitmap */
+				MapWindowPoints(hWnd,hTreeView,&p,1);
+
+				/* get big region */
+				GetClientRect(hWnd,&rect);
+				region = CreateRectRgnIndirect(&rect);
+
+				if (IsWindowVisible(GetDlgItem(hMain,IDC_HISTORY)))
+				{
+					/* don't draw over this window */
+					GetWindowRect(GetDlgItem(hMain,IDC_HISTORY),&nodraw_rect);
+					MapWindowPoints(HWND_DESKTOP,hWnd,(LPPOINT)&nodraw_rect,2);
+					nodraw_region = CreateRectRgnIndirect(&nodraw_rect);
+					CombineRgn(region,region,nodraw_region,RGN_DIFF);
+					DeleteObject(nodraw_region);
+				}
+				if (IsWindowVisible(GetDlgItem(hMain,IDC_SSPICTURE)))
+				{
+					/* don't draw over this window */
+					GetWindowRect(GetDlgItem(hMain,IDC_SSPICTURE),&nodraw_rect);
+					MapWindowPoints(HWND_DESKTOP,hWnd,(LPPOINT)&nodraw_rect,2);
+					nodraw_region = CreateRectRgnIndirect(&nodraw_rect);
+					CombineRgn(region,region,nodraw_region,RGN_DIFF);
+					DeleteObject(nodraw_region);
+				}
+
+				PaintBackgroundImage(hWnd,region,p.x,p.y);
+
+				DeleteObject(region);
+
+				/* to ensure our parent procedure repaints the whole client area */
+				InvalidateRect(hWnd, NULL, FALSE);
+
+				break;
 			}
-			if (IsWindowVisible(GetDlgItem(hMain,IDC_SSPICTURE)))
-			{
-				/* don't draw over this window */
-				GetWindowRect(GetDlgItem(hMain,IDC_SSPICTURE),&nodraw_rect);
-				MapWindowPoints(HWND_DESKTOP,hWnd,(LPPOINT)&nodraw_rect,2);
-				nodraw_region = CreateRectRgnIndirect(&nodraw_rect);
-				CombineRgn(region,region,nodraw_region,RGN_DIFF);
-				DeleteObject(nodraw_region);
-			}
-
-			PaintBackgroundImage(hWnd,region,p.x,p.y);
-
-			DeleteObject(region);
-
-			/* to ensure our parent procedure repaints the whole client area */
-			InvalidateRect(hWnd, NULL, FALSE);
-
-			break;
-		}
 		}
 	}
 	return CallWindowProc(g_lpPictureFrameWndProc, hWnd, uMsg, wParam, lParam);
@@ -6271,80 +6272,80 @@ static LRESULT CALLBACK PictureWndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPAR
 	case WM_ERASEBKGND :
 		return TRUE;
 	case WM_PAINT :
-	{
-		PAINTSTRUCT ps;
-		HDC	hdc,hdc_temp;
-		RECT rect;
-		HBITMAP old_bitmap;
-
-		int width,height;
-
-		RECT rect2;
-		HBRUSH hBrush;
-		HBRUSH holdBrush;
-		HRGN region1, region2;
-		int nBordersize;
-		nBordersize = GetScreenshotBorderSize();
-		hBrush = CreateSolidBrush(GetScreenshotBorderColor());
-
-		hdc = BeginPaint(hWnd,&ps);
-
-		hdc_temp = CreateCompatibleDC(hdc);
-		if (ScreenShotLoaded())
 		{
-			width = GetScreenShotWidth();
-			height = GetScreenShotHeight();
+			PAINTSTRUCT ps;
+			HDC hdc,hdc_temp;
+			RECT rect;
+			HBITMAP old_bitmap;
 
-			old_bitmap = (HBITMAP)SelectObject(hdc_temp,GetScreenShotHandle());
+			int width,height;
+
+			RECT rect2;
+			HBRUSH hBrush;
+			HBRUSH holdBrush;
+			HRGN region1, region2;
+			int nBordersize;
+			nBordersize = GetScreenshotBorderSize();
+			hBrush = CreateSolidBrush(GetScreenshotBorderColor());
+
+			hdc = BeginPaint(hWnd,&ps);
+
+			hdc_temp = CreateCompatibleDC(hdc);
+			if (ScreenShotLoaded())
+			{
+				width = GetScreenShotWidth();
+				height = GetScreenShotHeight();
+
+				old_bitmap = (HBITMAP)SelectObject(hdc_temp,GetScreenShotHandle());
+			}
+			else
+			{
+				BITMAP bmp;
+
+				GetObject(hMissing_bitmap,sizeof(BITMAP),&bmp);
+				width = bmp.bmWidth;
+				height = bmp.bmHeight;
+
+				old_bitmap = (HBITMAP)SelectObject(hdc_temp,hMissing_bitmap);
+			}
+
+			GetClientRect(hWnd,&rect);
+
+			rect2 = rect;
+			//Configurable Borders around images
+			rect.bottom -= nBordersize;
+			if( rect.bottom < 0)
+				rect.bottom = rect2.bottom;
+			rect.right -= nBordersize;
+			if( rect.right < 0)
+				rect.right = rect2.right;
+			rect.top += nBordersize;
+			if( rect.top > rect.bottom )
+				rect.top = rect2.top;
+			rect.left += nBordersize;
+			if( rect.left > rect.right )
+				rect.left = rect2.left;
+			region1 = CreateRectRgnIndirect(&rect);
+			region2 = CreateRectRgnIndirect(&rect2);
+			CombineRgn(region2,region2,region1,RGN_DIFF);
+			holdBrush = (HBRUSH)SelectObject(hdc, hBrush);
+
+			FillRgn(hdc,region2, hBrush );
+			SelectObject(hdc, holdBrush);
+			DeleteBrush(hBrush);
+
+			SetStretchBltMode(hdc,STRETCH_HALFTONE);
+			StretchBlt(hdc,nBordersize,nBordersize,rect.right-rect.left,rect.bottom-rect.top,
+				hdc_temp,0,0,width,height,SRCCOPY);
+			SelectObject(hdc_temp,old_bitmap);
+			DeleteDC(hdc_temp);
+			DeleteObject(region1);
+			DeleteObject(region2);
+
+			EndPaint(hWnd,&ps);
+
+			return TRUE;
 		}
-		else
-		{
-			BITMAP bmp;
-
-			GetObject(hMissing_bitmap,sizeof(BITMAP),&bmp);
-			width = bmp.bmWidth;
-			height = bmp.bmHeight;
-
-			old_bitmap = (HBITMAP)SelectObject(hdc_temp,hMissing_bitmap);
-		}
-
-		GetClientRect(hWnd,&rect);
-
-		rect2 = rect;
-		//Configurable Borders around images
-		rect.bottom -= nBordersize;
-		if( rect.bottom < 0)
-			rect.bottom = rect2.bottom;
-		rect.right -= nBordersize;
-		if( rect.right < 0)
-			rect.right = rect2.right;
-		rect.top += nBordersize;
-		if( rect.top > rect.bottom )
-			rect.top = rect2.top;
-		rect.left += nBordersize;
-		if( rect.left > rect.right )
-			rect.left = rect2.left;
-		region1 = CreateRectRgnIndirect(&rect);
-		region2 = CreateRectRgnIndirect(&rect2);
-		CombineRgn(region2,region2,region1,RGN_DIFF);
-		holdBrush = (HBRUSH)SelectObject(hdc, hBrush);
-
-		FillRgn(hdc,region2, hBrush );
-		SelectObject(hdc, holdBrush);
-		DeleteBrush(hBrush);
-
-		SetStretchBltMode(hdc,STRETCH_HALFTONE);
-		StretchBlt(hdc,nBordersize,nBordersize,rect.right-rect.left,rect.bottom-rect.top,
-				   hdc_temp,0,0,width,height,SRCCOPY);
-		SelectObject(hdc_temp,old_bitmap);
-		DeleteDC(hdc_temp);
-		DeleteObject(region1);
-		DeleteObject(region2);
-
-		EndPaint(hWnd,&ps);
-
-		return TRUE;
-	}
 	}
 
 	return CallWindowProc(g_lpPictureWndProc, hWnd, uMsg, wParam, lParam);
@@ -6366,20 +6367,20 @@ static void RemoveGameCustomFolder(int driver_index)
 	{
 	    if (folders[i]->m_dwFlags & F_CUSTOM && folders[i]->m_nFolderId == GetCurrentFolderID())
 		{
-		    int current_pick_index;
+			int current_pick_index;
 
-		    RemoveFromCustomFolder(folders[i],driver_index);
+			RemoveFromCustomFolder(folders[i],driver_index);
 
 			if (driver_index == Picker_GetSelectedItem(hwndList))
 			{
-			   /* if we just removed the current game,
+			/* if we just removed the current game,
                   move the current selection so that when we rebuild the listview it
                   leaves the cursor on next or previous one */
 
-			   current_pick_index = GetSelectedPick();
-			   Picker_SetSelectedPick(hwndList, GetSelectedPick() + 1);
-			   if (current_pick_index == GetSelectedPick()) /* we must have deleted the last item */
-				  Picker_SetSelectedPick(hwndList, GetSelectedPick() - 1);
+				current_pick_index = GetSelectedPick();
+				Picker_SetSelectedPick(hwndList, GetSelectedPick() + 1);
+				if (current_pick_index == GetSelectedPick()) /* we must have deleted the last item */
+					Picker_SetSelectedPick(hwndList, GetSelectedPick() - 1);
 			}
 
 			ResetListView();
@@ -6575,7 +6576,7 @@ void UpdateListView(void)
 
 	if( (GetViewMode() == VIEW_GROUPED) || (GetViewMode() == VIEW_DETAILS ) )
 		res = ListView_RedrawItems(hwndList,ListView_GetTopIndex(hwndList),
-							 ListView_GetTopIndex(hwndList)+ ListView_GetCountPerPage(hwndList) );
+			ListView_GetTopIndex(hwndList)+ ListView_GetCountPerPage(hwndList) );
 	res++;
 }
 

@@ -521,7 +521,7 @@ static BOOL LoadDIB(const char *filename, HGLOBAL *phDIB, HPALETTE *pPal, int pi
 	char* dir_one = strtok(dir_name1, ";");
 
 	while (dir_one && filerr != FILERR_NONE)
-	{printf("B=%s\\%s\n",dir_one,file_name);
+	{
 		//Add handling for the displaying of all the different supported snapshot pattern types
 		//%g
 
