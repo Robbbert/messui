@@ -292,7 +292,7 @@ BOOL CreateMessIcons(void)
 	HIMAGELIST hSmall;
 	HIMAGELIST hLarge;
 
-	// create the icon index, if we havn't already
+	// create the icon index, if we haven't already
 	if (!mess_icon_index)
 	{
 		mess_icon_index = (int*)pool_malloc_lib(GetMameUIMemoryPool(), driver_list::total() * IO_COUNT * sizeof(*mess_icon_index));
@@ -356,6 +356,8 @@ static int GetMessIcon(int drvindex, int nSoftwareType)
 	return nIconPos;
 }
 
+// Split multi-directory for SW Files into separate directories. SubDir path not used.
+// This could be replaced by strtok.
 static BOOL AddSoftwarePickerDirs(HWND hwndPicker, LPCSTR pszDirectories, LPCSTR pszSubDir)
 {
 	LPCSTR s;

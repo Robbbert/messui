@@ -263,12 +263,12 @@ static int              GamePicker_Compare(HWND hwndPicker, int index1, int inde
 static void             DisableSelection(void);
 static void             EnableSelection(int nGame);
 
-static HICON			GetSelectedPickItemIcon(void);
+static HICON            GetSelectedPickItemIcon(void);
 static void             SetRandomPickItem(void);
-static void				PickColor(COLORREF *cDefault);
+static void             PickColor(COLORREF *cDefault);
 
 static LPTREEFOLDER     GetSelectedFolder(void);
-static HICON			GetSelectedFolderIcon(void);
+static HICON            GetSelectedFolderIcon(void);
 
 static LRESULT CALLBACK HistoryWndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
 static LRESULT CALLBACK PictureFrameWndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
@@ -279,7 +279,7 @@ static void             MamePlayBackGame(void);
 static void             MamePlayRecordWave(void);
 static void             MamePlayRecordMNG(void);
 static void             MamePlayRecordAVI(void);
-static void				MameLoadState(void);
+static void             MameLoadState(void);
 static void             MamePlayGameWithOptions(int nGame, const play_options *playopts);
 static BOOL             GameCheck(void);
 static BOOL             FolderCheck(void);
@@ -303,8 +303,8 @@ static void             InitBodyContextMenu(HMENU hBodyContextMenu);
 static void             ToggleShowFolder(int folder);
 static BOOL             HandleTreeContextMenu( HWND hWnd, WPARAM wParam, LPARAM lParam);
 static BOOL             HandleScreenShotContextMenu( HWND hWnd, WPARAM wParam, LPARAM lParam);
-static void				GamePicker_OnHeaderContextMenu(POINT pt, int nColumn);
-static void				GamePicker_OnBodyContextMenu(POINT pt);
+static void             GamePicker_OnHeaderContextMenu(POINT pt, int nColumn);
+static void             GamePicker_OnBodyContextMenu(POINT pt);
 
 static void             InitListView(void);
 /* Re/initialize the ListView header columns */
@@ -393,7 +393,7 @@ typedef struct
 		int     id;         /* Window control id */
 		HWND    hwnd;       /* Window handle */
 	} u;
-	BOOL		setfont;	/* Do we set this item's font? */
+	BOOL        setfont;    /* Do we set this item's font? */
 	int         action;     /* What to do when control is resized */
 	void        *subwindow; /* Points to a Resize structure for this subwindow; NULL if none */
 } ResizeItem;
@@ -472,8 +472,8 @@ static BOOL bShowTabCtrl   = 1;
 static BOOL bProgressShown = FALSE;
 static BOOL bListReady     = FALSE;
 
-#define	WM_MAME32_FILECHANGED	(WM_USER + 0)
-#define	WM_MAME32_AUDITGAME		(WM_USER + 1)
+#define	WM_MAME32_FILECHANGED (WM_USER + 0)
+#define	WM_MAME32_AUDITGAME   (WM_USER + 1)
 
 static PDIRWATCHER s_pWatcher;
 
@@ -855,14 +855,14 @@ public:
 
 static std::wstring s2ws(const std::string& s)
 {
-    int len;
-    int slength = (int)s.length() + 1;
-    len = MultiByteToWideChar(CP_ACP, 0, s.c_str(), slength, 0, 0); 
-    wchar_t* buf = new wchar_t[len];
-    MultiByteToWideChar(CP_ACP, 0, s.c_str(), slength, buf, len);
-    std::wstring r(buf);
-    delete[] buf;
-    return r;
+	int len;
+	int slength = (int)s.length() + 1;
+	len = MultiByteToWideChar(CP_ACP, 0, s.c_str(), slength, 0, 0); 
+	wchar_t* buf = new wchar_t[len];
+	MultiByteToWideChar(CP_ACP, 0, s.c_str(), slength, buf, len);
+	std::wstring r(buf);
+	delete[] buf;
+	return r;
 }
 
 
@@ -877,15 +877,11 @@ static DWORD RunMAME(int nGameIndex, const play_options *playopts)
 	int i = 0;
 	windows_options mame_opts;
 	std::string error_string;
-	// set up MAME options
-//  mame_opts = mame_options_init(mame_win_options);
 
 	// Tell mame where to get the INIs
-	SetDirectories(mame_opts);   // mame_opts.set_value(OPTION_INIPATH, GetIniDir(), OPTION_PRIORITY_CMDLINE,error_string);
+	SetDirectories(mame_opts);
 
-	// add image specific device options
-//	mame_opts.set_system_name(driver_list::driver(nGameIndex).name);
-MessSetupGameOptions(mame_opts, nGameIndex);
+	MessSetupGameOptions(mame_opts, nGameIndex);
 
 	// set any specified play options
 	if (playopts != NULL)
@@ -913,7 +909,7 @@ MessSetupGameOptions(mame_opts, nGameIndex);
 	}
 	// Mame will parse all the needed .ini files.
 
-	// prepare MAME32 to run the game
+	// prepare to run the game
 	ShowWindow(hMain, SW_HIDE);
 
 	for (i = 0; i < ARRAY_LENGTH(s_nPickers); i++)
@@ -998,12 +994,13 @@ HWND GetTreeView(void)
 	return hTreeView;
 }
 
-// These 2 used by messui.c
+// used by messui.c
 HIMAGELIST GetLargeImageList(void)
 {
 	return hLarge;
 }
 
+// used by messui.c
 HIMAGELIST GetSmallImageList(void)
 {
 	return hSmall;

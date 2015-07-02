@@ -1479,7 +1479,7 @@ void Picker_HandleDrawItem(HWND hWnd, LPDRAWITEMSTRUCT lpDrawItemStruct)
 		if (rcIcon.left + 16 + indent_space < rcItem.right)
 		{
 			ImageList_DrawEx(hImageList, lvi.iImage, hDC, rcIcon.left, rcIcon.top, 16, 16,
-							 GetSysColor(COLOR_WINDOW), clrImage, uiFlags | nOvlImageMask);
+				GetSysColor(COLOR_WINDOW), clrImage, uiFlags | nOvlImageMask);
 		}
 	}
 
@@ -1491,8 +1491,7 @@ void Picker_HandleDrawItem(HWND hWnd, LPDRAWITEMSTRUCT lpDrawItemStruct)
 	rcLabel.left  += offset + indent_space;
 	rcLabel.right -= offset;
 
-	DrawText(hDC, pszText, -1, &rcLabel,
-			 DT_LEFT | DT_SINGLELINE | DT_NOPREFIX | DT_VCENTER);
+	DrawText(hDC, pszText, -1, &rcLabel, DT_LEFT | DT_SINGLELINE | DT_NOPREFIX | DT_VCENTER);
 
 	for (nColumn = 1; nColumn < nColumnMax; nColumn++)
 	{
