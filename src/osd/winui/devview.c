@@ -309,6 +309,9 @@ static void DevView_ButtonClick(HWND hwndDevView, struct DevViewEntry *pEnt, HWN
 	if (pDevViewInfo->pCallbacks->pfnGetOpenFileName)
 		AppendMenu(hMenu, MF_STRING, 1, TEXT("Mount File..."));
 
+	if (pDevViewInfo->pCallbacks->pfnGetOpenItemName)
+		AppendMenu(hMenu, MF_STRING, 4, TEXT("Mount Item..."));
+
 	if (pEnt->dev->is_creatable())
 	{
 		if (pDevViewInfo->pCallbacks->pfnGetCreateFileName)
@@ -325,15 +328,19 @@ static void DevView_ButtonClick(HWND hwndDevView, struct DevViewEntry *pEnt, HWN
 	{
 		case 1:
 			b = pDevViewInfo->pCallbacks->pfnGetOpenFileName(hwndDevView,
-			pDevViewInfo->config->mconfig, pEnt->dev, szPath, ARRAY_LENGTH(szPath));
+				pDevViewInfo->config->mconfig, pEnt->dev, szPath, ARRAY_LENGTH(szPath));
 			break;
 		case 2:
 			b = pDevViewInfo->pCallbacks->pfnGetCreateFileName(hwndDevView,
-			pDevViewInfo->config->mconfig, pEnt->dev, szPath, ARRAY_LENGTH(szPath));
+				pDevViewInfo->config->mconfig, pEnt->dev, szPath, ARRAY_LENGTH(szPath));
 			break;
 		case 3:
 			memset(szPath, 0, sizeof(szPath));
 			b = TRUE;
+			break;
+		case 4:
+			b = pDevViewInfo->pCallbacks->pfnGetOpenItemName(hwndDevView,
+				pDevViewInfo->config->mconfig, pEnt->dev, szPath, ARRAY_LENGTH(szPath));
 			break;
 		default:
 			b = FALSE;

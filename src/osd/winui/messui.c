@@ -81,7 +81,7 @@ char g_szSelectedItem[MAX_PATH];
 
 char g_szSelectedSoftware[MAX_PATH];
 
-char g_szSelectedDevice[MAX_PATH];
+char g_szSelectedDevice[26];
 
 //============================================================
 //  LOCAL VARIABLES
@@ -164,6 +164,7 @@ static void SoftwareList_LeavingItem(HWND hwndSoftwareList, int nItem);
 static void SoftwareList_EnteringItem(HWND hwndSoftwareList, int nItem);
 
 static BOOL DevView_GetOpenFileName(HWND hwndDevView, const machine_config *config, const device_image_interface *dev, LPTSTR pszFilename, UINT nFilenameLength);
+static BOOL DevView_GetOpenItemName(HWND hwndDevView, const machine_config *config, const device_image_interface *dev, LPTSTR pszFilename, UINT nFilenameLength);
 static BOOL DevView_GetCreateFileName(HWND hwndDevView, const machine_config *config, const device_image_interface *dev, LPTSTR pszFilename, UINT nFilenameLength);
 static void DevView_SetSelectedSoftware(HWND hwndDevView, int nDriverIndex, const machine_config *config, const device_image_interface *dev, LPCTSTR pszFilename);
 static LPCTSTR DevView_GetSelectedSoftware(HWND hwndDevView, int nDriverIndex, const machine_config *config, const device_image_interface *dev, LPTSTR pszBuffer, UINT nBufferLength);
@@ -796,7 +797,8 @@ void InitMessPicker(void)
 			DevView_GetOpenFileName,
 			DevView_GetCreateFileName,
 			DevView_SetSelectedSoftware,
-			DevView_GetSelectedSoftware
+			DevView_GetSelectedSoftware,
+			DevView_GetOpenItemName
 		};
 		DevView_SetCallbacks(GetDlgItem(GetMainWindow(), IDC_SWDEVVIEW), &s_devViewCallbacks);
 	}
@@ -1019,7 +1021,7 @@ static void MessOpenOtherSoftware(const device_image_interface *dev)
 
 
 
-/* This is used to Mount an image in the device view of MESSUI.
+/* This is used to Mount a software File in the device view of MESSUI.
     Since the emulation is not running at this time,
     we cannot do the same as the NEWUI does, that is, "initial_dir = image_working_directory(dev);"
     because a crash occurs (the image system isn't set up yet).
@@ -1091,6 +1093,85 @@ static BOOL DevView_GetOpenFileName(HWND hwndDevView, const machine_config *conf
 
 	osd_free(t_s);
 
+	return bResult;
+}
+
+
+/* This is used to Mount a software Item in the device view of MESSUI.
+
+    Order of priority:
+    1. Directory where existing image is already loaded from
+    2. The software directory root
+    3. mess-folder */
+
+static BOOL DevView_GetOpenItemName(HWND hwndDevView, const machine_config *config, const device_image_interface *dev, LPTSTR pszFilename, UINT nFilenameLength)
+{
+	BOOL bResult = 0;
+	TCHAR *t_s;
+	int i = 0;
+	mess_image_type imagetypes[256];
+	HWND hwndList = GetDlgItem(GetMainWindow(), IDC_LIST);
+	int drvindex = Picker_GetSelectedItem(hwndList);
+	std::string as;
+	const char *s, *opt_name = dev->instance_name();
+	windows_options o;
+	load_options(o, drvindex);
+	s = o.value(opt_name);
+
+	/* Get the path to the currently mounted image, chop off any trailing backslash */
+	zippath_parent(as, s);
+	size_t t1 = as.length()-1;
+	if (as[t1] == '\\') as[t1]='\0';
+	t_s = tstring_from_utf8(as.c_str());
+
+	/* See if an image was loaded, and that the path still exists */
+	if ((!osd_opendir(as.c_str())) || (as.find(':') == std::string::npos))
+	{
+		/* Get the path from the software tab */
+		as = GetSoftwareDirs();
+
+		/* We only want the first path; throw out the rest */
+		i = as.find(';');
+		if (i > 0) as.substr(0, i);
+		osd_free(t_s);
+		t_s = tstring_from_utf8(as.c_str());
+
+		/* Make sure a folder was specified in the tab, and that it exists */
+		if ((!osd_opendir(as.c_str())) || (as.find(':') == std::string::npos))
+		{
+			char *dst = NULL;
+			osd_get_full_path(&dst,".");
+			/* Default to emu directory */
+			osd_free(t_s);
+			t_s = tstring_from_utf8(dst);
+			osd_free(dst);
+		}
+	}
+
+	SetupImageTypes(config, imagetypes, ARRAY_LENGTH(imagetypes), TRUE, dev);
+	bResult = CommonFileImageDialog(t_s, GetOpenFileName, pszFilename, config, imagetypes);
+	CleanupImageTypes(imagetypes, ARRAY_LENGTH(imagetypes));
+
+	// This crappy code is typical of what you get with strings in c++
+	// All we want to do is get the Item name out of the full path
+	char t2[nFilenameLength];
+	wcstombs(t2, pszFilename, nFilenameLength-1); // convert wide string to a normal one
+	std::string t3 = t2; // then convert to a c++ string so we can manipulate it
+	t1 = t3.find(".zip"); // get rid of zip name and anything after
+	t3[t1] = '\0';
+//	t1 = t3.find_last_of("\\");   // we can force the swlist name in, if needed
+//	t3[t1] = ':';
+	t1 = t3.find_last_of("\\"); // get rid of path; we only want the item name
+	t3.erase(0, t1+1);
+
+	// set up editbox display text
+	mbstowcs(pszFilename, t3.c_str(), nFilenameLength-1); // convert it back to a wide string
+
+	// set up inifile text to signify to MAME that a SW ITEM is to be used
+	strcpy(g_szSelectedSoftware, t3.c_str()); // store to global item name
+	strcpy(g_szSelectedDevice, dev->instance_name()); // get media-device name (brief_instance_name is ok too)
+
+	osd_free(t_s);
 	return bResult;
 }
 
@@ -1271,7 +1352,7 @@ static void SoftwarePicker_EnteringItem(HWND hwndSoftwarePicker, int nItem)
 		// Do the dirty work
 		MessSpecifyImage(drvindex, NULL, pszFullName);
 
-		// Set up s_szSelecteItem, for the benefit of UpdateScreenShot()
+		// Set up g_szSelectedItem, for the benefit of UpdateScreenShot()
 		strncpyz(g_szSelectedItem, pszName, ARRAY_LENGTH(g_szSelectedItem));
 		s = strrchr(g_szSelectedItem, '.');
 		if (s)

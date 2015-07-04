@@ -3315,7 +3315,7 @@ static void prepare_menus(HWND wnd)
 			flags_for_writing |= MF_GRAYED;
 
 		sub_menu = CreateMenu();
-		win_append_menu_utf8(sub_menu, MF_STRING, new_item + DEVOPTION_OPEN, "Mount...");
+		win_append_menu_utf8(sub_menu, MF_STRING, new_item + DEVOPTION_OPEN, "Mount File...");
 
 		if (img->is_creatable())
 			win_append_menu_utf8(sub_menu, MF_STRING, new_item + DEVOPTION_CREATE, "Create...");
