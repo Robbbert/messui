@@ -798,19 +798,23 @@ static MYBITMAPINFO     bmDesc;
 /* List view Column text */
 extern const LPCTSTR column_names[COLUMN_MAX] =
 {
-	TEXT("System"),
+	TEXT("Machine"),
 	TEXT("Source"),
 	TEXT("Directory"),
-	TEXT("ROMs"),
-	TEXT("Played"),
-	TEXT("Play Time"),
+	TEXT("Type"),
+	TEXT("Screen"),
 	TEXT("Manufacturer"),
 	TEXT("Year"),
-	TEXT("Screen"),
-	TEXT("Type"),
+	TEXT("Played"),
+	TEXT("Play Time"),
 	TEXT("Clone Of"),
 	TEXT("Trackball"),
-	//TEXT("Samples"),
+#ifdef SHOW_COLUMN_SAMPLES
+	TEXT("Samples"),
+#endif
+#ifdef SHOW_COLUMN_ROMS
+	TEXT("ROMs"),
+#endif
 };
 
 /***************************************************************************
@@ -4216,7 +4220,7 @@ static BOOL MameCommand(HWND hwnd,int id, HWND hwndCtl, UINT codeNotify)
 	case ID_CUSTOMIZE_FIELDS:
 		if (DialogBox(GetModuleHandle(NULL),
 			MAKEINTRESOURCE(IDD_COLUMNS), hMain, ColumnDialogProc) == TRUE)
-			ResetColumnDisplay(FALSE);
+			ResetColumnDisplay(TRUE);
 		SetFocus(hwndList);
 		return TRUE;
 
@@ -4671,16 +4675,18 @@ static const TCHAR *GamePicker_GetItemString(HWND hwndPicker, int nItem, int nCo
 			utf8_s = DriverIsVertical(nItem) ? "Vertical" : "Horizontal";
 			break;
 
+#ifdef SHOW_COLUMN_ROMS
 		case COLUMN_ROMS:
 			utf8_s = GetAuditString(GetRomAuditResults(nItem));
 			break;
-#ifdef COLUMN_SAMPLES
+#endif
+#ifdef SHOW_COLUMN_SAMPLES
 		case COLUMN_SAMPLES:
 			/* Samples */
 			if (DriverUsesSamples(nItem))
-				s = TEXT("Yes");
+				utf8_s = GetAuditString(GetSampleAuditResults(nItem));
 			else
-				s = TEXT("No");
+				s = TEXT("-");
 			break;
 #endif
 		case COLUMN_DIRECTORY:
@@ -5083,7 +5089,7 @@ static int GamePicker_Compare(HWND hwndPicker, int index1, int index2, int sort_
 		value = nTemp1 - nTemp2;
 		break;
 
-#ifdef COLUMN_SAMPLES
+#ifdef SHOW_COLUMN_SAMPLES
 	case COLUMN_SAMPLES:
 		nTemp1 = -1;
 		if (DriverUsesSamples(index1))

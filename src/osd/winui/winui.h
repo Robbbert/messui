@@ -31,8 +31,9 @@
 #define MAMEUINAME MAMENAME "UI32"
 #endif
 
-
 #define SEARCH_PROMPT ""
+#define SHOW_COLUMN_ROMS
+#define SHOW_COLUMN_SAMPLES
 
 enum
 {

@@ -64,24 +64,6 @@ static UINT8 bToken[MAX_TOKEN_LENGTH];  /* Our current token */
 static int num_games;
 
 
-/**************************************************************************
- **************************************************************************
- *
- *              Parsing functions
- *
- **************************************************************************
- **************************************************************************/
-
-
-/*
- * GetGameNameIndex -- given a driver name (in lowercase), return
- * its index in the main drivers[] array, or -1 if it's not found.
- */
-static int GetGameNameIndex(const char *name)
-{
-	return driver_list::find(name);
-}
-
 /****************************************************************************
  *      GetNextToken - Pointer to the token string pointer
  *                                 Pointer to position within file

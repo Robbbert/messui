@@ -4,11 +4,8 @@
 #ifndef MUI_OPTS_H
 #define MUI_OPTS_H
 
-#include "osdcomm.h"
-#include "options.h"
-#include "emu.h" /* for input_seq definition */
-//#include <video.h> /* for MAX_SCREENS Definition*/
 #include "winmain.h"
+#include "winui.h"
 
 // These help categorise the folders on the left side
 typedef enum {
@@ -25,16 +22,20 @@ enum
 	COLUMN_GAMES = 0,
 	COLUMN_SRCDRIVERS,
 	COLUMN_DIRECTORY,
-	COLUMN_ROMS,
-	COLUMN_PLAYED,
-	COLUMN_PLAYTIME,
+	COLUMN_TYPE,
+	COLUMN_ORIENTATION,
 	COLUMN_MANUFACTURER,
 	COLUMN_YEAR,
-	COLUMN_ORIENTATION,
-	COLUMN_TYPE,
+	COLUMN_PLAYED,
+	COLUMN_PLAYTIME,
 	COLUMN_CLONE,
 	COLUMN_TRACKBALL,
-	//COLUMN_SAMPLES,
+#ifdef SHOW_COLUMN_SAMPLES
+	COLUMN_SAMPLES,
+#endif
+#ifdef SHOW_COLUMN_ROMS
+	COLUMN_ROMS,
+#endif
 	COLUMN_MAX
 };
 

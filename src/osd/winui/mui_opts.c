@@ -249,9 +249,9 @@ const options_entry winui_options::s_option_entries[] =
 	{ MUIOPTION_LIST_MODE,				"5",       OPTION_INTEGER,                 NULL },
 	{ MUIOPTION_SPLITTERS,				MUIDEFAULT_SPLITTERS, OPTION_STRING,       NULL },
 	{ MUIOPTION_LIST_FONT,				"-8,0,0,0,400,0,0,0,0,0,0,0,MS Sans Serif", OPTION_STRING, NULL },
-	{ MUIOPTION_COLUMN_WIDTHS,			"185,78,84,84,64,88,74,108,60,144,84,60", OPTION_STRING, NULL },
-	{ MUIOPTION_COLUMN_ORDER,			"0,1,2,3,4,5,6,7,8,9,10,11", OPTION_STRING, NULL },
-	{ MUIOPTION_COLUMN_SHOWN,			"1,1,1,1,1,1,0,0,0,0,0,0", OPTION_STRING,  NULL },
+	{ MUIOPTION_COLUMN_WIDTHS,			"185,78,84,84,64,88,74,108,60,144,84,40,40", OPTION_STRING, NULL },
+	{ MUIOPTION_COLUMN_ORDER,			"0,1,2,3,4,5,6,7,8,9,10,11,12", OPTION_STRING, NULL },
+	{ MUIOPTION_COLUMN_SHOWN,			"1,1,1,1,1,1,1,1,1,1,1,1,0", OPTION_STRING,  NULL },
 	{ NULL,						NULL,       OPTION_HEADER,     "INTERFACE OPTIONS" },
 	{ MUIOPTION_LANGUAGE,				"english",  OPTION_STRING,                 NULL },
 	{ MUIOPTION_CHECK_GAME,				"0",        OPTION_BOOLEAN,    NULL },
@@ -383,91 +383,20 @@ winui_options::winui_options()
 	add_entries(s_option_entries);
 }
 
-// NOT USED
-/*static void memory_error(const char *message)
-{
-	win_message_box_utf8(NULL, message, NULL, MB_OK);
-	exit(-1);
-}
-*/
-
-
-// NOT USED
-/*
-static void AddOptions(winui_options *opts, const options_entry *entrylist, BOOL is_global)
-{
-	static const char *blacklist[] =
-	{
-		WINOPTION_SCREEN,
-		WINOPTION_ASPECT,
-		WINOPTION_RESOLUTION,
-		WINOPTION_VIEW
-	};
-	options_entry entries[2];
-	BOOL good_option = 0;
-	int i = 0;
-
-	for ( ; entrylist->name != NULL || (entrylist->flags & OPTION_HEADER); entrylist++)
-	{
-		good_option = TRUE;
-
-		// check blacklist
-		if (entrylist->name != NULL)
-		{
-			for (i = 0; i < ARRAY_LENGTH(blacklist); i++)
-			{
-				if (strcmp(entrylist->name, blacklist[i])==0)
-				{
-					good_option = FALSE;
-					break;
-				}
-			}
-		}
-
-		// if is_global is FALSE, blacklist global options (mame only)
-		if (entrylist->name && !is_global && IsGlobalOption(entrylist->name))
-			good_option = FALSE;
-
-		if (good_option)
-		{
-			memcpy(entries, entrylist, sizeof(options_entry));
-			memset(&entries[1], 0, sizeof(entries[1]));
-///			options_add_entries(opts, entries);
-		}
-	}
-}
-*/
-
 void CreateGameOptions(windows_options &opts, int driver_index)
 {
-	//BOOL is_global = (driver_index == OPTIONS_TYPE_GLOBAL);
-	// create the options
-	//opts = options_create(memory_error);
-
-	// add the options
-	//AddOptions(opts, mame_winui_options, is_global);
-	//AddOptions(opts, mame_win_options, is_global);
-
-	// customize certain options
-	//if (is_global)
-	//	opts.set_default_value(OPTION_INIPATH, "ini");
-
+#ifdef MESS
 	MessSetupGameOptions(opts, driver_index);
+#endif
 }
 
 
 
 BOOL OptionsInit()
 {
-	// create a memory pool for our data
-	//options_memory_pool = pool_alloc_lib(memory_error);
-	//if (!options_memory_pool)
-	//	return FALSE;
-
-	// set up the MAME32 settings (these get placed in MAME32ui.ini
-	//settings = options_create(memory_error);
-	//options_add_entries(settings, regSettings);
+#ifdef MESS
 	MessSetupSettings(settings);
+#endif
 
 	// set up per game options
 	{
