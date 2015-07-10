@@ -128,7 +128,7 @@ BEGIN
         MENUITEM "&Interface Options...",       ID_OPTIONS_INTERFACE
         MENUITEM "&Background Image...",        ID_OPTIONS_BG
         MENUITEM "&History/Sysinfo File...",    ID_OPTIONS_HISTORY
-        MENUITEM "&Messinfo File...",           ID_OPTIONS_MAMEINFO
+        MENUITEM "&Messinfo/Mameinfo File...",  ID_OPTIONS_MAMEINFO
     END
     POPUP "&Help"
     BEGIN

@@ -35,6 +35,7 @@
 #include "winutf8.h"
 #include "strconv.h"
 #include "window.h"
+#include "zippath.h"
 
 #include "resource.h"
 #include "resource.hm"
@@ -1703,6 +1704,7 @@ static BOOL Win32UI_init(HINSTANCE hInstance, LPWSTR lpCmdLine, int nCmdShow)
 
 	HelpInit();
 
+	// should be able to get rid of this directory stuff soon
 	t_inpdir = tstring_from_utf8(GetInpDir());
 	if( ! t_inpdir )
 		return FALSE;
@@ -4123,10 +4125,8 @@ static BOOL MameCommand(HWND hwnd,int id, HWND hwndCtl, UINT codeNotify)
 	/* ListView Context Menu */
 	case ID_CONTEXT_ADD_CUSTOM:
 	{
-		int nResult;
-		nResult = DialogBoxParam(GetModuleHandle(NULL),MAKEINTRESOURCE(IDD_CUSTOM_FILE),
-				 hMain,AddCustomFileDialogProc,Picker_GetSelectedItem(hwndList));
-		nResult++;
+		DialogBoxParam(GetModuleHandle(NULL),MAKEINTRESOURCE(IDD_CUSTOM_FILE),
+			hMain,AddCustomFileDialogProc,Picker_GetSelectedItem(hwndList));
 		SetFocus(hwndList);
 		break;
 	}
@@ -4269,7 +4269,6 @@ static BOOL MameCommand(HWND hwnd,int id, HWND hwndCtl, UINT codeNotify)
 				curOptType = OPTIONS_VECTOR;
 
 			InitPropertyPage(hInst, hwnd, GetSelectedFolderIcon(), curOptType, folder->m_nFolderId, Picker_GetSelectedItem(hwndList));
-			//SaveFolderOptions(folder->m_nFolderId, Picker_GetSelectedItem(hwndList) );
 		}
 		/* Just in case the toggle MMX on/off */
 		UpdateStatusBar();
@@ -4280,7 +4279,6 @@ static BOOL MameCommand(HWND hwnd,int id, HWND hwndCtl, UINT codeNotify)
 		{
 			folder = GetFolderByName(FOLDER_SOURCE, GetDriverFilename(Picker_GetSelectedItem(hwndList)) );
 			InitPropertyPage(hInst, hwnd, GetSelectedFolderIcon(), (folder->m_nFolderId == FOLDER_VECTOR) ? OPTIONS_VECTOR : OPTIONS_SOURCE , folder->m_nFolderId, Picker_GetSelectedItem(hwndList));
-			//SaveFolderOptions(folder->m_nFolderId, Picker_GetSelectedItem(hwndList) );
 		}
 		/* Just in case the toggle MMX on/off */
 		UpdateStatusBar();
@@ -4291,7 +4289,6 @@ static BOOL MameCommand(HWND hwnd,int id, HWND hwndCtl, UINT codeNotify)
 		{
 			folder = GetFolderByID( FOLDER_VECTOR );
 			InitPropertyPage(hInst, hwnd, GetSelectedFolderIcon(), OPTIONS_VECTOR, folder->m_nFolderId, Picker_GetSelectedItem(hwndList));
-			//SaveFolderOptions(folder->m_nFolderId, Picker_GetSelectedItem(hwndList) );
 		}
 		/* Just in case the toggle MMX on/off */
 		UpdateStatusBar();
@@ -4328,7 +4325,6 @@ static BOOL MameCommand(HWND hwnd,int id, HWND hwndCtl, UINT codeNotify)
 		if (!oldControl)
 		{
 			InitDefaultPropertyPage(hInst, hwnd);
-			//SaveDefaultOptions();   leave out; kills users Default Game Settings
 		}
 		SetFocus(hwndList);
 		return TRUE;
@@ -4342,7 +4338,6 @@ static BOOL MameCommand(HWND hwnd,int id, HWND hwndCtl, UINT codeNotify)
 
 			SaveDefaultOptions();
 			SaveOptions();
-			//SaveDefaultOptions();   leave out; kills users Default Game Settings
 
 			BOOL bUpdateRoms    = ((nResult & DIRDLG_ROMS) == DIRDLG_ROMS) ? TRUE : FALSE;
 			BOOL bUpdateSamples = ((nResult & DIRDLG_SAMPLES) == DIRDLG_SAMPLES) ? TRUE : FALSE;
@@ -4368,15 +4363,16 @@ static BOOL MameCommand(HWND hwnd,int id, HWND hwndCtl, UINT codeNotify)
 		return TRUE;
 
 	case ID_OPTIONS_RESET_DEFAULTS:
-		if (DialogBox(GetModuleHandle(NULL),
-					  MAKEINTRESOURCE(IDD_RESET), hMain, ResetDialogProc) == TRUE)
-        {
+		if (DialogBox(GetModuleHandle(NULL), MAKEINTRESOURCE(IDD_RESET), hMain, ResetDialogProc) == TRUE)
+		{
 			// these may have been changed
 			SaveDefaultOptions();
 			SaveOptions();
 			DestroyWindow(hwnd);
 			PostQuitMessage(0);
-		} else {
+		}
+		else
+		{
 			ResetListView();
 			SetFocus(hwndList);
 		}
@@ -4385,7 +4381,6 @@ static BOOL MameCommand(HWND hwnd,int id, HWND hwndCtl, UINT codeNotify)
 	case ID_OPTIONS_INTERFACE:
 		DialogBox(GetModuleHandle(NULL), MAKEINTRESOURCE(IDD_INTERFACE_OPTIONS),
 				  hMain, InterfaceDialogProc);
-		//SaveDefaultOptions();   leave out; kills users Default Game Settings
 		SaveOptions();
 
 		KillTimer(hMain, SCREENSHOT_TIMER);
@@ -4398,36 +4393,47 @@ static BOOL MameCommand(HWND hwnd,int id, HWND hwndCtl, UINT codeNotify)
 
 	case ID_OPTIONS_BG:
 		{
-			OPENFILENAME OpenFileName;
+			// More c++ stupidity with strings
+			// Get the path from the existing filename; if no filename go to root
+			TCHAR* t_bgdir = TEXT(".");
+			const char *s = GetBgDir();
+			std::string as;
+			zippath_parent(as, s);
+			size_t t1 = as.length()-1;
+			if (as[t1] == '\\') as[t1]='\0';
+			t1 = as.find(':');
+			if (t1 > 0)
+				t_bgdir = tstring_from_utf8(as.c_str());
+
+			OPENFILENAME OFN;
 			static TCHAR szFile[MAX_PATH] = TEXT("\0");
-			TCHAR* t_bgdir = tstring_from_utf8(GetBgDir());
 			if( !t_bgdir )
 				return FALSE;
 
-			OpenFileName.lStructSize       = sizeof(OPENFILENAME);
-			OpenFileName.hwndOwner         = hMain;
-			OpenFileName.hInstance         = 0;
-			//OpenFileName.lpstrFilter       = TEXT("Image Files (*.png, *.bmp)\0*.PNG;*.BMP\0");
-			OpenFileName.lpstrFilter       = TEXT("Image Files (*.png)\0*.PNG\0");
-			OpenFileName.lpstrCustomFilter = NULL;
-			OpenFileName.nMaxCustFilter    = 0;
-			OpenFileName.nFilterIndex      = 1;
-			OpenFileName.lpstrFile         = szFile;
-			OpenFileName.nMaxFile          = sizeof(szFile);
-			OpenFileName.lpstrFileTitle    = NULL;
-			OpenFileName.nMaxFileTitle     = 0;
-			OpenFileName.lpstrInitialDir   = t_bgdir;
-			OpenFileName.lpstrTitle        = TEXT("Select a Background Image");
-			OpenFileName.nFileOffset       = 0;
-			OpenFileName.nFileExtension    = 0;
-			OpenFileName.lpstrDefExt       = NULL;
-			OpenFileName.lCustData         = 0;
-			OpenFileName.lpfnHook          = NULL;
-			OpenFileName.lpTemplateName    = NULL;
-			OpenFileName.Flags             = OFN_NOCHANGEDIR | OFN_SHOWHELP | OFN_EXPLORER;
+			OFN.lStructSize       = sizeof(OPENFILENAME);
+			OFN.hwndOwner         = hMain;
+			OFN.hInstance         = 0;
+			OFN.lpstrFilter       = TEXT("Image Files (*.png)\0*.PNG\0");
+			OFN.lpstrCustomFilter = NULL;
+			OFN.nMaxCustFilter    = 0;
+			OFN.nFilterIndex      = 1;
+			OFN.lpstrFile         = szFile;
+			OFN.nMaxFile          = sizeof(szFile);
+			OFN.lpstrFileTitle    = NULL;
+			OFN.nMaxFileTitle     = 0;
+			OFN.lpstrInitialDir   = t_bgdir;
+			OFN.lpstrTitle        = TEXT("Select a Background Image");
+			OFN.nFileOffset       = 0;
+			OFN.nFileExtension    = 0;
+			OFN.lpstrDefExt       = NULL;
+			OFN.lCustData         = 0;
+			OFN.lpfnHook          = NULL;
+			OFN.lpTemplateName    = NULL;
+			OFN.Flags             = OFN_NOCHANGEDIR | OFN_SHOWHELP | OFN_EXPLORER;
 
-			if (GetOpenFileName(&OpenFileName))
+			if (GetOpenFileName(&OFN))
 			{
+				osd_free(t_bgdir);
 				utf8_szFile = utf8_from_tstring(szFile);
 				if( !utf8_szFile )
 					return FALSE;
@@ -4438,7 +4444,6 @@ static BOOL MameCommand(HWND hwnd,int id, HWND hwndCtl, UINT codeNotify)
 				// Display new background
 				LoadBackgroundBitmap();
 				InvalidateRect(hMain, NULL, TRUE);
-				osd_free(t_bgdir);
 				osd_free(utf8_szFile);
 				return TRUE;
 			}
@@ -5310,7 +5315,7 @@ BOOL CommonFileDialog(common_file_dialog_proc cfd, char *filename, int filetype)
 		of.lpstrInitialDir = t_snapdir;
 	}
 	else {
-		of.lpstrInitialDir = last_directory;
+		of.lpstrInitialDir = TEXT(".");//last_directory;
 	}
 	of.lpstrTitle        = NULL;
 	of.Flags             = OFN_EXPLORER | OFN_NOCHANGEDIR | OFN_PATHMUSTEXIST | OFN_HIDEREADONLY;
