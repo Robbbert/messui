@@ -5315,7 +5315,7 @@ BOOL CommonFileDialog(common_file_dialog_proc cfd, char *filename, int filetype)
 		of.lpstrInitialDir = t_snapdir;
 	}
 	else {
-		of.lpstrInitialDir = TEXT(".");//last_directory;
+		of.lpstrInitialDir = TEXT(".");
 	}
 	of.lpstrTitle        = NULL;
 	of.Flags             = OFN_EXPLORER | OFN_NOCHANGEDIR | OFN_PATHMUSTEXIST | OFN_HIDEREADONLY;
