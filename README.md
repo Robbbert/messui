@@ -11,8 +11,8 @@ MESSUI is an easy-to-use frontend of MAME, for Windows XP and later.
 License
 =======
 
-The license of MAME is explained at the MAME repository ( https://github.com/mamedev/mame ).
-The license of WINUI (the graphical frontend) is BSD3Clause.
+* The license of MAME is explained at the MAME repository ( https://github.com/mamedev/mame ).
+* The license of WINUI (the graphical frontend) is BSD3Clause.
 
 
 How to compile?
