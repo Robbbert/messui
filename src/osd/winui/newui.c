@@ -1049,8 +1049,6 @@ static int dialog_add_trigger(struct _dialog_box *di, WORD dialog_item,
 	WORD trigger_flags, UINT message, trigger_function trigger_proc,
 	WPARAM wparam, LPARAM lparam, void (*storeval)(void *param, int val), void *storeval_param)
 {
-	struct dialog_info_trigger *trigger;
-
 	if (!di)
 		printf("Unexpected result of di in dialog_add_trigger\n");
 	assert(di);
@@ -1058,9 +1056,9 @@ static int dialog_add_trigger(struct _dialog_box *di, WORD dialog_item,
 		printf("Unexpected result of trigger_flags in dialog_add_trigger\n");
 	assert(trigger_flags);
 
-	trigger = global_alloc(dialog_info_trigger);
-	if (!trigger)
-		return 1;
+	dialog_info_trigger *trigger = new(dialog_info_trigger);
+	//dialog_info_trigger *trigger;
+	//trigger = global_alloc(dialog_info_trigger);
 
 	trigger->next = NULL;
 	trigger->trigger_flags = trigger_flags;
@@ -1716,15 +1714,15 @@ static LRESULT seqselect_apply(dialog_box *dialog, HWND editwnd, UINT message, W
 static int dialog_add_single_seqselect(struct _dialog_box *di, short x, short y,
 	short cx, short cy, ioport_field *field, int is_analog, int seqtype)
 {
-	seqselect_info *stuff;
-
 	// write the dialog item
 	if (dialog_write_item(di, WS_CHILD | WS_VISIBLE | SS_ENDELLIPSIS | ES_CENTER | SS_SUNKEN,
 			x, y, cx, cy, NULL, DLGITEM_EDIT, NULL))
 		return 1;
 
 	// allocate a seqselect_info
-	stuff = global_alloc(seqselect_info);
+	seqselect_info *stuff = new(seqselect_info);
+	//seqselect_info *stuff;
+	//stuff = global_alloc(seqselect_info);
 	if (!stuff)
 		return 1;
 
