@@ -548,26 +548,17 @@ BOOL DriverIsHarddisk(int driver_index)
 
 BOOL DriverIsBios(int driver_index)
 {
-	BOOL b = FALSE;
-	if( driver_list::driver(driver_index).flags & GAME_IS_BIOS_ROOT )
-		b = TRUE;
-	return b;
+	return ( driver_list::driver(driver_index).flags & GAME_IS_BIOS_ROOT ) ? TRUE : FALSE;
 }
 
 BOOL DriverIsMechanical(int driver_index)
 {
-	BOOL b = FALSE;
-	if( driver_list::driver(driver_index).flags & GAME_MECHANICAL )
-		b = TRUE;
-	return b;
+	return ( driver_list::driver(driver_index).flags & GAME_MECHANICAL ) ? TRUE : FALSE;
 }
 
 BOOL DriverIsArcade(int driver_index)
 {
-	BOOL b = FALSE;
-	if( driver_list::driver(driver_index).flags & GAME_TYPE_ARCADE )
-		b = TRUE;
-	return b;
+	return ( driver_list::driver(driver_index).flags & GAME_TYPE_ARCADE ) ? TRUE : FALSE;
 }
 
 BOOL DriverHasOptionalBIOS(int driver_index)

@@ -19,7 +19,9 @@
 #define DIRLIST_NEWENTRYTEXT "<               >"
 
 #include "mui_opts.h"
+#ifdef MESS
 #include "optionsms.h"
+#endif
 
 typedef struct
 {
@@ -35,8 +37,10 @@ const DIRECTORYINFO g_directoryInfo[] =
 {
 	{ "ROMs",                  GetRomDirs,         SetRomDirs,         TRUE,  DIRDLG_ROMS },
 	{ "Samples",               GetSampleDirs,      SetSampleDirs,      TRUE,  DIRDLG_SAMPLES },
+#ifdef MESS
 	{ "Software File Base",    GetCommentDir,      SetCommentDir,      TRUE,  DIRDLG_COMMENT },
 	{ "Software List Base",    GetSoftwareDirs,    SetSoftwareDirs,    FALSE, DIRDLG_SOFTWARE },
+#endif
 	{ "Artwork",               GetArtDir,          SetArtDir,          TRUE, 0 },
 	{ "Cabinets",              GetCabinetDir,      SetCabinetDir,      TRUE, 0 },
 	{ "Cheats",                GetCheatDir,        SetCheatDir,        TRUE, DIRDLG_CHEAT },

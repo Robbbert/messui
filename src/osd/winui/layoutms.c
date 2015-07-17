@@ -15,7 +15,7 @@
 
 #include "emu.h"
 #include "bitmask.h"
-#include "TreeView.h"
+#include "treeview.h"
 #include "mui_util.h"
 #include "resource.h"
 #include "resourcems.h"
@@ -71,6 +71,8 @@ extern const FILTER_ITEM g_filterList[] =
 	{ F_ORIGINALS,    IDC_FILTER_ORIGINALS,   DriverIsClone, FALSE },
 	{ F_WORKING,      IDC_FILTER_WORKING,     DriverIsBroken, FALSE },
 	{ F_AVAILABLE,    IDC_FILTER_AVAILABLE,   FilterAvailable, TRUE },
+	{ F_ARCADE,       IDC_FILTER_ARCADE,      DriverIsArcade, TRUE },
+	{ F_MESS,         IDC_FILTER_MESS,        DriverIsArcade, FALSE },
 	{ 0 }
 };
 

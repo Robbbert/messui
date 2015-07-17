@@ -13,7 +13,6 @@
 #include <windows.h>
 
 // standard C headers
-#include <assert.h>
 #include <ctype.h>
 
 // MAME/MAMEUI headers
@@ -21,240 +20,81 @@
 #include "osdcomm.h"
 #include "datafile.h"
 #include "mui_opts.h" // For MameUIGlobal()
+#include "sound/samples.h"
 #include "drivenum.h"
 
-/****************************************************************************
- *      token parsing constants
- ****************************************************************************/
-
-#define CR 0x0d    /* '\n' and '\r' meanings are swapped in some */
-#define LF 0x0a    /*     compilers (e.g., Mac compilers) */
-
-enum
-{
-	TOKEN_COMMA,
-	TOKEN_EQUALS,
-	TOKEN_SYMBOL,
-	TOKEN_LINEBREAK,
-	TOKEN_INVALID=-1
-};
-
 #define MAX_TOKEN_LENGTH        256
-
+#define DATAFILE_TAG '$'
 
 /****************************************************************************
  *      datafile constants
  ****************************************************************************/
-#define DATAFILE_TAG '$'
-
-static const char *DATAFILE_TAG_KEY = "$info";
-static const char *DATAFILE_TAG_BIO = "$bio";
-static const char *DATAFILE_TAG_MAME = "$mame";
+static const char *DATAFILE_TAG_KEY   = "$info";
+static const char *DATAFILE_TAG_BIO   = "$bio";
+static const char *DATAFILE_TAG_MAME  = "$mame";
+static const char *DATAFILE_TAG_DRIV  = "$drv";
+static const char *DATAFILE_TAG_END   = "$end";
 
 char *g_history_filename = NULL;
 char *g_mameinfo_filename = NULL;
-bool is_historydat = 0;
+
 
 /****************************************************************************
  *      private data for parsing functions
  ****************************************************************************/
-static emu_file *fp;   /* Our file pointer */
-static long dwFilePos;  /* file position */
-static UINT8 bToken[MAX_TOKEN_LENGTH];  /* Our current token */
-static int num_games;
+static emu_file *fp = NULL;                  /* Our file pointer */
+static UINT64 dwFilePos = 0;                     /* file position */
+static int num_games = 0;
 
 
 /****************************************************************************
- *      GetNextToken - Pointer to the token string pointer
- *                                 Pointer to position within file
- *
- *      Returns token, or TOKEN_INVALID if at end of file
+ *      Create an array with sorted sourcedrivers for the function
+ *      index_datafile_drivinfo to speed up the datafile access
  ****************************************************************************/
-static UINT32 GetNextToken(UINT8 **ppszTokenText, long *pdwPosition)
+
+typedef struct
 {
-	UINT32 dwLength = 0;						/* Length of symbol */
-	long dwPos = 0;						/* Temporary position */
-	UINT8 *pbTokenPtr = bToken;				/* Point to the beginning */
-	UINT8 bData = 0;							/* Temporary data byte */
+	const char *srcdriver;
+	int index;
+} srcdriver_data_type;
+static srcdriver_data_type *sorted_srcdrivers = NULL;
 
-	while (1)
+
+static int SrcDriverDataCompareFunc(const void *arg1,const void *arg2)
+{
+	return strcmp( ((srcdriver_data_type *)arg1)->srcdriver, ((srcdriver_data_type *)arg2)->srcdriver );
+}
+
+
+static int GetSrcDriverIndex(const char *srcdriver)
+{
+	srcdriver_data_type *srcdriver_index_info;
+	srcdriver_data_type key;
+	key.srcdriver = srcdriver;
+
+	if (sorted_srcdrivers == NULL)
 	{
-		bData = fp->getc();				/* Get next character */
+		/* initialize array of game names/indices */
+		int i;
+		num_games = driver_list::total();
 
-		/* If we're at the end of the file, bail out */
-
-		if (fp->eof())
-			return(TOKEN_INVALID);
-
-		/* If it's not whitespace, then let's start eating characters */
-
-		if (' ' != bData && '\t' != bData)
+		sorted_srcdrivers = (srcdriver_data_type *)malloc(sizeof(srcdriver_data_type) * num_games);
+		for (i=0;i<num_games;i++)
 		{
-			/* Store away our file position (if given on input) */
-
-			if (pdwPosition)
-				*pdwPosition = dwFilePos;
-
-			/* If it's a separator, special case it */
-
-			if (',' == bData || '=' == bData)
-			{
-				*pbTokenPtr++ = bData;
-				*pbTokenPtr = '\0';
-				++dwFilePos;
-
-				if (',' == bData)
-					return(TOKEN_COMMA);
-				else
-					return(TOKEN_EQUALS);
-			}
-
-			/* Otherwise, let's try for a symbol */
-
-			if (bData > ' ')
-			{
-				dwLength = 0;   /* Assume we're 0 length to start with */
-
-				/* Loop until we've hit something we don't understand */
-
-				while (bData != ',' && bData != '=' && bData != ' '
-					&&bData != '\t' && bData != '\n' && bData != '\r' && fp->eof() == 0)
-				{
-					++dwFilePos;
-					*pbTokenPtr++ = bData;  /* Store our byte */
-					++dwLength;
-					assert(dwLength < MAX_TOKEN_LENGTH);
-					bData = fp->getc();
-				}
-
-				/* If it's not the end of the file, put the last received byte */
-				/* back. We don't want to touch the file position, though if */
-				/* we're past the end of the file. Otherwise, adjust it. */
-
-				if (0 == fp->eof())
-				{
-					fp->ungetc(bData);
-				}
-
-				/* Null terminate the token */
-
-				*pbTokenPtr = '\0';
-
-				/* Connect up the */
-
-				if (ppszTokenText)
-					*ppszTokenText = bToken;
-
-				return(TOKEN_SYMBOL);
-			}
-
-			/* Not a symbol. Let's see if it's a cr/cr, lf/lf, or cr/lf/cr/lf */
-			/* sequence */
-
-			if (LF == bData)
-			{
-				/* Unix style perhaps? */
-
-				bData = fp->getc();  /* Peek ahead */
-				fp->ungetc(bData);  /* Force a retrigger if subsequent LF's */
-
-				if (LF == bData)		/* Two LF's in a row - it's a UNIX hard CR */
-				{
-					++dwFilePos;
-					*pbTokenPtr++ = bData;  /* A real linefeed */
-					*pbTokenPtr = '\0';
-					return(TOKEN_LINEBREAK);
-				}
-
-				/* Otherwise, fall through and keep parsing. */
-
-			}
-			else
-			if (CR == bData)		/* Carriage return? */
-			{
-				/* Figure out if it's Mac or MSDOS format */
-
-				++dwFilePos;
-				bData = fp->getc();  /* Peek ahead */
-
-				/* We don't need to bother with EOF checking. It will be 0xff if */
-				/* it's the end of the file and will be caught by the outer loop. */
-
-				if (CR == bData)		/* Mac style hard return! */
-				{
-					/* Do not advance the file pointer in case there are successive */
-					/* CR/CR sequences */
-
-					/* Stuff our character back upstream for successive CR's */
-
-					fp->ungetc(bData);
-
-					*pbTokenPtr++ = bData;  /* A real carriage return (hard) */
-					*pbTokenPtr = '\0';
-					return(TOKEN_LINEBREAK);
-				}
-				else
-				if (LF == bData)	/* MSDOS format! */
-				{
-					++dwFilePos;			/* Our file position to reset to */
-					dwPos = dwFilePos;		  /* Here so we can reposition things */
-
-					if (is_historydat)
-					{
-						fp->seek(dwPos, SEEK_SET);
-
-						if (pdwPosition)
-							*pdwPosition = dwPos;
-
-						*pbTokenPtr++ = '\r';
-						*pbTokenPtr++ = '\n';
-						*pbTokenPtr = '\0';
-
-						return(TOKEN_LINEBREAK);
-					}
-
-					/* Look for a followup CR/LF */
-
-					bData = fp->getc();  /* Get the next byte */
-
-					if (CR == bData)	/* CR! Good! */
-					{
-						bData = fp->getc();  /* Get the next byte */
-
-						/* We need to do this to pick up subsequent CR/LF sequences */
-
-						fp->seek(dwPos, SEEK_SET);
-
-						if (pdwPosition)
-							*pdwPosition = dwPos;
-
-						if (LF == bData)	/* LF? Good! */
-						{
-							*pbTokenPtr++ = '\r';
-							*pbTokenPtr++ = '\n';
-							*pbTokenPtr = '\0';
-
-							return(TOKEN_LINEBREAK);
-						}
-					}
-					else
-					{
-						--dwFilePos;
-						fp->ungetc(bData);  /* Put the character back. No good */
-					}
-				}
-				else
-				{
-					--dwFilePos;
-					fp->ungetc(bData);  /* Put the character back. No good */
-				}
-
-				/* Otherwise, fall through and keep parsing */
-			}
+			sorted_srcdrivers[i].srcdriver = driver_list::driver(i).source_file+32;
+			sorted_srcdrivers[i].index = i;
 		}
-
-		++dwFilePos;
+		qsort(sorted_srcdrivers,num_games,sizeof(srcdriver_data_type),SrcDriverDataCompareFunc);
 	}
+
+	srcdriver_index_info = (srcdriver_data_type *)bsearch(&key,sorted_srcdrivers,num_games,
+		sizeof(srcdriver_data_type), SrcDriverDataCompareFunc);
+
+	if (srcdriver_index_info == NULL)
+		return -1;
+
+	return srcdriver_index_info->index;
+
 }
 
 
@@ -264,98 +104,62 @@ static UINT32 GetNextToken(UINT8 **ppszTokenText, long *pdwPosition)
 static void ParseClose(void)
 {
 	/* If the file is open, time for fclose. */
-
 	if (fp)
 	{
+		fp->close();
 		global_free(fp);
 	}
 
 	fp = NULL;
 }
 
-
 /****************************************************************************
  *      ParseOpen - Open up file for reading
  ****************************************************************************/
 static BOOL ParseOpen(const char *pszFilename)
 {
+	file_error filerr;
+
+	ParseClose();
+
 	/* Open file up in binary mode */
-	is_historydat = 0;
-	fp = global_alloc(emu_file("", OPEN_FLAG_READ));
-	/* If this is NULL, return FALSE. We can't open it */
-	if (fp == NULL)
+	fp = global_alloc(emu_file(OPEN_FLAG_READ));
+	filerr = fp->open(pszFilename);
+	if (filerr != FILERR_NONE)
 		return FALSE;
-
-	file_error err = fp->open(pszFilename);
-	if (err != FILERR_NONE)
-	{
-		global_free(fp);
-		fp = NULL;
-		return FALSE;
-	}
-
-	/* See if it is history.dat by checking if 2nd byte is a hash */
-	UINT8 bData = fp->getc();
-	bData = fp->getc();
-	if (bData == 0x23) is_historydat = 1;
 
 	/* Otherwise, prepare! */
 	dwFilePos = 0;
+
+	/* identify text file type first */
+	fp->getc();
+	fp->seek(dwFilePos, SEEK_SET);
+
 	return TRUE;
 }
-
 
 /****************************************************************************
  *      ParseSeek - Move the file position indicator
  ****************************************************************************/
-static UINT8 ParseSeek(long offset, int whence)
+static UINT8 ParseSeek(UINT64 offset, int whence)
 {
 	int result = fp->seek(offset, whence);
 
 	if (0 == result)
-	{
 		dwFilePos = fp->tell();
-	}
+
 	return (UINT8)result;
 }
 
-
-
 /**************************************************************************
  **************************************************************************
  *
- *      Datafile functions
+ *              Datafile functions
  *
  **************************************************************************
  **************************************************************************/
 
-
-/**************************************************************************
- *      ci_strncmp - case insensitive character array compare
- *
- *      Returns zero if the first n characters of s1 and s2 are equal,
- *      ignoring case.
- **************************************************************************/
-static int ci_strncmp (const char *s1, const char *s2, int n)
-{
-	int c1 = 0, c2 = 0;
-
-	while (n)
-	{
-		if ((c1 = tolower (*s1)) != (c2 = tolower (*s2)))
-			return (c1 - c2);
-		else if (!c1)
-			break;
-		--n;
-
-		s1++;
-		s2++;
-	}
-	return 0;
-}
-
-
-/**************************************************************************
+ /**************************************************************************
  *      index_datafile
  *      Create an index for the records in the currently open datafile.
  *
@@ -365,59 +169,73 @@ static int index_datafile (struct tDatafileIndex **_index)
 {
 	struct tDatafileIndex *idx;
 	int count = 0;
-	UINT32 token = TOKEN_SYMBOL;
-		num_games = driver_list::total();
+	char readbuf[512];
+	char name[40];
+	num_games = driver_list::total();
+
 	/* rewind file */
-	if (ParseSeek (0L, SEEK_SET)) return 0;
+	if (ParseSeek (0L, SEEK_SET))
+		return 0;
 
 	/* allocate index */
-	idx = *_index = (tDatafileIndex *)malloc (num_games * sizeof (struct tDatafileIndex));
-	if (NULL == idx) return 0;
+	idx = *_index = global_alloc_array(tDatafileIndex, (num_games + 1) * sizeof (struct tDatafileIndex));
+	if (!idx)
+		return 0;
 
-	/* loop through datafile */
-	while ((count < (num_games - 1)) && TOKEN_INVALID != token)
+	while (fp->gets(readbuf, 512))
 	{
-		long tell = 0;
-		UINT8 *s = 0;
-
-		token = GetNextToken (&s, &tell);
-		if (TOKEN_SYMBOL != token) continue;
-
 		/* DATAFILE_TAG_KEY identifies the driver */
-		if (!ci_strncmp (DATAFILE_TAG_KEY, (char *)s, strlen (DATAFILE_TAG_KEY)))
+		if (!core_strnicmp(DATAFILE_TAG_KEY, readbuf, strlen(DATAFILE_TAG_KEY)))
 		{
-			token = GetNextToken (&s, &tell);
-			if (TOKEN_EQUALS == token)
+			int game_index = 0;
+			char *curpoint = &readbuf[strlen(DATAFILE_TAG_KEY) + 1];
+			char *pch;
+			char *ends = &readbuf[strlen(readbuf) - 1];
+			while (curpoint < ends)
 			{
-				int done = 0;
+				// search for comma
+				pch = strpbrk(curpoint, ",");
 
-				token = GetNextToken (&s, &tell);
-				while (!done && TOKEN_SYMBOL == token)
+				// found it
+				if (pch)
 				{
-					int game_index = 0;
-					UINT8 *p = 0;
-					for (p = s; *p; p++)
-						*p = tolower(*p);
+					// copy data and validate driver
+					int len = pch - curpoint;
+					strncpy(name, curpoint, len);
+					name[len] = '\0';
 
-					game_index = GetGameNameIndex((char *)s);
+					game_index = GetGameNameIndex(name);
+
 					if (game_index >= 0)
 					{
 						idx->driver = &driver_list::driver(game_index);
-						idx->offset = tell;
+						idx->offset = fp->tell();
 						idx++;
 						count++;
-						/* done = 1;  Not done, as we must process other clones in list */
-
 					}
-					if (!done)
+
+					// update current point
+					curpoint = pch + 1;
+				}
+				// if comma not found, copy data while until reach the end of string
+				else if (!pch && curpoint < ends)
+				{
+					int len = ends - curpoint;
+					strncpy(name, curpoint, len);
+					name[len] = '\0';
+
+					game_index = GetGameNameIndex(name);
+
+					if (game_index >= 0)
 					{
-						token = GetNextToken (&s, &tell);
-
-						if (TOKEN_COMMA == token)
-							token = GetNextToken (&s, &tell);
-						else
-							done = 1; /* end of key field */
+						idx->driver = &driver_list::driver(game_index);
+						idx->offset = fp->tell();
+						idx++;
+						count++;
 					}
+
+					// update current point
+					curpoint = ends;
 				}
 			}
 		}
@@ -429,6 +247,87 @@ static int index_datafile (struct tDatafileIndex **_index)
 	return count;
 }
 
+static int index_datafile_drivinfo (struct tDatafileIndex **_index)
+{
+	struct tDatafileIndex *idx;
+	int count = 0;
+	char readbuf[512];
+	char name[40];
+	num_games = driver_list::total();
+
+	/* rewind file */
+	if (ParseSeek (0L, SEEK_SET))
+		return 0;
+
+	/* allocate index */
+	idx = *_index = global_alloc_array(tDatafileIndex, (num_games + 1) * sizeof (struct tDatafileIndex));
+	if (!idx)
+		return 0;
+
+	while (fp->gets(readbuf, 512))
+	{
+		/* DATAFILE_TAG_KEY identifies the driver */
+		if (!core_strnicmp(DATAFILE_TAG_KEY, readbuf, strlen(DATAFILE_TAG_KEY)))
+		{
+			int game_index = 0;
+			char *curpoint = &readbuf[strlen(DATAFILE_TAG_KEY) + 1];
+			char *pch;
+			char *ends = &readbuf[strlen(readbuf) - 1];
+			while (curpoint < ends)
+			{
+				// search for comma
+				pch = strpbrk(curpoint, ",");
+
+				// found it
+				if (pch)
+				{
+					// copy data and validate driver
+					int len = pch - curpoint;
+					strncpy(name, curpoint, len);
+					name[len] = '\0';
+
+					game_index = GetSrcDriverIndex(name);
+
+					if (game_index >= 0)
+					{
+						idx->driver = &driver_list::driver(game_index);
+						idx->offset = fp->tell();
+						idx++;
+						count++;
+					}
+
+					// update current point
+					curpoint = pch + 1;
+				}
+				// if comma not found, copy data while until reach the end of string
+				else if (!pch && curpoint < ends)
+				{
+					int len = ends - curpoint;
+					strncpy(name, curpoint, len);
+					name[len] = '\0';
+
+					game_index = GetSrcDriverIndex(name);
+
+					if (game_index >= 0)
+					{
+						idx->driver = &driver_list::driver(game_index);
+						idx->offset = fp->tell();
+						idx++;
+						count++;
+					}
+
+					// update current point
+					curpoint = ends;
+				}
+			}
+		}
+	}
+
+	/* mark end of index */
+	idx->offset = 0L;
+	idx->driver = 0;
+	return count;
+}
 
 /**************************************************************************
  *      load_datafile_text
@@ -440,96 +339,70 @@ static int index_datafile (struct tDatafileIndex **_index)
  *      Returns 0 if successful.
  **************************************************************************/
 static int load_datafile_text (const game_driver *drv, char *buffer, int bufsize,
-	struct tDatafileIndex *idx, const char *tag)
+		struct tDatafileIndex *idx, const char *tag, int source_file, int carriage)
 {
-	int offset = 0;
-	int found = 0;
-	UINT32  token = TOKEN_SYMBOL;
-	UINT32  prev_token = TOKEN_SYMBOL;
+	char readbuf[4096];
 
 	*buffer = '\0';
 
-	/* find driver in datafile index */
-	while (idx->driver)
+	if (!source_file)
 	{
-		if (idx->driver == drv) break;
+		/* find driver in datafile index */
+		while (idx->driver)
+		{
+			if (idx->driver == drv)
+				break;
 
-		idx++;
+			idx++;
+		}
 	}
-	if (idx->driver == 0) return 1; /* driver not found in index */
+	else
+	{
+		/* find source file in datafile index */
+		while (idx->driver)
+		{
+			if (idx->driver->source_file == drv->source_file)
+				break;
+
+			idx++;
+		}
+	}
+
+	if (idx->driver == 0)
+		return 1;  /* driver not found in index */
 
 	/* seek to correct point in datafile */
-	if (ParseSeek (idx->offset, SEEK_SET)) return 1;
+	if (ParseSeek (idx->offset, SEEK_SET))
+		return 1;
 
 	/* read text until buffer is full or end of entry is encountered */
-	while (TOKEN_INVALID != token)
+	while (fp->gets(readbuf, 4096))
 	{
-		UINT8 *s;
-		int len = 0;
-		long tell = 0;
+		if (!core_strnicmp(DATAFILE_TAG_END, readbuf, strlen(DATAFILE_TAG_END)))
+			break;
+		if (!core_strnicmp(tag, readbuf, strlen(tag)))
+			continue;
+		if (strlen(buffer) + strlen(readbuf) > bufsize)
+			break;
 
-		token = GetNextToken (&s, &tell);
-		if (TOKEN_INVALID == token) continue;
-
-		if (found)
+		if (carriage)
 		{
-			/* end entry when a tag is encountered */
-			if (TOKEN_SYMBOL == token && DATAFILE_TAG == s[0] && TOKEN_LINEBREAK == prev_token) break;
-
-			prev_token = token;
-
-			/* translate platform-specific linebreaks to '\n' */
-			if (TOKEN_LINEBREAK == token)
-							strcpy ((char *)s, "\n");
-
-			/* append a space to words */
-			if (TOKEN_LINEBREAK != token)
-							strcat ((char *)s, " ");
-
-			/* remove extraneous space before commas */
-			if (TOKEN_COMMA == token)
-			{
-				--buffer;
-				--offset;
-				*buffer = '\0';
-			}
-
-			/* Get length of text to add to the buffer */
-			len = strlen ((char *)s);
-
-			/* Check for buffer overflow */
-			/* For some reason we can get a crash if we try */
-			/* to use the last 30 characters of the buffer  */
-			if ((bufsize - offset) - len <= 45)
-			{
-				strcpy ((char *)s, " ...[TRUNCATED]");
-				len = strlen((char *)s);
-				strcpy (buffer, (char *)s);
-				buffer += len;
-				offset += len;
-				break;
-			}
-
-			/* add this word to the buffer */
-			strcpy (buffer, (char *)s);
-			buffer += len;
-			offset += len;
+			strcat(buffer, readbuf);
+			strcat(buffer, "\n");
 		}
 		else
 		{
-			if (TOKEN_SYMBOL == token)
+			if (strtok(readbuf, "\r\n\r\n") != NULL)
+				strcat(buffer, readbuf);
+			else
 			{
-				/* looking for requested tag */
-				if (!ci_strncmp (tag, (char *)s, strlen (tag)))
-					found = 1;
-				else if (!ci_strncmp (DATAFILE_TAG_KEY, (char *)s, strlen (DATAFILE_TAG_KEY)))
-					break; /* error: tag missing */
+				strcat(buffer, readbuf);
+				strcat(buffer, "\n");
 			}
 		}
 	}
-	return (!found);
+	return 0;
 }
-
 
 /**************************************************************************
  *      load_driver_history
@@ -543,16 +416,13 @@ static int load_datafile_text (const game_driver *drv, char *buffer, int bufsize
 int load_driver_history (const game_driver *drv, char *buffer, int bufsize)
 {
 	static struct tDatafileIndex *hist_idx = 0;
-	static struct tDatafileIndex *mame_idx = 0;
-//  const game_driver *clone_of = NULL;
-	int history = 0, mameinfo = 0;
+	int history = 0;
 	int err = 0;
 
 	*buffer = 0;
 
-
-//	if (!g_history_filename || !*g_history_filename)
-//		g_history_filename = mame_strdup("sysinfo.dat");
+	if (!g_history_filename || !*g_history_filename)
+		g_history_filename = core_strdup("history.dat");
 
 	/* try to open history datafile */
 	if (ParseOpen (g_history_filename))
@@ -571,12 +441,10 @@ int load_driver_history (const game_driver *drv, char *buffer, int bufsize)
 			gdrv = drv;
 			do
 			{
-				if ( ( gdrv->flags & GAME_IS_BIOS_ROOT) == 1 )
-					break;
-				err = load_datafile_text (gdrv, buffer, bufsize, hist_idx, DATAFILE_TAG_BIO);
+				err = load_datafile_text (gdrv, buffer, bufsize, hist_idx, DATAFILE_TAG_BIO, 0, 1);
 				int g = driver_list::clone(*gdrv);
 
-				if (g != -1)
+				if (g!=-1)
 					gdrv = &driver_list::driver(g);
 				else
 					gdrv = NULL;
@@ -588,8 +456,54 @@ int load_driver_history (const game_driver *drv, char *buffer, int bufsize)
 		ParseClose ();
 	}
 
-//	if (!g_mameinfo_filename || !*g_mameinfo_filename)
-//		g_mameinfo_filename = mame_strdup("messinfo.dat");
+	strcat(buffer, "\n");
+	return (history == 0);
+}
+
+int load_driver_mameinfo (const game_driver *drv, char *buffer, int bufsize)
+{
+	static struct tDatafileIndex *mame_idx = 0;
+	machine_config config(*drv,MameUIGlobal());
+	const game_driver *parent = NULL;
+
+	char name[300];
+	int mameinfo = 0;
+	int err = 0;
+	int i = 0;
+	int has_sound = 0;
+	int is_bios = 0;
+
+	*buffer = 0;
+
+	strcat(buffer, "\nMAMEINFO:\n");
+
+	/* List the game info 'flags' */
+	if (drv->flags & GAME_NOT_WORKING)
+		strcat(buffer, "THIS GAME DOESN'T WORK PROPERLY\n");
+	if (drv->flags & GAME_UNEMULATED_PROTECTION)
+		strcat(buffer, "The game has protection which isn't fully emulated.\n");
+	if (drv->flags & GAME_IMPERFECT_GRAPHICS)
+		strcat(buffer, "The video emulation isn't 100% accurate.\n");
+	if (drv->flags & GAME_WRONG_COLORS)
+		strcat(buffer, "The colors are completely wrong.\n");
+	if (drv->flags & GAME_IMPERFECT_COLORS)
+		strcat(buffer, "The colors aren't 100% accurate.\n");
+	if (drv->flags & GAME_NO_SOUND)
+		strcat(buffer, "The game lacks sound.\n");
+	if (drv->flags & GAME_IMPERFECT_SOUND)
+		strcat(buffer, "The sound emulation isn't 100% accurate.\n");
+	if (drv->flags & GAME_SUPPORTS_SAVE)
+		strcat(buffer, "Save state support.\n");
+//	if (drv->flags & GAME_NO_COCKTAIL)
+//		strcat(buffer, "Screen flipping in cocktail mode is not supported.\n");
+	if (drv->flags & GAME_MECHANICAL)
+		strcat(buffer, "The game contains mechanical parts.\n");
+		strcat(buffer, "\n");
+	if (drv->flags & GAME_IS_BIOS_ROOT)
+		is_bios = 1;
+
+	if (!g_mameinfo_filename || !*g_mameinfo_filename)
+		g_mameinfo_filename = core_strdup("mameinfo.dat");
 
 	/* try to open mameinfo datafile */
 	if (ParseOpen (g_mameinfo_filename))
@@ -609,21 +523,253 @@ int load_driver_history (const game_driver *drv, char *buffer, int bufsize)
 			gdrv = drv;
 			do
 			{
-				if ( (gdrv->flags & GAME_IS_BIOS_ROOT) == 1 )
-					break;
-				err = load_datafile_text (gdrv, buffer+len, bufsize-len, mame_idx, DATAFILE_TAG_MAME);
+				err = load_datafile_text (gdrv, buffer+len, bufsize-len, mame_idx, DATAFILE_TAG_MAME, 0, 0);
 				int g = driver_list::clone(*gdrv);
 
-				if (g != -1)
+				if (g!=-1)
 					gdrv = &driver_list::driver(g);
 				else
 					gdrv = NULL;
 			} while (err && gdrv);
 
-			if (err) mameinfo = 0;
+			if (err)
+				mameinfo = 0;
 		}
 		ParseClose ();
 	}
 
-	return (history == 0 && mameinfo == 0);
+	/* GAME INFORMATIONS */
+	sprintf(name,"\nGAME: %s\n", drv->name);
+	strcat(buffer, name);
+	sprintf(name,"%s", drv->description);
+	strcat(buffer, name);
+	sprintf(name," (%s %s)\n\nCPU:\n", drv->manufacturer, drv->year);
+	strcat(buffer, name);
+
+	execute_interface_iterator iter(config.root_device());
+	device_execute_interface *cpu = iter.first();
+	while (cpu)
+	{
+		if (cpu->device().clock()-((cpu->device().clock()/1000000)*1000000) > 0)
+			sprintf(name,"%s (%d Hz)\n", cpu->device().name(), cpu->device().clock());
+		else
+			sprintf(name,"%s (%d MHz)\n", cpu->device().name(), cpu->device().clock()/1000000);
+
+		strcat(buffer, name);
+
+		cpu = iter.next();
+	}
+
+	strcat(buffer, "\nSOUND:\n");
+	i = 0;
+	has_sound = 0;
+
+	/* iterate over sound chips */
+	sound_interface_iterator sounditer(config.root_device());
+	const device_sound_interface *sound = sounditer.first();
+	while(sound)
+	{
+		int clock, count = 0;
+		device_type sound_type_;
+		char tmpname[1024];
+
+		sprintf(tmpname,"%s",sound->device().name());
+
+		sound_type_ = sound->device().type();
+		clock = sound->device().clock();
+
+		has_sound = 1;
+		count = 1;
+		sound = sounditer.next();
+		/* Matching chips at the same clock are aggregated */
+		while (sound && sound->device().type() == sound_type_ && sound->device().clock() == clock)
+		{
+			count++;
+			sound = sounditer.next();
+		}
+
+		if (count > 1)
+		{
+			sprintf(name,"%dx ",count);
+			strcat(buffer, name);
+		}
+		strcat(buffer, tmpname);
+
+		if (clock)
+		{
+			if (clock-((clock/1000000)*1000000) > 0)
+				sprintf(name," (%d Hz)", clock);
+			else
+				sprintf(name," (%d MHz)", clock/1000000);
+			strcat(buffer, name);
+		}
+		strcat(buffer,"\n");
+	}
+
+	if (has_sound)
+	{
+		speaker_device_iterator iter(config.root_device());
+		int channels = iter.count();
+		if(channels == 1)
+			sprintf(name,"%d Channel\n",channels);
+		else
+			sprintf(name,"%dx Channels\n",channels);
+		strcat(buffer, name);
+	}
+
+	strcat(buffer, "\nVIDEO:\n");
+	screen_device_iterator screeniter(config.root_device());
+	const screen_device *screen = screeniter.first();
+	if (screen == NULL)
+		strcat(buffer, "None\n");
+	else
+	{
+		for (; screen != NULL; screen = screeniter.next())
+		{
+			if (drv->flags & ORIENTATION_SWAP_XY)
+				sprintf(name,"%dx%d (V)", screen->visible_area().height(), screen->visible_area().width());
+			else
+				sprintf(name,"%dx%d (H)", screen->visible_area().width(), screen->visible_area().height());
+
+			strcat(buffer, name);
+
+			i = ATTOSECONDS_TO_HZ(screen->refresh_attoseconds());
+			if ((ATTOSECONDS_TO_HZ(screen->refresh_attoseconds()) * 1000000 - i * 1000000) > 0)
+				sprintf(name," (%f Hz, ", ATTOSECONDS_TO_HZ(screen->refresh_attoseconds()));
+			else
+				sprintf(name," (%d Hz, ", i);
+
+			strcat(buffer, name);
+		}
+	}
+
+	strcat(buffer, "\nROM REGION:\n");
+	int g = driver_list::clone(*drv);
+	if (g!=-1)
+		parent = &driver_list::driver(g);
+
+	device_iterator deviter(config.root_device());
+	for (device_t *device = deviter.first(); device; device = deviter.next())
+		for (const rom_entry *region = rom_first_region(*device); region; region = rom_next_region(region))
+			for (const rom_entry *rom = rom_first_file(region); rom; rom = rom_next_file(rom))
+			{
+				hash_collection hashes(ROM_GETHASHDATA(rom));
+
+				if (g!=-1)
+				{
+					machine_config pconfig(*parent, MameUIGlobal());
+					device_iterator deviter(pconfig.root_device());
+					for (device_t *device = deviter.first(); device; device = deviter.next())
+						for (const rom_entry *pregion = rom_first_region(*device); pregion; pregion = rom_next_region(pregion))
+							for (const rom_entry *prom = rom_first_file(pregion); prom; prom = rom_next_file(prom))
+							{
+								hash_collection phashes(ROM_GETHASHDATA(prom));
+								if (hashes == phashes)
+									break;
+							}
+				}
+
+				sprintf(name,"%-16s \t", ROM_GETNAME(rom));
+				strcat(buffer, name);
+				sprintf(name,"%07d \t", rom_file_size(rom));
+				strcat(buffer, name);
+				sprintf(name,"%-10s", ROMREGION_GETTAG(region));
+				strcat(buffer, name);
+				strcat(buffer, "\n");
+			}
+
+	samples_device_iterator samplesiter(config.root_device());
+	for (samples_device *device = samplesiter.first(); device; device = samplesiter.next())
+	{
+		samples_iterator sampiter(*device);
+		if (sampiter.altbasename() != NULL)
+		{
+			sprintf(name,"\nSAMPLES (%s):\n", sampiter.altbasename());
+			strcat(buffer, name);
+		}
+
+		tagmap_t<int> already_printed;
+		for (const char *samplename = sampiter.first(); samplename; samplename = sampiter.next())
+		{
+			// filter out duplicates
+			if (already_printed.add(samplename, 1) == TMERR_DUPLICATE)
+				continue;
+
+			// output the sample name
+			sprintf(name,"%s.wav\n", samplename);
+			strcat(buffer, name);
+		}
+	}
+
+	if (!is_bios)
+	{
+		int g = driver_list::clone(*drv);
+		if (g!=-1)
+			drv = &driver_list::driver(g);
+
+		strcat(buffer, "\nORIGINAL:\n");
+		strcat(buffer, drv->description);
+		strcat(buffer, "\n\nCLONES:\n");
+		for (i = 0; i < driver_list::total(); i++)
+		{
+			if (!strcmp (drv->name, driver_list::driver(i).parent))
+			{
+				strcat(buffer, driver_list::driver(i).description);
+				strcat(buffer, "\n");
+			}
+		}
+	}
+
+	strcat(buffer, "\n");
+	return (mameinfo == 0);
+}
+
+int load_driver_drivinfo (const game_driver *drv, char *buffer, int bufsize)
+{
+	static struct tDatafileIndex *driv_idx = 0;
+	int drivinfo = 0;
+	int err = 0;
+	int i = 0;
+
+	*buffer = 0;
+
+	/* Print source code file */
+	sprintf (buffer, "\n\nSOURCE: %s\n", drv->source_file+32);
+
+	if (!g_mameinfo_filename || !*g_mameinfo_filename)
+		g_mameinfo_filename = core_strdup("mameinfo.dat");
+
+	/* Try to open mameinfo datafile - driver section*/
+	if (ParseOpen (g_mameinfo_filename))
+	{
+		/* create index if necessary */
+		if (driv_idx)
+			drivinfo = 1;
+		else
+			drivinfo = (index_datafile_drivinfo (&driv_idx) != 0);
+
+		/* load informational text (append) */
+		if (driv_idx)
+		{
+			int len = strlen (buffer);
+			err = load_datafile_text (drv, buffer+len, bufsize-len, driv_idx, DATAFILE_TAG_DRIV, 1, 0);
+			if (err)
+				drivinfo = 0;
+		}
+		ParseClose ();
+	}
+
+	strcat(buffer,"\nGAMES SUPPORTED:\n");
+	for (i = 0; i < driver_list::total(); i++)
+	{
+		if (!strcmp (drv->source_file+32, driver_list::driver(i).source_file+32) && !(driver_list::driver(i).flags & GAME_IS_BIOS_ROOT))
+		{
+			strcat(buffer, driver_list::driver(i).description);
+			strcat(buffer,"\n");
+		}
+	}
+
+	strcat(buffer, "\n");
+	return (drivinfo == 0);
+
 }

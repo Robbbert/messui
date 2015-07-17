@@ -34,6 +34,10 @@
 #define snprintf _snprintf
 #endif
 
+#undef malloc
+#undef realloc
+#undef free
+
 //============================================================
 //  TYPE DEFINITIONS
 //============================================================
@@ -79,7 +83,9 @@ struct _datamap_entry
 struct _datamap
 {
 	int entry_count;
-	datamap_entry entries[256];
+	int entry_size;
+	// mamefx: dynamic allocation
+	datamap_entry *entries;
 };
 
 typedef void (*datamap_default_callback)(datamap *map, HWND control, windows_options *opts, datamap_entry *entry, const char *option_name);
@@ -94,9 +100,11 @@ static datamap_entry *find_entry(datamap *map, int dlgitem);
 static control_type get_control_type(HWND control);
 static int control_operation(datamap *map, HWND dialog, windows_options *opts,
 	datamap_entry *entry, datamap_callback_type callback_type);
-static void read_control(datamap *map, HWND control, windows_options *opts, datamap_entry *entry, const char *option_name);
-static void populate_control(datamap *map, HWND control, windows_options *opts, datamap_entry *entry, const char *option_name);
-static	char *tztrim(float float_value);
+static void read_control(datamap *map, HWND control, windows_options *opts,
+	datamap_entry *entry, const char *option_name);
+static void populate_control(datamap *map, HWND control, windows_options *opts,
+	datamap_entry *entry, const char *option_name);
+static char *tztrim(float float_value);
 
 
 //============================================================
@@ -110,6 +118,8 @@ datamap *datamap_create(void)
 		return NULL;
 
 	map->entry_count = 0;
+	map->entry_size = 0;
+	map->entries = NULL;
 	return map;
 }
 
@@ -121,6 +131,11 @@ datamap *datamap_create(void)
 
 void datamap_free(datamap *map)
 {
+	if (map->entries)
+	{
+		free(map->entries);
+		map->entries = NULL;
+	}
 	free(map);
 }
 
@@ -133,7 +148,17 @@ void datamap_free(datamap *map)
 void datamap_add(datamap *map, int dlgitem, datamap_entry_type type, const char *option_name)
 {
 	// sanity check for too many entries
-	assert(map->entry_count < ARRAY_LENGTH(map->entries));
+	if (map->entry_count == map->entry_size)
+	{
+		map->entry_size += 32;
+
+		if (map->entries)
+			map->entries = (datamap_entry *)realloc(map->entries, map->entry_size * sizeof (*map->entries));
+		else
+			map->entries = (datamap_entry *)malloc(map->entry_size * sizeof (*map->entries));
+
+		assert (map->entries);
+	}
 
 	// add entry to the datamap
 	memset(&map->entries[map->entry_count], 0, sizeof(map->entries[map->entry_count]));
@@ -371,10 +396,11 @@ static BOOL is_control_displayonly(HWND control)
 
 static void broadcast_changes(datamap *map, HWND dialog, windows_options *opts, datamap_entry *entry, const char *option_name)
 {
-	HWND other_control = 0;
+	HWND other_control;
 	const char *that_option_name;
+	int i;
 
-	for (int i = 0; i < map->entry_count; i++)
+	for (i = 0; i < map->entry_count; i++)
 	{
 		// search for an entry with the same option_name, but is not the exact
 		// same entry
@@ -404,10 +430,10 @@ static int control_operation(datamap *map, HWND dialog, windows_options *opts,
 		populate_control,
 		NULL
 	};
-	HWND control = 0;
+	HWND control;
 	int result = 0;
 	const char *option_name;
-	char option_name_buffer[256];
+	char option_name_buffer[64];
 	char option_value[1024] = {0, };
 
 	control = GetDlgItem(dialog, entry->dlgitem);
@@ -510,7 +536,7 @@ static void read_control(datamap *map, HWND control, windows_options *opts, data
 {
 	BOOL bool_value = 0;
 	int int_value = 0;
-	float float_value = 0.0;
+	float float_value = 0;
 	const char *string_value;
 	int selected_index = 0;
 	int trackbar_pos = 0;
@@ -536,7 +562,7 @@ static void read_control(datamap *map, HWND control, windows_options *opts, data
 						break;
 
 					case DM_STRING:
-						string_value = (char *) ComboBox_GetItemData(control, selected_index);
+						string_value = (const char *) ComboBox_GetItemData(control, selected_index);
 						opts->set_value(option_name, string_value ? string_value : "", OPTION_PRIORITY_CMDLINE,error);
 						break;
 
@@ -600,9 +626,7 @@ static void populate_control(datamap *map, HWND control, windows_options *opts, 
 	char buffer[128];
 	int trackbar_range = 0;
 	int trackbar_pos = 0;
-	double trackbar_range_d = 0.0;
-	//int minval_int, maxval_int;
-	//float minval_float, maxval_float;
+	double trackbar_range_d = 0;
 
 	// use default populate control value
 	switch(get_control_type(control))
@@ -669,7 +693,7 @@ static void populate_control(datamap *map, HWND control, windows_options *opts, 
 					for (i = 0; i < ComboBox_GetCount(control); i++)
 					{
 						item_string = (const char *) ComboBox_GetItemData(control, i);
-						if (core_stricmp(string_value, item_string ? item_string : "")==0)
+						if (!core_stricmp(string_value, item_string ? item_string : ""))
 						{
 							selected_index = i;
 							break;
@@ -750,10 +774,10 @@ static void populate_control(datamap *map, HWND control, windows_options *opts, 
 }
 
 // Return a string from a float value with trailing zeros removed.
-static	char *tztrim(float float_value)
+static char *tztrim(float float_value)
 {
-	static char tz_string[256];
-	char float_string[256];
+	static char tz_string[20];
+	char float_string[20];
 	char *ptr;
 	int i = 0;
 

@@ -1,7 +1,6 @@
 // For licensing and usage information, read docs/winui_license.txt
 //****************************************************************************
 
-
 #ifndef DIRECTINPUT_H
 #define DIRECTINPUT_H
 
@@ -17,8 +16,7 @@ extern void DirectInputClose(void);
 
 extern BOOL CALLBACK inputEnumDeviceProc(LPCDIDEVICEINSTANCE pdidi, LPVOID pv);
 
-extern HRESULT SetDIDwordProperty(LPDIRECTINPUTDEVICE2 pdev, REFGUID guidProperty,
-								  DWORD dwObject, DWORD dwHow, DWORD dwValue);
+extern HRESULT SetDIDwordProperty(LPDIRECTINPUTDEVICE2 pdev, REFGUID guidProperty, DWORD dwObject, DWORD dwHow, DWORD dwValue);
 
 LPDIRECTINPUT GetDirectInput(void);
 

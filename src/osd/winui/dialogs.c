@@ -23,11 +23,11 @@
 #include <shellapi.h>
 #include <commctrl.h>
 #include <commdlg.h>
-#include <stdlib.h>
 
 // standard C headers
 #include <string.h>
 #include <tchar.h>
+#include <stdlib.h>
 #include <assert.h>
 
 // MAMEUI headers
@@ -48,11 +48,15 @@
 #define snprintf _snprintf
 #endif
 
+#ifdef __GNUC__
+#pragma GCC diagnostic ignored "-Wunused-but-set-variable"
+#endif
+
 #define FILTERTEXT_LEN 256
 
 static char g_FilterText[FILTERTEXT_LEN];
 
-#define NUM_EXCLUSIONS  10
+#define NUM_EXCLUSIONS  12
 
 /* Pairs of filters that exclude each other */
 static DWORD filterExclusion[NUM_EXCLUSIONS] =
@@ -61,11 +65,11 @@ static DWORD filterExclusion[NUM_EXCLUSIONS] =
 	IDC_FILTER_NONWORKING,  IDC_FILTER_WORKING,
 	IDC_FILTER_UNAVAILABLE, IDC_FILTER_AVAILABLE,
 	IDC_FILTER_RASTER,      IDC_FILTER_VECTOR,
-	IDC_FILTER_HORIZONTAL,  IDC_FILTER_VERTICAL
+	IDC_FILTER_HORIZONTAL,  IDC_FILTER_VERTICAL,
+	IDC_FILTER_ARCADE,      IDC_FILTER_MESS,
 };
 
-static void DisableFilterControls(HWND hWnd, LPCFOLDERDATA lpFilterRecord,
-								  LPCFILTER_ITEM lpFilterItem, DWORD dwFlags);
+static void DisableFilterControls(HWND hWnd, LPCFOLDERDATA lpFilterRecord, LPCFILTER_ITEM lpFilterItem, DWORD dwFlags);
 static void EnableFilterExclusions(HWND hWnd, DWORD dwCtrlID);
 static DWORD ValidateFilters(LPCFOLDERDATA lpFilterRecord, DWORD dwFlags);
 static void OnHScroll(HWND hWnd, HWND hwndCtl, UINT code, int pos);
@@ -189,20 +193,15 @@ INT_PTR CALLBACK InterfaceDialogProc(HWND hDlg, UINT Msg, WPARAM wParam, LPARAM 
 		Button_SetCheck(GetDlgItem(hDlg,IDC_HIDE_MOUSE),GetHideMouseOnStartup());
 
 		// Get the current value of the control
-		SendDlgItemMessage(hDlg, IDC_CYCLETIMESEC, TBM_SETRANGE,
-					(WPARAM)FALSE,
-					(LPARAM)MAKELONG(0, 60)); /* [0, 60] */
+		SendDlgItemMessage(hDlg, IDC_CYCLETIMESEC, TBM_SETRANGE, (WPARAM)FALSE, (LPARAM)MAKELONG(0, 60)); /* [0, 60] */
 		value = GetCycleScreenshot();
 		SendDlgItemMessage(hDlg,IDC_CYCLETIMESEC, TBM_SETPOS, TRUE, value);
 		_itot(value,tmp,10);
 		SendDlgItemMessage(hDlg,IDC_CYCLETIMESECTXT,WM_SETTEXT,0, (WPARAM)tmp);
 
-		Button_SetCheck(GetDlgItem(hDlg,IDC_STRETCH_SCREENSHOT_LARGER),
-						GetStretchScreenShotLarger());
-		Button_SetCheck(GetDlgItem(hDlg,IDC_FILTER_INHERIT),
-						GetFilterInherit());
-		Button_SetCheck(GetDlgItem(hDlg,IDC_NOOFFSET_CLONES),
-						GetOffsetClones());
+		Button_SetCheck(GetDlgItem(hDlg,IDC_STRETCH_SCREENSHOT_LARGER), GetStretchScreenShotLarger());
+		Button_SetCheck(GetDlgItem(hDlg,IDC_FILTER_INHERIT), GetFilterInherit());
+		Button_SetCheck(GetDlgItem(hDlg,IDC_NOOFFSET_CLONES), GetOffsetClones());
 		(void)ComboBox_AddString(GetDlgItem(hDlg, IDC_HISTORY_TAB), TEXT("Snapshot"));
 		(void)ComboBox_SetItemData(GetDlgItem(hDlg, IDC_HISTORY_TAB), nTabCount++, TAB_SCREENSHOT);
 		(void)ComboBox_AddString(GetDlgItem(hDlg, IDC_HISTORY_TAB), TEXT("Flyer"));
@@ -240,21 +239,21 @@ INT_PTR CALLBACK InterfaceDialogProc(HWND hDlg, UINT Msg, WPARAM wParam, LPARAM 
 		//Default to this setting
 		(void)ComboBox_SetCurSel(GetDlgItem(hDlg, IDC_SNAPNAME), nPatternCount++);
 		snapname = GetSnapName();
-		if (core_stricmp(snapname,"%g" )==0)
+		if (core_stricmp(snapname,"%g" )==0) {
 			(void)ComboBox_SetCurSel(GetDlgItem(hDlg, IDC_SNAPNAME), 0);
-
-		if (core_stricmp(snapname,"%g%i" )==0)
+		}
+		if (core_stricmp(snapname,"%g%i" )==0) {
 			(void)ComboBox_SetCurSel(GetDlgItem(hDlg, IDC_SNAPNAME), 1);
-
-		if (core_stricmp(snapname,"%g/%g" )==0)
+		}
+		if (core_stricmp(snapname,"%g/%g" )==0) {
 			(void)ComboBox_SetCurSel(GetDlgItem(hDlg, IDC_SNAPNAME), 2);
-
-		if (core_stricmp(snapname,"%g/%g%i" )==0)
-
+		}
+		if (core_stricmp(snapname,"%g/%g%i" )==0) {
 			(void)ComboBox_SetCurSel(GetDlgItem(hDlg, IDC_SNAPNAME), 3);
-
-		if (core_stricmp(snapname,"%g/%i" )==0)
+		}
+		if (core_stricmp(snapname,"%g/%i" )==0) {
 			(void)ComboBox_SetCurSel(GetDlgItem(hDlg, IDC_SNAPNAME), 4);
+		}
 
 		SendDlgItemMessage(hDlg, IDC_SCREENSHOT_BORDERSIZE, TBM_SETRANGE,
 					(WPARAM)FALSE,
@@ -311,6 +310,11 @@ INT_PTR CALLBACK InterfaceDialogProc(HWND hDlg, UINT Msg, WPARAM wParam, LPARAM 
 			if( Button_GetCheck(GetDlgItem(hDlg,IDC_RESET_PLAYCOUNT ) ) )
 			{
 				ResetPlayCount( -1 );
+				bRedrawList = TRUE;
+			}
+			if( Button_GetCheck(GetDlgItem(hDlg,IDC_RESET_PLAYTIME ) ) )
+			{
+				ResetPlayTime( -1 );
 				bRedrawList = TRUE;
 			}
 			value = SendDlgItemMessage(hDlg,IDC_CYCLETIMESEC, TBM_GETPOS, 0, 0);
@@ -381,11 +385,11 @@ INT_PTR CALLBACK InterfaceDialogProc(HWND hDlg, UINT Msg, WPARAM wParam, LPARAM 
 
 INT_PTR CALLBACK FilterDialogProc(HWND hDlg, UINT Msg, WPARAM wParam, LPARAM lParam)
 {
-	static DWORD			dwFilters;
-	static DWORD			dwpFilters;
-	static LPCFOLDERDATA	lpFilterRecord;
-	char					strText[250];
-	int 					i;
+	static DWORD dwFilters;
+	static DWORD dwpFilters;
+	static LPCFOLDERDATA lpFilterRecord;
+	char strText[250];
+	int i = 0;
 
 	switch (Msg)
 	{
@@ -399,7 +403,7 @@ INT_PTR CALLBACK FilterDialogProc(HWND hDlg, UINT Msg, WPARAM wParam, LPARAM lPa
 
 		if (folder != NULL)
 		{
-			char tmp[256];
+			char tmp[80];
 
 			win_set_window_text_utf8(GetDlgItem(hDlg, IDC_FILTER_EDIT), g_FilterText);
 			Edit_SetSel(GetDlgItem(hDlg, IDC_FILTER_EDIT), 0, -1);
@@ -498,6 +502,22 @@ INT_PTR CALLBACK FilterDialogProc(HWND hDlg, UINT Msg, WPARAM wParam, LPARAM lPa
 						win_set_window_text_utf8(GetDlgItem(hDlg, IDC_FILTER_VERTICAL), strText);
 						bShowExplanation = TRUE;
 					}
+					if( (dwpFilters & F_ARCADE) && !(dwFilters & F_ARCADE) )
+					{
+						/*Add a Specifier to the Checkbox to show it was inherited from the parent*/
+						win_get_window_text_utf8(GetDlgItem(hDlg, IDC_FILTER_ARCADE), strText, 250);
+						strcat(strText, " (*)");
+						win_set_window_text_utf8(GetDlgItem(hDlg, IDC_FILTER_ARCADE), strText);
+						bShowExplanation = TRUE;
+					}
+					if( (dwpFilters & F_MESS) && !(dwFilters & F_MESS) )
+					{
+						/*Add a Specifier to the Checkbox to show it was inherited from the parent*/
+						win_get_window_text_utf8(GetDlgItem(hDlg, IDC_FILTER_MESS), strText, 250);
+						strcat(strText, " (*)");
+						win_set_window_text_utf8(GetDlgItem(hDlg, IDC_FILTER_MESS), strText);
+						bShowExplanation = TRUE;
+					}
 					/*Do not or in the Values of the parent, so that the values of the folder still can be set*/
 					//dwFilters |= dwpFilters;
 				}
@@ -525,7 +545,7 @@ INT_PTR CALLBACK FilterDialogProc(HWND hDlg, UINT Msg, WPARAM wParam, LPARAM lPa
 	case WM_HELP:
 		// User clicked the ? from the upper right on a control
 		HelpFunction((HWND)((LPHELPINFO)lParam)->hItemHandle, MAMEUICONTEXTHELP,
-					 HH_TP_HELP_WM_HELP, GetHelpIDs());
+			 HH_TP_HELP_WM_HELP, GetHelpIDs());
 		break;
 
 	case WM_CONTEXTMENU:
@@ -534,7 +554,7 @@ INT_PTR CALLBACK FilterDialogProc(HWND hDlg, UINT Msg, WPARAM wParam, LPARAM lPa
 
 	case WM_COMMAND:
 	{
-		WORD wID		 = GET_WM_COMMAND_ID(wParam, lParam);
+		WORD wID = GET_WM_COMMAND_ID(wParam, lParam);
 		WORD wNotifyCode = GET_WM_COMMAND_CMD(wParam, lParam);
 		LPTREEFOLDER folder = GetCurrentFolder();
 		LPCFILTER_ITEM g_lpFilterList = GetFilterList();
@@ -587,11 +607,9 @@ INT_PTR CALLBACK AboutDialogProc(HWND hDlg, UINT Msg, WPARAM wParam, LPARAM lPar
 	case WM_INITDIALOG:
 		{
 			HBITMAP hBmp;
-			hBmp = (HBITMAP)LoadImage(GetModuleHandle(NULL),
-									  MAKEINTRESOURCE(IDB_ABOUT),
-									  IMAGE_BITMAP, 0, 0, LR_SHARED);
-			SendDlgItemMessage(hDlg, IDC_ABOUT, STM_SETIMAGE,
-						(WPARAM)IMAGE_BITMAP, (LPARAM)hBmp);
+			hBmp = (HBITMAP)LoadImage(GetModuleHandle(NULL), MAKEINTRESOURCE(IDB_ABOUT),
+				IMAGE_BITMAP, 0, 0, LR_SHARED);
+			SendDlgItemMessage(hDlg, IDC_ABOUT, STM_SETIMAGE, (WPARAM)IMAGE_BITMAP, (LPARAM)hBmp);
 			win_set_window_text_utf8(GetDlgItem(hDlg, IDC_VERSION), GetVersionString());
 		}
 		return 1;
@@ -606,16 +624,16 @@ INT_PTR CALLBACK AboutDialogProc(HWND hDlg, UINT Msg, WPARAM wParam, LPARAM lPar
 INT_PTR CALLBACK AddCustomFileDialogProc(HWND hDlg, UINT Msg, WPARAM wParam, LPARAM lParam)
 {
 	static LPTREEFOLDER default_selection = NULL;
-	static int driver_index;
-	bool res = 0;
+	static int driver_index = 0;
+	BOOL res = 0;
 
 	switch (Msg)
 	{
 	case WM_INITDIALOG:
 	{
-	    TREEFOLDER **folders;
-		int num_folders;
-		int i;
+		TREEFOLDER **folders;
+		int num_folders = 0;
+		int i = 0;
 		TVINSERTSTRUCT tvis;
 		TVITEM tvi;
 		BOOL first_entry = TRUE;
@@ -633,22 +651,22 @@ INT_PTR CALLBACK AddCustomFileDialogProc(HWND hDlg, UINT Msg, WPARAM wParam, LPA
 		// insert custom folders into our tree view
 		for (i=0;i<num_folders;i++)
 		{
-		    if (folders[i]->m_dwFlags & F_CUSTOM)
+			if (folders[i]->m_dwFlags & F_CUSTOM)
 			{
-			    HTREEITEM hti;
-				int jj;
+				HTREEITEM hti;
+				int jj = 0;
 
 				if (folders[i]->m_nParent == -1)
 				{
 					memset(&tvi, '\0', sizeof(tvi));
-				    tvis.hParent = TVI_ROOT;
+					tvis.hParent = TVI_ROOT;
 					tvis.hInsertAfter = TVI_SORT;
 					tvi.mask = TVIF_TEXT | TVIF_PARAM | TVIF_IMAGE | TVIF_SELECTEDIMAGE;
 					tvi.pszText = folders[i]->m_lptTitle;
 					tvi.lParam = (LPARAM)folders[i];
 					tvi.iImage = GetTreeViewIconIndex(folders[i]->m_nIconId);
 					tvi.iSelectedImage = 0;
-#if defined(__GNUC__) /* bug in commctrl.h */
+#if !defined(NONAMELESSUNION)
 					tvis.item = tvi;
 #else
 					tvis.DUMMYUNIONNAME.item = tvi;
@@ -659,41 +677,39 @@ INT_PTR CALLBACK AddCustomFileDialogProc(HWND hDlg, UINT Msg, WPARAM wParam, LPA
 					/* look for children of this custom folder */
 					for (jj=0;jj<num_folders;jj++)
 					{
-					    if (folders[jj]->m_nParent == i)
+						if (folders[jj]->m_nParent == i)
 						{
-						    HTREEITEM hti_child;
-						    tvis.hParent = hti;
+							HTREEITEM hti_child;
+							tvis.hParent = hti;
 							tvis.hInsertAfter = TVI_SORT;
 							tvi.mask = TVIF_TEXT | TVIF_PARAM | TVIF_IMAGE | TVIF_SELECTEDIMAGE;
 							tvi.pszText = folders[jj]->m_lptTitle;
 							tvi.lParam = (LPARAM)folders[jj];
 							tvi.iImage = GetTreeViewIconIndex(folders[jj]->m_nIconId);
 							tvi.iSelectedImage = 0;
-#if defined(__GNUC__) /* bug in commctrl.h */
-					        tvis.item = tvi;
+#if !defined(NONAMELESSUNION)
+							tvis.item = tvi;
 #else
-					        tvis.DUMMYUNIONNAME.item = tvi;
+							tvis.DUMMYUNIONNAME.item = tvi;
 #endif
 							hti_child = TreeView_InsertItem(GetDlgItem(hDlg,IDC_CUSTOM_TREE),&tvis);
 							if (folders[jj] == default_selection)
-							    res = TreeView_SelectItem(GetDlgItem(hDlg,IDC_CUSTOM_TREE),hti_child);
+								res = TreeView_SelectItem(GetDlgItem(hDlg,IDC_CUSTOM_TREE),hti_child);
 						}
 					}
 
 					/*TreeView_Expand(GetDlgItem(hDlg,IDC_CUSTOM_TREE),hti,TVE_EXPAND);*/
 					if (first_entry || folders[i] == default_selection)
 					{
-					    res = TreeView_SelectItem(GetDlgItem(hDlg,IDC_CUSTOM_TREE),hti);
+						res = TreeView_SelectItem(GetDlgItem(hDlg,IDC_CUSTOM_TREE),hti);
 						first_entry = FALSE;
 					}
-
 				}
-
 			}
 		}
 
 		win_set_window_text_utf8(GetDlgItem(hDlg,IDC_CUSTOMFILE_GAME),
-					  ModifyThe(driver_list::driver(driver_index).description));
+			ModifyThe(driver_list::driver(driver_index).description));
 
 		return TRUE;
 	}
@@ -701,22 +717,22 @@ INT_PTR CALLBACK AddCustomFileDialogProc(HWND hDlg, UINT Msg, WPARAM wParam, LPA
 		switch (GET_WM_COMMAND_ID(wParam, lParam))
 		{
 		case IDOK:
-		{
-		   TVITEM tvi;
-		   tvi.hItem = TreeView_GetSelection(GetDlgItem(hDlg,IDC_CUSTOM_TREE));
-		   tvi.mask = TVIF_PARAM;
-		   if (TreeView_GetItem(GetDlgItem(hDlg,IDC_CUSTOM_TREE),&tvi) == TRUE)
-		   {
-			  /* should look for New... */
+			{
+				TVITEM tvi;
+				tvi.hItem = TreeView_GetSelection(GetDlgItem(hDlg,IDC_CUSTOM_TREE));
+				tvi.mask = TVIF_PARAM;
+				if (TreeView_GetItem(GetDlgItem(hDlg,IDC_CUSTOM_TREE),&tvi) == TRUE)
+				{
+				/* should look for New... */
 
-			  default_selection = (LPTREEFOLDER)tvi.lParam; /* start here next time */
+				default_selection = (LPTREEFOLDER)tvi.lParam; /* start here next time */
 
-			  AddToCustomFolder((LPTREEFOLDER)tvi.lParam,driver_index);
-		   }
+				AddToCustomFolder((LPTREEFOLDER)tvi.lParam,driver_index);
+				}
 
-		   EndDialog(hDlg, 0);
-		   return TRUE;
-		}
+			EndDialog(hDlg, 0);
+			return TRUE;
+			}
 		case IDCANCEL:
 			EndDialog(hDlg, 0);
 			return TRUE;
@@ -724,7 +740,6 @@ INT_PTR CALLBACK AddCustomFileDialogProc(HWND hDlg, UINT Msg, WPARAM wParam, LPA
 		}
 		break;
 	}
-	res++;
 	return 0;
 }
 
@@ -734,7 +749,7 @@ INT_PTR CALLBACK DirectXDialogProc(HWND hDlg, UINT Msg, WPARAM wParam, LPARAM lP
 
 	const char *directx_help =
 		MAMEUINAME " requires DirectX version 9 or later, which is a set of operating\r\n"
-		"system extensions by Microsoft for Windows XP and later.\r\n\r\n"
+		"system extensions by Microsoft for Windows 9x, NT and 2000.\r\n\r\n"
 		"Visit Microsoft's DirectX web page at http://www.microsoft.com/directx\r\n"
 		"download DirectX, install it, and then run " MAMEUINAME " again.\r\n";
 
@@ -748,8 +763,8 @@ INT_PTR CALLBACK DirectXDialogProc(HWND hDlg, UINT Msg, WPARAM wParam, LPARAM lP
 
 	case WM_COMMAND:
 		if (LOWORD(wParam) == IDB_WEB_PAGE)
-			ShellExecute(GetMainWindow(), TEXT("open"), TEXT("http://www.microsoft.com/directx"),
-						 TEXT(""), NULL, SW_SHOWNORMAL);
+			ShellExecute(GetMainWindow(), NULL, TEXT("http://www.microsoft.com/directx"),
+				NULL, NULL, SW_SHOWNORMAL);
 
 		if (LOWORD(wParam) == IDCANCEL || LOWORD(wParam) == IDB_WEB_PAGE)
 			EndDialog(hDlg, 0);
@@ -762,10 +777,9 @@ INT_PTR CALLBACK DirectXDialogProc(HWND hDlg, UINT Msg, WPARAM wParam, LPARAM lP
     private functions
  ***************************************************************************/
 
-static void DisableFilterControls(HWND hWnd, LPCFOLDERDATA lpFilterRecord,
-								  LPCFILTER_ITEM lpFilterItem, DWORD dwFlags)
+static void DisableFilterControls(HWND hWnd, LPCFOLDERDATA lpFilterRecord, LPCFILTER_ITEM lpFilterItem, DWORD dwFlags)
 {
-	HWND  hWndCtrl = GetDlgItem(hWnd, lpFilterItem->m_dwCtrlID);
+	HWND hWndCtrl = GetDlgItem(hWnd, lpFilterItem->m_dwCtrlID);
 	DWORD dwFilterType = lpFilterItem->m_dwFilterType;
 
 	/* Check the appropriate control */
@@ -795,8 +809,8 @@ static void DisableFilterControls(HWND hWnd, LPCFOLDERDATA lpFilterRecord,
 // Handle disabling mutually exclusive controls
 static void EnableFilterExclusions(HWND hWnd, DWORD dwCtrlID)
 {
-	int 	i;
-	DWORD	id;
+	int i = 0;
+	DWORD id = 0;
 
 	for (i = 0; i < NUM_EXCLUSIONS; i++)
 	{
@@ -825,7 +839,7 @@ static void EnableFilterExclusions(HWND hWnd, DWORD dwCtrlID)
 // Validate filter setting, mask out inappropriate filters for this folder
 static DWORD ValidateFilters(LPCFOLDERDATA lpFilterRecord, DWORD dwFlags)
 {
-	DWORD dwFilters;
+	DWORD dwFilters = 0;
 
 	if (lpFilterRecord != (LPFOLDERDATA)0)
 	{
@@ -840,7 +854,7 @@ static DWORD ValidateFilters(LPCFOLDERDATA lpFilterRecord, DWORD dwFlags)
 
 static void OnHScroll(HWND hwnd, HWND hwndCtl, UINT code, int pos)
 {
-	int value;
+	int value = 0;
 	TCHAR tmp[4];
 	if (hwndCtl == GetDlgItem(hwnd, IDC_CYCLETIMESEC))
 	{
