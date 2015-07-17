@@ -1298,18 +1298,11 @@ static int win_dialog_add_combobox(dialog_box *dialog, const char *item_label, i
 
 static int win_dialog_add_combobox_item(dialog_box *dialog, const char *item_label, int item_data)
 {
-	TCHAR* t_item_label = NULL;
 	// create our own copy of the string
-	if (item_label)
-	{
-		TCHAR* t_tmp = tstring_from_utf8(item_label);
-		if( !t_tmp )
-			return 1;
-		t_item_label = win_dialog_tcsdup(dialog, t_tmp);
-		osd_free(t_tmp);
-		if (!t_item_label)
-			return 1;
-	}
+	size_t newsize = strlen(item_label) + 1;
+	wchar_t * t_item_label = new wchar_t[newsize];
+	size_t convertedChars = 0;
+	mbstowcs_s(&convertedChars, t_item_label, newsize, item_label, _TRUNCATE);
 
 	if (dialog_add_trigger(dialog, dialog->item_count, TRIGGER_INITDIALOG, CB_ADDSTRING, NULL, 0, (LPARAM) t_item_label, NULL, NULL))
 		return 1;
@@ -1451,6 +1444,7 @@ static int win_dialog_add_adjuster(dialog_box *dialog, const char *item_label, i
 		is_percentage ? TEXT("%d%%") : TEXT("%d"),
 		default_value);
 	s = win_dialog_tcsdup(dialog, buf);
+	osd_free(buf);
 	if (!s)
 		return 1;
 	if (dialog_add_trigger(dialog, dialog->item_count, TRIGGER_INITDIALOG, WM_SETTEXT, NULL,
