@@ -12,6 +12,7 @@
 
 #include <cstring>
 #include <algorithm>
+#include <cmath>
 
 #include "palloc.h"
 #include "pstring.h"
@@ -65,6 +66,11 @@ public:
 	ATTR_HOT  const _ListClass& operator[](std::size_t index) const { return m_list[index]; }
 
 	ATTR_HOT  std::size_t size() const { return m_capacity; }
+
+	void resize(const std::size_t new_size)
+	{
+		set_capacity(new_size);
+	}
 
 protected:
 	ATTR_COLD void set_capacity(const std::size_t new_capacity)
@@ -614,47 +620,112 @@ public:
 template <class C>
 struct phash_functor
 {
-	unsigned hash(const C &v) { return (unsigned) v; }
+	phash_functor()
+	{}
+	phash_functor(const C &v)
+	{
+		m_hash = v;
+	}
+	friend unsigned operator%(const phash_functor &lhs, const unsigned &rhs) { return lhs.m_hash % rhs; }
+	bool operator==(const phash_functor &lhs) const { return (m_hash == lhs.m_hash); }
+private:
+	unsigned m_hash;
 };
 
 template <>
 struct phash_functor<pstring>
 {
-	unsigned hash(const pstring &v)
+	phash_functor()
+	{}
+	phash_functor(const pstring &v)
 	{
+		/* modified djb2 */
 		const char *string = v.cstr();
-		unsigned result = *string++;
-		for (UINT8 c = *string++; c != 0; c = *string++)
-			result = (result*33) ^ c;
-		return result;
+		unsigned result = 5381;
+		for (UINT8 c = *string; c != 0; c = *string++)
+			result = ((result << 5) + result ) ^ (result >> (32 - 5)) ^ c;
+			//result = (result*33) ^ c;
+		m_hash = result;
 	}
+	friend unsigned operator%(const phash_functor<pstring> &lhs, const unsigned &rhs) { return lhs.m_hash % rhs; }
+	bool operator==(const phash_functor<pstring> &lhs) const { return (m_hash == lhs.m_hash); }
+private:
+	unsigned m_hash;
 };
 
-/* some primes 53, 97, 193, 389, 769, 1543, 3079, 6151 */
+#if 0
+#if 0
+	unsigned hash(const pstring &v) const
+	{
+		/* Fowler–Noll–Vo hash - FNV-1 */
+		const char *string = v.cstr();
+		unsigned result = 2166136261;
+		for (UINT8 c = *string++; c != 0; c = *string++)
+			result = (result * 16777619) ^ c;
+			// result = (result ^ c) * 16777619; FNV 1a
+		return result;
+	}
+#else
+	unsigned hash(const pstring &v) const
+	{
+		/* jenkins one at a time algo */
+		unsigned result = 0;
+		const char *string = v.cstr();
+	    while (*string)
+	    {
+	        result += *string;
+	        string++;
+	        result += (result << 10);
+	        result ^= (result >> 6);
+	    }
+	    result += (result << 3);
+	    result ^= (result >> 11);
+	    result += (result << 15);
+	    return result;
+	}
+#endif
+#endif
+
 template <class K, class V, class H = phash_functor<K> >
 class phashmap_t
 {
 public:
-	phashmap_t() : m_hash(389)
+	phashmap_t() : m_hash(37)
 	{
 		for (unsigned i=0; i<m_hash.size(); i++)
 			m_hash[i] = -1;
 	}
 
+	~phashmap_t()
+	{
+	}
+
 	struct element_t
 	{
 		element_t() { }
-		element_t(K key, unsigned hash, V value)
+		element_t(const K &key, const H &hash, const V &value)
 		: m_key(key), m_hash(hash), m_value(value), m_next(-1)
 		{}
 		K m_key;
-		unsigned m_hash;
+		H m_hash;
 		V m_value;
 		int m_next;
 	};
 
 	void clear()
 	{
+		if (0)
+		{
+			unsigned cnt = 0;
+			for (unsigned i=0; i<m_hash.size(); i++)
+				if (m_hash[i] >= 0)
+					cnt++;
+			const unsigned s = m_values.size();
+			if (s>0)
+				printf("phashmap: %d elements %d hashsize, percent in overflow: %d\n", s, (unsigned) m_hash.size(),  (s - cnt) * 100 / s);
+			else
+				printf("phashmap: No elements .. \n");
+		}
 		m_values.clear();
 		for (unsigned i=0; i<m_hash.size(); i++)
 			m_hash[i] = -1;
@@ -674,8 +745,22 @@ public:
 
 	bool add(const K &key, const V &value)
 	{
-		H h;
-		const unsigned hash=h.hash(key);
+		/*
+		 * we are using the Euler prime function here
+		 *
+		 * n * n + n + 41 | 40 >= n >=0
+		 *
+		 * and accept that outside we will not have a prime
+		 *
+		 */
+		if (m_values.size() * 3 / 2 > m_hash.size())
+		{
+			unsigned n = std::sqrt( 2 * m_hash.size());
+			n = n * n + n + 41;
+			m_hash.resize(n);
+			rebuild();
+		}
+		const H hash(key);
 		const unsigned pos = hash % m_hash.size();
 		if (m_hash[pos] == -1)
 		{
@@ -711,27 +796,15 @@ public:
 		return m_values[p].m_value;
 	}
 
-	const V& operator[](const K &key) const
-	{
-		int p = get_idx(key);
-		if (p == -1)
-		{
-			p = m_values.size();
-			add(key, V());
-		}
-		return m_values[p].m_value;
-	}
-
 	V& value_at(const unsigned pos) { return m_values[pos].m_value; }
 	const V& value_at(const unsigned pos) const { return m_values[pos].m_value; }
 
-	V& key_at(const unsigned pos) const { return m_values[pos].m_key; }
+	V& key_at(const unsigned pos) { return m_values[pos].m_key; }
 private:
 
 	int get_idx(const K &key) const
 	{
-		H h;
-		const unsigned hash=h.hash(key);
+		H hash(key);
 		const unsigned pos = hash % m_hash.size();
 
 		for (int ep = m_hash[pos]; ep != -1; ep = m_values[ep].m_next)
@@ -740,6 +813,18 @@ private:
 		return -1;
 	}
 
+	void rebuild()
+	{
+		for (unsigned i=0; i<m_hash.size(); i++)
+			m_hash[i] = -1;
+		for (unsigned i=0; i<m_values.size(); i++)
+		{
+			unsigned pos = m_values[i].m_hash % m_hash.size();
+			m_values[i].m_next = m_hash[pos];
+			m_hash[pos] = i;
+		}
+
+	}
 	plist_t<element_t> m_values;
 	parray_t<int> m_hash;
 };

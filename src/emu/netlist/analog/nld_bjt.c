@@ -55,7 +55,7 @@ NETLIB_NAME(Q)::~NETLIB_NAME(Q)()
 
 NETLIB_START(Q)
 {
-	register_param("model", m_model, "");
+	register_param("MODEL", m_model, "");
 }
 
 NETLIB_RESET(Q)
@@ -118,9 +118,9 @@ NETLIB_UPDATE(QBJT_switch)
 
 NETLIB_UPDATE_PARAM(QBJT_switch)
 {
-	nl_double IS = m_model.model_value("IS", 1e-15);
-	nl_double BF = m_model.model_value("BF", 100);
-	nl_double NF = m_model.model_value("NF", 1);
+	nl_double IS = m_model.model_value("IS");
+	nl_double BF = m_model.model_value("BF");
+	nl_double NF = m_model.model_value("NF");
 	//nl_double VJE = m_model.dValue("VJE", 0.75);
 
 	set_qtype((m_model.model_type() == "NPN") ? BJT_NPN : BJT_PNP);
@@ -230,11 +230,11 @@ NETLIB_UPDATE_TERMINALS(QBJT_EB)
 
 NETLIB_UPDATE_PARAM(QBJT_EB)
 {
-	nl_double IS = m_model.model_value("IS", 1e-15);
-	nl_double BF = m_model.model_value("BF", 100);
-	nl_double NF = m_model.model_value("NF", 1);
-	nl_double BR = m_model.model_value("BR", 1);
-	nl_double NR = m_model.model_value("NR", 1);
+	nl_double IS = m_model.model_value("IS");
+	nl_double BF = m_model.model_value("BF");
+	nl_double NF = m_model.model_value("NF");
+	nl_double BR = m_model.model_value("BR");
+	nl_double NR = m_model.model_value("NR");
 	//nl_double VJE = m_model.dValue("VJE", 0.75);
 
 	set_qtype((m_model.model_type() == "NPN") ? BJT_NPN : BJT_PNP);

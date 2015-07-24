@@ -240,6 +240,7 @@ endif
 endif
 
 ifeq ($(findstring arm,$(UNAME)),arm)
+ARCHITECTURE :=
 ifndef NOASM
 	NOASM := 1
 endif
@@ -293,6 +294,10 @@ OSD := sdl
 endif
 
 ifeq ($(TARGETOS),freebsd)
+OSD := sdl
+endif
+
+ifeq ($(TARGETOS),netbsd)
 OSD := sdl
 endif
 
@@ -903,12 +908,13 @@ $(PROJECTDIR)/gmake-linux/Makefile: makefile $(SCRIPTS) $(GENIE)
 linux_x64: generate $(PROJECTDIR)/gmake-linux/Makefile
 	$(SILENT) $(MAKE) $(MAKEPARAMS) -C $(PROJECTDIR)/gmake-linux config=$(CONFIG)64
 
-.PHONY: linux
-linux: linux_x86
-
 .PHONY: linux_x86
 linux_x86: generate $(PROJECTDIR)/gmake-linux/Makefile
 	$(SILENT) $(MAKE) $(MAKEPARAMS) -C $(PROJECTDIR)/gmake-linux config=$(CONFIG)32
+
+.PHONY: linux
+linux: generate $(PROJECTDIR)/gmake-linux/Makefile
+	$(SILENT) $(MAKE) $(MAKEPARAMS) -C $(PROJECTDIR)/gmake-linux config=$(CONFIG)
 
 #-------------------------------------------------
 # gmake-linux-clang
@@ -1002,6 +1008,26 @@ freebsd: freebsd_x86
 .PHONY: freebsd_x86
 freebsd_x86: generate $(PROJECTDIR)/gmake-freebsd/Makefile
 	$(SILENT) $(MAKE) -C $(PROJECTDIR)/gmake-freebsd config=$(CONFIG)32
+
+
+#-------------------------------------------------
+# gmake-netbsd
+#-------------------------------------------------
+
+
+$(PROJECTDIR)/gmake-netbsd/Makefile: makefile $(SCRIPTS) $(GENIE)
+	$(SILENT) $(GENIE) $(PARAMS) --gcc=netbsd --gcc_version=$(GCC_VERSION) gmake
+
+.PHONY: netbsd_x64
+netbsd_x64: generate $(PROJECTDIR)/gmake-netbsd/Makefile
+	$(SILENT) $(MAKE) -C $(PROJECTDIR)/gmake-netbsd config=$(CONFIG)64
+
+.PHONY: netbsd
+netbsd: netbsd_x86
+
+.PHONY: netbsd_x86
+netbsd_x86: generate $(PROJECTDIR)/gmake-netbsd/Makefile
+	$(SILENT) $(MAKE) -C $(PROJECTDIR)/gmake-netbsd config=$(CONFIG)32
 
 
 #-------------------------------------------------

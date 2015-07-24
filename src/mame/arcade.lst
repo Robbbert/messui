@@ -3139,7 +3139,7 @@ cawingj         // 12/10/1990 (c) 1990 (Japan)
 cawingbl        // bootleg
 cawingb2        // bootleg
 nemo            // 30/11/1990 (c) 1990 (World)
-nemor1      // 09/11/1990 (c) 1990 (World)
+nemor1          // 09/11/1990 (c) 1990 (World)
 nemoj           // 20/11/1990 (c) 1990 (Japan)
 sf2             // 22/05/1991 (c) 1991 (World)
 sf2eb           // 14/02/1991 (c) 1991 (World)
@@ -3206,7 +3206,7 @@ sf2red          // hack
 sf2v004         // hack
 sf2acc          // hack
 sf2acca         // hack
-sf2ceblp            // hack
+sf2ceblp        // hack
 sf2accp2        // hack
 sf2amf          // bootleg
 sf2amf2         // bootleg
@@ -3234,6 +3234,7 @@ varth           // 14/07/1992 (c) 1992 (World)
 varthr1         // 12/06/1992 (c) 1992 (World)
 varthu          // 12/06/1992 (c) 1992 (USA)
 varthj          // 14/07/1992 (c) 1992 (Japan)
+varthjr         // 14/07/1992 (c) 1992 (Japan)
 qad             // 01/07/1992 (c) 1992 (USA)
 qadjr           // 21/09/1994 (c) 1994 (Japan)
 wof             // 31/10/1992 (c) 1992 (World) (CPS1 + QSound)
@@ -3278,6 +3279,7 @@ megamana        // 06/10/1995 (c) 1995 (Asia)
 rockmanj        // 22/09/1995 (c) 1995 (Japan)
 fcrash          // bootleg of Final Fight
 ffightbl        // bootleg
+ffightbla		// bootleg
 ganbare         // 11/04/2000 (c) 2000 (Japan)
 
 
@@ -4687,6 +4689,7 @@ passht4b        // bootleg
 passshtb        // bootleg
 shinoblb        // (c) 1987 (but bootleg)
 shinobld        // (c) 1987 (but bootleg)
+shinoblda		//
 tetrisbl        // (c) 1988 (but bootleg)
 beautyb         // (c) 1991 AMT
 iqpipe          // (c) 1991 AMT
@@ -6019,7 +6022,8 @@ secretab        // bootleg
 midres          // (c) 1989 Data East Corporation (World)
 midresu         // (c) 1989 Data East USA (US)
 midresj         // (c) 1989 Data East Corporation (Japan)
-midresb         // (c) 1989 Data East Corporation (Japan)
+midresb         // bootleg
+midresbj		// bootleg
 bouldash        // (c) 1990 Data East Corporation (World)
 bouldashj       // (c) 1990 Data East Corporation (Japan)
 // end of similar hardware
@@ -6479,6 +6483,7 @@ mogura          // GX141 (c) 1991
 wecleman        // GX602 (c) 1986
 wecleman2       // GX602?(c) 1988
 hotchase        // GX763 (c) 1988
+hotchasea
 chqflag         // GX717 (c) 1988
 chqflagj        // GX717 (c) 1988 (Japan)
 ultraman        // GX910 (c) 1991 Banpresto/Bandai
@@ -9721,6 +9726,7 @@ mjdchuka        // "111" (c) 1995 Nakanihon
 ddenlovj        // "112" (c) 1995 Dynax (Japan)
 ddenlovrk       // "113" (c) 1995 Dynax (Korea)
 ddenlovr        // "113" (c) 1996 Dynax (Hong Kong)
+mjschuka        // "115" (c) 1995 Dynax
 mjchuuka        // "121" (c) 1998 Dynax
 ddenlovrb       // bootleg
 mjflove         // "500" 1996 Dynax

@@ -9,6 +9,13 @@
 #include "nl_factory.h"
 #include "devices/nld_truthtable.h"
 
+// for now, make buggy GCC/Mingw STFU about I64FMT
+#if (defined(__MINGW32__) && (__GNUC__ >= 5))
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wformat"
+#pragma GCC diagnostic ignored "-Wformat-extra-args"
+#endif
+
 //#undef NL_VERBOSE_OUT
 //#define NL_VERBOSE_OUT(x) printf x
 
@@ -189,7 +196,7 @@ void parser_t::net_truthtable_start()
 		else if (token.is(m_tok_TT_FAMILY))
 		{
 			require_token(m_tok_param_left);
-			ttd->m_family = netlist::logic_family_desc_t::from_model(m_setup.get_model_str(get_string()));
+			ttd->m_family = m_setup.family_from_model(get_string());
 			require_token(m_tok_param_right);
 		}
 		else
@@ -360,7 +367,7 @@ void parser_t::device(const pstring &dev_type)
 	}
 	else
 	{
-		base_factory_t *f = m_setup.factory().factory_by_name(dev_type, m_setup);
+		base_factory_t *f = m_setup.factory().factory_by_name(dev_type);
 		device_t *dev;
 		pstring_list_t termlist = f->term_param_list();
 		pstring_list_t def_params = f->def_params();
@@ -466,3 +473,7 @@ nl_double parser_t::eval_param(const token_t tok)
 #endif
 }
 }
+
+#if (defined(__MINGW32__) && (__GNUC__ >= 5))
+#pragma GCC diagnostic pop
+#endif

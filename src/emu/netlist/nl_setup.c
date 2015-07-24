@@ -52,7 +52,7 @@ setup_t::setup_t(netlist_t *netlist)
 	, m_proxy_cnt(0)
 {
 	netlist->set_setup(this);
-	m_factory = palloc(factory_list_t);
+	m_factory = palloc(factory_list_t(*this));
 }
 
 void setup_t::init()
@@ -129,7 +129,7 @@ device_t *setup_t::register_dev(const pstring &classname, const pstring &name)
 	}
 	else
 	{
-		device_t *dev = factory().new_device_by_name(classname, *this);
+		device_t *dev = factory().new_device_by_name(classname);
 		//device_t *dev = factory().new_device_by_classname(classname);
 		if (dev == NULL)
 			netlist().error("Class %s not found!\n", classname.cstr());
@@ -137,9 +137,15 @@ device_t *setup_t::register_dev(const pstring &classname, const pstring &name)
 	}
 }
 
-void setup_t::register_model(const pstring &model)
+void setup_t::register_model(const pstring &model_in)
 {
-	m_models.add(model);
+	int pos = model_in.find(' ');
+	if (pos < 0)
+		netlist().error("Unable to parse model: %s", model_in.cstr());
+	pstring model = model_in.left(pos).trim().ucase();
+	pstring def = model_in.substr(pos + 1).trim();
+	if (!m_models.add(model, def))
+		netlist().error("Model already exists: %s", model_in.cstr());
 }
 
 void setup_t::register_alias_nofqn(const pstring &alias, const pstring &out)
@@ -194,25 +200,6 @@ pstring setup_t::objtype_as_astr(object_t &in) const
 	return "Error";
 }
 
-const pstring setup_t::get_model_str(const pstring val) const
-{
-	if (val.startsWith(".model ") || val.find("(") >= 0)
-	{
-		return val;
-	}
-	else
-	{
-		pstring search = (".model " + val + " ").ucase();
-		for (std::size_t i=0; i < m_models.size(); i++)
-		{
-			if (m_models[i].ucase().startsWith(search))
-				return m_models[i];
-		}
-		netlist().error("Model %s not found\n", val.cstr());
-		return ""; /* please compiler */
-	}
-}
-
 
 void setup_t::register_object(device_t &dev, const pstring &name, object_t &obj)
 {
@@ -235,7 +222,7 @@ void setup_t::register_object(device_t &dev, const pstring &name, object_t &obj)
 				else
 					term.init_object(dev, dev.name() + "." + name);
 
-				if (!(m_terminals.add(&term, false)==true))
+				if (!m_terminals.add(term.name(), &term))
 					netlist().error("Error adding %s %s to terminal list\n", objtype_as_astr(term).cstr(), term.name().cstr());
 				NL_VERBOSE_OUT(("%s %s\n", objtype_as_astr(term).cstr(), name.cstr()));
 			}
@@ -276,7 +263,8 @@ void setup_t::register_object(device_t &dev, const pstring &name, object_t &obj)
 						}
 						break;
 						case param_t::MODEL:
-							dynamic_cast<param_model_t &>(param).initial(get_model_str(val));
+							//dynamic_cast<param_model_t &>(param).initial(val);
+							dynamic_cast<param_model_t &>(param).initial(val);
 							break;
 						default:
 							netlist().error("Parameter is not supported %s : %s\n", name.cstr(), val.cstr());
@@ -412,48 +400,53 @@ const pstring setup_t::resolve_alias(const pstring &name) const
 core_terminal_t *setup_t::find_terminal(const pstring &terminal_in, bool required)
 {
 	const pstring &tname = resolve_alias(terminal_in);
-	core_terminal_t *ret;
+	int ret;
 
-	ret = m_terminals.find_by_name(tname);
+	ret = m_terminals.index_of(tname);
 	/* look for default */
-	if (ret == NULL)
+	if (ret < 0)
 	{
 		/* look for ".Q" std output */
-		pstring s = tname + ".Q";
-		ret = m_terminals.find_by_name(s);
+		ret = m_terminals.index_of(tname + ".Q");
 	}
-	if (ret == NULL && required)
+
+	core_terminal_t *term = (ret < 0 ? NULL : m_terminals.value_at(ret));
+
+	if (term == NULL && required)
 		netlist().error("terminal %s(%s) not found!\n", terminal_in.cstr(), tname.cstr());
-	if (ret != NULL)
+	if (term != NULL)
 		NL_VERBOSE_OUT(("Found input %s\n", tname.cstr()));
-	return ret;
+	return term;
 }
 
 core_terminal_t *setup_t::find_terminal(const pstring &terminal_in, object_t::type_t atype, bool required)
 {
 	const pstring &tname = resolve_alias(terminal_in);
-	core_terminal_t *ret;
+	int ret;
 
-	ret = m_terminals.find_by_name(tname);
+	ret = m_terminals.index_of(tname);
 	/* look for default */
-	if (ret == NULL && atype == object_t::OUTPUT)
+	if (ret < 0 && atype == object_t::OUTPUT)
 	{
 		/* look for ".Q" std output */
-		pstring s = tname + ".Q";
-		ret = m_terminals.find_by_name(s);
+		ret = m_terminals.index_of(tname + ".Q");
 	}
-	if (ret == NULL && required)
+	if (ret < 0 && required)
 		netlist().error("terminal %s(%s) not found!\n", terminal_in.cstr(), tname.cstr());
-	if (ret != NULL && ret->type() != atype)
+
+	core_terminal_t *term = (ret < 0 ? NULL : m_terminals.value_at(ret));
+
+	if (term != NULL && term->type() != atype)
 	{
 		if (required)
 			netlist().error("object %s(%s) found but wrong type\n", terminal_in.cstr(), tname.cstr());
 		else
-			ret = NULL;
+			term = NULL;
 	}
-	if (ret != NULL)
+	if (term != NULL)
 		NL_VERBOSE_OUT(("Found input %s\n", tname.cstr()));
-	return ret;
+
+	return term;
 }
 
 param_t *setup_t::find_param(const pstring &param_in, bool required)
@@ -758,13 +751,9 @@ void setup_t::resolve_inputs()
 			core_terminal_t *t2 = find_terminal(t2s);
 
 			if (connect(*t1, *t2))
-			{
 				m_links.remove_at(li);
-			}
 			else
-			{
 				li++;
-			}
 		}
 		tries--;
 	}
@@ -807,12 +796,13 @@ void setup_t::resolve_inputs()
 	netlist().log("looking for terminals not connected ...");
 	for (std::size_t i = 0; i < m_terminals.size(); i++)
 	{
-		if (!m_terminals[i]->has_net())
+		core_terminal_t *term = m_terminals.value_at(i);
+		if (!term->has_net())
 			errstr += pstring::sprintf("Found terminal %s without a net\n",
-					m_terminals[i]->name().cstr());
-		else if (m_terminals[i]->net().num_cons() == 0)
+					term->name().cstr());
+		else if (term->net().num_cons() == 0)
 			netlist().warning("Found terminal %s without connections",
-					m_terminals[i]->name().cstr());
+					term->name().cstr());
 	}
 	if (errstr != "")
 		netlist().error("%s", errstr.cstr());
@@ -861,7 +851,7 @@ void setup_t::start_devices()
 		{
 			NL_VERBOSE_OUT(("%d: <%s>\n",i, ll[i].cstr()));
 			NL_VERBOSE_OUT(("%d: <%s>\n",i, ll[i].cstr()));
-			device_t *nc = factory().new_device_by_name("LOG", *this);
+			device_t *nc = factory().new_device_by_name("LOG");
 			pstring name = "log_" + ll[i];
 			register_dev(nc, name);
 			register_link(name + ".I", ll[i]);
@@ -887,66 +877,130 @@ void setup_t::print_stats() const
 }
 
 // ----------------------------------------------------------------------------------------
-// Static
+// Model / family
 // ----------------------------------------------------------------------------------------
 
-const pstring setup_t::model_value_str(const pstring &model_str, const pstring &entity, const pstring defval)
+class logic_family_std_proxy_t : public logic_family_desc_t
 {
-	pstring tmp = model_str;
-	// .model 1N914 D(Is=2.52n Rs=.568 N=1.752 Cjo=4p M=.4 tt=20n Iave=200m Vpk=75 mfg=OnSemi type=silicon)
-	int p = tmp.ucase().find(entity.ucase() + "=");
-	if (p>=0)
+public:
+	logic_family_std_proxy_t() { }
+	virtual devices::nld_base_d_to_a_proxy *create_d_a_proxy(logic_output_t *proxied) const
 	{
-		int pblank = tmp.find(" ", p);
-		if (pblank < 0) pblank = tmp.len() + 1;
-		tmp = tmp.substr(p, pblank - p);
-		if (tmp.right(1) == ")")
-			tmp = tmp.left(tmp.len()-1);
-		int pequal = tmp.find("=", 0);
-		if (pequal < 0)
-			fatalerror_e("parameter %s misformat in model %s temp %s\n", entity.cstr(), model_str.cstr(), tmp.cstr());
-		tmp = tmp.substr(pequal+1);
-		return tmp;
+		return palloc(devices::nld_d_to_a_proxy(proxied));
 	}
+};
+
+logic_family_desc_t *setup_t::family_from_model(const pstring &model)
+{
+	model_map_t map;
+	model_parse(model, map);
+
+	if (setup_t::model_value_str(map, "TYPE") == "TTL")
+		return netlist_family_TTL;
+	if (setup_t::model_value_str(map, "TYPE") == "CD4XXX")
+		return netlist_family_CD4XXX;
+
+	logic_family_std_proxy_t *ret = palloc(logic_family_std_proxy_t);
+
+	ret->m_low_thresh_V = setup_t::model_value(map, "IVL");
+	ret->m_high_thresh_V = setup_t::model_value(map, "IVH");
+	ret->m_low_V = setup_t::model_value(map, "OVL");
+	ret->m_high_V = setup_t::model_value(map, "OVH");
+	ret->m_R_low = setup_t::model_value(map, "ORL");
+	ret->m_R_high = setup_t::model_value(map, "ORH");
+
+	return ret;
+}
+
+static pstring model_string(model_map_t &map)
+{
+	pstring ret = map["COREMODEL"] + "(";
+	for (unsigned i=0; i<map.size(); i++)
+		ret = ret + map.key_at(i) + "=" + map.value_at(i) + " ";
+
+	return ret + ")";
+}
+
+
+void setup_t::model_parse(const pstring &model_in, model_map_t &map)
+{
+	pstring model = model_in;
+	int pos = 0;
+	pstring key;
+
+	while (true)
+	{
+		pos = model.find("(");
+		if (pos >= 0) break;
+
+		key = model.ucase();
+		if (!m_models.contains(key))
+			netlist().error("Model %s not found\n", model.cstr());
+		model = m_models[key];
+	}
+	pstring xmodel = model.left(pos);
+
+	if (xmodel.equals("_"))
+		map["COREMODEL"] = key;
 	else
 	{
-		//netlist().log("Entity %s not found in model %s\n", entity.cstr(), tmp.cstr());
-		//printf("Entity %s not found in model %s\n", entity.cstr(), tmp.cstr());
-		return defval;
+		if (m_models.contains(xmodel))
+			model_parse(xmodel, map);
+		else
+			netlist().error("Model doesn't exist %s\n", xmodel.cstr());
+	}
+
+	pstring remainder=model.substr(pos+1).trim();
+	if (!remainder.endsWith(")"))
+		netlist().error("Model error %s\n", model.cstr());
+	remainder = remainder.left(remainder.len() - 1);
+	pstring_list_t pairs(remainder," ", true);
+	for (unsigned i=0; i<pairs.size(); i++)
+	{
+		int pose = pairs[i].find('=');
+		if (pose < 0)
+			netlist().error("Model error on pair %s\n", model.cstr());
+		map[pairs[i].left(pose).ucase()] = pairs[i].substr(pose+1);
 	}
 }
 
-nl_double setup_t::model_value(const pstring &model_str, const pstring &entity, const nl_double defval)
+const pstring setup_t::model_value_str(model_map_t &map, const pstring &entity)
 {
-	pstring tmp = model_value_str(model_str, entity, "NOTFOUND");
+	pstring ret;
+
+	if (entity != entity.ucase())
+		netlist().error("model parameters should be uppercase:%s %s\n", entity.cstr(), model_string(map).cstr());
+	if (!map.contains(entity))
+		netlist().error("Entity %s not found in model %s\n", entity.cstr(), model_string(map).cstr());
+	else
+		ret = map[entity];
+
+	return ret;
+}
+
+nl_double setup_t::model_value(model_map_t &map, const pstring &entity)
+{
+	pstring tmp = model_value_str(map, entity);
 
 	nl_double factor = NL_FCONST(1.0);
-	if (tmp != "NOTFOUND")
+	char numfac = *(tmp.right(1).cstr());
+	switch (numfac)
 	{
-		char numfac = *(tmp.right(1).cstr());
-		switch (numfac)
-		{
-			case 'M': factor = 1e6; break;
-			case 'k': factor = 1e3; break;
-			case 'm': factor = 1e-3; break;
-			case 'u': factor = 1e-6; break;
-			case 'n': factor = 1e-9; break;
-			case 'p': factor = 1e-12; break;
-			case 'f': factor = 1e-15; break;
-			case 'a': factor = 1e-18; break;
-			default:
-				if (numfac < '0' || numfac > '9')
-					fatalerror_e("Unknown number factor <%c> in: %s", numfac, entity.cstr());
-		}
-		if (factor != NL_FCONST(1.0))
-			tmp = tmp.left(tmp.len() - 1);
-		return tmp.as_double() * factor;
+		case 'M': factor = 1e6; break;
+		case 'k': factor = 1e3; break;
+		case 'm': factor = 1e-3; break;
+		case 'u': factor = 1e-6; break;
+		case 'n': factor = 1e-9; break;
+		case 'p': factor = 1e-12; break;
+		case 'f': factor = 1e-15; break;
+		case 'a': factor = 1e-18; break;
+		default:
+			if (numfac < '0' || numfac > '9')
+				fatalerror_e("Unknown number factor <%c> in: %s", numfac, entity.cstr());
 	}
-	else
-	{
-		//netlist().log("Entity %s not found in model %s\n", entity.cstr(), tmp.cstr());
-		return defval;
-	}
+	if (factor != NL_FCONST(1.0))
+		tmp = tmp.left(tmp.len() - 1);
+	return tmp.as_double() * factor;
 }
 
 // ----------------------------------------------------------------------------------------
