@@ -1301,8 +1301,9 @@ static int win_dialog_add_combobox_item(dialog_box *dialog, const char *item_lab
 	// create our own copy of the string
 	size_t newsize = strlen(item_label) + 1;
 	wchar_t * t_item_label = new wchar_t[newsize];
-	size_t convertedChars = 0;
-	mbstowcs_s(&convertedChars, t_item_label, newsize, item_label, _TRUNCATE);
+	//size_t convertedChars = 0;
+	//mbstowcs_s(&convertedChars, t_item_label, newsize, item_label, _TRUNCATE);
+	mbstowcs(t_item_label, item_label, newsize);
 
 	if (dialog_add_trigger(dialog, dialog->item_count, TRIGGER_INITDIALOG, CB_ADDSTRING, NULL, 0, (LPARAM) t_item_label, NULL, NULL))
 		return 1;
