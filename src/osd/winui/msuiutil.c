@@ -12,17 +12,17 @@
 
 BOOL DriverIsComputer(int driver_index)
 {
-	return (driver_list::driver(driver_index).flags & GAME_TYPE_COMPUTER) != 0;
+	return (driver_list::driver(driver_index).flags & MACHINE_TYPE_COMPUTER) != 0;
 }
 
 BOOL DriverIsConsole(int driver_index)
 {
-	return (driver_list::driver(driver_index).flags & GAME_TYPE_CONSOLE) != 0;
+	return (driver_list::driver(driver_index).flags & MACHINE_TYPE_CONSOLE) != 0;
 }
 
 BOOL DriverIsModified(int driver_index)
 {
-	return (driver_list::driver(driver_index).flags & GAME_UNOFFICIAL) != 0;
+	return (driver_list::driver(driver_index).flags & MACHINE_UNOFFICIAL) != 0;
 }
 
 BOOL DriverHasDevice(const game_driver *gamedrv, iodevice_t type)

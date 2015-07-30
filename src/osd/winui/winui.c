@@ -1611,7 +1611,7 @@ int GetParentRomSetIndex(const game_driver *driver)
 
 	if( nParentIndex >= 0)
 	{
-		if ((driver_list::driver(nParentIndex).flags & GAME_IS_BIOS_ROOT) == 0)
+		if ((driver_list::driver(nParentIndex).flags & MACHINE_IS_BIOS_ROOT) == 0)
 			return nParentIndex;
 	}
 
@@ -4781,7 +4781,7 @@ static void GamePicker_EnteringItem(HWND hwndPicker, int nItem)
 	EnableSelection(nItem);
 	MessReadMountedSoftware(nItem);
 	// decide if it is valid to load a savestate
-	if (driver_list::driver(nItem).flags & GAME_SUPPORTS_SAVE)
+	if (driver_list::driver(nItem).flags & MACHINE_SUPPORTS_SAVE)
 		EnableMenuItem(GetMenu(hMain), ID_FILE_LOADSTATE, MFS_ENABLED);
 	else
 		EnableMenuItem(GetMenu(hMain), ID_FILE_LOADSTATE, MFS_GRAYED);

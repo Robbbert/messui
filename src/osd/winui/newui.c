@@ -3221,7 +3221,7 @@ static void prepare_menus(HWND wnd)
 		}
 	}
 
-	if (window->machine().system().flags & GAME_SUPPORTS_SAVE)
+	if (window->machine().system().flags & MACHINE_SUPPORTS_SAVE)
 	{
 		set_command_state(menu_bar, ID_FILE_LOADSTATE_NEWUI, MFS_ENABLED);
 		set_command_state(menu_bar, ID_FILE_SAVESTATE_AS, MFS_ENABLED);

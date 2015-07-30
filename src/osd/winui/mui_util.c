@@ -399,8 +399,8 @@ static void InitDriversInfo(void)
 		machine_config config(*gamedrv, MameUIGlobal());
 
 		gameinfo->isClone = (GetParentRomSetIndex(gamedrv) != -1);
-		gameinfo->isBroken = ((gamedrv->flags & GAME_NOT_WORKING) != 0);
-		gameinfo->supportsSaveState = ((gamedrv->flags & GAME_SUPPORTS_SAVE) != 0);
+		gameinfo->isBroken = ((gamedrv->flags & MACHINE_NOT_WORKING) != 0);
+		gameinfo->supportsSaveState = ((gamedrv->flags & MACHINE_SUPPORTS_SAVE) != 0);
 		gameinfo->isHarddisk = FALSE;
 		gameinfo->isVertical = (gamedrv->flags & ORIENTATION_SWAP_XY) ? TRUE : FALSE;
 		device_iterator deviter(config.root_device());
@@ -495,8 +495,8 @@ static int InitDriversCache(void)
 			break;
 		}
 
-		gameinfo->isBroken          = ((gamedrv->flags & GAME_NOT_WORKING)   != 0);
-		gameinfo->supportsSaveState = ((gamedrv->flags & GAME_SUPPORTS_SAVE) != 0);
+		gameinfo->isBroken          = ((gamedrv->flags & MACHINE_NOT_WORKING)   != 0);
+		gameinfo->supportsSaveState = ((gamedrv->flags & MACHINE_SUPPORTS_SAVE) != 0);
 		gameinfo->isVertical        =  (gamedrv->flags & ORIENTATION_SWAP_XY) ? TRUE : FALSE;
 		gameinfo->screenCount       =   cache & DRIVER_CACHE_SCREEN;
 		gameinfo->isClone           = ((cache & DRIVER_CACHE_CLONE)     != 0);
@@ -548,17 +548,17 @@ BOOL DriverIsHarddisk(int driver_index)
 
 BOOL DriverIsBios(int driver_index)
 {
-	return ( driver_list::driver(driver_index).flags & GAME_IS_BIOS_ROOT ) ? TRUE : FALSE;
+	return ( driver_list::driver(driver_index).flags & MACHINE_IS_BIOS_ROOT ) ? TRUE : FALSE;
 }
 
 BOOL DriverIsMechanical(int driver_index)
 {
-	return ( driver_list::driver(driver_index).flags & GAME_MECHANICAL ) ? TRUE : FALSE;
+	return ( driver_list::driver(driver_index).flags & MACHINE_MECHANICAL ) ? TRUE : FALSE;
 }
 
 BOOL DriverIsArcade(int driver_index)
 {
-	return ( driver_list::driver(driver_index).flags & GAME_TYPE_ARCADE ) ? TRUE : FALSE;
+	return ( driver_list::driver(driver_index).flags & MACHINE_TYPE_ARCADE ) ? TRUE : FALSE;
 }
 
 BOOL DriverHasOptionalBIOS(int driver_index)
