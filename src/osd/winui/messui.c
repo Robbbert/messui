@@ -119,11 +119,6 @@ static const device_entry s_devices[] =
 static const LPCTSTR mess_column_names[] =
 {
 	TEXT("Filename"),
-	TEXT(""), // Goodname
-	TEXT(""), // Manufacturer
-	TEXT(""), // Year
-	TEXT(""), // Playable
-	TEXT(""),
 };
 
 // columns for software list
@@ -807,7 +802,7 @@ void InitMessPicker(void)
 
 	memset(&opts, 0, sizeof(opts));
 	opts.pCallbacks = &s_softwareListCallbacks;
-	opts.nColumnCount = MESS_COLUMN_MAX; // number of columns in sw-list
+	opts.nColumnCount = SWLIST_COLUMN_MAX; // number of columns in sw-list
 	opts.ppszColumnNames = softlist_column_names; // columns for sw-list
 	SetupSoftwareList(hwndSoftwareList, &opts); // show them
 
@@ -1736,100 +1731,3 @@ static void SetupSoftwareTabView(void)
 	SetupTabView(GetDlgItem(GetMainWindow(), IDC_SWTAB), &opts);
 }
 
-
-// ------------------------------------------------------------------------
-// MessUI Diagnostics
-// ------------------------------------------------------------------------
-
-#ifdef MAME_DEBUG
-
-static int s_nOriginalPick;
-static UINT_PTR s_nTestingTimer;
-static BOOL s_bInTimerProc;
-
-static void MessTestsColumns(void)
-{
-	int i = 0, j = 0;
-	int oldshown[MESS_COLUMN_MAX];
-	int shown[MESS_COLUMN_MAX];
-
-	GetMessColumnShown(oldshown);
-
-	shown[0] = 1;
-	for (i = 0; i < (1<<(MESS_COLUMN_MAX-1)); i++)
-	{
-		for (j = 1; j < MESS_COLUMN_MAX; j++)
-			shown[j] = (i & (1<<(j-1))) ? 1 : 0;
-
-		SetMessColumnShown(shown);
-		Picker_ResetColumnDisplay(GetDlgItem(GetMainWindow(), IDC_SWLIST));
-	}
-
-	SetMessColumnShown(oldshown);
-	Picker_ResetColumnDisplay(GetDlgItem(GetMainWindow(), IDC_SWLIST));
-}
-
-
-
-
-static void CALLBACK MessTestsTimerProc(HWND hwnd, UINT uMsg, UINT_PTR idEvent, DWORD dwTime)
-{
-	int nNewGame = 0;
-	HWND hwndList = GetDlgItem(GetMainWindow(), IDC_LIST);
-
-	// if either of the pickers have further idle work to do, or we are
-	// already in this timerproc, do not do anything
-	if (s_bInTimerProc || Picker_IsIdling(hwndList)
-		|| Picker_IsIdling(GetDlgItem(GetMainWindow(), IDC_SWLIST)))
-		return;
-	s_bInTimerProc = TRUE;
-
-	nNewGame = GetSelectedPick() + 1;
-
-	if (nNewGame >= driver_list::total())
-	{
-		/* We are done */
-		Picker_SetSelectedPick(hwndList, s_nOriginalPick);
-
-		KillTimer(NULL, s_nTestingTimer);
-		s_nTestingTimer = 0;
-
-		win_message_box_utf8(GetMainWindow(), "Tests successfully completed!", MAMEUINAME, MB_OK);
-	}
-	else
-	{
-//      MessTestsFlex(GetDlgItem(GetMainWindow(), IDC_SWLIST), drivers[Picker_GetSelectedItem(hwndList)]);
-		Picker_SetSelectedPick(hwndList, nNewGame);
-	}
-	s_bInTimerProc = FALSE;
-}
-
-
-
-static void MessTestsBegin(void)
-{
-	int nOriginalPick = 0;
-	HWND hwndList = GetDlgItem(GetMainWindow(), IDC_LIST);
-
-	nOriginalPick = GetSelectedPick();
-
-	// If we are not currently running tests, set up the timer and keep track
-	// of the original selected pick item
-	if (!s_nTestingTimer)
-	{
-		s_nTestingTimer = SetTimer(NULL, 0, 50, MessTestsTimerProc);
-		if (!s_nTestingTimer)
-			return;
-		s_nOriginalPick = nOriginalPick;
-	}
-
-	MessTestsColumns();
-
-	if (nOriginalPick == 0)
-		Picker_SetSelectedPick(hwndList, 1);
-	Picker_SetSelectedPick(hwndList, 0);
-}
-
-
-
-#endif // MAME_DEBUG

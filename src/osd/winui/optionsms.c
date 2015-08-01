@@ -41,8 +41,8 @@ static const options_entry mess_wingui_settings[] =
 	{ MESSUI_SWLIST_SORT_COLUMN,      "0", OPTION_INTEGER, NULL },
 	{ MESSUI_SWLIST_SORT_REVERSED,    "0", OPTION_BOOLEAN, NULL },
 	{ MESSUI_SOFTWARE_COLUMN_WIDTHS,  "400", OPTION_STRING, NULL },
-	{ MESSUI_SOFTWARE_COLUMN_ORDER,   "0,1,1,1,1", OPTION_STRING, NULL }, // 1= dummy column
-	{ MESSUI_SOFTWARE_COLUMN_SHOWN,   "1,0,0,0,0", OPTION_STRING, NULL }, // 0=don't show it
+	{ MESSUI_SOFTWARE_COLUMN_ORDER,   "0", OPTION_STRING, NULL }, // 1= dummy column
+	{ MESSUI_SOFTWARE_COLUMN_SHOWN,   "1", OPTION_STRING, NULL }, // 0=don't show it
 	{ MESSUI_SOFTWARE_SORT_COLUMN,    "0", OPTION_INTEGER, NULL },
 	{ MESSUI_SOFTWARE_SORT_REVERSED,  "0", OPTION_BOOLEAN, NULL },
 	{ MESSUI_SOFTWARE_TAB,            "0", OPTION_STRING, NULL },
@@ -64,7 +64,7 @@ void MessSetupGameOptions(windows_options &opts, int driver_index)
 void SetSWListColumnOrder(int order[])
 {
 	char column_order_string[80];
-	ColumnEncodeStringWithCount(order, column_order_string, MESS_COLUMN_MAX);
+	ColumnEncodeStringWithCount(order, column_order_string, SWLIST_COLUMN_MAX);
 	std::string error_string;
 	MameUISettings().set_value(MESSUI_SWLIST_COLUMN_ORDER, column_order_string, OPTION_PRIORITY_CMDLINE,error_string);
 }
@@ -73,13 +73,13 @@ void GetSWListColumnOrder(int order[])
 {
 	const char *column_order_string;
 	column_order_string = MameUISettings().value(MESSUI_SWLIST_COLUMN_ORDER);
-	ColumnDecodeStringWithCount(column_order_string, order, MESS_COLUMN_MAX);
+	ColumnDecodeStringWithCount(column_order_string, order, SWLIST_COLUMN_MAX);
 }
 
 void SetSWListColumnShown(int shown[])
 {
 	char column_shown_string[80];
-	ColumnEncodeStringWithCount(shown, column_shown_string, MESS_COLUMN_MAX);
+	ColumnEncodeStringWithCount(shown, column_shown_string, SWLIST_COLUMN_MAX);
 	std::string error_string;
 	MameUISettings().set_value(MESSUI_SWLIST_COLUMN_SHOWN, column_shown_string, OPTION_PRIORITY_CMDLINE,error_string);
 }
@@ -88,13 +88,13 @@ void GetSWListColumnShown(int shown[])
 {
 	const char *column_shown_string;
 	column_shown_string = MameUISettings().value(MESSUI_SWLIST_COLUMN_SHOWN);
-	ColumnDecodeStringWithCount(column_shown_string, shown, MESS_COLUMN_MAX);
+	ColumnDecodeStringWithCount(column_shown_string, shown, SWLIST_COLUMN_MAX);
 }
 
 void SetSWListColumnWidths(int width[])
 {
 	char column_width_string[80];
-	ColumnEncodeStringWithCount(width, column_width_string, MESS_COLUMN_MAX);
+	ColumnEncodeStringWithCount(width, column_width_string, SWLIST_COLUMN_MAX);
 	std::string error_string;
 	MameUISettings().set_value(MESSUI_SWLIST_COLUMN_WIDTHS, column_width_string, OPTION_PRIORITY_CMDLINE,error_string);
 }
@@ -103,7 +103,7 @@ void GetSWListColumnWidths(int width[])
 {
 	const char *column_width_string;
 	column_width_string = MameUISettings().value(MESSUI_SWLIST_COLUMN_WIDTHS);
-	ColumnDecodeStringWithCount(column_width_string, width, MESS_COLUMN_MAX);
+	ColumnDecodeStringWithCount(column_width_string, width, SWLIST_COLUMN_MAX);
 }
 
 void SetSWListSortColumn(int column)

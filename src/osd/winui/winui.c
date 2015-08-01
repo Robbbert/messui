@@ -4220,7 +4220,7 @@ static BOOL MameCommand(HWND hwnd,int id, HWND hwndCtl, UINT codeNotify)
 	case ID_CUSTOMIZE_FIELDS:
 		if (DialogBox(GetModuleHandle(NULL),
 			MAKEINTRESOURCE(IDD_COLUMNS), hMain, ColumnDialogProc) == TRUE)
-			ResetColumnDisplay(TRUE);
+			ResetColumnDisplay(FALSE);
 		SetFocus(hwndList);
 		return TRUE;
 

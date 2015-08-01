@@ -46,7 +46,6 @@ struct _file_info
 	char year[10];
 	char full_name[MAX_PATH*2];
 	char usage[MAX_PATH*2];
-
 	char device[MAX_PATH];
 };
 
