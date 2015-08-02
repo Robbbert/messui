@@ -421,6 +421,8 @@ static MACHINE_CONFIG_DERIVED_CLASS( invadpt2, mw8080bw_root, _8080bw_state )
 	MCFG_SCREEN_MODIFY("screen")
 	MCFG_SCREEN_UPDATE_DRIVER(_8080bw_state, screen_update_invadpt2)
 
+	MCFG_PALETTE_ADD_3BIT_RBG("palette")
+
 	/* sound hardware */
 	MCFG_FRAGMENT_ADD(invaders_samples_audio)
 MACHINE_CONFIG_END
@@ -623,6 +625,8 @@ static MACHINE_CONFIG_DERIVED_CLASS( cosmo, mw8080bw_root, _8080bw_state )
 	MCFG_SCREEN_MODIFY("screen")
 	MCFG_SCREEN_UPDATE_DRIVER(_8080bw_state, screen_update_cosmo)
 
+	MCFG_PALETTE_ADD_3BIT_RGB("palette")
+
 	/* sound hardware */
 	MCFG_FRAGMENT_ADD(invaders_samples_audio)
 MACHINE_CONFIG_END
@@ -784,6 +788,8 @@ MACHINE_CONFIG_START( spacecom, _8080bw_state )
 	MCFG_SCREEN_VISIBLE_AREA(0*8, 32*8-1, 0*8, 28*8-1)
 	MCFG_SCREEN_UPDATE_DRIVER(_8080bw_state, screen_update_spacecom)
 
+	MCFG_PALETTE_ADD_BLACK_AND_WHITE("palette")
+
 	/* sound hardware */
 	MCFG_FRAGMENT_ADD(invaders_audio)
 MACHINE_CONFIG_END
@@ -892,6 +898,8 @@ static MACHINE_CONFIG_DERIVED_CLASS( invrvnge, mw8080bw_root, _8080bw_state )
 	/* video hardware */
 	MCFG_SCREEN_MODIFY("screen")
 	MCFG_SCREEN_UPDATE_DRIVER(_8080bw_state, screen_update_invadpt2)
+
+	MCFG_PALETTE_ADD_3BIT_RBG("palette")
 
 	/* sound hardware */
 	MCFG_SPEAKER_STANDARD_MONO("mono")
@@ -1055,6 +1063,8 @@ static MACHINE_CONFIG_DERIVED_CLASS( lrescue, mw8080bw_root, _8080bw_state )
 	/* video hardware */
 	MCFG_SCREEN_MODIFY("screen")
 	MCFG_SCREEN_UPDATE_DRIVER(_8080bw_state, screen_update_invadpt2)
+
+	MCFG_PALETTE_ADD_3BIT_RBG("palette")
 
 	/* sound hardware */
 	MCFG_SPEAKER_STANDARD_MONO("mono")
@@ -1385,6 +1395,8 @@ static MACHINE_CONFIG_DERIVED_CLASS( schaser, mw8080bw_root, _8080bw_state )
 	MCFG_SCREEN_MODIFY("screen")
 	MCFG_SCREEN_UPDATE_DRIVER(_8080bw_state, screen_update_schaser)
 
+	MCFG_PALETTE_ADD_3BIT_RBG("palette")
+
 	/* sound hardware */
 	MCFG_SPEAKER_STANDARD_MONO("mono")
 
@@ -1490,6 +1502,8 @@ static MACHINE_CONFIG_DERIVED_CLASS( schasercv, mw8080bw_root, _8080bw_state )
 	MCFG_SCREEN_MODIFY("screen")
 	MCFG_SCREEN_UPDATE_DRIVER(_8080bw_state, screen_update_schasercv)
 
+	MCFG_PALETTE_ADD_3BIT_RBG("palette")
+
 	/* sound hardware */
 	MCFG_FRAGMENT_ADD(invaders_samples_audio)
 
@@ -1570,6 +1584,9 @@ static MACHINE_CONFIG_DERIVED_CLASS( sflush, mw8080bw_root, _8080bw_state )
 	/* video hardware */
 	MCFG_SCREEN_MODIFY("screen")
 	MCFG_SCREEN_UPDATE_DRIVER(_8080bw_state, screen_update_sflush)
+
+	MCFG_PALETTE_ADD("palette", 8)
+	MCFG_PALETTE_INIT_OWNER(_8080bw_state, sflush)
 MACHINE_CONFIG_END
 
 
@@ -1670,6 +1687,8 @@ static MACHINE_CONFIG_DERIVED_CLASS( lupin3, mw8080bw_root, _8080bw_state )
 	MCFG_SCREEN_MODIFY("screen")
 	MCFG_SCREEN_UPDATE_DRIVER(_8080bw_state, screen_update_indianbt)
 
+	MCFG_PALETTE_ADD_3BIT_RGB("palette")
+
 	/* sound hardware */
 	MCFG_SPEAKER_STANDARD_MONO("mono")
 
@@ -1713,6 +1732,8 @@ static MACHINE_CONFIG_DERIVED_CLASS( lupin3a, mw8080bw_root, _8080bw_state )
 	/* video hardware */
 	MCFG_SCREEN_MODIFY("screen")
 	MCFG_SCREEN_UPDATE_DRIVER(_8080bw_state, screen_update_lupin3)
+
+	MCFG_PALETTE_ADD_3BIT_RBG("palette")
 
 	/* sound hardware */
 	MCFG_SPEAKER_STANDARD_MONO("mono")
@@ -1865,6 +1886,8 @@ static MACHINE_CONFIG_DERIVED_CLASS( polaris, mw8080bw_root, _8080bw_state )
 	MCFG_SCREEN_MODIFY("screen")
 	MCFG_SCREEN_UPDATE_DRIVER(_8080bw_state, screen_update_polaris)
 
+	MCFG_PALETTE_ADD_3BIT_RBG("palette")
+
 	/* sound hardware */
 	MCFG_SPEAKER_STANDARD_MONO("mono")
 
@@ -1988,6 +2011,8 @@ static MACHINE_CONFIG_DERIVED_CLASS( ballbomb, mw8080bw_root, _8080bw_state )
 	/* video hardware */
 	MCFG_SCREEN_MODIFY("screen")
 	MCFG_SCREEN_UPDATE_DRIVER(_8080bw_state, screen_update_ballbomb)
+
+	MCFG_PALETTE_ADD_3BIT_RBG("palette")
 
 	/* sound hardware */
 	MCFG_FRAGMENT_ADD(invaders_samples_audio)
@@ -2230,6 +2255,8 @@ static MACHINE_CONFIG_DERIVED_CLASS( indianbt, mw8080bw_root, _8080bw_state )
 	MCFG_SCREEN_MODIFY("screen")
 	MCFG_SCREEN_UPDATE_DRIVER(_8080bw_state, screen_update_indianbt)
 
+	MCFG_PALETTE_ADD_3BIT_RGB("palette")
+
 	/* sound hardware */
 	MCFG_FRAGMENT_ADD(invaders_samples_audio)
 
@@ -2252,6 +2279,8 @@ static MACHINE_CONFIG_DERIVED_CLASS( indianbtbr, mw8080bw_root, _8080bw_state )
 	/* video hardware */
 	MCFG_SCREEN_MODIFY("screen")
 	MCFG_SCREEN_UPDATE_DRIVER(_8080bw_state, screen_update_indianbt)
+
+	MCFG_PALETTE_ADD_3BIT_RGB("palette")
 
 	/* sound hardware */
 	MCFG_FRAGMENT_ADD(invaders_samples_audio)
@@ -2323,6 +2352,8 @@ static MACHINE_CONFIG_DERIVED_CLASS( steelwkr, mw8080bw_root, _8080bw_state )
 	/* video hardware */
 	MCFG_SCREEN_MODIFY("screen")
 	MCFG_SCREEN_UPDATE_DRIVER(_8080bw_state, screen_update_invadpt2)
+
+	MCFG_PALETTE_ADD_3BIT_RBG("palette")
 
 	/* sound hardware */
 	MCFG_FRAGMENT_ADD(invaders_samples_audio)
@@ -2498,6 +2529,8 @@ MACHINE_CONFIG_START( shuttlei, _8080bw_state )
 	MCFG_SCREEN_SIZE(32*8, 32*8)
 	MCFG_SCREEN_VISIBLE_AREA(0*8, 32*8-1, 0*8, 24*8-1)
 	MCFG_SCREEN_UPDATE_DRIVER(_8080bw_state, screen_update_shuttlei)
+
+	MCFG_PALETTE_ADD_BLACK_AND_WHITE("palette")
 
 	/* sound hardware */
 	MCFG_FRAGMENT_ADD(invaders_samples_audio)
