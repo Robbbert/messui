@@ -233,6 +233,8 @@ const char *GetSelectedSoftware(int driver_index, const machine_config *config, 
 	return o.value(opt_name);
 }
 
+#if 0
+// old extra software
 // To be deleted when conversion to "comments_directory" is complete
 void SetExtraSoftwarePaths(int driver_index, const char *extra_paths)
 {
@@ -244,6 +246,7 @@ void SetExtraSoftwarePaths(int driver_index, const char *extra_paths)
 	std::string error_string;
 	MameUISettings().set_value(opt_name, extra_paths, OPTION_PRIORITY_CMDLINE,error_string);
 }
+#endif
 
 // sw = 0 when looking for the path string
 // sw = 1 when doing search for compatible software
@@ -252,14 +255,14 @@ const char *GetExtraSoftwarePaths(int driver_index, bool sw)
 	if (driver_index == -1)
 		return GetCommentDir();
 
-	char opt_name[256];
+//	char opt_name[256];
 	const char *paths;
 
 	assert(0 <= driver_index && driver_index < driver_list::total());
 
-	snprintf(opt_name, ARRAY_LENGTH(opt_name), "%s_extra_software", driver_list::driver(driver_index).name);
-	paths = MameUISettings().value(opt_name);
-	if (paths && (paths[0] > 64)) return paths; // must start with a drive letter
+//	snprintf(opt_name, ARRAY_LENGTH(opt_name), "%s_extra_software", driver_list::driver(driver_index).name);
+//	paths = MameUISettings().value(opt_name);
+//	if (paths && (paths[0] > 64)) return paths; // must start with a drive letter
 
 	// Try comments
 	windows_options o;
@@ -277,15 +280,15 @@ const char *GetExtraSoftwarePaths(int driver_index, bool sw)
 			nParentIndex = GetParentIndex(&driver_list::driver(driver_index));
 			if (nParentIndex >= 0)
 			{
-				snprintf(opt_name, ARRAY_LENGTH(opt_name), "%s_extra_software", driver_list::driver(nParentIndex).name);
-				paths = MameUISettings().value(opt_name);
-				if (paths && (paths[0] > 64))
-				{} else
-				{
+//				snprintf(opt_name, ARRAY_LENGTH(opt_name), "%s_extra_software", driver_list::driver(nParentIndex).name);
+//				paths = MameUISettings().value(opt_name);
+//				if (paths && (paths[0] > 64))
+//				{} else
+//				{
 					// Try comments
 					load_options(o, nParentIndex);
 					paths = o.value(OPTION_COMMENT_DIRECTORY);
-				}
+//				}
 			}
 		}
 		if (paths && (paths[0] > 64)) return paths; // must start with a drive letter
@@ -298,15 +301,15 @@ const char *GetExtraSoftwarePaths(int driver_index, bool sw)
 		nParentIndex = GetCompatIndex(&driver_list::driver(driver_index));
 		if (nParentIndex >= 0)
 		{
-			snprintf(opt_name, ARRAY_LENGTH(opt_name), "%s_extra_software", driver_list::driver(nParentIndex).name);
-			paths = MameUISettings().value(opt_name);
-			if (paths && (paths[0] > 64))
-			{} else
-			{
+//			snprintf(opt_name, ARRAY_LENGTH(opt_name), "%s_extra_software", driver_list::driver(nParentIndex).name);
+//			paths = MameUISettings().value(opt_name);
+//			if (paths && (paths[0] > 64))
+//			{} else
+//			{
 				// Try comments
 				load_options(o, nParentIndex);
 				paths = o.value(OPTION_COMMENT_DIRECTORY);
-			}
+//			}
 		}
 	}
 

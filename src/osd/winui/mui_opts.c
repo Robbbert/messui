@@ -339,12 +339,15 @@ const options_entry winui_options::s_option_entries[] =
 	{ NULL }
 };
 
+#if 0
+// no longer used, but keep in case we need to add more per-game options in the future
 static const options_entry perGameOptions[] =
 {
 	// per game options in messui.ini - to transfer to commentpath
 	{ "_extra_software",         "",         OPTION_STRING,  NULL },
 	{ NULL }
 };
+#endif
 
 static const options_entry filterOptions[] =
 {
@@ -406,6 +409,8 @@ BOOL OptionsInit()
 	MessSetupSettings(settings);
 #endif
 
+#if 0
+// keep in case we need per-game options in the future
 	// set up per game options
 	{
 		char buffer[128];
@@ -430,6 +435,7 @@ BOOL OptionsInit()
 			}
 		}
 	}
+#endif
 
 	game_opts.add_entries();
 	// set up global options

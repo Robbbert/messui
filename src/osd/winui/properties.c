@@ -2141,7 +2141,7 @@ static BOOL DirListReadControl(datamap *map, HWND dialog, HWND control, windows_
 	LV_ITEM lvi;
 	TCHAR buffer[2048];
 	char *utf8_dir_list;
-	int i, pos, driver_index;
+	int i, pos; //, driver_index;
 	BOOL res;
 
 	// determine the directory count; note that one item is the "<    >" entry
@@ -2173,8 +2173,8 @@ static BOOL DirListReadControl(datamap *map, HWND dialog, HWND control, windows_
 	utf8_dir_list = utf8_from_tstring(buffer);
 	if (utf8_dir_list != NULL)
 	{
-		driver_index = PropertiesCurrentGame(dialog);
-		SetExtraSoftwarePaths(driver_index, utf8_dir_list);
+//		driver_index = PropertiesCurrentGame(dialog);
+//		SetExtraSoftwarePaths(driver_index, utf8_dir_list);
 		std::string error_string;
 		pCurrentOpts.set_value(OPTION_COMMENT_DIRECTORY, utf8_dir_list, OPTION_PRIORITY_CMDLINE,error_string);
 		osd_free(utf8_dir_list);
