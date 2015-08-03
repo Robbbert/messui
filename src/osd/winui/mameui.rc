@@ -69,7 +69,8 @@ BEGIN
         MENUITEM SEPARATOR
         MENUITEM "Pr&operties",                 ID_GAME_PROPERTIES
         MENUITEM SEPARATOR
-        MENUITEM "&Audit all systems",          ID_FILE_AUDIT
+        MENUITEM "Audi&t existing sets",        ID_FILE_AUDIT_X
+        MENUITEM "&Audit all sets",             ID_FILE_AUDIT
         MENUITEM SEPARATOR
         MENUITEM "E&xit",                       ID_FILE_EXIT
     END
@@ -289,7 +290,7 @@ BEGIN
         END
         MENUITEM "Show &FPS",                   ID_OPTIONS_TOGGLEFPS
     END
-    POPUP "&Devices"
+    POPUP "&Media"
     BEGIN
         MENUITEM SEPARATOR
     END
@@ -323,7 +324,7 @@ END
 
 3 TEXTINCLUDE MOVEABLE PURE
 BEGIN
-    "#include ""mamevers.rc"" // Version block\r\n"
+    "#include ""messvers.rc"" // Version block\r\n"
     "\r\n"
     "\0"
 END
@@ -338,7 +339,7 @@ END
 
 // Icon with lowest ID value placed first to ensure application icon
 // remains consistent on all systems.
-IDI_MAMEUI_ICON         ICON                    "res\\mame.ico"
+IDI_MAMEUI_ICON         ICON                    "res\\messui.ico"
 IDI_WIN_ROMS            ICON                    "res\\win_roms.ico"
 IDI_WIN_NOROMS          ICON                    "res\\win_noro.ico"
 IDI_WIN_UNKNOWN         ICON                    "res\\win_unkn.ico"
@@ -605,22 +606,18 @@ BEGIN
     LTEXT           "Static",IDC_PROP_STATUS,75,55,139,30
     CONTROL         "",IDC_STATIC,"Static",SS_ETCHEDHORZ,18,85,178,1
     LTEXT           "CPU:",IDC_STATIC,18,90,47,8
-    LTEXT           "Static\nStatic\nStatic\nStatic\nStatic",IDC_PROP_CPU,75,
-                    90,139,40
+    LTEXT           "Static\nStatic\nStatic\nStatic\nStatic",IDC_PROP_CPU,75,90,139,40
     CONTROL         "",IDC_STATIC,"Static",SS_ETCHEDHORZ,18,130,178,1
     LTEXT           "Sound:",IDC_STATIC,18,135,47,8
-    LTEXT           "Static\nStatic\nStatic\nStatic\nStatic",IDC_PROP_SOUND,
-                    75,135,139,45
+    LTEXT           "Static\nStatic\nStatic\nStatic\nStatic",IDC_PROP_SOUND,75,135,139,45
     CONTROL         "",IDC_STATIC,"Static",SS_ETCHEDHORZ,18,181,178,1
-    LTEXT           "Screen:",IDC_STATIC,18,188,47,8
-    LTEXT           "Static\nStatic\nStatic",IDC_PROP_SCREEN,75,188,139,27
-    LTEXT           "Colors:",IDC_STATIC,16,228,47,8
-    LTEXT           "Static",IDC_PROP_COLORS,73,228,139,8
-    LTEXT           "Clone of:",IDC_PROP_CLONEOF_TEXT,16,249,50,8
-    LTEXT           "Static",IDC_PROP_CLONEOF,74,249,130,11
-    LTEXT           "Source:",IDC_STATIC,16,238,47,8
-    LTEXT           "Static",IDC_PROP_SOURCE,73,238,139,8
+    LTEXT           "Screen:",IDC_STATIC,18,186,47,8
+    LTEXT           "Static\nStatic\nStatic",IDC_PROP_SCREEN,75,186,139,27
     CONTROL         "",IDC_STATIC,"Static",SS_ETCHEDHORZ,19,218,177,1
+    LTEXT           "Source:",IDC_STATIC,16,223,47,8
+    LTEXT           "Static",IDC_PROP_SOURCE,73,223,139,8
+    LTEXT           "Clone of:",IDC_PROP_CLONEOF_TEXT,16,233,50,8
+    LTEXT           "Static",IDC_PROP_CLONEOF,74,233,130,33
 END
 
 IDD_PROP_AUDIT DIALOG DISCARDABLE 0, 0, 220, 240
@@ -996,14 +993,14 @@ BEGIN
                     HIDC_HISTORY
 END
 
-IDD_FILTERS DIALOGEX 0, 0, 190, 196
+IDD_FILTERS DIALOGEX 0, 0, 190, 210
 STYLE DS_MODALFRAME | DS_3DLOOK | WS_POPUP | WS_CAPTION |
     WS_SYSMENU
 EXSTYLE WS_EX_CONTEXTHELP
 CAPTION "System Filters"
 FONT 8, "MS Shell Dlg", 0, 0, 0x1
 BEGIN
-    GROUPBOX        "System filters",IDC_STATIC,6,4,178,99
+    GROUPBOX        "System filters",IDC_STATIC,6,4,178,113
     CONTROL         "&Vector Graphics",IDC_FILTER_VECTOR,"Button",
                     BS_AUTOCHECKBOX | WS_TABSTOP,14,16,70,10,0,
                     HIDC_FILTER_VECTOR
@@ -1020,6 +1017,8 @@ BEGIN
     CONTROL         "&Unavailable",IDC_FILTER_UNAVAILABLE,"Button",
                     BS_AUTOCHECKBOX | WS_TABSTOP,14,86,57,10,0,
                     HIDC_FILTER_UNAVAILABLE
+    CONTROL         "Arcade",IDC_FILTER_ARCADE,"Button",
+                    BS_AUTOCHECKBOX | WS_TABSTOP,14,100,57,10,0
     CONTROL         "&Raster Graphics",IDC_FILTER_RASTER,"Button",
                     BS_AUTOCHECKBOX | WS_TABSTOP,100,16,70,10,0,
                     HIDC_FILTER_RASTER
@@ -1032,14 +1031,16 @@ BEGIN
                     WS_TABSTOP,100,58,47,10,0,HIDC_FILTER_VERTICAL
     CONTROL         "&Mechanical",IDC_FILTER_MECHANICAL,"Button",BS_AUTOCHECKBOX |
                     WS_TABSTOP,100,86,60,10,0,HIDC_FILTER_MECHANICAL
+    CONTROL         "MESS",IDC_FILTER_MESS,"Button",BS_AUTOCHECKBOX |
+                    WS_TABSTOP,100,100,58,10,0,HIDC_FILTER_MECHANICAL
     LTEXT           "(*) = inherited from parent folder",IDC_INHERITED,14,72,
                     99,10
-    CTEXT           "System filters allow customising the systems that are displayed in each folder by hiding games that match the filters applied.",IDC_STATIC,6,108,178,27
-    GROUPBOX        "&Description filter",IDC_STATIC,6,136,178,33
-    EDITTEXT        IDC_FILTER_EDIT,14,148,162,13,ES_AUTOHSCROLL,0,
+    CTEXT           "System filters allow customising the systems that are displayed in each folder by hiding games that match the filters applied.",IDC_STATIC,6,122,178,27
+    GROUPBOX        "&Description filter",IDC_STATIC,6,150,178,33
+    EDITTEXT        IDC_FILTER_EDIT,14,162,162,13,ES_AUTOHSCROLL,0,
                     HIDC_FILTER_EDIT
-    DEFPUSHBUTTON   "&OK",IDOK,42,175,50,14
-    PUSHBUTTON      "&Cancel",IDCANCEL,98,175,50,14
+    DEFPUSHBUTTON   "&OK",IDOK,42,189,50,14
+    PUSHBUTTON      "&Cancel",IDCANCEL,98,189,50,14
 END
 
 IDD_RESET DIALOGEX 0, 0, 190, 122
@@ -1538,7 +1539,7 @@ END
 //
 // Generated from the TEXTINCLUDE 3 resource.
 //
-#include "mamevers.rc" // Version block
+#include "messvers.rc" // Version block
 
 
 /////////////////////////////////////////////////////////////////////////////
