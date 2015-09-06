@@ -213,8 +213,6 @@ static int MIN_HEIGHT = DBU_MIN_HEIGHT;
 extern const ICONDATA g_iconData[];
 extern const TCHAR g_szPlayGameString[];
 extern const char g_szGameCountString[];
-extern char *g_history_filename;
-extern char *g_mameinfo_filename;
 
 typedef struct _play_options play_options;
 struct _play_options
@@ -1402,8 +1400,8 @@ void UpdateScreenShot(void)
 		// - we have history for the game
 		// - we're on the first tab
 		// - we DON'T have a separate history tab
-		showing_history = (have_history && (TabView_GetCurrentTab(hTabCtrl) == GetHistoryTab() || GetHistoryTab() == TAB_ALL ) &&
-						   GetShowTab(TAB_HISTORY) == FALSE);
+		showing_history = (have_history && (TabView_GetCurrentTab(hTabCtrl) == GetHistoryTab()
+			|| GetHistoryTab() == TAB_ALL ) && GetShowTab(TAB_HISTORY) == FALSE);
 		CalculateBestScreenShotRect(GetDlgItem(hMain, IDC_SSFRAME), &rect,showing_history);
 
 		dwStyle   = GetWindowLong(GetDlgItem(hMain, IDC_SSPICTURE), GWL_STYLE);
@@ -1798,9 +1796,6 @@ static BOOL Win32UI_init(HINSTANCE hInstance, LPWSTR lpCmdLine, int nCmdShow)
 	hTreeView = GetDlgItem(hMain, IDC_TREE);
 	hwndList  = GetDlgItem(hMain, IDC_LIST);
 
-	g_history_filename = core_strdup(GetHistoryFileName());
-	g_mameinfo_filename = core_strdup(GetMAMEInfoFileName());
-
 	if (!InitSplitters())
 		return FALSE;
 
@@ -2034,9 +2029,6 @@ static void Win32UI_exit()
 	OptionsExit();
 
 	HelpExit();
-
-	osd_free(g_mameinfo_filename);
-	osd_free(g_history_filename);
 
 	pool_free_lib(mameui_pool);
 	mameui_pool = NULL;
@@ -4450,26 +4442,6 @@ static BOOL MameCommand(HWND hwnd,int id, HWND hwndCtl, UINT codeNotify)
 			osd_free(t_bgdir);
 		}
 		break;
-	case ID_OPTIONS_HISTORY:
-		{
-			char filename[MAX_PATH];
-			strcpy(filename, GetHistoryFileName());
-			if (CommonFileDialog(GetOpenFileName, filename, FILETYPE_HISTORY_FILE))
-			{
-				SetHistoryFileName(filename);
-			}
-			return TRUE;
-		}
-	case ID_OPTIONS_MAMEINFO:
-		{
-			char filename[MAX_PATH];
-			strcpy(filename, GetMAMEInfoFileName());
-			if (CommonFileDialog(GetOpenFileName, filename, FILETYPE_MAMEINFO_FILE))
-			{
-				SetMAMEInfoFileName(filename);
-			}
-			return TRUE;
-		}
 
 	case ID_HELP_ABOUT:
 		DialogBox(GetModuleHandle(NULL), MAKEINTRESOURCE(IDD_ABOUT),
