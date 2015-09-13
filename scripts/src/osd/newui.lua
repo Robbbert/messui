@@ -25,6 +25,7 @@ function maintargetosdoptions(_target,_subtarget)
 	links {
 		"comctl32",
 		"comdlg32",
+		"psapi",
 	}
 
 -- needs same resources as messui, because dropdown menus are in mameui.rc
@@ -88,6 +89,7 @@ project ("osd_" .. _OPTIONS["osd"])
 
 	includedirs {
 		MAME_DIR .. "src/emu",
+		MAME_DIR .. "src/devices",
 		MAME_DIR .. "src/osd",
 		MAME_DIR .. "src/lib",
 		MAME_DIR .. "src/lib/util",
