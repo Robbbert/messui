@@ -2317,6 +2317,8 @@ void SetDirectories(windows_options &opts)
 	opts.set_value(OPTION_SNAPNAME, GetSnapName(), OPTION_PRIORITY_CMDLINE, error_string);
 }
 
+// not used
+#if 0
 const char * GetFolderNameByID(UINT nID)
 {
 	UINT i;
@@ -2334,7 +2336,7 @@ const char * GetFolderNameByID(UINT nID)
 
 	return NULL;
 }
-
+#endif
 
 DWORD GetFolderFlags(int folder_index)
 {

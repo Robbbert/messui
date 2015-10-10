@@ -301,28 +301,10 @@ char * ConvertToWindowsNewlines(const char *source)
 const char * GetDriverFilename(int nIndex)
 {
 	static char tmp[40];
-	const char *ptmp;
+	std::string driver;
 
-	const char *s = driver_list::driver(nIndex).source_file;
-
-	tmp[0] = '\0';
-
-	ptmp = strrchr(s, '\\');
-	if (ptmp == NULL) {
-		ptmp = strrchr(s, '/');
-	}
-	else {
-		const char *ptmp2;
-		ptmp2 = strrchr(ptmp, '/');
-		if (ptmp2 != NULL) {
-			ptmp = ptmp2;
-		}
-	}
-	if (ptmp == NULL)
-		return s;
-
-	ptmp++;
-	strcpy(tmp,ptmp);
+	core_filename_extract_base(driver, driver_list::driver(nIndex).source_file, FALSE);
+	strcpy(tmp, driver.c_str());
 	return tmp;
 }
 
@@ -330,12 +312,10 @@ BOOL isDriverVector(const machine_config *config)
 {
 	const screen_device *screen  = config->first_screen();
 
-	if (screen != NULL) {
-		// parse "vector.ini" for vector games
+	if (screen)
+	{
 		if (SCREEN_TYPE_VECTOR == screen->screen_type())
-		{
 			return TRUE;
-		}
 	}
 	return FALSE;
 }
