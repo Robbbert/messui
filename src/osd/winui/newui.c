@@ -2921,12 +2921,25 @@ static void change_device(HWND wnd, device_image_interface *image, int is_save)
 		filename[0] = '\0';
 
 	// get the working directory, but if it is ".", then use the one specified in comments_path
-	char *dst = NULL;
+	char *dst = NULL,*working = 0;
 	osd_get_full_path(&dst,"."); // turn local directory into full path
 	initial_dir = image->working_directory(); // get working directory from diimage.c
+	// if . use comments_dir
 	if (strcmp(dst, initial_dir) == 0)  // same?
 		initial_dir = software_dir;
 
+	// remove any trailing backslash
+	working = core_strdup(initial_dir);
+	int temp = strlen(working) - 1;
+	if (temp > 2)
+		if (working[temp] == '\\')
+		{
+			working[temp] = '\0';
+			initial_dir = working;
+		}
+
+// NOTE: the working directory can come from the .cfg file. If it's wrong delete the cfg.
+//printf("%s = %s = %s = %s\n",dst,working,initial_dir,software_dir);
 	// add custom dialog elements, if appropriate
 	if (is_save
 		&& (image->device_get_creation_option_guide())
