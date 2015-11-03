@@ -922,11 +922,11 @@ static INT_PTR CALLBACK dialog_proc(HWND dlgwnd, UINT msg, WPARAM wparam, LPARAM
 	CHAR buf[32];
 	WORD command;
 
-	if (LOG_WINMSGS)
-	{
-		logerror("dialog_proc(): dlgwnd=%p msg=0x%08x wparam=0x%08x lparam=0x%08x\n",
-			dlgwnd, (unsigned int) msg, (unsigned int) wparam, (unsigned int) lparam);
-	}
+	//if (LOG_WINMSGS)
+	//{
+	//	logerror("dialog_proc(): dlgwnd=%p msg=0x%08x wparam=0x%08x lparam=0x%08x\n",
+	//		dlgwnd, (unsigned int) msg, (unsigned int) wparam, (unsigned int) lparam);
+	//}
 
 	switch(msg)
 	{
