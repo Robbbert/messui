@@ -41,6 +41,7 @@
 #include "emuopts.h"
 #include "drivenum.h"
 #include "xmlfile.h"
+#include "softlist.h"
 
 
 //============================================================
