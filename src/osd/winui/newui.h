@@ -17,7 +17,7 @@
 #include "emu.h"
 #include "emuopts.h"
 #include "ui/ui.h"
-#include "messres.h"
+#include "newuires.h"
 #include "strconv.h"
 #include "debug/debugcpu.h"
 #include "imagedev/cassette.h"

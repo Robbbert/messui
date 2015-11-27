@@ -5,7 +5,7 @@
 
 #include "resource.h"
 
-#include "messres.h"
+#include "newuires.h"
 
 #define IDC_SPLITTER3				    2000
 #define IDC_SWTAB                       2001
@@ -14,7 +14,6 @@
 #define IDC_FILTER_COMPUTER             2004
 #define IDC_FILTER_CONSOLE              2005
 #define IDC_FILTER_MODIFIED             2006
-#define IDC_SHOW_MENU                   2007
 #define IDC_RAM_COMBOBOX				2008
 #define IDC_RAM_CAPTION					2009
 #define IDC_SOFTLIST					2010

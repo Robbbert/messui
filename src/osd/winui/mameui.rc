@@ -1,6 +1,6 @@
 // Microsoft Visual C++ generated resource script.
 //
-#include "messres.h"
+#include "newuires.h"
 #include "resource.h"
 #include "resourcems.h "
 
@@ -309,7 +309,7 @@ END
 1 TEXTINCLUDE MOVEABLE PURE
 BEGIN
     "resource.h\\r\n"
-	"messres.h\0"
+	"newuires.h\0"
 END
 
 2 TEXTINCLUDE MOVEABLE PURE

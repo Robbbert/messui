@@ -1,6 +1,6 @@
 // Microsoft Visual C++ generated resource script.
 //
-#include "messres.h"
+#include "newuires.h"
 #include "resource.h"
 #include "resourcems.h "
 
@@ -62,10 +62,6 @@ BEGIN
         MENUITEM "Loa&d Savestate...",          ID_FILE_LOADSTATE, GRAYED
         MENUITEM SEPARATOR
         MENUITEM "Op&en Other Software...",     ID_MESS_OPEN_SOFTWARE
-#ifdef MAME_DEBUG
-        MENUITEM SEPARATOR
-        MENUITEM "Run Tests",			ID_MESS_RUN_TESTS
-#endif
         MENUITEM SEPARATOR
         MENUITEM "Pr&operties",                 ID_GAME_PROPERTIES
         MENUITEM SEPARATOR
@@ -309,7 +305,7 @@ END
 1 TEXTINCLUDE MOVEABLE PURE
 BEGIN
     "resource.h\\r\n"
-	"messres.h\0"
+    "newuires.h\0"
 END
 
 2 TEXTINCLUDE MOVEABLE PURE
