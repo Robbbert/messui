@@ -1,6 +1,7 @@
 defines {
 	"OSD_WINDOWS",
 	"_WIN32_WINNT=0x0501",
+	"USE_QTDEBUG=0",
 }
 
 configuration { "mingw*-gcc or vs*" }
