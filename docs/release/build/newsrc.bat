@@ -1,5 +1,5 @@
 set from=C:\MESS
-set to=c:\MESS\release
+set to=c:\MESS\docs\release
 
 rd %to%\src /q /s
 
