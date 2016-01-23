@@ -922,7 +922,7 @@ void CreateCPUFolders(int parent_index)
 			{
 				LPTREEFOLDER lpTemp;
 
-				lpTemp = NewFolder(device->device().name().c_str(), next_folder_id, parent_index, IDI_CPU,
+				lpTemp = NewFolder(device->device().name(), next_folder_id, parent_index, IDI_CPU,
 								GetFolderFlags(numFolders));
 				ExtraFolderData[next_folder_id] = (EXFOLDERDATA*)malloc(sizeof(EXFOLDERDATA));
 				memset(ExtraFolderData[next_folder_id], 0, sizeof(EXFOLDERDATA));
@@ -931,7 +931,7 @@ void CreateCPUFolders(int parent_index)
 				ExtraFolderData[next_folder_id]->m_nIconId = IDI_CPU;
 				ExtraFolderData[next_folder_id]->m_nParent = treeFolders[parent_index]->m_nFolderId;
 				ExtraFolderData[next_folder_id]->m_nSubIconId = -1;
-				strcpy( ExtraFolderData[next_folder_id]->m_szTitle, device->device().name().c_str() );
+				strcpy( ExtraFolderData[next_folder_id]->m_szTitle, device->device().name() );
 				ExtraFolderData[next_folder_id++]->m_dwFlags = 0;
 				AddFolder(lpTemp);
 				folder = treeFolders[nFolder++];
@@ -982,7 +982,7 @@ void CreateSoundFolders(int parent_index)
 			{
 				LPTREEFOLDER lpTemp;
 
-				lpTemp = NewFolder(device->device().name().c_str(), next_folder_id, parent_index, IDI_SOUND, GetFolderFlags(numFolders));
+				lpTemp = NewFolder(device->device().name(), next_folder_id, parent_index, IDI_SOUND, GetFolderFlags(numFolders));
 				ExtraFolderData[next_folder_id] = (EXFOLDERDATA*)malloc(sizeof(EXFOLDERDATA));
 				memset(ExtraFolderData[next_folder_id], 0, sizeof(EXFOLDERDATA));
 
@@ -990,7 +990,7 @@ void CreateSoundFolders(int parent_index)
 				ExtraFolderData[next_folder_id]->m_nIconId = IDI_SOUND;
 				ExtraFolderData[next_folder_id]->m_nParent = treeFolders[parent_index]->m_nFolderId;
 				ExtraFolderData[next_folder_id]->m_nSubIconId = -1;
-				strcpy( ExtraFolderData[next_folder_id]->m_szTitle, device->device().name().c_str() );
+				strcpy( ExtraFolderData[next_folder_id]->m_szTitle, device->device().name() );
 				ExtraFolderData[next_folder_id++]->m_dwFlags = 0;
 				AddFolder(lpTemp);
 				folder = treeFolders[nFolder++];

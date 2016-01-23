@@ -217,7 +217,7 @@ BOOL DevView_SetDriver(HWND hwndDevView, const software_config *config)
 		image_interface_iterator iter(pDevViewInfo->config->mconfig->root_device());
 		for (device_image_interface *dev = iter.first(); dev; dev = iter.next())
 		{
-			t_s = tstring_from_utf8(dev->device().name().c_str());
+			t_s = tstring_from_utf8(dev->device().name());
 			ppszDevices[i] = (TCHAR*)alloca((_tcslen(t_s) + 1) * sizeof(TCHAR));
 			_tcscpy(ppszDevices[i], t_s);
 			osd_free(t_s);
@@ -253,7 +253,7 @@ BOOL DevView_SetDriver(HWND hwndDevView, const software_config *config)
 		{
 			pEnt->dev = dev;
 
-			pEnt->hwndStatic = win_create_window_ex_utf8(0, "STATIC", dev->device().name().c_str(),
+			pEnt->hwndStatic = win_create_window_ex_utf8(0, "STATIC", dev->device().name(),
 				WS_VISIBLE | WS_CHILD, nStaticPos,
 				y, nStaticWidth, nHeight, hwndDevView, NULL, NULL, NULL);
 			y += nHeight;
