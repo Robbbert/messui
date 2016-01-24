@@ -139,10 +139,10 @@ int cli_frontend::execute(int argc, char **argv)
 									{
 										if (swpart->matches_interface(interface))
 										{
-											const char *option = m_options.value(image->brief_instance_name());
+//											const char *option = m_options.value(image->brief_instance_name());
 
 											// mount only if not already mounted
-											if (*option == 0)
+//											if (*option == 0)
 											{
 												std::string val;
 												strprintf(val, "%s:%s:%s", swlistdev->list_name(), m_options.software_name(), swpart->name());
