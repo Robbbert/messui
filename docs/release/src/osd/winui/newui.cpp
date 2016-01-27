@@ -1508,7 +1508,7 @@ static void seqselect_settext(HWND editwnd)
 		return;	// this should not happen - need to fix this
 
 	// retrieve the seq name
-	*Machine->input().seq_name(seqstring, *stuff->code);
+	seqstring = Machine->input().seq_name(*stuff->code);
 
 	// change the text - avoid calls to SetWindowText() if we can
 	win_get_window_text_utf8(editwnd, buffer, ARRAY_LENGTH(buffer));
