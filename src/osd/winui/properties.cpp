@@ -2140,9 +2140,8 @@ static BOOL DirListReadControl(datamap *map, HWND dialog, HWND control, windows_
 	int directory_count;
 	LV_ITEM lvi;
 	TCHAR buffer[2048];
-	char *utf8_dir_list;
-	int i, pos; //, driver_index;
-	BOOL res;
+	int i, pos = 0;
+
 
 	// determine the directory count; note that one item is the "<    >" entry
 	directory_count = ListView_GetItemCount(control);
@@ -2150,7 +2149,6 @@ static BOOL DirListReadControl(datamap *map, HWND dialog, HWND control, windows_
 		directory_count--;
 
 	buffer[0] = '\0';
-	pos = 0;
 
 	for (i = 0; i < directory_count; i++)
 	{
@@ -2164,22 +2162,20 @@ static BOOL DirListReadControl(datamap *map, HWND dialog, HWND control, windows_
 		lvi.iItem = i;
 		lvi.pszText = &buffer[pos];
 		lvi.cchTextMax = ARRAY_LENGTH(buffer) - pos;
-		res = ListView_GetItem(control, &lvi);
+		ListView_GetItem(control, &lvi);
 
 		// advance the position
 		pos += _tcslen(&buffer[pos]);
 	}
 
-	utf8_dir_list = utf8_from_tstring(buffer);
-	if (utf8_dir_list != NULL)
+	const char* paths = utf8_from_tstring(buffer);
+	if ((buffer[1] == 0x3A) || (buffer[0] == 0)) // must be a folder or null
 	{
-//		driver_index = PropertiesCurrentGame(dialog);
-//		SetExtraSoftwarePaths(driver_index, utf8_dir_list);
 		std::string error_string;
-		pCurrentOpts.set_value(OPTION_COMMENT_DIRECTORY, utf8_dir_list, OPTION_PRIORITY_CMDLINE,error_string);
-		osd_free(utf8_dir_list);
+		pCurrentOpts.set_value(OPTION_COMMENT_DIRECTORY, paths, OPTION_PRIORITY_CMDLINE, error_string);
 	}
-	res++;
+	paths = 0;
+	buffer[0] = '\0';
 	return TRUE;
 }
 
@@ -2187,30 +2183,29 @@ static BOOL DirListReadControl(datamap *map, HWND dialog, HWND control, windows_
 static BOOL DirListPopulateControl(datamap *map, HWND dialog, HWND control, windows_options *opts, const char *option_name)
 {
 	int driver_index, pos, new_pos, current_item;
-	const char *dir_list;
-	TCHAR *t_dir_list;
 	TCHAR *s;
 	LV_COLUMN lvc;
 	RECT r;
-	HRESULT res;
-	BOOL b_res;
 
 	// access the directory list, and convert to TCHARs
 	driver_index = PropertiesCurrentGame(dialog);
-	dir_list = GetExtraSoftwarePaths(driver_index, 0);
-	t_dir_list = tstring_from_utf8(dir_list);
+	windows_options o;
+	load_options(o, driver_index);
+	const char* paths = o.value(OPTION_COMMENT_DIRECTORY);
+	TCHAR* t_dir_list = tstring_from_utf8(paths);
+	paths = 0;
 	if (!t_dir_list)
 		return FALSE;
 
 	// delete all items in the list control
-	b_res = ListView_DeleteAllItems(control);
+	ListView_DeleteAllItems(control);
 
 	// add the column
 	GetClientRect(control, &r);
 	memset(&lvc, 0, sizeof(LVCOLUMN));
 	lvc.mask = LVCF_WIDTH;
 	lvc.cx = r.right - r.left - GetSystemMetrics(SM_CXHSCROLL);
-	res = ListView_InsertColumn(control, 0, &lvc);
+	ListView_InsertColumn(control, 0, &lvc);
 
 	// add each of the directories
 	pos = 0;
@@ -2219,7 +2214,7 @@ static BOOL DirListPopulateControl(datamap *map, HWND dialog, HWND control, wind
 	{
 		// parse off this item
 		s = _tcschr(&t_dir_list[pos], ';');
-		if (s != NULL)
+		if (s)
 		{
 			*s = '\0';
 			new_pos = s - t_dir_list + 1;
@@ -2239,8 +2234,7 @@ static BOOL DirListPopulateControl(datamap *map, HWND dialog, HWND control, wind
 	AppendList(control, TEXT(DIRLIST_NEWENTRYTEXT), current_item);
 	ListView_SetItemState(control, 0, LVIS_SELECTED, LVIS_SELECTED);
 	osd_free(t_dir_list);
-	res++;
-	b_res++;
+	s = 0;
 	return TRUE;
 }
 
@@ -2293,7 +2287,7 @@ static BOOL RamPopulateControl(datamap *map, HWND dialog, HWND control, windows_
 	i = 0;
 
 	// we can only do something meaningful if there is more than one option
-	if (device != NULL)
+	if (device)
 	{
 		const ram_device *ramdev = dynamic_cast<const ram_device *>(device);
 
@@ -2506,7 +2500,7 @@ static void BuildDataMap(void)
 	datamap_add(properties_datamap, IDC_KEEPASPECT,				DM_BOOL,	OSDOPTION_KEEPASPECT);
 	datamap_add(properties_datamap, IDC_PRESCALE,				DM_INT,		OSDOPTION_PRESCALE);
 	datamap_add(properties_datamap, IDC_PRESCALEDISP,			DM_INT,		OSDOPTION_PRESCALE);
-	datamap_add(properties_datamap, IDC_EFFECT,				DM_STRING,	OPTION_EFFECT);
+	datamap_add(properties_datamap, IDC_EFFECT,					DM_STRING,	OPTION_EFFECT);
 	datamap_add(properties_datamap, IDC_WAITVSYNC,				DM_BOOL,	OSDOPTION_WAITVSYNC);
 	datamap_add(properties_datamap, IDC_SYNCREFRESH,			DM_BOOL,	OSDOPTION_SYNCREFRESH);
 

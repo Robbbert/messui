@@ -51,9 +51,6 @@ void  SetSoftwareDirs(const char* paths);
 void SetSelectedSoftware(int driver_index, const machine_config *config, const device_image_interface *device, const char *software);
 const char *GetSelectedSoftware(int driver_index, const machine_config *config, const device_image_interface *device);
 
-//void SetExtraSoftwarePaths(int driver_index, const char *extra_paths);
-const char *GetExtraSoftwarePaths(int driver_index, bool sw);
-
 void SetCurrentSoftwareTab(const char *shortname);
 const char *GetCurrentSoftwareTab(void);
 
