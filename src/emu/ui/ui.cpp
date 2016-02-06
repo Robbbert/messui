@@ -496,7 +496,7 @@ void ui_manager::update_and_render(render_container *container)
 	else
 		m_popup_text_end = 0;
 
-	if (machine().options().ui_mouse() && (m_mouse_show || is_menu_active())) //MESSUI - (NEWUI) system pointer always on; MAME pointer always off
+	if (machine().ui().options().ui_mouse() && (m_mouse_show || is_menu_active())) //MESSUI - (NEWUI) system pointer always on; MAME pointer always off
 	{
 		INT32 mouse_target_x, mouse_target_y;
 		bool mouse_button;
