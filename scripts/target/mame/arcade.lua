@@ -295,6 +295,7 @@ VIDEOS["HUC6270"] = true
 --VIDEOS["HUC6272"] = true
 --VIDEOS["I8244"] = true
 VIDEOS["I8275"] = true
+VIDEOS["JANGOU_BLITTER"] = true
 VIDEOS["M50458"] = true
 VIDEOS["MB90082"] = true
 VIDEOS["MB_VCU"] = true
@@ -4246,6 +4247,7 @@ files {
 	MAME_DIR .. "src/mame/machine/inder_vid.cpp",
 	MAME_DIR .. "src/mame/machine/inder_vid.h",
 	MAME_DIR .. "src/mame/drivers/corona.cpp",
+	MAME_DIR .. "src/mame/drivers/amazonlf.cpp",
 	MAME_DIR .. "src/mame/drivers/crystal.cpp",
 	MAME_DIR .. "src/mame/video/vrender0.cpp",
 	MAME_DIR .. "src/mame/video/vrender0.h",
