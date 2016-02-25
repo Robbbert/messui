@@ -363,7 +363,7 @@ void ui_manager::display_startup_screens(bool first_time, bool show_disclaimer)
 {
 	const int maxstate = 4;
 	int str = machine().options().seconds_to_run();
-	bool show_gameinfo = !machine().ui().options().skip_gameinfo();
+	bool show_gameinfo = !machine().options().skip_gameinfo();
 	bool show_warnings = true, show_mandatory_fileman = true;
 	int state;
 
@@ -498,7 +498,12 @@ void ui_manager::update_and_render(render_container *container)
 	else
 		m_popup_text_end = 0;
 
+<<<<<<< HEAD
 	if (machine().ui().options().ui_mouse() && (m_mouse_show || is_menu_active())) //MESSUI - (NEWUI) system pointer always on; MAME pointer always off
+=======
+	// display the internal mouse cursor
+	if (m_mouse_show || (is_menu_active() && machine().options().ui_mouse()))
+>>>>>>> 1a36175f75a1b337fbb3e7dfa1ce2fb8258a62e9
 	{
 		INT32 mouse_target_x, mouse_target_y;
 		bool mouse_button;
@@ -529,7 +534,7 @@ render_font *ui_manager::get_font()
 {
 	// allocate the font and messagebox string
 	if (m_font == nullptr)
-		m_font = machine().render().font_alloc(machine().ui().options().ui_font());
+		m_font = machine().render().font_alloc(machine().options().ui_font());
 	return m_font;
 }
 
@@ -1697,12 +1702,12 @@ UINT32 ui_manager::handler_ingame(running_machine &machine, render_container *co
 	if (machine.ui_input().pressed(IPT_UI_PAUSE))
 	{
 		// with a shift key, it is single step
-//		if (is_paused && (machine.input().code_pressed(KEYCODE_LSHIFT) || machine.input().code_pressed(KEYCODE_RSHIFT)))
-//		{
-//			machine.ui().set_single_step(true);
-//			machine.resume();
-//		}
-//		else
+//      if (is_paused && (machine.input().code_pressed(KEYCODE_LSHIFT) || machine.input().code_pressed(KEYCODE_RSHIFT)))
+//      {
+//          machine.ui().set_single_step(true);
+//          machine.resume();
+//      }
+//      else
 			machine.toggle_pause();
 	}
 
@@ -1879,7 +1884,7 @@ UINT32 ui_manager::handler_load_save(running_machine &machine, render_container 
 
 void ui_manager::request_quit()
 {
-	if (!machine().ui().options().confirm_quit())
+	if (!machine().options().confirm_quit())
 		machine().schedule_exit();
 	else
 		set_handler(handler_confirm_quit, 0);
@@ -2701,8 +2706,8 @@ int ui_manager::wrap_text(render_container *container, const char *origs, float 
 		if (curwidth > maxwidth)
 			maxwidth = curwidth;
 
-        xstart.push_back(linestart - origs);
-        xend.push_back(s - origs);
+		xstart.push_back(linestart - origs);
+		xend.push_back(s - origs);
 
 		// loop from the line start and add the characters
 		while (linestart < s)
