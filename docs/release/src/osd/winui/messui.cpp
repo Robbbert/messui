@@ -438,62 +438,54 @@ void MyFillSoftwareList(int drvindex, BOOL bForce)
 	SoftwarePicker_Clear(hwndSoftwarePicker);
 	SoftwarePicker_SetDriver(hwndSoftwarePicker, s_config);
 
-	// add the relevant paths /// this seems pointless - removed
-///	drv = &driver_list::driver(drvindex);
-///	while(drv != NULL)
-///	{
-///		AddSoftwarePickerDirs(hwndSoftwarePicker, GetSoftwareDirs(), drv->name);
-///
-///		int cl = driver_list::clone(*drv);
-///
-///		if (cl!=-1)
-///			drv = &driver_list::driver(cl);
-///		else
-///			drv = NULL;
-///	}
+	// Get the game's software path
+	int driver_index = drvindex;
+	windows_options o;
+	load_options(o, driver_index);
+	const char* paths = o.value(OPTION_COMMENT_DIRECTORY);
+	if (paths && (paths[0] > 64)) 
+	{} else
+	// search deeper when looking for software
+	{
+		// not specified in driver, try parent if it has one
+		int nParentIndex = -1;
+		if (DriverIsClone(driver_index) == TRUE)
+		{
+			nParentIndex = GetParentIndex(&driver_list::driver(driver_index));
+			if (nParentIndex >= 0)
+			{
+				load_options(o, nParentIndex);
+				paths = o.value(OPTION_COMMENT_DIRECTORY);
+			}
+		}
+		if (paths && (paths[0] > 64))
+		{} else
+		{
 
-	/// These are the only paths that matter
-	AddSoftwarePickerDirs(hwndSoftwarePicker, GetExtraSoftwarePaths(drvindex, 1), NULL);
+			// still nothing, try for a system in the 'compat' field
+			if (nParentIndex >= 0)
+				driver_index = nParentIndex;
 
+			// now recycle variable as a compat system number
+			nParentIndex = GetCompatIndex(&driver_list::driver(driver_index));
+			if (nParentIndex >= 0)
+			{
+				load_options(o, nParentIndex);
+				paths = o.value(OPTION_COMMENT_DIRECTORY);
+			}
+		}
+	}
+
+	// These are the only paths that matter
+	AddSoftwarePickerDirs(hwndSoftwarePicker, paths, NULL);
+	paths = 0;
 	// set up the software picker
 	SoftwareList_Clear(hwndSoftwareList);
 	SoftwareList_SetDriver(hwndSoftwareList, s_config);
 
 	/* allocate the machine config */
 	machine_config config(driver_list::driver(drvindex),MameUIGlobal());
-//to be upgraded to latest
-//	windows_options options;
-//	software_list_device_iterator iter(config.root_device());
-//	for (software_list_device *swlist = iter.first(); swlist != NULL; swlist = iter.next())
-//	{
-//		software_list *list = software_list_open(options, swlist->list_name(), FALSE, NULL);
-//
-//		if (list)
-//		{
-//			for (software_info *swinfo = software_list_find(list, "*", NULL); swinfo != NULL; swinfo = software_list_find(list, "*", swinfo))
-//			{
-//				software_part *part = software_find_part(swinfo, NULL, NULL);
-//
-//				// search for a device with the right interface
-//				image_interface_iterator iter(config.root_device());
-//				for (device_image_interface *image = iter.first(); image; image = iter.next())
-//				{
-//					const char *interface = image->image_interface();
-//					if (interface != NULL)
-//					{
-//						if (!strcmp(interface, part->interface_))
-//						{
-//							SoftwareList_AddFile(hwndSoftwareList, swinfo->shortname, swlist->list_name(), swinfo->longname, swinfo->publisher, swinfo->year, image->brief_instance_name());
-//							break;
-//						}
-//					}
-//				}
-//			}
-//			software_list_close(list);
-//		}
-//	}
 
-//	windows_options options;
 	software_list_device_iterator iter(config.root_device());
 	for (software_list_device *swlistdev = iter.first(); swlistdev; swlistdev = iter.next())
 	{
@@ -1050,8 +1042,44 @@ static BOOL DevView_GetOpenFileName(HWND hwndDevView, const machine_config *conf
 	if ((!osd_opendir(as.c_str())) || (as.find(':') == std::string::npos))
 	{
 		/* Get the path from the software tab */
-		as = GetExtraSoftwarePaths(drvindex, 1);
+		int driver_index = drvindex;
+		windows_options o;
+		load_options(o, driver_index);
+		const char* paths = o.value(OPTION_COMMENT_DIRECTORY);
+		if (paths && (paths[0] > 64)) 
+		{} else
+		// search deeper when looking for software
+		{
+			// not specified in driver, try parent if it has one
+			int nParentIndex = -1;
+			if (DriverIsClone(driver_index) == TRUE)
+			{
+				nParentIndex = GetParentIndex(&driver_list::driver(driver_index));
+				if (nParentIndex >= 0)
+				{
+					load_options(o, nParentIndex);
+					paths = o.value(OPTION_COMMENT_DIRECTORY);
+				}
+			}
+			if (paths && (paths[0] > 64))
+			{} else
+			{
 
+				// still nothing, try for a system in the 'compat' field
+				if (nParentIndex >= 0)
+					driver_index = nParentIndex;
+
+				// now recycle variable as a compat system number
+				nParentIndex = GetCompatIndex(&driver_list::driver(driver_index));
+				if (nParentIndex >= 0)
+				{
+					load_options(o, nParentIndex);
+					paths = o.value(OPTION_COMMENT_DIRECTORY);
+				}
+			}
+		}
+
+		as = paths;
 		/* We only want the first path; throw out the rest */
 		i = as.find(';');
 		if (i > 0) as.substr(0, i);
@@ -1062,7 +1090,7 @@ static BOOL DevView_GetOpenFileName(HWND hwndDevView, const machine_config *conf
 		if ((!osd_opendir(as.c_str())) || (as.find(':') == std::string::npos))
 		{
 			// Get the global loose software path
-			as = GetExtraSoftwarePaths(-1, 0);
+			as = GetCommentDir();//GetExtraSoftwarePaths(-1, 0);
 
 			/* We only want the first path; throw out the rest */
 			i = as.find(';');
@@ -1190,8 +1218,46 @@ static BOOL DevView_GetCreateFileName(HWND hwndDevView, const machine_config *co
 	std::string as;
 
 	/* Get the path from the software tab */
-	as = GetExtraSoftwarePaths(drvindex, 1);
+	//as = GetExtraSoftwarePaths(drvindex, 1);
+	// Get the game's software path
+	int driver_index = drvindex;
+	windows_options o;
+	load_options(o, driver_index);
+	const char* paths = o.value(OPTION_COMMENT_DIRECTORY);
+	if (paths && (paths[0] > 64)) 
+	{} else
+	// search deeper when looking for software
+	{
+		// not specified in driver, try parent if it has one
+		int nParentIndex = -1;
+		if (DriverIsClone(driver_index) == TRUE)
+		{
+			nParentIndex = GetParentIndex(&driver_list::driver(driver_index));
+			if (nParentIndex >= 0)
+			{
+				load_options(o, nParentIndex);
+				paths = o.value(OPTION_COMMENT_DIRECTORY);
+			}
+		}
+		if (paths && (paths[0] > 64))
+		{} else
+		{
 
+			// still nothing, try for a system in the 'compat' field
+			if (nParentIndex >= 0)
+				driver_index = nParentIndex;
+
+			// now recycle variable as a compat system number
+			nParentIndex = GetCompatIndex(&driver_list::driver(driver_index));
+			if (nParentIndex >= 0)
+			{
+				load_options(o, nParentIndex);
+				paths = o.value(OPTION_COMMENT_DIRECTORY);
+			}
+		}
+	}
+
+	as = paths;
 	/* We only want the first path; throw out the rest */
 	i = as.find(';');
 	if (i > 0) as.substr(0, i);
@@ -1201,7 +1267,7 @@ static BOOL DevView_GetCreateFileName(HWND hwndDevView, const machine_config *co
 	if ((!osd_opendir(as.c_str())) || (as.find(':') == std::string::npos))
 	{
 		// Get the global loose software path
-		as = GetExtraSoftwarePaths(-1, 0);
+		as = GetCommentDir();//GetExtraSoftwarePaths(-1, 0);
 
 		/* We only want the first path; throw out the rest */
 		i = as.find(';');

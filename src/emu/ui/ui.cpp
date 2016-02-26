@@ -498,12 +498,7 @@ void ui_manager::update_and_render(render_container *container)
 	else
 		m_popup_text_end = 0;
 
-<<<<<<< HEAD
-	if (machine().ui().options().ui_mouse() && (m_mouse_show || is_menu_active())) //MESSUI - (NEWUI) system pointer always on; MAME pointer always off
-=======
-	// display the internal mouse cursor
-	if (m_mouse_show || (is_menu_active() && machine().options().ui_mouse()))
->>>>>>> 1a36175f75a1b337fbb3e7dfa1ce2fb8258a62e9
+	if (machine().options().ui_mouse() && (m_mouse_show || is_menu_active())) //MESSUI - (NEWUI) system pointer always on; MAME pointer always off
 	{
 		INT32 mouse_target_x, mouse_target_y;
 		bool mouse_button;

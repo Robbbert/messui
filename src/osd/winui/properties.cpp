@@ -2163,7 +2163,7 @@ static BOOL DirListReadControl(datamap *map, HWND dialog, HWND control, windows_
 		lvi.iItem = i;
 		lvi.pszText = &buffer[pos];
 		lvi.cchTextMax = ARRAY_LENGTH(buffer) - pos;
-		ListView_GetItem(control, &lvi);
+		(void)ListView_GetItem(control, &lvi);
 
 		// advance the position
 		pos += _tcslen(&buffer[pos]);
@@ -2199,14 +2199,14 @@ static BOOL DirListPopulateControl(datamap *map, HWND dialog, HWND control, wind
 		return FALSE;
 
 	// delete all items in the list control
-	ListView_DeleteAllItems(control);
+	(void)ListView_DeleteAllItems(control);
 
 	// add the column
 	GetClientRect(control, &r);
 	memset(&lvc, 0, sizeof(LVCOLUMN));
 	lvc.mask = LVCF_WIDTH;
 	lvc.cx = r.right - r.left - GetSystemMetrics(SM_CXHSCROLL);
-	ListView_InsertColumn(control, 0, &lvc);
+	(void)ListView_InsertColumn(control, 0, &lvc);
 
 	// add each of the directories
 	pos = 0;
