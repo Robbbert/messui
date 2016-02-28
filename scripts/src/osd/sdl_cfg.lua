@@ -111,10 +111,6 @@ if _OPTIONS["targetos"]=="windows" then
 		defines {
 			"MALLOC_DEBUG",
 		}
-	configuration { "vs*" }
-		includedirs {
-			MAME_DIR .. "3rdparty/sdl2/include",
-		}
 	configuration { }
 
 elseif _OPTIONS["targetos"]=="linux" then
