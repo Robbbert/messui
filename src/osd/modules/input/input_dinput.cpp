@@ -115,8 +115,6 @@ protected:
 class dinput_keyboard_device : public dinput_device
 {
 private:
-	HANDLE m_dataEvent;
-	HANDLE m_exitEvent;
 	std::mutex m_device_lock;
 
 public:
@@ -124,7 +122,7 @@ public:
 
 	dinput_keyboard_device(running_machine &machine, const char *name, input_module &module)
 		: dinput_device(machine, name, DEVICE_CLASS_KEYBOARD, module),
-			keyboard({0})
+			keyboard({{0}})
 	{
 	}
 
@@ -152,8 +150,6 @@ class dinput_module : public wininput_module
 private:
 	LPDIRECTINPUT        m_dinput;
 	int                  m_dinput_version;
-	int                  didevtype_keyboard;
-	int                  didevtype_mouse;
 
 public:
 	dinput_module(const char* type, const char* name)
@@ -422,7 +418,7 @@ public:
 #if DIRECTINPUT_VERSION >= 0x800
 		return DI8DEVCLASS_POINTER;
 #else
-		return DI8DEVTYPE_MOUSE;
+		return DIDEVTYPE_MOUSE;
 #endif
 	}
 
@@ -493,7 +489,7 @@ public:
 
 	dinput_joystick_device(running_machine &machine, const char *name, input_module &module)
 		: dinput_device(machine, name, DEVICE_CLASS_JOYSTICK, module),
-		  joystick({0})
+		  joystick({{0}})
 	{
 	}
 
@@ -531,7 +527,7 @@ public:
 #if DIRECTINPUT_VERSION >= 0x800
 		return DI8DEVCLASS_GAMECTRL;
 #else
-		return DI8DEVTYPE_JOYSTICK;
+		return DIDEVTYPE_JOYSTICK;
 #endif
 	}
 

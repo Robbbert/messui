@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 
 # **MESSUI** #
 
@@ -41,3 +42,10 @@ Where can I find out more?
 * [Official MESSUI site](http://messui.1emulation.com/)
 * [Official MESSUI forum](http://1emulation.com/pc/messui) (bugs, requests, discussion)
 
+=======
+# **Docs** #
+
+Documentation of MAME is work of many different contributors, and contain information about usage and internals of MAME.
+
+Licensed under [CC0 1.0 Universal (CC0 1.0)](https://creativecommons.org/publicdomain/zero/1.0/)
+>>>>>>> upstream/master
