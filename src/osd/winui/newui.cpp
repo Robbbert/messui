@@ -1494,7 +1494,9 @@ static seqselect_info *get_seqselect_info(HWND editwnd)
 //  seqselect_settext
 //============================================================
 //#pragma GCC diagnostic push
+#ifdef __GNUC__
 #pragma GCC diagnostic ignored "-Wunused-value"
+#endif
 
 static void seqselect_settext(HWND editwnd)
 {
@@ -1524,8 +1526,10 @@ static void seqselect_settext(HWND editwnd)
 			SendMessage(editwnd, EM_SETSEL, 0, -1);
 	}
 }
-#pragma GCC diagnostic error "-Wunused-value"
 
+#ifdef __GNUC__
+#pragma GCC diagnostic error "-Wunused-value"
+#endif
 
 
 //============================================================
@@ -1900,7 +1904,7 @@ static void before_display_dialog(running_machine &machine)
 static void after_display_dialog(running_machine &machine)
 {
 	winwindow_ui_pause_from_window_thread(machine, FALSE);
-	Machine = NULL;
+	//Machine = NULL;
 }
 
 
@@ -2926,11 +2930,12 @@ static void change_device(HWND wnd, device_image_interface *image, int is_save)
 		filename[0] = '\0';
 
 	// get the working directory, but if it is ".", then use the one specified in comments_path
-	char *dst = NULL,*working = 0;
-	osd_get_full_path(&dst,"."); // turn local directory into full path
+	char *working = 0;
+	std::string dst;
+	osd_get_full_path(dst,"."); // turn local directory into full path
 	initial_dir = image->working_directory(); // get working directory from diimage.c
 	// if . use comments_dir
-	if (strcmp(dst, initial_dir) == 0)  // same?
+	if (strcmp(dst.c_str(), initial_dir) == 0)  // same?
 		initial_dir = software_dir;
 
 	// remove any trailing backslash
@@ -3955,11 +3960,9 @@ int win_create_menu(running_machine &machine, HMENU *menus)
 	else
 		software_dir = t; // the only path
 
-	HMENU menu_bar = NULL;
-	HMODULE module;
+	HMODULE module = win_resource_module();
+	HMENU menu_bar = LoadMenu(module, MAKEINTRESOURCE(IDR_RUNTIME_MENU));
 
-	module = win_resource_module();
-	menu_bar = LoadMenu(module, MAKEINTRESOURCE(IDR_RUNTIME_MENU));
 	if (!menu_bar)
 		goto error;
 

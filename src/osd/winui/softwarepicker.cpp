@@ -453,7 +453,7 @@ error:
 
 
 static BOOL SoftwarePicker_AddZipEntFile(HWND hwndPicker, LPCSTR pszZipPath,
-	BOOL bForce, zip_file *pZip, const zip_file_header *pZipEnt, bool check)
+	BOOL bForce, zip_file::ptr &pZip, const zip_file::file_header *pZipEnt, bool check)
 {
 	LPSTR s;
 	LPCSTR temp = pZipEnt->filename;
@@ -480,24 +480,24 @@ static BOOL SoftwarePicker_InternalAddFile(HWND hwndPicker, LPCSTR pszFilename, 
 {
 	LPCSTR s;
 	BOOL rc = TRUE;
-	zip_error ziperr;
-	zip_file *pZip;
-	const zip_file_header *pZipEnt;
+	zip_file::error ziperr;
+	zip_file::ptr pZip;
+	const zip_file::file_header *pZipEnt;
 
 	s = strrchr(pszFilename, '.');
 	if (s && ((core_stricmp(s, ".zip")==0) || (core_stricmp(s, ".7z")==0))) // 7z not being detected
 	{
-		ziperr = zip_file_open(pszFilename, &pZip);
-		if (ziperr  == ZIPERR_NONE)
+		ziperr = zip_file::open(pszFilename, pZip);
+		if (ziperr  == zip_file::error::NONE)
 		{
-			pZipEnt = zip_file_first_file(pZip);
+			pZipEnt = pZip->first_file();
 			while(rc && pZipEnt)
 			{
 				rc = SoftwarePicker_AddZipEntFile(hwndPicker, pszFilename,
 					bForce, pZip, pZipEnt, check);
-				pZipEnt = zip_file_next_file(pZip);
+				pZipEnt = pZip->next_file();
 			}
-			zip_file_close(pZip);
+			pZip.reset();
 		}
 	}
 	else
