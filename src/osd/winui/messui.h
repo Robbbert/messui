@@ -4,7 +4,7 @@
 #define __MESSUI_H__
 
 //#include "emu.h"
-#include "resourcems.h"
+//#include "resourcems.h"
 #include "devview.h"
 //#include "options.h"
 

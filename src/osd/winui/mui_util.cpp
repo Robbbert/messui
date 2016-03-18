@@ -26,6 +26,7 @@
 #include "mui_util.h"
 #include "mui_opts.h"
 #include "drivenum.h"
+#include "machine/ram.h"
 
 #include <shlwapi.h>
 #include <vector>
@@ -57,6 +58,7 @@ struct DriversInfo
 	bool usesMouse;
 	bool supportsSaveState;
 	bool isVertical;
+	bool hasRam;
 };
 
 static std::vector<DriversInfo>	drivers_info;
@@ -75,6 +77,7 @@ enum
 	DRIVER_CACHE_LIGHTGUN	= 0x0800,
 	DRIVER_CACHE_VECTOR		= 0x1000,
 	DRIVER_CACHE_MOUSE		= 0x2000,
+	DRIVER_CACHE_RAM        = 0x4000,
 };
 
 /***************************************************************************
@@ -356,6 +359,7 @@ static void SetDriversInfo(void)
 		if (gameinfo->usesTrackball)	cache += DRIVER_CACHE_TRACKBALL;
 		if (gameinfo->usesLightGun)		cache += DRIVER_CACHE_LIGHTGUN;
 		if (gameinfo->usesMouse)		cache += DRIVER_CACHE_MOUSE;
+		if (gameinfo->hasRam)           cache += DRIVER_CACHE_RAM;
 
 		SetDriverCache(ndriver, cache);
 	}
@@ -381,14 +385,18 @@ static void InitDriversInfo(void)
 		gameinfo->supportsSaveState = ((gamedrv->flags & MACHINE_SUPPORTS_SAVE) != 0);
 		gameinfo->isHarddisk = FALSE;
 		gameinfo->isVertical = (gamedrv->flags & ORIENTATION_SWAP_XY) ? TRUE : FALSE;
+
+		ram_device_iterator iter1(config.root_device());
+		gameinfo->hasRam = (iter1.first()!=NULL);
+
 		device_iterator deviter(config.root_device());
-		for (device_t *device = deviter.first(); device != NULL; device = deviter.next())
+		for (device_t *device = deviter.first(); device; device = deviter.next())
 			for (region = rom_first_region(*device); region; region = rom_next_region(region))
 				if (ROMREGION_ISDISKDATA(region))
 					gameinfo->isHarddisk = TRUE;
 
 		gameinfo->hasOptionalBIOS = FALSE;
-		if (gamedrv->rom != NULL)
+		if (gamedrv->rom)
 			for (rom = gamedrv->rom; !ROMENTRY_ISEND(rom); rom++)
 				if (ROMENTRY_ISSYSTEM_BIOS(rom))
 					gameinfo->hasOptionalBIOS = TRUE;
@@ -399,7 +407,7 @@ static void InitDriversInfo(void)
 		gameinfo->screenCount = numberOfScreens(&config);
 		gameinfo->isVector = isDriverVector(&config); // ((drv.video_attributes & VIDEO_TYPE_VECTOR) != 0);
 		gameinfo->usesRoms = FALSE;
-		for (device_t *device = deviter.first(); device != NULL; device = deviter.next())
+		for (device_t *device = deviter.first(); device; device = deviter.next())
 			for (region = rom_first_region(*device); region; region = rom_next_region(region))
 				for (rom = rom_first_file(region); rom; rom = rom_next_file(rom))
 					gameinfo->usesRoms = TRUE;
@@ -407,12 +415,12 @@ static void InitDriversInfo(void)
 		gameinfo->usesSamples = FALSE;
 
 		samples_device_iterator iter(config.root_device());
-		if (iter.first() != NULL)
+		if (iter.first())
 			gameinfo->usesSamples = TRUE;
 
 		gameinfo->usesTrackball = FALSE;
 		gameinfo->usesLightGun = FALSE;
-		if (gamedrv->ipt != NULL)
+		if (gamedrv->ipt)
 		{
 			ioport_port *port;
 			ioport_list portlist;
@@ -487,6 +495,7 @@ static int InitDriversCache(void)
 		gameinfo->usesTrackball     = ((cache & DRIVER_CACHE_TRACKBALL) != 0);
 		gameinfo->usesLightGun      = ((cache & DRIVER_CACHE_LIGHTGUN)  != 0);
 		gameinfo->usesMouse         = ((cache & DRIVER_CACHE_MOUSE)     != 0);
+		gameinfo->hasRam            = ((cache & DRIVER_CACHE_RAM)       != 0);
 	}
 
 	return 0;
@@ -594,6 +603,11 @@ BOOL DriverIsVertical(int driver_index)
 	return GetDriversInfo(driver_index)->isVertical;
 }
 
+BOOL DriverHasRam(int driver_index)
+{
+	return GetDriversInfo(driver_index)->hasRam;
+}
+
 void FlushFileCaches(void)
 {
 	zip_file::cache_clear();
@@ -615,10 +629,10 @@ BOOL SafeIsAppThemed(void)
 	BOOL (WINAPI *pfnIsAppThemed)(void);
 
 	hThemes = LoadLibrary(TEXT("uxtheme.dll"));
-	if (hThemes != NULL)
+	if (hThemes)
 	{
 		pfnIsAppThemed = (BOOL (WINAPI *)(void)) GetProcAddress(hThemes, "IsAppThemed");
-		if (pfnIsAppThemed != NULL)
+		if (pfnIsAppThemed)
 			bResult = pfnIsAppThemed();
 		FreeLibrary(hThemes);
 	}
@@ -664,10 +678,10 @@ HICON win_extract_icon_utf8(HINSTANCE inst, const char* exefilename, UINT iconin
 TCHAR* win_tstring_strdup(LPCTSTR str)
 {
 	TCHAR *cpy = NULL;
-	if (str != NULL)
+	if (str)
 	{
 		cpy = (TCHAR*)osd_malloc((_tcslen(str) + 1) * sizeof(TCHAR));
-		if (cpy != NULL)
+		if (cpy)
 			_tcscpy(cpy, str);
 	}
 	return cpy;

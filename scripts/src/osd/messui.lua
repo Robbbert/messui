@@ -90,7 +90,7 @@ newoption {
 	trigger = "DIRECTINPUT",
 	description = "Minimum DirectInput version to support",
 	allowed = {
-		{ "7",  "Support DirectInput 7 or later"  },
+		{ "7",  "Support DirectInput 7 or later" },
 		{ "8",  "Support DirectInput 8 or later" },
 	},
 }
@@ -220,17 +220,15 @@ project ("osd_" .. _OPTIONS["osd"])
 		MAME_DIR .. "src/osd/winui/help.cpp",
 		MAME_DIR .. "src/osd/winui/helpids.cpp",
 		MAME_DIR .. "src/osd/winui/history.cpp",
-		MAME_DIR .. "src/osd/winui/layoutms.cpp",
+		MAME_DIR .. "src/osd/winui/layout.cpp",
 		MAME_DIR .. "src/osd/winui/messui.cpp",
-		MAME_DIR .. "src/osd/winui/msuiutil.cpp",
 		MAME_DIR .. "src/osd/winui/mui_audit.cpp",
 		MAME_DIR .. "src/osd/winui/mui_main.cpp",
 		MAME_DIR .. "src/osd/winui/mui_opts.cpp",
 		MAME_DIR .. "src/osd/winui/mui_util.cpp",
-		MAME_DIR .. "src/osd/winui/optionsms.cpp",
 		MAME_DIR .. "src/osd/winui/picker.cpp",
 		MAME_DIR .. "src/osd/winui/properties.cpp",
-		MAME_DIR .. "src/osd/winui/propertiesms.cpp",
+		MAME_DIR .. "src/osd/winui/resource.h",
 		MAME_DIR .. "src/osd/winui/screenshot.cpp",
 		MAME_DIR .. "src/osd/winui/softwarelist.cpp",
 		MAME_DIR .. "src/osd/winui/softwarepicker.cpp",
@@ -250,7 +248,7 @@ project ("ocore_" .. _OPTIONS["osd"])
 		"ForceCPP",
 	}
 	removeflags {
-		"SingleOutputDir",	
+		"SingleOutputDir",
 	}
 
 	dofile("windows_cfg.lua")

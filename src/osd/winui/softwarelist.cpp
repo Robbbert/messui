@@ -25,7 +25,7 @@
 #include "screenshot.h"
 #include "bitmask.h"
 #include "winui.h"
-#include "resourcems.h"
+//#include "resource.h"
 #include "mui_opts.h"
 #include "softwarelist.h"
 #include "mui_util.h"
