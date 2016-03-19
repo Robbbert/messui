@@ -168,24 +168,23 @@ extern const SPLITTERINFO g_splitterInfo[] =
 #endif
 
 #ifdef MESS
-// this doesn't seem to be used
 extern const MAMEHELPINFO g_helpInfo[] =
 {
-	//{ ID_HELP_CONTENTS,    TRUE,  TEXT("messui.chm::/windows/main.htm") },
-	{ ID_HELP_CONTENTS,    TRUE,  TEXT("messui.chm") },
-	//{ ID_HELP_RELEASE,     TRUE,  TEXT("messui.chm") },
-	//{ ID_HELP_WHATS_NEW,   TRUE,  TEXT("messui.chm::/messnew.txt") },
-	{ ID_HELP_WHATS_NEW,   TRUE,  TEXT("http://mamedev.org/releases/whatsnew.txt") },
+	//{ ID_HELP_CONTENTS,    TRUE,  TEXT(MAMEUIHELP"::/windows/main.htm") },
+	{ ID_HELP_CONTENTS,    TRUE,  TEXT(MAMEUIHELP) }, // 0 - call up CHM file
+	//{ ID_HELP_RELEASE,     TRUE,  TEXT(MAMEUIHELP) },
+	//{ ID_HELP_WHATS_NEW,   TRUE,  TEXT(MAMEUIHELP"::/messnew.txt") },
+	{ ID_HELP_WHATS_NEW,   TRUE,  TEXT("") }, // 1 - call up whatsnew at mamedev.org
 	{ -1 }
 };
 #else
 extern const MAMEHELPINFO g_helpInfo[] =
 {
-	{ ID_HELP_CONTENTS,    TRUE,  TEXT("MAMEUIHELP::/html/mameui_overview.htm") },
-	{ ID_HELP_WHATS_NEWUI, TRUE,  TEXT("MAMEUIHELP::/html/mameui_changes.txt") },
-	{ ID_HELP_TROUBLE,     TRUE,  TEXT("MAMEUIHELP::/html/mameui_support.htm") },
-	{ ID_HELP_RELEASE,     FALSE, TEXT("windows.txt") },
-	{ ID_HELP_WHATS_NEW,   TRUE,  TEXT("MAMEUIHELP::/docs/whatsnew.txt") },
+	{ ID_HELP_CONTENTS,    TRUE,  TEXT(MAMEUIHELP) },
+	//{ ID_HELP_WHATS_NEWUI, TRUE,  TEXT(MAMEUIHELP"::/html/mameui_changes.txt") },
+	//{ ID_HELP_TROUBLE,     TRUE,  TEXT(MAMEUIHELP"::/html/mameui_support.htm") },
+	//{ ID_HELP_RELEASE,     FALSE, TEXT("windows.txt") },
+	{ ID_HELP_WHATS_NEW,   TRUE,  TEXT(MAMEUIHELP"::/docs/whatsnew.txt") },
 	{ -1 }
 };
 #endif

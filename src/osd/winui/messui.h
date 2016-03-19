@@ -3,10 +3,7 @@
 #ifndef __MESSUI_H__
 #define __MESSUI_H__
 
-//#include "emu.h"
-//#include "resourcems.h"
 #include "devview.h"
-//#include "options.h"
 
 extern char g_szSelectedItem[MAX_PATH];
 extern char g_szSelectedSoftware[MAX_PATH];

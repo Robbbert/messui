@@ -2969,14 +2969,12 @@ static LRESULT Statusbar_MenuSelect(HWND hwnd, WPARAM wParam, LPARAM lParam)
 	if (hMainMenu)
 	{
 		/* Display helpful text in status bar */
-		MenuHelp(WM_MENUSELECT, wParam, lParam, hMainMenu, hInst,
-				 hStatusBar, (UINT *)&popstr[iMenu]);
+		MenuHelp(WM_MENUSELECT, wParam, lParam, hMainMenu, hInst, hStatusBar, (UINT *)&popstr[iMenu]);
 	}
 	else
 	{
 		UINT nZero = 0;
-		MenuHelp(WM_MENUSELECT, wParam, lParam, NULL, hInst,
-				 hStatusBar, &nZero);
+		MenuHelp(WM_MENUSELECT, wParam, lParam, NULL, hInst, hStatusBar, &nZero);
 	}
 
 	return 0;
@@ -2985,8 +2983,8 @@ static LRESULT Statusbar_MenuSelect(HWND hwnd, WPARAM wParam, LPARAM lParam)
 static void UpdateStatusBar()
 {
 	LPTREEFOLDER lpFolder = GetCurrentFolder();
-	int 		 games_shown = 0;
-	int 		 i = -1;
+	int games_shown = 0;
+	int i = -1;
 
 	if (!lpFolder)
 		return;
@@ -3019,7 +3017,7 @@ static void UpdateHistory(void)
 {
 	HDC hDC;
 	RECT rect;
-	TEXTMETRIC     tm ;
+	TEXTMETRIC tm ;
 	int nLines = 0, nLineHeight = 0;
 	//DWORD dwStyle = GetWindowLong(GetDlgItem(hMain, IDC_HISTORY), GWL_STYLE);
 	have_history = FALSE;
@@ -3063,20 +3061,20 @@ static void UpdateHistory(void)
 
 static void DisableSelection()
 {
-	MENUITEMINFO	mmi;
-	HMENU			hMenu = GetMenu(hMain);
-	BOOL			prev_have_selection = have_selection;
+	MENUITEMINFO mmi;
+	HMENU hMenu = GetMenu(hMain);
+	BOOL prev_have_selection = have_selection;
 
-	mmi.cbSize	   = sizeof(mmi);
-	mmi.fMask	   = MIIM_TYPE;
-	mmi.fType	   = MFT_STRING;
+	mmi.cbSize = sizeof(mmi);
+	mmi.fMask = MIIM_TYPE;
+	mmi.fType = MFT_STRING;
 	mmi.dwTypeData = (TCHAR *) TEXT("&Play");
-	mmi.cch 	   = _tcslen(mmi.dwTypeData);
+	mmi.cch = _tcslen(mmi.dwTypeData);
 	SetMenuItemInfo(hMenu, ID_FILE_PLAY, FALSE, &mmi);
 
-	EnableMenuItem(hMenu, ID_FILE_PLAY, 		   MF_GRAYED);
-	EnableMenuItem(hMenu, ID_FILE_PLAY_RECORD,	   MF_GRAYED);
-	EnableMenuItem(hMenu, ID_GAME_PROPERTIES,	   MF_GRAYED);
+	EnableMenuItem(hMenu, ID_FILE_PLAY, MF_GRAYED);
+	EnableMenuItem(hMenu, ID_FILE_PLAY_RECORD, MF_GRAYED);
+	EnableMenuItem(hMenu, ID_GAME_PROPERTIES, MF_GRAYED);
 
 	SetStatusBarText(0, "No Selection");
 	SetStatusBarText(1, "");
@@ -3090,12 +3088,11 @@ static void DisableSelection()
 
 static void EnableSelection(int nGame)
 {
-	TCHAR			buf[200];
-	const char *	pText;
-	MENUITEMINFO	mmi;
-	HMENU			hMenu = GetMenu(hMain);
-	TCHAR*          t_description;
-	int items;
+	TCHAR buf[200];
+	const char * pText;
+	MENUITEMINFO mmi;
+	HMENU hMenu = GetMenu(hMain);
+	TCHAR* t_description;
 
 	MyFillSoftwareList(nGame, FALSE);
 
@@ -3104,11 +3101,11 @@ static void EnableSelection(int nGame)
 		return;
 
 	_sntprintf(buf, sizeof(buf) / sizeof(buf[0]), g_szPlayGameString, t_description);
-	mmi.cbSize	   = sizeof(mmi);
-	mmi.fMask	   = MIIM_TYPE;
-	mmi.fType	   = MFT_STRING;
+	mmi.cbSize = sizeof(mmi);
+	mmi.fMask = MIIM_TYPE;
+	mmi.fType = MFT_STRING;
 	mmi.dwTypeData = buf;
-	mmi.cch 	   = _tcslen(mmi.dwTypeData);
+	mmi.cch = _tcslen(mmi.dwTypeData);
 	SetMenuItemInfo(hMenu, ID_FILE_PLAY, FALSE, &mmi);
 
 	pText = ModifyThe(driver_list::driver(nGame).description);
@@ -3118,7 +3115,7 @@ static void EnableSelection(int nGame)
 	SetStatusBarText(1, pText);
 
 	// Show number of software_list items in box at bottom right.
-	items = SoftwareList_GetNumberOfItems();
+	int items = SoftwareList_GetNumberOfItems();
 	if (items)
 	{
 		sprintf((char *)pText, "%d", items);
@@ -3129,8 +3126,8 @@ static void EnableSelection(int nGame)
 
 	/* If doing updating game status */
 
-	EnableMenuItem(hMenu, ID_FILE_PLAY, 		   MF_ENABLED);
-	EnableMenuItem(hMenu, ID_FILE_PLAY_RECORD,	   MF_ENABLED);
+	EnableMenuItem(hMenu, ID_FILE_PLAY, MF_ENABLED);
+	EnableMenuItem(hMenu, ID_FILE_PLAY_RECORD, MF_ENABLED);
 
 	if (!oldControl)
 		EnableMenuItem(hMenu, ID_GAME_PROPERTIES, MF_ENABLED);
@@ -3147,13 +3144,13 @@ static void EnableSelection(int nGame)
 
 static void PaintBackgroundImage(HWND hWnd, HRGN hRgn, int x, int y)
 {
-	RECT		rcClient;
-	HRGN		rgnBitmap = 0;
-	HPALETTE	hPAL = 0;
-	HDC 		hDC = GetDC(hWnd);
-	int 		i = 0, j = 0;
-	HDC 		htempDC = 0;
-	HBITMAP 	oldBitmap = 0;
+	RECT rcClient;
+	HRGN rgnBitmap = 0;
+	HPALETTE hPAL = 0;
+	HDC hDC = GetDC(hWnd);
+	int i = 0, j = 0;
+	HDC htempDC = 0;
+	HBITMAP oldBitmap = 0;
 
 	/* x and y are offsets within the background image that should be at 0,0 in hWnd */
 
@@ -3219,62 +3216,61 @@ static BOOL TreeViewNotify(LPNMHDR nm)
 {
 	switch (nm->code)
 	{
-	case TVN_SELCHANGED :
-	{
-		HTREEITEM hti = TreeView_GetSelection(hTreeView);
-		TVITEM	  tvi;
-
-		tvi.mask  = TVIF_PARAM | TVIF_HANDLE;
-		tvi.hItem = hti;
-
-		if (TreeView_GetItem(hTreeView, &tvi))
+		case TVN_SELCHANGED :
 		{
-			SetCurrentFolder((LPTREEFOLDER)tvi.lParam);
-			if (bListReady)
+			HTREEITEM hti = TreeView_GetSelection(hTreeView);
+			TVITEM tvi;
+
+			tvi.mask  = TVIF_PARAM | TVIF_HANDLE;
+			tvi.hItem = hti;
+
+			if (TreeView_GetItem(hTreeView, &tvi))
 			{
-				ResetListView();
-				MessUpdateSoftwareList();
-				UpdateScreenShot();
+				SetCurrentFolder((LPTREEFOLDER)tvi.lParam);
+				if (bListReady)
+				{
+					ResetListView();
+					MessUpdateSoftwareList();
+					UpdateScreenShot();
+				}
 			}
+			return TRUE;
 		}
-		return TRUE;
-	}
-	case TVN_BEGINLABELEDIT :
-	{
-		TV_DISPINFO *ptvdi = (TV_DISPINFO *)nm;
-		LPTREEFOLDER folder = (LPTREEFOLDER)ptvdi->item.lParam;
-
-		if (folder->m_dwFlags & F_CUSTOM)
+		case TVN_BEGINLABELEDIT :
 		{
-			// user can edit custom folder names
-			g_in_treeview_edit = TRUE;
-			return FALSE;
+			TV_DISPINFO *ptvdi = (TV_DISPINFO *)nm;
+			LPTREEFOLDER folder = (LPTREEFOLDER)ptvdi->item.lParam;
+
+			if (folder->m_dwFlags & F_CUSTOM)
+			{
+				// user can edit custom folder names
+				g_in_treeview_edit = TRUE;
+				return FALSE;
+			}
+			// user can't edit built in folder names
+			return TRUE;
 		}
-		// user can't edit built in folder names
-		return TRUE;
-	}
-	case TVN_ENDLABELEDIT :
-	{
-		TV_DISPINFO *ptvdi = (TV_DISPINFO *)nm;
-		LPTREEFOLDER folder = (LPTREEFOLDER)ptvdi->item.lParam;
-		char* utf8_szText;
-		BOOL result = 0;
+		case TVN_ENDLABELEDIT :
+		{
+			TV_DISPINFO *ptvdi = (TV_DISPINFO *)nm;
+			LPTREEFOLDER folder = (LPTREEFOLDER)ptvdi->item.lParam;
+			char* utf8_szText;
+			BOOL result = 0;
+			g_in_treeview_edit = FALSE;
 
-		g_in_treeview_edit = FALSE;
+			if (ptvdi->item.pszText == NULL || _tcslen(ptvdi->item.pszText) == 0)
+				return FALSE;
 
-		if (ptvdi->item.pszText == NULL || _tcslen(ptvdi->item.pszText) == 0)
-			return FALSE;
+			utf8_szText = utf8_from_tstring(ptvdi->item.pszText);
+			if( !utf8_szText )
+				return FALSE;
 
-		utf8_szText = utf8_from_tstring(ptvdi->item.pszText);
-		if( !utf8_szText )
-			return FALSE;
+			result = TryRenameCustomFolder(folder, utf8_szText);
 
-		result = TryRenameCustomFolder(folder, utf8_szText);
+			osd_free(utf8_szText);
 
-		osd_free(utf8_szText);
-
-		return result;
-	}
+			return result;
+		}
 	}
 	return FALSE;
 }
@@ -4565,7 +4561,8 @@ static BOOL MameCommand(HWND hwnd,int id, HWND hwndCtl, UINT codeNotify)
 		{
 			if (g_helpInfo[i].nMenuItem == id)
 			{
-				if (i == 1) // NEW MESS FEATURES : get current whatsnew.txt from mamedev.org
+				printf("%X: %ls\n",g_helpInfo[i].bIsHtmlHelp, g_helpInfo[i].lpFile);
+				if (i == 1) // get current whatsnew.txt from mamedev.org
 				{
 					std::string version = std::string(build_version); // turn version string into std
 					version.erase(1,1); // take out the decimal point
@@ -4577,11 +4574,10 @@ static BOOL MameCommand(HWND hwnd,int id, HWND hwndCtl, UINT codeNotify)
 				}
 				else
 				if (g_helpInfo[i].bIsHtmlHelp)
-				//	HelpFunction(hMain, g_helpInfo[i].lpFile, HH_DISPLAY_TOPIC, 0);
+//					HelpFunction(hMain, g_helpInfo[i].lpFile, HH_DISPLAY_TOPIC, 0);
 					ShellExecute(hMain, TEXT("open"), g_helpInfo[i].lpFile, TEXT(""), NULL, SW_SHOWNORMAL);
-
-				//else
-				//	DisplayTextFile(hMain, g_helpInfo[i].lpFile);
+//				else
+//					DisplayTextFile(hMain, g_helpInfo[i].lpFile);
 				return FALSE;
 			}
 		}

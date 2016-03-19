@@ -610,7 +610,7 @@ BOOL DriverHasRam(int driver_index)
 
 void FlushFileCaches(void)
 {
-	zip_file::cache_clear();
+	util::archive_file::cache_clear();
 }
 
 BOOL StringIsSuffixedBy(const char *s, const char *suffix)
