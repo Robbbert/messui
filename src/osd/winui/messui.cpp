@@ -1034,7 +1034,7 @@ static BOOL DevView_GetOpenFileName(HWND hwndDevView, const machine_config *conf
 	s = o.value(opt_name);
 
 	/* Get the path to the currently mounted image */
-	zippath_parent(as, s);
+	util::zippath_parent(as, s);
 	t_s = tstring_from_utf8(as.c_str());
 
 	/* See if an image was loaded, and that the path still exists */
@@ -1138,7 +1138,7 @@ static BOOL DevView_GetOpenItemName(HWND hwndDevView, const machine_config *conf
 	s = o.value(opt_name);
 
 	/* Get the path to the currently mounted image, chop off any trailing backslash */
-	zippath_parent(as, s);
+	util::zippath_parent(as, s);
 	size_t t1 = as.length()-1;
 	if (as[t1] == '\\') as[t1]='\0';
 	t_s = tstring_from_utf8(as.c_str());

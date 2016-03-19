@@ -1146,13 +1146,12 @@ HICON LoadIconFromFile(const char *iconname)
 	char tmpIcoName[MAX_PATH];
 	const char* sDirName = GetImgDir();
 	PBYTE bufferPtr = 0;
-	zip_file::error ziperr;
-	zip_file::ptr zip;
-	const zip_file::file_header *entry;
+	util::archive_file::error ziperr;
+	util::archive_file::ptr zip;
+	int res = 0;
 
 	sprintf(tmpStr, "%s/%s.ico", GetIconsDir(), iconname);
-	if (stat(tmpStr, &file_stat) != 0
-	|| (hIcon = win_extract_icon_utf8(hInst, tmpStr, 0)) == 0)
+	if (stat(tmpStr, &file_stat) != 0 || (hIcon = win_extract_icon_utf8(hInst, tmpStr, 0)) == 0)
 	{
 		sprintf(tmpStr, "%s/%s.ico", sDirName, iconname);
 		if (stat(tmpStr, &file_stat) != 0
@@ -1161,26 +1160,22 @@ HICON LoadIconFromFile(const char *iconname)
 			sprintf(tmpStr, "%s/icons.zip", GetIconsDir());
 			sprintf(tmpIcoName, "%s.ico", iconname);
 
-			ziperr = zip_file::open(tmpStr, zip);
-			if (ziperr == zip_file::error::NONE)
+			ziperr = util::archive_file::open_zip(tmpStr, zip);
+			if (ziperr == util::archive_file::error::NONE)
 			{
-				entry = zip->first_file();
-				while(!hIcon && entry)
+				res = zip->search(tmpIcoName);
+				if (res >= 0)
 				{
-					if (!core_stricmp(entry->filename, tmpIcoName))
+					bufferPtr = (PBYTE)malloc(zip->current_uncompressed_length());
+					if (bufferPtr)
 					{
-						bufferPtr = (PBYTE)malloc(entry->uncompressed_length);
-						if (bufferPtr)
+						ziperr = zip->decompress(bufferPtr, zip->current_uncompressed_length());
+						if (ziperr == util::archive_file::error::NONE)
 						{
-							ziperr = zip->decompress(bufferPtr, entry->uncompressed_length);
-							if (ziperr == zip_file::error::NONE)
-							{
-								hIcon = FormatICOInMemoryToHICON(bufferPtr, entry->uncompressed_length);
-							}
-							free(bufferPtr);
+							hIcon = FormatICOInMemoryToHICON(bufferPtr, zip->current_uncompressed_length());
 						}
+						free(bufferPtr);
 					}
-					entry = zip->next_file();
 				}
 				zip.reset();
 			}
@@ -4386,7 +4381,7 @@ static BOOL MameCommand(HWND hwnd,int id, HWND hwndCtl, UINT codeNotify)
 			TCHAR* t_bgdir = TEXT(".");
 			const char *s = GetBgDir();
 			std::string as;
-			zippath_parent(as, s);
+			util::zippath_parent(as, s);
 			size_t t1 = as.length()-1;
 			if (as[t1] == '\\') as[t1]='\0';
 			t1 = as.find(':');

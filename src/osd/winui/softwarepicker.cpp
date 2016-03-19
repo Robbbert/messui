@@ -25,7 +25,6 @@
 #include <ctype.h>
 
 #include "emu.h"
-//#include "emuopts.h"
 #include "mui_opts.h"
 #include "unzip.h"
 #include "strconv.h"
@@ -33,7 +32,6 @@
 #include "screenshot.h"
 #include "bitmask.h"
 #include "winui.h"
-//#include "resource.h"
 #include "mui_util.h"
 #include "hash.h"
 #include "softwarepicker.h"
@@ -249,7 +247,7 @@ static BOOL SoftwarePicker_CalculateHash(HWND hwndPicker, int nIndex)
 	if (pFileInfo->zip_entry_name)
 	{
 		// this is in a ZIP file
-		zip_file *zip;
+		util::archive_file *zip;
 		zip_error ziperr;
 		const zip_file_header *zipent;
 
@@ -451,50 +449,45 @@ error:
 
 
 
-static BOOL SoftwarePicker_AddZipEntFile(HWND hwndPicker, LPCSTR pszZipPath,
-	BOOL bForce, zip_file::ptr &pZip, const zip_file::file_header *pZipEnt, bool check)
+static BOOL SoftwarePicker_AddZipEntFile(HWND hwndPicker, LPCSTR pszZipPath, BOOL bForce, util::archive_file::ptr &pZip, bool check)
 {
 	LPSTR s;
-	LPCSTR temp = pZipEnt->filename;
-	int nLength;
-	int nZipEntryNameLength;
+	LPCSTR temp = pZip->current_name().c_str();
 
 	// special case; skip first two characters if they are './'
-	if ((pZipEnt->filename[0] == '.') && (pZipEnt->filename[1] == '/'))
+	if ((temp[0] == '.') && (temp[1] == '/'))
 	{
 		while(*(++temp) == '/')
 			;
 	}
 
-	nZipEntryNameLength = strlen(pZipEnt->filename);
-	nLength = strlen(pszZipPath) + 1 + nZipEntryNameLength + 1;
+	int nZipEntryNameLength = strlen(pZip->current_name().c_str());
+	int nLength = strlen(pszZipPath) + 1 + nZipEntryNameLength + 1;
 	s = (LPSTR) alloca(nLength);
-	snprintf(s, nLength, "%s\\%s", pszZipPath, pZipEnt->filename);
+	snprintf(s, nLength, "%s\\%s", pszZipPath, pZip->current_name().c_str());
 
-	return SoftwarePicker_AddFileEntry(hwndPicker, s,
-		nZipEntryNameLength, pZipEnt->crc, bForce, check);
+	return SoftwarePicker_AddFileEntry(hwndPicker, s, nZipEntryNameLength, pZip->current_crc(), bForce, check);
 }
 
 static BOOL SoftwarePicker_InternalAddFile(HWND hwndPicker, LPCSTR pszFilename, BOOL bForce, bool check)
 {
+	int res = 0;
 	LPCSTR s;
 	BOOL rc = TRUE;
-	zip_file::error ziperr;
-	zip_file::ptr pZip;
-	const zip_file::file_header *pZipEnt;
+	util::archive_file::error ziperr;
+	util::archive_file::ptr pZip;
 
 	s = strrchr(pszFilename, '.');
-	if (s && ((core_stricmp(s, ".zip")==0) || (core_stricmp(s, ".7z")==0))) // 7z not being detected
+	if (s && (core_stricmp(s, ".zip")==0)) //|| (core_stricmp(s, ".7z")==0))) // 7z not being detected
 	{
-		ziperr = zip_file::open(pszFilename, pZip);
-		if (ziperr  == zip_file::error::NONE)
+		ziperr = util::archive_file::open_zip(pszFilename, pZip);
+		if (ziperr  == util::archive_file::error::NONE)
 		{
-			pZipEnt = pZip->first_file();
-			while(rc && pZipEnt)
+			res = pZip->first_file();
+			while(rc && (res >= 0))
 			{
-				rc = SoftwarePicker_AddZipEntFile(hwndPicker, pszFilename,
-					bForce, pZip, pZipEnt, check);
-				pZipEnt = pZip->next_file();
+				rc = SoftwarePicker_AddZipEntFile(hwndPicker, pszFilename, bForce, pZip, check);
+				res = pZip->next_file();
 			}
 			pZip.reset();
 		}
