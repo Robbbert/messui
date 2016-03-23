@@ -181,7 +181,7 @@ static BOOL DirListReadControl(datamap *map, HWND dialog, HWND control, windows_
 static BOOL DirListPopulateControl(datamap *map, HWND dialog, HWND control, windows_options *opts, const char *option_name);
 static BOOL RamPopulateControl(datamap *map, HWND dialog, HWND control, windows_options *opts, const char *option_name);
 extern BOOL BrowseForDirectory(HWND hwnd, LPCTSTR pStartDir, TCHAR* pResult);
-//BOOL g_bModifiedSoftwarePaths = FALSE;
+static BOOL g_bModifiedSoftwarePaths = FALSE;
 #endif
 
 /**************************************************************
@@ -2262,15 +2262,12 @@ static void BuildDataMap(void)
 	datamap_add(properties_datamap, IDC_NUMSCREENSDISP,			DM_INT,		OSDOPTION_NUMSCREENS);
 	datamap_add(properties_datamap, IDC_WINDOWED,				DM_BOOL,	OSDOPTION_WINDOW);
 	datamap_add(properties_datamap, IDC_MAXIMIZE,				DM_BOOL,	OSDOPTION_MAXIMIZE);
-	datamap_add(properties_datamap, IDC_KEEPASPECT,				DM_BOOL,	OSDOPTION_KEEPASPECT);
+	datamap_add(properties_datamap, IDC_KEEPASPECT,				DM_BOOL,	OPTION_KEEPASPECT);
 	datamap_add(properties_datamap, IDC_PRESCALE,				DM_INT,		OSDOPTION_PRESCALE);
 	datamap_add(properties_datamap, IDC_PRESCALEDISP,			DM_INT,		OSDOPTION_PRESCALE);
 	datamap_add(properties_datamap, IDC_EFFECT,				DM_STRING,	OPTION_EFFECT);
 	datamap_add(properties_datamap, IDC_WAITVSYNC,				DM_BOOL,	OSDOPTION_WAITVSYNC);
 	datamap_add(properties_datamap, IDC_SYNCREFRESH,			DM_BOOL,	OSDOPTION_SYNCREFRESH);
-
-	// DirectDraw specific options
-	datamap_add(properties_datamap, IDC_HWSTRETCH,				DM_BOOL,	WINOPTION_HWSTRETCH);
 
 	// Direct3D specific options
 	datamap_add(properties_datamap, IDC_D3D_VERSION,			DM_INT,		WINOPTION_D3DVERSION);
