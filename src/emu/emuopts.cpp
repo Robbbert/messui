@@ -30,7 +30,7 @@ const options_entry emu_options::s_option_entries[] =
 	// config options
 	{ nullptr,                                              nullptr,        OPTION_HEADER,     "CORE CONFIGURATION OPTIONS" },
 	{ OPTION_READCONFIG ";rc",                           "1",         OPTION_BOOLEAN,    "enable loading of configuration files" },
-	{ OPTION_WRITECONFIG ";wc",       /* MESSUI */       "1",         OPTION_BOOLEAN,    "writes configuration to (driver).ini on exit" },
+	{ OPTION_WRITECONFIG ";wc",                          "0",         OPTION_BOOLEAN,    "writes configuration to (driver).ini on exit" },
 
 	// search path options
 	{ nullptr,                                              nullptr,        OPTION_HEADER,     "CORE SEARCH PATH OPTIONS" },
@@ -376,6 +376,9 @@ void emu_options::remove_device_options()
 			remove_entry(*curentry);
 	}
 
+	// take also care of ramsize options
+	set_default_value(OPTION_RAMSIZE, "");
+
 	// reset counters
 	m_slot_options = 0;
 	m_device_options = 0;
@@ -457,8 +460,6 @@ void emu_options::parse_standard_inis(std::string &error_string)
 	const game_driver *cursystem = system();
 	if (cursystem == nullptr)
 		return;
-//MESSUI
-#if 0
 
 	// parse "vertical.ini" or "horizont.ini"
 	if (cursystem->flags & ORIENTATION_SWAP_XY)
@@ -514,8 +515,6 @@ void emu_options::parse_standard_inis(std::string &error_string)
 		parse_one_ini(driver_list::driver(gparent).name, OPTION_PRIORITY_GPARENT_INI, &error_string);
 	if (parent != -1)
 		parse_one_ini(driver_list::driver(parent).name, OPTION_PRIORITY_PARENT_INI, &error_string);
-//MESSUI
-#endif
 	parse_one_ini(cursystem->name, OPTION_PRIORITY_DRIVER_INI, &error_string);
 
 	// Re-evaluate slot options after loading ini files
@@ -545,20 +544,29 @@ void emu_options::set_system_name(const char *name)
 {
 	// remember the original system name
 	std::string old_system_name(system_name());
+	bool new_system = old_system_name.compare(name)!=0;
 
 	// if the system name changed, fix up the device options
-	if (old_system_name.compare(name)!=0)
+	if (new_system)
 	{
 		// first set the new name
 		std::string error;
 		set_value(OPTION_SYSTEMNAME, name, OPTION_PRIORITY_CMDLINE, error);
 		assert(error.empty());
 
-		// remove any existing device options and then add them afresh
+		// remove any existing device options
 		remove_device_options();
-		while (add_slot_options()) { }
+	}
 
-		// then add the options
+	// get the new system
+	const game_driver *cursystem = system();
+	if (cursystem == nullptr)
+		return;
+
+	if (new_system)
+	{
+		// add the options afresh
+		while (add_slot_options()) { }
 		add_device_options();
 		int num;
 		do {
