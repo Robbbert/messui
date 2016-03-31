@@ -17,7 +17,7 @@
 #include "emu.h"
 #include "mui_opts.h"
 #include "devview.h"
-#include "optionsms.h"
+//#include "optionsms.h"
 #include "strconv.h"
 #include "winutf8.h"
 #include "mui_util.h"

@@ -41,7 +41,7 @@ BEGIN
     END
     POPUP "&Help"
     BEGIN
-        MENUITEM "&About MESS",			ID_ABOUT
+        MENUITEM "&About MESS",                 ID_ABOUT
     END
 END
 
@@ -55,8 +55,7 @@ BEGIN
         MENUITEM "P&layback Input...",          ID_FILE_PLAY_BACK
         MENUITEM "Play and Record &Wave Output...", ID_FILE_PLAY_RECORD_WAVE
         MENUITEM "Play and Record &MNG Output...", ID_FILE_PLAY_RECORD_MNG
-        MENUITEM "Play and Record &uncompressed AVI Output...",
-                                                ID_FILE_PLAY_RECORD_AVI
+        MENUITEM "Play and Record &uncompressed AVI Output...", ID_FILE_PLAY_RECORD_AVI
         MENUITEM SEPARATOR
         MENUITEM "Loa&d Savestate...",          ID_FILE_LOADSTATE, GRAYED
         MENUITEM SEPARATOR
@@ -87,7 +86,6 @@ BEGIN
             MENUITEM "&Marquee",                    ID_TOGGLE_TAB_MARQUEE
             MENUITEM "&Title",                      ID_TOGGLE_TAB_TITLE
             MENUITEM "Control &Panel",              ID_TOGGLE_TAB_CONTROL_PANEL
-
             MENUITEM "PC&B",                        ID_TOGGLE_TAB_PCB
             MENUITEM "&History",                    ID_TOGGLE_TAB_HISTORY
         END

@@ -2,7 +2,6 @@
 //
 #include "newuires.h"
 #include "resource.h"
-#include "resourcems.h "
 
 // Generated Help ID header file
 #define APSTUDIO_HIDDEN_SYMBOLS
@@ -42,7 +41,7 @@ BEGIN
     END
     POPUP "&Help"
     BEGIN
-        MENUITEM "&About MESS",			ID_ABOUT
+        MENUITEM "&About MESS",                 ID_ABOUT
     END
 END
 
@@ -56,16 +55,11 @@ BEGIN
         MENUITEM "P&layback Input...",          ID_FILE_PLAY_BACK
         MENUITEM "Play and Record &Wave Output...", ID_FILE_PLAY_RECORD_WAVE
         MENUITEM "Play and Record &MNG Output...", ID_FILE_PLAY_RECORD_MNG
-        MENUITEM "Play and Record &uncompressed AVI Output...",
-                                                ID_FILE_PLAY_RECORD_AVI
+        MENUITEM "Play and Record &uncompressed AVI Output...", ID_FILE_PLAY_RECORD_AVI
         MENUITEM SEPARATOR
         MENUITEM "Loa&d Savestate...",          ID_FILE_LOADSTATE, GRAYED
         MENUITEM SEPARATOR
         MENUITEM "Op&en Other Software...",     ID_MESS_OPEN_SOFTWARE
-#ifdef MAME_DEBUG
-        MENUITEM SEPARATOR
-        MENUITEM "Run Tests",			ID_MESS_RUN_TESTS
-#endif
         MENUITEM SEPARATOR
         MENUITEM "Pr&operties",                 ID_GAME_PROPERTIES
         MENUITEM SEPARATOR
@@ -92,7 +86,6 @@ BEGIN
             MENUITEM "&Marquee",                    ID_TOGGLE_TAB_MARQUEE
             MENUITEM "&Title",                      ID_TOGGLE_TAB_TITLE
             MENUITEM "Control &Panel",              ID_TOGGLE_TAB_CONTROL_PANEL
-
             MENUITEM "PC&B",                        ID_TOGGLE_TAB_PCB
             MENUITEM "&History",                    ID_TOGGLE_TAB_HISTORY
         END
@@ -131,7 +124,7 @@ BEGIN
     POPUP "&Help"
     BEGIN
 //        MENUITEM "&Mess Release Notes",         ID_HELP_RELEASE
-        MENUITEM "&New Mess Features",          ID_HELP_WHATS_NEW
+        MENUITEM "What's New in MAME",          ID_HELP_WHATS_NEW
         MENUITEM "&Contents\tF1",               ID_HELP_CONTENTS
 //        MENUITEM "&Troubleshooting",            ID_HELP_TROUBLE
         MENUITEM "&About",                      ID_HELP_ABOUT
@@ -401,7 +394,7 @@ BEGIN
     CTEXT           "Multi Emulator Super System",IDC_STATIC,147,7,142,
                     11,NOT WS_GROUP
     CTEXT           "Version 0",IDC_VERSION,147,18,142,11,NOT WS_GROUP
-    CTEXT           "Copyright (C) 1998-2015 The MAME Team",IDC_STATIC,147,
+    CTEXT           "Copyright (C) 1998-2016 The MAME Team",IDC_STATIC,147,
                     29,142,10,NOT WS_GROUP
     CTEXT           "MESSUI based on MAMEUI version by",IDC_STATIC,147,51,142,10,NOT
                     WS_GROUP
@@ -694,8 +687,8 @@ BEGIN
     GROUPBOX        "Version",IDC_STATIC,119,150,90,28
     COMBOBOX        IDC_D3D_VERSION,125,160,78,95,CBS_DROPDOWNLIST | WS_VSCROLL | WS_TABSTOP,0,HIDC_D3D_VERSION
 
-    GROUPBOX        "DirectDraw",IDC_STATIC,113,187,102,26
-    CONTROL         "Stretch using hardware",IDC_HWSTRETCH,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,119,197,85,10,0,HIDC_HWSTRETCH
+//    GROUPBOX        "DirectDraw",IDC_STATIC,113,187,102,26
+//    CONTROL         "Stretch using hardware",IDC_HWSTRETCH,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,119,197,85,10,0,HIDC_HWSTRETCH
 
     PUSHBUTTON      "Reset",IDC_PROP_RESET,4,222,97,14,0,0,HIDC_PROP_RESET
     PUSHBUTTON      "Restore Default Settings",IDC_USE_DEFAULT,118,222,97,14,0,0,HIDC_USE_DEFAULT
@@ -870,9 +863,9 @@ BEGIN
                     WS_TABSTOP,10,40,86,10,0,HIDC_CHEAT
     CONTROL         "Sleep when possible",IDC_SLEEP,"Button",BS_AUTOCHECKBOX |
                     WS_TABSTOP,10,52,86,10,0,HIDC_SLEEP
-//    CONTROL         "Skip system info",IDC_SKIP_GAME_INFO,"Button",
-//                    BS_AUTOCHECKBOX | WS_TABSTOP,10,64,96,10,0,
-//                    HIDC_SKIP_GAME_INFO
+    CONTROL         "Skip system info",IDC_SKIP_GAME_INFO,"Button",
+                    BS_AUTOCHECKBOX | WS_TABSTOP,10,64,96,10,0,
+                    HIDC_SKIP_GAME_INFO
     CONTROL         "Save system state on exit",IDC_ENABLE_AUTOSAVE,"Button",
                     BS_AUTOCHECKBOX | WS_TABSTOP,10,76,96,10,0,
                     HIDC_ENABLE_AUTOSAVE
@@ -952,8 +945,7 @@ BEGIN
 END
 
 IDD_MAIN DIALOGEX 0, 0, 364, 206
-STYLE DS_3DLOOK | DS_NOFAILCREATE | WS_MINIMIZEBOX | WS_MAXIMIZEBOX |
-    WS_POPUP | WS_CAPTION | WS_SYSMENU | WS_THICKFRAME
+STYLE DS_3DLOOK | DS_NOFAILCREATE | WS_MINIMIZEBOX | WS_MAXIMIZEBOX | WS_POPUP | WS_CAPTION | WS_SYSMENU | WS_THICKFRAME
 EXSTYLE WS_EX_CONTROLPARENT
 CAPTION "MAMEUI - overwritten at runtime"
 CLASS "MainClass"

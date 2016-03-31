@@ -3,7 +3,7 @@
 
 ---------------------------------------------------------------------------
 --
---   messui.lua
+--   winui.lua
 --
 --   Rules for the building for Windows
 --
@@ -61,11 +61,12 @@ function maintargetosdoptions(_target,_subtarget)
 		"psapi",
 	}
 
--- Local file gives correct icon in mess instance inside of messui
--- Local file must #include messui.rc
+-- Local file gives correct icon in mame instance inside of mameui
+-- Local file must #include mameui.rc
 	override_resources = true;
-	local rcfile = MAME_DIR .. "src/osd/winui/" .. _subtarget .. ".rc"
-	local uifile = MAME_DIR .. "src/osd/winui/" .. _subtarget .. "ui.rc"
+	rctarget = _target;
+	local rcfile = MAME_DIR .. "src/osd/winui/" .. _target .. ".rc"
+	local uifile = MAME_DIR .. "src/osd/winui/" .. _target .. "ui.rc"
 
 	if not os.isfile(rcfile) then
 		print(string.format("***** %s not found *****",rcfile))
@@ -81,7 +82,7 @@ function maintargetosdoptions(_target,_subtarget)
 		rcfile,
 	}
 	dependency {
-		{ "$(OBJDIR)/".._subtarget..".res" ,  GEN_DIR  .. "/resource/".._subtarget.."vers.rc", true  },
+		{ "$(OBJDIR)/".._target ..".res" ,  GEN_DIR  .. "/resource/" .. _target .. "vers.rc", true  },
 	}
 end
 
@@ -90,7 +91,7 @@ newoption {
 	trigger = "DIRECTINPUT",
 	description = "Minimum DirectInput version to support",
 	allowed = {
-		{ "7",  "Support DirectInput 7 or later" },
+		{ "7",  "Support DirectInput 7 or later"  },
 		{ "8",  "Support DirectInput 8 or later" },
 	},
 }
@@ -209,7 +210,6 @@ project ("osd_" .. _OPTIONS["osd"])
 		MAME_DIR .. "src/osd/winui/columnedit.cpp",
 		MAME_DIR .. "src/osd/winui/datafile.cpp",
 		MAME_DIR .. "src/osd/winui/datamap.cpp",
-		MAME_DIR .. "src/osd/winui/devview.cpp",
 		MAME_DIR .. "src/osd/winui/dialogs.cpp",
 		MAME_DIR .. "src/osd/winui/dijoystick.cpp",
 		MAME_DIR .. "src/osd/winui/directdraw.cpp",
@@ -221,7 +221,6 @@ project ("osd_" .. _OPTIONS["osd"])
 		MAME_DIR .. "src/osd/winui/helpids.cpp",
 		MAME_DIR .. "src/osd/winui/history.cpp",
 		MAME_DIR .. "src/osd/winui/layout.cpp",
-		MAME_DIR .. "src/osd/winui/messui.cpp",
 		MAME_DIR .. "src/osd/winui/mui_audit.cpp",
 		MAME_DIR .. "src/osd/winui/mui_main.cpp",
 		MAME_DIR .. "src/osd/winui/mui_opts.cpp",
@@ -230,10 +229,7 @@ project ("osd_" .. _OPTIONS["osd"])
 		MAME_DIR .. "src/osd/winui/properties.cpp",
 		MAME_DIR .. "src/osd/winui/resource.h",
 		MAME_DIR .. "src/osd/winui/screenshot.cpp",
-		MAME_DIR .. "src/osd/winui/softwarelist.cpp",
-		MAME_DIR .. "src/osd/winui/softwarepicker.cpp",
 		MAME_DIR .. "src/osd/winui/splitters.cpp",
-		MAME_DIR .. "src/osd/winui/swconfig.cpp",
 		MAME_DIR .. "src/osd/winui/tabview.cpp",
 		MAME_DIR .. "src/osd/winui/treeview.cpp",
 		MAME_DIR .. "src/osd/winui/winui.cpp",
@@ -248,7 +244,7 @@ project ("ocore_" .. _OPTIONS["osd"])
 		"ForceCPP",
 	}
 	removeflags {
-		"SingleOutputDir",
+		"SingleOutputDir",	
 	}
 
 	dofile("windows_cfg.lua")

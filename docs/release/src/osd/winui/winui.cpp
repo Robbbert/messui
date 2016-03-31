@@ -1146,13 +1146,12 @@ HICON LoadIconFromFile(const char *iconname)
 	char tmpIcoName[MAX_PATH];
 	const char* sDirName = GetImgDir();
 	PBYTE bufferPtr = 0;
-	zip_error ziperr;
-	zip_file *zip;
-	const zip_file_header *entry;
+	util::archive_file::error ziperr;
+	util::archive_file::ptr zip;
+	int res = 0;
 
 	sprintf(tmpStr, "%s/%s.ico", GetIconsDir(), iconname);
-	if (stat(tmpStr, &file_stat) != 0
-	|| (hIcon = win_extract_icon_utf8(hInst, tmpStr, 0)) == 0)
+	if (stat(tmpStr, &file_stat) != 0 || (hIcon = win_extract_icon_utf8(hInst, tmpStr, 0)) == 0)
 	{
 		sprintf(tmpStr, "%s/%s.ico", sDirName, iconname);
 		if (stat(tmpStr, &file_stat) != 0
@@ -1161,28 +1160,24 @@ HICON LoadIconFromFile(const char *iconname)
 			sprintf(tmpStr, "%s/icons.zip", GetIconsDir());
 			sprintf(tmpIcoName, "%s.ico", iconname);
 
-			ziperr = zip_file_open(tmpStr, &zip);
-			if (ziperr == ZIPERR_NONE)
+			ziperr = util::archive_file::open_zip(tmpStr, zip);
+			if (ziperr == util::archive_file::error::NONE)
 			{
-				entry = zip_file_first_file(zip);
-				while(!hIcon && entry)
+				res = zip->search(tmpIcoName, false);
+				if (res >= 0)
 				{
-					if (core_stricmp(entry->filename, tmpIcoName)==0)
+					bufferPtr = (PBYTE)malloc(zip->current_uncompressed_length());
+					if (bufferPtr)
 					{
-						bufferPtr = (PBYTE)malloc(entry->uncompressed_length);
-						if (bufferPtr)
+						ziperr = zip->decompress(bufferPtr, zip->current_uncompressed_length());
+						if (ziperr == util::archive_file::error::NONE)
 						{
-							ziperr = zip_file_decompress(zip, bufferPtr, entry->uncompressed_length);
-							if (ziperr == ZIPERR_NONE)
-							{
-								hIcon = FormatICOInMemoryToHICON(bufferPtr, entry->uncompressed_length);
-							}
-							free(bufferPtr);
+							hIcon = FormatICOInMemoryToHICON(bufferPtr, zip->current_uncompressed_length());
 						}
+						free(bufferPtr);
 					}
-					entry = zip_file_next_file(zip);
 				}
-				zip_file_close(zip);
+				zip.reset();
 			}
 		}
 	}
@@ -2969,14 +2964,12 @@ static LRESULT Statusbar_MenuSelect(HWND hwnd, WPARAM wParam, LPARAM lParam)
 	if (hMainMenu)
 	{
 		/* Display helpful text in status bar */
-		MenuHelp(WM_MENUSELECT, wParam, lParam, hMainMenu, hInst,
-				 hStatusBar, (UINT *)&popstr[iMenu]);
+		MenuHelp(WM_MENUSELECT, wParam, lParam, hMainMenu, hInst, hStatusBar, (UINT *)&popstr[iMenu]);
 	}
 	else
 	{
 		UINT nZero = 0;
-		MenuHelp(WM_MENUSELECT, wParam, lParam, NULL, hInst,
-				 hStatusBar, &nZero);
+		MenuHelp(WM_MENUSELECT, wParam, lParam, NULL, hInst, hStatusBar, &nZero);
 	}
 
 	return 0;
@@ -2985,8 +2978,8 @@ static LRESULT Statusbar_MenuSelect(HWND hwnd, WPARAM wParam, LPARAM lParam)
 static void UpdateStatusBar()
 {
 	LPTREEFOLDER lpFolder = GetCurrentFolder();
-	int 		 games_shown = 0;
-	int 		 i = -1;
+	int games_shown = 0;
+	int i = -1;
 
 	if (!lpFolder)
 		return;
@@ -3019,7 +3012,7 @@ static void UpdateHistory(void)
 {
 	HDC hDC;
 	RECT rect;
-	TEXTMETRIC     tm ;
+	TEXTMETRIC tm ;
 	int nLines = 0, nLineHeight = 0;
 	//DWORD dwStyle = GetWindowLong(GetDlgItem(hMain, IDC_HISTORY), GWL_STYLE);
 	have_history = FALSE;
@@ -3063,20 +3056,20 @@ static void UpdateHistory(void)
 
 static void DisableSelection()
 {
-	MENUITEMINFO	mmi;
-	HMENU			hMenu = GetMenu(hMain);
-	BOOL			prev_have_selection = have_selection;
+	MENUITEMINFO mmi;
+	HMENU hMenu = GetMenu(hMain);
+	BOOL prev_have_selection = have_selection;
 
-	mmi.cbSize	   = sizeof(mmi);
-	mmi.fMask	   = MIIM_TYPE;
-	mmi.fType	   = MFT_STRING;
+	mmi.cbSize = sizeof(mmi);
+	mmi.fMask = MIIM_TYPE;
+	mmi.fType = MFT_STRING;
 	mmi.dwTypeData = (TCHAR *) TEXT("&Play");
-	mmi.cch 	   = _tcslen(mmi.dwTypeData);
+	mmi.cch = _tcslen(mmi.dwTypeData);
 	SetMenuItemInfo(hMenu, ID_FILE_PLAY, FALSE, &mmi);
 
-	EnableMenuItem(hMenu, ID_FILE_PLAY, 		   MF_GRAYED);
-	EnableMenuItem(hMenu, ID_FILE_PLAY_RECORD,	   MF_GRAYED);
-	EnableMenuItem(hMenu, ID_GAME_PROPERTIES,	   MF_GRAYED);
+	EnableMenuItem(hMenu, ID_FILE_PLAY, MF_GRAYED);
+	EnableMenuItem(hMenu, ID_FILE_PLAY_RECORD, MF_GRAYED);
+	EnableMenuItem(hMenu, ID_GAME_PROPERTIES, MF_GRAYED);
 
 	SetStatusBarText(0, "No Selection");
 	SetStatusBarText(1, "");
@@ -3090,12 +3083,11 @@ static void DisableSelection()
 
 static void EnableSelection(int nGame)
 {
-	TCHAR			buf[200];
-	const char *	pText;
-	MENUITEMINFO	mmi;
-	HMENU			hMenu = GetMenu(hMain);
-	TCHAR*          t_description;
-	int items;
+	TCHAR buf[200];
+	const char * pText;
+	MENUITEMINFO mmi;
+	HMENU hMenu = GetMenu(hMain);
+	TCHAR* t_description;
 
 	MyFillSoftwareList(nGame, FALSE);
 
@@ -3104,11 +3096,11 @@ static void EnableSelection(int nGame)
 		return;
 
 	_sntprintf(buf, sizeof(buf) / sizeof(buf[0]), g_szPlayGameString, t_description);
-	mmi.cbSize	   = sizeof(mmi);
-	mmi.fMask	   = MIIM_TYPE;
-	mmi.fType	   = MFT_STRING;
+	mmi.cbSize = sizeof(mmi);
+	mmi.fMask = MIIM_TYPE;
+	mmi.fType = MFT_STRING;
 	mmi.dwTypeData = buf;
-	mmi.cch 	   = _tcslen(mmi.dwTypeData);
+	mmi.cch = _tcslen(mmi.dwTypeData);
 	SetMenuItemInfo(hMenu, ID_FILE_PLAY, FALSE, &mmi);
 
 	pText = ModifyThe(driver_list::driver(nGame).description);
@@ -3118,7 +3110,7 @@ static void EnableSelection(int nGame)
 	SetStatusBarText(1, pText);
 
 	// Show number of software_list items in box at bottom right.
-	items = SoftwareList_GetNumberOfItems();
+	int items = SoftwareList_GetNumberOfItems();
 	if (items)
 	{
 		sprintf((char *)pText, "%d", items);
@@ -3129,8 +3121,8 @@ static void EnableSelection(int nGame)
 
 	/* If doing updating game status */
 
-	EnableMenuItem(hMenu, ID_FILE_PLAY, 		   MF_ENABLED);
-	EnableMenuItem(hMenu, ID_FILE_PLAY_RECORD,	   MF_ENABLED);
+	EnableMenuItem(hMenu, ID_FILE_PLAY, MF_ENABLED);
+	EnableMenuItem(hMenu, ID_FILE_PLAY_RECORD, MF_ENABLED);
 
 	if (!oldControl)
 		EnableMenuItem(hMenu, ID_GAME_PROPERTIES, MF_ENABLED);
@@ -3147,13 +3139,13 @@ static void EnableSelection(int nGame)
 
 static void PaintBackgroundImage(HWND hWnd, HRGN hRgn, int x, int y)
 {
-	RECT		rcClient;
-	HRGN		rgnBitmap = 0;
-	HPALETTE	hPAL = 0;
-	HDC 		hDC = GetDC(hWnd);
-	int 		i = 0, j = 0;
-	HDC 		htempDC = 0;
-	HBITMAP 	oldBitmap = 0;
+	RECT rcClient;
+	HRGN rgnBitmap = 0;
+	HPALETTE hPAL = 0;
+	HDC hDC = GetDC(hWnd);
+	int i = 0, j = 0;
+	HDC htempDC = 0;
+	HBITMAP oldBitmap = 0;
 
 	/* x and y are offsets within the background image that should be at 0,0 in hWnd */
 
@@ -3219,62 +3211,61 @@ static BOOL TreeViewNotify(LPNMHDR nm)
 {
 	switch (nm->code)
 	{
-	case TVN_SELCHANGED :
-	{
-		HTREEITEM hti = TreeView_GetSelection(hTreeView);
-		TVITEM	  tvi;
-
-		tvi.mask  = TVIF_PARAM | TVIF_HANDLE;
-		tvi.hItem = hti;
-
-		if (TreeView_GetItem(hTreeView, &tvi))
+		case TVN_SELCHANGED :
 		{
-			SetCurrentFolder((LPTREEFOLDER)tvi.lParam);
-			if (bListReady)
+			HTREEITEM hti = TreeView_GetSelection(hTreeView);
+			TVITEM tvi;
+
+			tvi.mask  = TVIF_PARAM | TVIF_HANDLE;
+			tvi.hItem = hti;
+
+			if (TreeView_GetItem(hTreeView, &tvi))
 			{
-				ResetListView();
-				MessUpdateSoftwareList();
-				UpdateScreenShot();
+				SetCurrentFolder((LPTREEFOLDER)tvi.lParam);
+				if (bListReady)
+				{
+					ResetListView();
+					MessUpdateSoftwareList();
+					UpdateScreenShot();
+				}
 			}
+			return TRUE;
 		}
-		return TRUE;
-	}
-	case TVN_BEGINLABELEDIT :
-	{
-		TV_DISPINFO *ptvdi = (TV_DISPINFO *)nm;
-		LPTREEFOLDER folder = (LPTREEFOLDER)ptvdi->item.lParam;
-
-		if (folder->m_dwFlags & F_CUSTOM)
+		case TVN_BEGINLABELEDIT :
 		{
-			// user can edit custom folder names
-			g_in_treeview_edit = TRUE;
-			return FALSE;
+			TV_DISPINFO *ptvdi = (TV_DISPINFO *)nm;
+			LPTREEFOLDER folder = (LPTREEFOLDER)ptvdi->item.lParam;
+
+			if (folder->m_dwFlags & F_CUSTOM)
+			{
+				// user can edit custom folder names
+				g_in_treeview_edit = TRUE;
+				return FALSE;
+			}
+			// user can't edit built in folder names
+			return TRUE;
 		}
-		// user can't edit built in folder names
-		return TRUE;
-	}
-	case TVN_ENDLABELEDIT :
-	{
-		TV_DISPINFO *ptvdi = (TV_DISPINFO *)nm;
-		LPTREEFOLDER folder = (LPTREEFOLDER)ptvdi->item.lParam;
-		char* utf8_szText;
-		BOOL result = 0;
+		case TVN_ENDLABELEDIT :
+		{
+			TV_DISPINFO *ptvdi = (TV_DISPINFO *)nm;
+			LPTREEFOLDER folder = (LPTREEFOLDER)ptvdi->item.lParam;
+			char* utf8_szText;
+			BOOL result = 0;
+			g_in_treeview_edit = FALSE;
 
-		g_in_treeview_edit = FALSE;
+			if (ptvdi->item.pszText == NULL || _tcslen(ptvdi->item.pszText) == 0)
+				return FALSE;
 
-		if (ptvdi->item.pszText == NULL || _tcslen(ptvdi->item.pszText) == 0)
-			return FALSE;
+			utf8_szText = utf8_from_tstring(ptvdi->item.pszText);
+			if( !utf8_szText )
+				return FALSE;
 
-		utf8_szText = utf8_from_tstring(ptvdi->item.pszText);
-		if( !utf8_szText )
-			return FALSE;
+			result = TryRenameCustomFolder(folder, utf8_szText);
 
-		result = TryRenameCustomFolder(folder, utf8_szText);
+			osd_free(utf8_szText);
 
-		osd_free(utf8_szText);
-
-		return result;
-	}
+			return result;
+		}
 	}
 	return FALSE;
 }
@@ -4390,7 +4381,7 @@ static BOOL MameCommand(HWND hwnd,int id, HWND hwndCtl, UINT codeNotify)
 			TCHAR* t_bgdir = TEXT(".");
 			const char *s = GetBgDir();
 			std::string as;
-			zippath_parent(as, s);
+			util::zippath_parent(as, s);
 			size_t t1 = as.length()-1;
 			if (as[t1] == '\\') as[t1]='\0';
 			t1 = as.find(':');
@@ -4565,7 +4556,8 @@ static BOOL MameCommand(HWND hwnd,int id, HWND hwndCtl, UINT codeNotify)
 		{
 			if (g_helpInfo[i].nMenuItem == id)
 			{
-				if (i == 1) // NEW MESS FEATURES : get current whatsnew.txt from mamedev.org
+				printf("%X: %ls\n",g_helpInfo[i].bIsHtmlHelp, g_helpInfo[i].lpFile);
+				if (i == 1) // get current whatsnew.txt from mamedev.org
 				{
 					std::string version = std::string(build_version); // turn version string into std
 					version.erase(1,1); // take out the decimal point
@@ -4577,11 +4569,10 @@ static BOOL MameCommand(HWND hwnd,int id, HWND hwndCtl, UINT codeNotify)
 				}
 				else
 				if (g_helpInfo[i].bIsHtmlHelp)
-				//	HelpFunction(hMain, g_helpInfo[i].lpFile, HH_DISPLAY_TOPIC, 0);
+//					HelpFunction(hMain, g_helpInfo[i].lpFile, HH_DISPLAY_TOPIC, 0);
 					ShellExecute(hMain, TEXT("open"), g_helpInfo[i].lpFile, TEXT(""), NULL, SW_SHOWNORMAL);
-
-				//else
-				//	DisplayTextFile(hMain, g_helpInfo[i].lpFile);
+//				else
+//					DisplayTextFile(hMain, g_helpInfo[i].lpFile);
 				return FALSE;
 			}
 		}
@@ -5351,23 +5342,20 @@ static void CLIB_DECL ATTR_PRINTF(1,2) MameMessageBox(const char *fmt, ...)
 
 static void MamePlayBackGame()
 {
-	int nGame = 0;
 	char filename[MAX_PATH];
-
 	*filename = 0;
 
-	nGame = Picker_GetSelectedItem(hwndList);
+	int nGame = Picker_GetSelectedItem(hwndList);
 	if (nGame != -1)
 		strcpy(filename, driver_list::driver(nGame).name);
 
 	if (CommonFileDialog(GetOpenFileName, filename, FILETYPE_INPUT_FILES))
 	{
-		file_error fileerr;
+		osd_file::error fileerr;
 		char drive[_MAX_DRIVE];
 		char dir[_MAX_DIR];
 		char bare_fname[_MAX_FNAME];
 		char ext[_MAX_EXT];
-
 		char path[MAX_PATH];
 		char fname[MAX_PATH];
 		play_options playopts;
@@ -5381,42 +5369,43 @@ static void MamePlayBackGame()
 
 		emu_file pPlayBack(MameUIGlobal().input_directory(), OPEN_FLAG_READ);
 		fileerr = pPlayBack.open(fname);
-		if (fileerr != FILERR_NONE)
+		if (fileerr != osd_file::error::NONE)
 		{
 			MameMessageBox("Could not open '%s' as a valid input file.", filename);
 			return;
 		}
 
 		// check for game name embedded in .inp header
-		int i=0;
-		inp_header ihdr;
+		inp_header header;
 
 		/* read the header and verify that it is a modern version; if not, print an error */
-		if (pPlayBack.read(&ihdr, sizeof(inp_header)) != sizeof(inp_header))
+		if (!header.read(pPlayBack))
 		{
 			MameMessageBox("Input file is corrupt or invalid (missing header)");
 			return;
 		}
-
-		if (memcmp("MAMEINP\0", ihdr.header, 8) != 0)
+		if ((!header.check_magic()) || (header.get_majversion() != inp_header::MAJVERSION))
 		{
 			MameMessageBox("Input file invalid or in an older, unsupported format");
 			return;
 		}
-		if (ihdr.majversion != INP_HEADER_MAJVERSION)
-		{
-			MameMessageBox("Input file format version mismatch");
-			return;
-		}
 
-		for (i = 0; i < driver_list::total(); i++) // find game and play it
+		std::string const sysname = header.get_sysname();
+		nGame = -1;
+		for (int i = 0; i < driver_list::total(); i++) // find game and play it
 		{
-			if (strcmp(driver_list::driver(i).name, ihdr.gamename) == 0)
+			if (driver_list::driver(i).name == sysname)
 			{
 				nGame = i;
 				break;
 			}
 		}
+		if (nGame == -1)
+		{
+			MameMessageBox("Game \"%s\" cannot be found", sysname.c_str());
+			return;
+		}
+
 		memset(&playopts, 0, sizeof(playopts));
 		playopts.playback = fname;
 		MamePlayGameWithOptions(nGame, &playopts);
@@ -5463,8 +5452,8 @@ static void MameLoadState()
 		}
 
 		emu_file pSaveState(MameUIGlobal().state_directory(), OPEN_FLAG_READ);
-		file_error fileerr = pSaveState.open(state_fname);
-		if (fileerr != FILERR_NONE)
+		osd_file::error fileerr = pSaveState.open(state_fname);
+		if (fileerr != osd_file::error::NONE)
 		{
 			MameMessageBox("Could not open '%s' as a valid savestate file.", filename);
 			return;

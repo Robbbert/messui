@@ -22,13 +22,12 @@
 #include "screenshot.h"
 #include "bitmask.h"
 #include "winui.h"
-#include "resourcems.h"
+#include "resource.h"
 #include "mui_opts.h"
 #include "picker.h"
 #include "tabview.h"
 #include "mui_util.h"
 #include "columnedit.h"
-#include "optionsms.h"
 #include "softwarepicker.h"
 #include "softwarelist.h"
 #include "devview.h"
@@ -1035,7 +1034,7 @@ static BOOL DevView_GetOpenFileName(HWND hwndDevView, const machine_config *conf
 	s = o.value(opt_name);
 
 	/* Get the path to the currently mounted image */
-	zippath_parent(as, s);
+	util::zippath_parent(as, s);
 	t_s = tstring_from_utf8(as.c_str());
 
 	/* See if an image was loaded, and that the path still exists */
@@ -1083,7 +1082,6 @@ static BOOL DevView_GetOpenFileName(HWND hwndDevView, const machine_config *conf
 		/* We only want the first path; throw out the rest */
 		i = as.find(';');
 		if (i > 0) as.substr(0, i);
-		osd_free(t_s);
 		t_s = tstring_from_utf8(as.c_str());
 
 		/* Make sure a folder was specified in the tab, and that it exists */
@@ -1095,18 +1093,15 @@ static BOOL DevView_GetOpenFileName(HWND hwndDevView, const machine_config *conf
 			/* We only want the first path; throw out the rest */
 			i = as.find(';');
 			if (i > 0) as.substr(0, i);
-			osd_free(t_s);
 			t_s = tstring_from_utf8(as.c_str());
 
 			/* Make sure a folder was specified in the tab, and that it exists */
 			if ((!osd_opendir(as.c_str())) || (as.find(':') == std::string::npos))
 			{
-				char *dst = NULL;
-				osd_get_full_path(&dst,".");
+				std::string dst;
+				osd_get_full_path(dst,".");
 				/* Default to emu directory */
-				osd_free(t_s);
-				t_s = tstring_from_utf8(dst);
-				osd_free(dst);
+				t_s = tstring_from_utf8(dst.c_str());
 			}
 		}
 	}
@@ -1143,7 +1138,7 @@ static BOOL DevView_GetOpenItemName(HWND hwndDevView, const machine_config *conf
 	s = o.value(opt_name);
 
 	/* Get the path to the currently mounted image, chop off any trailing backslash */
-	zippath_parent(as, s);
+	util::zippath_parent(as, s);
 	size_t t1 = as.length()-1;
 	if (as[t1] == '\\') as[t1]='\0';
 	t_s = tstring_from_utf8(as.c_str());
@@ -1163,12 +1158,10 @@ static BOOL DevView_GetOpenItemName(HWND hwndDevView, const machine_config *conf
 		/* Make sure a folder was specified in the tab, and that it exists */
 		if ((!osd_opendir(as.c_str())) || (as.find(':') == std::string::npos))
 		{
-			char *dst = NULL;
-			osd_get_full_path(&dst,".");
+			std::string dst;
+			osd_get_full_path(dst,".");
 			/* Default to emu directory */
-			osd_free(t_s);
-			t_s = tstring_from_utf8(dst);
-			osd_free(dst);
+			t_s = tstring_from_utf8(dst.c_str());
 		}
 	}
 
@@ -1272,18 +1265,15 @@ static BOOL DevView_GetCreateFileName(HWND hwndDevView, const machine_config *co
 		/* We only want the first path; throw out the rest */
 		i = as.find(';');
 		if (i > 0) as.substr(0, i);
-		osd_free(t_s);
 		t_s = tstring_from_utf8(as.c_str());
 
 		/* Make sure a folder was specified in the tab, and that it exists */
 		if ((!osd_opendir(as.c_str())) || (as.find(':') == std::string::npos))
 		{
-			char *dst = NULL;
-			osd_get_full_path(&dst,".");
+			std::string dst;
+			osd_get_full_path(dst,".");
 			/* Default to emu directory */
-			osd_free(t_s);
-			t_s = tstring_from_utf8(dst);
-			osd_free(dst);
+			t_s = tstring_from_utf8(dst.c_str());
 		}
 	}
 

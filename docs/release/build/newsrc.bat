@@ -44,7 +44,7 @@ pause
 echo off
 cls
 echo.
-echo ZIP up everything.
+echo RAR up everything.
 echo.
 
 pause
