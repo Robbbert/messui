@@ -488,9 +488,9 @@ void MyFillSoftwareList(int drvindex, BOOL bForce)
 	software_list_device_iterator iter(config.root_device());
 	for (software_list_device *swlistdev = iter.first(); swlistdev; swlistdev = iter.next())
 	{
-		for (software_info *swinfo = swlistdev->first_software_info(); swinfo; swinfo = swinfo->next())
+		for (software_info &swinfo : swlistdev->get_info())
 		{
-			const software_part *swpart = swinfo->first_part();
+			const software_part *swpart = swinfo.first_part();
 
 			// search for a device with the right interface
 			image_interface_iterator iter(config.root_device());
@@ -503,11 +503,11 @@ void MyFillSoftwareList(int drvindex, BOOL bForce)
 					{
 						// Extract the Usage data from the "info" fields.
 						const char* usage = NULL;
-						for (feature_list_item *flist = swinfo->other_info(); flist; flist = flist->next())
-							if (strcmp(flist->name(), "usage") == 0)
-								usage = flist->value();
+						for (feature_list_item &flist : swinfo.other_info())
+							if (strcmp(flist.name(), "usage") == 0)
+								usage = flist.value();
 						// Now actually add the item
-						SoftwareList_AddFile(hwndSoftwareList, swinfo->shortname(), swlistdev->list_name(), swinfo->longname(), swinfo->publisher(), swinfo->year(), usage, image->brief_instance_name());
+						SoftwareList_AddFile(hwndSoftwareList, swinfo.shortname(), swlistdev->list_name(), swinfo.longname(), swinfo.publisher(), swinfo.year(), usage, image->brief_instance_name());
 						break;
 					}
 				}
