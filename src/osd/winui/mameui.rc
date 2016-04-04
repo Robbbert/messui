@@ -230,8 +230,6 @@ BEGIN
         MENUITEM "&Full Screen\tAlt+Enter",     ID_FILE_FULLSCREEN
         MENUITEM "Partial Keyboard Emulation",  ID_FILE_UIACTIVE
         MENUITEM "Show Tab Menu",               ID_FILE_OLDUI
-        MENUITEM "&Debugger...",                ID_FILE_DEBUGGER
-        MENUITEM "Show P&rofiler",              ID_FILE_PROFILER, GRAYED
         MENUITEM SEPARATOR
         MENUITEM "&Exit",                       ID_FILE_EXIT_NEWUI
     END
@@ -736,7 +734,6 @@ BEGIN
     CONTROL         "Sync to monitor refresh",IDC_SYNCREFRESH,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,52,93,10,0,HIDC_SYNCREFRESH
     CONTROL         "Wait for vertical sync",IDC_WAITVSYNC,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,64,93,10,0,HIDC_WAITVSYNC
     CONTROL         "Refresh speed",IDC_REFRESHSPEED,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,76,93,10,0,HIDC_REFRESHSPEED
-    CONTROL         "HLSL",IDC_HLSL_ON,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,88,93,10,0,HIDC_HLSL_ON
 
     GROUPBOX        "Frame skipping",IDC_STATIC,4,104,103,42
     CONTROL         "Automatic",IDC_AUTOFRAMESKIP,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,114,77,10,0,HIDC_AUTOFRAMESKIP
@@ -869,9 +866,9 @@ BEGIN
     CONTROL         "Save system state on exit",IDC_ENABLE_AUTOSAVE,"Button",
                     BS_AUTOCHECKBOX | WS_TABSTOP,10,76,96,10,0,
                     HIDC_ENABLE_AUTOSAVE
-    CONTROL         "Multi-threaded rendering",IDC_MULTITHREAD_RENDERING,
-                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,88,96,10,0,
-                    HIDC_MULTITHREAD_RENDERING
+//    CONTROL         "Multi-threaded rendering",IDC_MULTITHREAD_RENDERING,
+//                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,88,96,10,0,
+//                    HIDC_MULTITHREAD_RENDERING
     CONTROL         "Coin lockout",IDC_COINLOCKOUT,"Button",BS_AUTOCHECKBOX |
                     WS_TABSTOP,10,100,96,10,0,HIDC_COINLOCKOUT
     GROUPBOX        "Thread Priority",IDC_HIGH_PRIORITY_TEXT,7,112,103,34
