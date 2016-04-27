@@ -114,8 +114,6 @@ static const device_entry s_devices[] =
 
 
 // columns for software picker
-// All fields are unused apart from the filename
-// Columns are shared between the picker and the list, so number of fields must be equal
 static const LPCTSTR mess_column_names[] =
 {
 	TEXT("Filename"),
@@ -163,10 +161,6 @@ static BOOL DevView_GetOpenItemName(HWND hwndDevView, const machine_config *conf
 static BOOL DevView_GetCreateFileName(HWND hwndDevView, const machine_config *config, const device_image_interface *dev, LPTSTR pszFilename, UINT nFilenameLength);
 static void DevView_SetSelectedSoftware(HWND hwndDevView, int nDriverIndex, const machine_config *config, const device_image_interface *dev, LPCTSTR pszFilename);
 static LPCTSTR DevView_GetSelectedSoftware(HWND hwndDevView, int nDriverIndex, const machine_config *config, const device_image_interface *dev, LPTSTR pszBuffer, UINT nBufferLength);
-
-#ifdef MAME_DEBUG
-static void MessTestsBegin(void);
-#endif /* MAME_DEBUG */
 
 
 
@@ -392,7 +386,7 @@ static BOOL AddSoftwarePickerDirs(HWND hwndPicker, LPCSTR pszDirectories, LPCSTR
 void MySoftwareListClose(void)
 {
 	// free the machine config, if necessary
-	if (s_config != NULL)
+	if (s_config)
 	{
 		software_config_free(s_config);
 		s_config = NULL;
@@ -402,7 +396,6 @@ void MySoftwareListClose(void)
 void MyFillSoftwareList(int drvindex, BOOL bForce)
 {
 	BOOL is_same = 0;
-///	const game_driver *drv;
 	HWND hwndSoftwarePicker;
 	HWND hwndSoftwareList;
 	HWND hwndSoftwareDevView;
@@ -485,29 +478,27 @@ void MyFillSoftwareList(int drvindex, BOOL bForce)
 	/* allocate the machine config */
 	machine_config config(driver_list::driver(drvindex),MameUIGlobal());
 
-	software_list_device_iterator iter(config.root_device());
-	for (software_list_device *swlistdev = iter.first(); swlistdev; swlistdev = iter.next())
+	for (software_list_device &swlistdev : software_list_device_iterator(config.root_device()))
 	{
-		for (software_info *swinfo = swlistdev->first_software_info(); swinfo; swinfo = swinfo->next())
+		for (software_info &swinfo : swlistdev.get_info())
 		{
-			const software_part *swpart = swinfo->first_part();
+			const software_part *swpart = swinfo.first_part();
 
 			// search for a device with the right interface
-			image_interface_iterator iter(config.root_device());
-			for (device_image_interface *image = iter.first(); image; image = iter.next())
+			for (device_image_interface &image : image_interface_iterator(config.root_device()))
 			{
-				const char *interface = image->image_interface();
+				const char *interface = image.image_interface();
 				if (interface)
 				{
 					if (swpart->matches_interface(interface))
 					{
 						// Extract the Usage data from the "info" fields.
 						const char* usage = NULL;
-						for (feature_list_item *flist = swinfo->other_info(); flist; flist = flist->next())
-							if (strcmp(flist->name(), "usage") == 0)
-								usage = flist->value();
+						for (feature_list_item &flist : swinfo.other_info())
+							if (strcmp(flist.name(), "usage") == 0)
+								usage = flist.value();
 						// Now actually add the item
-						SoftwareList_AddFile(hwndSoftwareList, swinfo->shortname(), swlistdev->list_name(), swinfo->longname(), swinfo->publisher(), swinfo->year(), usage, image->brief_instance_name());
+						SoftwareList_AddFile(hwndSoftwareList, swinfo.shortname(), swlistdev.list_name(), swinfo.longname(), swinfo.publisher(), swinfo.year(), usage, image.brief_instance_name());
 						break;
 					}
 				}
@@ -528,39 +519,15 @@ void MessUpdateSoftwareList(void)
 
 BOOL MessApproveImageList(HWND hParent, int drvindex)
 {
-//	const device_image_interface *dev = 0;
 	char szMessage[256];
-//	LPCSTR s;
 	BOOL bResult = FALSE;
 	windows_options o;
 
 	if (g_szSelectedSoftware[0] && g_szSelectedDevice[0])
 		return TRUE;
 
-	// allocate the machine config
-//	machine_config config(driver_list::driver(drvindex),MameUIGlobal());
-
-//	for (bool gotone = config.devicelist().first(dev); gotone; gotone = dev->next(dev))
-//	{
-//		// confirm any mandatory devices are loaded
-//		if (dev->must_be_loaded())
-//		{
-//			const char *opt_name = dev->instance_name();
-//			load_options(o, drvindex);
-//			s = o.value(opt_name);
-//			if (!s || !*s)
-//			{
-//				snprintf(szMessage, ARRAY_LENGTH(szMessage),
-//					"System '%s' requires that device %s must have software selected.\n",
-//					driver_list::driver(drvindex).description,
-//					dev->image_type_name());
-//				goto done;
-//			}
-//		}
-//	}
 	bResult = TRUE;
 
-//done:
 	if (!bResult)
 	{
 		win_message_box_utf8(hParent, szMessage, MAMEUINAME, MB_OK);
@@ -611,14 +578,13 @@ static void MessSpecifyImage(int drvindex, const device_image_interface *device,
 	// see if the software is already loaded (why?)
 	if (device == NULL)
 	{
-		image_interface_iterator iter(s_config->mconfig->root_device());
-		for (device_image_interface *dev = iter.first(); dev; dev = iter.next())
+		for (device_image_interface &dev : image_interface_iterator(s_config->mconfig->root_device()))
 		{
-			const char *opt_name = dev->instance_name();
+			const char *opt_name = dev.instance_name();
 			s = o.value(opt_name);
 			if ((s != NULL) && (core_stricmp(s, pszFilename)==0))
 			{
-				device = dev;
+				device = &dev;
 				break;
 			}
 		}
@@ -633,16 +599,15 @@ static void MessSpecifyImage(int drvindex, const device_image_interface *device,
 		file_extension = strrchr(pszFilename, '.');
 		file_extension = file_extension ? file_extension + 1 : NULL;
 
-		if (file_extension != NULL)
+		if (file_extension)
 		{
-			image_interface_iterator iter(s_config->mconfig->root_device());
-			for (device_image_interface *dev = iter.first(); dev; dev = iter.next())
+			for (device_image_interface &dev : image_interface_iterator(s_config->mconfig->root_device()))
 			{
-				const char *opt_name = dev->instance_name();
+				const char *opt_name = dev.instance_name();
 				s = o.value(opt_name);
-				if (is_null_or_empty(s) && dev->uses_file_extension(file_extension))
+				if (is_null_or_empty(s) && dev.uses_file_extension(file_extension))
 				{
-					device = dev;
+					device = &dev;
 					break;
 				}
 			}
@@ -651,16 +616,15 @@ static void MessSpecifyImage(int drvindex, const device_image_interface *device,
 	// no choice but to replace the existing cart
 	if (device == NULL)
 	{
-		if (file_extension != NULL)
+		if (file_extension)
 		{
-			image_interface_iterator iter(s_config->mconfig->root_device());
-			for (device_image_interface *dev = iter.first(); dev; dev = iter.next())
+			for (device_image_interface &dev : image_interface_iterator(s_config->mconfig->root_device()))
 			{
-				const char *opt_name = dev->instance_name();
+				const char *opt_name = dev.instance_name();
 				s = o.value(opt_name);
-				if (!is_null_or_empty(s) && dev->uses_file_extension(file_extension))
+				if (!is_null_or_empty(s) && dev.uses_file_extension(file_extension))
 				{
-					device = dev;
+					device = &dev;
 					break;
 				}
 			}
@@ -687,14 +651,13 @@ static void MessRemoveImage(int drvindex, const char *pszFilename)
 	const char *s;
 	windows_options o;
 
-	image_interface_iterator iter(s_config->mconfig->root_device());
-	for (device_image_interface *dev = iter.first(); dev; dev = iter.next())
+	for (device_image_interface &dev : image_interface_iterator(s_config->mconfig->root_device()))
 	{
-		const char *opt_name = dev->instance_name();
+		const char *opt_name = dev.instance_name();
 		load_options(o, drvindex);
 		s = o.value(opt_name);
-		if ((s != NULL) && !strcmp(pszFilename, s))
-			MessSpecifyImage(drvindex, dev, NULL);
+		if ((s) && !strcmp(pszFilename, s))
+			MessSpecifyImage(drvindex, &dev, NULL);
 	}
 }
 
@@ -727,10 +690,9 @@ static void MessRefreshPicker(void)
 	// be problematic
 	ListView_SetItemState(hwndSoftware, -1, 0, LVIS_SELECTED);
 
-	image_interface_iterator iter(s_config->mconfig->root_device());
-	for (device_image_interface *dev = iter.first(); dev; dev = iter.next())
+	for (device_image_interface &dev : image_interface_iterator(s_config->mconfig->root_device()))
 	{
-		const char *opt_name = dev->instance_name(); // get name of device slot
+		const char *opt_name = dev.instance_name(); // get name of device slot
 		load_options(o, s_config->driver_index);
 		s = o.value(opt_name); // get name of software in the slot
 
@@ -932,11 +894,10 @@ static void SetupImageTypes(const machine_config *config, mess_image_type *types
 	if (dev == NULL)
 	{
 		/* special case; all non-printer devices */
-		image_interface_iterator iter(s_config->mconfig->root_device());
-		for (device_image_interface *device = iter.first(); device != NULL; device = iter.next())
+		for (device_image_interface &device : image_interface_iterator(s_config->mconfig->root_device()))
 		{
-			if (device->image_type() != IO_PRINTER)
-				SetupImageTypes(config, &types[num_extensions], count - num_extensions, FALSE, device);
+			if (device.image_type() != IO_PRINTER)
+				SetupImageTypes(config, &types[num_extensions], count - num_extensions, FALSE, &device);
 		}
 
 	}
@@ -944,7 +905,7 @@ static void SetupImageTypes(const machine_config *config, mess_image_type *types
 	{
 		std::string extensions((char*)dev->file_extensions());
 		char *ext = strtok((char*)extensions.c_str(),",");
-		while (ext != NULL)
+		while (ext)
 		{
 			if (num_extensions < count)
 			{
@@ -1655,11 +1616,6 @@ BOOL MessCommand(HWND hwnd,int id, HWND hwndCtl, UINT codeNotify)
 			MessOpenOtherSoftware(NULL);
 			break;
 
-#ifdef MAME_DEBUG
-		case ID_MESS_RUN_TESTS:
-			MessTestsBegin();
-			break;
-#endif /* MAME_DEBUG */
 	}
 	return FALSE;
 }

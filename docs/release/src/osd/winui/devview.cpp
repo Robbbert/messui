@@ -180,6 +180,9 @@ static LRESULT CALLBACK DevView_EditWndProc(HWND hwndEdit, UINT nMessage, WPARAM
 
 
 
+#ifdef __GNUC__
+#pragma GCC diagnostic ignored "-Wunused-variable"
+#endif
 BOOL DevView_SetDriver(HWND hwndDevView, const software_config *config)
 {
 	struct DevViewInfo *pDevViewInfo;
@@ -205,8 +208,7 @@ BOOL DevView_SetDriver(HWND hwndDevView, const software_config *config)
 	// count total amount of devices
 	nDevCount = 0;
 
-	image_interface_iterator iter(pDevViewInfo->config->mconfig->root_device());
-	for (device_image_interface *dev = iter.first(); dev; dev = iter.next())
+	for (device_image_interface &dev : image_interface_iterator(pDevViewInfo->config->mconfig->root_device()))
 		nDevCount++;
 
 	if (nDevCount > 0)
@@ -214,10 +216,9 @@ BOOL DevView_SetDriver(HWND hwndDevView, const software_config *config)
 		// get the names of all of the devices
 		ppszDevices = (LPTSTR *) alloca(nDevCount * sizeof(*ppszDevices));
 		i = 0;
-		image_interface_iterator iter(pDevViewInfo->config->mconfig->root_device());
-		for (device_image_interface *dev = iter.first(); dev; dev = iter.next())
+		for (device_image_interface &dev : image_interface_iterator(pDevViewInfo->config->mconfig->root_device()))
 		{
-			t_s = tstring_from_utf8(dev->device().name());
+			t_s = tstring_from_utf8(dev.device().name());
 			ppszDevices[i] = (TCHAR*)alloca((_tcslen(t_s) + 1) * sizeof(TCHAR));
 			_tcscpy(ppszDevices[i], t_s);
 			osd_free(t_s);
@@ -249,11 +250,11 @@ BOOL DevView_SetDriver(HWND hwndDevView, const software_config *config)
 		DevView_GetColumns(hwndDevView, &nStaticPos, &nStaticWidth,
 			&nEditPos, &nEditWidth, &nButtonPos, &nButtonWidth);
 
-		for (device_image_interface *dev = iter.first(); dev; dev = iter.next())
+		for (device_image_interface &dev : image_interface_iterator(pDevViewInfo->config->mconfig->root_device()))
 		{
-			pEnt->dev = dev;
+			pEnt->dev = &dev;
 
-			pEnt->hwndStatic = win_create_window_ex_utf8(0, "STATIC", dev->device().name(),
+			pEnt->hwndStatic = win_create_window_ex_utf8(0, "STATIC", dev.device().name(),
 				WS_VISIBLE | WS_CHILD, nStaticPos,
 				y, nStaticWidth, nHeight, hwndDevView, NULL, NULL, NULL);
 			y += nHeight;
@@ -290,6 +291,9 @@ BOOL DevView_SetDriver(HWND hwndDevView, const software_config *config)
 	DevView_Refresh(hwndDevView);
 	return TRUE;
 }
+#ifdef __GNUC__
+#pragma GCC diagnostic error "-Wunused-variable"
+#endif
 
 
 

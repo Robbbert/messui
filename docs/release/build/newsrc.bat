@@ -7,6 +7,7 @@ md %to%\src\emu
 copy /Y %from%\src\emu\audit.* %to%\src\emu
 copy /Y %from%\src\emu\emuopts.cpp %to%\src\emu
 copy /Y %from%\src\emu\video.* %to%\src\emu
+copy /Y %from%\src\version.cpp %to%\src
 
 md %to%\src\emu\ui
 copy /Y %from%\src\emu\ui\ui.cpp %to%\src\emu\ui

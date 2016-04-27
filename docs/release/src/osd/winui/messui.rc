@@ -41,7 +41,7 @@ BEGIN
     END
     POPUP "&Help"
     BEGIN
-        MENUITEM "&About MESS",			ID_ABOUT
+        MENUITEM "&About MESS",                 ID_ABOUT
     END
 END
 
@@ -55,8 +55,7 @@ BEGIN
         MENUITEM "P&layback Input...",          ID_FILE_PLAY_BACK
         MENUITEM "Play and Record &Wave Output...", ID_FILE_PLAY_RECORD_WAVE
         MENUITEM "Play and Record &MNG Output...", ID_FILE_PLAY_RECORD_MNG
-        MENUITEM "Play and Record &uncompressed AVI Output...",
-                                                ID_FILE_PLAY_RECORD_AVI
+        MENUITEM "Play and Record &uncompressed AVI Output...", ID_FILE_PLAY_RECORD_AVI
         MENUITEM SEPARATOR
         MENUITEM "Loa&d Savestate...",          ID_FILE_LOADSTATE, GRAYED
         MENUITEM SEPARATOR
@@ -87,7 +86,6 @@ BEGIN
             MENUITEM "&Marquee",                    ID_TOGGLE_TAB_MARQUEE
             MENUITEM "&Title",                      ID_TOGGLE_TAB_TITLE
             MENUITEM "Control &Panel",              ID_TOGGLE_TAB_CONTROL_PANEL
-
             MENUITEM "PC&B",                        ID_TOGGLE_TAB_PCB
             MENUITEM "&History",                    ID_TOGGLE_TAB_HISTORY
         END
@@ -232,8 +230,6 @@ BEGIN
         MENUITEM "&Full Screen\tAlt+Enter",     ID_FILE_FULLSCREEN
         MENUITEM "Partial Keyboard Emulation",  ID_FILE_UIACTIVE
         MENUITEM "Show Tab Menu",               ID_FILE_OLDUI
-        MENUITEM "&Debugger...",                ID_FILE_DEBUGGER
-        MENUITEM "Show P&rofiler",              ID_FILE_PROFILER, GRAYED
         MENUITEM SEPARATOR
         MENUITEM "&Exit",                       ID_FILE_EXIT_NEWUI
     END
@@ -738,7 +734,6 @@ BEGIN
     CONTROL         "Sync to monitor refresh",IDC_SYNCREFRESH,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,52,93,10,0,HIDC_SYNCREFRESH
     CONTROL         "Wait for vertical sync",IDC_WAITVSYNC,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,64,93,10,0,HIDC_WAITVSYNC
     CONTROL         "Refresh speed",IDC_REFRESHSPEED,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,76,93,10,0,HIDC_REFRESHSPEED
-    CONTROL         "HLSL",IDC_HLSL_ON,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,88,93,10,0,HIDC_HLSL_ON
 
     GROUPBOX        "Frame skipping",IDC_STATIC,4,104,103,42
     CONTROL         "Automatic",IDC_AUTOFRAMESKIP,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,114,77,10,0,HIDC_AUTOFRAMESKIP
@@ -871,9 +866,9 @@ BEGIN
     CONTROL         "Save system state on exit",IDC_ENABLE_AUTOSAVE,"Button",
                     BS_AUTOCHECKBOX | WS_TABSTOP,10,76,96,10,0,
                     HIDC_ENABLE_AUTOSAVE
-    CONTROL         "Multi-threaded rendering",IDC_MULTITHREAD_RENDERING,
-                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,88,96,10,0,
-                    HIDC_MULTITHREAD_RENDERING
+//    CONTROL         "Multi-threaded rendering",IDC_MULTITHREAD_RENDERING,
+//                    "Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,88,96,10,0,
+//                    HIDC_MULTITHREAD_RENDERING
     CONTROL         "Coin lockout",IDC_COINLOCKOUT,"Button",BS_AUTOCHECKBOX |
                     WS_TABSTOP,10,100,96,10,0,HIDC_COINLOCKOUT
     GROUPBOX        "Thread Priority",IDC_HIGH_PRIORITY_TEXT,7,112,103,34
