@@ -10,6 +10,7 @@
 #include "emu.h"
 #include "pool.h"
 #include "screenshot.h"
+#include "drivenum.h"
 
 // Make sure all MESS features are included
 #define MESS
