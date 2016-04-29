@@ -10238,6 +10238,7 @@ crgolfb                         // (c) 1984 Nasco Japan
 crgolfbt                        // bootleg
 crgolfc                         // (c) 1984 Nasco Japan
 crgolfhi                        // (c) 1984 Nasco Japan
+mastrglf
 
 @source:crimfght.cpp
 crimfght                        // GX821 (c) 1989 (World)
