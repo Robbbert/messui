@@ -252,7 +252,7 @@ void mame_options::parse_standard_inis(emu_options &options, std::string &error_
 	const game_driver *cursystem = (driver == nullptr) ? system(options) : driver;
 	if (cursystem == nullptr)
 		return;
-
+#if 0
 	// parse "vertical.ini" or "horizont.ini"
 	if (cursystem->flags & ORIENTATION_SWAP_XY)
 		parse_one_ini(options,"vertical", OPTION_PRIORITY_ORIENTATION_INI, &error_string);
@@ -306,6 +306,7 @@ void mame_options::parse_standard_inis(emu_options &options, std::string &error_
 		parse_one_ini(options,driver_list::driver(gparent).name, OPTION_PRIORITY_GPARENT_INI, &error_string);
 	if (parent != -1)
 		parse_one_ini(options,driver_list::driver(parent).name, OPTION_PRIORITY_PARENT_INI, &error_string);
+#endif
 	parse_one_ini(options,cursystem->name, OPTION_PRIORITY_DRIVER_INI, &error_string);
 
 	// Re-evaluate slot options after loading ini files
