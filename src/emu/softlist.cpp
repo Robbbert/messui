@@ -223,8 +223,10 @@ device_image_interface *software_part::find_mountable_image(const machine_config
 		if (interface != nullptr && matches_interface(interface))
 		{
 			// mount only if not already mounted
-			const char *option = mconfig.options().value(image.brief_instance_name());
-			if (*option == '\0' && !image.filename())
+// MESS - fix MT 6107
+//			const char *option = mconfig.options().value(image.brief_instance_name());
+//			if (*option == '\0' && !image.filename())
+			if (!image.filename())
 
 				return &image;
 		}
