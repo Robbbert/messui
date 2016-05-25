@@ -480,7 +480,7 @@ static BOOL SoftwarePicker_InternalAddFile(HWND hwndPicker, LPCSTR pszFilename, 
 	util::archive_file::ptr pZip;
 
 	s = strrchr(pszFilename, '.');
-	if (s && (core_stricmp(s, ".zip")==0)) //|| (core_stricmp(s, ".7z")==0))) // 7z not being detected
+	if (s && ((core_stricmp(s, ".zip")==0) || (core_stricmp(s, ".7z")==0)))
 	{
 		ziperr = util::archive_file::open_zip(pszFilename, pZip);
 		if (ziperr  == util::archive_file::error::NONE)

@@ -5,11 +5,13 @@ rd %to%\src /q /s
 
 md %to%\src\emu
 copy /Y %from%\src\emu\emuopts.cpp %to%\src\emu
+copy /Y %from%\src\emu\softlist.cpp %to%\src\emu
 copy /Y %from%\src\emu\video.* %to%\src\emu
 copy /Y %from%\src\version.cpp %to%\src
 
 md %to%\src\frontend\mame\ui
 copy /Y %from%\src\frontend\mame\audit.* %to%\src\frontend\mame
+copy /Y %from%\src\frontend\mame\mameopts.cpp %to%\src\frontend\mame
 copy /Y %from%\src\frontend\mame\ui\ui.cpp %to%\src\frontend\mame\ui
 
 md %to%\src\lib\util

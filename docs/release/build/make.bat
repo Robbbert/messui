@@ -1,11 +1,11 @@
 del *.sym
 :start
 del messui.exe
-if exist messui.exe goto start
+if exist messui.exe goto start1
 call make32 -j4 "OSD=messui" %1 %2 %3
 if not exist messui.exe goto end
 :start1
 del mess.exe
-if exist mess.exe goto start1
+if exist mess.exe goto end
 call make32 -j4 "OSD=newui" %1 %2 %3
 :end

@@ -889,6 +889,10 @@ static void SetupImageTypes(const machine_config *config, mess_image_type *types
 		types[num_extensions].dev = NULL;
 		types[num_extensions].dlgname = NULL;
 		num_extensions++;
+		types[num_extensions].ext = core_strdup("7z");
+		types[num_extensions].dev = NULL;
+		types[num_extensions].dlgname = NULL;
+		num_extensions++;
 	}
 
 	if (dev == NULL)
@@ -1136,7 +1140,9 @@ static BOOL DevView_GetOpenItemName(HWND hwndDevView, const machine_config *conf
 	wcstombs(t2, pszFilename, nFilenameLength-1); // convert wide string to a normal one
 	std::string t3 = t2; // then convert to a c++ string so we can manipulate it
 	t1 = t3.find(".zip"); // get rid of zip name and anything after
-	t3[t1] = '\0';
+	if (t1) t3[t1] = '\0';
+	t1 = t3.find(".7z"); // get rid of 7zip name and anything after
+	if (t1) t3[t1] = '\0';
 //	t1 = t3.find_last_of("\\");   // we can force the swlist name in, if needed
 //	t3[t1] = ':';
 	t1 = t3.find_last_of("\\"); // get rid of path; we only want the item name

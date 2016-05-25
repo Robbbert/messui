@@ -32,6 +32,7 @@
 // MAME/MAMEUI headers
 #include "emu.h"
 #include "mame.h"
+#include "language.h"
 #include "unzip.h"
 #include "winutf8.h"
 #include "strconv.h"
@@ -879,34 +880,40 @@ static DWORD RunMAME(int nGameIndex, const play_options *playopts)
 	time_t start = 0, end = 0;
 	double elapsedtime = 0;
 	int i = 0;
-	windows_options mame_opts;
+	windows_options global_opts;
 	std::string error_string;
 
 	// Tell mame where to get the INIs
-	SetDirectories(mame_opts);
+	SetDirectories(global_opts);
 
-	MessSetupGameOptions(mame_opts, nGameIndex);
+	MessSetupGameOptions(global_opts, nGameIndex);
+
+	// set some startup options
+	global_opts.set_value(OPTION_LANGUAGE, GetLanguageUI(), OPTION_PRIORITY_CMDLINE, error_string);
+	global_opts.set_value(OPTION_PLUGINS, GetEnablePlugins(), OPTION_PRIORITY_CMDLINE, error_string);
+	global_opts.set_value(OPTION_PLUGIN, GetPlugins(), OPTION_PRIORITY_CMDLINE, error_string);
+	global_opts.set_value(OPTION_SYSTEMNAME, driver_list::driver(nGameIndex).name, OPTION_PRIORITY_CMDLINE, error_string);
 
 	// set any specified play options
 	if (playopts_apply == 0x57)
 	{
 		if (playopts->record)
-			mame_opts.set_value(OPTION_RECORD, playopts->record, OPTION_PRIORITY_CMDLINE,error_string);
+			global_opts.set_value(OPTION_RECORD, playopts->record, OPTION_PRIORITY_CMDLINE,error_string);
 		if (playopts->playback)
-			mame_opts.set_value(OPTION_PLAYBACK, playopts->playback, OPTION_PRIORITY_CMDLINE,error_string);
+			global_opts.set_value(OPTION_PLAYBACK, playopts->playback, OPTION_PRIORITY_CMDLINE,error_string);
 		if (playopts->state)
-			mame_opts.set_value(OPTION_STATE, playopts->state, OPTION_PRIORITY_CMDLINE,error_string);
+			global_opts.set_value(OPTION_STATE, playopts->state, OPTION_PRIORITY_CMDLINE,error_string);
 		if (playopts->wavwrite)
-			mame_opts.set_value(OPTION_WAVWRITE, playopts->wavwrite, OPTION_PRIORITY_CMDLINE,error_string);
+			global_opts.set_value(OPTION_WAVWRITE, playopts->wavwrite, OPTION_PRIORITY_CMDLINE,error_string);
 		if (playopts->mngwrite)
-			mame_opts.set_value(OPTION_MNGWRITE, playopts->mngwrite, OPTION_PRIORITY_CMDLINE,error_string);
+			global_opts.set_value(OPTION_MNGWRITE, playopts->mngwrite, OPTION_PRIORITY_CMDLINE,error_string);
 		if (playopts->aviwrite)
-			mame_opts.set_value(OPTION_AVIWRITE, playopts->aviwrite, OPTION_PRIORITY_CMDLINE,error_string);
+			global_opts.set_value(OPTION_AVIWRITE, playopts->aviwrite, OPTION_PRIORITY_CMDLINE,error_string);
 	}
 
 	if (g_szSelectedSoftware[0] && g_szSelectedDevice[0])
 	{
-			mame_opts.set_value(g_szSelectedDevice, g_szSelectedSoftware, OPTION_PRIORITY_CMDLINE,error_string);
+			global_opts.set_value(g_szSelectedDevice, g_szSelectedSoftware, OPTION_PRIORITY_CMDLINE,error_string);
 			// Add params and clear so next start of driver is without parameters
 			g_szSelectedSoftware[0] = 0;
 			g_szSelectedDevice[0] = 0;
@@ -921,12 +928,14 @@ static DWORD RunMAME(int nGameIndex, const play_options *playopts)
 
 	// run the emulation
 	time(&start);
-	windows_osd_interface osd(mame_opts);
+	windows_osd_interface osd(global_opts);
 	// output errors to message boxes
 	mameui_output_error winerror;
 	osd_output::push(&winerror);
 	osd.register_options();
-	mame_machine_manager *manager = mame_machine_manager::instance(mame_opts, osd);
+	mame_machine_manager *manager = mame_machine_manager::instance(global_opts, osd);
+	load_translation(global_opts);
+	manager->start_luaengine();
 	manager->execute();
 	osd_output::pop(&winerror);
 	global_free(manager);
@@ -1203,6 +1212,31 @@ HICON LoadIconFromFile(const char *iconname)
 					}
 				}
 				zip.reset();
+			}
+			else
+			{
+				sprintf(tmpStr, "%s/icons.7z", GetIconsDir());
+				sprintf(tmpIcoName, "%s.ico", iconname);
+
+				ziperr = util::archive_file::open_zip(tmpStr, zip);
+				if (ziperr == util::archive_file::error::NONE)
+				{
+					res = zip->search(tmpIcoName, false);
+					if (res >= 0)
+					{
+						bufferPtr = (PBYTE)malloc(zip->current_uncompressed_length());
+						if (bufferPtr)
+						{
+							ziperr = zip->decompress(bufferPtr, zip->current_uncompressed_length());
+							if (ziperr == util::archive_file::error::NONE)
+							{
+								hIcon = FormatICOInMemoryToHICON(bufferPtr, zip->current_uncompressed_length());
+							}
+							free(bufferPtr);
+						}
+					}
+					zip.reset();
+				}
 			}
 		}
 	}
@@ -5237,7 +5271,7 @@ BOOL CommonFileDialog(common_file_dialog_proc cfd, char *filename, int filetype)
 	switch (filetype)
 	{
 	case FILETYPE_INPUT_FILES :
-		ofn.lpstrFilter   = TEXT("input files (*.inp,*.zip)\0*.inp;*.zip\0All files (*.*)\0*.*\0");
+		ofn.lpstrFilter   = TEXT("input files (*.inp,*.zip,*.7z)\0*.inp;*.zip;*.7z\0All files (*.*)\0*.*\0");
 		ofn.lpstrDefExt   = TEXT("inp");
 		dirname = GetInpDir();
 		break;
