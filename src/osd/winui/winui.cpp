@@ -3375,7 +3375,7 @@ static int GUI_seq_pressed(const input_seq *seq)
 	int invert = 0;
 	int count = 0;
 
-	for (codenum = 0; codenum < ARRAY_LENGTH(seq); codenum++)
+	for (codenum = 0; (*seq)[codenum] != input_seq::end_code; codenum++)
 	{
 		input_code code = (*seq)[codenum];
 
