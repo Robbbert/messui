@@ -2,17 +2,6 @@
 // copyright-holders:Luca Elia, Olivier Galibert
 /***************************************************************************
 
-TODO:
-- Find out how layers are enabled\disabled
-- dangar input ports - parent set requires F2 be held for Service Mode
-- wrong title screen in ninjemak
-- bit 3 of ninjemak_gfxbank_w, there currently is a kludge to clear text RAM
-  but it should really copy stuff from the extra ROM.
-- Likely missing MCU emulation/simulation for displaying text layer for Ninja Emaki.
-  There is no text displayed when you enter Service Mode when there should be.
-  Examine $3000+ in file loaded for "gfx5".
-
-
 Galivan
 (C) 1985 Nihon Bussan
 driver by
@@ -26,6 +15,17 @@ Youma Ninpou Chou (Japan)
 (c)1986 NihonBussan Co.,Ltd.
 Driver by
 Takahiro Nogi (nogi@kt.rim.or.jp) 1999/12/17 -
+
+TODO
+- Find out how layers are enabled\disabled
+- dangar input ports - parent set requires F2 be held for Service Mode
+- wrong title screen in ninjemak
+- bit 3 of ninjemak_gfxbank_w, there currently is a kludge to clear text RAM
+  but it should really copy stuff from the extra ROM.
+- Ninja Emaki has minor protection issues, see NB1414M4 simulation for more info.
+- dangarj has unemulated protection at I/Os 0x80-1 for missing sprites. 
+  It then checks the checksum result with 0x27, jumps to unmapped ROM area 
+  during gameplay if it's manually hampered hmm ...
 
 ***************************************************************************/
 
@@ -85,8 +85,8 @@ static ADDRESS_MAP_START( io_map, AS_IO, 8, galivan_state )
 	AM_RANGE(0x41, 0x42) AM_WRITE(galivan_scrollx_w)
 	AM_RANGE(0x43, 0x44) AM_WRITE(galivan_scrolly_w)
 	AM_RANGE(0x45, 0x45) AM_WRITE(galivan_sound_command_w)
-/*  AM_RANGE(0x46, 0x46) AM_WRITENOP */
-/*  AM_RANGE(0x47, 0x47) AM_WRITENOP */
+//  AM_RANGE(0x46, 0x46) AM_WRITENOP
+//  AM_RANGE(0x47, 0x47) AM_WRITENOP
 	AM_RANGE(0xc0, 0xc0) AM_READ(IO_port_c0_r) /* dangar needs to return 0x58 */
 ADDRESS_MAP_END
 
