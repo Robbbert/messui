@@ -9,8 +9,8 @@
 
 #pragma once
 
-#ifndef EMU_DEBUGGER_H
-#define EMU_DEBUGGER_H
+#ifndef __DEBUGGER_H__
+#define __DEBUGGER_H__
 
 class debugger_commands;
 class debugger_cpu;
