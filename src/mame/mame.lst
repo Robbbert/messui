@@ -185,6 +185,7 @@ searthina                       // bootleg
 sflush                          // (c)1979 Taito
 shuttlei                        // (c) 1979 Omori (Arcade Tv Game List - P.79, Left, 6 from bottom)
 sicv                            // (c) 1979 Taito
+sicv1                           // (c) 1979 Taito
 sinvemag                        // Zenitone-Microsec Ltd.
 sinvzen                         // Zenitone-Microsec Ltd
 sisv                            // (c) 1978 Taito
@@ -12095,6 +12096,7 @@ sf2mdta                         // bootleg
 sf2mdtb                         // bootleg
 sgyxz                           // bootleg (All-In Electronics)
 slampic                         // bootleg
+varthb                          // bootleg
 
 @source:feversoc.cpp
 feversoc                        // (c) 2004
@@ -12658,6 +12660,7 @@ scrambp                         // bootleg (Billport S.A.)
 scramce                         // bootleg (Centromatic S.A.)
 scrampt                         // bootleg (Petaco S.A.)
 scramrf                         // bootleg (Recreativos Franco)
+scrammr                         // bootleg (Model Racing)
 sfx                             // (c) 1983 Nichibutsu
 skelagon                        // (c) 1983 Nichibutsu USA
 skybase                         // (c) 1982 Omori Electric Co., Ltd.
@@ -27420,6 +27423,7 @@ gaiapols                        // GX123 (c) 1993 (Europe)
 gaiapolsj                       // GX123 (c) 1993 (Japan)
 gaiapolsu                       // GX123 (c) 1993 (US)
 metamrph                        // GX224 (c) 1993 (Europe)
+metamrpha                       // GX224 (c) 1993 (Europe) - Alternate
 metamrphj                       // GX224 (c) 1993 (Japan)
 metamrphu                       // GX224 (c) 1993 (US)
 mmaulers                        // GX170 (c) 1993 (Europe)
