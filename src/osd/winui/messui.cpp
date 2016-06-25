@@ -1003,7 +1003,7 @@ static BOOL DevView_GetOpenFileName(HWND hwndDevView, const machine_config *conf
 	t_s = tstring_from_utf8(as.c_str());
 
 	/* See if an image was loaded, and that the path still exists */
-	if ((!osd_opendir(as.c_str())) || (as.find(':') == std::string::npos))
+	if ((!osd::directory::open(as.c_str())) || (as.find(':') == std::string::npos))
 	{
 		/* Get the path from the software tab */
 		int driver_index = drvindex;
@@ -1050,7 +1050,7 @@ static BOOL DevView_GetOpenFileName(HWND hwndDevView, const machine_config *conf
 		t_s = tstring_from_utf8(as.c_str());
 
 		/* Make sure a folder was specified in the tab, and that it exists */
-		if ((!osd_opendir(as.c_str())) || (as.find(':') == std::string::npos))
+		if ((!osd::directory::open(as.c_str())) || (as.find(':') == std::string::npos))
 		{
 			// Get the global loose software path
 			as = GetCommentDir();//GetExtraSoftwarePaths(-1, 0);
@@ -1061,7 +1061,7 @@ static BOOL DevView_GetOpenFileName(HWND hwndDevView, const machine_config *conf
 			t_s = tstring_from_utf8(as.c_str());
 
 			/* Make sure a folder was specified in the tab, and that it exists */
-			if ((!osd_opendir(as.c_str())) || (as.find(':') == std::string::npos))
+			if ((!osd::directory::open(as.c_str())) || (as.find(':') == std::string::npos))
 			{
 				std::string dst;
 				osd_get_full_path(dst,".");
@@ -1109,7 +1109,7 @@ static BOOL DevView_GetOpenItemName(HWND hwndDevView, const machine_config *conf
 	t_s = tstring_from_utf8(as.c_str());
 
 	/* See if an image was loaded, and that the path still exists */
-	if ((!osd_opendir(as.c_str())) || (as.find(':') == std::string::npos))
+	if ((!osd::directory::open(as.c_str())) || (as.find(':') == std::string::npos))
 	{
 		/* Get the path from the software tab */
 		as = GetSoftwareDirs();
@@ -1121,7 +1121,7 @@ static BOOL DevView_GetOpenItemName(HWND hwndDevView, const machine_config *conf
 		t_s = tstring_from_utf8(as.c_str());
 
 		/* Make sure a folder was specified in the tab, and that it exists */
-		if ((!osd_opendir(as.c_str())) || (as.find(':') == std::string::npos))
+		if ((!osd::directory::open(as.c_str())) || (as.find(':') == std::string::npos))
 		{
 			std::string dst;
 			osd_get_full_path(dst,".");
@@ -1224,7 +1224,7 @@ static BOOL DevView_GetCreateFileName(HWND hwndDevView, const machine_config *co
 	t_s = tstring_from_utf8(as.c_str());
 
 	/* Make sure a folder was specified in the tab, and that it exists */
-	if ((!osd_opendir(as.c_str())) || (as.find(':') == std::string::npos))
+	if ((!osd::directory::open(as.c_str())) || (as.find(':') == std::string::npos))
 	{
 		// Get the global loose software path
 		as = GetCommentDir();//GetExtraSoftwarePaths(-1, 0);
@@ -1235,7 +1235,7 @@ static BOOL DevView_GetCreateFileName(HWND hwndDevView, const machine_config *co
 		t_s = tstring_from_utf8(as.c_str());
 
 		/* Make sure a folder was specified in the tab, and that it exists */
-		if ((!osd_opendir(as.c_str())) || (as.find(':') == std::string::npos))
+		if ((!osd::directory::open(as.c_str())) || (as.find(':') == std::string::npos))
 		{
 			std::string dst;
 			osd_get_full_path(dst,".");
