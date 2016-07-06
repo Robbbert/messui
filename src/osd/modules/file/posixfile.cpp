@@ -42,6 +42,7 @@
 
 #include <cassert>
 #include <cerrno>
+#include <cstdlib>
 #include <cstring>
 #include <memory>
 #include <type_traits>
@@ -390,6 +391,13 @@ osd_file::error osd_get_full_path(std::string &dst, std::string const &path)
 			return osd_file::error::FAILURE;
 		}
 #else
+		std::unique_ptr<char, void (*)(void *)> canonical(::realpath(path.c_str(), nullptr), &std::free);
+		if (canonical)
+		{
+			dst = canonical.get();
+			return osd_file::error::NONE;
+		}
+
 		std::vector<char> path_buffer(PATH_MAX);
 		if (::realpath(path.c_str(), &path_buffer[0]))
 		{
