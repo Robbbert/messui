@@ -20,6 +20,7 @@
 #include "ui/ui.h"
 #include "newuires.h"
 #include "strconv.h"
+#include "opresolv.h"
 #include "debug/debugcpu.h"
 #include "imagedev/cassette.h"
 #include "windows/window.h"
