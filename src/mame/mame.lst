@@ -11741,6 +11741,7 @@ avenger                         // (c) 1975 Electra
 
 @source:electron.cpp
 electron                        // 1983 Acorn Electron
+btm2105                         // 1985 BT Merlin M2105
 
 @source:elekscmp.cpp
 elekscmp                        //
@@ -32612,6 +32613,7 @@ rdft2aa                         // (c) 1997 Seibu Kaihatsu (Dream Island license
 rdft2it                         // (c) 1997 Seibu Kaihatsu
 rdft2j                          // (c) 1997 Seibu Kaihatsu
 rdft2ja                         // (c) 1997 Seibu Kaihatsu
+rdft2jb                         // (c) 1997 Seibu Kaihatsu
 rdft2t                          // (c) 1997 Seibu Kaihatsu
 rdft2u                          // (c) 1997 Seibu Kaihatsu (Fabtek license)
 rdft2us                         // (c) 1997 Seibu Kaihatsu (Fabtek license)
@@ -35117,6 +35119,8 @@ bilyard                         // (c) 1988 Terminal
 konek                           // (c) 1988 Terminal
 koroleva                        // (c) 1988 Terminal
 sosterm                         // (c) 1988 Terminal
+gorodki                         // (c) 1988 Terminal
+kot                             // (c) 1988 Terminal
 
 @source:ticalc1x.cpp
 dataman                         //
