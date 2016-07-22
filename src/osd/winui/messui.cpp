@@ -480,9 +480,9 @@ void MyFillSoftwareList(int drvindex, BOOL bForce)
 
 	for (software_list_device &swlistdev : software_list_device_iterator(config.root_device()))
 	{
-		for (software_info &swinfo : swlistdev.get_info())
+		for (const software_info &swinfo : swlistdev.get_info())
 		{
-			const software_part *swpart = swinfo.first_part();
+			const software_part &swpart = swinfo.parts().front();
 
 			// search for a device with the right interface
 			for (device_image_interface &image : image_interface_iterator(config.root_device()))
@@ -490,11 +490,11 @@ void MyFillSoftwareList(int drvindex, BOOL bForce)
 				const char *interface = image.image_interface();
 				if (interface)
 				{
-					if (swpart->matches_interface(interface))
+					if (swpart.matches_interface(interface))
 					{
 						// Extract the Usage data from the "info" fields.
 						const char* usage = NULL;
-						for (feature_list_item &flist : swinfo.other_info())
+						for (const feature_list_item &flist : swinfo.other_info())
 							if (flist.name() == "usage")
 								usage = flist.value().c_str();
 						// Now actually add the item
