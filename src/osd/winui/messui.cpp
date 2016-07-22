@@ -495,10 +495,10 @@ void MyFillSoftwareList(int drvindex, BOOL bForce)
 						// Extract the Usage data from the "info" fields.
 						const char* usage = NULL;
 						for (feature_list_item &flist : swinfo.other_info())
-							if (strcmp(flist.name(), "usage") == 0)
-								usage = flist.value();
+							if (flist.name() == "usage")
+								usage = flist.value().c_str();
 						// Now actually add the item
-						SoftwareList_AddFile(hwndSoftwareList, swinfo.shortname(), swlistdev.list_name(), swinfo.longname(), swinfo.publisher(), swinfo.year(), usage, image.brief_instance_name());
+						SoftwareList_AddFile(hwndSoftwareList, swinfo.shortname().c_str(), swlistdev.list_name(), swinfo.longname().c_str(), swinfo.publisher().c_str(), swinfo.year().c_str(), usage, image.brief_instance_name());
 						break;
 					}
 				}
