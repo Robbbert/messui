@@ -218,7 +218,7 @@ BOOL DevView_SetDriver(HWND hwndDevView, const software_config *config)
 		i = 0;
 		for (device_image_interface &dev : image_interface_iterator(pDevViewInfo->config->mconfig->root_device()))
 		{
-			t_s = tstring_from_utf8(dev.device().name());
+			t_s = ui_wstring_from_utf8(dev.device().name());
 			ppszDevices[i] = (TCHAR*)alloca((_tcslen(t_s) + 1) * sizeof(TCHAR));
 			_tcscpy(ppszDevices[i], t_s);
 			osd_free(t_s);

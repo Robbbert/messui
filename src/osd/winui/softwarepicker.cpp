@@ -602,7 +602,7 @@ static BOOL SoftwarePicker_AddEntry(HWND hwndPicker, directory_search_info *pSea
 
 	//pPickerInfo = GetSoftwarePickerInfo(hwndPicker);
 
-	utf8_FileName = utf8_from_tstring(pSearchInfo->fd.cFileName);
+	utf8_FileName = ui_utf8_from_wstring(pSearchInfo->fd.cFileName);
 	if( !utf8_FileName )
 		return FALSE;
 
@@ -732,7 +732,7 @@ LPCTSTR SoftwarePicker_GetItemString(HWND hwndPicker, int nRow, int nColumn, TCH
 	switch(nColumn)
 	{
 		case MESS_COLUMN_IMAGES:
-			t_buf = tstring_from_utf8(pFileInfo->base_name);
+			t_buf = ui_wstring_from_utf8(pFileInfo->base_name);
 			if( !t_buf )
 				return s;
 			_sntprintf(pszBuffer, nBufferLength, TEXT("%s"), t_buf);

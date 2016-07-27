@@ -830,7 +830,7 @@ static BOOL CommonFileImageDialog(LPTSTR the_last_directory, common_file_dialog_
 	}
 	*(s++) = '|';
 
-	t_buffer = tstring_from_utf8(szFilter);
+	t_buffer = ui_wstring_from_utf8(szFilter);
 	if( !t_buffer )
 		return FALSE;
 
@@ -955,7 +955,7 @@ static void MessSetupDevice(common_file_dialog_proc cfd, const device_image_inte
 
 	if (cfd_res)
 	{
-		utf8_filename = utf8_from_tstring(filename);
+		utf8_filename = ui_utf8_from_wstring(filename);
 		if( !utf8_filename )
 			return;
 		// TODO - this should go against InternalSetSelectedSoftware()
@@ -1000,7 +1000,7 @@ static BOOL DevView_GetOpenFileName(HWND hwndDevView, const machine_config *conf
 
 	/* Get the path to the currently mounted image */
 	util::zippath_parent(as, s);
-	t_s = tstring_from_utf8(as.c_str());
+	t_s = ui_wstring_from_utf8(as.c_str());
 
 	/* See if an image was loaded, and that the path still exists */
 	if ((!osd::directory::open(as.c_str())) || (as.find(':') == std::string::npos))
@@ -1047,7 +1047,7 @@ static BOOL DevView_GetOpenFileName(HWND hwndDevView, const machine_config *conf
 		/* We only want the first path; throw out the rest */
 		i = as.find(';');
 		if (i > 0) as.substr(0, i);
-		t_s = tstring_from_utf8(as.c_str());
+		t_s = ui_wstring_from_utf8(as.c_str());
 
 		/* Make sure a folder was specified in the tab, and that it exists */
 		if ((!osd::directory::open(as.c_str())) || (as.find(':') == std::string::npos))
@@ -1058,7 +1058,7 @@ static BOOL DevView_GetOpenFileName(HWND hwndDevView, const machine_config *conf
 			/* We only want the first path; throw out the rest */
 			i = as.find(';');
 			if (i > 0) as.substr(0, i);
-			t_s = tstring_from_utf8(as.c_str());
+			t_s = ui_wstring_from_utf8(as.c_str());
 
 			/* Make sure a folder was specified in the tab, and that it exists */
 			if ((!osd::directory::open(as.c_str())) || (as.find(':') == std::string::npos))
@@ -1066,7 +1066,7 @@ static BOOL DevView_GetOpenFileName(HWND hwndDevView, const machine_config *conf
 				std::string dst;
 				osd_get_full_path(dst,".");
 				/* Default to emu directory */
-				t_s = tstring_from_utf8(dst.c_str());
+				t_s = ui_wstring_from_utf8(dst.c_str());
 			}
 		}
 	}
@@ -1106,7 +1106,7 @@ static BOOL DevView_GetOpenItemName(HWND hwndDevView, const machine_config *conf
 	util::zippath_parent(as, s);
 	size_t t1 = as.length()-1;
 	if (as[t1] == '\\') as[t1]='\0';
-	t_s = tstring_from_utf8(as.c_str());
+	t_s = ui_wstring_from_utf8(as.c_str());
 
 	/* See if an image was loaded, and that the path still exists */
 	if ((!osd::directory::open(as.c_str())) || (as.find(':') == std::string::npos))
@@ -1118,7 +1118,7 @@ static BOOL DevView_GetOpenItemName(HWND hwndDevView, const machine_config *conf
 		i = as.find(';');
 		if (i > 0) as.substr(0, i);
 		osd_free(t_s);
-		t_s = tstring_from_utf8(as.c_str());
+		t_s = ui_wstring_from_utf8(as.c_str());
 
 		/* Make sure a folder was specified in the tab, and that it exists */
 		if ((!osd::directory::open(as.c_str())) || (as.find(':') == std::string::npos))
@@ -1126,7 +1126,7 @@ static BOOL DevView_GetOpenItemName(HWND hwndDevView, const machine_config *conf
 			std::string dst;
 			osd_get_full_path(dst,".");
 			/* Default to emu directory */
-			t_s = tstring_from_utf8(dst.c_str());
+			t_s = ui_wstring_from_utf8(dst.c_str());
 		}
 	}
 
@@ -1221,7 +1221,7 @@ static BOOL DevView_GetCreateFileName(HWND hwndDevView, const machine_config *co
 	/* We only want the first path; throw out the rest */
 	i = as.find(';');
 	if (i > 0) as.substr(0, i);
-	t_s = tstring_from_utf8(as.c_str());
+	t_s = ui_wstring_from_utf8(as.c_str());
 
 	/* Make sure a folder was specified in the tab, and that it exists */
 	if ((!osd::directory::open(as.c_str())) || (as.find(':') == std::string::npos))
@@ -1232,7 +1232,7 @@ static BOOL DevView_GetCreateFileName(HWND hwndDevView, const machine_config *co
 		/* We only want the first path; throw out the rest */
 		i = as.find(';');
 		if (i > 0) as.substr(0, i);
-		t_s = tstring_from_utf8(as.c_str());
+		t_s = ui_wstring_from_utf8(as.c_str());
 
 		/* Make sure a folder was specified in the tab, and that it exists */
 		if ((!osd::directory::open(as.c_str())) || (as.find(':') == std::string::npos))
@@ -1240,7 +1240,7 @@ static BOOL DevView_GetCreateFileName(HWND hwndDevView, const machine_config *co
 			std::string dst;
 			osd_get_full_path(dst,".");
 			/* Default to emu directory */
-			t_s = tstring_from_utf8(dst.c_str());
+			t_s = ui_wstring_from_utf8(dst.c_str());
 		}
 	}
 
@@ -1258,7 +1258,7 @@ static BOOL DevView_GetCreateFileName(HWND hwndDevView, const machine_config *co
 static void DevView_SetSelectedSoftware(HWND hwndDevView, int drvindex,
 	const machine_config *config, const device_image_interface *dev, LPCTSTR pszFilename)
 {
-	char* utf8_filename = utf8_from_tstring(pszFilename);
+	char* utf8_filename = ui_utf8_from_wstring(pszFilename);
 	if( !utf8_filename )
 		return;
 	MessSpecifyImage(drvindex, dev, utf8_filename);
@@ -1280,7 +1280,7 @@ static LPCTSTR DevView_GetSelectedSoftware(HWND hwndDevView, int nDriverIndex,
 	load_options(o, nDriverIndex);
 	s = o.value(opt_name);
 
-	t_s = tstring_from_utf8(s);
+	t_s = ui_wstring_from_utf8(s);
 	if( !t_s )
 		return t_buffer;
 
