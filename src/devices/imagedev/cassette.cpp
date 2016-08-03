@@ -2,7 +2,7 @@
 // copyright-holders:Nathan Woods, Miodrag Milanovic
 /*********************************************************************
 
-    cassette.c
+    cassette.cpp
 
     Interface to the cassette image abstraction code
 
@@ -76,7 +76,8 @@ bool cassette_image_device::is_motor_on()
 		return false;
 	if ((m_state & CASSETTE_MASK_MOTOR) != CASSETTE_MOTOR_ENABLED)
 		return false;
-	return true;
+	else
+		return true;
 }
 
 
@@ -250,21 +251,20 @@ void cassette_image_device::device_start()
 	m_value = 0;
 }
 
-bool cassette_image_device::call_create(int format_type, util::option_resolution *format_options)
+image_init_result cassette_image_device::call_create(int format_type, util::option_resolution *format_options)
 {
 	return internal_load(true);
 }
 
-bool cassette_image_device::call_load()
+image_init_result cassette_image_device::call_load()
 {
 	return internal_load(false);
 }
 
-bool cassette_image_device::internal_load(bool is_create)
+image_init_result cassette_image_device::internal_load(bool is_create)
 {
 	casserr_t err;
 	int cassette_flags;
-	const char *extension;
 	int is_writable;
 	device_image_interface *image = nullptr;
 	interface(image);
@@ -284,18 +284,7 @@ bool cassette_image_device::internal_load(bool is_create)
 			is_writable = !is_readonly();
 			cassette_flags = is_writable ? (CASSETTE_FLAG_READWRITE|CASSETTE_FLAG_SAVEONEXIT) : CASSETTE_FLAG_READONLY;
 			std::string fname;
-			if (software_entry()==nullptr) {
-				extension = filetype();
-			} else {
-				fname = m_mame_file->filename();
-				int loc = fname.find_last_of('.');
-				if (loc!=-1) {
-					extension = fname.substr(loc + 1,fname.length()-loc).c_str();
-				} else {
-					extension = "";
-				}
-			}
-			err = cassette_open_choices((void *)image, &image_ioprocs, extension, m_formats, cassette_flags, &m_cassette);
+			err = cassette_open_choices((void *)image, &image_ioprocs, filetype().c_str(), m_formats, cassette_flags, &m_cassette);
 
 			/* this is kind of a hack */
 			if (err && is_writable)
@@ -319,7 +308,7 @@ bool cassette_image_device::internal_load(bool is_create)
 	m_speed = 1;
 	m_direction = 1;
 
-	return IMAGE_INIT_PASS;
+	return image_init_result::PASS;
 
 error:
 	image_error_t imgerr = IMAGE_ERROR_UNSPECIFIED;
@@ -342,7 +331,7 @@ error:
 			break;
 	}
 	image->seterror(imgerr, "" );
-	return IMAGE_INIT_FAIL;
+	return image_init_result::FAIL;
 }
 
 
