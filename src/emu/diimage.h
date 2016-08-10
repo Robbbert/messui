@@ -21,8 +21,6 @@
 #include <string>
 #include <vector>
 
-#include "softlist.h"
-
 
 //**************************************************************************
 //  TYPE DEFINITIONS
@@ -31,6 +29,7 @@
 extern struct io_procs image_ioprocs;
 
 class software_list;
+class software_list_loader;
 
 enum iodevice_t
 {
@@ -181,7 +180,6 @@ public:
 	util::core_file &image_core_file() const { return *m_file; }
 	UINT64 length() { check_for_file(); return m_file->size(); }
 	bool is_readonly() const { return m_readonly; }
-	void make_readonly() { m_readonly = true; }
 	UINT32 fread(void *buffer, UINT32 length) { check_for_file(); return m_file->read(buffer, length); }
 	UINT32 fread(optional_shared_ptr<UINT8> &ptr, UINT32 length) { ptr.allocate(length); return fread(ptr.target(), length); }
 	UINT32 fread(optional_shared_ptr<UINT8> &ptr, UINT32 length, offs_t offset) { ptr.allocate(length); return fread(ptr + offset, length - offset); }
@@ -240,7 +238,7 @@ public:
 	bool load_software(software_list_device &swlist, const char *swname, const rom_entry *entry);
 	int reopen_for_write(const std::string &path);
 
-	static void software_name_split(const char *swlist_swname, std::string &swlist_name, std::string &swname, std::string &swpart);
+	static void software_name_split(const std::string &swlist_swname, std::string &swlist_name, std::string &swname, std::string &swpart);
 	static void static_set_user_loadable(device_t &device, bool user_loadable) {
 		device_image_interface *img;
 		if (!device.interface(img))
@@ -252,7 +250,7 @@ public:
 	bool user_loadable() const { return m_user_loadable; }
 
 protected:
-	virtual const software_list_loader &get_software_list_loader() const { return false_software_list_loader::instance(); }
+	virtual const software_list_loader &get_software_list_loader() const;
 
 	image_init_result load_internal(const std::string &path, bool is_create, int create_format, util::option_resolution *create_args, bool just_load);
 	void determine_open_plan(int is_create, UINT32 *open_plan);
@@ -273,8 +271,8 @@ protected:
 	void image_checkhash();
 	void update_names(const device_type device_type = nullptr, const char *inst = nullptr, const char *brief = nullptr);
 
-	const software_part *find_software_item(const char *path, bool restrict_to_interface) const;
-	bool load_software_part(const char *path, const software_part *&swpart);
+	const software_part *find_software_item(const std::string &path, bool restrict_to_interface, software_list_device **device = nullptr) const;
+	bool load_software_part(const std::string &path, const software_part *&swpart, std::string *list_name = nullptr);
 	std::string software_get_default_slot(const char *default_card_slot) const;
 
 	void add_format(std::unique_ptr<image_device_format> &&format);
