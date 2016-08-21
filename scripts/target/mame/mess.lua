@@ -8,6 +8,7 @@
 --   MESS target makefile
 --
 ---------------------------------------------------------------------------
+dofile("virtual.lua")
 
 --------------------------------------------------
 -- specify available CPU cores
@@ -196,11 +197,11 @@ SOUNDS["HC55516"] = true
 --SOUNDS["K005289"] = true
 --SOUNDS["K007232"] = true
 SOUNDS["K051649"] = true
---SOUNDS["K053260"] = true
+SOUNDS["K053260"] = true
 --SOUNDS["K054539"] = true
 --SOUNDS["K056800"] = true
---SOUNDS["SEGAPCM"] = true
---SOUNDS["MULTIPCM"] = true
+SOUNDS["SEGAPCM"] = true
+SOUNDS["MULTIPCM"] = true
 SOUNDS["SCSP"] = true
 SOUNDS["AICA"] = true
 SOUNDS["RF5C68"] = true
@@ -855,6 +856,7 @@ FORMATS["ZX81_P"] = true
 -- the list of drivers
 --------------------------------------------------
 function linkProjects_mame_mess(_target, _subtarget)
+	linkProjects_mame_virtual(_target, _subtarget)
 	links {
 		"acorn",
 		"act",
@@ -1089,6 +1091,7 @@ end
 
 function createProjects_mame_mess(_target, _subtarget)
 --------------------------------------------------
+	createProjects_mame_virtual(_target, _subtarget)
 -- the following files are MAME components and
 -- shared across a number of drivers
 --
