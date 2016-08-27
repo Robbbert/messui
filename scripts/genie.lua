@@ -486,7 +486,7 @@ configuration { "Release", "vs*" }
 		"Optimize",
 	}
 
--- Force VS2013/15 targets to use bundled SDL2
+-- Force VS2015 targets to use bundled SDL2
 if string.sub(_ACTION,1,4) == "vs20" and _OPTIONS["osd"]=="sdl" then
 	if _OPTIONS["with-bundled-sdl2"]==nil then
 		_OPTIONS["with-bundled-sdl2"] = "1"
@@ -970,8 +970,8 @@ end
 				}
 			end
 		else
-			if (version < 40900) then
-				print("GCC version 4.9 or later needed")
+			if (version < 50000) then
+				print("GCC version 5.0 or later needed")
 				os.exit(-1)
 			end
 				buildoptions {
@@ -1297,6 +1297,12 @@ configuration { "winphone8* or winstore8*" }
 		"/ignore:4264" -- LNK4264: archiving object file compiled with /ZW into a static library; note that when authoring Windows Runtime types it is not recommended to link with a static library that contains Windows Runtime metadata
 	}
 
+
+-- adding this till we sort out asserts in debug mode
+configuration { "Debug", "gmake" }
+	buildoptions_cpp {
+		"-Wno-terminate",
+	}
 
 configuration { }
 
