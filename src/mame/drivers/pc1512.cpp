@@ -50,6 +50,9 @@ F2=DOS.SYS
 Select operating system:
 
 If you choose F1 then DOS Plus and GEM will be booted, or if you press F2 then MS-DOS will be booted.
+
+PC1512HD10 - ?
+PC1512HD20 - ?
 */
 
 /*
@@ -84,6 +87,9 @@ The system is now installed and should be tested by rebooting the machine.
 It should be noted that if the hard disc is ok but the software has been corrupted or deleted you can
 reinstall the software without reformatting.
 This is done by following steps 11 and 12.
+
+PC1640HD20 - Amstrad 40095 (Alps DRMD20A12A) [-chs 615,4,17 -ss 512]
+PC1640HD30 - Western Digital 95038 [-chs 615,6,17 -ss 512]
 */
 
 #include "includes/pc1512.h"
@@ -200,6 +206,13 @@ WRITE8_MEMBER( pc1512_state::system_w )
 		update_speaker();
 
 		m_kb->clock_w(BIT(data, 6));
+
+		if (BIT(data, 7))
+		{
+			m_kb_bits = 0;
+			m_kb->data_w(1);
+			m_pic->ir1_w(CLEAR_LINE);
+		}
 		break;
 
 	case 4:
@@ -1134,7 +1147,6 @@ void pc1512_state::machine_reset()
 {
 	m_nmi_enable = 0;
 	m_toggle = 0;
-	m_kb_bits = 0;
 	m_pit2 = 1;
 
 	m_lpen = 0;
@@ -1147,7 +1159,9 @@ void pc1512_state::machine_reset()
 	m_vdu_plane = 0x0f;
 	m_vdu_border = 0;
 
-	m_kb->clock_w(0);
+	m_kb_bits = 0;
+	m_kb->data_w(1);
+	m_pic->ir1_w(CLEAR_LINE);
 }
 
 
@@ -1193,8 +1207,10 @@ void pc1640_state::machine_start()
 void pc1640_state::machine_reset()
 {
 	m_nmi_enable = 0;
+
 	m_kb_bits = 0;
-	m_kb->clock_w(0);
+	m_kb->data_w(1);
+	m_pic->ir1_w(CLEAR_LINE);
 }
 
 
