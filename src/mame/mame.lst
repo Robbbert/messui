@@ -1212,6 +1212,7 @@ apple2cp                        // Sep 1988 Apple //c+
 apple2e                         // Jan 1983 Apple //e
 apple2ee                        // Mar 1985 Apple //e Enhanced
 apple2eeuk                      // Mar 1985 Apple //e Enhanced (UK)
+apple2eefr                      // Mar 1985 Apple //e Enhanced (France)
 apple2ep                        // Jan 1987 Apple //e Platinum
 apple2euk                       // Jan 1983 Apple //e (UK)
 las128e2                        // ??? Laser 128 EX2
@@ -9684,6 +9685,7 @@ revlatns                        // (c) 199?
 copsnrob                        // 005625           1976/07 [6502]
 
 @source:corona.cpp
+legrandc                        // (c) 198? Isermatic France S.A.
 luckyrlt                        // (c) 1990 unknown
 rcirulet                        // (c) 199? Entretenimientos GEMINIS
 re800ea                         // (c) 1991 Entretenimientos GEMINIS
@@ -19814,6 +19816,7 @@ bigappg                         // (c) 1986 Merit / Big Apple Games
 casino5                         // (c) 1989 Merit
 casino5a                        // (c) 1984 Merit
 chkndraw                        // (c) 1984 Merit
+chkndrawa                       // (c) 1984 Merit
 couple                          // (c) 1988 Merit
 couplei                         // (c) 1988 Merit
 couplep                         // (c) 1988 Merit
@@ -29218,8 +29221,9 @@ clubpacmb                       // Miky SRL
 crockman                        // 1980 bootleg (RENE PIERRE)
 crush                           // (c) 1981 Kural Samno Electric Ltd
 crush2                          // (c) 1981 Kural Esco Electric Ltd - bootleg?
-crush3                          // Kural Electric Ltd - bootleg?
-crush4                          // Kural TWT
+crush3                          // Kural Electric Ltd
+crush4                          // Kural Electric Ltd - bootleg?
+crush5                          // Kural TWT
 crushbl                         // bootleg
 crushbl2                        // bootleg
 crushbl3                        // bootleg
@@ -32902,6 +32906,7 @@ gundamex                        // (c) 1994 Banpresto
 mj4simai                        // (c) 1996 Maboroshi Ware
 myangel                         // (c) 1996 Namco
 myangel2                        // (c) 1997 Namco
+staraudi                        // (c) 1997 Namco
 namcostr                        // (c) 2000 Namco
 penbros                         // (c) 2000 Subsino
 pzlbowl                         // (c) 1999 Nihon System / Moss
@@ -36400,10 +36405,10 @@ iceclmrd                        // (c) 1984 Nintendo (Dual game version)
 jajamaru                        // (c) 1985 Jaleco
 ladygolf                        // (c) 1984 Nintendo
 ladygolfe                       // (c) 1984 Nintendo
-machridr                        // (c) 1985 Nintendo
-machridra                       // (c) 1985 Nintendo
-mightybj                        // (c) 1986 Tecmo
-platoon                         // (c) 1987 Ocean
+nvs_machrider                   // (c) 1985 Nintendo
+nvs_machridera                  // (c) 1985 Nintendo
+nvs_mightybj                    // (c) 1986 Tecmo
+nvs_platoon                     // (c) 1987 Ocean
 rbibb                           // (c) 1987 Namco
 rbibba                          // (c) 1987 Namco
 skatekds                        // (c) 1988 (hack)
@@ -37608,6 +37613,7 @@ mfjump                          // Monster Farm Jump (JAPAN)
 mgcldate                        // Magical Date (JAPAN Ver 2.02J)
 mgcldtex                        // Magical Date EX (JAPAN Ver 2.01J)
 nbajamex                        // NBA Jam Extreme
+nbajamexa						//
 plsmaswd                        // Plasma Sword (USA 980316)
 plsmaswda                       // Plasma Sword (ASIA 980316)
 primrag2                        // Primal Rage 2
