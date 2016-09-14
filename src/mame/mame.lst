@@ -9352,6 +9352,7 @@ cheekyms                        // 8004 (c) [1980?]
 @source:chessmst.cpp
 chessmst                        //
 chessmsta                       //
+chessmstdm                      //
 
 @source:chesstrv.cpp
 borisdpl                        //
@@ -14139,6 +14140,7 @@ astro                           // Kosmos
 bankshot                        // Parker Bros
 bigtrak                         // Milton Bradley
 bship                           // Milton Bradley
+bshipb                          // Milton Bradley
 copycat                         // Tiger Electronics
 copycatm2                       // Tiger Electronics
 cnfball                         // Conic
@@ -14229,12 +14231,14 @@ tour4000                        // (c) 2000 High Video
 tour4010                        // (c) 2000 High Video
 
 @source:hikaru.cpp
-airtrix                         // 2001.02 Air Trix
+airtrix                         // 2001.02 Air Trix (Rev A)
+airtrixo                        // 2001.02 Air Trix (original)
 braveff                         // 1999.06 Syouboushi Brave Fire Fighters
 hikaru                          // 2000.?? Hikaru BIOS
-pharrier                        // 2000.12 Planet Harriers
+pharrier                        // 2000.12 Planet Harriers (Rev A)
 podrace                         // 2000.06 Star Wars: Racer Arcade
-sgnascar                        // 2000.09 Nascar Arcade
+sgnascar                        // 2000.10 Nascar Arcade (Rev A)
+sgnascaro                       // 2000.09 Nascar Arcade (original)
 
 @source:himesiki.cpp
 himesiki                        // (c) 1989 Hi-Soft
@@ -29546,6 +29550,9 @@ pcg850v                         // Pocket Computer G850V
 @source:pcfx.cpp
 pcfx                            // PC-FX NEC 1994
 pcfxga                          // PC-FX NEC 199? (PC-FX on a PC ISA Card)
+
+@source:pcipc.cpp
+pcipc                           //
 
 @source:pcktgal.cpp
 pcktgal                         // (c) 1987 Data East Corporation (Japan)
