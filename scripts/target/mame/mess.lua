@@ -2743,6 +2743,7 @@ files {
 	MAME_DIR .. "src/mame/machine/pcd_kbd.h",
 	MAME_DIR .. "src/mame/video/pcd.cpp",
 	MAME_DIR .. "src/mame/video/pcd.h",
+	MAME_DIR .. "src/mame/drivers/pg685.cpp",
 }
 
 createMESSProjects(_target, _subtarget, "slicer")
