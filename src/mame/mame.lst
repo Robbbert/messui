@@ -12200,11 +12200,26 @@ cscfr                           // * French
 cscg                            // * German
 cscsp                           // * Spanish
 feasbu                          // EAS: Elite A/S Challenger (Budapest program, English)
+feasbufr                        // * French
+feasbug                         // * German
+feasbusp                        // * Spanish
 feasgla                         // EAS: Elite A/S Challenger (Glasgow program, English)
+feasglafr                       // * French
+feasglag                        // * German
+feasglasp                       // * Spanish
+feag2100                        // EAG: Elite Avant Garde 2100 (English)
+feag2100fr                      // * French
+feag2100g                       // * German
+feag2100sp                      // * Spanish
 fexcel                          //
+fexcela                         //
+fexcelb                         //
+fexceld                         //
+fexcelp                         //
 fexcelv                         //
 fscc9                           //
 fscc9b                          //
+fscc9ps                         //
 fscc12                          //
 reversic                        //
 super9cc                        // SU9: Super 9 Sensory Chess Challenger (English)
@@ -12803,6 +12818,7 @@ turpin                          // (c) 1981 Sega
 turpins                         // (c) 1981 bootleg
 turtles                         // (c) 1981 Stern
 uniwars                         // (c) Irem
+uniwarsa                        // (c) Karateco
 warofbug                        // (c) 1981 Armenia
 warofbugg                       // German Version
 warofbugu                       // (c) 1981 Armenia
@@ -13190,6 +13206,7 @@ geimulti                        // (c) 1992 Grayhound Electronics
 gepoker                         // (c) 1984 Greyhound Electronics
 gepoker1                        // (c) 1984 Greyhound Electronics
 gepoker2                        // (c) 1984 Greyhound Electronics
+gepoker3                        // (c) 1984 Greyhound Electronics
 gs4002                          // (c) 1982 G.E.I.
 gs4002a                         // (c) 1982 G.E.I.
 gt103a1                         // (c) 1984 Greyhound Electronics
@@ -14842,8 +14859,10 @@ wfortunea                       // (c) 1989 GameTek
 
 @source:itgambl2.cpp
 cmagica                         // (c) 200? unknown
+granfrat                        // (c) 200? unknown
 mcard_h8                        // (c) 200? unknown
 elvis                           // (c) 200? unknown
+eurodsr                         // (c) 200? unknown
 europass                        // (c) 200? unknown
 laser2k1                        // (c) 2001 unknown
 mclass                          // (c) 200? unknown
@@ -14859,7 +14878,6 @@ thedrink                        // (c) 200? unknown
 trstar2k                        // (c) 1999 A.M.
 unkh8gam                        // (c) 200? unknown
 wizard                          // (c) 1999 A.A.
-eurodsr                         // (c) 200? unknown
 
 @source:itgambl3.cpp
 ejollyx5                        // (c) 200? Solar Games
@@ -20376,6 +20394,7 @@ vf                              // 1993.12 Virtua Fighter
 vformula                        // 1993.?? Virtua Formula
 vr                              // 1992.08 Virtua Racing
 wingwar                         // 1994.06 Wing War
+wingwar360                      // 1994.09 Wing War R360
 wingwarj                        // 1994.06 Wing War (Japan)
 wingwaru                        // 1994.09 Wing War (US)
 
@@ -28381,7 +28400,7 @@ iemoto                          // (c) 1987
 iemotom                         // (c) 1987
 kaguya                          // (c) 1988 MIKI SYOUJI
 kaguya2                         // (c) 1989 MIKI SYOUJI
-kaguya2f                        // (c) 1989 MIKI SYOUJI
+kaguya2f                        // (c) 2001 MIKI SYOUJI
 kanatuen                        // (c) 1988 Panac
 korinai                         // (c) 1988
 korinaim                        // (c) 1988
@@ -28893,7 +28912,7 @@ nitedrvr                        // 006321           1976/10 [6502]
 
 @source:niyanpai.cpp
 4psimasy                        // (c) 1994
-mhhonban                        // (c) 199?
+mhhonban                        // (c) 1994
 musobana                        // (c) 1995
 niyanpai                        // (c) 1996
 zokumahj                        // (c) 199?
@@ -33646,6 +33665,7 @@ twinadv                         // (c) 1995 Barko Corp
 twinadvk                        // (c) 1995 Barko Corp
 twinkle                         // (c) 1997 SemiCom
 wintbob                         // bootleg
+yutnori							// (c) 199? yutnori
 
 @source:socrates.cpp
 iqunlimz                        // 1991 IQ Unlimited (Z80)
@@ -34041,6 +34061,7 @@ statriv2                        // (c) 1984 Status Games
 statriv2v                       // (c) 1984 Status Games
 statriv4                        // (c) 1985 Status Games
 statusbj                        // (c) 1981 Status Games
+supertr                         // (c) 1986 Status Games
 supertr2                        // (c) 1986 Status Games
 supertr3                        // (c) 1986 Status Games
 tripdraw                        // (c) 1981 Status Games
