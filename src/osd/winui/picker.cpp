@@ -673,16 +673,26 @@ int Picker_GetSelectedItem(HWND hWnd)
 }
 
 
-
+// This highlights a selected game, and scrolls it into view
 void Picker_SetSelectedPick(HWND hWnd, int nIndex)
 {
 	BOOL res;
 
 	if (nIndex < 0)
 		nIndex = 0;
-
-	ListView_SetItemState(hWnd, nIndex, LVIS_FOCUSED | LVIS_SELECTED,
-		LVIS_FOCUSED | LVIS_SELECTED);
+	// Protection against bad coding elsewhere
+	// nCount is one more than number of last game
+	int nCount = ListView_GetItemCount(hWnd);
+	// No games to show
+	if (nCount == 0)
+		return;
+	nCount--;
+	if (nCount < nIndex)
+		nIndex = nCount;
+	// Highlight a game
+	if (nIndex)
+		ListView_SetItemState(hWnd, nIndex, LVIS_FOCUSED | LVIS_SELECTED, LVIS_FOCUSED | LVIS_SELECTED);
+	// Bring the game into view
 	res = ListView_EnsureVisible(hWnd, nIndex, FALSE);
 	res++;
 }

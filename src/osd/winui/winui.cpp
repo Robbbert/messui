@@ -2474,7 +2474,6 @@ static BOOL PumpMessage()
 
 static BOOL FolderCheck(void)
 {
-
 	char *pDescription = NULL;
 	int nGameIndex = 0;
 	int i=0;
@@ -3731,10 +3730,10 @@ static void SetView(int menu_id)
 
 static void ResetListView()
 {
-	int 	i = 0;
-	int 	current_game = 0;
+	int i = -1;
+	int current_game = 0;
 	LV_ITEM lvi;
-	BOOL	no_selection = FALSE;
+	BOOL no_selection = FALSE;
 	LPTREEFOLDER lpFolder = GetCurrentFolder();
 	HRESULT res = 0;
 	BOOL b_res = 0;
@@ -3758,8 +3757,6 @@ static void ResetListView()
 	lvi.mask = LVIF_TEXT | LVIF_IMAGE | LVIF_PARAM;
 	lvi.stateMask = 0;
 
-	i = -1;
-
 	do
 	{
 		/* Add the games that are in this folder */
@@ -3768,11 +3765,11 @@ static void ResetListView()
 			if (GameFiltered(i, lpFolder->m_dwFlags))
 				continue;
 
-			lvi.iItem	 = i;
+			lvi.iItem    = i;
 			lvi.iSubItem = 0;
-			lvi.lParam	 = i;
+			lvi.lParam   = i;
 			lvi.pszText  = LPSTR_TEXTCALLBACK;
-			lvi.iImage	 = I_IMAGECALLBACK;
+			lvi.iImage   = I_IMAGECALLBACK;
 			res = ListView_InsertItem(hwndList, &lvi);
 		}
 	} while (i != -1);
@@ -3781,11 +3778,11 @@ static void ResetListView()
 
 	if (bListReady)
 	{
-	    /* If last folder was empty, select the first item in this folder */
-	    if (no_selection)
-		    Picker_SetSelectedPick(hwndList, 0);
+		/* If last folder was empty, select the first item in this folder */
+		if (no_selection)
+			Picker_SetSelectedPick(hwndList, 0);
 		else
-		    Picker_SetSelectedItem(hwndList, current_game);
+			Picker_SetSelectedItem(hwndList, current_game);
 	}
 
 	/*RS Instead of the Arrange Call that was here previously on all Views
