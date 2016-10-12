@@ -305,17 +305,17 @@ void SetBgDir(const char *path);
 const char* GetCtrlrDir(void);
 void SetCtrlrDir(const char* path);
 
-const char* GetCommentDir(void);
-void SetCommentDir(const char* path);
+const char* GetSWDir(void);
+void SetSWDir(const char* path);
 
 const char* GetFolderDir(void);
 void SetFolderDir(const char* path);
 
 const char* GetFontDir(void);
-void  SetFontDir(const char* paths);
+void SetFontDir(const char* paths);
 
 const char* GetCrosshairDir(void);
-void  SetCrosshairDir(const char* paths);
+void SetCrosshairDir(const char* paths);
 
 const char* GetCheatDir(void);
 void SetCheatDir(const char* path);
@@ -491,9 +491,6 @@ void SetSWListSortColumn(int column);
 int  GetSWListSortColumn(void);
 void SetSWListSortReverse(BOOL reverse);
 BOOL GetSWListSortReverse(void);
-
-const char* GetSoftwareDirs(void);
-void  SetSoftwareDirs(const char* paths);
 
 void SetSelectedSoftware(int driver_index, const machine_config *config, const device_image_interface *device, const char *software);
 const char *GetSelectedSoftware(int driver_index, const machine_config *config, const device_image_interface *device);

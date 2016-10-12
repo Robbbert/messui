@@ -2329,12 +2329,12 @@ static void change_device(HWND wnd, device_image_interface *image, bool is_save)
 	else
 		filename[0] = '\0';
 
-	// get the working directory, but if it is ".", then use the one specified in comments_path
+	// get the working directory, but if it is ".", then use the one specified in swpath
 	char *working = 0;
 	std::string dst;
 	osd_get_full_path(dst,"."); // turn local directory into full path
 	initial_dir = image->working_directory().c_str(); // get working directory from diimage.cpp
-	// if . use comments_dir
+	// if . use swpath
 	if (strcmp(dst.c_str(), initial_dir) == 0)  // same?
 		initial_dir = software_dir;
 
@@ -3299,7 +3299,7 @@ int win_create_menu(running_machine &machine, HMENU *menus)
 {
 	// Get the path for loose software from <gamename>.ini
 	// if this is invalid, then windows chooses whatever directory it used last.
-	const char* t = machine.options().emu_options::comment_directory();
+	const char* t = machine.options().emu_options::sw_path();
 	// This pulls out the first path from a multipath field
 	const char* t1 = strtok((char*)t, ";");
 	if (t1)

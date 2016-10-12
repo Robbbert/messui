@@ -4380,7 +4380,7 @@ static BOOL MameCommand(HWND hwnd,int id, HWND hwndCtl, UINT codeNotify)
 
 			BOOL bUpdateRoms    = ((nResult & DIRDLG_ROMS) == DIRDLG_ROMS) ? TRUE : FALSE;
 			BOOL bUpdateSamples = ((nResult & DIRDLG_SAMPLES) == DIRDLG_SAMPLES) ? TRUE : FALSE;
-			BOOL bUpdateSoftware = ((nResult & DIRDLG_SOFTWARE) == DIRDLG_SOFTWARE) ? TRUE : FALSE;
+			BOOL bUpdateSoftware = ((nResult & DIRDLG_SL) == DIRDLG_SL) ? TRUE : FALSE;
 
 			if (bUpdateSoftware)
 				MessUpdateSoftwareList();

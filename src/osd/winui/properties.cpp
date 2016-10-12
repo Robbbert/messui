@@ -2924,7 +2924,7 @@ static BOOL DirListReadControl(datamap *map, HWND dialog, HWND control, windows_
 	if ((buffer[1] == 0x3A) || (buffer[0] == 0)) // must be a folder or null
 	{
 		std::string error_string;
-		pCurrentOpts.set_value(OPTION_COMMENT_DIRECTORY, paths, OPTION_PRIORITY_CMDLINE, error_string);
+		pCurrentOpts.set_value(OPTION_SWPATH, paths, OPTION_PRIORITY_CMDLINE, error_string);
 	}
 	res++;
 	return TRUE;
@@ -2944,7 +2944,7 @@ static BOOL DirListPopulateControl(datamap *map, HWND dialog, HWND control, wind
 	driver_index = PropertiesCurrentGame(dialog);
 	windows_options o;
 	load_options(o, driver_index);
-	const char* paths = o.value(OPTION_COMMENT_DIRECTORY);
+	const char* paths = o.value(OPTION_SWPATH);
 	TCHAR* t_dir_list = ui_wstring_from_utf8(paths);
 	paths = 0;
 	if (!t_dir_list)

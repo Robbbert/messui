@@ -324,7 +324,7 @@ const options_entry winui_options::s_option_entries[] =
 // no longer used, but keep in case we need to add more per-game options in the future
 static const options_entry perGameOptions[] =
 {
-	// per game options in messui.ini - transferred to commentpath
+	// per game options in messui.ini - transferred to swpath
 	{ "_extra_software",         "",         OPTION_STRING,  NULL },
 	{ NULL }
 };
@@ -1163,15 +1163,15 @@ void SetCtrlrDir(const char* path)
 	global.set_value(OPTION_CTRLRPATH, path, OPTION_PRIORITY_CMDLINE,error_string);
 }
 
-const char* GetCommentDir(void)
+const char* GetSWDir(void)
 {
-	return global.value(OPTION_COMMENT_DIRECTORY);
+	return global.value(OPTION_SWPATH);
 }
 
-void SetCommentDir(const char* path)
+void SetSWDir(const char* path)
 {
 	std::string error_string;
-	global.set_value(OPTION_COMMENT_DIRECTORY, path, OPTION_PRIORITY_CMDLINE,error_string);
+	global.set_value(OPTION_SWPATH, path, OPTION_PRIORITY_CMDLINE,error_string);
 }
 
 const char* GetCfgDir(void)
@@ -2534,9 +2534,9 @@ void load_options(windows_options &opts, int game_num)
 
 		if (game_num > -1)
 		{
-			// global comment_dir serves a different purpose than for games, so blank it out
+			// global swpath serves a different purpose than for games, so blank it out
 			std::string error_string;
-			opts.set_value(OPTION_COMMENT_DIRECTORY, "", OPTION_PRIORITY_CMDLINE,error_string);
+			opts.set_value(OPTION_SWPATH, "", OPTION_PRIORITY_CMDLINE,error_string);
 			// Lastly, gamename.ini
 			driver = &driver_list::driver(game_num);
 			if (driver != NULL)
@@ -2625,7 +2625,6 @@ BOOL RequiredDriverCache(void)
 #define MESSUI_SOFTWARE_SORT_REVERSED		"mess_sort_reversed"
 #define MESSUI_SOFTWARE_SORT_COLUMN		"mess_sort_column"
 #define MESSUI_SOFTWARE_TAB			"current_software_tab"
-#define MESSUI_SOFTWAREPATH			"softwarepath"
 
 #define LOG_SOFTWARE 0
 
@@ -2642,7 +2641,6 @@ static const options_entry mess_wingui_settings[] =
 	{ MESSUI_SOFTWARE_SORT_COLUMN,    "0", OPTION_INTEGER, NULL },
 	{ MESSUI_SOFTWARE_SORT_REVERSED,  "0", OPTION_BOOLEAN, NULL },
 	{ MESSUI_SOFTWARE_TAB,            "0", OPTION_STRING, NULL },
-	{ MESSUI_SOFTWAREPATH,            "software", OPTION_STRING, NULL },
 	{ NULL }
 };
 
@@ -2789,17 +2787,6 @@ void SetMessSortReverse(BOOL reverse)
 BOOL GetMessSortReverse(void)
 {
 	return MameUISettings().bool_value(MESSUI_SOFTWARE_SORT_REVERSED);
-}
-
-const char* GetSoftwareDirs(void)
-{
-	return MameUISettings().value(MESSUI_SOFTWAREPATH);
-}
-
-void SetSoftwareDirs(const char* paths)
-{
-	std::string error_string;
-	MameUISettings().set_value(MESSUI_SOFTWAREPATH, paths, OPTION_PRIORITY_CMDLINE,error_string);
 }
 
 void SetSelectedSoftware(int driver_index, const machine_config *config, const device_image_interface *dev, const char *software)

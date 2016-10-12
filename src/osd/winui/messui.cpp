@@ -435,7 +435,7 @@ void MyFillSoftwareList(int drvindex, BOOL bForce)
 	int driver_index = drvindex;
 	windows_options o;
 	load_options(o, driver_index);
-	const char* paths = o.value(OPTION_COMMENT_DIRECTORY);
+	const char* paths = o.value(OPTION_SWPATH);
 	if (paths && (paths[0] > 64)) 
 	{} else
 	// search deeper when looking for software
@@ -448,7 +448,7 @@ void MyFillSoftwareList(int drvindex, BOOL bForce)
 			if (nParentIndex >= 0)
 			{
 				load_options(o, nParentIndex);
-				paths = o.value(OPTION_COMMENT_DIRECTORY);
+				paths = o.value(OPTION_SWPATH);
 			}
 		}
 		if (paths && (paths[0] > 64))
@@ -464,7 +464,7 @@ void MyFillSoftwareList(int drvindex, BOOL bForce)
 			if (nParentIndex >= 0)
 			{
 				load_options(o, nParentIndex);
-				paths = o.value(OPTION_COMMENT_DIRECTORY);
+				paths = o.value(OPTION_SWPATH);
 			}
 		}
 	}
@@ -981,8 +981,8 @@ static void MessOpenOtherSoftware(const device_image_interface *dev)
 
     Order of priority:
     1. Directory where existing image is already loaded from
-    2. First directory specified in game-specific "comment_directory"
-    3. First directory specified in the global software "comment_directory"
+    2. First directory specified in game-specific "swpath"
+    3. First directory specified in the global software "swpath"
     4. mess-folder */
 
 static BOOL DevView_GetOpenFileName(HWND hwndDevView, const machine_config *config, const device_image_interface *dev, LPTSTR pszFilename, UINT nFilenameLength)
@@ -1010,7 +1010,7 @@ static BOOL DevView_GetOpenFileName(HWND hwndDevView, const machine_config *conf
 		int driver_index = drvindex;
 		windows_options o;
 		load_options(o, driver_index);
-		const char* paths = o.value(OPTION_COMMENT_DIRECTORY);
+		const char* paths = o.value(OPTION_SWPATH);
 		if (paths && (paths[0] > 64)) 
 		{} else
 		// search deeper when looking for software
@@ -1023,7 +1023,7 @@ static BOOL DevView_GetOpenFileName(HWND hwndDevView, const machine_config *conf
 				if (nParentIndex >= 0)
 				{
 					load_options(o, nParentIndex);
-					paths = o.value(OPTION_COMMENT_DIRECTORY);
+					paths = o.value(OPTION_SWPATH);
 				}
 			}
 			if (paths && (paths[0] > 64))
@@ -1039,7 +1039,7 @@ static BOOL DevView_GetOpenFileName(HWND hwndDevView, const machine_config *conf
 				if (nParentIndex >= 0)
 				{
 					load_options(o, nParentIndex);
-					paths = o.value(OPTION_COMMENT_DIRECTORY);
+					paths = o.value(OPTION_SWPATH);
 				}
 			}
 		}
@@ -1054,7 +1054,7 @@ static BOOL DevView_GetOpenFileName(HWND hwndDevView, const machine_config *conf
 		if ((!osd::directory::open(as.c_str())) || (as.find(':') == std::string::npos))
 		{
 			// Get the global loose software path
-			as = GetCommentDir();//GetExtraSoftwarePaths(-1, 0);
+			as = GetSWDir();//GetExtraSoftwarePaths(-1, 0);
 
 			/* We only want the first path; throw out the rest */
 			i = as.find(';');
@@ -1113,7 +1113,7 @@ static BOOL DevView_GetOpenItemName(HWND hwndDevView, const machine_config *conf
 	if ((!osd::directory::open(as.c_str())) || (as.find(':') == std::string::npos))
 	{
 		/* Get the path from the software tab */
-		as = GetSoftwareDirs();
+		as = GetSWDir();
 
 		/* We only want the first path; throw out the rest */
 		i = as.find(';');
@@ -1164,8 +1164,8 @@ static BOOL DevView_GetOpenItemName(HWND hwndDevView, const machine_config *conf
 /* This is used to Create an image in the device view of MESSUI.
 
     Order of priority:
-    1. First directory specified in game-specific "comment_directory"
-    2. First directory specified in the global software "comment_directory"
+    1. First directory specified in game-specific "swpath"
+    2. First directory specified in the global software "swpath"
     3. mess-folder */
 
 static BOOL DevView_GetCreateFileName(HWND hwndDevView, const machine_config *config, const device_image_interface *dev, LPTSTR pszFilename, UINT nFilenameLength)
@@ -1184,7 +1184,7 @@ static BOOL DevView_GetCreateFileName(HWND hwndDevView, const machine_config *co
 	int driver_index = drvindex;
 	windows_options o;
 	load_options(o, driver_index);
-	const char* paths = o.value(OPTION_COMMENT_DIRECTORY);
+	const char* paths = o.value(OPTION_SWPATH);
 	if (paths && (paths[0] > 64)) 
 	{} else
 	// search deeper when looking for software
@@ -1197,7 +1197,7 @@ static BOOL DevView_GetCreateFileName(HWND hwndDevView, const machine_config *co
 			if (nParentIndex >= 0)
 			{
 				load_options(o, nParentIndex);
-				paths = o.value(OPTION_COMMENT_DIRECTORY);
+				paths = o.value(OPTION_SWPATH);
 			}
 		}
 		if (paths && (paths[0] > 64))
@@ -1213,7 +1213,7 @@ static BOOL DevView_GetCreateFileName(HWND hwndDevView, const machine_config *co
 			if (nParentIndex >= 0)
 			{
 				load_options(o, nParentIndex);
-				paths = o.value(OPTION_COMMENT_DIRECTORY);
+				paths = o.value(OPTION_SWPATH);
 			}
 		}
 	}
@@ -1228,7 +1228,7 @@ static BOOL DevView_GetCreateFileName(HWND hwndDevView, const machine_config *co
 	if ((!osd::directory::open(as.c_str())) || (as.find(':') == std::string::npos))
 	{
 		// Get the global loose software path
-		as = GetCommentDir();//GetExtraSoftwarePaths(-1, 0);
+		as = GetSWDir();//GetExtraSoftwarePaths(-1, 0);
 
 		/* We only want the first path; throw out the rest */
 		i = as.find(';');
