@@ -172,18 +172,18 @@ static LPCTSTR DevView_GetSelectedSoftware(HWND hwndDevView, int nDriverIndex, c
 // picker
 static const struct PickerCallbacks s_softwarePickerCallbacks =
 {
-	SetMessSortColumn,					// pfnSetSortColumn
-	GetMessSortColumn,					// pfnGetSortColumn
-	SetMessSortReverse,					// pfnSetSortReverse
-	GetMessSortReverse,					// pfnGetSortReverse
+	SetSWSortColumn,					// pfnSetSortColumn
+	GetSWSortColumn,					// pfnGetSortColumn
+	SetSWSortReverse,					// pfnSetSortReverse
+	GetSWSortReverse,					// pfnGetSortReverse
 	NULL,								// pfnSetViewMode
 	GetViewMode,						// pfnGetViewMode
-	SetMessColumnWidths,				// pfnSetColumnWidths
-	GetMessColumnWidths,				// pfnGetColumnWidths
-	SetMessColumnOrder,					// pfnSetColumnOrder
-	GetMessColumnOrder,					// pfnGetColumnOrder
-	SetMessColumnShown,					// pfnSetColumnShown
-	GetMessColumnShown,					// pfnGetColumnShown
+	SetSWColumnWidths,					// pfnSetColumnWidths
+	GetSWColumnWidths,					// pfnGetColumnWidths
+	SetSWColumnOrder,					// pfnSetColumnOrder
+	GetSWColumnOrder,					// pfnGetColumnOrder
+	SetSWColumnShown,					// pfnSetColumnShown
+	GetSWColumnShown,					// pfnGetColumnShown
 	NULL,								// pfnGetOffsetChildren
 
 	NULL,								// pfnCompare
@@ -202,18 +202,18 @@ static const struct PickerCallbacks s_softwarePickerCallbacks =
 // swlist
 static const struct PickerCallbacks s_softwareListCallbacks =
 {
-	SetSWListSortColumn,					// pfnSetSortColumn
-	GetSWListSortColumn,					// pfnGetSortColumn
-	SetSWListSortReverse,					// pfnSetSortReverse
-	GetSWListSortReverse,					// pfnGetSortReverse
+	SetSLSortColumn,					// pfnSetSortColumn
+	GetSLSortColumn,					// pfnGetSortColumn
+	SetSLSortReverse,					// pfnSetSortReverse
+	GetSLSortReverse,					// pfnGetSortReverse
 	NULL,								// pfnSetViewMode
 	GetViewMode,						// pfnGetViewMode
-	SetSWListColumnWidths,				// pfnSetColumnWidths
-	GetSWListColumnWidths,				// pfnGetColumnWidths
-	SetSWListColumnOrder,					// pfnSetColumnOrder
-	GetSWListColumnOrder,					// pfnGetColumnOrder
-	SetSWListColumnShown,					// pfnSetColumnShown
-	GetSWListColumnShown,					// pfnGetColumnShown
+	SetSLColumnWidths,					// pfnSetColumnWidths
+	GetSLColumnWidths,					// pfnGetColumnWidths
+	SetSLColumnOrder,					// pfnSetColumnOrder
+	GetSLColumnOrder,					// pfnGetColumnOrder
+	SetSLColumnShown,					// pfnSetColumnShown
+	GetSLColumnShown,					// pfnGetColumnShown
 	NULL,								// pfnGetOffsetChildren
 
 	NULL,								// pfnCompare
@@ -732,7 +732,7 @@ void InitMessPicker(void)
 
 	memset(&opts, 0, sizeof(opts));
 	opts.pCallbacks = &s_softwarePickerCallbacks;
-	opts.nColumnCount = MESS_COLUMN_MAX; // number of columns in picker
+	opts.nColumnCount = SW_COLUMN_MAX; // number of columns in picker
 	opts.ppszColumnNames = mess_column_names; // get picker column names
 	SetupSoftwarePicker(hwndSoftware, &opts); // display them
 
@@ -757,7 +757,7 @@ void InitMessPicker(void)
 
 	memset(&opts, 0, sizeof(opts));
 	opts.pCallbacks = &s_softwareListCallbacks;
-	opts.nColumnCount = SWLIST_COLUMN_MAX; // number of columns in sw-list
+	opts.nColumnCount = SL_COLUMN_MAX; // number of columns in sw-list
 	opts.ppszColumnNames = softlist_column_names; // columns for sw-list
 	SetupSoftwareList(hwndSoftwareList, &opts); // show them
 
@@ -1551,14 +1551,14 @@ static void SoftwarePicker_OnHeaderContextMenu(POINT pt, int nColumn)
 
 	switch(nMenuItem) {
 	case ID_SORT_ASCENDING:
-		SetMessSortReverse(FALSE);
-		SetMessSortColumn(Picker_GetRealColumnFromViewColumn(hwndPicker, nColumn));
+		SetSWSortReverse(FALSE);
+		SetSWSortColumn(Picker_GetRealColumnFromViewColumn(hwndPicker, nColumn));
 		Picker_Sort(hwndPicker);
 		break;
 
 	case ID_SORT_DESCENDING:
-		SetMessSortReverse(TRUE);
-		SetMessSortColumn(Picker_GetRealColumnFromViewColumn(hwndPicker, nColumn));
+		SetSWSortReverse(TRUE);
+		SetSWSortColumn(Picker_GetRealColumnFromViewColumn(hwndPicker, nColumn));
 		Picker_Sort(hwndPicker);
 		break;
 
@@ -1592,14 +1592,14 @@ static void SoftwareList_OnHeaderContextMenu(POINT pt, int nColumn)
 
 	switch(nMenuItem) {
 	case ID_SORT_ASCENDING:
-		SetMessSortReverse(FALSE);
-		SetMessSortColumn(Picker_GetRealColumnFromViewColumn(hwndPicker, nColumn));
+		SetSLSortReverse(FALSE);
+		SetSLSortColumn(Picker_GetRealColumnFromViewColumn(hwndPicker, nColumn));
 		Picker_Sort(hwndPicker);
 		break;
 
 	case ID_SORT_DESCENDING:
-		SetMessSortReverse(TRUE);
-		SetMessSortColumn(Picker_GetRealColumnFromViewColumn(hwndPicker, nColumn));
+		SetSLSortReverse(TRUE);
+		SetSLSortColumn(Picker_GetRealColumnFromViewColumn(hwndPicker, nColumn));
 		Picker_Sort(hwndPicker);
 		break;
 
