@@ -5,6 +5,9 @@
 #ifndef VERIFONE_TRANZ330_H
 #define VERIFONE_TRANZ330_H
 
+// single-driver build must have emu.h here
+#include "emu.h"
+
 #include "cpu/z80/z80.h"
 #include "cpu/z80/z80daisy.h"
 #include "machine/z80ctc.h"
@@ -14,6 +17,7 @@
 #include "machine/roc10937.h"
 #include "bus/rs232/rs232.h"
 #include "sound/speaker.h"
+#include "machine/clock.h"
 
 #define CPU_TAG		"cpu"
 #define DART_TAG	"dart"
@@ -44,6 +48,7 @@ public:
 	virtual void machine_reset() override;
 
 	DECLARE_WRITE_LINE_MEMBER( syncb_w );
+	DECLARE_WRITE_LINE_MEMBER(clock_w);
 
 	DECLARE_WRITE_LINE_MEMBER( sound_w );
 
