@@ -897,8 +897,12 @@ char *GameInfoTitle(OPTIONS_TYPE opt_type, UINT nIndex)
 
 	if (OPTIONS_GLOBAL == opt_type)
 		strcpy(buf, "Global game options\nDefault options used by all games");
-	else if ((OPTIONS_SOURCE == opt_type) || (OPTIONS_VECTOR == opt_type) )
-		strcpy(buf, "Global folder options\nDefault options used by all games in the folder");
+	else
+	if (OPTIONS_SOURCE == opt_type)
+		strcpy(buf, "Options used by all games in the source");
+	else
+	if (OPTIONS_VECTOR == opt_type)
+		strcpy(buf, "Global vector options");
 	else
 	if (OPTIONS_GAME == opt_type)
 		sprintf(buf, "%s\n\"%s\"", ModifyThe(driver_list::driver(nIndex).description), driver_list::driver(nIndex).name);

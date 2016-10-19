@@ -4314,14 +4314,18 @@ static BOOL MameCommand(HWND hwnd,int id, HWND hwndCtl, UINT codeNotify)
 		break;
 
 	case ID_FOLDER_SOURCEPROPERTIES:
-		if (!oldControl)
-		{
-			folder = GetFolderByName(FOLDER_SOURCE, GetDriverFilename(Picker_GetSelectedItem(hwndList)) );
-			InitPropertyPage(hInst, hwnd, GetSelectedFolderIcon(), (folder->m_nFolderId == FOLDER_VECTOR) ? OPTIONS_VECTOR : OPTIONS_SOURCE , folder->m_nFolderId, Picker_GetSelectedItem(hwndList));
-		}
-		/* Just in case the toggle MMX on/off */
+	{
+		int game = Picker_GetSelectedItem(hwndList);
+		folder = GetFolderByName(FOLDER_SOURCE, GetDriverFilename(game));
+		InitPropertyPage(hInst, hwnd, GetSelectedFolderIcon(), OPTIONS_SOURCE, folder->m_nFolderId, game);
 		UpdateStatusBar();
-		break;
+		SetFocus(hwndList);
+		return true;
+		//folder = GetFolderByName(FOLDER_SOURCE, GetDriverFilename(Picker_GetSelectedItem(hwndList)) );
+		//InitPropertyPage(hInst, hwnd, GetSelectedFolderIcon(), (folder->m_nFolderId == FOLDER_VECTOR) ? OPTIONS_VECTOR : OPTIONS_SOURCE , folder->m_nFolderId, Picker_GetSelectedItem(hwndList));
+		//UpdateStatusBar();
+		//break;
+	}
 
 	case ID_FOLDER_VECTORPROPERTIES:
 		if (!oldControl)
