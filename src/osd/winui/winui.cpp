@@ -886,7 +886,7 @@ static DWORD RunMAME(int nGameIndex, const play_options *playopts)
 	// Tell mame where to get the INIs
 	SetDirectories(global_opts);
 
-	MessSetupGameOptions(global_opts, nGameIndex);
+	MessSetupGameOptions(global_opts, OPTIONS_GLOBAL, nGameIndex);
 
 	// set some startup options
 	global_opts.set_value(OPTION_LANGUAGE, GetLanguageUI(), OPTION_PRIORITY_CMDLINE, error_string);
@@ -913,10 +913,10 @@ static DWORD RunMAME(int nGameIndex, const play_options *playopts)
 
 	if (g_szSelectedSoftware[0] && g_szSelectedDevice[0])
 	{
-			global_opts.set_value(g_szSelectedDevice, g_szSelectedSoftware, OPTION_PRIORITY_CMDLINE,error_string);
-			// Add params and clear so next start of driver is without parameters
-			g_szSelectedSoftware[0] = 0;
-			g_szSelectedDevice[0] = 0;
+		global_opts.set_value(g_szSelectedDevice, g_szSelectedSoftware, OPTION_PRIORITY_CMDLINE,error_string);
+		// Add params and clear so next start of driver is without parameters
+		g_szSelectedSoftware[0] = 0;
+		g_szSelectedDevice[0] = 0;
 	}
 	// Mame will parse all the needed .ini files.
 
@@ -948,7 +948,7 @@ static DWORD RunMAME(int nGameIndex, const play_options *playopts)
 	if (playopts_apply == 0x57)
 	{
 		windows_options o;
-		load_options(o, nGameIndex);
+		load_options(o, OPTIONS_GAME, nGameIndex);
 		if (playopts->record)
 			o.set_value(OPTION_RECORD, "", OPTION_PRIORITY_CMDLINE,error_string);
 		if (playopts->playback)
@@ -962,7 +962,7 @@ static DWORD RunMAME(int nGameIndex, const play_options *playopts)
 		if (playopts->aviwrite)
 			o.set_value(OPTION_AVIWRITE, "", OPTION_PRIORITY_CMDLINE,error_string);
 		// apply the above to the ini file
-		save_options(o, nGameIndex);
+		save_options(o, OPTIONS_GAME, nGameIndex);
 	}
 	playopts_apply = 0;
 
@@ -4592,12 +4592,8 @@ static BOOL MameCommand(HWND hwnd,int id, HWND hwndCtl, UINT codeNotify)
 		SetRandomPickItem();
 		break;
 
-	case ID_CONTEXT_RESET_PLAYTIME:
+	case ID_CONTEXT_RESET_PLAYSTATS:
 		ResetPlayTime( Picker_GetSelectedItem(hwndList) );
-		res = ListView_RedrawItems(hwndList, GetSelectedPick(), GetSelectedPick());
-		break;
-
-	case ID_CONTEXT_RESET_PLAYCOUNT:
 		ResetPlayCount( Picker_GetSelectedItem(hwndList) );
 		res = ListView_RedrawItems(hwndList, GetSelectedPick(), GetSelectedPick());
 		break;

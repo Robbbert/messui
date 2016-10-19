@@ -434,7 +434,7 @@ void MyFillSoftwareList(int drvindex, BOOL bForce)
 	// Get the game's software path
 	int driver_index = drvindex;
 	windows_options o;
-	load_options(o, driver_index);
+	load_options(o, OPTIONS_GAME, driver_index);
 	const char* paths = o.value(OPTION_SWPATH);
 	if (paths && (paths[0] > 64)) 
 	{} else
@@ -447,7 +447,7 @@ void MyFillSoftwareList(int drvindex, BOOL bForce)
 			nParentIndex = GetParentIndex(&driver_list::driver(driver_index));
 			if (nParentIndex >= 0)
 			{
-				load_options(o, nParentIndex);
+				load_options(o, OPTIONS_PARENT, nParentIndex);
 				paths = o.value(OPTION_SWPATH);
 			}
 		}
@@ -463,7 +463,7 @@ void MyFillSoftwareList(int drvindex, BOOL bForce)
 			nParentIndex = GetCompatIndex(&driver_list::driver(driver_index));
 			if (nParentIndex >= 0)
 			{
-				load_options(o, nParentIndex);
+				load_options(o, OPTIONS_PARENT, nParentIndex);
 				paths = o.value(OPTION_SWPATH);
 			}
 		}
@@ -548,7 +548,7 @@ static void InternalSetSelectedSoftware(int drvindex, const machine_config *conf
 	const char *s, *opt_name = device->instance_name();
 	windows_options o;
 
-	load_options(o, drvindex);
+	load_options(o, OPTIONS_GAME, drvindex);
 	s = o.value(opt_name);
 	// only call SetSelectedSoftware() if this value is different
 	if (strcmp(s, pszSoftware)!=0)
@@ -571,7 +571,7 @@ static void MessSpecifyImage(int drvindex, const device_image_interface *device,
 {
 	const char *s, *file_extension;
 	windows_options o;
-	load_options(o, drvindex);
+	load_options(o, OPTIONS_GAME, drvindex);
 
 	if (LOG_SOFTWARE)
 		dprintf("MessSpecifyImage(): device=%p pszFilename='%s'\n", device, pszFilename);
@@ -655,7 +655,7 @@ static void MessRemoveImage(int drvindex, const char *pszFilename)
 	for (device_image_interface &dev : image_interface_iterator(s_config->mconfig->root_device()))
 	{
 		const char *opt_name = dev.instance_name();
-		load_options(o, drvindex);
+		load_options(o, OPTIONS_GAME, drvindex);
 		s = o.value(opt_name);
 		if ((s) && !strcmp(pszFilename, s))
 			MessSpecifyImage(drvindex, &dev, NULL);
@@ -694,7 +694,7 @@ static void MessRefreshPicker(void)
 	for (device_image_interface &dev : image_interface_iterator(s_config->mconfig->root_device()))
 	{
 		const char *opt_name = dev.instance_name(); // get name of device slot
-		load_options(o, s_config->driver_index);
+		load_options(o, OPTIONS_GAME, s_config->driver_index);
 		s = o.value(opt_name); // get name of software in the slot
 
 		if (s[0]) // if software is loaded
@@ -996,7 +996,7 @@ static BOOL DevView_GetOpenFileName(HWND hwndDevView, const machine_config *conf
 	std::string as;
 	const char *s, *opt_name = dev->instance_name();
 	windows_options o;
-	load_options(o, drvindex);
+	load_options(o, OPTIONS_GAME, drvindex);
 	s = o.value(opt_name);
 
 	/* Get the path to the currently mounted image */
@@ -1009,7 +1009,7 @@ static BOOL DevView_GetOpenFileName(HWND hwndDevView, const machine_config *conf
 		/* Get the path from the software tab */
 		int driver_index = drvindex;
 		windows_options o;
-		load_options(o, driver_index);
+		load_options(o, OPTIONS_GAME, driver_index);
 		const char* paths = o.value(OPTION_SWPATH);
 		if (paths && (paths[0] > 64)) 
 		{} else
@@ -1022,7 +1022,7 @@ static BOOL DevView_GetOpenFileName(HWND hwndDevView, const machine_config *conf
 				nParentIndex = GetParentIndex(&driver_list::driver(driver_index));
 				if (nParentIndex >= 0)
 				{
-					load_options(o, nParentIndex);
+					load_options(o, OPTIONS_PARENT, nParentIndex);
 					paths = o.value(OPTION_SWPATH);
 				}
 			}
@@ -1038,7 +1038,7 @@ static BOOL DevView_GetOpenFileName(HWND hwndDevView, const machine_config *conf
 				nParentIndex = GetCompatIndex(&driver_list::driver(driver_index));
 				if (nParentIndex >= 0)
 				{
-					load_options(o, nParentIndex);
+					load_options(o, OPTIONS_PARENT, nParentIndex);
 					paths = o.value(OPTION_SWPATH);
 				}
 			}
@@ -1100,7 +1100,7 @@ static BOOL DevView_GetOpenItemName(HWND hwndDevView, const machine_config *conf
 	std::string as;
 	const char *s, *opt_name = dev->instance_name();
 	windows_options o;
-	load_options(o, drvindex);
+	load_options(o, OPTIONS_GAME, drvindex);
 	s = o.value(opt_name);
 
 	/* Get the path to the currently mounted image, chop off any trailing backslash */
@@ -1183,7 +1183,7 @@ static BOOL DevView_GetCreateFileName(HWND hwndDevView, const machine_config *co
 	// Get the game's software path
 	int driver_index = drvindex;
 	windows_options o;
-	load_options(o, driver_index);
+	load_options(o, OPTIONS_GAME, driver_index);
 	const char* paths = o.value(OPTION_SWPATH);
 	if (paths && (paths[0] > 64)) 
 	{} else
@@ -1196,7 +1196,7 @@ static BOOL DevView_GetCreateFileName(HWND hwndDevView, const machine_config *co
 			nParentIndex = GetParentIndex(&driver_list::driver(driver_index));
 			if (nParentIndex >= 0)
 			{
-				load_options(o, nParentIndex);
+				load_options(o, OPTIONS_PARENT, nParentIndex);
 				paths = o.value(OPTION_SWPATH);
 			}
 		}
@@ -1212,7 +1212,7 @@ static BOOL DevView_GetCreateFileName(HWND hwndDevView, const machine_config *co
 			nParentIndex = GetCompatIndex(&driver_list::driver(driver_index));
 			if (nParentIndex >= 0)
 			{
-				load_options(o, nParentIndex);
+				load_options(o, OPTIONS_PARENT, nParentIndex);
 				paths = o.value(OPTION_SWPATH);
 			}
 		}
@@ -1278,7 +1278,7 @@ static LPCTSTR DevView_GetSelectedSoftware(HWND hwndDevView, int nDriverIndex,
 	const char *opt_name = dev->instance_name();
 	windows_options o;
 
-	load_options(o, nDriverIndex);
+	load_options(o, OPTIONS_GAME, nDriverIndex);
 	s = o.value(opt_name);
 
 	t_s = ui_wstring_from_utf8(s);
