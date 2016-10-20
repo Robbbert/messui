@@ -74,6 +74,7 @@ BEGIN
         MENUITEM "&Status bar\tAlt+S",          ID_VIEW_STATUS
         MENUITEM "Fold&er List\tAlt+D",         ID_VIEW_FOLDERS
         MENUITEM "&Picture Area\tAlt+P",        ID_VIEW_PICTURE_AREA
+        MENUITEM "Software Area",               ID_VIEW_SOFTWARE_AREA
         MENUITEM "Screenshot Ta&b\tAlt+B",      ID_VIEW_PAGETAB
         MENUITEM SEPARATOR
         MENUITEM "&Fullscreen\tF11",            ID_VIEW_FULLSCREEN
