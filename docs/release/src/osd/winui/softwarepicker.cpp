@@ -731,7 +731,7 @@ LPCTSTR SoftwarePicker_GetItemString(HWND hwndPicker, int nRow, int nColumn, TCH
 
 	switch(nColumn)
 	{
-		case MESS_COLUMN_IMAGES:
+		case SW_COLUMN_IMAGES:
 			t_buf = ui_wstring_from_utf8(pFileInfo->base_name);
 			if( !t_buf )
 				return s;
@@ -741,24 +741,24 @@ LPCTSTR SoftwarePicker_GetItemString(HWND hwndPicker, int nRow, int nColumn, TCH
 			break;
 
 /*
-		case MESS_COLUMN_GOODNAME:
-		case MESS_COLUMN_MANUFACTURER:
-		case MESS_COLUMN_YEAR:
-		case MESS_COLUMN_PLAYABLE:
+		case SW_COLUMN_GOODNAME:
+		case SW_COLUMN_MANUFACTURER:
+		case SW_COLUMN_YEAR:
+		case SW_COLUMN_PLAYABLE:
 			if (pFileInfo->hashinfo)
 			{
 				switch(nColumn)
 				{
-					case MESS_COLUMN_GOODNAME:
+					case SW_COLUMN_GOODNAME:
 						pszUtf8 = pFileInfo->hashinfo->longname;
 						break;
-					case MESS_COLUMN_MANUFACTURER:
+					case SW_COLUMN_MANUFACTURER:
 						pszUtf8 = pFileInfo->hashinfo->manufacturer;
 						break;
-					case MESS_COLUMN_YEAR:
+					case SW_COLUMN_YEAR:
 						pszUtf8 = pFileInfo->hashinfo->year;
 						break;
-					case MESS_COLUMN_PLAYABLE:
+					case SW_COLUMN_PLAYABLE:
 						pszUtf8 = pFileInfo->hashinfo->playable;
 						break;
 				}
@@ -774,12 +774,16 @@ LPCTSTR SoftwarePicker_GetItemString(HWND hwndPicker, int nRow, int nColumn, TCH
 			}
 			break;
 
-		case MESS_COLUMN_CRC:
-		case MESS_COLUMN_SHA1:
+		case SW_COLUMN_CRC:
+		case SW_COLUMN_SHA1:
 			switch (nColumn)
 			{
-				case MESS_COLUMN_CRC:	nHashFunction = hash_collection::HASH_CRC;	break;
-				case MESS_COLUMN_SHA1:	nHashFunction = hash_collection::HASH_SHA1;	break;
+				case SW_COLUMN_CRC:
+					nHashFunction = hash_collection::HASH_CRC;
+					break;
+				case SW_COLUMN_SHA1:
+					nHashFunction = hash_collection::HASH_SHA1;
+					break;
 			}
 			if (hash_data_extract_printable_checksum(pFileInfo->hash_string, nHashFunction, szBuffer))
 			{

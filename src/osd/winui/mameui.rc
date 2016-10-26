@@ -74,6 +74,7 @@ BEGIN
         MENUITEM "&Status bar\tAlt+S",          ID_VIEW_STATUS
         MENUITEM "Fold&er List\tAlt+D",         ID_VIEW_FOLDERS
         MENUITEM "&Picture Area\tAlt+P",        ID_VIEW_PICTURE_AREA
+        MENUITEM "Software Area",               ID_VIEW_SOFTWARE_AREA
         MENUITEM "Screenshot Ta&b\tAlt+B",      ID_VIEW_PAGETAB
         MENUITEM SEPARATOR
         MENUITEM "&Fullscreen\tF11",            ID_VIEW_FULLSCREEN
@@ -143,11 +144,12 @@ BEGIN
         MENUITEM "R&emove From This Folder",    ID_CONTEXT_REMOVE_CUSTOM
         MENUITEM "&Custom Filters...",          ID_CONTEXT_FILTERS
         MENUITEM SEPARATOR
-        MENUITEM "Rese&t Playcount",            ID_CONTEXT_RESET_PLAYCOUNT
+        MENUITEM "Rese&t Play Stats",           ID_CONTEXT_RESET_PLAYSTATS
         MENUITEM SEPARATOR
         MENUITEM "A&udit",                      ID_GAME_AUDIT
         MENUITEM SEPARATOR
         MENUITEM "Pr&operties",                 ID_GAME_PROPERTIES
+        MENUITEM "Properties for driver",       ID_FOLDER_SOURCEPROPERTIES
     END
 END
 
@@ -300,7 +302,7 @@ END
 1 TEXTINCLUDE MOVEABLE PURE
 BEGIN
     "resource.h\\r\n"
-	"newuires.h\0"
+    "newuires.h\0"
 END
 
 2 TEXTINCLUDE MOVEABLE PURE
@@ -313,7 +315,7 @@ END
 
 3 TEXTINCLUDE MOVEABLE PURE
 BEGIN
-    "#include ""mamevers.rc"" // Version block\r\n"
+    "#include ""messvers.rc"" // Version block\r\n"
     "\r\n"
     "\0"
 END
@@ -392,7 +394,7 @@ BEGIN
     CTEXT           "Multi Emulator Super System",IDC_STATIC,147,7,142,
                     11,NOT WS_GROUP
     CTEXT           "Version 0",IDC_VERSION,147,18,142,11,NOT WS_GROUP
-    CTEXT           "Copyright (C) 1998-2016 The MAME Team",IDC_STATIC,147,
+    CTEXT           "Copyright (C) 1997-2016 The MAME Team",IDC_STATIC,147,
                     29,142,10,NOT WS_GROUP
     CTEXT           "MESSUI based on MAMEUI version by",IDC_STATIC,147,51,142,10,NOT
                     WS_GROUP
@@ -1446,8 +1448,7 @@ END
 
 STRINGTABLE DISCARDABLE
 BEGIN
-    ID_CONTEXT_RESET_PLAYTIME "Reset time played for selected item"
-    ID_CONTEXT_RESET_PLAYCOUNT "Reset number of plays for selected item"
+    ID_CONTEXT_RESET_PLAYSTATS "Reset play stats for selected item"
     ID_FOLDER_PROPERTIES    "Display folder properties"
     ID_FOLDER_AUDIT         "Audit items in this folder"
     ID_FILE_LOADSTATE       "Run a system starting with the given savestate"
@@ -1514,7 +1515,7 @@ END
 //
 // Generated from the TEXTINCLUDE 3 resource.
 //
-#include "mamevers.rc" // Version block
+#include "messvers.rc" // Version block
 
 
 /////////////////////////////////////////////////////////////////////////////

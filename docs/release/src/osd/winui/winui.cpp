@@ -886,7 +886,7 @@ static DWORD RunMAME(int nGameIndex, const play_options *playopts)
 	// Tell mame where to get the INIs
 	SetDirectories(global_opts);
 
-	MessSetupGameOptions(global_opts, nGameIndex);
+	MessSetupGameOptions(global_opts, OPTIONS_GLOBAL, nGameIndex);
 
 	// set some startup options
 	global_opts.set_value(OPTION_LANGUAGE, GetLanguageUI(), OPTION_PRIORITY_CMDLINE, error_string);
@@ -913,10 +913,10 @@ static DWORD RunMAME(int nGameIndex, const play_options *playopts)
 
 	if (g_szSelectedSoftware[0] && g_szSelectedDevice[0])
 	{
-			global_opts.set_value(g_szSelectedDevice, g_szSelectedSoftware, OPTION_PRIORITY_CMDLINE,error_string);
-			// Add params and clear so next start of driver is without parameters
-			g_szSelectedSoftware[0] = 0;
-			g_szSelectedDevice[0] = 0;
+		global_opts.set_value(g_szSelectedDevice, g_szSelectedSoftware, OPTION_PRIORITY_CMDLINE,error_string);
+		// Add params and clear so next start of driver is without parameters
+		g_szSelectedSoftware[0] = 0;
+		g_szSelectedDevice[0] = 0;
 	}
 	// Mame will parse all the needed .ini files.
 
@@ -948,7 +948,7 @@ static DWORD RunMAME(int nGameIndex, const play_options *playopts)
 	if (playopts_apply == 0x57)
 	{
 		windows_options o;
-		load_options(o, nGameIndex);
+		load_options(o, OPTIONS_GAME, nGameIndex);
 		if (playopts->record)
 			o.set_value(OPTION_RECORD, "", OPTION_PRIORITY_CMDLINE,error_string);
 		if (playopts->playback)
@@ -962,7 +962,7 @@ static DWORD RunMAME(int nGameIndex, const play_options *playopts)
 		if (playopts->aviwrite)
 			o.set_value(OPTION_AVIWRITE, "", OPTION_PRIORITY_CMDLINE,error_string);
 		// apply the above to the ini file
-		save_options(o, nGameIndex);
+		save_options(o, OPTIONS_GAME, nGameIndex);
 	}
 	playopts_apply = 0;
 
@@ -2474,7 +2474,6 @@ static BOOL PumpMessage()
 
 static BOOL FolderCheck(void)
 {
-
 	char *pDescription = NULL;
 	int nGameIndex = 0;
 	int i=0;
@@ -3731,10 +3730,10 @@ static void SetView(int menu_id)
 
 static void ResetListView()
 {
-	int 	i = 0;
-	int 	current_game = 0;
+	int i = -1;
+	int current_game = 0;
 	LV_ITEM lvi;
-	BOOL	no_selection = FALSE;
+	BOOL no_selection = FALSE;
 	LPTREEFOLDER lpFolder = GetCurrentFolder();
 	HRESULT res = 0;
 	BOOL b_res = 0;
@@ -3758,8 +3757,6 @@ static void ResetListView()
 	lvi.mask = LVIF_TEXT | LVIF_IMAGE | LVIF_PARAM;
 	lvi.stateMask = 0;
 
-	i = -1;
-
 	do
 	{
 		/* Add the games that are in this folder */
@@ -3768,11 +3765,11 @@ static void ResetListView()
 			if (GameFiltered(i, lpFolder->m_dwFlags))
 				continue;
 
-			lvi.iItem	 = i;
+			lvi.iItem    = i;
 			lvi.iSubItem = 0;
-			lvi.lParam	 = i;
+			lvi.lParam   = i;
 			lvi.pszText  = LPSTR_TEXTCALLBACK;
-			lvi.iImage	 = I_IMAGECALLBACK;
+			lvi.iImage   = I_IMAGECALLBACK;
 			res = ListView_InsertItem(hwndList, &lvi);
 		}
 	} while (i != -1);
@@ -3781,11 +3778,11 @@ static void ResetListView()
 
 	if (bListReady)
 	{
-	    /* If last folder was empty, select the first item in this folder */
-	    if (no_selection)
-		    Picker_SetSelectedPick(hwndList, 0);
+		/* If last folder was empty, select the first item in this folder */
+		if (no_selection)
+			Picker_SetSelectedPick(hwndList, 0);
 		else
-		    Picker_SetSelectedItem(hwndList, current_game);
+			Picker_SetSelectedItem(hwndList, current_game);
 	}
 
 	/*RS Instead of the Arrange Call that was here previously on all Views
@@ -4317,14 +4314,18 @@ static BOOL MameCommand(HWND hwnd,int id, HWND hwndCtl, UINT codeNotify)
 		break;
 
 	case ID_FOLDER_SOURCEPROPERTIES:
-		if (!oldControl)
-		{
-			folder = GetFolderByName(FOLDER_SOURCE, GetDriverFilename(Picker_GetSelectedItem(hwndList)) );
-			InitPropertyPage(hInst, hwnd, GetSelectedFolderIcon(), (folder->m_nFolderId == FOLDER_VECTOR) ? OPTIONS_VECTOR : OPTIONS_SOURCE , folder->m_nFolderId, Picker_GetSelectedItem(hwndList));
-		}
-		/* Just in case the toggle MMX on/off */
+	{
+		int game = Picker_GetSelectedItem(hwndList);
+		folder = GetFolderByName(FOLDER_SOURCE, GetDriverFilename(game));
+		InitPropertyPage(hInst, hwnd, GetSelectedFolderIcon(), OPTIONS_SOURCE, folder->m_nFolderId, game);
 		UpdateStatusBar();
-		break;
+		SetFocus(hwndList);
+		return true;
+		//folder = GetFolderByName(FOLDER_SOURCE, GetDriverFilename(Picker_GetSelectedItem(hwndList)) );
+		//InitPropertyPage(hInst, hwnd, GetSelectedFolderIcon(), (folder->m_nFolderId == FOLDER_VECTOR) ? OPTIONS_VECTOR : OPTIONS_SOURCE , folder->m_nFolderId, Picker_GetSelectedItem(hwndList));
+		//UpdateStatusBar();
+		//break;
+	}
 
 	case ID_FOLDER_VECTORPROPERTIES:
 		if (!oldControl)
@@ -4383,7 +4384,7 @@ static BOOL MameCommand(HWND hwnd,int id, HWND hwndCtl, UINT codeNotify)
 
 			BOOL bUpdateRoms    = ((nResult & DIRDLG_ROMS) == DIRDLG_ROMS) ? TRUE : FALSE;
 			BOOL bUpdateSamples = ((nResult & DIRDLG_SAMPLES) == DIRDLG_SAMPLES) ? TRUE : FALSE;
-			BOOL bUpdateSoftware = ((nResult & DIRDLG_SOFTWARE) == DIRDLG_SOFTWARE) ? TRUE : FALSE;
+			BOOL bUpdateSoftware = ((nResult & DIRDLG_SL) == DIRDLG_SL) ? TRUE : FALSE;
 
 			if (bUpdateSoftware)
 				MessUpdateSoftwareList();
@@ -4591,12 +4592,8 @@ static BOOL MameCommand(HWND hwnd,int id, HWND hwndCtl, UINT codeNotify)
 		SetRandomPickItem();
 		break;
 
-	case ID_CONTEXT_RESET_PLAYTIME:
+	case ID_CONTEXT_RESET_PLAYSTATS:
 		ResetPlayTime( Picker_GetSelectedItem(hwndList) );
-		res = ListView_RedrawItems(hwndList, GetSelectedPick(), GetSelectedPick());
-		break;
-
-	case ID_CONTEXT_RESET_PLAYCOUNT:
 		ResetPlayCount( Picker_GetSelectedItem(hwndList) );
 		res = ListView_RedrawItems(hwndList, GetSelectedPick(), GetSelectedPick());
 		break;

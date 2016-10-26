@@ -4,18 +4,19 @@ set to=c:\MESS\docs\release
 rd %to%\src /q /s
 
 md %to%\src\emu
-copy /Y %from%\src\emu\emuopts.cpp %to%\src\emu
+copy /Y %from%\src\emu\diimage.cpp %to%\src\emu
+copy /Y %from%\src\emu\emuopts.* %to%\src\emu
 copy /Y %from%\src\emu\softlist.cpp %to%\src\emu
 copy /Y %from%\src\emu\video.* %to%\src\emu
 copy /Y %from%\src\version.cpp %to%\src
 
 md %to%\src\frontend\mame\ui
+copy /Y %from%\src\frontend\mame\mameopts.* %to%\src\frontend\mame
 copy /Y %from%\src\frontend\mame\audit.* %to%\src\frontend\mame
-copy /Y %from%\src\frontend\mame\mameopts.cpp %to%\src\frontend\mame
 copy /Y %from%\src\frontend\mame\ui\ui.cpp %to%\src\frontend\mame\ui
 
 md %to%\src\lib\util
-copy /Y %from%\src\lib\util\options.cpp %to%\src\lib\util
+copy /Y %from%\src\lib\util\options.* %to%\src\lib\util
 
 md %to%\src\osd\windows
 copy /Y %from%\src\osd\windows\winmain.cpp %to%\src\osd\windows

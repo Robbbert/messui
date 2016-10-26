@@ -1,3 +1,9 @@
+@goto x
+@echo off
+echo HAVE YOU UPDATED version.cpp ???
+pause
+
+
 call newsrc.bat
 call clean.bat
 call clean.bat
@@ -17,7 +23,7 @@ call make64 -j4 "OSD=messui" %1 %2 %3
 if not exist messui64.exe goto end
 del mess64.exe
 call make64 -j4  "OSD=newui" %1 %2 %3
-
+:x
 rem --- 32bit full ---
 del mameui.exe
 call make32a -j4 "OSD=messui" %1 %2 %3

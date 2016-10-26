@@ -53,7 +53,7 @@ const char *const core_options::s_option_unadorned[MAX_UNADORNED_OPTIONS] =
 //  entry - constructor
 //-------------------------------------------------
 
-core_options::entry::entry(const char *name, const char *description, UINT32 flags, const char *defvalue)
+core_options::entry::entry(const char *name, const char *description, uint32_t flags, const char *defvalue)
 	: m_next(nullptr),
 		m_flags(flags),
 		m_seqid(0),
@@ -139,7 +139,7 @@ void core_options::entry::set_description(const char *description)
 }
 
 
-void core_options::entry::set_flag(UINT32 mask, UINT32 flag)
+void core_options::entry::set_flag(uint32_t mask, uint32_t flag)
 {
 	m_flags = ( m_flags & mask ) | flag;
 }
@@ -254,7 +254,7 @@ bool core_options::operator!=(const core_options &rhs)
 //  options set
 //-------------------------------------------------
 
-void core_options::add_entry(const char *name, const char *description, UINT32 flags, const char *defvalue, bool override_existing)
+void core_options::add_entry(const char *name, const char *description, uint32_t flags, const char *defvalue, bool override_existing)
 {
 	// allocate a new entry
 	auto  newentry = global_alloc(entry(name, description, flags, defvalue));
@@ -410,7 +410,7 @@ bool core_options::parse_ini_file(util::core_file &inifile, int priority, int ig
 		// find the extent of the name
 		char *optionname;
 		for (optionname = buffer; *optionname != 0; optionname++)
-			if (!isspace((UINT8)*optionname))
+			if (!isspace((uint8_t)*optionname))
 				break;
 
 		// skip comments
@@ -420,7 +420,7 @@ bool core_options::parse_ini_file(util::core_file &inifile, int priority, int ig
 		// scan forward to find the first space
 		char *temp;
 		for (temp = optionname; *temp != 0; temp++)
-			if (isspace((UINT8)*temp))
+			if (isspace((uint8_t)*temp))
 				break;
 
 		// if we hit the end early, print a warning and continue
@@ -601,7 +601,7 @@ int core_options::priority(const char *name) const
 //  seqid - return the seqid for a given option
 //-------------------------------------------------
 
-UINT32 core_options::seqid(const char *name) const
+uint32_t core_options::seqid(const char *name) const
 {
 	auto curentry = m_entrymap.find(name);
 	return (curentry != m_entrymap.end()) ? curentry->second->seqid() : 0;
@@ -655,7 +655,7 @@ bool core_options::set_value(const char *name, float value, int priority, std::s
 }
 
 
-void core_options::set_flag(const char *name, UINT32 mask, UINT32 flag)
+void core_options::set_flag(const char *name, uint32_t mask, uint32_t flag)
 {
 	// find the entry first
 	auto curentry = m_entrymap.find(name);
@@ -843,3 +843,72 @@ core_options::entry *core_options::get_entry(const char *name) const
 	auto curentry = m_entrymap.find(name);
 	return (curentry != m_entrymap.end()) ? curentry->second : nullptr;
 }
+
+// MESSUI
+bool core_options::parse_parent_file(util::core_file &inifile, int priority, int ignore_priority, std::string &error_string)
+{
+	// loop over lines in the file
+	char buffer[4096];
+	while (inifile.gets(buffer, ARRAY_LENGTH(buffer)) != nullptr)
+	{
+		// find the extent of the name
+		char *optionname;
+		for (optionname = buffer; *optionname != 0; optionname++)
+			if (!isspace((uint8_t)*optionname))
+				break;
+
+		if (optionname[0] == '#') // this statement is the only extra thing: we don't want slots or images copied to the clone
+		{
+			if (optionname[2] == 'S' && optionname[3] == 'L' && optionname[4] == 'O' && optionname[5] == 'T' )
+				break;
+			if (optionname[2] == 'I' && optionname[3] == 'M' && optionname[4] == 'A' && optionname[5] == 'G' )
+				break;
+		}
+
+		// skip comments
+		if (*optionname == 0 || *optionname == '#')
+			continue;
+
+		// scan forward to find the first space
+		char *temp;
+		for (temp = optionname; *temp != 0; temp++)
+			if (isspace((uint8_t)*temp))
+				break;
+
+		// if we hit the end early, print a warning and continue
+		if (*temp == 0)
+		{
+			error_string.append(string_format("Warning: invalid line in INI: %s", buffer));
+			continue;
+		}
+
+		// NULL-terminate
+		*temp++ = 0;
+		char *optiondata = temp;
+
+		// scan the data, stopping when we hit a comment
+		bool inquotes = false;
+		for (temp = optiondata; *temp != 0; temp++)
+		{
+			if (*temp == '"')
+				inquotes = !inquotes;
+			if (*temp == '#' && !inquotes)
+				break;
+		}
+		*temp = 0;
+
+		// find our entry
+		auto curentry = m_entrymap.find(optionname);
+		if (curentry == m_entrymap.end())
+		{
+			if (priority >= ignore_priority)
+				error_string.append(string_format("Warning: unknown option in INI: %s\n", optionname));
+			continue;
+		}
+
+		// set the new data
+		validate_and_set_data(*curentry->second, optiondata, priority, error_string);
+	}
+	return true;
+}
+

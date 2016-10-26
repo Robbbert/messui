@@ -172,18 +172,18 @@ static LPCTSTR DevView_GetSelectedSoftware(HWND hwndDevView, int nDriverIndex, c
 // picker
 static const struct PickerCallbacks s_softwarePickerCallbacks =
 {
-	SetMessSortColumn,					// pfnSetSortColumn
-	GetMessSortColumn,					// pfnGetSortColumn
-	SetMessSortReverse,					// pfnSetSortReverse
-	GetMessSortReverse,					// pfnGetSortReverse
+	SetSWSortColumn,					// pfnSetSortColumn
+	GetSWSortColumn,					// pfnGetSortColumn
+	SetSWSortReverse,					// pfnSetSortReverse
+	GetSWSortReverse,					// pfnGetSortReverse
 	NULL,								// pfnSetViewMode
 	GetViewMode,						// pfnGetViewMode
-	SetMessColumnWidths,				// pfnSetColumnWidths
-	GetMessColumnWidths,				// pfnGetColumnWidths
-	SetMessColumnOrder,					// pfnSetColumnOrder
-	GetMessColumnOrder,					// pfnGetColumnOrder
-	SetMessColumnShown,					// pfnSetColumnShown
-	GetMessColumnShown,					// pfnGetColumnShown
+	SetSWColumnWidths,					// pfnSetColumnWidths
+	GetSWColumnWidths,					// pfnGetColumnWidths
+	SetSWColumnOrder,					// pfnSetColumnOrder
+	GetSWColumnOrder,					// pfnGetColumnOrder
+	SetSWColumnShown,					// pfnSetColumnShown
+	GetSWColumnShown,					// pfnGetColumnShown
 	NULL,								// pfnGetOffsetChildren
 
 	NULL,								// pfnCompare
@@ -202,18 +202,18 @@ static const struct PickerCallbacks s_softwarePickerCallbacks =
 // swlist
 static const struct PickerCallbacks s_softwareListCallbacks =
 {
-	SetSWListSortColumn,					// pfnSetSortColumn
-	GetSWListSortColumn,					// pfnGetSortColumn
-	SetSWListSortReverse,					// pfnSetSortReverse
-	GetSWListSortReverse,					// pfnGetSortReverse
+	SetSLSortColumn,					// pfnSetSortColumn
+	GetSLSortColumn,					// pfnGetSortColumn
+	SetSLSortReverse,					// pfnSetSortReverse
+	GetSLSortReverse,					// pfnGetSortReverse
 	NULL,								// pfnSetViewMode
 	GetViewMode,						// pfnGetViewMode
-	SetSWListColumnWidths,				// pfnSetColumnWidths
-	GetSWListColumnWidths,				// pfnGetColumnWidths
-	SetSWListColumnOrder,					// pfnSetColumnOrder
-	GetSWListColumnOrder,					// pfnGetColumnOrder
-	SetSWListColumnShown,					// pfnSetColumnShown
-	GetSWListColumnShown,					// pfnGetColumnShown
+	SetSLColumnWidths,					// pfnSetColumnWidths
+	GetSLColumnWidths,					// pfnGetColumnWidths
+	SetSLColumnOrder,					// pfnSetColumnOrder
+	GetSLColumnOrder,					// pfnGetColumnOrder
+	SetSLColumnShown,					// pfnSetColumnShown
+	GetSLColumnShown,					// pfnGetColumnShown
 	NULL,								// pfnGetOffsetChildren
 
 	NULL,								// pfnCompare
@@ -434,8 +434,8 @@ void MyFillSoftwareList(int drvindex, BOOL bForce)
 	// Get the game's software path
 	int driver_index = drvindex;
 	windows_options o;
-	load_options(o, driver_index);
-	const char* paths = o.value(OPTION_COMMENT_DIRECTORY);
+	load_options(o, OPTIONS_GAME, driver_index);
+	const char* paths = o.value(OPTION_SWPATH);
 	if (paths && (paths[0] > 64)) 
 	{} else
 	// search deeper when looking for software
@@ -447,8 +447,8 @@ void MyFillSoftwareList(int drvindex, BOOL bForce)
 			nParentIndex = GetParentIndex(&driver_list::driver(driver_index));
 			if (nParentIndex >= 0)
 			{
-				load_options(o, nParentIndex);
-				paths = o.value(OPTION_COMMENT_DIRECTORY);
+				load_options(o, OPTIONS_PARENT, nParentIndex);
+				paths = o.value(OPTION_SWPATH);
 			}
 		}
 		if (paths && (paths[0] > 64))
@@ -463,8 +463,8 @@ void MyFillSoftwareList(int drvindex, BOOL bForce)
 			nParentIndex = GetCompatIndex(&driver_list::driver(driver_index));
 			if (nParentIndex >= 0)
 			{
-				load_options(o, nParentIndex);
-				paths = o.value(OPTION_COMMENT_DIRECTORY);
+				load_options(o, OPTIONS_PARENT, nParentIndex);
+				paths = o.value(OPTION_SWPATH);
 			}
 		}
 	}
@@ -548,7 +548,7 @@ static void InternalSetSelectedSoftware(int drvindex, const machine_config *conf
 	const char *s, *opt_name = device->instance_name();
 	windows_options o;
 
-	load_options(o, drvindex);
+	load_options(o, OPTIONS_GAME, drvindex);
 	s = o.value(opt_name);
 	// only call SetSelectedSoftware() if this value is different
 	if (strcmp(s, pszSoftware)!=0)
@@ -571,7 +571,7 @@ static void MessSpecifyImage(int drvindex, const device_image_interface *device,
 {
 	const char *s, *file_extension;
 	windows_options o;
-	load_options(o, drvindex);
+	load_options(o, OPTIONS_GAME, drvindex);
 
 	if (LOG_SOFTWARE)
 		dprintf("MessSpecifyImage(): device=%p pszFilename='%s'\n", device, pszFilename);
@@ -655,7 +655,7 @@ static void MessRemoveImage(int drvindex, const char *pszFilename)
 	for (device_image_interface &dev : image_interface_iterator(s_config->mconfig->root_device()))
 	{
 		const char *opt_name = dev.instance_name();
-		load_options(o, drvindex);
+		load_options(o, OPTIONS_GAME, drvindex);
 		s = o.value(opt_name);
 		if ((s) && !strcmp(pszFilename, s))
 			MessSpecifyImage(drvindex, &dev, NULL);
@@ -694,7 +694,7 @@ static void MessRefreshPicker(void)
 	for (device_image_interface &dev : image_interface_iterator(s_config->mconfig->root_device()))
 	{
 		const char *opt_name = dev.instance_name(); // get name of device slot
-		load_options(o, s_config->driver_index);
+		load_options(o, OPTIONS_GAME, s_config->driver_index);
 		s = o.value(opt_name); // get name of software in the slot
 
 		if (s[0]) // if software is loaded
@@ -732,7 +732,7 @@ void InitMessPicker(void)
 
 	memset(&opts, 0, sizeof(opts));
 	opts.pCallbacks = &s_softwarePickerCallbacks;
-	opts.nColumnCount = MESS_COLUMN_MAX; // number of columns in picker
+	opts.nColumnCount = SW_COLUMN_MAX; // number of columns in picker
 	opts.ppszColumnNames = mess_column_names; // get picker column names
 	SetupSoftwarePicker(hwndSoftware, &opts); // display them
 
@@ -757,7 +757,7 @@ void InitMessPicker(void)
 
 	memset(&opts, 0, sizeof(opts));
 	opts.pCallbacks = &s_softwareListCallbacks;
-	opts.nColumnCount = SWLIST_COLUMN_MAX; // number of columns in sw-list
+	opts.nColumnCount = SL_COLUMN_MAX; // number of columns in sw-list
 	opts.ppszColumnNames = softlist_column_names; // columns for sw-list
 	SetupSoftwareList(hwndSoftwareList, &opts); // show them
 
@@ -981,8 +981,8 @@ static void MessOpenOtherSoftware(const device_image_interface *dev)
 
     Order of priority:
     1. Directory where existing image is already loaded from
-    2. First directory specified in game-specific "comment_directory"
-    3. First directory specified in the global software "comment_directory"
+    2. First directory specified in game-specific "swpath"
+    3. First directory specified in the global software "swpath"
     4. mess-folder */
 
 static BOOL DevView_GetOpenFileName(HWND hwndDevView, const machine_config *config, const device_image_interface *dev, LPTSTR pszFilename, UINT nFilenameLength)
@@ -996,7 +996,7 @@ static BOOL DevView_GetOpenFileName(HWND hwndDevView, const machine_config *conf
 	std::string as;
 	const char *s, *opt_name = dev->instance_name();
 	windows_options o;
-	load_options(o, drvindex);
+	load_options(o, OPTIONS_GAME, drvindex);
 	s = o.value(opt_name);
 
 	/* Get the path to the currently mounted image */
@@ -1009,8 +1009,8 @@ static BOOL DevView_GetOpenFileName(HWND hwndDevView, const machine_config *conf
 		/* Get the path from the software tab */
 		int driver_index = drvindex;
 		windows_options o;
-		load_options(o, driver_index);
-		const char* paths = o.value(OPTION_COMMENT_DIRECTORY);
+		load_options(o, OPTIONS_GAME, driver_index);
+		const char* paths = o.value(OPTION_SWPATH);
 		if (paths && (paths[0] > 64)) 
 		{} else
 		// search deeper when looking for software
@@ -1022,8 +1022,8 @@ static BOOL DevView_GetOpenFileName(HWND hwndDevView, const machine_config *conf
 				nParentIndex = GetParentIndex(&driver_list::driver(driver_index));
 				if (nParentIndex >= 0)
 				{
-					load_options(o, nParentIndex);
-					paths = o.value(OPTION_COMMENT_DIRECTORY);
+					load_options(o, OPTIONS_PARENT, nParentIndex);
+					paths = o.value(OPTION_SWPATH);
 				}
 			}
 			if (paths && (paths[0] > 64))
@@ -1038,8 +1038,8 @@ static BOOL DevView_GetOpenFileName(HWND hwndDevView, const machine_config *conf
 				nParentIndex = GetCompatIndex(&driver_list::driver(driver_index));
 				if (nParentIndex >= 0)
 				{
-					load_options(o, nParentIndex);
-					paths = o.value(OPTION_COMMENT_DIRECTORY);
+					load_options(o, OPTIONS_PARENT, nParentIndex);
+					paths = o.value(OPTION_SWPATH);
 				}
 			}
 		}
@@ -1054,7 +1054,7 @@ static BOOL DevView_GetOpenFileName(HWND hwndDevView, const machine_config *conf
 		if ((!osd::directory::open(as.c_str())) || (as.find(':') == std::string::npos))
 		{
 			// Get the global loose software path
-			as = GetCommentDir();//GetExtraSoftwarePaths(-1, 0);
+			as = GetSWDir();//GetExtraSoftwarePaths(-1, 0);
 
 			/* We only want the first path; throw out the rest */
 			i = as.find(';');
@@ -1100,7 +1100,7 @@ static BOOL DevView_GetOpenItemName(HWND hwndDevView, const machine_config *conf
 	std::string as;
 	const char *s, *opt_name = dev->instance_name();
 	windows_options o;
-	load_options(o, drvindex);
+	load_options(o, OPTIONS_GAME, drvindex);
 	s = o.value(opt_name);
 
 	/* Get the path to the currently mounted image, chop off any trailing backslash */
@@ -1113,7 +1113,7 @@ static BOOL DevView_GetOpenItemName(HWND hwndDevView, const machine_config *conf
 	if ((!osd::directory::open(as.c_str())) || (as.find(':') == std::string::npos))
 	{
 		/* Get the path from the software tab */
-		as = GetSoftwareDirs();
+		as = GetSWDir();
 
 		/* We only want the first path; throw out the rest */
 		i = as.find(';');
@@ -1164,8 +1164,8 @@ static BOOL DevView_GetOpenItemName(HWND hwndDevView, const machine_config *conf
 /* This is used to Create an image in the device view of MESSUI.
 
     Order of priority:
-    1. First directory specified in game-specific "comment_directory"
-    2. First directory specified in the global software "comment_directory"
+    1. First directory specified in game-specific "swpath"
+    2. First directory specified in the global software "swpath"
     3. mess-folder */
 
 static BOOL DevView_GetCreateFileName(HWND hwndDevView, const machine_config *config, const device_image_interface *dev, LPTSTR pszFilename, UINT nFilenameLength)
@@ -1183,8 +1183,8 @@ static BOOL DevView_GetCreateFileName(HWND hwndDevView, const machine_config *co
 	// Get the game's software path
 	int driver_index = drvindex;
 	windows_options o;
-	load_options(o, driver_index);
-	const char* paths = o.value(OPTION_COMMENT_DIRECTORY);
+	load_options(o, OPTIONS_GAME, driver_index);
+	const char* paths = o.value(OPTION_SWPATH);
 	if (paths && (paths[0] > 64)) 
 	{} else
 	// search deeper when looking for software
@@ -1196,8 +1196,8 @@ static BOOL DevView_GetCreateFileName(HWND hwndDevView, const machine_config *co
 			nParentIndex = GetParentIndex(&driver_list::driver(driver_index));
 			if (nParentIndex >= 0)
 			{
-				load_options(o, nParentIndex);
-				paths = o.value(OPTION_COMMENT_DIRECTORY);
+				load_options(o, OPTIONS_PARENT, nParentIndex);
+				paths = o.value(OPTION_SWPATH);
 			}
 		}
 		if (paths && (paths[0] > 64))
@@ -1212,8 +1212,8 @@ static BOOL DevView_GetCreateFileName(HWND hwndDevView, const machine_config *co
 			nParentIndex = GetCompatIndex(&driver_list::driver(driver_index));
 			if (nParentIndex >= 0)
 			{
-				load_options(o, nParentIndex);
-				paths = o.value(OPTION_COMMENT_DIRECTORY);
+				load_options(o, OPTIONS_PARENT, nParentIndex);
+				paths = o.value(OPTION_SWPATH);
 			}
 		}
 	}
@@ -1228,7 +1228,7 @@ static BOOL DevView_GetCreateFileName(HWND hwndDevView, const machine_config *co
 	if ((!osd::directory::open(as.c_str())) || (as.find(':') == std::string::npos))
 	{
 		// Get the global loose software path
-		as = GetCommentDir();//GetExtraSoftwarePaths(-1, 0);
+		as = GetSWDir();//GetExtraSoftwarePaths(-1, 0);
 
 		/* We only want the first path; throw out the rest */
 		i = as.find(';');
@@ -1278,7 +1278,7 @@ static LPCTSTR DevView_GetSelectedSoftware(HWND hwndDevView, int nDriverIndex,
 	const char *opt_name = dev->instance_name();
 	windows_options o;
 
-	load_options(o, nDriverIndex);
+	load_options(o, OPTIONS_GAME, nDriverIndex);
 	s = o.value(opt_name);
 
 	t_s = ui_wstring_from_utf8(s);
@@ -1551,14 +1551,14 @@ static void SoftwarePicker_OnHeaderContextMenu(POINT pt, int nColumn)
 
 	switch(nMenuItem) {
 	case ID_SORT_ASCENDING:
-		SetMessSortReverse(FALSE);
-		SetMessSortColumn(Picker_GetRealColumnFromViewColumn(hwndPicker, nColumn));
+		SetSWSortReverse(FALSE);
+		SetSWSortColumn(Picker_GetRealColumnFromViewColumn(hwndPicker, nColumn));
 		Picker_Sort(hwndPicker);
 		break;
 
 	case ID_SORT_DESCENDING:
-		SetMessSortReverse(TRUE);
-		SetMessSortColumn(Picker_GetRealColumnFromViewColumn(hwndPicker, nColumn));
+		SetSWSortReverse(TRUE);
+		SetSWSortColumn(Picker_GetRealColumnFromViewColumn(hwndPicker, nColumn));
 		Picker_Sort(hwndPicker);
 		break;
 
@@ -1592,14 +1592,14 @@ static void SoftwareList_OnHeaderContextMenu(POINT pt, int nColumn)
 
 	switch(nMenuItem) {
 	case ID_SORT_ASCENDING:
-		SetMessSortReverse(FALSE);
-		SetMessSortColumn(Picker_GetRealColumnFromViewColumn(hwndPicker, nColumn));
+		SetSLSortReverse(FALSE);
+		SetSLSortColumn(Picker_GetRealColumnFromViewColumn(hwndPicker, nColumn));
 		Picker_Sort(hwndPicker);
 		break;
 
 	case ID_SORT_DESCENDING:
-		SetMessSortReverse(TRUE);
-		SetMessSortColumn(Picker_GetRealColumnFromViewColumn(hwndPicker, nColumn));
+		SetSLSortReverse(TRUE);
+		SetSLSortColumn(Picker_GetRealColumnFromViewColumn(hwndPicker, nColumn));
 		Picker_Sort(hwndPicker);
 		break;
 
