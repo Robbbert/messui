@@ -114,6 +114,7 @@ astropal                        // (c) 19?? Sidam
 attackfc                        // (c) 1979? E.G.S.
 ballbomb                        // TN  (c) 1980 Taito
 claybust                        // (c) 1978 Model Racing
+cosmicin                        // bootleg
 cosmicm2                        // Universal
 cosmicmo                        // Universal
 cosmo                           // TDS & Mints
@@ -10518,6 +10519,9 @@ thndzone                        // MAJ (c) 1991 Data East Corporation (World) - 
 thndzone4                       // MAJ (c) 1991 Data East Corporation (World) - 4 Player only
 thndzonea                       // MAJ (c) 1991 Data East Corporation (World)
 thndzonej                       // MAJ (c) 1991 Data East Corporation (Japan) - Some MASK ROMS stamped MAL
+
+@source:datum.cpp
+datum                           // 1982
 
 @source:dblcrown.cpp
 dblcrown                        // (c) 1994 Excellent System

@@ -348,28 +348,13 @@ MACHINES["AUTOCONFIG"] = true
 MACHINES["CR511B"] = true
 MACHINES["DMAC"] = true
 MACHINES["GAYLE"] = true
---MACHINES["NCR53C7XX"] = true
---MACHINES["LSI53C810"] = true
 MACHINES["6522VIA"] = true
---MACHINES["TPI6525"] = true
---MACHINES["RIOT6532"] = true
 MACHINES["6821PIA"] = true
 MACHINES["6840PTM"] = true
 MACHINES["68561MPCC"] = true
---MACHINES["ACIA6850"] = true
 MACHINES["68681"] = true
 MACHINES["7200FIFO"] = true
 MACHINES["8530SCC"] = true
---MACHINES["TTL74123"] = true
---MACHINES["TTL74145"] = true
---MACHINES["TTL74148"] = true
---MACHINES["TTL74153"] = true
---MACHINES["TTL74161"] = true
---MACHINES["TTL74175"] = true
---MACHINES["TTL74181"] = true
---MACHINES["TTL7474"] = true
---MACHINES["KBDC8042"] = true
---MACHINES["I8257"] = true
 MACHINES["AAKARTDEV"] = true
 MACHINES["ACIA6850"] = true
 MACHINES["ADC0808"] = true
@@ -469,8 +454,6 @@ MACHINES["MC6854"] = true
 MACHINES["MC68328"] = true
 MACHINES["MC68901"] = true
 MACHINES["MCCS1850"] = true
---MACHINES["M68307"] = true
---MACHINES["M68340"] = true
 MACHINES["MCF5206E"] = true
 MACHINES["MICROTOUCH"] = true
 MACHINES["MIOT6530"] = true
@@ -479,7 +462,6 @@ MACHINES["MM58274C"] = true
 MACHINES["MM74C922"] = true
 MACHINES["MOS6526"] = true
 MACHINES["MOS6529"] = true
---MACHINES["MIOT6530"] = true
 MACHINES["MOS6551"] = true
 MACHINES["MOS6702"] = true
 MACHINES["MOS8706"] = true
@@ -511,6 +493,7 @@ MACHINES["PIT68230"] = true
 MACHINES["PIT8253"] = true
 MACHINES["PLA"] = true
 --MACHINES["PROFILE"] = true
+MACHINES["PROM82S129"] = true
 MACHINES["R64H156"] = true
 MACHINES["RF5C296"] = true
 MACHINES["RIOT6532"] = true
@@ -545,6 +528,8 @@ MACHINES["TMS6100"] = true
 MACHINES["TMS9901"] = true
 MACHINES["TMS9902"] = true
 MACHINES["TPI6525"] = true
+MACHINES["TTL7400"] = true
+MACHINES["TTL7404"] = true
 MACHINES["TTL74123"] = true
 MACHINES["TTL74145"] = true
 MACHINES["TTL74148"] = true
@@ -578,8 +563,6 @@ MACHINES["Z80DMA"] = true
 MACHINES["Z80PIO"] = true
 MACHINES["Z80STI"] = true
 MACHINES["Z8536"] = true
---MACHINES["SECFLASH"] = true
---MACHINES["PCCARD"] = true
 MACHINES["SMC92X4"] = true
 MACHINES["HDC9234"] = true
 MACHINES["TI99_HD"] = true
@@ -1968,6 +1951,7 @@ files {
 	MAME_DIR .. "src/mame/drivers/glasgow.cpp",
 	MAME_DIR .. "src/mame/drivers/mephisto.cpp",
 	MAME_DIR .. "src/mame/drivers/mmodular.cpp",
+	MAME_DIR .. "src/mame/drivers/risc2500.cpp",
 	MAME_DIR .. "src/mame/drivers/stratos.cpp",
 }
 
@@ -2994,6 +2978,7 @@ files {
 	MAME_DIR .. "src/mame/drivers/babbage.cpp",
 	MAME_DIR .. "src/mame/drivers/bob85.cpp",
 	MAME_DIR .. "src/mame/drivers/cvicny.cpp",
+	MAME_DIR .. "src/mame/drivers/datum.cpp",
 	MAME_DIR .. "src/mame/drivers/dolphunk.cpp",
 	MAME_DIR .. "src/mame/drivers/instruct.cpp",
 	MAME_DIR .. "src/mame/drivers/mk14.cpp",
