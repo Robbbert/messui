@@ -234,7 +234,6 @@ bool mame_options::parse_command_line(emu_options &options, int argc, char *argv
 //  of INI files
 //-------------------------------------------------
 
-// MESSUI: ignore slots and images unless it is the gamename INI
 void mame_options::parse_standard_inis(emu_options &options, std::string &error_string, const game_driver *driver)
 {
 	// start with an empty string
@@ -299,6 +298,7 @@ void mame_options::parse_standard_inis(emu_options &options, std::string &error_
 	// then parse the grandparent, parent, and system-specific INIs
 	int parent = driver_list::clone(*cursystem);
 	int gparent = (parent != -1) ? driver_list::clone(parent) : -1;
+	// MESSUI: ignore slots and images unless it is the gamename INI
 	if (gparent != -1)
 		parse_parent_ini(options,driver_list::driver(gparent).name, OPTION_PRIORITY_GPARENT_INI, &error_string);
 	if (parent != -1)

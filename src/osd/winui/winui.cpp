@@ -1701,7 +1701,6 @@ static BOOL Win32UI_init(HINSTANCE hInstance, LPWSTR lpCmdLine, int nCmdShow)
 	extern const FOLDERDATA g_folderData[];
 	extern const FILTER_ITEM g_filterList[];
 	LONG common_control_version = GetCommonControlVersion();
-	int validity_failed = 0;
 	TCHAR* t_inpdir = NULL;
 	LONG_PTR l=0;
 
@@ -2013,12 +2012,6 @@ static BOOL Win32UI_init(HINSTANCE hInstance, LPWSTR lpCmdLine, int nCmdShow)
 	if (GetCycleScreenshot() > 0)
 	{
 		SetTimer(hMain, SCREENSHOT_TIMER, GetCycleScreenshot()*1000, NULL); //scale to Seconds
-	}
-
-	if (validity_failed)
-	{
-		win_message_box_utf8(hMain, MAMENAME " has failed its validity checks.  The GUI will "
-			"still work, but emulations will fail to execute", MAMENAME, MB_OK);
 	}
 
 	return TRUE;
