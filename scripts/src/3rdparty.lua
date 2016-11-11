@@ -594,7 +594,11 @@ end
 		MAME_DIR .. "3rdparty/lua-zlib/lua_zlib.c",
 		MAME_DIR .. "3rdparty/luafilesystem/src/lfs.c",
 	}
-if (_OPTIONS["osd"] ~= "uwp") then
+if (_OPTIONS["osd"] == "uwp") then
+	files {
+		MAME_DIR .. "3rdparty/lua-linenoise/linenoise_none.c",
+	}
+else
 	files {
 		MAME_DIR .. "3rdparty/lua-linenoise/linenoise.c",
 	}
@@ -616,7 +620,7 @@ project "sqlite3"
 			"-Wno-bad-function-cast",
 			"-Wno-undef",
 		}
-if _OPTIONS["gcc"]~=nil and string.find(_OPTIONS["gcc"], "clang") then
+if _OPTIONS["gcc"]~=nil and ((string.find(_OPTIONS["gcc"], "clang") or string.find(_OPTIONS["gcc"], "asmjs") or string.find(_OPTIONS["gcc"], "android"))) then
 		buildoptions_c {
 			"-Wno-incompatible-pointer-types-discards-qualifiers",
 		}
