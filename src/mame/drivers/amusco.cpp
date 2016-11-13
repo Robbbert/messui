@@ -66,7 +66,7 @@
   - Make the 6845 transparent videoram addressing actually transparent.
     (IRQ1 changes the 6845 address twice but neither reads nor writes data?)
   - Add NVRAM in a way that won't trigger POST error message (needs NMI on shutdown?)
-  - Identify outputs from first PPI (these include button lamps?)
+  - Identify remaining outputs from first PPI (button lamps and coin counter are identified and implemented)
 
 *******************************************************************************/
 
@@ -77,6 +77,8 @@
 #define CPU_CLOCK           MASTER_CLOCK / 4    /* guess */
 #define CRTC_CLOCK          SECOND_CLOCK / 8    /* guess */
 #define SND_CLOCK           SECOND_CLOCK / 8    /* guess */
+#define PIT_CLOCK0          SECOND_CLOCK / 8    /* guess */
+#define PIT_CLOCK1          SECOND_CLOCK / 8    /* guess */
 
 #include "emu.h"
 #include "cpu/i86/i86.h"
@@ -87,6 +89,7 @@
 #include "machine/pic8259.h"
 #include "machine/pit8253.h"
 #include "machine/msm5832.h"
+#include "amusco.lh"
 
 
 class amusco_state : public driver_device
@@ -110,7 +113,6 @@ public:
 	virtual void machine_start() override;
 	DECLARE_READ8_MEMBER(hack_coin1_r);
 	DECLARE_READ8_MEMBER(hack_coin2_r);
-	DECLARE_READ8_MEMBER(hack_908_r);
 	DECLARE_READ8_MEMBER(mc6845_r);
 	DECLARE_WRITE8_MEMBER(mc6845_w);
 	DECLARE_WRITE8_MEMBER(output_a_w);
@@ -190,12 +192,6 @@ READ8_MEMBER(amusco_state::hack_coin2_r)
 	return BIT(ioport("IN2")->read(), 2) ? 1 : 0;
 }
 
-READ8_MEMBER(amusco_state::hack_908_r)
-{
-	// IRQ4 and other routines wait for bits of this to be set by IRQ2
-	return 0xff;
-}
-
 /*************************
 * Memory Map Information *
 *************************/
@@ -203,7 +199,6 @@ READ8_MEMBER(amusco_state::hack_908_r)
 static ADDRESS_MAP_START( amusco_mem_map, AS_PROGRAM, 8, amusco_state )
 	AM_RANGE(0x006a6, 0x006a6) AM_READ(hack_coin1_r)
 	AM_RANGE(0x006a8, 0x006a8) AM_READ(hack_coin2_r)
-	AM_RANGE(0x00908, 0x00908) AM_READ(hack_908_r)
 	AM_RANGE(0x00000, 0x0ffff) AM_RAM
 	AM_RANGE(0xec000, 0xecfff) AM_RAM AM_SHARE("videoram")  // placeholder
 	AM_RANGE(0xf8000, 0xfffff) AM_ROM
@@ -236,17 +231,50 @@ WRITE8_MEMBER( amusco_state::mc6845_w)
 
 WRITE8_MEMBER(amusco_state::output_a_w)
 {
-	//logerror("Writing %02Xh to PPI output A\n", data);
+/* Lamps from port A
+
+  7654 3210
+  ---- ---x  Bet lamp.
+  ---- --x-  Hold/Discard 5 lamp.
+  ---- -x--  Hold/Discard 3 lamp.
+  ---- x---  Hold/Discard 1 lamp.
+  ---x ----  Hold/Discard 2 lamp.
+  --x- ----  Hold/Discard 4 lamp.
+  xx-- ----  Unknown.
+
+*/
+	output().set_lamp_value(0, (data) & 1);         // Lamp 0 (Bet)
+	output().set_lamp_value(1, (data >> 1) & 1);    // Lamp 1 (Hold/Disc 5)
+	output().set_lamp_value(2, (data >> 2) & 1);    // Lamp 2 (Hold/Disc 3)
+	output().set_lamp_value(3, (data >> 3) & 1);    // Lamp 3 (Hold/Disc 1)
+	output().set_lamp_value(4, (data >> 4) & 1);    // Lamp 4 (Hold/Disc 2)
+	output().set_lamp_value(5, (data >> 5) & 1);    // Lamp 5 (Hold/Disc 4)
+
+//	logerror("Writing %02Xh to PPI output A\n", data);
 }
 
 WRITE8_MEMBER(amusco_state::output_b_w)
 {
-	//logerror("Writing %02Xh to PPI output B\n", data);
+/* Lamps and counters from port B
+
+  7654 3210
+  ---- --x-  Unknown lamp (lits when all holds/disc are ON. Could be a Cancel lamp in an inverted Hold system).
+  ---- -x--  Start/Draw lamp.
+  ---x ----  Coin counter.
+  xxx- x--x  Unknown.
+
+*/
+	output().set_lamp_value(6, (data >> 2) & 1);    // Lamp 6 (Start/Draw)
+	output().set_lamp_value(7, (data >> 1) & 1);    // Lamp 7 (Unknown)
+
+	machine().bookkeeping().coin_counter_w(0, ~data & 0x10);  // Coin counter
+
+//	logerror("Writing %02Xh to PPI output B\n", data);
 }
 
 WRITE8_MEMBER(amusco_state::output_c_w)
 {
-	//logerror("Writing %02Xh to PPI output C\n", data);
+//	logerror("Writing %02Xh to PPI output C\n", data);
 }
 
 WRITE8_MEMBER(amusco_state::vram_w)
@@ -338,7 +366,7 @@ static INPUT_PORTS_START( amusco )
 	PORT_BIT( 0x40, IP_ACTIVE_LOW, IPT_POKER_HOLD4 ) // move down in service mode
 	PORT_BIT( 0x80, IP_ACTIVE_LOW, IPT_POKER_HOLD3 ) // move up in service mode
 
-	PORT_START("IN2")
+	PORT_START("IN2") // TO DO: enabling IRQ4 produces COIN ERROR message
 	PORT_BIT( 0x02, IP_ACTIVE_HIGH, IPT_COIN1 ) //PORT_WRITE_LINE_DEVICE_MEMBER("pic8259", pic8259_device, ir4_w)
 	PORT_BIT( 0x04, IP_ACTIVE_HIGH, IPT_COIN2 ) //PORT_WRITE_LINE_DEVICE_MEMBER("pic8259", pic8259_device, ir4_w)
 	PORT_BIT( 0xf9, IP_ACTIVE_HIGH, IPT_UNUSED )
@@ -401,10 +429,10 @@ static MACHINE_CONFIG_START( amusco, amusco_state )
 	MCFG_PIC8259_ADD("pic8259", INPUTLINE("maincpu", 0), VCC, NOOP)
 
 	MCFG_DEVICE_ADD("pit8253", PIT8253, 0)
-	//MCFG_PIT8253_CLK0(nnn)
-	//MCFG_PIT8253_OUT0_HANDLER(DEVWRITELINE("pic8259", pic8259_device, ir0_w))
-	//MCFG_PIT8253_CLK1(nnn)
-	//MCFG_PIT8253_OUT1_HANDLER(DEVWRITELINE("pic8259", pic8259_device, ir2_w))
+	MCFG_PIT8253_CLK0(PIT_CLOCK0)
+	MCFG_PIT8253_OUT0_HANDLER(DEVWRITELINE("pic8259", pic8259_device, ir0_w))
+	MCFG_PIT8253_CLK1(PIT_CLOCK1)
+	MCFG_PIT8253_OUT1_HANDLER(DEVWRITELINE("pic8259", pic8259_device, ir2_w))
 
 	MCFG_DEVICE_ADD("ppi_outputs", I8255, 0)
 	MCFG_I8255_OUT_PORTA_CB(WRITE8(amusco_state, output_a_w))
@@ -445,7 +473,6 @@ static MACHINE_CONFIG_START( amusco, amusco_state )
 	MCFG_MC6845_CHAR_WIDTH(8)
 	MCFG_MC6845_ADDR_CHANGED_CB(amusco_state, crtc_addr)
 	MCFG_MC6845_OUT_DE_CB(DEVWRITELINE("pic8259", pic8259_device, ir1_w)) // IRQ1 sets 0x918 bit 3
-	MCFG_MC6845_OUT_VSYNC_CB(DEVWRITELINE("pic8259", pic8259_device, ir0_w)) // IRQ0 sets 0x665 to 0xff
 	MCFG_MC6845_UPDATE_ROW_CB(amusco_state, update_row)
 
 	/* sound hardware */
@@ -502,6 +529,6 @@ ROM_END
 *      Game Drivers      *
 *************************/
 
-/*    YEAR  NAME        PARENT  MACHINE   INPUT     STATE          INIT  ROT    COMPANY      FULLNAME                      FLAGS */
-GAME( 1987, amusco,     0,      amusco,   amusco,   driver_device, 0,    ROT0, "Amusco",    "American Music Poker (V1.4)", MACHINE_IMPERFECT_COLORS | MACHINE_NODEVICE_PRINTER ) // runs much too fast; palette totally wrong
-GAME( 1988, draw88pkr,  0,      amusco,   amusco,   driver_device, 0,    ROT0, "BTE, Inc.", "Draw 88 Poker (V2.0)",        MACHINE_NOT_WORKING | MACHINE_IMPERFECT_COLORS | MACHINE_NODEVICE_PRINTER )
+/*     YEAR  NAME        PARENT  MACHINE   INPUT     STATE          INIT  ROT    COMPANY      FULLNAME                      FLAGS                                                    LAYOUT    */
+GAMEL( 1987, amusco,     0,      amusco,   amusco,   driver_device, 0,    ROT0, "Amusco",    "American Music Poker (V1.4)", MACHINE_IMPERFECT_COLORS | MACHINE_NODEVICE_PRINTER,     layout_amusco ) // palette totally wrong
+GAME(  1988, draw88pkr,  0,      amusco,   amusco,   driver_device, 0,    ROT0, "BTE, Inc.", "Draw 88 Poker (V2.0)",        MACHINE_NOT_WORKING | MACHINE_IMPERFECT_COLORS | MACHINE_NODEVICE_PRINTER )
