@@ -727,3 +727,4 @@ zx.cpp
 -raaspec
 //import from virtual.flt
 vgmplay.cpp
+ldplayer.cpp
