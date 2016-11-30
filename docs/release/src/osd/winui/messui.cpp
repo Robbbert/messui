@@ -841,7 +841,7 @@ static BOOL CommonFileImageDialog(LPTSTR the_last_directory, common_file_dialog_
 		t_filter[i] = (t_buffer[i] != '|') ? t_buffer[i] : '\0';
 	t_filter[i++] = '\0';
 	t_filter[i++] = '\0';
-	osd_free(t_buffer);
+	free(t_buffer);
 
 	of.lStructSize = sizeof(of);
 	of.hwndOwner = GetMainWindow();
@@ -929,7 +929,7 @@ static void CleanupImageTypes(mess_image_type *types, int count)
 {
 	for (int i = 0; i < count; ++i)
 		if (types[i].ext)
-			osd_free(types[i].ext);
+			free(types[i].ext);
 }
 
 
@@ -940,10 +940,14 @@ static void MessSetupDevice(common_file_dialog_proc cfd, const device_image_inte
 	int drvindex = 0;
 	HWND hwndList;
 	char* utf8_filename;
-	BOOL cfd_res = 0;
+	BOOL bResult = 0;
+	std::string dst = GetSWDir();
+	// We only want the first path; throw out the rest
+	size_t i = dst.find(';');
+	if (i > 0) dst.substr(0, i);
+	wchar_t* t_s = ui_wstring_from_utf8(dst.c_str());
 
-//  begin_resource_tracking();
-
+	//  begin_resource_tracking();
 	hwndList = GetDlgItem(GetMainWindow(), IDC_LIST);
 	drvindex = Picker_GetSelectedItem(hwndList);
 
@@ -951,17 +955,18 @@ static void MessSetupDevice(common_file_dialog_proc cfd, const device_image_inte
 	machine_config config(driver_list::driver(drvindex),MameUIGlobal());
 
 	SetupImageTypes(&config, imagetypes, ARRAY_LENGTH(imagetypes), TRUE, dev);
-	cfd_res = CommonFileImageDialog(last_directory, cfd, filename, &config, imagetypes);
+	bResult = CommonFileImageDialog(t_s, cfd, filename, &config, imagetypes);
+	free(t_s);
 	CleanupImageTypes(imagetypes, ARRAY_LENGTH(imagetypes));
 
-	if (cfd_res)
+	if (bResult)
 	{
 		utf8_filename = ui_utf8_from_wstring(filename);
 		if( !utf8_filename )
 			return;
 		// TODO - this should go against InternalSetSelectedSoftware()
 		SoftwarePicker_AddFile(GetDlgItem(GetMainWindow(), IDC_SWLIST), utf8_filename, 0);
-		osd_free(utf8_filename);
+		free(utf8_filename);
 	}
 }
 
@@ -993,7 +998,7 @@ static BOOL DevView_GetOpenFileName(HWND hwndDevView, const machine_config *conf
 	mess_image_type imagetypes[256];
 	HWND hwndList = GetDlgItem(GetMainWindow(), IDC_LIST);
 	int drvindex = Picker_GetSelectedItem(hwndList);
-	std::string as;
+	std::string as, dst;
 	const char *s, *opt_name = dev->instance_name();
 	windows_options o;
 	load_options(o, OPTIONS_GAME, drvindex);
@@ -1001,7 +1006,7 @@ static BOOL DevView_GetOpenFileName(HWND hwndDevView, const machine_config *conf
 
 	/* Get the path to the currently mounted image */
 	util::zippath_parent(as, s);
-	t_s = ui_wstring_from_utf8(as.c_str());
+	dst = as;
 
 	/* See if an image was loaded, and that the path still exists */
 	if ((!osd::directory::open(as.c_str())) || (as.find(':') == std::string::npos))
@@ -1029,7 +1034,6 @@ static BOOL DevView_GetOpenFileName(HWND hwndDevView, const machine_config *conf
 			if (paths && (paths[0] > 64))
 			{} else
 			{
-
 				// still nothing, try for a system in the 'compat' field
 				if (nParentIndex >= 0)
 					driver_index = nParentIndex;
@@ -1048,35 +1052,34 @@ static BOOL DevView_GetOpenFileName(HWND hwndDevView, const machine_config *conf
 		/* We only want the first path; throw out the rest */
 		i = as.find(';');
 		if (i > 0) as.substr(0, i);
-		t_s = ui_wstring_from_utf8(as.c_str());
+		dst = as;
 
 		/* Make sure a folder was specified in the tab, and that it exists */
 		if ((!osd::directory::open(as.c_str())) || (as.find(':') == std::string::npos))
 		{
 			// Get the global loose software path
-			as = GetSWDir();//GetExtraSoftwarePaths(-1, 0);
+			as = GetSWDir();
 
 			/* We only want the first path; throw out the rest */
 			i = as.find(';');
 			if (i > 0) as.substr(0, i);
-			t_s = ui_wstring_from_utf8(as.c_str());
+			dst = as;
 
 			/* Make sure a folder was specified in the tab, and that it exists */
 			if ((!osd::directory::open(as.c_str())) || (as.find(':') == std::string::npos))
 			{
-				std::string dst;
-				osd_get_full_path(dst,".");
 				/* Default to emu directory */
-				t_s = ui_wstring_from_utf8(dst.c_str());
+				osd_get_full_path(dst,".");
 			}
 		}
 	}
 
 	SetupImageTypes(config, imagetypes, ARRAY_LENGTH(imagetypes), TRUE, dev);
+	t_s = ui_wstring_from_utf8(dst.c_str());
 	bResult = CommonFileImageDialog(t_s, GetOpenFileName, pszFilename, config, imagetypes);
 	CleanupImageTypes(imagetypes, ARRAY_LENGTH(imagetypes));
 
-	osd_free(t_s);
+	free(t_s);
 
 	return bResult;
 }
@@ -1097,7 +1100,7 @@ static BOOL DevView_GetOpenItemName(HWND hwndDevView, const machine_config *conf
 	mess_image_type imagetypes[256];
 	HWND hwndList = GetDlgItem(GetMainWindow(), IDC_LIST);
 	int drvindex = Picker_GetSelectedItem(hwndList);
-	std::string as;
+	std::string as, dst;
 	const char *s, *opt_name = dev->instance_name();
 	windows_options o;
 	load_options(o, OPTIONS_GAME, drvindex);
@@ -1107,31 +1110,55 @@ static BOOL DevView_GetOpenItemName(HWND hwndDevView, const machine_config *conf
 	util::zippath_parent(as, s);
 	size_t t1 = as.length()-1;
 	if (as[t1] == '\\') as[t1]='\0';
-	t_s = ui_wstring_from_utf8(as.c_str());
+	dst = as;
 
 	/* See if an image was loaded, and that the path still exists */
 	if ((!osd::directory::open(as.c_str())) || (as.find(':') == std::string::npos))
 	{
-		/* Get the path from the software tab */
-		as = GetSWDir();
+		/* Get the path from the SL base */
+		as = GetSLDir();
 
 		/* We only want the first path; throw out the rest */
 		i = as.find(';');
 		if (i > 0) as.substr(0, i);
-		osd_free(t_s);
-		t_s = ui_wstring_from_utf8(as.c_str());
+
+		// Get the path to suitable software
+		i = 0;
+		for (software_list_device &swlist : software_list_device_iterator(config->root_device()))
+		{
+			for (const software_info &swinfo : swlist.get_info())
+			{
+				const software_part &part = swinfo.parts().front();
+				if (swlist.is_compatible(part) == SOFTWARE_IS_COMPATIBLE)
+				{
+					for (device_image_interface &image : image_interface_iterator(config->root_device()))
+					{
+						if ((i == 0) && (std::string(opt_name) == std::string(image.instance_name())))
+						{
+							const char *interface = image.image_interface();
+							if (interface != nullptr && part.matches_interface(interface))
+							{
+								as.append("\\").append(swlist.list_name());
+								i++;
+							}
+						}
+					}
+				}
+			}
+		}
+
+		dst = as;
 
 		/* Make sure a folder was specified in the tab, and that it exists */
 		if ((!osd::directory::open(as.c_str())) || (as.find(':') == std::string::npos))
 		{
-			std::string dst;
-			osd_get_full_path(dst,".");
 			/* Default to emu directory */
-			t_s = ui_wstring_from_utf8(dst.c_str());
+			osd_get_full_path(dst,".");
 		}
 	}
 
 	SetupImageTypes(config, imagetypes, ARRAY_LENGTH(imagetypes), TRUE, dev);
+	t_s = ui_wstring_from_utf8(dst.c_str());
 	bResult = CommonFileImageDialog(t_s, GetOpenFileName, pszFilename, config, imagetypes);
 	CleanupImageTypes(imagetypes, ARRAY_LENGTH(imagetypes));
 
@@ -1154,9 +1181,9 @@ static BOOL DevView_GetOpenItemName(HWND hwndDevView, const machine_config *conf
 
 	// set up inifile text to signify to MAME that a SW ITEM is to be used
 	strcpy(g_szSelectedSoftware, t3.c_str()); // store to global item name
-	strcpy(g_szSelectedDevice, dev->instance_name()); // get media-device name (brief_instance_name is ok too)
+	strcpy(g_szSelectedDevice, opt_name); // get media-device name (brief_instance_name is ok too)
 
-	osd_free(t_s);
+	free(t_s);
 	return bResult;
 }
 
@@ -1228,7 +1255,7 @@ static BOOL DevView_GetCreateFileName(HWND hwndDevView, const machine_config *co
 	if ((!osd::directory::open(as.c_str())) || (as.find(':') == std::string::npos))
 	{
 		// Get the global loose software path
-		as = GetSWDir();//GetExtraSoftwarePaths(-1, 0);
+		as = GetSWDir();
 
 		/* We only want the first path; throw out the rest */
 		i = as.find(';');
@@ -1249,7 +1276,7 @@ static BOOL DevView_GetCreateFileName(HWND hwndDevView, const machine_config *co
 	bResult = CommonFileImageDialog(t_s, GetSaveFileName, pszFilename, config, imagetypes);
 	CleanupImageTypes(imagetypes, ARRAY_LENGTH(imagetypes));
 
-	osd_free(t_s);
+	free(t_s);
 
 	return bResult;
 }
@@ -1264,7 +1291,7 @@ static void DevView_SetSelectedSoftware(HWND hwndDevView, int drvindex,
 		return;
 	MessSpecifyImage(drvindex, dev, utf8_filename);
 	MessRefreshPicker();
-	osd_free(utf8_filename);
+	free(utf8_filename);
 }
 
 
@@ -1286,7 +1313,7 @@ static LPCTSTR DevView_GetSelectedSoftware(HWND hwndDevView, int nDriverIndex,
 		return t_buffer;
 
 	_sntprintf(pszBuffer, nBufferLength, TEXT("%s"), t_s);
-	osd_free(t_s);
+	free(t_s);
 	t_buffer = pszBuffer;
 
 	return t_buffer;

@@ -476,23 +476,25 @@ static BOOL SoftwarePicker_InternalAddFile(HWND hwndPicker, LPCSTR pszFilename, 
 	int res = 0;
 	LPCSTR s;
 	BOOL rc = TRUE;
-	util::archive_file::error ziperr;
+	util::archive_file::error ziperr = util::archive_file::error::UNSUPPORTED;
 	util::archive_file::ptr pZip;
 
 	s = strrchr(pszFilename, '.');
-	if (s && ((core_stricmp(s, ".zip")==0) || (core_stricmp(s, ".7z")==0)))
-	{
+	if (s && (core_stricmp(s, ".zip")==0))
 		ziperr = util::archive_file::open_zip(pszFilename, pZip);
-		if (ziperr  == util::archive_file::error::NONE)
+	else
+	if (s && (core_stricmp(s, ".7z")==0))
+		ziperr = util::archive_file::open_7z(pszFilename, pZip);
+
+	if (ziperr  == util::archive_file::error::NONE)
+	{
+		res = pZip->first_file();
+		while(rc && (res >= 0))
 		{
-			res = pZip->first_file();
-			while(rc && (res >= 0))
-			{
-				rc = SoftwarePicker_AddZipEntFile(hwndPicker, pszFilename, bForce, pZip, check);
-				res = pZip->next_file();
-			}
-			pZip.reset();
+			rc = SoftwarePicker_AddZipEntFile(hwndPicker, pszFilename, bForce, pZip, check);
+			res = pZip->next_file();
 		}
+	pZip.reset();
 	}
 	else
 		rc = SoftwarePicker_AddFileEntry(hwndPicker, pszFilename, 0, 0, bForce, check);
@@ -608,7 +610,7 @@ static BOOL SoftwarePicker_AddEntry(HWND hwndPicker, directory_search_info *pSea
 
 	if (!strcmp(utf8_FileName, ".") || !strcmp(utf8_FileName, ".."))
 	{
-		osd_free(utf8_FileName);
+		free(utf8_FileName);
 		return TRUE;
 	}
 
@@ -622,7 +624,7 @@ static BOOL SoftwarePicker_AddEntry(HWND hwndPicker, directory_search_info *pSea
 	else
 		rc = SoftwarePicker_InternalAddFile(hwndPicker, pszFilename, FALSE, 1); // must check for dup
 
-	osd_free(utf8_FileName);
+	free(utf8_FileName);
 	return rc;
 }
 
@@ -737,7 +739,7 @@ LPCTSTR SoftwarePicker_GetItemString(HWND hwndPicker, int nRow, int nColumn, TCH
 				return s;
 			_sntprintf(pszBuffer, nBufferLength, TEXT("%s"), t_buf);
 			s = pszBuffer;
-			osd_free(t_buf);
+			free(t_buf);
 			break;
 
 /*
@@ -769,7 +771,7 @@ LPCTSTR SoftwarePicker_GetItemString(HWND hwndPicker, int nRow, int nColumn, TCH
 						return s;
 					_sntprintf(pszBuffer, nBufferLength, TEXT("%s"), t_buf);
 					s = pszBuffer;
-					osd_free(t_buf);
+					free(t_buf);
 				}
 			}
 			break;
@@ -792,7 +794,7 @@ LPCTSTR SoftwarePicker_GetItemString(HWND hwndPicker, int nRow, int nColumn, TCH
 					return s;
 				_sntprintf(pszBuffer, nBufferLength, TEXT("%s"), t_buf);
 				s = pszBuffer;
-				osd_free(t_buf);
+				free(t_buf);
 			}
 			break;
 */

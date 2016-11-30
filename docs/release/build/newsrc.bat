@@ -18,11 +18,11 @@ copy /Y %from%\src\frontend\mame\ui\ui.cpp %to%\src\frontend\mame\ui
 md %to%\src\lib\util
 copy /Y %from%\src\lib\util\options.* %to%\src\lib\util
 
-md %to%\src\osd\windows
-copy /Y %from%\src\osd\windows\winmain.cpp %to%\src\osd\windows
-
 md %to%\src\osd\winui
 xcopy /E /Y %from%\src\osd\winui %to%\src\osd\winui
+
+md %to%\src\osd\modules\render
+copy /Y %from%\src\osd\modules\render\drawd3d.cpp %to%\src\osd\modules\render
 
 rem now save all our stuff to github
 copy %from%\*.bat %to%\build

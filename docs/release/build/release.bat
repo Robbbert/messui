@@ -1,4 +1,3 @@
-@goto x
 @echo off
 echo HAVE YOU UPDATED version.cpp ???
 pause
@@ -23,7 +22,7 @@ call make64 -j4 "OSD=messui" %1 %2 %3
 if not exist messui64.exe goto end
 del mess64.exe
 call make64 -j4  "OSD=newui" %1 %2 %3
-:x
+goto x
 rem --- 32bit full ---
 del mameui.exe
 call make32a -j4 "OSD=messui" %1 %2 %3
@@ -33,7 +32,7 @@ rem --- 64bit full ---
 del mameui64.exe
 call make64a -j4 "OSD=messui" %1 %2 %3
 if not exist mameui64.exe goto end
-
+:x
 cls
 echo Compile was successful.
 echo.
