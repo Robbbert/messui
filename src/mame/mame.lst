@@ -17313,6 +17313,9 @@ trojanj                         // 4/1986 (c) 1986 (Japan)
 trojanr                         // 4/1986 (c) 1986 + Romstar
 fball                        //
 
+@source:lwriter.cpp
+lwriter							// Apple LaserWriter
+
 @source:lynx.cpp
 lynx                            // Atari Lynx Handheld
 
@@ -31368,6 +31371,7 @@ qixa                            // LK  (c) 1981 Taito America Corporation
 qixb                            // LK  (c) 1981 Taito America Corporation
 qixo                            // LK  (c) 1981 Taito America Corporation
 sdungeon                        // SD  (c) 1981 Taito America Corporation
+sdungeona                       // SD  (c) 1981 Taito America Corporation
 slither                         // (c) 1982 Century II
 slithera                        // (c) 1982 Century II
 zookeep                         // ZA  (c) 1982 Taito America Corporation
