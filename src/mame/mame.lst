@@ -12109,6 +12109,7 @@ galsnewa                        // (c) 1990 Kaneko
 galsnewj                        // (c) 1990 Kaneko
 galsnewk                        // (c) 1990 Kaneko
 missmw96                        // (c) 1996 Comad
+missw02                         // (c) 2002 Diagom
 missw96                         // (c) 1996 Comad
 missw96a                        // (c) 1996 Comad
 missw96b                        // (c) 1996 Comad
@@ -17623,6 +17624,9 @@ magictga                        // (c) 199? Acclaim
 
 @source:magmax.cpp
 magmax                          // (c) 1985
+
+@source:magnum.cpp
+magnum                          //
 
 @source:magtouch.cpp
 magtouch                        // (c) 1995
@@ -30306,6 +30310,7 @@ pexm007p                        // (c) 1997 IGT - International Game Technology
 pexm008p                        // (c) 1997 IGT - International Game Technology
 pexm009p                        // (c) 1997 IGT - International Game Technology
 pexm013p                        // (c) 1997 IGT - International Game Technology
+pexmp011                        // (c) 1997 IGT - International Game Technology
 pexmp013                        // (c) 1997 IGT - International Game Technology
 pexmp017                        // (c) 1997 IGT - International Game Technology
 pexmp017a                       // (c) 1997 IGT - International Game Technology
@@ -33103,6 +33108,7 @@ qzkklogy                        // (c) 1992 Tecmo
 rezon                           // (c) 1991 Allumer
 rezont                          // (c) 1991 Allumer / Taito
 setaroul                        // UF   (c) 19?? Seta / Visco
+simpsonjr                       // bootleg of J. J. Squawkers by Diagom
 sokonuke                        // (c) 1995 Sammy Industries
 stg                             // (c) 1991 Athena / Tecmo
 superbar                        // (c) 1994 Promat (not genuine seta hardware, but based on thunderl code)
@@ -37034,6 +37040,7 @@ id4f_201                        //
 jplstw20                        //
 jplstw22                        //
 lostspc                         //
+lostspcf                        //
 lostspcg                        //
 lostspc_d1                      //
 mononew                         //
@@ -37171,6 +37178,7 @@ wackadoo                        //
 xfiles2                         //
 xfiles20                        //
 xfilesp                         //
+xfilespf                        //
 
 @source:wicat.cpp
 wicat                           //

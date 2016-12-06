@@ -377,6 +377,7 @@ MACHINES["AY31015"] = true
 MACHINES["BANKDEV"] = true
 MACHINES["CDP1852"] = true
 MACHINES["CDP1871"] = true
+MACHINES["CDP1879"] = true
 MACHINES["CMOS40105"] = true
 --MACHINES["CDU76S"] = true
 MACHINES["COM8116"] = true
@@ -536,6 +537,7 @@ MACHINES["TTL74123"] = true
 MACHINES["TTL74145"] = true
 MACHINES["TTL74148"] = true
 MACHINES["TTL74153"] = true
+--MACHINES["TTL74157"] = true
 MACHINES["TTL74161"] = true
 MACHINES["TTL74175"] = true
 MACHINES["TTL74181"] = true
@@ -903,6 +905,7 @@ function linkProjects_mame_mess(_target, _subtarget)
 		"dms",
 		"dragon",
 		"drc",
+		"dulmont",
 		"eaca",
 		"einis",
 		"elektor",
@@ -1766,6 +1769,11 @@ files {
 createMESSProjects(_target, _subtarget, "drc")
 files {
 	MAME_DIR .. "src/mame/drivers/zrt80.cpp",
+}
+
+createMESSProjects(_target, _subtarget, "dulmont")
+files {
+	MAME_DIR .. "src/mame/drivers/magnum.cpp",
 }
 
 createMESSProjects(_target, _subtarget, "eaca")
