@@ -2245,8 +2245,12 @@ static void SaveSettingsFile(windows_options &opts, const char *filename)
 
 	if (filerr == osd_file::error::NONE)
 	{
+		// ToDo: work out how to support partial inifiles
+		// Get global settings and make this the 'diff', then use opts.output_ini(diff), then inistring only contains the differences
+		//fname = std::string(GetIniDir()) + PATH_SEPARATOR + std::string(emulator_info::get_configname()).append(".ini");
+		//LoadSettingsFile(opts, fname.c_str());
 		std::string inistring = opts.output_ini();
-		// printf("=====%s=====\n%s\n",filename,inistring.c_str());  // for debugging
+		//printf("=====%s=====\n%s\n",filename,inistring.c_str());  // for debugging
 		file->puts(inistring.c_str());
 		file.reset();
 	}
