@@ -14195,6 +14195,7 @@ funrlgl                         // Mattel
 h2hbaskb                        // Coleco
 lightfgt                        // Milton Bradley
 plus1                           // Milton Bradley
+qkracer                         // National Semiconductor
 
 @source:hh_hmcs40.cpp
 alnattck                        // Coleco
@@ -35938,6 +35939,9 @@ topspeedu                       // B14 (c) 1987 Taito America Corporation (US)
 @source:toratora.cpp
 toratora                        // (c) 1980 Game Plan
 toratorab                       // (c) 1980 Game Plan
+
+@source:tosh1000.cpp
+tosh1000
 
 @source:tourtabl.cpp
 tourtab2                        // 030170           1978/03 [6507]
