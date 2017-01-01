@@ -265,6 +265,8 @@ SOUNDS["GB_SOUND"] = true
 SOUNDS["PCD3311"] = true
 SOUNDS["VOLT_REG"] = true
 SOUNDS["MEA8000"] = true
+--SOUNDS["DAC76"] = true
+--SOUNDS["MM5837"] = true
 
 --------------------------------------------------
 -- specify available video cores
@@ -285,6 +287,7 @@ VIDEOS["EF9340_1"] = true
 VIDEOS["EF9345"] = true
 VIDEOS["EF9364"] = true
 VIDEOS["EF9365"] = true
+--VIDEOS["EF9369"] = true
 VIDEOS["GF4500"] = true
 --VIDEOS+= EPIC12"] = true
 --VIDEOS+= FIXFREQ"] = true
@@ -376,6 +379,7 @@ MACHINES["AY31015"] = true
 MACHINES["BANKDEV"] = true
 MACHINES["CDP1852"] = true
 MACHINES["CDP1871"] = true
+MACHINES["CDP1879"] = true
 MACHINES["CMOS40105"] = true
 --MACHINES["CDU76S"] = true
 MACHINES["COM8116"] = true
@@ -535,6 +539,7 @@ MACHINES["TTL74123"] = true
 MACHINES["TTL74145"] = true
 MACHINES["TTL74148"] = true
 MACHINES["TTL74153"] = true
+--MACHINES["TTL74157"] = true
 MACHINES["TTL74161"] = true
 MACHINES["TTL74175"] = true
 MACHINES["TTL74181"] = true
@@ -698,6 +703,7 @@ BUSES["VIC10"] = true
 BUSES["VIC20"] = true
 BUSES["VIDBRAIN"] = true
 BUSES["VIP"] = true
+BUSES["VME"] = true
 BUSES["VTECH_IOEXP"] = true
 BUSES["VTECH_MEMEXP"] = true
 BUSES["WANGPC"] = true
@@ -902,6 +908,7 @@ function linkProjects_mame_mess(_target, _subtarget)
 		"dms",
 		"dragon",
 		"drc",
+		"dulmont",
 		"eaca",
 		"einis",
 		"elektor",
@@ -1138,8 +1145,6 @@ files {
 	MAME_DIR .. "src/mame/video/jagblit.h",
 	MAME_DIR .. "src/mame/video/jagblit.hxx",
 	MAME_DIR .. "src/mame/video/jagobj.hxx",
-	MAME_DIR .. "src/mame/audio/gorf.cpp",
-	MAME_DIR .. "src/mame/audio/wow.cpp",
 	MAME_DIR .. "src/mame/drivers/astrocde.cpp",
 	MAME_DIR .. "src/mame/includes/astrocde.h",
 	MAME_DIR .. "src/mame/video/astrocde.cpp",
@@ -1226,7 +1231,7 @@ files {
 	MAME_DIR .. "src/mame/drivers/cps1.cpp",
 	MAME_DIR .. "src/mame/includes/cps1.h",
 	MAME_DIR .. "src/mame/video/cps1.cpp",
-	MAME_DIR .. "src/mame/video/chihiro.cpp",
+	MAME_DIR .. "src/mame/video/xbox_nv2a.cpp",
 	MAME_DIR .. "src/mame/machine/xbox.cpp",
 	MAME_DIR .. "src/mame/machine/xbox_usb.cpp",
 	MAME_DIR .. "src/mame/includes/saturn.h",
@@ -1386,6 +1391,7 @@ files {
 	MAME_DIR .. "src/mame/drivers/lisa.cpp",
 	MAME_DIR .. "src/mame/includes/lisa.h",
 	MAME_DIR .. "src/mame/machine/lisa.cpp",
+	MAME_DIR .. "src/mame/drivers/lwriter.cpp",
 	MAME_DIR .. "src/mame/drivers/mac128.cpp",
 	MAME_DIR .. "src/mame/drivers/mac.cpp",
 	MAME_DIR .. "src/mame/includes/mac.h",
@@ -1766,6 +1772,11 @@ files {
 	MAME_DIR .. "src/mame/drivers/zrt80.cpp",
 }
 
+createMESSProjects(_target, _subtarget, "dulmont")
+files {
+	MAME_DIR .. "src/mame/drivers/magnum.cpp",
+}
+
 createMESSProjects(_target, _subtarget, "eaca")
 files {
 	MAME_DIR .. "src/mame/drivers/cgenie.cpp",
@@ -1886,6 +1897,7 @@ files {
 
 createMESSProjects(_target, _subtarget, "force")
 files {
+	MAME_DIR .. "src/mame/drivers/fccpu20.cpp",
 	MAME_DIR .. "src/mame/drivers/fccpu30.cpp",
 	MAME_DIR .. "src/mame/drivers/force68k.cpp",
 }
@@ -2434,6 +2446,7 @@ files {
 	MAME_DIR .. "src/mame/drivers/pc.cpp",
 	MAME_DIR .. "src/mame/drivers/pcipc.cpp",
 	MAME_DIR .. "src/mame/drivers/tandy1t.cpp",
+	MAME_DIR .. "src/mame/drivers/tosh1000.cpp",
 	MAME_DIR .. "src/mame/video/pc_t1t.cpp",
 	MAME_DIR .. "src/mame/video/pc_t1t.h",
 }
@@ -3332,6 +3345,8 @@ files {
 	MAME_DIR .. "src/mame/drivers/mx2178.cpp",
 	MAME_DIR .. "src/mame/drivers/mycom.cpp",
 	MAME_DIR .. "src/mame/drivers/myvision.cpp",
+	MAME_DIR .. "src/mame/machine/nl_hazelvid.cpp",
+	MAME_DIR .. "src/mame/machine/nl_hazelvid.h",
 	MAME_DIR .. "src/mame/drivers/notetaker.cpp",
 	MAME_DIR .. "src/mame/drivers/ngen.cpp",
 	MAME_DIR .. "src/mame/machine/ngen_kb.cpp",

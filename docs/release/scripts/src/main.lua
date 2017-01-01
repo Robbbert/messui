@@ -276,8 +276,13 @@ end
 	links {
 		ext_lib("zlib"),
 		ext_lib("flac"),
+		ext_lib("utf8proc"),
+	}
+if (STANDALONE~=true) then
+	links {
 		ext_lib("sqlite3"),
 	}
+end
 
 	if _OPTIONS["NO_USE_MIDI"]~="1" then
 		links {
