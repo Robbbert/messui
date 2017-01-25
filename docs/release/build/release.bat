@@ -11,28 +11,24 @@ call clean.bat
 
 rem --- 32bit ---
 del messui.exe
+del messui.sym
 call make32 -j4 "OSD=messui" %1 %2 %3
 if not exist messui.exe goto end
 del mess.exe
+del mess.sym
 call make32 -j4 "OSD=newui" %1 %2 %3
+if not exist mess.exe goto end
 
 rem --- 64bit ---
 del messui64.exe
+del messui64.sym
 call make64 -j4 "OSD=messui" %1 %2 %3
 if not exist messui64.exe goto end
 del mess64.exe
+del mess64.sym
 call make64 -j4  "OSD=newui" %1 %2 %3
-goto x
-rem --- 32bit full ---
-del mameui.exe
-call make32a -j4 "OSD=messui" %1 %2 %3
-if not exist mameui.exe goto end
+if not exist mess64.exe goto end
 
-rem --- 64bit full ---
-del mameui64.exe
-call make64a -j4 "OSD=messui" %1 %2 %3
-if not exist mameui64.exe goto end
-:x
 cls
 echo Compile was successful.
 echo.
