@@ -1436,6 +1436,7 @@ incasunu
 indrema5                       // (c) 1998
 jungjuic
 kgalah
+kgbirdmk5                       // (c) 1994
 koalamnt                        // (c) 2001
 kookabuk
 locoloot
@@ -1490,6 +1491,7 @@ swhr2
 swhr2u                        // (c) 1998
 swhr2v                        // (c) 1995
 topbana
+toutango						// (c) 1998
 trstrove
 tritreat
 trojhors
@@ -14320,7 +14322,10 @@ leboom                          // Lakeside
 maniac                          // Ideal
 melodym                         // GAF
 rockpin                         // Tiger Electronics
+tbaskb                          // Tandy Radio Shack
 touchme                         // Atari
+ttfball                         // Toytronic
+ttfballa                        // Toytronic
 
 @source:hh_sm510.cpp
 gnwmndon                        // Nintendo
@@ -16927,7 +16932,7 @@ whiterus                        // White Russia
 konin                           //
 
 @source:konmedal.cpp
-konmedal
+tsukande
 
 @source:kontest.cpp
 kontest                         // GX800 (c) 198? (Japan)
@@ -20083,10 +20088,11 @@ phrcrazeb                       // (c) 1986 Merit
 phrcrazec                       // (c) 1986 Merit
 phrcrazev                       // (c) 1986 Merit
 pitboss                         // (c) 1983 Merit
-pitbossa                        // (c) 1983 Merit
-pitbossa1                       // (c) 1983 Merit
-pitbossb                        // (c) 1983 Merit
-pitbossc                        // (c) 1983 Merit
+pitboss04                       // (c) 1983 Merit
+pitboss03                       // (c) 1983 Merit
+pitboss03a                      // (c) 1983 Merit
+pitbossm4                       // (c) 1983 Merit
+pitbossps                       // (c) 1983 Merit
 riviera                         // (c) 1987 Merit
 rivieraa                        // (c) 1986 Merit
 rivierab                        // (c) 1986 Merit
