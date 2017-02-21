@@ -32,10 +32,8 @@ if not exist mess64.exe goto end
 cls
 echo Compile was successful.
 echo.
-echo RAR up mess and messui;
-echo RAR up mess64 and messui64;
-echo rename mameui to messui and then RAR it;
-echo rename mameui64 to messui64 and then RAR it;
-echo each RAR must include license stuff.
+echo 7Z up mess and messui;
+echo 7Z up mess64 and messui64;
+echo each must include license stuff.
 
 :end

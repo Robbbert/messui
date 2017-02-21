@@ -1133,13 +1133,14 @@ void SetSampleDirs(const char* paths)
 const char * GetIniDir(void)
 {
 	const char *ini_dir;
-	const char *s;
+//	const char *s;
 
-	ini_dir = global.value(OPTION_INIPATH);
-	while((s = strchr(ini_dir, ';')) != NULL)
-	{
-		ini_dir = s + 1;
-	}
+//	ini_dir = global.value(OPTION_INIPATH);
+//	while((s = strchr(ini_dir, ';')) != NULL)
+//	{
+//		ini_dir = s + 1;
+//	}
+	ini_dir = "ini\0";
 	return ini_dir;
 
 }
@@ -2244,12 +2245,8 @@ static void SaveSettingsFile(windows_options &opts, const char *filename)
 
 	if (filerr == osd_file::error::NONE)
 	{
-		// ToDo: work out how to support partial inifiles
-		// Get global settings and make this the 'diff', then use opts.output_ini(diff), then inistring only contains the differences
-		//fname = std::string(GetIniDir()) + PATH_SEPARATOR + std::string(emulator_info::get_configname()).append(".ini");
-		//LoadSettingsFile(opts, fname.c_str());
 		std::string inistring = opts.output_ini();
-		//printf("=====%s=====\n%s\n",filename,inistring.c_str());  // for debugging
+		// printf("=====%s=====\n%s\n",filename,inistring.c_str());  // for debugging
 		file->puts(inistring.c_str());
 		file.reset();
 	}
