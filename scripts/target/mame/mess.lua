@@ -701,6 +701,7 @@ BUSES["SPC1000"] = true
 BUSES["SUNKBD"] = true
 BUSES["SVI_EXPANDER"] = true
 BUSES["SVI_SLOT"] = true
+BUSES["TI8X"] = true
 BUSES["TI99PEB"] = true
 BUSES["TI99X"] = true
 BUSES["TIKI100"] = true
