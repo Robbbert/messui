@@ -94,8 +94,6 @@ private:
 	class const_iterator_helper;
 
 public:
-	device_registrar() { }
-
 	class const_iterator
 	{
 	public:
@@ -121,6 +119,9 @@ public:
 
 		pointer m_type = nullptr;
 	};
+
+	// explicit constructor is required for const variable initialization
+	constexpr device_registrar() { }
 
 	const_iterator begin() const { return cbegin(); }
 	const_iterator end() const { return cend(); }
