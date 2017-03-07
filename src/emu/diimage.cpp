@@ -110,6 +110,20 @@ device_image_interface::~device_image_interface()
 {
 }
 
+
+//-------------------------------------------------
+//  interface_config_complete - perform any
+//  operations now that the configuration is
+//  complete
+//-------------------------------------------------
+
+void device_image_interface::interface_config_complete()
+{
+	// set brief and instance name
+	update_names();
+}
+
+
 //-------------------------------------------------
 //  find_device_type - search trough list of
 //  device types to extract data
@@ -1158,7 +1172,7 @@ image_init_result device_image_interface::load_software(const std::string &softw
 
 bool device_image_interface::open_image_file(emu_options &options)
 {
-	const char* path = options.value(instance_name());
+	const char* path = options.value(instance_name().c_str());
 	if (*path != 0)
 	{
 		set_init_phase();
@@ -1304,6 +1318,7 @@ const util::option_guide &device_image_interface::create_option_guide() const
 
 void device_image_interface::update_names()
 {
+	// count instances of the general image type, or device type if custom
 	int count = 0;
 	int index = -1;
 	for (const device_image_interface &image : image_interface_iterator(device().mconfig().root_device()))
@@ -1484,7 +1499,7 @@ bool device_image_interface::load_software_part(const std::string &identifier)
 
 std::string device_image_interface::software_get_default_slot(const char *default_card_slot) const
 {
-	const char *path = device().mconfig().options().value(instance_name());
+	const char *path = device().mconfig().options().value(instance_name().c_str());
 	std::string result;
 	if (*path != '\0')
 	{
