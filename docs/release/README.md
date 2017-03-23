@@ -5,7 +5,7 @@
 What is MESSUI?
 ===============
 
-MESSUI is an easy-to-use frontend of MAME, for Windows XP and later.
+MESSUI is an easy-to-use frontend of MESS, for Windows XP and later.
 
 
 License
@@ -21,13 +21,13 @@ How to compile?
 To create the command-line build:
 
 ```
-make "OSD=newui"
+make subtarget=mess OSD=newui
 ```
 
 To create the graphical frontend build:
 
 ```
-make "OSD=messui"
+make subtarget=mess OSD=messui
 ```
 
 
