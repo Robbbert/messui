@@ -545,17 +545,19 @@ static void InternalSetSelectedSoftware(int drvindex, const machine_config *conf
 	if (!pszSoftware)
 		pszSoftware = "";
 
-	const char *s;
+//	const char *s;
 	std::string opt_name = device->instance_name();
-	windows_options o;
+//	windows_options o;
 
-	load_options(o, OPTIONS_GAME, drvindex);
-	s = o.value(opt_name.c_str());
+//	load_options(o, OPTIONS_GAME, drvindex);
+//	s = o.value(opt_name.c_str());
 	// only call SetSelectedSoftware() if this value is different
-	if (strcmp(s, pszSoftware)!=0)
-	{
-		SetSelectedSoftware(drvindex, config, device, pszSoftware);
-	}
+//	if (strcmp(s, pszSoftware)!=0)
+//	{
+//		SetSelectedSoftware(drvindex, config, device, pszSoftware);
+//	}
+	strcpy(g_szSelectedSoftware, pszSoftware);
+	strcpy(g_szSelectedDevice, opt_name.c_str());
 }
 
 
@@ -584,7 +586,7 @@ static void MessSpecifyImage(int drvindex, const device_image_interface *device,
 		{
 			std::string opt_name = dev.instance_name();
 			s = o.value(opt_name.c_str());
-			if (s && (core_stricmp(s, pszFilename)==0))
+			if (s) // && (core_stricmp(s, pszFilename)==0))
 			{
 				device = &dev;
 				break;
