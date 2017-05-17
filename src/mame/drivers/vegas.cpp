@@ -602,6 +602,8 @@ WRITE8_MEMBER(vegas_state::sio_w)
 		int index = offset >> 12;
 		switch (index) {
 		case 0:
+			if (LOG_SIO)
+				logerror("sio_w: Reset Control offset: %08x index: %d data: %02X\n", offset, index, data);
 			// Reset Control:  Bit 0=>Reset IOASIC, Bit 1=>Reset NSS Connection, Bit 2=>Reset SMC, Bit 3=>Reset VSYNC, Bit 4=>VSYNC Polarity
 			m_sio_irq_clear = data;
 
@@ -621,6 +623,14 @@ WRITE8_MEMBER(vegas_state::sio_w)
 			break;
 		case 1:
 			// Interrupt Enable
+			// Bit 0 => SIO Watchdog
+			// Bit 1 => A/D Converter
+			// Bit 2 => IOASIC
+			// Bit 3 => NSS / Hi-Link
+			// Bit 4 => Ethernet
+			// Bit 5 => Vsync
+			if (LOG_SIO)
+				logerror("sio_w: Interrupt Enable offset: %08x index: %d data: %02X\n", offset, index, data);
 			m_sio_irq_enable = data;
 			update_sio_irqs();
 			break;
@@ -1247,6 +1257,7 @@ ADDRESS_MAP_END
 
 static ADDRESS_MAP_START(vegas_cs3_map, AS_PROGRAM, 32, vegas_state)
 	AM_RANGE(0x00000000, 0x00000003) AM_READWRITE(analog_port_r, analog_port_w)
+	//AM_RANGE(0x00001000, 0x00001003) AM_READWRITE(lcd_r, lcd_w)
 ADDRESS_MAP_END
 
 static ADDRESS_MAP_START(vegas_cs4_map, AS_PROGRAM, 32, vegas_state)
@@ -1267,6 +1278,7 @@ static ADDRESS_MAP_START(vegas_cs6_map, AS_PROGRAM, 32, vegas_state)
 ADDRESS_MAP_END
 
 static ADDRESS_MAP_START(vegas_cs7_map, AS_PROGRAM, 32, vegas_state)
+	//AM_RANGE(0x00000000, 0x00000003) AM_READWRITE8(nss_r, nss_w, 0xffffffff)
 	AM_RANGE(0x00001000, 0x0000100f) AM_READWRITE(ethernet_r, ethernet_w)
 	AM_RANGE(0x00005000, 0x00005003) AM_DEVWRITE("dcs", dcs_audio_device, dsio_idma_addr_w) // if (m_dcs_idma_cs == 7)
 	AM_RANGE(0x00007000, 0x00007003) AM_DEVREADWRITE("dcs", dcs_audio_device, dsio_idma_data_r, dsio_idma_data_w) // if (m_dcs_idma_cs == 7)
@@ -1278,13 +1290,13 @@ ADDRESS_MAP_END
  *
  *************************************/
 
-static MACHINE_CONFIG_START( vegascore, vegas_state )
+static MACHINE_CONFIG_START( vegascore )
 
 	/* basic machine hardware */
-	MCFG_CPU_ADD("maincpu", R5000LE, SYSTEM_CLOCK*2)
+	MCFG_CPU_ADD("maincpu", R5000LE, vrc5074_device::SYSTEM_CLOCK*2)
 	MCFG_MIPS3_ICACHE_SIZE(16384)
 	MCFG_MIPS3_DCACHE_SIZE(16384)
-	MCFG_MIPS3_SYSTEM_CLOCK(SYSTEM_CLOCK)
+	MCFG_MIPS3_SYSTEM_CLOCK(vrc5074_device::SYSTEM_CLOCK)
 
 	// PCI Bus Devices
 	MCFG_PCI_ROOT_ADD(":pci")
@@ -1329,7 +1341,7 @@ MACHINE_CONFIG_END
 
 static MACHINE_CONFIG_DERIVED( vegas250, vegascore )
 	MCFG_CPU_MODIFY("maincpu")
-	MCFG_CPU_CLOCK(SYSTEM_CLOCK*2.5)
+	MCFG_CPU_CLOCK(vrc5074_device::SYSTEM_CLOCK*2.5)
 MACHINE_CONFIG_END
 
 
@@ -1352,10 +1364,10 @@ MACHINE_CONFIG_END
 
 
 static MACHINE_CONFIG_DERIVED( vegasv3, vegascore)
-	MCFG_CPU_REPLACE("maincpu", RM7000LE, SYSTEM_CLOCK*2.5)
+	MCFG_CPU_REPLACE("maincpu", RM7000LE, vrc5074_device::SYSTEM_CLOCK*2.5)
 	MCFG_MIPS3_ICACHE_SIZE(16384)
 	MCFG_MIPS3_DCACHE_SIZE(16384)
-	MCFG_MIPS3_SYSTEM_CLOCK(SYSTEM_CLOCK)
+	MCFG_MIPS3_SYSTEM_CLOCK(vrc5074_device::SYSTEM_CLOCK)
 
 	MCFG_DEVICE_REMOVE(PCI_ID_VIDEO)
 	MCFG_VOODOO_PCI_ADD(PCI_ID_VIDEO, TYPE_VOODOO_3, ":maincpu")
@@ -1366,10 +1378,10 @@ MACHINE_CONFIG_END
 
 
 static MACHINE_CONFIG_DERIVED( denver, vegascore )
-	MCFG_CPU_REPLACE("maincpu", RM7000LE, SYSTEM_CLOCK*2.5)
+	MCFG_CPU_REPLACE("maincpu", RM7000LE, vrc5074_device::SYSTEM_CLOCK*2.5)
 	MCFG_MIPS3_ICACHE_SIZE(16384)
 	MCFG_MIPS3_DCACHE_SIZE(16384)
-	MCFG_MIPS3_SYSTEM_CLOCK(SYSTEM_CLOCK)
+	MCFG_MIPS3_SYSTEM_CLOCK(vrc5074_device::SYSTEM_CLOCK)
 	MCFG_DEVICE_MODIFY(PCI_ID_NILE)
 	MCFG_VRC5074_SET_SDRAM(0, 0x02000000)
 
@@ -1884,32 +1896,32 @@ DRIVER_INIT_MEMBER(vegas_state,cartfury)
  *************************************/
 
 /* Vegas + Vegas SIO + Voodoo 2 */
-GAME( 1998, gauntleg,   0,        gauntleg,    gauntleg, vegas_state, gauntleg, ROT0, "Atari Games",  "Gauntlet Legends (version 1.6)", MACHINE_SUPPORTS_SAVE )
-GAME( 1998, gauntleg12, gauntleg, gauntleg,    gauntleg, vegas_state, gauntleg, ROT0, "Atari Games",  "Gauntlet Legends (version 1.2)", MACHINE_NO_SOUND | MACHINE_SUPPORTS_SAVE )
-GAME( 1998, tenthdeg, 0,        tenthdeg,    tenthdeg, vegas_state, tenthdeg, ROT0, "Atari Games",  "Tenth Degree (prototype)", MACHINE_SUPPORTS_SAVE )
+GAME( 1998, gauntleg,   0,        gauntleg, gauntleg, vegas_state, gauntleg, ROT0, "Atari Games",   "Gauntlet Legends (version 1.6)", MACHINE_SUPPORTS_SAVE )
+GAME( 1998, gauntleg12, gauntleg, gauntleg, gauntleg, vegas_state, gauntleg, ROT0, "Atari Games",   "Gauntlet Legends (version 1.2)", MACHINE_NO_SOUND | MACHINE_SUPPORTS_SAVE )
+GAME( 1998, tenthdeg,   0,        tenthdeg, tenthdeg, vegas_state, tenthdeg, ROT0, "Atari Games",   "Tenth Degree (prototype)", MACHINE_SUPPORTS_SAVE )
 
 /* Durango + Vegas SIO + Voodoo 2 */
-GAME( 1999, gauntdl,  0,        gauntdl,    gauntdl, vegas_state,  gauntdl,  ROT0, "Midway Games", "Gauntlet Dark Legacy (version DL 2.52)", MACHINE_SUPPORTS_SAVE )
-GAME( 1999, gauntdl24,gauntdl,  gauntdl,    gauntdl, vegas_state,  gauntdl,  ROT0, "Midway Games", "Gauntlet Dark Legacy (version DL 2.4)", MACHINE_SUPPORTS_SAVE )
-GAME( 1999, warfa,    0,        warfa, warfa, vegas_state,    warfa,    ROT0, "Atari Games",  "War: The Final Assault (EPROM 1.9 Mar 25 1999, GUTS 1.3 Apr 20 1999, GAME Apr 20 1999)", MACHINE_NOT_WORKING | MACHINE_SUPPORTS_SAVE )
-GAME( 1999, warfaa,   warfa,    warfa, warfa, vegas_state,    warfa,    ROT0, "Atari Games",  "War: The Final Assault (EPROM 1.6 Jan 14 1999, GUTS 1.1 Mar 16 1999, GAME Mar 16 1999)", MACHINE_NOT_WORKING | MACHINE_SUPPORTS_SAVE )
-GAME( 1999, warfab,   warfa,    warfa, warfa, vegas_state,    warfa,    ROT0, "Atari Games",  "War: The Final Assault (EPROM 1.3 Apr 7 1999, GUTS 1.3 Apr 7 1999, GAME Apr 7 1999)", MACHINE_NOT_WORKING | MACHINE_SUPPORTS_SAVE ) // version numbers comes from test mode, can be unreliable
+GAME( 1999, gauntdl,    0,        gauntdl,  gauntdl,  vegas_state,  gauntdl,  ROT0, "Midway Games", "Gauntlet Dark Legacy (version DL 2.52)", MACHINE_SUPPORTS_SAVE )
+GAME( 1999, gauntdl24,  gauntdl,  gauntdl,  gauntdl,  vegas_state,  gauntdl,  ROT0, "Midway Games", "Gauntlet Dark Legacy (version DL 2.4)", MACHINE_SUPPORTS_SAVE )
+GAME( 1999, warfa,      0,        warfa,    warfa,    vegas_state,  warfa,    ROT0, "Atari Games",  "War: The Final Assault (EPROM 1.9 Mar 25 1999, GUTS 1.3 Apr 20 1999, GAME Apr 20 1999)", MACHINE_NOT_WORKING | MACHINE_SUPPORTS_SAVE )
+GAME( 1999, warfaa,     warfa,    warfa,    warfa,    vegas_state,  warfa,    ROT0, "Atari Games",  "War: The Final Assault (EPROM 1.6 Jan 14 1999, GUTS 1.1 Mar 16 1999, GAME Mar 16 1999)", MACHINE_NOT_WORKING | MACHINE_SUPPORTS_SAVE )
+GAME( 1999, warfab,     warfa,    warfa,    warfa,    vegas_state,  warfa,    ROT0, "Atari Games",  "War: The Final Assault (EPROM 1.3 Apr 7 1999, GUTS 1.3 Apr 7 1999, GAME Apr 7 1999)", MACHINE_NOT_WORKING | MACHINE_SUPPORTS_SAVE ) // version numbers comes from test mode, can be unreliable
 
 
 /* Durango + DSIO + Voodoo 2 */
-GAME( 1999, roadburn, 0,        roadburn, roadburn, vegas_state, roadburn, ROT0, "Atari Games",  "Road Burners (ver 1.04)", MACHINE_NOT_WORKING | MACHINE_SUPPORTS_SAVE )
-GAME( 1999, roadburn1,roadburn, roadburn, roadburn, vegas_state, roadburn, ROT0, "Atari Games",  "Road Burners (ver 1.0)", MACHINE_NOT_WORKING | MACHINE_SUPPORTS_SAVE )
+GAME( 1999, roadburn,   0,        roadburn, roadburn, vegas_state, roadburn, ROT0, "Atari Games",   "Road Burners (ver 1.04)", MACHINE_NOT_WORKING | MACHINE_SUPPORTS_SAVE )
+GAME( 1999, roadburn1,  roadburn, roadburn, roadburn, vegas_state, roadburn, ROT0, "Atari Games",   "Road Burners (ver 1.0)", MACHINE_NOT_WORKING | MACHINE_SUPPORTS_SAVE )
 
 /* Durango + DSIO? + Voodoo banshee */
-GAME( 1998, nbashowt, 0,        nbashowt, nbashowt, vegas_state, nbashowt, ROT0, "Midway Games", "NBA Showtime: NBA on NBC (ver 2.0)", MACHINE_NO_SOUND | MACHINE_NOT_WORKING | MACHINE_SUPPORTS_SAVE )
-GAME( 1999, nbanfl,   0,        nbanfl, nbashowt, vegas_state, nbanfl,   ROT0, "Midway Games", "NBA Showtime / NFL Blitz 2000 (ver 2.1)", MACHINE_NO_SOUND | MACHINE_NOT_WORKING | MACHINE_SUPPORTS_SAVE )
-GAME( 2000, nbagold , 0,        nbanfl, nbashowt, vegas_state, nbanfl,   ROT0, "Midway Games", "NBA Showtime Gold / NFL Blitz 2000 (ver 3.0) (Sports Station?)", MACHINE_NO_SOUND | MACHINE_NOT_WORKING | MACHINE_SUPPORTS_SAVE )
+GAME( 1998, nbashowt,   0,        nbashowt, nbashowt, vegas_state, nbashowt, ROT0, "Midway Games",  "NBA Showtime: NBA on NBC (ver 2.0)", MACHINE_NO_SOUND | MACHINE_NOT_WORKING | MACHINE_SUPPORTS_SAVE )
+GAME( 1999, nbanfl,     0,        nbanfl,   nbashowt, vegas_state, nbanfl,   ROT0, "Midway Games",  "NBA Showtime / NFL Blitz 2000 (ver 2.1)", MACHINE_NO_SOUND | MACHINE_NOT_WORKING | MACHINE_SUPPORTS_SAVE )
+GAME( 2000, nbagold ,   0,        nbanfl,   nbashowt, vegas_state, nbanfl,   ROT0, "Midway Games",  "NBA Showtime Gold / NFL Blitz 2000 (ver 3.0) (Sports Station?)", MACHINE_NO_SOUND | MACHINE_NOT_WORKING | MACHINE_SUPPORTS_SAVE )
 
 
 /* Durango + Denver SIO + Voodoo 3 */
-GAME( 1998, sf2049,   0,        sf2049,   sf2049, vegas_state,   sf2049,   ROT0, "Atari Games",  "San Francisco Rush 2049", MACHINE_NO_SOUND | MACHINE_NOT_WORKING | MACHINE_SUPPORTS_SAVE )
-GAME( 1998, sf2049se, sf2049,   sf2049se,   sf2049se, vegas_state, sf2049se, ROT0, "Atari Games",  "San Francisco Rush 2049: Special Edition", MACHINE_NO_SOUND | MACHINE_NOT_WORKING | MACHINE_SUPPORTS_SAVE )
-GAME( 1998, sf2049te, sf2049,   sf2049te,   sf2049te, vegas_state, sf2049te, ROT0, "Atari Games",  "San Francisco Rush 2049: Tournament Edition", MACHINE_NO_SOUND | MACHINE_NOT_WORKING | MACHINE_SUPPORTS_SAVE)
+GAME( 1998, sf2049,     0,        sf2049,   sf2049,   vegas_state, sf2049,   ROT0, "Atari Games",   "San Francisco Rush 2049", MACHINE_NO_SOUND | MACHINE_NOT_WORKING | MACHINE_SUPPORTS_SAVE )
+GAME( 1998, sf2049se,   sf2049,   sf2049se, sf2049se, vegas_state, sf2049se, ROT0, "Atari Games",   "San Francisco Rush 2049: Special Edition", MACHINE_NO_SOUND | MACHINE_NOT_WORKING | MACHINE_SUPPORTS_SAVE )
+GAME( 1998, sf2049te,   sf2049,   sf2049te, sf2049te, vegas_state, sf2049te, ROT0, "Atari Games",   "San Francisco Rush 2049: Tournament Edition", MACHINE_NO_SOUND | MACHINE_NOT_WORKING | MACHINE_SUPPORTS_SAVE)
 
 /* Durango + Vegas SIO + Voodoo 3 */
-GAME( 2000, cartfury, 0,        cartfury,  cartfury, vegas_state, cartfury, ROT0, "Midway Games", "Cart Fury", MACHINE_NO_SOUND | MACHINE_NOT_WORKING | MACHINE_SUPPORTS_SAVE )
+GAME( 2000, cartfury,   0,        cartfury, cartfury, vegas_state, cartfury, ROT0, "Midway Games",  "Cart Fury", MACHINE_NO_SOUND | MACHINE_NOT_WORKING | MACHINE_SUPPORTS_SAVE )
