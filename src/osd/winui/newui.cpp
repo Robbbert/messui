@@ -3247,7 +3247,7 @@ static int win_setup_menus(running_machine &machine, HMODULE module, HMENU menu_
 	}
 
 	// set the help menu to refer to this machine
-	snprintf(buf, ARRAY_LENGTH(buf), "About %s (%s)...", machine.system().description, machine.system().name);
+	snprintf(buf, ARRAY_LENGTH(buf), "About %s (%s)...", machine.system().type.fullname(), machine.system().name);
 	set_menu_text(menu_bar, ID_HELP_ABOUTSYSTEM, buf);
 
 	// initialize state_filename for each driver, so we don't carry names in-between them
@@ -3255,7 +3255,7 @@ static int win_setup_menus(running_machine &machine, HMODULE module, HMENU menu_
 		char *src;
 		char *dst;
 
-		snprintf(state_filename, ARRAY_LENGTH(state_filename), "%s State", machine.system().description);
+		snprintf(state_filename, ARRAY_LENGTH(state_filename), "%s State", machine.system().type.fullname());
 
 		src = state_filename;
 		dst = state_filename;
