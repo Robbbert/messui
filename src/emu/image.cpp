@@ -88,10 +88,14 @@ image_manager::image_manager(running_machine &machine)
 			{
 				// retrieve image error message
 				std::string image_err = std::string(image.error());
+//MESSUI start (deal with a bad image properly)
+				// unload the bad image
+				image.unload();
 
-				// unload all images
-				unload_all();
-
+				machine.options().image_options()[image.instance_name()] = "";
+				if (machine.options().write_config())
+					write_config(machine.options(), nullptr, &machine.system());
+//MESSUI end
 				fatalerror_exitcode(machine, EMU_ERR_DEVICE, "Device %s load (%s) failed: %s",
 					image.device().name(),
 					startup_image.c_str(),

@@ -127,7 +127,7 @@ void DevView_Refresh(HWND hwndDevView)
 				szBuffer, MAX_PATH);
 
 			if (!pszSelection)
-				pszSelection = TEXT("xxx");
+				pszSelection = TEXT("");
 
 			pDevViewInfo->bSurpressFilenameChanged = TRUE;
 			SetWindowText(pDevViewInfo->pEntries[i].hwndEdit, pszSelection);

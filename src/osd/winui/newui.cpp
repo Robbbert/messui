@@ -2863,6 +2863,7 @@ static void device_command(HWND wnd, device_image_interface *img, int devoption)
 
 		case DEVOPTION_CLOSE:
 			img->unload();
+			img->device().machine().options().image_options()[img->instance_name()] = "";
 			break;
 
 		default:

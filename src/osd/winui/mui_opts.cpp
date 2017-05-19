@@ -2782,12 +2782,8 @@ void SetSelectedSoftware(int driver_index, const device_image_interface *dev, co
 
 	load_options(o, OPTIONS_GAME, driver_index);
 	o.set_value(opt_name.c_str(), software, OPTION_PRIORITY_CMDLINE,error_string);
+	o.image_options()[opt_name] = software;
 	save_options(o, OPTIONS_GAME, driver_index);
-	// This might work instead, needs testing
-	//if (software)
-	//dev->load(software);
-	//else
-	//dev->unload();
 }
 
 void SetCurrentSoftwareTab(const char *shortname)
