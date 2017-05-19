@@ -2573,7 +2573,6 @@ static void prepare_menus(HWND wnd)
 	int i = 0;
 	char buf[MAX_PATH];
 	TCHAR t_buf[MAX_PATH];
-	const char *s;
 	HMENU menu_bar;
 	HMENU video_menu;
 	HMENU device_menu;
@@ -2725,9 +2724,43 @@ static void prepare_menus(HWND wnd)
 			win_append_menu_utf8(sub_menu, flags_for_exists, new_item + DEVOPTION_CASSETTE_REWIND, "Rewind");
 			win_append_menu_utf8(sub_menu, flags_for_exists, new_item + DEVOPTION_CASSETTE_FASTFORWARD, "Fast Forward");
 		}
-		s = img.exists() ? img.filename() : "[empty slot]";
 
-		snprintf(buf, ARRAY_LENGTH(buf), "%s: %s", img.device().name(), s);
+		std::string filename;
+		if (img.basename() != nullptr)
+		{
+			filename.assign(img.basename());
+
+			// if the image has been loaded through softlist, also show the loaded part
+			if (img.loaded_through_softlist())
+			{
+				const software_part *tmp = img.part_entry();
+				if (!tmp->name().empty())
+				{
+					filename.append(" (");
+					filename.append(tmp->name());
+					// also check if this part has a specific part_id (e.g. "Map Disc", "Bonus Disc", etc.), and in case display it
+					if (img.get_feature("part_id") != nullptr)
+					{
+						filename.append(": ");
+						filename.append(img.get_feature("part_id"));
+					}
+					filename.append(")");
+				}
+			}
+		}
+		else
+			filename.assign("---");
+
+		//s = img.exists() ? img.filename() : "[empty slot]";
+
+		// Full name for slot name (too long for a cartslot)
+		//snprintf(buf, ARRAY_LENGTH(buf), "%s: %s", img.device().name(), s);
+
+		// Get instance names instead, like Media View, and mame's File Manager
+		std::string instance = string_format("%s (%s): %s", img.instance_name(), img.brief_instance_name(), filename.c_str());
+		std::transform(instance.begin(), instance.begin()+1, instance.begin(), ::toupper); // turn first char to uppercase
+
+		snprintf(buf, ARRAY_LENGTH(buf), "%s", instance.c_str());
 		win_append_menu_utf8(device_menu, MF_POPUP, (UINT_PTR)sub_menu, buf);
 
 		cnt++;

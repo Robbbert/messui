@@ -2768,7 +2768,8 @@ BOOL GetSWSortReverse(void)
 	return MameUISettings().bool_value(MESSUI_SW_SORT_REVERSED);
 }
 
-void SetSelectedSoftware(int driver_index, const machine_config *config, const device_image_interface *dev, const char *software)
+
+void SetSelectedSoftware(int driver_index, const device_image_interface *dev, const char *software)
 {
 	std::string opt_name = dev->instance_name();
 	windows_options o;
@@ -2782,6 +2783,11 @@ void SetSelectedSoftware(int driver_index, const machine_config *config, const d
 	load_options(o, OPTIONS_GAME, driver_index);
 	o.set_value(opt_name.c_str(), software, OPTION_PRIORITY_CMDLINE,error_string);
 	save_options(o, OPTIONS_GAME, driver_index);
+	// This might work instead, needs testing
+	//if (software)
+	//dev->load(software);
+	//else
+	//dev->unload();
 }
 
 void SetCurrentSoftwareTab(const char *shortname)
