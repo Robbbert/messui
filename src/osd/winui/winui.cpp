@@ -967,6 +967,10 @@ printf("Software=%s:%s\n",g_szSelectedDevice, g_szSelectedSoftware);
 	ShowWindow(hMain, SW_SHOW);
 	SetForegroundWindow(hMain);
 
+	// update Media View in case software was loaded in newui
+	if (TabView_GetCurrentTab(GetDlgItem(GetMainWindow(), IDC_SWTAB))==1)
+		DevView_Refresh(GetDlgItem(GetMainWindow(), IDC_SWDEVVIEW));
+
 	return (DWORD)0;
 }
 

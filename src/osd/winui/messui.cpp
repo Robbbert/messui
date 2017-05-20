@@ -159,6 +159,7 @@ static void SoftwareList_EnteringItem(HWND hwndSoftwareList, int nItem);
 static BOOL DevView_GetOpenFileName(HWND hwndDevView, const machine_config *config, const device_image_interface *dev, LPTSTR pszFilename, UINT nFilenameLength);
 static BOOL DevView_GetOpenItemName(HWND hwndDevView, const machine_config *config, const device_image_interface *dev, LPTSTR pszFilename, UINT nFilenameLength);
 static BOOL DevView_GetCreateFileName(HWND hwndDevView, const machine_config *config, const device_image_interface *dev, LPTSTR pszFilename, UINT nFilenameLength);
+static BOOL DevView_Unmount(HWND hwndDevView, const machine_config *config, const device_image_interface *dev, LPTSTR pszFilename, UINT nFilenameLength);
 static void DevView_SetSelectedSoftware(HWND hwndDevView, int nDriverIndex, const machine_config *config, const device_image_interface *dev, LPCTSTR pszFilename);
 static LPCTSTR DevView_GetSelectedSoftware(HWND hwndDevView, int nDriverIndex, const machine_config *config, const device_image_interface *dev, LPTSTR pszBuffer, UINT nBufferLength);
 
@@ -691,7 +692,8 @@ void InitMessPicker(void)
 			DevView_GetCreateFileName,
 			DevView_SetSelectedSoftware,
 			DevView_GetSelectedSoftware,
-			DevView_GetOpenItemName
+			DevView_GetOpenItemName,
+			DevView_Unmount
 		};
 		DevView_SetCallbacks(GetDlgItem(GetMainWindow(), IDC_SWDEVVIEW), &s_devViewCallbacks);
 	}
@@ -922,6 +924,18 @@ static void MessOpenOtherSoftware(const device_image_interface *dev)
 
 
 
+static BOOL DevView_Unmount(HWND hwndDevView, const machine_config *config, const device_image_interface *dev, LPTSTR pszFilename, UINT nFilenameLength)
+{
+	HWND hwndList = GetDlgItem(GetMainWindow(), IDC_LIST);
+	int drvindex = Picker_GetSelectedItem(hwndList);
+
+	SetSelectedSoftware(drvindex, dev, "");
+
+	return true;
+}
+
+
+
 /* This is used to Mount a software File in the device view of MESSUI.
     Since the emulation is not running at this time,
     we cannot do the same as the NEWUI does, that is, "initial_dir = image_working_directory(dev);"
@@ -1021,9 +1035,15 @@ static BOOL DevView_GetOpenFileName(HWND hwndDevView, const machine_config *conf
 	SetupImageTypes(config, imagetypes, ARRAY_LENGTH(imagetypes), TRUE, dev);
 	t_s = ui_wstring_from_utf8(dst.c_str());
 	bResult = CommonFileImageDialog(t_s, GetOpenFileName, pszFilename, config, imagetypes);
+	free(t_s);
 	CleanupImageTypes(imagetypes, ARRAY_LENGTH(imagetypes));
 
-	free(t_s);
+	if (bResult)
+	{
+		char t2[nFilenameLength];
+		wcstombs(t2, pszFilename, nFilenameLength-1); // convert wide string to a normal one
+		SetSelectedSoftware(drvindex, dev, t2);
+	}
 
 	return bResult;
 }
@@ -1104,30 +1124,34 @@ static BOOL DevView_GetOpenItemName(HWND hwndDevView, const machine_config *conf
 	SetupImageTypes(config, imagetypes, ARRAY_LENGTH(imagetypes), TRUE, dev);
 	t_s = ui_wstring_from_utf8(dst.c_str());
 	bResult = CommonFileImageDialog(t_s, GetOpenFileName, pszFilename, config, imagetypes);
+	free(t_s);
 	CleanupImageTypes(imagetypes, ARRAY_LENGTH(imagetypes));
 
-	// This crappy code is typical of what you get with strings in c++
-	// All we want to do is get the Item name out of the full path
-	char t2[nFilenameLength];
-	wcstombs(t2, pszFilename, nFilenameLength-1); // convert wide string to a normal one
-	std::string t3 = t2; // then convert to a c++ string so we can manipulate it
-	t1 = t3.find(".zip"); // get rid of zip name and anything after
-	if (t1) t3[t1] = '\0';
-	t1 = t3.find(".7z"); // get rid of 7zip name and anything after
-	if (t1) t3[t1] = '\0';
-//	t1 = t3.find_last_of("\\");   // we can force the swlist name in, if needed
-//	t3[t1] = ':';
-	t1 = t3.find_last_of("\\"); // get rid of path; we only want the item name
-	t3.erase(0, t1+1);
+	if (bResult)
+	{
+		// This crappy code is typical of what you get with strings in c++
+		// All we want to do is get the Item name out of the full path
+		char t2[nFilenameLength];
+		wcstombs(t2, pszFilename, nFilenameLength-1); // convert wide string to a normal one
+		std::string t3 = t2; // then convert to a c++ string so we can manipulate it
+		t1 = t3.find(".zip"); // get rid of zip name and anything after
+		if (t1) t3[t1] = '\0';
+		t1 = t3.find(".7z"); // get rid of 7zip name and anything after
+		if (t1) t3[t1] = '\0';
+		t1 = t3.find_last_of("\\");   // put the swlist name in
+		t3[t1] = ':';
+		t1 = t3.find_last_of("\\"); // get rid of path; we only want the item name
+		t3.erase(0, t1+1);
 
-	// set up editbox display text
-	mbstowcs(pszFilename, t3.c_str(), nFilenameLength-1); // convert it back to a wide string
+		// set up editbox display text
+		mbstowcs(pszFilename, t3.c_str(), nFilenameLength-1); // convert it back to a wide string
 
-	// set up inifile text to signify to MAME that a SW ITEM is to be used
-	strcpy(g_szSelectedSoftware, t3.c_str()); // store to global item name
-	strcpy(g_szSelectedDevice, opt_name.c_str()); // get media-device name (brief_instance_name is ok too)
+		// set up inifile text to signify to MAME that a SW ITEM is to be used
+		SetSelectedSoftware(drvindex, dev, t3.c_str());
+		strcpy(g_szSelectedSoftware, t3.c_str()); // store to global item name
+		strcpy(g_szSelectedDevice, opt_name.c_str()); // get media-device name (brief_instance_name is ok too)
+	}
 
-	free(t_s);
 	return bResult;
 }
 
@@ -1218,9 +1242,15 @@ static BOOL DevView_GetCreateFileName(HWND hwndDevView, const machine_config *co
 
 	SetupImageTypes(config, imagetypes, ARRAY_LENGTH(imagetypes), TRUE, dev);
 	bResult = CommonFileImageDialog(t_s, GetSaveFileName, pszFilename, config, imagetypes);
+	free(t_s);
 	CleanupImageTypes(imagetypes, ARRAY_LENGTH(imagetypes));
 
-	free(t_s);
+	if (bResult)
+	{
+		char t2[nFilenameLength];
+		wcstombs(t2, pszFilename, nFilenameLength-1); // convert wide string to a normal one
+		SetSelectedSoftware(drvindex, dev, t2);
+	}
 
 	return bResult;
 }

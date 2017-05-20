@@ -206,6 +206,7 @@ BOOL DevView_SetDriver(HWND hwndDevView, const software_config *config)
 	// count total amount of devices
 	nDevCount = 0;
 
+	// compiler says &dev is unused
 	for (device_image_interface &dev : image_interface_iterator(pDevViewInfo->config->mconfig->root_device()))
 		nDevCount++;
 
@@ -363,8 +364,8 @@ static void DevView_ButtonClick(HWND hwndDevView, struct DevViewEntry *pEnt, HWN
 				pDevViewInfo->config->mconfig, pEnt->dev, szPath, ARRAY_LENGTH(szPath));
 			break;
 		case 3:
-			memset(szPath, 0, sizeof(szPath));
-			b = TRUE;
+			b = pDevViewInfo->pCallbacks->pfnUnmount(hwndDevView,
+				pDevViewInfo->config->mconfig, pEnt->dev, szPath, ARRAY_LENGTH(szPath));
 			break;
 		case 4:
 			b = pDevViewInfo->pCallbacks->pfnGetOpenItemName(hwndDevView,
