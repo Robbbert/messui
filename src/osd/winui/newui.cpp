@@ -2851,6 +2851,7 @@ static void win_toggle_menubar(void)
 
 static void device_command(HWND wnd, device_image_interface *img, int devoption)
 {
+	std::string error_string;
 	switch(devoption)
 	{
 		case DEVOPTION_OPEN:
@@ -2864,6 +2865,7 @@ static void device_command(HWND wnd, device_image_interface *img, int devoption)
 		case DEVOPTION_CLOSE:
 			img->unload();
 			img->device().machine().options().image_options()[img->instance_name()] = "";
+			img->device().machine().options().emu_options::set_value(img->instance_name().c_str(), "", OPTION_PRIORITY_CMDLINE,error_string);
 			break;
 
 		default:
@@ -2931,7 +2933,7 @@ static void help_display(HWND wnd, const char *chapter)
 	TCHAR *t_chapter = ui_wstring_from_utf8(chapter);
 //	htmlhelp(wnd, t_chapter, 0 /*HH_DISPLAY_TOPIC*/, 0);
 //	TCHAR *szSite = new TCHAR[100];
-//	_tcscpy(szSite, TEXT("http://messui.the-chronicles.org/onlinehelp/"));
+//	_tcscpy(szSite, TEXT("http://messui.polygonal-moogle.com/onlinehelp/"));
 //	_tcscat(szSite, t_chapter);
 //	_tcscat(szSite, TEXT(".html"));
 //	ShellExecute(wnd, TEXT("open"), TEXT("http://www.microsoft.com/directx"), TEXT(""), NULL, SW_SHOWNORMAL);
@@ -2963,7 +2965,7 @@ static void help_about_thissystem(running_machine &machine, HWND wnd)
 {
 	char buf[100];
 //	snprintf(buf, ARRAY_LENGTH(buf), "mess.chm::/sysinfo/%s.htm", machine.system().name);
-//	snprintf(buf, ARRAY_LENGTH(buf), "http://messui.the-chronicles.org/onlinehelp/%s.html", machine.system().name);
+//	snprintf(buf, ARRAY_LENGTH(buf), "http://messui.polygonal-moogle.com/onlinehelp/%s.html", machine.system().name);
 	snprintf(buf, ARRAY_LENGTH(buf), "http://www.progettoemma.net/mess/system.php?machine=%s", machine.system().name);
 	help_display(wnd, buf);
 }

@@ -941,3 +941,74 @@ core_options::entry *core_options::get_entry(const char *name) const
 	auto curentry = m_entrymap.find(name);
 	return (curentry != m_entrymap.end()) ? curentry->second : nullptr;
 }
+
+// MESSUI
+bool core_options::parse_parent_file(util::core_file &inifile, int priority, bool ignore_unknown_options, std::string &error_string)
+{
+	// loop over lines in the file
+	char buffer[4096];
+	while (inifile.gets(buffer, ARRAY_LENGTH(buffer)) != nullptr)
+	{
+		// find the extent of the name
+		char *optionname;
+		for (optionname = buffer; *optionname != 0; optionname++)
+			if (!isspace((uint8_t)*optionname))
+				break;
+
+		if (optionname[0] == '#') // this statement is the only extra thing: we don't want slots or images copied to the clone
+		{
+			if (optionname[2] == 'S' && optionname[3] == 'L' && optionname[4] == 'O' && optionname[5] == 'T' )
+				break;
+			if (optionname[2] == 'I' && optionname[3] == 'M' && optionname[4] == 'A' && optionname[5] == 'G' )
+				break;
+		}
+
+		// skip comments
+		if (*optionname == 0 || *optionname == '#')
+			continue;
+
+		// scan forward to find the first space
+		char *temp;
+		for (temp = optionname; *temp != 0; temp++)
+			if (isspace((uint8_t)*temp))
+				break;
+
+		// if we hit the end early, print a warning and continue
+		if (*temp == 0)
+		{
+			error_string.append(string_format("Warning: invalid line in INI: %s", buffer));
+			continue;
+		}
+
+		// NULL-terminate
+		*temp++ = 0;
+		char *optiondata = temp;
+
+		// scan the data, stopping when we hit a comment
+		bool inquotes = false;
+		for (temp = optiondata; *temp != 0; temp++)
+		{
+			if (*temp == '"')
+				inquotes = !inquotes;
+			if (*temp == '#' && !inquotes)
+				break;
+		}
+		*temp = 0;
+
+		// find our entry
+		auto curentry = m_entrymap.find(optionname);
+		if (curentry == m_entrymap.end())
+		{
+			if (!ignore_unknown_options)
+				error_string.append(string_format("Warning: unknown option in INI: %s\n", optionname));
+			continue;
+		}
+
+		// set the new data
+		std::string data = optiondata;
+		trim_spaces_and_quotes(data);
+		validate_and_set_data(*curentry->second, std::move(data), priority, error_string);
+	}
+	return true;
+}
+
