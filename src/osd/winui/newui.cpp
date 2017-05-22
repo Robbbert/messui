@@ -229,6 +229,7 @@ enum
 	DEVOPTION_OPEN,
 	DEVOPTION_CREATE,
 	DEVOPTION_CLOSE,
+	DEVOPTION_ITEM,
 	DEVOPTION_CASSETTE_PLAYRECORD,
 	DEVOPTION_CASSETTE_STOPPAUSE,
 	DEVOPTION_CASSETTE_PLAY,
@@ -2369,6 +2370,70 @@ static void change_device(HWND wnd, device_image_interface *image, bool is_save)
 }
 
 
+#if 0
+//============================================================
+//  load_item
+//    open a dialog box to choose a software-list-item to load
+//============================================================
+//To do: get location of software list software from messui.ini, then do much the same as MediaView does
+// Code below is not yet altered
+static void load_item(HWND wnd, device_image_interface *image, bool is_save)
+{
+	std::string filter;
+	char filename[MAX_PATH];
+	const char *initial_dir;
+	BOOL result = 0;
+	int create_format = 0;
+	util::option_resolution *create_args = NULL;
+
+	// get the file
+	if (image->exists())
+	{
+		const char *imgname;
+		imgname = image->basename();
+		snprintf(filename, ARRAY_LENGTH(filename), "%s", imgname);
+	}
+	else
+		filename[0] = '\0';
+
+	// get the working directory, but if it is ".", then use the one specified in swpath
+	char *working = 0;
+	std::string dst;
+	osd_get_full_path(dst,"."); // turn local directory into full path
+	initial_dir = image->working_directory().c_str(); // get working directory from diimage.cpp
+	// if . use swpath
+	if (strcmp(dst.c_str(), initial_dir) == 0)  // same?
+		initial_dir = software_dir;
+
+	// remove any trailing backslash
+	working = core_strdup(initial_dir);
+	int temp = strlen(working) - 1;
+	if (temp > 2)
+		if (working[temp] == '\\')
+		{
+			working[temp] = '\0';
+			initial_dir = working;
+		}
+
+// NOTE: the working directory can come from the .cfg file. If it's wrong delete the cfg.
+//printf("%s = %s = %s = %s\n",dst,working,initial_dir,software_dir);
+
+	// build a normal filter
+	build_generic_filter(image, is_save, filter);
+
+	// display the dialog
+	result = win_file_dialog(image->device().machine(), wnd, is_save ? WIN_FILE_DIALOG_SAVE : WIN_FILE_DIALOG_OPEN, filter.c_str(), initial_dir, filename, ARRAY_LENGTH(filename));
+	if (result)
+	{
+		// mount the image
+		if (is_save)
+			(image_error_t)image->create(filename, image->device_get_indexed_creatable_format(create_format), create_args);
+		else
+			(image_error_t)image->load_software( filename);
+	}
+}
+#endif
+
 
 //============================================================
 //  pause
@@ -2708,6 +2773,9 @@ static void prepare_menus(HWND wnd)
 		sub_menu = CreateMenu();
 		win_append_menu_utf8(sub_menu, MF_STRING, new_item + DEVOPTION_OPEN, "Mount File...");
 
+		// TODO: add an option to load a software item
+		//win_append_menu_utf8(sub_menu, MF_STRING, new_item + DEVOPTION_ITEM, "Mount Item...");
+
 		if (img.is_creatable())
 			win_append_menu_utf8(sub_menu, MF_STRING, new_item + DEVOPTION_CREATE, "Create...");
 
@@ -2856,6 +2924,10 @@ static void device_command(HWND wnd, device_image_interface *img, int devoption)
 	{
 		case DEVOPTION_OPEN:
 			change_device(wnd, img, FALSE);
+			break;
+
+		case DEVOPTION_ITEM:
+			//TODO: load_item(wnd, img, FALSE);
 			break;
 
 		case DEVOPTION_CREATE:
