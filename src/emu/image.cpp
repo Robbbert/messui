@@ -68,8 +68,15 @@ image_manager::image_manager(running_machine &machine)
 		if (iter != machine.options().image_options().end() && !iter->second.empty())
 		{
 			// we do have a startup image specified - load it
-			const std::string &startup_image(iter->second);
+			std::string &startup_image(iter->second);
 			image_init_result result = image_init_result::FAIL;
+
+// MESSUI start (remove software part because it's actually the brief instance name and causes a crash)
+			size_t t1 = startup_image.find_first_of(":");
+			size_t t2 = startup_image.find_last_of(":");
+			if ((t2 != std::string::npos) && (t2 > t1))
+				startup_image.erase(t2, std::string::npos);
+// MESSUI end
 
 			// try as a softlist
 			if (software_name_parse(startup_image))

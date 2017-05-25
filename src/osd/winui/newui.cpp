@@ -2349,7 +2349,7 @@ static bool get_softlist_info(HWND wnd, device_image_interface *img)
 
 	if (has_software)
 	{
-		// Now, scan through the media_path looking for the required folder)
+		// Now, scan through the media_path looking for the required folder
 		char* sl_root = strtok(rompath, ";");
 		while (sl_root && !passes_tests)
 		{
