@@ -203,6 +203,7 @@ static int joystick_menu_setup = 0;
 static char state_filename[MAX_PATH];
 static void add_filter_entry(std::string &dest, const char *description, const char *extensions);
 static const char* software_dir;
+static std::map<std::string,std::string> slmap;
 
 
 //============================================================
@@ -1719,8 +1720,7 @@ static void win_dialog_runmodal(running_machine &machine, HWND wnd, dialog_box *
 //    called from change_device
 //============================================================
 
-static BOOL win_file_dialog(running_machine &machine, HWND parent, win_file_dialog_type dlgtype, const char *filter,
-	const char *initial_dir, char *filename, size_t filename_len)
+static BOOL win_file_dialog(running_machine &machine, HWND parent, win_file_dialog_type dlgtype, const char *filter, const char *initial_dir, char *filename)
 {
 	win_open_file_name ofn;
 	BOOL result = FALSE;
@@ -1742,7 +1742,7 @@ static BOOL win_file_dialog(running_machine &machine, HWND parent, win_file_dial
 	result = win_get_file_name_dialog(&ofn);
 	after_display_dialog(machine);
 
-	snprintf(filename, filename_len, "%s", ofn.filename);
+	snprintf(filename, ARRAY_LENGTH(ofn.filename), "%s", ofn.filename);
 	return result;
 }
 
@@ -2290,7 +2290,10 @@ static void add_filter_entry(std::string &dest, const char *description, const c
 
 static void build_generic_filter(device_image_interface *img, bool is_save, std::string &filter)
 {
-	std::string file_extension = img->file_extensions();
+	std::string file_extension;
+
+	if (img)
+		file_extension = img->file_extensions();
 
 	if (!is_save)
 		file_extension.append(",zip,7z");
@@ -2306,6 +2309,68 @@ static void build_generic_filter(device_image_interface *img, bool is_save, std:
 
 
 //============================================================
+//  get_softlist_info
+//============================================================
+static bool get_softlist_info(HWND wnd, device_image_interface *img)
+{
+	bool has_software = false;
+	bool passes_tests = false;
+	std::string sl_dir, opt_name = img->instance_name();
+	LONG_PTR ptr = GetWindowLongPtr(wnd, GWLP_USERDATA);
+	win_window_info *window = (win_window_info *)ptr;
+
+	/* Get the media_path */
+	char rompath[400];
+	strcpy(rompath, window->machine().options().emu_options::media_path());
+
+	// Get the path to suitable software
+	for (software_list_device &swlist : software_list_device_iterator(window->machine().root_device()))
+	{
+		for (const software_info &swinfo : swlist.get_info())
+		{
+			const software_part &part = swinfo.parts().front();
+			if (swlist.is_compatible(part) == SOFTWARE_IS_COMPATIBLE)
+			{
+				for (device_image_interface &image : image_interface_iterator(window->machine().root_device()))
+				{
+					if (!has_software && (opt_name == image.instance_name()))
+					{
+						const char *interface = image.image_interface();
+						if (interface && part.matches_interface(interface))
+						{
+							sl_dir = "\\" + swlist.list_name();
+							has_software = true;
+						}
+					}
+				}
+			}
+		}
+	}
+
+	if (has_software)
+	{
+		// Now, scan through the media_path looking for the required folder)
+		char* sl_root = strtok(rompath, ";");
+		while (sl_root && !passes_tests)
+		{
+			std::string test_path = sl_root + sl_dir;
+			TCHAR *szPath = ui_wstring_from_utf8(test_path.c_str());
+			DWORD dwAttrib = GetFileAttributes(szPath);
+			if ((dwAttrib != INVALID_FILE_ATTRIBUTES) && (dwAttrib & FILE_ATTRIBUTE_DIRECTORY))
+			{
+				passes_tests = true;
+				slmap[opt_name] = test_path;
+			}
+			sl_root = strtok(NULL, ";");
+		}
+	}
+
+	return passes_tests;
+}
+
+
+
+//============================================================
 //  change_device
 //    open a dialog box to open or create a software file
 //============================================================
@@ -2316,7 +2381,6 @@ static void change_device(HWND wnd, device_image_interface *image, bool is_save)
 	char filename[MAX_PATH];
 	const char *initial_dir;
 	BOOL result = 0;
-	int create_format = 0;
 	util::option_resolution *create_args = NULL;
 
 	// get the file
@@ -2355,84 +2419,63 @@ static void change_device(HWND wnd, device_image_interface *image, bool is_save)
 	build_generic_filter(image, is_save, filter);
 
 	// display the dialog
-	result = win_file_dialog(image->device().machine(), wnd, is_save ? WIN_FILE_DIALOG_SAVE : WIN_FILE_DIALOG_OPEN, filter.c_str(), initial_dir, filename, ARRAY_LENGTH(filename));
+	result = win_file_dialog(image->device().machine(), wnd, is_save ? WIN_FILE_DIALOG_SAVE : WIN_FILE_DIALOG_OPEN, filter.c_str(), initial_dir, filename);
 	if (result)
 	{
 		// mount the image
 		if (is_save)
-			(image_error_t)image->create(filename, image->device_get_indexed_creatable_format(create_format), create_args);
+			(image_error_t)image->create(filename, image->device_get_indexed_creatable_format(0), create_args);
 		else
 			(image_error_t)image->load( filename);
-
-		// no need to check the returnvalue and show a messagebox anymore.
-		// a UI message will now be generated by the image code
 	}
 }
 
 
-#if 0
 //============================================================
 //  load_item
 //    open a dialog box to choose a software-list-item to load
 //============================================================
-//To do: get location of software list software from messui.ini, then do much the same as MediaView does
-// Code below is not yet altered
-static void load_item(HWND wnd, device_image_interface *image, bool is_save)
+static void load_item(HWND wnd, device_image_interface *img, bool is_save)
 {
 	std::string filter;
-	char filename[MAX_PATH];
+	char filename[MAX_PATH] = "";
 	const char *initial_dir;
 	BOOL result = 0;
-	int create_format = 0;
-	util::option_resolution *create_args = NULL;
+	std::string opt_name = img->instance_name();
+	std::string as = slmap.find(opt_name)->second;
 
-	// get the file
-	if (image->exists())
+	/* Make sure a folder was specified in the tab, and that it exists */
+	if ((!osd::directory::open(as.c_str())) || (as.find(':') == std::string::npos))
 	{
-		const char *imgname;
-		imgname = image->basename();
-		snprintf(filename, ARRAY_LENGTH(filename), "%s", imgname);
+		/* Default to emu directory */
+		osd_get_full_path(as, ".");
 	}
-	else
-		filename[0] = '\0';
 
-	// get the working directory, but if it is ".", then use the one specified in swpath
-	char *working = 0;
-	std::string dst;
-	osd_get_full_path(dst,"."); // turn local directory into full path
-	initial_dir = image->working_directory().c_str(); // get working directory from diimage.cpp
-	// if . use swpath
-	if (strcmp(dst.c_str(), initial_dir) == 0)  // same?
-		initial_dir = software_dir;
-
-	// remove any trailing backslash
-	working = core_strdup(initial_dir);
-	int temp = strlen(working) - 1;
-	if (temp > 2)
-		if (working[temp] == '\\')
-		{
-			working[temp] = '\0';
-			initial_dir = working;
-		}
-
-// NOTE: the working directory can come from the .cfg file. If it's wrong delete the cfg.
-//printf("%s = %s = %s = %s\n",dst,working,initial_dir,software_dir);
-
+	initial_dir = as.c_str();
 	// build a normal filter
-	build_generic_filter(image, is_save, filter);
+	build_generic_filter(NULL, is_save, filter);
 
 	// display the dialog
-	result = win_file_dialog(image->device().machine(), wnd, is_save ? WIN_FILE_DIALOG_SAVE : WIN_FILE_DIALOG_OPEN, filter.c_str(), initial_dir, filename, ARRAY_LENGTH(filename));
+	result = win_file_dialog(img->device().machine(), wnd, WIN_FILE_DIALOG_OPEN, filter.c_str(), initial_dir, filename);
+
 	if (result)
 	{
-		// mount the image
-		if (is_save)
-			(image_error_t)image->create(filename, image->device_get_indexed_creatable_format(create_format), create_args);
-		else
-			(image_error_t)image->load_software( filename);
+		// Get the Item name out of the full path
+		std::string t3 = filename; // convert to a c++ string so we can manipulate it
+		size_t t1 = t3.find(".zip"); // get rid of zip name and anything after
+		if (t1) t3[t1] = '\0';
+		t1 = t3.find(".7z"); // get rid of 7zip name and anything after
+		if (t1) t3[t1] = '\0';
+		t1 = t3.find_last_of("\\");   // put the swlist name in
+		t3[t1] = ':';
+		t1 = t3.find_last_of("\\"); // get rid of path; we only want the item name
+		t3.erase(0, t1+1);
+
+		// load software
+		(image_error_t)img->load_software( t3.c_str());
 	}
 }
-#endif
+
 
 
 //============================================================
@@ -2771,10 +2814,12 @@ static void prepare_menus(HWND wnd)
 			flags_for_writing |= MF_GRAYED;
 
 		sub_menu = CreateMenu();
-		win_append_menu_utf8(sub_menu, MF_STRING, new_item + DEVOPTION_OPEN, "Mount File...");
 
-		// TODO: add an option to load a software item
-		//win_append_menu_utf8(sub_menu, MF_STRING, new_item + DEVOPTION_ITEM, "Mount Item...");
+		// see if a software list exists and if so add the Mount Item menu
+		if (get_softlist_info(wnd, &img))
+			win_append_menu_utf8(sub_menu, MF_STRING, new_item + DEVOPTION_ITEM, "Mount Item...");
+
+		win_append_menu_utf8(sub_menu, MF_STRING, new_item + DEVOPTION_OPEN, "Mount File...");
 
 		if (img.is_creatable())
 			win_append_menu_utf8(sub_menu, MF_STRING, new_item + DEVOPTION_CREATE, "Create...");
@@ -2794,7 +2839,7 @@ static void prepare_menus(HWND wnd)
 		}
 
 		std::string filename;
-		if (img.basename() != nullptr)
+		if (img.basename())
 		{
 			filename.assign(img.basename());
 
@@ -2927,7 +2972,7 @@ static void device_command(HWND wnd, device_image_interface *img, int devoption)
 			break;
 
 		case DEVOPTION_ITEM:
-			//TODO: load_item(wnd, img, FALSE);
+			load_item(wnd, img, FALSE);
 			break;
 
 		case DEVOPTION_CREATE:
@@ -3404,6 +3449,10 @@ static HMODULE win_resource_module(void)
 
 int win_create_menu(running_machine &machine, HMENU *menus)
 {
+	// do not show in the mewui ui.
+	if (strcmp(machine.system().name, "___empty") == 0)
+		return 0;
+
 	// Get the path for loose software from <gamename>.ini
 	// if this is invalid, then windows chooses whatever directory it used last.
 	const char* t = machine.options().emu_options::sw_path();
@@ -3413,10 +3462,6 @@ int win_create_menu(running_machine &machine, HMENU *menus)
 		software_dir = t1; // the first path of many
 	else
 		software_dir = t; // the only path
-
-	// do not show in the mewui ui.
-	if (strcmp(machine.system().name, "___empty") == 0)
-		return 0;
 
 	HMODULE module = win_resource_module();
 	HMENU menu_bar = LoadMenu(module, MAKEINTRESOURCE(IDR_RUNTIME_MENU));
