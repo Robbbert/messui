@@ -2335,6 +2335,8 @@ static bool get_softlist_info(HWND wnd, device_image_interface *img)
 			{
 				for (device_image_interface &image : image_interface_iterator(window->machine().root_device()))
 				{
+					if (!image.user_loadable())
+						continue;
 					if (!has_software && (opt_name == image.instance_name()))
 					{
 						const char *interface = image.image_interface();
@@ -2793,7 +2795,10 @@ static void prepare_menus(HWND wnd)
 	// then set up the actual devices
 	for (device_image_interface &img : image_interface_iterator(window->machine().root_device()))
 	{
-		new_item = ID_DEVICE_0 + (cnt * DEVOPTION_MAX);
+		if (!img.user_loadable())
+			continue;
+
+			new_item = ID_DEVICE_0 + (cnt * DEVOPTION_MAX);
 		flags_for_exists = MF_STRING;
 
 		if (!img.exists())
