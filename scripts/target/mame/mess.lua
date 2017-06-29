@@ -104,7 +104,7 @@ CPUS["MINX"] = true
 CPUS["SSEM"] = true
 CPUS["AVR8"] = true
 CPUS["TMS1000"] = true
-CPUS["I4004"] = true
+CPUS["MCS40"] = true
 CPUS["SUPERFX"] = true
 CPUS["Z8"] = true
 CPUS["I8008"] = true
@@ -637,6 +637,7 @@ BUSES["BW2"] = true
 BUSES["C64"] = true
 BUSES["CBM2"] = true
 BUSES["CBMIEC"] = true
+BUSES["CBUS"] = true
 BUSES["CENTRONICS"] = true
 BUSES["CGENIE_EXPANSION"] = true
 BUSES["CGENIE_PARALLEL"] = true
@@ -2119,6 +2120,7 @@ createMESSProjects(_target, _subtarget, "intel")
 files {
 	MAME_DIR .. "src/mame/drivers/basic52.cpp",
 	MAME_DIR .. "src/mame/drivers/imds.cpp",
+	MAME_DIR .. "src/mame/drivers/intellec4.cpp",
 	MAME_DIR .. "src/mame/drivers/ipc.cpp",
 	MAME_DIR .. "src/mame/drivers/ipds.cpp",
 	MAME_DIR .. "src/mame/drivers/isbc.cpp",
@@ -2385,14 +2387,6 @@ files {
 	MAME_DIR .. "src/mame/drivers/pc88va.cpp",
 	MAME_DIR .. "src/mame/drivers/pc100.cpp",
 	MAME_DIR .. "src/mame/drivers/pc9801.cpp",
-	MAME_DIR .. "src/mame/machine/pc9801_26.cpp",
-	MAME_DIR .. "src/mame/machine/pc9801_26.h",
-	MAME_DIR .. "src/mame/machine/pc9801_86.cpp",
-	MAME_DIR .. "src/mame/machine/pc9801_86.h",
-	MAME_DIR .. "src/mame/machine/pc9801_118.cpp",
-	MAME_DIR .. "src/mame/machine/pc9801_118.h",
-	MAME_DIR .. "src/mame/machine/pc9801_cbus.cpp",
-	MAME_DIR .. "src/mame/machine/pc9801_cbus.h",
 	MAME_DIR .. "src/mame/machine/pc9801_kbd.cpp",
 	MAME_DIR .. "src/mame/machine/pc9801_kbd.h",
 	MAME_DIR .. "src/mame/machine/pc9801_cd.cpp",
