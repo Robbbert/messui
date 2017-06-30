@@ -3368,7 +3368,8 @@ static bool invoke_command(HWND wnd, UINT command)
 			else
 			if ((command >= 3400) && (command < 4000))
 			{
-				window->machine().options().emu_options::set_value(slot_map[command].slotname.c_str(), slot_map[command].optname.c_str(), OPTION_PRIORITY_CMDLINE);
+				slot_option &opt(window->machine().options().slot_option(slot_map[command].slotname.c_str()));
+				opt.specify(slot_map[command].optname.c_str());
 				window->machine().schedule_hard_reset();
 			}
 			else
