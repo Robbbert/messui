@@ -399,7 +399,7 @@ void MyFillSoftwareList(int drvindex, BOOL bForce)
 	BOOL is_same = 0;
 	HWND hwndSoftwarePicker;
 	HWND hwndSoftwareList;
-	HWND hwndSoftwareDevView;
+	//HWND hwndSoftwareDevView;
 
 	// do we have to do anything?
 	if (!bForce)
@@ -422,10 +422,10 @@ void MyFillSoftwareList(int drvindex, BOOL bForce)
 	// locate key widgets
 	hwndSoftwarePicker = GetDlgItem(GetMainWindow(), IDC_SWLIST);
 	hwndSoftwareList = GetDlgItem(GetMainWindow(), IDC_SOFTLIST);
-	hwndSoftwareDevView = GetDlgItem(GetMainWindow(), IDC_SWDEVVIEW);
+	//hwndSoftwareDevView = GetDlgItem(GetMainWindow(), IDC_SWDEVVIEW);
 
 	// set up the device view
-	DevView_SetDriver(hwndSoftwareDevView, s_config);
+	//DevView_SetDriver(hwndSoftwareDevView, s_config);
 
 	// set up the software picker
 	SoftwarePicker_Clear(hwndSoftwarePicker);
@@ -596,7 +596,7 @@ static void MessRemoveImage(int drvindex, const char *pszFilename)
 	{
 		// search through all the slots looking for a matching software name and unload it
 		std::string opt_name = dev.instance_name();
-		s = o.value(opt_name.c_str());
+		s = o.value(opt_name.c_str());                // ## THIS CRASHES ##
 		if (s && (strcmp(pszFilename, s)==0))
 		{
 			img = &dev;
@@ -621,25 +621,23 @@ void MessReadMountedSoftware(int drvindex)
 
 static void MessRefreshPicker(void)
 {
-	HWND hwndSoftware;
-	int i = 0;
-	LVFINDINFO lvfi;
-	const char *s;
-	windows_options o;
-
-	hwndSoftware = GetDlgItem(GetMainWindow(), IDC_SWLIST);
+	HWND hwndSoftware = GetDlgItem(GetMainWindow(), IDC_SWLIST);
 
 	s_bIgnoreSoftwarePickerNotifies = TRUE;
 
 	// Now clear everything out; this may call back into us but it should not
 	// be problematic
 	ListView_SetItemState(hwndSoftware, -1, 0, LVIS_SELECTED);
-
+#if 0
+	int i = 0;
+	LVFINDINFO lvfi;
+	const char *s;
+	windows_options o;
 	for (device_image_interface &dev : image_interface_iterator(s_config->mconfig->root_device()))
 	{
 		std::string opt_name = dev.instance_name(); // get name of device slot
 		load_options(o, OPTIONS_GAME, s_config->driver_index);
-		s = o.value(opt_name.c_str()); // get name of software in the slot
+		s = o.value(opt_name.c_str()); // get name of software in the slot  ## THIS CRASHES ##
 
 		if (s[0]) // if software is loaded
 		{
@@ -660,7 +658,7 @@ static void MessRefreshPicker(void)
 			}
 		}
 	}
-
+#endif
 	s_bIgnoreSoftwarePickerNotifies = FALSE;
 }
 
@@ -958,9 +956,7 @@ static BOOL DevView_GetOpenFileName(HWND hwndDevView, const machine_config *conf
 	std::string as, dst, opt_name = dev->instance_name();
 	windows_options o;
 	load_options(o, OPTIONS_GAME, drvindex);
-	auto iter = o.image_options().find(opt_name.c_str());
-	std::string temp = std::move(iter->second);
-	const char *s = temp.c_str();
+	const char* s = o.value(opt_name.c_str());            // ## THIS CRASHES ##
 
 	/* Get the path to the currently mounted image */
 	util::zippath_parent(as, s);
@@ -1068,7 +1064,7 @@ static BOOL DevView_GetOpenItemName(HWND hwndDevView, const machine_config *conf
 	std::string as, dst, opt_name = dev->instance_name();
 	windows_options o;
 	load_options(o, OPTIONS_GAME, drvindex);
-	s = o.value(opt_name.c_str());
+	s = o.value(opt_name.c_str());                // ## THIS CRASHES ##
 
 	/* Get the path to the currently mounted image, chop off any trailing backslash */
 	util::zippath_parent(as, s);
@@ -1273,16 +1269,13 @@ static LPCTSTR DevView_GetSelectedSoftware(HWND hwndDevView, int nDriverIndex,
 	const machine_config *config, const device_image_interface *dev, LPTSTR pszBuffer, UINT nBufferLength)
 {
 	// can't get loaded image from dev->basename because the machine isn't running.
-	std::string temp;
 	windows_options o;
 	load_options(o, OPTIONS_GAME, nDriverIndex);
-	auto iter = o.image_options().find(dev->instance_name().c_str());
-	if (iter != o.image_options().end())
-		temp = std::move(iter->second);
+	const char* temp = o.value(dev->instance_name().c_str()); // ## THIS CRASHES ##
 
-	if (!temp.empty())
+	if (temp)
 	{
-		TCHAR* t_s = ui_wstring_from_utf8(temp.c_str());
+		TCHAR* t_s = ui_wstring_from_utf8(temp);
 		if( t_s )
 		{
 			_sntprintf(pszBuffer, nBufferLength, TEXT("%s"), t_s);
