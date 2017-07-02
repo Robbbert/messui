@@ -108,7 +108,6 @@ static void DevView_GetColumns(HWND hwndDevView, int *pnStaticPos, int *pnStatic
 
 void DevView_Refresh(HWND hwndDevView)
 {
-#if 0
 	struct DevViewInfo *pDevViewInfo;
 	int i = 0;
 	LPCTSTR pszSelection;
@@ -135,7 +134,6 @@ void DevView_Refresh(HWND hwndDevView)
 			pDevViewInfo->bSurpressFilenameChanged = FALSE;
 		}
 	}
-#endif
 }
 
 
