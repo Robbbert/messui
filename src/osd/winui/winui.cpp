@@ -904,6 +904,7 @@ static DWORD RunMAME(int nGameIndex, const play_options *playopts)
 			global_opts.set_value(OPTION_AVIWRITE, playopts->aviwrite, OPTION_PRIORITY_CMDLINE);
 	}
 	//printf("Software=%s:%s\n",g_szSelectedDevice, g_szSelectedSoftware);
+	// These are needed when choosing an item from the SW List
 	if (g_szSelectedSoftware[0] && g_szSelectedDevice[0])
 	{
 		global_opts.set_value(g_szSelectedDevice, g_szSelectedSoftware, OPTION_PRIORITY_CMDLINE);
@@ -4776,6 +4777,10 @@ static void GamePicker_EnteringItem(HWND hwndPicker, int nItem)
 {
 	// printf("entering %s\n",driver_list::driver(nItem).name);
 
+	windows_options o;
+	load_options(o, OPTIONS_GAME, nItem);
+	const char* name = driver_list::driver(nItem).name;
+	o.set_value(OPTION_SYSTEMNAME, name, OPTION_PRIORITY_CMDLINE);
 	EnableSelection(nItem);
 	MessReadMountedSoftware(nItem);
 	// decide if it is valid to load a savestate

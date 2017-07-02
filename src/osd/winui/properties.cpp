@@ -135,6 +135,9 @@ b) Exit the dialog.
 #define PropSheet_GetTabControl(d) (HWND)(LRESULT)(int)SendMessage((d),PSM_GETTABCONTROL,0,0)
 #endif /* defined(__GNUC__) */
 
+/* Enable this if MAME supports multiple versions of D3D */
+//#define D3DVERSION
+
 /***************************************************************
  * Imported function prototypes
  ***************************************************************/
@@ -154,7 +157,9 @@ static void InitializeSkippingUI(HWND hwnd);
 static void InitializeRotateUI(HWND hwnd);
 static void UpdateSelectScreenUI(HWND hwnd);
 static void InitializeSelectScreenUI(HWND hwnd);
+#ifdef D3DVERSION
 static void InitializeD3DVersionUI(HWND hwnd);
+#endif
 static void InitializeVideoUI(HWND hwnd);
 static void InitializeBIOSUI(HWND hwnd);
 static void InitializeControllerMappingUI(HWND hwnd);
@@ -254,7 +259,7 @@ static struct ComboBoxSound
 //	{ TEXT("XAudio2"),              "xaudio2" },     // invalid option
 };
 #define NUMSOUND (sizeof(g_ComboBoxSound) / sizeof(g_ComboBoxSound[0]))
-
+#ifdef D3DVERSION
 static struct ComboBoxD3DVersion
 {
 	const TCHAR* m_pText;
@@ -267,7 +272,7 @@ static struct ComboBoxD3DVersion
 
 #define NUMD3DVERSIONS (sizeof(g_ComboBoxD3DVersion) / sizeof(g_ComboBoxD3DVersion[0]))
 #define WINOPTION_D3DVERSION "9"
-
+#endif
 static struct ComboBoxSelectScreen
 {
 	const TCHAR* m_pText;
@@ -974,12 +979,9 @@ HWND hWnd;
 }
 
 /* Handle all options property pages */
-// NOTE you cannot just say opts1=opts2, although in theory it should work, in practice opts1 becomes null.
 INT_PTR CALLBACK GameOptionsProc(HWND hDlg, UINT Msg, WPARAM wParam, LPARAM lParam)
 {
 	BOOL g_bUseDefaults = 0, g_bReset = 0;
-	//d3d_version = pCurrentOpts.int_value(WINOPTION_D3DVERSION);
-
 
 	switch (Msg)
 	{
@@ -1580,11 +1582,12 @@ static void SetPropEnabledControls(HWND hWnd)
 	EnableWindow(GetDlgItem(hWnd, IDC_SNAPSIZEWIDTH), !g_bAutoSnapSize);
 	EnableWindow(GetDlgItem(hWnd, IDC_SNAPSIZEX), !g_bAutoSnapSize);
 
-	EnableWindow(GetDlgItem(hWnd,IDC_D3D_FILTER),d3d);
-	EnableWindow(GetDlgItem(hWnd,IDC_D3D_VERSION),(NUMD3DVERSIONS>1) & d3d);
+	EnableWindow(GetDlgItem(hWnd, IDC_D3D_FILTER),d3d);
+#ifdef D3DVERSION
+	EnableWindow(GetDlgItem(hWnd, IDC_D3D_VERSION),(NUMD3DVERSIONS>1) & d3d);
+#endif
 
 	//Switchres and D3D or ddraw enable the per screen parameters
-
 	EnableWindow(GetDlgItem(hWnd, IDC_NUMSCREENS), ddraw | d3d);
 	EnableWindow(GetDlgItem(hWnd, IDC_NUMSCREENSDISP), ddraw | d3d);
 	EnableWindow(GetDlgItem(hWnd, IDC_SCREENSELECT), ddraw | d3d);
@@ -2231,7 +2234,9 @@ static void BuildDataMap(void)
 	datamap_add(properties_datamap, IDC_SYNCREFRESH,			DM_BOOL,	OSDOPTION_SYNCREFRESH);
 
 	// Direct3D specific options
+#ifdef D3DVERSION
 	datamap_add(properties_datamap, IDC_D3D_VERSION,			DM_INT,		WINOPTION_D3DVERSION);
+#endif
 	datamap_add(properties_datamap, IDC_D3D_FILTER,				DM_BOOL,	OSDOPTION_FILTER);
 
 	// per window video options
@@ -2364,7 +2369,9 @@ static void InitializeOptions(HWND hDlg)
 	InitializeSelectScreenUI(hDlg);
 	InitializeBIOSUI(hDlg);
 	InitializeControllerMappingUI(hDlg);
+#ifdef D3DVERSION
 	InitializeD3DVersionUI(hDlg);
+#endif
 	InitializeVideoUI(hDlg);
 }
 
@@ -2504,6 +2511,7 @@ static void InitializeVideoUI(HWND hwnd)
 	res++;
 }
 
+#ifdef D3DVERSION
 /* Populate the D3D Version drop down */
 static void InitializeD3DVersionUI(HWND hwnd)
 {
@@ -2519,7 +2527,7 @@ static void InitializeD3DVersionUI(HWND hwnd)
 	}
 	res++;
 }
-
+#endif
 static void UpdateSelectScreenUI(HWND hwnd)
 {
 	int res = 0, i, curSel;

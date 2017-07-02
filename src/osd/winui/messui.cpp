@@ -515,7 +515,7 @@ void MessUpdateSoftwareList(void)
 }
 
 
-
+// umm, what's this do??
 BOOL MessApproveImageList(HWND hParent, int drvindex)
 {
 	char szMessage[256];
@@ -1444,9 +1444,7 @@ static void SoftwareList_EnteringItem(HWND hwndSoftwareList, int nItem)
 	LPCSTR pszFullName;
 	LPCSTR pszFileName;
 	int drvindex = 0;
-	HWND hwndList;
-
-	hwndList = GetDlgItem(GetMainWindow(), IDC_LIST);
+	HWND hwndList = GetDlgItem(GetMainWindow(), IDC_LIST);
 
 	if (!s_bIgnoreSoftwarePickerNotifies)
 	{
