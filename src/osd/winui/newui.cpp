@@ -2844,14 +2844,10 @@ static void prepare_menus(HWND wnd)
 				const software_part *tmp = img.part_entry();
 				if (!tmp->name().empty())
 				{
-					filename.append(" (");
-					filename.append(tmp->name());
+					filename.append(" (").append(tmp->name());
 					// also check if this part has a specific part_id (e.g. "Map Disc", "Bonus Disc", etc.), and in case display it
-					if (img.get_feature("part_id") != nullptr)
-					{
-						filename.append(": ");
-						filename.append(img.get_feature("part_id"));
-					}
+					if (img.get_feature("part_id"))
+						filename.append(": ").append(img.get_feature("part_id"));
 					filename.append(")");
 				}
 			}

@@ -2450,7 +2450,6 @@ void load_options(windows_options &opts, OPTIONS_TYPE opt_type, int game_num)
 	const game_driver *driver = NULL;
 	if (game_num > -1)
 		driver = &driver_list::driver(game_num);
-	CreateGameOptions(opts, opt_type, game_num);
 
 	// Try base ini first
 	std::string fname = std::string(emulator_info::get_configname()).append(".ini");

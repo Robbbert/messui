@@ -4776,13 +4776,10 @@ static void GamePicker_LeavingItem(HWND hwndPicker, int nItem)
 static void GamePicker_EnteringItem(HWND hwndPicker, int nItem)
 {
 	// printf("entering %s\n",driver_list::driver(nItem).name);
-
-	windows_options o;
-	load_options(o, OPTIONS_GAME, nItem);
-	const char* name = driver_list::driver(nItem).name;
-	o.set_value(OPTION_SYSTEMNAME, name, OPTION_PRIORITY_CMDLINE);
 	EnableSelection(nItem);
+
 	MessReadMountedSoftware(nItem);
+
 	// decide if it is valid to load a savestate
 	if (driver_list::driver(nItem).flags & MACHINE_SUPPORTS_SAVE)
 		EnableMenuItem(GetMenu(hMain), ID_FILE_LOADSTATE, MFS_ENABLED);
