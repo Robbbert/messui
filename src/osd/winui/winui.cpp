@@ -1419,10 +1419,10 @@ void UpdateScreenShot(void)
 
 	if (have_selection)
 	{
-		if (!g_szSelectedItem[0] || 
-			!LoadScreenShotEx(Picker_GetSelectedItem(hwndList), g_szSelectedItem, TabView_GetCurrentTab(hTabCtrl)))
-				// load and set image, or empty it if we don't have one
-				LoadScreenShot(Picker_GetSelectedItem(hwndList), TabView_GetCurrentTab(hTabCtrl));
+		if (g_szSelectedItem[0])
+			LoadScreenShot(Picker_GetSelectedItem(hwndList), g_szSelectedItem, TabView_GetCurrentTab(hTabCtrl));
+		else
+			LoadScreenShot(Picker_GetSelectedItem(hwndList), NULL, TabView_GetCurrentTab(hTabCtrl));
 	}
 
 	// figure out if we have a history or not, to place our other windows properly
@@ -1441,7 +1441,7 @@ void UpdateScreenShot(void)
 		GetWindowRect(GetDlgItem(hMain, IDC_SSFRAME), &fRect);
 		OffsetRect(&fRect, -p.x, -p.y);
 
-		// show history on this tab IFF
+		// show history on this tab IF
 		// - we have history for the game
 		// - we're on the first tab
 		// - we DON'T have a separate history tab
