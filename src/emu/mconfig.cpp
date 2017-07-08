@@ -80,7 +80,14 @@ machine_config::machine_config(const game_driver &gamedrv, emu_options &options)
 					device_t::static_set_input_default(*new_dev, input_device_defaults);
 			}
 			else
-				throw emu_fatalerror("Unknown slot option '%s' in slot '%s'", selval, owner.tag()+1);
+// MESSUI start
+			{
+				//throw emu_fatalerror("Unknown slot option '%s' in slot '%s'", selval, owner.tag()+1);
+				printf("Unknown slot option '%s' in slot '%s'\n", selval, owner.tag()+1);
+				slot_option &opt = options.slot_option(slot_option_name);
+				opt.specify("");
+			}
+// MESSUI end
 		}
 	}
 

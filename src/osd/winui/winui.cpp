@@ -4416,16 +4416,15 @@ static BOOL MameCommand(HWND hwnd,int id, HWND hwndCtl, UINT codeNotify)
 
 	case ID_OPTIONS_BG:
 		{
-			// More c++ stupidity with strings
 			// Get the path from the existing filename; if no filename go to root
 			TCHAR* t_bgdir = TEXT(".");
 			const char *s = GetBgDir();
 			std::string as;
 			util::zippath_parent(as, s);
 			size_t t1 = as.length()-1;
-			if (as[t1] == '\\') as[t1]='\0';
+			if (as[t1] == '\\') as.substr(0, t1-1);
 			t1 = as.find(':');
-			if (t1 > 0)
+			if (t1 != std::string::npos)
 				t_bgdir = ui_wstring_from_utf8(as.c_str());
 
 			OPENFILENAME OFN;
@@ -5227,17 +5226,14 @@ static void SetRandomPickItem()
 
 BOOL CommonFileDialog(common_file_dialog_proc cfd, char *filename, int filetype)
 {
-	BOOL success;
-	UINT16 i;
 	OPENFILENAME ofn;
 	std::string dirname;
 	TCHAR* t_filename;
 	TCHAR t_filename_buffer[MAX_PATH]  = {0, };
-	char *utf8_filename;
 
 	// convert the filename to UTF-8 and copy into buffer
 	t_filename = ui_wstring_from_utf8(filename);
-	if (t_filename != NULL)
+	if (t_filename)
 	{
 		_sntprintf(t_filename_buffer, ARRAY_LENGTH(t_filename_buffer), TEXT("%s"), t_filename);
 		free(t_filename);
@@ -5288,21 +5284,8 @@ BOOL CommonFileDialog(common_file_dialog_proc cfd, char *filename, int filetype)
 		ofn.lpstrDefExt   = TEXT("txt");
 		dirname = GetInpDir();
 		break;
-	case FILETYPE_CHEAT_FILE :
-		ofn.lpstrFilter   = TEXT("cheats (*.dat)\0*.dat;\0All files (*.*)\0*.*\0");
-		ofn.lpstrDefExt   = TEXT("dat");
-		dirname = ".";
-		break;
-	case FILETYPE_HISTORY_FILE :
-		ofn.lpstrFilter   = TEXT("history (*.dat)\0*.dat;\0All files (*.*)\0*.*\0");
-		ofn.lpstrDefExt   = TEXT("dat");
-		dirname = ".";
-		break;
-	case FILETYPE_MAMEINFO_FILE :
-		ofn.lpstrFilter   = TEXT("mameinfo (*.dat)\0*.dat;\0All files (*.*)\0*.*\0");
-		ofn.lpstrDefExt   = TEXT("dat");
-		dirname = ".";
-		break;
+	default:
+		return false;
 	}
 	ofn.lpstrCustomFilter = NULL;
 	ofn.nMaxCustFilter    = 0;
@@ -5313,8 +5296,8 @@ BOOL CommonFileDialog(common_file_dialog_proc cfd, char *filename, int filetype)
 	ofn.nMaxFileTitle     = 0;
 
 	// Only want first directory
-	i = dirname.find(";");
-	if (i > 0)
+	size_t i = dirname.find(";");
+	if (i != std::string::npos)
 		dirname.resize(i);
 	if (dirname.empty())
 		dirname = ".";
@@ -5328,15 +5311,15 @@ BOOL CommonFileDialog(common_file_dialog_proc cfd, char *filename, int filetype)
 	ofn.lpfnHook          = NULL;
 	ofn.lpTemplateName    = NULL;
 
-	success = cfd(&ofn);
+	BOOL success = cfd(&ofn);
 	if (success)
 	{
 		//dprintf("got filename %s nFileExtension %u\n",filename,ofn.nFileExtension);
 		/*GetDirectory(filename,last_directory,sizeof(last_directory));*/
 	}
 
-	utf8_filename = ui_utf8_from_wstring(t_filename_buffer);
-	if (utf8_filename != NULL)
+	char *utf8_filename = ui_utf8_from_wstring(t_filename_buffer);
+	if (utf8_filename)
 	{
 		snprintf(filename, MAX_PATH, "%s", utf8_filename);
 		free(utf8_filename);
