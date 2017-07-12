@@ -608,6 +608,7 @@ MACHINES["APPLE_FDC"] = true
 MACHINES["SONY_DRIVE"] = true
 MACHINES["SCNXX562"] = true
 MACHINES["FGA002"] = true
+MACHINES["I82586"] = true
 MACHINES["INPUT_MERGER"] = true
 -- MACHINES["K054321"] = true
 
@@ -662,6 +663,7 @@ BUSES["GAMEBOY"] = true
 BUSES["GAMEGEAR"] = true
 BUSES["GBA"] = true
 BUSES["GENERIC"] = true
+BUSES["HEXBUS"] = true
 BUSES["HPHIL"] = true
 BUSES["HPDIO"] = true
 BUSES["IEEE488"] = true
@@ -2157,8 +2159,6 @@ files {
 	MAME_DIR .. "src/mame/machine/cammu.cpp",
 	MAME_DIR .. "src/mame/machine/interpro_ioga.h",
 	MAME_DIR .. "src/mame/machine/interpro_ioga.cpp",
-	MAME_DIR .. "src/mame/machine/interpro_ioga.h",
-	MAME_DIR .. "src/mame/machine/interpro_ioga.cpp",
 	MAME_DIR .. "src/mame/machine/interpro_mcga.h",
 	MAME_DIR .. "src/mame/machine/interpro_mcga.cpp",
 	MAME_DIR .. "src/mame/machine/interpro_sga.h",
@@ -2556,6 +2556,7 @@ files {
 	MAME_DIR .. "src/mame/drivers/pcipc.cpp",
 	MAME_DIR .. "src/mame/drivers/tandy1t.cpp",
 	MAME_DIR .. "src/mame/drivers/tosh1000.cpp",
+	MAME_DIR .. "src/mame/drivers/compc.cpp",
 	MAME_DIR .. "src/mame/video/pc_t1t.cpp",
 	MAME_DIR .. "src/mame/video/pc_t1t.h",
 }
