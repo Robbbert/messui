@@ -223,12 +223,12 @@ UINT8 playopts_apply = 0;
 typedef struct _play_options play_options;
 struct _play_options
 {
-	const char *record;			// OPTION_RECORD
-	const char *playback;		// OPTION_PLAYBACK
-	const char *state;			// OPTION_STATE
-	const char *wavwrite;		// OPTION_WAVWRITE
-	const char *mngwrite;		// OPTION_MNGWRITE
-	const char *aviwrite;		// OPTION_AVIWRITE
+	const char *record;      // OPTION_RECORD
+	const char *playback;    // OPTION_PLAYBACK
+	const char *state;       // OPTION_STATE
+	const char *wavwrite;    // OPTION_WAVWRITE
+	const char *mngwrite;    // OPTION_MNGWRITE
+	const char *aviwrite;    // OPTION_AVIWRITE
 };
 
 /***************************************************************************

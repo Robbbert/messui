@@ -3,7 +3,7 @@
 // ------------------------------------------------------------------------
 // Software Device View class
 // ------------------------------------------------------------------------
-
+#if 0
 #include <string.h>
 #include <windows.h>
 #include <shellapi.h>
@@ -515,3 +515,4 @@ void DevView_RegisterClass(void)
 
 
 
+#endif

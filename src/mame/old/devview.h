@@ -1,5 +1,6 @@
 // For licensing and usage information, read docs/winui_license.txt
 //****************************************************************************
+#if 0
 #ifndef DEVVIEW_H
 #define DEVVIEW_H
 
@@ -22,3 +23,4 @@ void DevView_RegisterClass(void);
 void DevView_Refresh(HWND hwndDevView);
 
 #endif // DEVVIEW_H
+#endif

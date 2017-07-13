@@ -237,6 +237,7 @@ extern const ICONDATA g_iconData[] =
 	{ IDI_WIN_SNAP,          "snapshot" },
 	{ IDI_WIN_PRIN,          "printer" },
 	{ IDI_WIN_HARD,          "hard" },
+	{ IDI_WIN_MIDI,          "midi" },
 	{ 0 }
 };
 #else
