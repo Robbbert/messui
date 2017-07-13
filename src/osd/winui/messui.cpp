@@ -433,8 +433,6 @@ static std::string ProcessSWDir(int drvindex)
 
 	// Get the game's software path
 	windows_options o;
-	//const char* name = driver_list::driver(drvindex).name;
-	//o.set_value(OPTION_SYSTEMNAME, name, OPTION_PRIORITY_CMDLINE);
 	load_options(o, OPTIONS_GAME, drvindex);
 	char dir1[2048];
 	strcpy(dir1, o.value(OPTION_SWPATH));
@@ -1226,7 +1224,7 @@ static BOOL DevView_GetOpenItemName(HWND hwndDevView, const machine_config *conf
 	std::string as, opt_name = dev->instance_name();
 	windows_options o;
 	const char* name = driver_list::driver(drvindex).name;
-	o.set_value(OPTION_SYSTEMNAME, name, OPTION_PRIORITY_CMDLINE);
+	o.set_value(OPTION_SYSTEMNAME, name, OPTION_PRIORITY_CMDLINE); // required
 	load_options(o, OPTIONS_GAME, drvindex);
 	s = o.value(opt_name.c_str());
 
@@ -1235,21 +1233,16 @@ static BOOL DevView_GetOpenItemName(HWND hwndDevView, const machine_config *conf
 	size_t i = as.length()-1;
 	if (as[i] == '\\')
 		as.erase(i);
+
 	std::string dst = as;
 
 	/* See if an image was loaded, and that the path still exists */
-	if ((!osd::directory::open(as.c_str())) || (as.find(':') == std::string::npos))
+//	if ((!osd::directory::open(as.c_str())) || (as.find(':') == std::string::npos)) // commented out because if loose software was loaded it would go to that folder
 	{
-		/* Get the path from the SL base */
-		as = GetSLDir();
-
-		/* We only want the first path; throw out the rest */
-		i = as.find(';');
-		if (i != std::string::npos)
-			as.substr(0, i);
+		std::string sl_dir;
+		BOOL has_software = false, passes_tests = false;
 
 		// Get the path to suitable software
-		i = 0;
 		for (software_list_device &swlist : software_list_device_iterator(config->root_device()))
 		{
 			for (const software_info &swinfo : swlist.get_info())
@@ -1261,13 +1254,13 @@ static BOOL DevView_GetOpenItemName(HWND hwndDevView, const machine_config *conf
 					{
 						if (!image.user_loadable())
 							continue;
-						if ((i == 0) && (opt_name == image.instance_name()))
+						if (!has_software && (opt_name == image.instance_name()))
 						{
 							const char *interface = image.image_interface();
 							if (interface != nullptr && part.matches_interface(interface))
 							{
-								as.append("\\").append(swlist.list_name());
-								i++;
+								sl_dir = "\\" + swlist.list_name();
+								has_software = true;
 							}
 						}
 					}
@@ -1275,15 +1268,32 @@ static BOOL DevView_GetOpenItemName(HWND hwndDevView, const machine_config *conf
 			}
 		}
 
-		dst = as;
-
-		/* Make sure a folder was specified in the tab, and that it exists */
-		if ((!osd::directory::open(as.c_str())) || (as.find(':') == std::string::npos))
+		if (has_software)
 		{
-			/* Default to emu directory */
-			osd_get_full_path(dst,".");
+			// Now, scan through the media_path looking for the required folder
+			char rompath[512];
+			strcpy(rompath, GetRomDirs());
+			char* sl_root = strtok(rompath, ";");
+			while (sl_root && !passes_tests)
+			{
+				as = sl_root + sl_dir;
+				TCHAR *szPath = ui_wstring_from_utf8(as.c_str());
+				DWORD dwAttrib = GetFileAttributes(szPath);
+				if ((dwAttrib != INVALID_FILE_ATTRIBUTES) && (dwAttrib & FILE_ATTRIBUTE_DIRECTORY))
+				{
+					passes_tests = true;
+					dst = as;
+				}
+				free(szPath);
+
+				sl_root = strtok(NULL, ";");
+			}
 		}
 	}
+
+	if (!osd::directory::open(dst.c_str()))
+		// Default to emu directory
+		osd_get_full_path(dst, ".");
 
 	mess_image_type imagetypes[256];
 	SetupImageTypes(config, imagetypes, ARRAY_LENGTH(imagetypes), true, dev);
@@ -1317,8 +1327,8 @@ static BOOL DevView_GetOpenItemName(HWND hwndDevView, const machine_config *conf
 
 		// set up inifile text to signify to MAME that a SW ITEM is to be used
 		SetSelectedSoftware(drvindex, dev, t3.c_str());
-		strcpy(g_szSelectedSoftware, t3.c_str()); // store to global item name
-		strcpy(g_szSelectedDevice, opt_name.c_str()); // get media-device name (brief_instance_name is ok too)
+		//strcpy(g_szSelectedSoftware, t3.c_str()); // store to global item name
+		//strcpy(g_szSelectedDevice, opt_name.c_str()); // get media-device name (brief_instance_name is ok too)
 	}
 
 	return bResult;
