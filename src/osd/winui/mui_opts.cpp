@@ -2691,9 +2691,9 @@ void SetSelectedSoftware(int driver_index, const device_image_interface *dev, co
 		dprintf("SetSelectedSoftware(): dev=%p (\'%s\') software='%s'\n", dev, driver_list::driver(driver_index).name, software);
 	}
 
-	load_options(o, OPTIONS_GAME, driver_index);
 	const char* name = driver_list::driver(driver_index).name;
 	o.set_value(OPTION_SYSTEMNAME, name, OPTION_PRIORITY_CMDLINE);
+	load_options(o, OPTIONS_GAME, driver_index);
 	o.set_value(opt_name.c_str(), software, OPTION_PRIORITY_CMDLINE);
 	//o.image_option(opt_name).specify(software);
 	save_options(o, OPTIONS_GAME, driver_index);

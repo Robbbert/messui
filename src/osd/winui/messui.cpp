@@ -81,6 +81,7 @@ static HWND MyColumnDialogProc_hwndPicker;
 static int *MyColumnDialogProc_order;
 static int *MyColumnDialogProc_shown;
 static int *mess_icon_index;
+static std::map<std::string,std::string> slmap;
 
 // TODO - We need to make icons for Cylinders, Punch Cards, and Punch Tape!
 static const device_entry s_devices[] =
@@ -762,6 +763,8 @@ void MyFillSoftwareList(int drvindex, BOOL bForce)
 			return;
 	}
 
+	slmap.clear();
+
 	// free the machine config, if necessary
 	MySoftwareListClose();
 
@@ -1086,6 +1089,8 @@ static void SetupImageTypes(const machine_config *config, mess_image_type *types
 	}
 
 	if (dev == NULL)
+#if 0
+	// Nobody used this so we will usurp it to just exit instead
 	{
 		/* special case; all non-printer devices */
 		for (device_image_interface &device : image_interface_iterator(s_config->mconfig->root_device()))
@@ -1095,8 +1100,9 @@ static void SetupImageTypes(const machine_config *config, mess_image_type *types
 			if (device.image_type() != IO_PRINTER)
 				SetupImageTypes(config, &types[num_extensions], count - num_extensions, false, &device);
 		}
-
 	}
+#endif
+		return; // used by DevView_MountItem
 	else
 	{
 		char t1[256];
@@ -1218,77 +1224,36 @@ static BOOL DevView_GetOpenFileName(HWND hwndDevView, const machine_config *conf
 // This is used to Mount a software-list Item in the Media View.
 static BOOL DevView_GetOpenItemName(HWND hwndDevView, const machine_config *config, const device_image_interface *dev, LPTSTR pszFilename, UINT nFilenameLength)
 {
+	std::string opt_name = dev->instance_name();
+	// sanity check - should never happen
+	if (slmap.find(opt_name) == slmap.end())
+	{
+		printf ("DevView_GetOpenItemName used invalid device of %s\n", opt_name.c_str());
+		return false;
+	}
+
 	HWND hwndList = GetDlgItem(GetMainWindow(), IDC_LIST);
 	int drvindex = Picker_GetSelectedItem(hwndList);
-	const char *s;
-	std::string as, opt_name = dev->instance_name();
-	windows_options o;
-	const char* name = driver_list::driver(drvindex).name;
-	o.set_value(OPTION_SYSTEMNAME, name, OPTION_PRIORITY_CMDLINE); // required
-	load_options(o, OPTIONS_GAME, drvindex);
-	s = o.value(opt_name.c_str());
 
-	/* Get the path to the currently mounted image, chop off any trailing backslash */
-	util::zippath_parent(as, s);
-	size_t i = as.length()-1;
-	if (as[i] == '\\')
-		as.erase(i);
-
-	std::string dst = as;
-
-	/* See if an image was loaded, and that the path still exists */
-//	if ((!osd::directory::open(as.c_str())) || (as.find(':') == std::string::npos)) // commented out because if loose software was loaded it would go to that folder
+	// Now, scan through the media_path looking for the required folder
+	BOOL passes_tests = false;
+	std::string as, dst;
+	char rompath[512];
+	strcpy(rompath, GetRomDirs());
+	char* sl_root = strtok(rompath, ";");
+	while (sl_root && !passes_tests)
 	{
-		std::string sl_dir;
-		BOOL has_software = false, passes_tests = false;
-
-		// Get the path to suitable software
-		for (software_list_device &swlist : software_list_device_iterator(config->root_device()))
+		as = sl_root + std::string("\\") + slmap.find(opt_name)->second;
+		TCHAR *szPath = ui_wstring_from_utf8(as.c_str());
+		DWORD dwAttrib = GetFileAttributes(szPath);
+		if ((dwAttrib != INVALID_FILE_ATTRIBUTES) && (dwAttrib & FILE_ATTRIBUTE_DIRECTORY))
 		{
-			for (const software_info &swinfo : swlist.get_info())
-			{
-				const software_part &part = swinfo.parts().front();
-				if (swlist.is_compatible(part) == SOFTWARE_IS_COMPATIBLE)
-				{
-					for (device_image_interface &image : image_interface_iterator(config->root_device()))
-					{
-						if (!image.user_loadable())
-							continue;
-						if (!has_software && (opt_name == image.instance_name()))
-						{
-							const char *interface = image.image_interface();
-							if (interface != nullptr && part.matches_interface(interface))
-							{
-								sl_dir = "\\" + swlist.list_name();
-								has_software = true;
-							}
-						}
-					}
-				}
-			}
+			passes_tests = true;
+			dst = as;
 		}
+		free(szPath);
 
-		if (has_software)
-		{
-			// Now, scan through the media_path looking for the required folder
-			char rompath[512];
-			strcpy(rompath, GetRomDirs());
-			char* sl_root = strtok(rompath, ";");
-			while (sl_root && !passes_tests)
-			{
-				as = sl_root + sl_dir;
-				TCHAR *szPath = ui_wstring_from_utf8(as.c_str());
-				DWORD dwAttrib = GetFileAttributes(szPath);
-				if ((dwAttrib != INVALID_FILE_ATTRIBUTES) && (dwAttrib & FILE_ATTRIBUTE_DIRECTORY))
-				{
-					passes_tests = true;
-					dst = as;
-				}
-				free(szPath);
-
-				sl_root = strtok(NULL, ";");
-			}
-		}
+		sl_root = strtok(NULL, ";");
 	}
 
 	if (!osd::directory::open(dst.c_str()))
@@ -1296,7 +1261,7 @@ static BOOL DevView_GetOpenItemName(HWND hwndDevView, const machine_config *conf
 		osd_get_full_path(dst, ".");
 
 	mess_image_type imagetypes[256];
-	SetupImageTypes(config, imagetypes, ARRAY_LENGTH(imagetypes), true, dev);
+	SetupImageTypes(config, imagetypes, ARRAY_LENGTH(imagetypes), true, NULL); // just get zip & 7z
 	TCHAR *t_s = ui_wstring_from_utf8(dst.c_str());
 	BOOL bResult = CommonFileImageDialog(t_s, GetOpenFileName, pszFilename, config, imagetypes);
 	free(t_s);
@@ -1308,7 +1273,7 @@ static BOOL DevView_GetOpenItemName(HWND hwndDevView, const machine_config *conf
 		char t2[nFilenameLength];
 		wcstombs(t2, pszFilename, nFilenameLength-1); // convert wide string to a normal one
 		std::string t3 = t2; // then convert to a c++ string so we can manipulate it
-		i = t3.find(".zip"); // get rid of zip name and anything after
+		size_t i = t3.find(".zip"); // get rid of zip name and anything after
 		if (i != std::string::npos)
 			t3.erase(i);
 		else
@@ -1327,8 +1292,6 @@ static BOOL DevView_GetOpenItemName(HWND hwndDevView, const machine_config *conf
 
 		// set up inifile text to signify to MAME that a SW ITEM is to be used
 		SetSelectedSoftware(drvindex, dev, t3.c_str());
-		//strcpy(g_szSelectedSoftware, t3.c_str()); // store to global item name
-		//strcpy(g_szSelectedDevice, opt_name.c_str()); // get media-device name (brief_instance_name is ok too)
 	}
 
 	return bResult;
@@ -1822,6 +1785,7 @@ static void DevView_ButtonClick(HWND hwndDevView, struct DevViewEntry *pEnt, HWN
 						const char *interface = image.image_interface();
 						if (interface && part.matches_interface(interface))
 						{
+							slmap[pEnt->dev->instance_name()] = swlist.list_name();
 							has_software = true;
 						}
 					}
