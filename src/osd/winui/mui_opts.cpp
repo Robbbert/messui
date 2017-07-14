@@ -2311,7 +2311,7 @@ void LoadFolderFlags(void)
 			ptr = folder_name;
 			while (*ptr && *ptr != '\0')
 			{
-				if (*ptr == ' ')
+				if ((*ptr == ' ') || (*ptr == '-'))
 				{
 					*ptr = '_';
 				}
@@ -2345,7 +2345,7 @@ void LoadFolderFlags(void)
 			ptr = folder_name;
 			while (*ptr && *ptr != '\0')
 			{
-				if (*ptr == ' ')
+				if ((*ptr == ' ') || (*ptr == '-'))
 				{
 					*ptr = '_';
 				}
@@ -2393,7 +2393,7 @@ static void AddFolderFlags(winui_options &opts)
 			ptr = folder_name;
 			while (*ptr && *ptr != '\0')
 			{
-				if (*ptr == ' ')
+				if ((*ptr == ' ') || (*ptr == '-'))
 				{
 					*ptr = '_';
 				}

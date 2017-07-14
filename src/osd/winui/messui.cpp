@@ -840,35 +840,20 @@ void MessUpdateSoftwareList(void)
 }
 
 
-// umm, what's this do??
-BOOL MessApproveImageList(HWND hParent, int drvindex)
-{
-	//char szMessage[256];
-	BOOL bResult = false;
-	//windows_options o;
-
-	if (g_szSelectedSoftware[0] && g_szSelectedDevice[0])
-		return true;
-
-	bResult = true;
-
-	//if (!bResult)
-	//{
-	//	win_message_box_utf8(hParent, szMessage, MAMEUINAME, MB_OK);
-	//}
-
-	return bResult;
-}
-
-
 // Places the specified image in the specified slot - MUST be a valid filename, not blank
-static void MessSpecifyImage(int drvindex, const device_image_interface *device, LPCSTR pszFilename)
+static void MessSpecifyImage(int drvindex, const device_image_interface *dev, LPCSTR pszFilename)
 {
+	if (dev)
+	{
+		SetSelectedSoftware(drvindex, dev, pszFilename);
+		return;
+	}
+
 	std::string opt_name;
 	device_image_interface* img = 0;
 
 	if (LOG_SOFTWARE)
-		dprintf("MessSpecifyImage(): device=%p pszFilename='%s'\n", device, pszFilename);
+		dprintf("MessSpecifyImage(): device=%p pszFilename='%s'\n", dev, pszFilename);
 
 	// identify the file extension
 	const char *file_extension = strrchr(pszFilename, '.'); // find last period
@@ -893,8 +878,6 @@ static void MessSpecifyImage(int drvindex, const device_image_interface *device,
 	{
 		// place the image
 		SetSelectedSoftware(drvindex, img, pszFilename);
-		strcpy(g_szSelectedSoftware, pszFilename);
-		strcpy(g_szSelectedDevice, opt_name.c_str());
 	}
 	else
 	{
