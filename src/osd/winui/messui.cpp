@@ -1799,36 +1799,30 @@ static void DevView_ButtonClick(HWND hwndDevView, struct DevViewEntry *pEnt, HWN
 {
 	struct DevViewInfo *pDevViewInfo;
 	RECT r;
-	BOOL b = true, ShowItem = false;
+	BOOL has_software = false;
 	TCHAR szPath[MAX_PATH];
 
 	pDevViewInfo = GetDevViewInfo(hwndDevView);
 
 	HMENU hMenu = CreatePopupMenu();
 
-	for (device_image_interface &dev : image_interface_iterator(pDevViewInfo->config->mconfig->root_device()))
+	for (software_list_device &swlist : software_list_device_iterator(pDevViewInfo->config->mconfig->root_device()))
 	{
-		if (!dev.user_loadable())
-			continue;
-		for (software_list_device &swlist : software_list_device_iterator(pDevViewInfo->config->mconfig->root_device()))
+		for (const software_info &swinfo : swlist.get_info())
 		{
-			for (const software_info &swinfo : swlist.get_info())
+			const software_part &part = swinfo.parts().front();
+			if (swlist.is_compatible(part) == SOFTWARE_IS_COMPATIBLE)
 			{
-				const software_part &part = swinfo.parts().front();
-				if (swlist.is_compatible(part) == SOFTWARE_IS_COMPATIBLE)
+				for (device_image_interface &image : image_interface_iterator(pDevViewInfo->config->mconfig->root_device()))
 				{
-					for (device_image_interface &image : image_interface_iterator(pDevViewInfo->config->mconfig->root_device()))
+					if (!image.user_loadable())
+						continue;
+					if (!has_software && (pEnt->dev->instance_name() == image.instance_name()))
 					{
-						if (!dev.user_loadable())
-							continue;
-						if (b && (dev.instance_name() == image.instance_name()))
+						const char *interface = image.image_interface();
+						if (interface && part.matches_interface(interface))
 						{
-							const char *interface = image.image_interface();
-							if (interface != nullptr && part.matches_interface(interface))
-							{
-								ShowItem = true;
-								b = false;
-							}
+							has_software = true;
 						}
 					}
 				}
@@ -1839,7 +1833,7 @@ static void DevView_ButtonClick(HWND hwndDevView, struct DevViewEntry *pEnt, HWN
 	if (pDevViewInfo->pCallbacks->pfnGetOpenFileName)
 		AppendMenu(hMenu, MF_STRING, 1, TEXT("Mount File..."));
 
-	if (ShowItem && pDevViewInfo->pCallbacks->pfnGetOpenItemName)
+	if (has_software && pDevViewInfo->pCallbacks->pfnGetOpenItemName)
 		AppendMenu(hMenu, MF_STRING, 4, TEXT("Mount Item..."));
 
 	if (pEnt->dev->is_creatable())
@@ -1852,27 +1846,26 @@ static void DevView_ButtonClick(HWND hwndDevView, struct DevViewEntry *pEnt, HWN
 
 	GetWindowRect(hwndButton, &r);
 	int rc = TrackPopupMenu(hMenu, TPM_TOPALIGN | TPM_NONOTIFY | TPM_RETURNCMD, r.left, r.bottom, 0, hwndDevView, NULL);
-
+	BOOL res = false;
 	switch(rc)
 	{
 		case 1:
-			b = pDevViewInfo->pCallbacks->pfnGetOpenFileName(hwndDevView, pDevViewInfo->config->mconfig, pEnt->dev, szPath, ARRAY_LENGTH(szPath));
+			res = pDevViewInfo->pCallbacks->pfnGetOpenFileName(hwndDevView, pDevViewInfo->config->mconfig, pEnt->dev, szPath, ARRAY_LENGTH(szPath));
 			break;
 		case 2:
-			b = pDevViewInfo->pCallbacks->pfnGetCreateFileName(hwndDevView, pDevViewInfo->config->mconfig, pEnt->dev, szPath, ARRAY_LENGTH(szPath));
+			res = pDevViewInfo->pCallbacks->pfnGetCreateFileName(hwndDevView, pDevViewInfo->config->mconfig, pEnt->dev, szPath, ARRAY_LENGTH(szPath));
 			break;
 		case 3:
-			b = pDevViewInfo->pCallbacks->pfnUnmount(hwndDevView, pDevViewInfo->config->mconfig, pEnt->dev, szPath, ARRAY_LENGTH(szPath));
+			res = pDevViewInfo->pCallbacks->pfnUnmount(hwndDevView, pDevViewInfo->config->mconfig, pEnt->dev, szPath, ARRAY_LENGTH(szPath));
 			memset(szPath, 0, sizeof(szPath));
 			break;
 		case 4:
-			b = pDevViewInfo->pCallbacks->pfnGetOpenItemName(hwndDevView, pDevViewInfo->config->mconfig, pEnt->dev, szPath, ARRAY_LENGTH(szPath));
+			res = pDevViewInfo->pCallbacks->pfnGetOpenItemName(hwndDevView, pDevViewInfo->config->mconfig, pEnt->dev, szPath, ARRAY_LENGTH(szPath));
 			break;
 		default:
-			b = false;
 			break;
 	}
-	if (b)
+	if (res)
 		SetWindowText(pEnt->hwndEdit, szPath);
 }
 
