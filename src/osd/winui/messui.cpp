@@ -81,8 +81,8 @@ static HWND MyColumnDialogProc_hwndPicker;
 static int *MyColumnDialogProc_order;
 static int *MyColumnDialogProc_shown;
 static int *mess_icon_index;
-static std::map<std::string,std::string> slmap;
-static std::map<std::string,int> mvmap;
+static std::map<std::string,std::string> slmap; // store folder for Media View Mount Item
+static std::map<std::string,int> mvmap;  // store indicator if Media View Unmount should be enabled
 
 // TODO - We need to make icons for Cylinders, Punch Cards, and Punch Tape!
 static const device_entry s_devices[] =
