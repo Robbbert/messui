@@ -179,16 +179,14 @@ static const ERRORCODE g_ErrorCode[] =
 
 const char * DirectXDecodeError(HRESULT errorval)
 {
-	int i;
-	static char tmp[64];
-
-	for (i = 0; i < (sizeof(g_ErrorCode) / sizeof(g_ErrorCode[0])); i++)
+	for (int i = 0; i < (sizeof(g_ErrorCode) / sizeof(g_ErrorCode[0])); i++)
 	{
 		if (g_ErrorCode[i].hr == errorval)
 		{
 			return g_ErrorCode[i].szError;
 		}
 	}
+	static char tmp[64];
 	sprintf(tmp, "UNKNOWN: 0x%x", (unsigned int)errorval);
 	return tmp;
 }
