@@ -35,6 +35,8 @@ BOOL DriverHasDevice(const game_driver *gamedrv, iodevice_t type)
 	image_interface_iterator iter(config.root_device());
 	for (device_image_interface *dev = iter.first(); dev; dev = iter.next())
 	{
+		if (!dev.user_loadable())
+			continue;
 		if (dev->image_type() == type)
 		{
 			b = true;

@@ -14,19 +14,11 @@
 #include <tchar.h>
 
 // standard C headers
-#include <stdlib.h>
-#include <stdarg.h>
-#include <ctype.h>
-#include <assert.h>
-#include <math.h>
 
 // MAME/MAMEUI headers
 #include "mui_opts.h"
-#include "corestr.h"
-#include "strconv.h"
 #include "datamap.h"
 #include "winutf8.h"
-#include "emu.h"
 
 
 #ifdef _MSC_VER
@@ -342,7 +334,7 @@ static control_type get_control_type(HWND control)
 
 static BOOL is_control_displayonly(HWND control)
 {
-	BOOL displayonly = 0;
+	BOOL displayonly = false;
 	switch(get_control_type(control))
 	{
 		case CT_STATIC:
@@ -350,7 +342,7 @@ static BOOL is_control_displayonly(HWND control)
 			break;
 
 		case CT_EDIT:
-			displayonly = (GetWindowLong(control, GWL_STYLE) & ES_READONLY) ? TRUE : FALSE;
+			displayonly = (GetWindowLong(control, GWL_STYLE) & ES_READONLY) ? true : false;
 			break;
 
 		default:
@@ -422,9 +414,7 @@ static int control_operation(datamap *map, HWND dialog, windows_options *opts, d
 				option_name = option_name_buffer;
 			}
 			else
-			{
 				option_name = entry->option_name;
-			}
 
 			// if reading, get the option value, solely for the purposes of comparison
 			if ((callback_type == DCT_READ_CONTROL) && option_name)
@@ -477,9 +467,8 @@ static float trackbar_value_from_position(datamap_entry *entry, int position)
 	float position_f = position;
 
 	if (entry->use_trackbar_options)
-	{
 		position_f = (position_f * entry->trackbar_increments) + entry->trackbar_min;
-	}
+
 	return position_f;
 }
 
@@ -492,9 +481,8 @@ static float trackbar_value_from_position(datamap_entry *entry, int position)
 static int trackbar_position_from_value(datamap_entry *entry, float value)
 {
 	if (entry->use_trackbar_options)
-	{
 		value = floor((value - entry->trackbar_min) / entry->trackbar_increments + 0.5);
-	}
+
 	return (int) value;
 }
 
@@ -516,7 +504,7 @@ static void read_control(datamap *map, HWND control, windows_options *opts, data
 	switch(get_control_type(control))
 	{
 		case CT_BUTTON:
-			assert(entry->type == DM_BOOL);
+			//assert(entry->type == DM_BOOL);
 			bool_value = Button_GetCheck(control);
 			opts->set_value(option_name, bool_value, OPTION_PRIORITY_CMDLINE);
 			break;
@@ -756,18 +744,19 @@ static char *tztrim(float float_value)
 	char* ptr = float_string;
 
 	// Copy before the '.'
-	while (*ptr && *ptr != '.') {
+	while (*ptr && *ptr != '.')
 		tz_string[i++] = *ptr++;
-	}
+
 	// add the '.' and the next digit
-	if (*ptr == '.') {
+	if (*ptr == '.')
+	{
 		tz_string[i++] = *ptr++;
 		tz_string[i++] = *ptr++;
 	}
 	// Keep copying until we hit a '0'
-	while (*ptr && *ptr != '0') {
+	while (*ptr && *ptr != '0')
 		tz_string[i++] = *ptr++;
-	}
+
 	// Null terminate
 	tz_string[i] = '\0';
 	return tz_string;
