@@ -2135,12 +2135,12 @@ done:
 
 static char *win_dirname(const char *filename)
 {
-	char *dirname;
-	char *c;
-
 	// NULL begets NULL
 	if (!filename)
 		return NULL;
+
+	char *dirname;
+	char *c;
 
 	// allocate space for it
 	dirname = (char*)malloc(strlen(filename) + 1);
@@ -2172,13 +2172,12 @@ static char *win_dirname(const char *filename)
 
 static void state_dialog(HWND wnd, win_file_dialog_type dlgtype, DWORD fileproc_flags, bool is_load, running_machine &machine)
 {
-	win_open_file_name ofn;
 	char *dir = NULL;
-	int result = 0;
 
 	if (state_filename[0])
 		dir = win_dirname(state_filename);
 
+	win_open_file_name ofn;
 	memset(&ofn, 0, sizeof(ofn));
 	ofn.type = dlgtype;
 	ofn.owner = wnd;
@@ -2191,7 +2190,7 @@ static void state_dialog(HWND wnd, win_file_dialog_type dlgtype, DWORD fileproc_
 	else
 		snprintf(ofn.filename, ARRAY_LENGTH(ofn.filename), "%s", state_filename);
 
-	result = win_get_file_name_dialog(&ofn);
+	BOOL result = win_get_file_name_dialog(&ofn);
 
 	if (result)
 	{
@@ -2580,15 +2579,12 @@ static HMENU find_sub_menu(HMENU menu, const char *menutext, bool create_sub_men
 
 static void set_command_state(HMENU menu_bar, UINT command, UINT state)
 {
-	BOOL result = 0;
-
 	MENUITEMINFO mii;
-
 	memset(&mii, 0, sizeof(mii));
 	mii.cbSize = sizeof(mii);
 	mii.fMask = MIIM_STATE;
 	mii.fState = state;
-	result = SetMenuItemInfo(menu_bar, command, false, &mii);
+	BOOL result = SetMenuItemInfo(menu_bar, command, false, &mii);
 	result++;
 }
 
@@ -2613,21 +2609,17 @@ static void remove_menu_items(HMENU menu)
 
 static void setup_joystick_menu(running_machine &machine, HMENU menu_bar)
 {
-	int joystick_count = 0;
-	HMENU joystick_menu;
-	int i = 0;
-	char buf[256];
-	int child_count = 0;
-
-	joystick_menu = find_sub_menu(menu_bar, "&Options\0&Joysticks\0", true);
+	HMENU joystick_menu = find_sub_menu(menu_bar, "&Options\0&Joysticks\0", true);
 	if (!joystick_menu)
 		return;
 
 	// set up joystick menu
-	joystick_count = machine.ioport().count_players();
+	char buf[256];
+	int child_count = 0;
+	int joystick_count = machine.ioport().count_players();
 	if (joystick_count > 0)
 	{
-		for (i = 0; i < joystick_count; i++)
+		for (int i = 0; i < joystick_count; i++)
 		{
 			snprintf(buf, ARRAY_LENGTH(buf), "Joystick %i", i + 1);
 			win_append_menu_utf8(joystick_menu, MF_STRING, ID_JOYSTICK_0 + i, buf);
@@ -2676,28 +2668,9 @@ static int frameskip_level_count(running_machine &machine)
 
 static void prepare_menus(HWND wnd)
 {
-	int i = 0;
-	char buf[MAX_PATH];
-	TCHAR t_buf[MAX_PATH];
-	HMENU menu_bar;
-	HMENU video_menu;
-	HMENU device_menu;
-	HMENU slot_menu;
-	HMENU sub_menu;
-	UINT_PTR new_item;
-	UINT flags_for_exists = 0;
-	UINT flags_for_writing = 0;
-	bool has_config = 0, has_dipswitch = 0, has_keyboard = 0, has_misc = 0, has_analog = 0;
-	int frameskip = 0;
-	int orientation = 0;
-	int speed = 0;
 	LONG_PTR ptr = GetWindowLongPtr(wnd, GWLP_USERDATA);
 	win_window_info *window = (win_window_info *)ptr;
-	const char *view_name;
-	int view_index = 0;
-	ioport_field::user_settings settings;
-
-	menu_bar = GetMenu(wnd);
+	HMENU menu_bar = GetMenu(wnd);
 	if (!menu_bar)
 		return;
 
@@ -2707,25 +2680,25 @@ static void prepare_menus(HWND wnd)
 		joystick_menu_setup = 1;
 	}
 
-	frameskip = window->machine().video().frameskip();
+	int frameskip = window->machine().video().frameskip();
 
-	orientation = window->m_target->orientation();
+	int orientation = window->m_target->orientation();
 
-	speed = window->machine().video().throttled() ? window->machine().video().speed_factor() : 0;
+	int speed = window->machine().video().throttled() ? window->machine().video().speed_factor() : 0;
 
-	has_config = window->machine().ioport().type_class_present(INPUT_CLASS_CONFIG);
-	has_dipswitch = window->machine().ioport().type_class_present(INPUT_CLASS_DIPSWITCH);
-	has_keyboard = window->machine().ioport().type_class_present(INPUT_CLASS_KEYBOARD);
-	has_misc = check_for_miscinput(window->machine());
+	bool has_config = window->machine().ioport().type_class_present(INPUT_CLASS_CONFIG);
+	bool has_dipswitch = window->machine().ioport().type_class_present(INPUT_CLASS_DIPSWITCH);
+	bool has_keyboard = window->machine().ioport().type_class_present(INPUT_CLASS_KEYBOARD);
+	bool has_misc = check_for_miscinput(window->machine());
 
-	has_analog = 0;
+	bool has_analog = false;
 	for (auto &port : window->machine().ioport().ports())
 	{
 		for (ioport_field &field : port.second->fields())
 		{
 			if (port_type_is_analog(field.type()))
 			{
-				has_analog = 1;
+				has_analog = true;
 				break;
 			}
 		}
@@ -2772,11 +2745,13 @@ static void prepare_menus(HWND wnd)
 	set_command_state(menu_bar, ID_THROTTLE_UNTHROTTLED, (speed == 0) ? MFS_CHECKED : MFS_ENABLED);
 
 	set_command_state(menu_bar, ID_FRAMESKIP_AUTO, (frameskip < 0) ? MFS_CHECKED : MFS_ENABLED);
+	int i;
 	for (i = 0; i < frameskip_level_count(window->machine()); i++)
 		set_command_state(menu_bar, ID_FRAMESKIP_0 + i, (frameskip == i) ? MFS_CHECKED : MFS_ENABLED);
 
 	// set up screens in video menu
-	video_menu = find_sub_menu(menu_bar, "&Options\0&Video\0", false);
+	TCHAR t_buf[MAX_PATH];
+	HMENU video_menu = find_sub_menu(menu_bar, "&Options\0&Video\0", false);
 	do
 	{
 		get_menu_item_string(video_menu, 0, true, NULL, t_buf, ARRAY_LENGTH(t_buf));
@@ -2784,8 +2759,10 @@ static void prepare_menus(HWND wnd)
 			RemoveMenu(video_menu, 0, MF_BYPOSITION);
 	}
 	while(_tcscmp(t_buf, TEXT("-")));
+
 	i = 0;
-	view_index = window->m_target->view();
+	const char *view_name;
+	int view_index = window->m_target->view();
 	while((view_name = window->m_target->view_name(i)))
 	{
 		TCHAR *t_view_name = ui_wstring_from_utf8(view_name);
@@ -2795,10 +2772,14 @@ static void prepare_menus(HWND wnd)
 	}
 
 	// set up device menu; first remove all existing menu items
-	device_menu = find_sub_menu(menu_bar, "&Media\0", false);
+	HMENU sub_menu, device_menu = find_sub_menu(menu_bar, "&Media\0", false);
 	remove_menu_items(device_menu);
 
+	UINT_PTR new_item;
+	UINT flags_for_exists = 0;
+	UINT flags_for_writing = 0;
 	int cnt = 0;
+	char buf[MAX_PATH];
 	// then set up the actual devices
 	for (device_image_interface &img : image_interface_iterator(window->machine().root_device()))
 	{
@@ -2873,7 +2854,7 @@ static void prepare_menus(HWND wnd)
 	}
 
 	// set up slot menu; first remove all existing menu items
-	slot_menu = find_sub_menu(menu_bar, "&Slots\0", false);
+	HMENU slot_menu = find_sub_menu(menu_bar, "&Slots\0", false);
 	remove_menu_items(slot_menu);
 	cnt = 3400;
 	// cycle through all slots for this system
