@@ -90,7 +90,7 @@ image_manager::image_manager(running_machine &machine)
 void image_manager::unload_all()
 {
 	// extract the options
-	options_extract();
+	//options_extract(); // MESSUI - this can cause crash when altering slots
 
 	for (device_image_interface &image : image_interface_iterator(machine().root_device()))
 	{

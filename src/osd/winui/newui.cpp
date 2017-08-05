@@ -1082,7 +1082,7 @@ static int win_dialog_add_active_combobox(dialog_box *dialog, const char *item_l
 	// put name of key on the left
 	if (dialog_write_item(dialog, WS_CHILD | WS_VISIBLE | SS_LEFT, x, y, dialog->layout->label_width, DIM_COMBO_ROW_HEIGHT, item_label, DLGITEM_STATIC, NULL))
 		goto done;
-printf("A");
+
 	y += DIM_BOX_VERTSKEW;
 
 	x += dialog->layout->label_width + DIM_HORIZONTAL_SPACING;
@@ -1091,11 +1091,11 @@ printf("A");
 		goto done;
 	dialog->combo_string_count = 0;
 	dialog->combo_default_value = default_value; // show current value
-printf("B");
+
 	// add the trigger invoked when the apply button is pressed
 	if (dialog_add_trigger(dialog, dialog->item_count, TRIGGER_APPLY, 0, dialog_get_combo_value, 0, 0, storeval, storeval_param))
 		goto done;
-printf("C");
+
 	// if appropriate, add the optional changed trigger
 	if (changed)
 		if (dialog_add_trigger(dialog, dialog->item_count, TRIGGER_INITDIALOG | TRIGGER_CHANGED, 0, dialog_combo_changed, (WPARAM) changed, (LPARAM) changed_param, NULL, NULL))
@@ -1106,7 +1106,7 @@ printf("C");
 
 	dialog_finish_control(dialog, x, y);
 	rc = 0;
-printf("D");
+
 done:
 	return rc;
 }
@@ -1389,7 +1389,7 @@ static void seqselect_start_read_from_main_thread(void *param)
 	while(stuff->poll_state == SEQSELECT_STATE_POLLING)
 	{
 		// poll
-		if (Machine->input().seq_poll())
+		if (Machine->input().seq_poll())       // This never returns anything, so updating keys doesn't work.
 		{
 			*stuff->code = Machine->input().seq_poll_final();
 			seqselect_settext(editwnd);
@@ -1914,7 +1914,7 @@ done:
 //============================================================
 
 static void update_keyval(void *param, int val)
-{printf("IN UPDATE_KEYVAL\n");
+{
 	ioport_field *field = (ioport_field *) param;
 	ioport_field::user_settings settings;
 
