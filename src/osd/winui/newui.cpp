@@ -1060,6 +1060,14 @@ static WCHAR *win_dialog_wcsdup(dialog_box *dialog, const WCHAR *s)
 //============================================================
 //  win_dialog_add_active_combobox
 //    called from win_dialog_add_combobox
+//       dialog = handle of dialog box?
+//       item_label = name of key
+//       default_value = current value of key
+//       storeval = function to handle changed key
+//       storeval_param = ?
+//       changed = ?
+//       changed_param = ?
+//       rc = return code (1 = failure)
 //============================================================
 
 static int win_dialog_add_active_combobox(dialog_box *dialog, const char *item_label, int default_value,
@@ -1071,10 +1079,10 @@ static int win_dialog_add_active_combobox(dialog_box *dialog, const char *item_l
 
 	dialog_new_control(dialog, &x, &y);
 
-	if (dialog_write_item(dialog, WS_CHILD | WS_VISIBLE | SS_LEFT,
-			x, y, dialog->layout->label_width, DIM_COMBO_ROW_HEIGHT, item_label, DLGITEM_STATIC, NULL))
+	// put name of key on the left
+	if (dialog_write_item(dialog, WS_CHILD | WS_VISIBLE | SS_LEFT, x, y, dialog->layout->label_width, DIM_COMBO_ROW_HEIGHT, item_label, DLGITEM_STATIC, NULL))
 		goto done;
-
+printf("A");
 	y += DIM_BOX_VERTSKEW;
 
 	x += dialog->layout->label_width + DIM_HORIZONTAL_SPACING;
@@ -1082,25 +1090,23 @@ static int win_dialog_add_active_combobox(dialog_box *dialog, const char *item_l
 			x, y, dialog->layout->combo_width, DIM_COMBO_ROW_HEIGHT * 8, NULL, DLGITEM_COMBOBOX, NULL))
 		goto done;
 	dialog->combo_string_count = 0;
-	dialog->combo_default_value = default_value;
-
+	dialog->combo_default_value = default_value; // show current value
+printf("B");
 	// add the trigger invoked when the apply button is pressed
 	if (dialog_add_trigger(dialog, dialog->item_count, TRIGGER_APPLY, 0, dialog_get_combo_value, 0, 0, storeval, storeval_param))
 		goto done;
-
+printf("C");
 	// if appropriate, add the optional changed trigger
 	if (changed)
-	{
 		if (dialog_add_trigger(dialog, dialog->item_count, TRIGGER_INITDIALOG | TRIGGER_CHANGED, 0, dialog_combo_changed, (WPARAM) changed, (LPARAM) changed_param, NULL, NULL))
 			goto done;
-	}
 
 	x += dialog->layout->combo_width + DIM_HORIZONTAL_SPACING;
 	y += DIM_COMBO_ROW_HEIGHT + DIM_VERTICAL_SPACING * 2;
 
 	dialog_finish_control(dialog, x, y);
 	rc = 0;
-
+printf("D");
 done:
 	return rc;
 }
@@ -1540,7 +1546,7 @@ static int dialog_add_single_seqselect(struct _dialog_box *di, short x, short y,
 	stuff->is_analog = is_analog;
 
 	// This next line is completely unsafe, but I do not know what to use *****************
-	stuff->code = const_cast <input_seq*> (&field->seq( (input_seq_type) seqtype) );
+	stuff->code = const_cast <input_seq*> (&field->seq( SEQ_TYPE_STANDARD ));
 
 	if (dialog_add_trigger(di, di->item_count, TRIGGER_INITDIALOG, 0, seqselect_setup, di->item_count, (LPARAM) stuff, NULL, NULL))
 		return 1;
@@ -1903,12 +1909,12 @@ done:
 
 
 //============================================================
-//  storeval_inputport
+//  update_keyval
 //    called from customise_switches
 //============================================================
 
-static void storeval_inputport(void *param, int val)
-{
+static void update_keyval(void *param, int val)
+{printf("IN UPDATE_KEYVAL\n");
 	ioport_field *field = (ioport_field *) param;
 	ioport_field::user_settings settings;
 
@@ -1949,7 +1955,7 @@ static void customise_switches(running_machine &machine, HWND wnd, const char* t
 
 				field.get_user_settings(settings);
 				afield = &field;
-				if (win_dialog_add_combobox(dlg, switch_name, settings.value, storeval_inputport, (void *) afield))
+				if (win_dialog_add_combobox(dlg, switch_name, settings.value, update_keyval, (void *) afield))
 					goto done;
 
 				for (setting = field.settings().first(); setting; setting = setting->next())
