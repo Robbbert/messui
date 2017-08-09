@@ -862,7 +862,7 @@ public:
 		// LOG all messages
 		FILE *pFile;
 		pFile = fopen("winui.log", "a");
-		vfprintf(pFile, msg, args);
+		vfprintf(pFile, msg, args);fflush(pFile);
 		fclose (pFile);
 /*  List of output types:
 		case OSD_OUTPUT_CHANNEL_ERROR:
