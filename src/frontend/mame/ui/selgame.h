@@ -28,9 +28,6 @@ public:
 	// force game select menu
 	static void force_game_select(mame_ui_manager &mui, render_container &container);
 
-protected:
-	virtual bool menu_has_search_active() override { return !m_search.empty(); }
-
 private:
 	enum
 	{
@@ -40,7 +37,6 @@ private:
 	};
 
 	enum { VISIBLE_GAMES_IN_SEARCH = 200 };
-	std::string m_search;
 	static bool first_start;
 	static int m_isabios;
 	int highlight;
@@ -60,6 +56,7 @@ private:
 
 	// get selected software and/or driver
 	virtual void get_selection(ui_software_info const *&software, game_driver const *&driver) const override;
+	virtual bool accept_search() const override { return !isfavorite(); }
 
 	// text for main top/bottom panels
 	virtual void make_topbox_text(std::string &line0, std::string &line1, std::string &line2) const override;
@@ -92,7 +89,6 @@ private:
 	// handlers
 	void inkey_select(const event *menu_event);
 	void inkey_select_favorite(const event *menu_event);
-	void inkey_special(const event *menu_event);
 	void inkey_export();
 };
 
