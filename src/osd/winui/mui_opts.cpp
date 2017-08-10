@@ -74,7 +74,6 @@ static const char * EncodeFolderFlags(DWORD value);
 
 static void ResetToDefaults(windows_options &opts, int priority);
 
-//static void ui_parse_ini_file(windows_options &opts, const char *name);
 
 
 #ifdef _MSC_VER
