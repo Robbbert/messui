@@ -29,6 +29,8 @@
 #include <tchar.h>
 
 // MAME/MAMEUI headers
+#include "drivenum.h"
+#include "game_opts.h"  // this must be under emu.h and drivenum.h
 #include "bitmask.h"
 #include "winui.h"
 #include "mui_util.h"
@@ -37,8 +39,6 @@
 #include "mui_opts.h"
 #include "winutf8.h"
 #include "strconv.h"
-#include "drivenum.h"
-#include "game_opts.h"
 
 #ifdef _MSC_VER
 #define snprintf _snprintf
@@ -54,8 +54,7 @@ static void LoadSettingsFile(winui_options &opts, const char *filename);
 static void SaveSettingsFile(winui_options &opts, const char *filename);
 static void LoadSettingsFile(windows_options &opts, const char *filename);
 static void SaveSettingsFile(windows_options &opts, const char *filename);
-
-static void LoadOptionsAndSettings(void);
+static void LoadSettingsFile(ui_options &opts, const char *filename);
 
 static void CusColorEncodeString(const COLORREF *value, char* str);
 static void CusColorDecodeString(const char* str, COLORREF *value);
@@ -427,11 +426,12 @@ BOOL OptionsInit()
 	}
 #endif
 
-	game_opts.add_entries();
 	// set up global options
-	CreateGameOptions(global, OPTIONS_GLOBAL, GLOBAL_OPTIONS);
-	// now load the options and settings
-	LoadOptionsAndSettings();
+	//CreateGameOptions(global, OPTIONS_GLOBAL, GLOBAL_OPTIONS);   // set system name (not valid until a game is selected)
+	LoadSettingsFile(settings, UI_INI_FILENAME);            // parse MAMEUI.ini
+	LoadSettingsFile(mewui, MEWUI_FILENAME);                // parse UI.INI
+	game_opts.load_file(GAMEINFO_INI_FILENAME);             // parse MAME_g.ini
+	load_options(global, OPTIONS_GLOBAL, GLOBAL_OPTIONS);   // parse MAME.INI
 
 	return TRUE;
 
@@ -2173,22 +2173,6 @@ static void SaveSettingsFile(windows_options &opts, const char *filename)
 }
 
 
-
-/* Register access functions below */
-static void LoadOptionsAndSettings(void)
-{
-//	char buffer[MAX_PATH];
-
-	// parse MAMEui.ini - always in the current directory.
-	LoadSettingsFile(settings, UI_INI_FILENAME);
-	LoadSettingsFile(mewui, MEWUI_FILENAME);
-
-	// parse GameInfo.ini - game options.
-	game_opts.load_file(GAMEINFO_INI_FILENAME);
-
-	// parse global options ini/mame32.ini
-	load_options(global, OPTIONS_GLOBAL, GLOBAL_OPTIONS);
-}
 
 void SetDirectories(windows_options &opts)
 {

@@ -676,7 +676,7 @@ static BOOL DevView_SetDriver(HWND hwndDevView, const software_config *sconfig)
 		{
 			if (!dev.user_loadable())
 				continue;
-			instance = string_format("%s (%s)", dev.instance_name(), dev.brief_instance_name());
+			instance = dev.instance_name() + std::string(" (") + dev.brief_instance_name() + std::string(")");
 			LPTSTR t_s = ui_wstring_from_utf8(instance.c_str());
 			ppszDevices[i] = (TCHAR*)alloca((_tcslen(t_s) + 1) * sizeof(TCHAR));
 			_tcscpy(ppszDevices[i], t_s);
@@ -711,8 +711,7 @@ static BOOL DevView_SetDriver(HWND hwndDevView, const software_config *sconfig)
 			if (!dev.user_loadable())
 				continue;
 			pEnt->dev = &dev;
-
-			instance = string_format("%s (%s)", dev.instance_name(), dev.brief_instance_name()); // get name of the slot (long and short)
+			instance = dev.instance_name() + std::string(" (") + dev.brief_instance_name() + std::string(")"); // get name of the slot (long and short)
 			std::transform(instance.begin(), instance.begin()+1, instance.begin(), ::toupper); // turn first char to uppercase
 			pEnt->hwndStatic = win_create_window_ex_utf8(0, "STATIC", instance.c_str(), // display it
 				WS_VISIBLE | WS_CHILD, nStaticPos,
