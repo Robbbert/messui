@@ -89,16 +89,6 @@ enum
 // (that's how many options we have after MAX_TAB_TYPES)
 #define TAB_SUBTRACT 3
 
-class winui_options : public core_options
-{
-public:
-	// construction/destruction
-	winui_options();
-
-private:
-	static const options_entry s_option_entries[];
-};
-
 BOOL OptionsInit(void);
 void OptionsExit(void);
 
@@ -329,7 +319,7 @@ const char *GetPlugins(void);
 const char *GetSnapName(void);
 void SetSnapName(const char *pattern);
 
-const char *GetBgDir(void);
+const std::string GetBgDir(void);
 void SetBgDir(const char *path);
 
 void ResetGameOptions(int driver_index);
@@ -446,9 +436,6 @@ void SetHideMouseOnStartup(BOOL hide);
 
 BOOL GetRunFullScreen(void);
 void SetRunFullScreen(BOOL fullScreen);
-
-void ColumnEncodeStringWithCount(const int *value, char *str, int count);
-void ColumnDecodeStringWithCount(const char *str, int *value, int count);
 
 int GetDriverCache(int driver_index);
 void SetDriverCache(int driver_index, int val);

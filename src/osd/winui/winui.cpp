@@ -840,7 +840,7 @@ public:
 		{
 			FILE *pFile;
 			pFile = fopen("verbose.log", "a");
-			vfprintf(pFile, msg, args);
+			vfprintf(pFile, msg, args);fflush(pFile);
 			fclose (pFile);
 			return;
 		}
@@ -1021,7 +1021,7 @@ int MameUIMain(HINSTANCE hInstance, LPWSTR lpCmdLine, int nCmdShow)
 	unlink("verbose.log");
 	unlink("winui.log");
 
-	printf("MAMEUI starting\n");
+	printf("MAMEUI starting\n");fflush(stdout);
 
 	if (__argc != 1)
 	{
@@ -1696,10 +1696,10 @@ static BOOL Win32UI_init(HINSTANCE hInstance, LPWSTR lpCmdLine, int nCmdShow)
 	extern const FOLDERDATA g_folderData[];
 	extern const FILTER_ITEM g_filterList[];
 
-	printf("about to init options\n");
+	printf("about to init options\n");fflush(stdout);
 	if (!OptionsInit())
 		return false;
-	printf("options loaded\n");
+	printf("options loaded\n");fflush(stdout);
 	//win_message_box_utf8(hMain, "test", emulator_info::get_appname(), MB_OK);
 
 	// create the memory pool
@@ -1730,7 +1730,7 @@ static BOOL Win32UI_init(HINSTANCE hInstance, LPWSTR lpCmdLine, int nCmdShow)
 
 	// Are we using an Old comctl32.dll?
 	LONG common_control_version = GetCommonControlVersion();
-	printf("common controlversion %ld %ld\n", common_control_version >> 16, common_control_version & 0xffff);
+	printf("common controlversion %ld %ld\n", common_control_version >> 16, common_control_version & 0xffff);fflush(stdout);
 
 	oldControl = (common_control_version < PACKVERSION(4,71));
 	xpControl = (common_control_version >= PACKVERSION(6,0));
@@ -1756,7 +1756,7 @@ static BOOL Win32UI_init(HINSTANCE hInstance, LPWSTR lpCmdLine, int nCmdShow)
 	hMain = CreateDialog(hInstance, MAKEINTRESOURCE(IDD_MAIN), 0, NULL);
 	if (hMain == NULL)
 	{
-		printf("error creating main dialog, aborting\n");
+		printf("error creating main dialog, aborting\n");fflush(stdout);
 		return false;
 	}
 
@@ -1894,9 +1894,9 @@ static BOOL Win32UI_init(HINSTANCE hInstance, LPWSTR lpCmdLine, int nCmdShow)
 
 	LoadBackgroundBitmap();
 
-	printf("about to init tree\n");
+	printf("about to init tree\n");fflush(stdout);
 	InitTree(g_folderData, g_filterList);
-	printf("did init tree\n");
+	printf("did init tree\n");fflush(stdout);
 
 	/* Initialize listview columns */
 	InitMessPicker(); // messui.cpp
@@ -1957,7 +1957,7 @@ static BOOL Win32UI_init(HINSTANCE hInstance, LPWSTR lpCmdLine, int nCmdShow)
 		ShowCursor(false);
 	}
 
-	printf("about to show window\n");
+	printf("about to show window\n");fflush(stdout);
 
 	nCmdShow = GetWindowState();
 	if (nCmdShow == SW_HIDE || nCmdShow == SW_MINIMIZE || nCmdShow == SW_SHOWMINIMIZED)
@@ -2299,7 +2299,7 @@ static LRESULT CALLBACK MameWindowProc(HWND hWnd, UINT message, WPARAM wParam, L
 		// tell the list view that each row (item) should be just taller than our font
 
 		//DefWindowProc(hWnd, message, wParam, lParam);
-		//printf("default row height calculation gives %u\n",lpmis->itemHeight);
+		//printf("default row height calculation gives %u\n",lpmis->itemHeight);fflush(stdout);
 
 		TEXTMETRIC tm;
 		HDC hDC = GetDC(NULL);
@@ -2310,7 +2310,7 @@ static LRESULT CALLBACK MameWindowProc(HWND hWnd, UINT message, WPARAM wParam, L
 		lpmis->itemHeight = tm.tmHeight + tm.tmExternalLeading + 1;
 		if (lpmis->itemHeight < 17)
 			lpmis->itemHeight = 17;
-		//printf("we would do %u\n",tm.tmHeight + tm.tmExternalLeading + 1);
+		//printf("we would do %u\n",tm.tmHeight + tm.tmExternalLeading + 1);fflush(stdout);
 		SelectObject(hDC,hFontOld);
 		ReleaseDC(NULL,hDC);
 
@@ -3384,7 +3384,7 @@ static void check_for_GUI_action(void)
 
 		if (GUI_seq_pressed(is))
 		{
-			printf("seq =%s pressed\n", GUISequenceControl[i].name);
+			printf("seq =%s pressed\n", GUISequenceControl[i].name);fflush(stdout);
 			switch (GUISequenceControl[i].func_id)
 			{
 			case ID_GAME_AUDIT:
@@ -3405,7 +3405,7 @@ static void check_for_GUI_action(void)
 static void KeyboardStateClear(void)
 {
 	memset(keyboard_state, 0, sizeof(keyboard_state));
-	printf("keyboard gui state cleared.\n");
+	printf("keyboard gui state cleared.\n");fflush(stdout);
 }
 
 
@@ -3470,11 +3470,11 @@ static void KeyboardKeyDown(int syskey, int vk_code, int special)
 	}
 	if (!found)
 	{
-		printf("VK_code pressed not found =  %i\n",vk_code);
+		printf("VK_code pressed not found =  %i\n",vk_code);fflush(stdout);
 		//MessageBox(NULL,"keydown message arrived not processed","TitleBox",MB_OK);
 		return;
 	}
-	printf("VK_code pressed found =  %i, sys=%i, mame_keycode=%i special=%08x\n", vk_code, syskey, icode, special);
+	printf("VK_code pressed found =  %i, sys=%i, mame_keycode=%i special=%08x\n", vk_code, syskey, icode, special);fflush(stdout);
 	keyboard_state[icode] = true;
 	check_for_GUI_action();
 }
@@ -3541,12 +3541,12 @@ static void KeyboardKeyUp(int syskey, int vk_code, int special)
 	}
 	if (!found)
 	{
-		printf("VK_code released not found =  %i\n",vk_code);
+		printf("VK_code released not found =  %i\n",vk_code);fflush(stdout);
 		//MessageBox(NULL,"keyup message arrived not processed","TitleBox",MB_OK);
 		return;
 	}
 	keyboard_state[icode] = false;
-	printf("VK_code released found=  %i, sys=%i, mame_keycode=%i special=%08x\n", vk_code, syskey, icode, special );
+	printf("VK_code released found=  %i, sys=%i, mame_keycode=%i special=%08x\n", vk_code, syskey, icode, special );fflush(stdout);
 	check_for_GUI_action();
 }
 
@@ -4387,8 +4387,7 @@ static BOOL MameCommand(HWND hwnd,int id, HWND hwndCtl, UINT codeNotify)
 		return true;
 
 	case ID_OPTIONS_INTERFACE:
-		DialogBox(GetModuleHandle(NULL), MAKEINTRESOURCE(IDD_INTERFACE_OPTIONS),
-				  hMain, InterfaceDialogProc);
+		DialogBox(GetModuleHandle(NULL), MAKEINTRESOURCE(IDD_INTERFACE_OPTIONS), hMain, InterfaceDialogProc);
 		SaveOptions();
 
 		KillTimer(hMain, SCREENSHOT_TIMER);
@@ -4403,9 +4402,9 @@ static BOOL MameCommand(HWND hwnd,int id, HWND hwndCtl, UINT codeNotify)
 		{
 			// Get the path from the existing filename; if no filename go to root
 			TCHAR* t_bgdir = TEXT(".");
-			const char *s = GetBgDir();
+			const std::string s = GetBgDir();
 			std::string as;
-			util::zippath_parent(as, s);
+			util::zippath_parent(as, s.c_str());
 			size_t t1 = as.length()-1;
 			if (as[t1] == '\\') as.substr(0, t1-1);
 			t1 = as.find(':');
@@ -4574,7 +4573,7 @@ static BOOL MameCommand(HWND hwnd,int id, HWND hwndCtl, UINT codeNotify)
 		{
 			if (g_helpInfo[i].nMenuItem == id)
 			{
-				printf("%X: %ls\n",g_helpInfo[i].bIsHtmlHelp, g_helpInfo[i].lpFile);
+				printf("%X: %ls\n",g_helpInfo[i].bIsHtmlHelp, g_helpInfo[i].lpFile);fflush(stdout);
 				if (i == 1) // get current whatsnew.txt from mamedev.org
 				{
 					std::string version = std::string(GetVersionString()); // turn version string into std
@@ -4748,7 +4747,7 @@ static const TCHAR *GamePicker_GetItemString(HWND hwndPicker, int nItem, int nCo
 static void GamePicker_LeavingItem(HWND hwndPicker, int nItem)
 {
 	// leaving item
-	// printf("leaving %s\n",driver_list::driver(nItem).name);
+	// printf("leaving %s\n",driver_list::driver(nItem).name);fflush(stdout);
 	g_szSelectedSoftware[0] = 0;
 	g_szSelectedDevice[0] = 0;
 	g_szSelectedItem[0] = 0;
@@ -4757,7 +4756,7 @@ static void GamePicker_LeavingItem(HWND hwndPicker, int nItem)
 
 static void GamePicker_EnteringItem(HWND hwndPicker, int nItem)
 {
-	// printf("entering %s\n",driver_list::driver(nItem).name);
+	// printf("entering %s\n",driver_list::driver(nItem).name);fflush(stdout);
 	EnableSelection(nItem);
 
 	MessReadMountedSoftware(nItem); // messui.cpp
@@ -4824,7 +4823,7 @@ static void InitListView()
 
 	res = ListView_SetTextBkColor(hwndList, CLR_NONE);
 	res = ListView_SetBkColor(hwndList, CLR_NONE);
-	t_bgdir = ui_wstring_from_utf8(GetBgDir());
+	t_bgdir = ui_wstring_from_utf8(GetBgDir().c_str());
 	if( !t_bgdir )
 		return;
 
@@ -5301,7 +5300,7 @@ BOOL CommonFileDialog(common_file_dialog_proc cfd, char *filename, int filetype)
 	BOOL success = cfd(&ofn);
 	if (success)
 	{
-		//printf("got filename %s nFileExtension %u\n",filename,ofn.nFileExtension);
+		//printf("got filename %s nFileExtension %u\n",filename,ofn.nFileExtension);fflush(stdout);
 		/*GetDirectory(filename,last_directory,sizeof(last_directory));*/
 	}
 
@@ -5980,13 +5979,13 @@ void InitTreeContextMenu(HMENU hTreeMenu)
 
 	if (GetMenuItemInfo(hMenu,3,true,&mii) == false)
 	{
-		printf("can't find show folders context menu\n");
+		printf("can't find show folders context menu\n");fflush(stdout);
 		return;
 	}
 
 	if (mii.hSubMenu == NULL)
 	{
-		printf("can't find submenu for show folders context menu\n");
+		printf("can't find submenu for show folders context menu\n");fflush(stdout);
 		return;
 	}
 
@@ -6026,7 +6025,7 @@ void InitBodyContextMenu(HMENU hBodyContextMenu)
 
 	if (GetMenuItemInfo(hBodyContextMenu,ID_FOLDER_SOURCEPROPERTIES,false,&mii) == false)
 	{
-		printf("can't find show folders context menu\n");
+		printf("can't find show folders context menu\n");fflush(stdout);
 		return;
 	}
 	LPTREEFOLDER lpFolder = GetFolderByName(FOLDER_SOURCE, GetDriverFilename(Picker_GetSelectedItem(hwndList)) );
