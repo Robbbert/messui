@@ -36,7 +36,7 @@ class game_options
 				char s[file_line.length()];
 				strcpy(s, file_line.c_str());
 
-				const char* name = strtok(s, "=");  // get driver name
+				const char* name = strtok(s, "\t");  // get driver name
 				index = driver_list::find(name);
 				if (index > -1)
 				{
@@ -110,14 +110,14 @@ public:
 		for (int i = 0; i < m_total; i++)
 		{
 			// 1:Rom, 2:Sample, 3:Cache, 4:Play Count, 5:Play Time
-			if ((m_list[i].cache != -1) || (m_list[i].play_count > 0))
+			if ((m_list[i].rom != -1) || (m_list[i].play_count > 0))
 			{
-				inistring.append(driver_list::driver(i).name).append("=");
+				inistring.append(driver_list::driver(i).name).append("\t");
 				inistring.append(std::to_string(m_list[i].rom)).append(",");
 				inistring.append(std::to_string(m_list[i].sample)).append(",");
 				inistring.append(std::to_string(m_list[i].cache)).append(",");
 				inistring.append(std::to_string(m_list[i].play_count)).append(",");
-				inistring.append(std::to_string(m_list[i].play_time)).append("\n");
+				inistring.append(std::to_string(m_list[i].play_time)).append(",\n");
 			}
 		}
 
