@@ -590,7 +590,10 @@ UINT GetWindowState(void)
 
 void SetCustomColor(int iIndex, COLORREF uColor)
 {
-	COLORREF custom_color[256];
+	if ((iIndex < 0) || (iIndex > 15))
+		return;
+
+	COLORREF custom_color[16];
 	CusColorDecodeString(settings.getter(MUIOPTION_CUSTOM_COLOR), custom_color);
 	custom_color[iIndex] = uColor;
 	settings.setter(MUIOPTION_CUSTOM_COLOR, CusColorEncodeString(custom_color));
@@ -598,7 +601,10 @@ void SetCustomColor(int iIndex, COLORREF uColor)
 
 COLORREF GetCustomColor(int iIndex)
 {
-	COLORREF custom_color[256];
+	if ((iIndex < 0) || (iIndex > 15))
+		return (COLORREF)RGB(0,0,0);
+
+	COLORREF custom_color[16];
 
 	CusColorDecodeString(settings.getter(MUIOPTION_CUSTOM_COLOR), custom_color);
 
@@ -1573,7 +1579,7 @@ static std::string CusColorEncodeString(const COLORREF *value)
 	std::string str = std::to_string(value[0]);
 
 	for (int i = 1; i < 16; i++)
-		str.append(std::to_string(value[i]));
+		str.append(",").append(std::to_string(value[i]));
 
 	return str;
 }
