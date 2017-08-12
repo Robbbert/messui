@@ -260,7 +260,7 @@ class winui_options
 				strcpy(s, file_line.c_str());
 
 				const char* name = strtok(s, "\t");  // get adjustment name
-				char* data = strtok(NULL, ";");    // get next part
+				char* data = strtok(NULL, "\t");    // get next part (there's no next tab, so just return whatever is left)
 				if (name)
 					m_list[name] = data ? data : "";
 			}
@@ -304,7 +304,7 @@ public:
 			return;
 		std::string inistring = std::string("\nYOU CAN SAFELY DELETE THIS FILE TO RESET THE EMULATOR BACK TO DEFAULTS.\n\n$start\n");
 		for (auto const &it : m_list)
-			inistring.append(it.first).append("\t").append(it.second).append(";\n");
+			inistring.append(it.first).append("\t").append(it.second).append("\n");
 
 		std::ofstream outfile (filename, std::ios::out | std::ios::trunc);
 		size_t size = inistring.size();
@@ -331,11 +331,11 @@ public:
 	}
 
 	// cannot be "setter" otherwise most strings use it, causing "1" to be saved.
-	void bool_setter(const char* name, bool value)
-	{
-		m_list[name] = value ? "1" : "0";
-		save_file(m_filename);
-	}
+	//void bool_setter(const char* name, bool value)
+	//{
+	//	m_list[name] = value ? "1" : "0";
+	//	save_file(m_filename);
+	//}
 
 	void setter(const char* name, int value)
 	{

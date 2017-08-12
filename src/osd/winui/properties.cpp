@@ -415,29 +415,25 @@ static PROPSHEETPAGE *CreatePropSheetPages(HINSTANCE hInst, BOOL bOnlyDefault,
 // This is for the DEFAULT property-page options only
 void InitDefaultPropertyPage(HINSTANCE hInst, HWND hWnd)
 {
-	PROPSHEETHEADER pshead;
-	PROPSHEETPAGE   *pspage;
-
 	// clear globals
 	g_nGame = GLOBAL_OPTIONS;
 	windows_options dummy;
-	pCurrentOpts.copy_from(dummy);
-	pOrigOpts.copy_from(dummy);
-	pDefaultOpts.copy_from(dummy);
+	OptionsCopy(dummy,pDefaultOpts);
+	OptionsCopy(dummy,pOrigOpts);
+	OptionsCopy(dummy,pCurrentOpts);
 
 	/* Get default options to populate property sheets */
 	load_options(pCurrentOpts, OPTIONS_GLOBAL, g_nGame);
 	load_options(pOrigOpts, OPTIONS_GLOBAL, g_nGame);
 	load_options(pDefaultOpts, OPTIONS_GLOBAL, -2);
 
-	/* Stash the result for comparing later */
-	//CreateGameOptions(pOrigOpts, OPTIONS_TYPE_GLOBAL);
-
 	g_nPropertyMode = OPTIONS_GLOBAL;
 	BuildDataMap();
 
+	PROPSHEETHEADER pshead;
 	ZeroMemory(&pshead, sizeof(pshead));
 
+	PROPSHEETPAGE   *pspage;
 	pspage = CreatePropSheetPages(hInst, true, -1, &pshead.nPages, false);
 	if (!pspage)
 		return;
@@ -472,11 +468,6 @@ void InitPropertyPage(HINSTANCE hInst, HWND hWnd, HICON hIcon, OPTIONS_TYPE opt_
 
 void InitPropertyPageToPage(HINSTANCE hInst, HWND hWnd, HICON hIcon, OPTIONS_TYPE opt_type, int folder_id, int game_num, int start_page )
 {
-	PROPSHEETHEADER pshead;
-	PROPSHEETPAGE   *pspage;
-	TCHAR*          t_description = 0;
-///	OPTIONS_TYPE    default_type = opt_type;
-
 	if (highlight_brush == NULL)
 		highlight_brush = CreateSolidBrush(HIGHLIGHT_COLOR);
 
@@ -484,15 +475,17 @@ void InitPropertyPageToPage(HINSTANCE hInst, HWND hWnd, HICON hIcon, OPTIONS_TYP
 		background_brush = CreateSolidBrush(GetSysColor(COLOR_3DFACE));
 
 	// Initialize the options
+	windows_options dummy;
+	OptionsCopy(dummy,pDefaultOpts);
+	OptionsCopy(dummy,pOrigOpts);
+	OptionsCopy(dummy,pCurrentOpts);
+
 	load_options(pCurrentOpts, opt_type, game_num);
 	load_options(pOrigOpts, opt_type, game_num);
 	if (game_num == GLOBAL_OPTIONS)
 		load_options(pDefaultOpts, OPTIONS_GLOBAL, -2); // base opts is the backup for global
 	else
 		load_options(pDefaultOpts, OPTIONS_GLOBAL, -1); // global is the backup for games
-
-	// Copy current_options to original options
-///	CreateGameOptions(pOrigOpts, OPTIONS_TYPE_GLOBAL);
 
 	// Copy icon to use for the property pages
 	g_hIcon = CopyIcon(hIcon);
@@ -504,20 +497,18 @@ void InitPropertyPageToPage(HINSTANCE hInst, HWND hWnd, HICON hIcon, OPTIONS_TYP
 	// Keep track of OPTIONS_TYPE that was passed in.
 	g_nPropertyMode = opt_type;
 
-	// Evaluate if the current set uses the Default set
-	//g_bUseDefaults = (pCurrentOpts != pDefaultOpts);
-	//g_bReset = false;
 	BuildDataMap();
 
+	PROPSHEETHEADER pshead;
 	ZeroMemory(&pshead, sizeof(PROPSHEETHEADER));
 
 	// Set the game to audit to this game
 
 	// Create the property sheets
+	PROPSHEETPAGE *pspage;
 	if( OPTIONS_GAME == opt_type )
 	{
 		InitGameAudit(game_num);
-//		pspage = CreatePropSheetPages(hInst, false, &driver_list::driver(game_num), &pshead.nPages, true);
 		pspage = CreatePropSheetPages(hInst, false, game_num, &pshead.nPages, true);
 	}
 	else
@@ -526,8 +517,8 @@ void InitPropertyPageToPage(HINSTANCE hInst, HWND hWnd, HICON hIcon, OPTIONS_TYP
 	if (!pspage)
 		return;
 
-
 	// Get the description use as the dialog caption.
+	TCHAR* t_description = 0;
 	switch( opt_type )
 	{
 	case OPTIONS_GAME:

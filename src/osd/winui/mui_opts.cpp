@@ -2151,8 +2151,8 @@ void save_options(windows_options &opts, OPTIONS_TYPE opt_type, int game_num)
 static void ResetToDefaults(windows_options &opts, int priority)
 {
 	// iterate through the options setting each one back to the default value.
-	windows_options orig_settings;
-	opts.copy_from(orig_settings);
+	windows_options dummy;
+	OptionsCopy(dummy, opts);
 }
 
 int GetDriverCache(int driver_index)
@@ -2324,4 +2324,22 @@ bool AreOptionsEqual(windows_options &opts1, windows_options &opts2)
 		}
 	}
 	return true;
+}
+
+void OptionsCopy(windows_options &source, windows_options &dest)
+{
+	for (auto &dest_entry : source.entries())
+	{
+		if (dest_entry->names().size() > 0)
+		{
+			// identify the source entry
+			const core_options::entry::shared_ptr source_entry = source.get_entry(dest_entry->name());
+			if (source_entry)
+			{
+				const char *value = source_entry->value();
+				if (value)
+					dest_entry->set_value(value, source_entry->priority(), true);
+			}
+		}
+	}
 }
