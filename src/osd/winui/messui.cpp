@@ -428,7 +428,8 @@ static std::string ProcessSWDir(int drvindex)
 {
 	BOOL b_dir = false;
 	char dir0[2048];
-	strcpy(dir0, GetSWDir()); // global SW
+	std::string t = GetSWDir();
+	strcpy(dir0, t.c_str()); // global SW
 	char* t0 = strtok(dir0, ";");
 	if (t0 && osd::directory::open(t0))  // make sure its valid
 		b_dir = true;
@@ -1791,7 +1792,8 @@ static void DevView_ButtonClick(HWND hwndDevView, struct DevViewEntry *pEnt, HWN
 	{
 		std::string as, dst;
 		char rompath[512];
-		strcpy(rompath, GetRomDirs());
+		std::string t = GetRomDirs();
+		strcpy(rompath, t.c_str());
 		char* sl_root = strtok(rompath, ";");
 		while (sl_root && !passes_tests)
 		{

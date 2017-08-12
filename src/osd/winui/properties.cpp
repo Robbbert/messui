@@ -1905,7 +1905,8 @@ static BOOL DefaultInputPopulateControl(datamap *map, HWND dialog, HWND control,
 	res = ComboBox_SetItemData(control, index, "");
 	index++;
 
-	TCHAR *t_ctrldir = ui_wstring_from_utf8(GetCtrlrDir());
+	std::string t = GetCtrlrDir();
+	TCHAR *t_ctrldir = ui_wstring_from_utf8(t.c_str());
 	if( !t_ctrldir )
 	{
 		if( t_buf )

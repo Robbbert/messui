@@ -775,9 +775,9 @@ const char* GetPlugins(void)
 	return global.value(OPTION_PLUGIN);
 }
 
-const char* GetRomDirs(void)
+const std::string GetRomDirs(void)
 {
-	return global.media_path();
+	return std::string(global.media_path());
 }
 
 void SetRomDirs(const char* paths)
@@ -785,9 +785,9 @@ void SetRomDirs(const char* paths)
 	global.set_value(OPTION_MEDIAPATH, paths, OPTION_PRIORITY_CMDLINE);
 }
 
-const char* GetHashDirs(void)
+const std::string GetHashDirs(void)
 {
-	return global.hash_path();
+	return std::string(global.hash_path());
 }
 
 void SetHashDirs(const char* paths)
@@ -795,9 +795,9 @@ void SetHashDirs(const char* paths)
 	global.set_value(OPTION_HASHPATH, paths, OPTION_PRIORITY_CMDLINE);
 }
 
-const char* GetSampleDirs(void)
+const std::string GetSampleDirs(void)
 {
-	return global.value(OPTION_SAMPLEPATH);
+	return std::string(global.value(OPTION_SAMPLEPATH));
 }
 
 void SetSampleDirs(const char* paths)
@@ -825,7 +825,7 @@ void SetIniDir(const char *path)
 	global.set_value(OPTION_INIPATH, path, OPTION_PRIORITY_CMDLINE);
 }
 
-const char* GetCtrlrDir(void)
+const std::string GetCtrlrDir(void)
 {
 	return global.value(OPTION_CTRLRPATH);
 }
@@ -835,9 +835,9 @@ void SetCtrlrDir(const char* path)
 	global.set_value(OPTION_CTRLRPATH, path, OPTION_PRIORITY_CMDLINE);
 }
 
-const char* GetSWDir(void)
+const std::string GetSWDir(void)
 {
-	return global.value(OPTION_SWPATH);
+	return std::string(global.value(OPTION_SWPATH));
 }
 
 void SetSWDir(const char* path)
@@ -845,9 +845,9 @@ void SetSWDir(const char* path)
 	global.set_value(OPTION_SWPATH, path, OPTION_PRIORITY_CMDLINE);
 }
 
-const char* GetCfgDir(void)
+const std::string GetCfgDir(void)
 {
-	return global.value(OPTION_CFG_DIRECTORY);
+	return std::string(global.value(OPTION_CFG_DIRECTORY));
 }
 
 void SetCfgDir(const char* path)
@@ -855,9 +855,9 @@ void SetCfgDir(const char* path)
 	global.set_value(OPTION_CFG_DIRECTORY, path, OPTION_PRIORITY_CMDLINE);
 }
 
-const char* GetNvramDir(void)
+const std::string GetNvramDir(void)
 {
-	return global.value(OPTION_NVRAM_DIRECTORY);
+	return std::string(global.value(OPTION_NVRAM_DIRECTORY));
 }
 
 void SetNvramDir(const char* path)
@@ -865,9 +865,9 @@ void SetNvramDir(const char* path)
 	global.set_value(OPTION_NVRAM_DIRECTORY, path, OPTION_PRIORITY_CMDLINE);
 }
 
-const char* GetInpDir(void)
+const std::string GetInpDir(void)
 {
-	return global.value(OPTION_INPUT_DIRECTORY);
+	return std::string(global.value(OPTION_INPUT_DIRECTORY));
 }
 
 void SetInpDir(const char* path)
@@ -875,9 +875,9 @@ void SetInpDir(const char* path)
 	global.set_value(OPTION_INPUT_DIRECTORY, path, OPTION_PRIORITY_CMDLINE);
 }
 
-const char* GetImgDir(void)
+const std::string GetImgDir(void)
 {
-	return global.value(OPTION_SNAPSHOT_DIRECTORY);
+	return std::string(global.value(OPTION_SNAPSHOT_DIRECTORY));
 }
 
 void SetImgDir(const char* path)
@@ -885,9 +885,9 @@ void SetImgDir(const char* path)
 	global.set_value(OPTION_SNAPSHOT_DIRECTORY, path, OPTION_PRIORITY_CMDLINE);
 }
 
-const char* GetStateDir(void)
+const std::string GetStateDir(void)
 {
-	return global.value(OPTION_STATE_DIRECTORY);
+	return std::string(global.value(OPTION_STATE_DIRECTORY));
 }
 
 void SetStateDir(const char* path)
@@ -895,9 +895,9 @@ void SetStateDir(const char* path)
 	global.set_value(OPTION_STATE_DIRECTORY, path, OPTION_PRIORITY_CMDLINE);
 }
 
-const char* GetArtDir(void)
+const std::string GetArtDir(void)
 {
-	return global.value(OPTION_ARTPATH);
+	return std::string(global.value(OPTION_ARTPATH));
 }
 
 void SetArtDir(const char* path)
@@ -905,9 +905,9 @@ void SetArtDir(const char* path)
 	global.set_value(OPTION_ARTPATH, path, OPTION_PRIORITY_CMDLINE);
 }
 
-const char* GetFontDir(void)
+const std::string GetFontDir(void)
 {
-	return global.value(OPTION_FONTPATH);
+	return std::string(global.value(OPTION_FONTPATH));
 }
 
 void SetFontDir(const char* paths)
@@ -915,9 +915,9 @@ void SetFontDir(const char* paths)
 	global.set_value(OPTION_FONTPATH, paths, OPTION_PRIORITY_CMDLINE);
 }
 
-const char* GetCrosshairDir(void)
+const std::string GetCrosshairDir(void)
 {
-	return global.value(OPTION_CROSSHAIRPATH);
+	return std::string(global.value(OPTION_CROSSHAIRPATH));
 }
 
 void SetCrosshairDir(const char* paths)
@@ -925,9 +925,9 @@ void SetCrosshairDir(const char* paths)
 	global.set_value(OPTION_CROSSHAIRPATH, paths, OPTION_PRIORITY_CMDLINE);
 }
 
-const char* GetFlyerDir(void)
+const std::string GetFlyerDir(void)
 {
-	return mewui.value(OPTION_FLYERS_PATH);
+	return std::string(mewui.value(OPTION_FLYERS_PATH));
 }
 
 void SetFlyerDir(const char* path)
@@ -935,9 +935,9 @@ void SetFlyerDir(const char* path)
 	mewui.set_value(OPTION_FLYERS_PATH, path, OPTION_PRIORITY_CMDLINE);
 }
 
-const char* GetCabinetDir(void)
+const std::string GetCabinetDir(void)
 {
-	return mewui.value(OPTION_CABINETS_PATH);
+	return std::string(mewui.value(OPTION_CABINETS_PATH));
 }
 
 void SetCabinetDir(const char* path)
@@ -945,9 +945,9 @@ void SetCabinetDir(const char* path)
 	mewui.set_value(OPTION_CABINETS_PATH, path, OPTION_PRIORITY_CMDLINE);
 }
 
-const char* GetMarqueeDir(void)
+const std::string GetMarqueeDir(void)
 {
-	return mewui.value(OPTION_MARQUEES_PATH);
+	return std::string(mewui.value(OPTION_MARQUEES_PATH));
 }
 
 void SetMarqueeDir(const char* path)
@@ -955,9 +955,9 @@ void SetMarqueeDir(const char* path)
 	mewui.set_value(OPTION_MARQUEES_PATH, path, OPTION_PRIORITY_CMDLINE);
 }
 
-const char* GetTitlesDir(void)
+const std::string GetTitlesDir(void)
 {
-	return mewui.value(OPTION_TITLES_PATH);
+	return std::string(mewui.value(OPTION_TITLES_PATH));
 }
 
 void SetTitlesDir(const char* path)
@@ -965,9 +965,9 @@ void SetTitlesDir(const char* path)
 	mewui.set_value(OPTION_TITLES_PATH, path, OPTION_PRIORITY_CMDLINE);
 }
 
-const char * GetControlPanelDir(void)
+const std::string GetControlPanelDir(void)
 {
-	return mewui.value(OPTION_CPANELS_PATH);
+	return std::string(mewui.value(OPTION_CPANELS_PATH));
 }
 
 void SetControlPanelDir(const char *path)
@@ -975,9 +975,9 @@ void SetControlPanelDir(const char *path)
 	mewui.set_value(OPTION_CPANELS_PATH, path, OPTION_PRIORITY_CMDLINE);
 }
 
-const char * GetPcbDir(void)
+const std::string GetPcbDir(void)
 {
-	return mewui.value(OPTION_PCBS_PATH);
+	return std::string(mewui.value(OPTION_PCBS_PATH));
 }
 
 void SetPcbDir(const char *path)
@@ -985,9 +985,9 @@ void SetPcbDir(const char *path)
 	mewui.set_value(OPTION_PCBS_PATH, path, OPTION_PRIORITY_CMDLINE);
 }
 
-const char* GetPluginsDir(void)
+const std::string GetPluginsDir(void)
 {
-	return global.value(OPTION_PLUGINSPATH);
+	return std::string(global.value(OPTION_PLUGINSPATH));
 }
 
 void SetPluginsDir(const char* path)
@@ -995,9 +995,9 @@ void SetPluginsDir(const char* path)
 	global.set_value(OPTION_PLUGINSPATH, path, OPTION_PRIORITY_CMDLINE);
 }
 
-const char* GetLangDir(void)
+const std::string GetLangDir(void)
 {
-	return global.value(OPTION_LANGUAGEPATH);
+	return std::string(global.value(OPTION_LANGUAGEPATH));
 }
 
 void SetLangDir(const char* path)
@@ -1005,9 +1005,9 @@ void SetLangDir(const char* path)
 	global.set_value(OPTION_LANGUAGEPATH, path, OPTION_PRIORITY_CMDLINE);
 }
 
-const char * GetDiffDir(void)
+const std::string GetDiffDir(void)
 {
-	return global.value(OPTION_DIFF_DIRECTORY);
+	return std::string(global.value(OPTION_DIFF_DIRECTORY));
 }
 
 void SetDiffDir(const char* path)
@@ -1015,9 +1015,9 @@ void SetDiffDir(const char* path)
 	global.set_value(OPTION_DIFF_DIRECTORY, path, OPTION_PRIORITY_CMDLINE);
 }
 
-const char* GetIconsDir(void)
+const std::string GetIconsDir(void)
 {
-	return settings.getter(MUIOPTION_ICONS_DIRECTORY).c_str();
+	return settings.getter(MUIOPTION_ICONS_DIRECTORY);
 }
 
 void SetIconsDir(const char* path)
@@ -1035,9 +1035,9 @@ void SetBgDir (const char* path)
 	settings.setter(MUIOPTION_BACKGROUND_DIRECTORY, path);
 }
 
-const char * GetDatsDir(void)
+const std::string GetDatsDir(void)
 {
-	return settings.getter(MUIOPTION_DATS_DIRECTORY).c_str();
+	return settings.getter(MUIOPTION_DATS_DIRECTORY);
 	//return mewui.value(OPTION_HISTORY_PATH);
 }
 
@@ -1049,9 +1049,9 @@ void SetDatsDir(const char *path)
 	mewui.set_value(OPTION_HISTORY_PATH, t1, OPTION_PRIORITY_CMDLINE);
 }
 
-const char* GetFolderDir(void)
+const std::string GetFolderDir(void)
 {
-	return mewui.value(OPTION_CATEGORYINI_PATH);
+	return std::string(mewui.value(OPTION_CATEGORYINI_PATH));
 }
 
 void SetFolderDir(const char* path)
@@ -1059,9 +1059,9 @@ void SetFolderDir(const char* path)
 	mewui.set_value(OPTION_CATEGORYINI_PATH, path, OPTION_PRIORITY_CMDLINE);
 }
 
-const char* GetCheatDir(void)
+const std::string GetCheatDir(void)
 {
-	return global.value(OPTION_CHEATPATH);
+	return std::string(global.value(OPTION_CHEATPATH));
 }
 
 void SetCheatDir(const char* path)

@@ -775,9 +775,6 @@ static ResizeItem main_resize_items[] =
 
 static Resize main_resize = { {0, 0, 0, 0}, main_resize_items };
 
-/* last directory for common file dialogs */
-TCHAR last_directory[MAX_PATH];
-
 static BOOL g_listview_dragging = false;
 static HIMAGELIST himl_drag;
 static int game_dragged; /* which game started the drag */
@@ -1184,10 +1181,11 @@ HICON LoadIconFromFile(const char *iconname)
 	PBYTE bufferPtr = 0;
 	util::archive_file::ptr zip;
 
-	sprintf(tmpStr, "%s/%s.ico", GetIconsDir(), iconname);
+	const std::string t = GetIconsDir();
+	sprintf(tmpStr, "%s/%s.ico", t.c_str(), iconname);
 	if (stat(tmpStr, &file_stat) != 0 || (hIcon = win_extract_icon_utf8(hInst, tmpStr, 0)) == 0)
 	{
-		sprintf(tmpStr, "%s/icons.zip", GetIconsDir());
+		sprintf(tmpStr, "%s/icons.zip", t.c_str());
 		sprintf(tmpIcoName, "%s.ico", iconname);
 
 		if (util::archive_file::open_zip(tmpStr, zip) == util::archive_file::error::NONE)
@@ -1207,7 +1205,7 @@ HICON LoadIconFromFile(const char *iconname)
 		}
 		else
 		{
-			sprintf(tmpStr, "%s/icons.7z", GetIconsDir());
+			sprintf(tmpStr, "%s/icons.7z", t.c_str());
 			sprintf(tmpIcoName, "%s.ico", iconname);
 
 			if (util::archive_file::open_7z(tmpStr, zip) == util::archive_file::error::NONE)
@@ -1744,14 +1742,6 @@ static BOOL Win32UI_init(HINSTANCE hInstance, LPWSTR lpCmdLine, int nCmdShow)
 	}
 
 	HelpInit();
-
-	// should be able to get rid of this directory stuff soon
-	TCHAR* t_inpdir = ui_wstring_from_utf8(GetInpDir());
-	if( ! t_inpdir )
-		return false;
-
-	_tcscpy(last_directory,t_inpdir);
-	free(t_inpdir);
 
 	hMain = CreateDialog(hInstance, MAKEINTRESOURCE(IDD_MAIN), 0, NULL);
 	if (hMain == NULL)
