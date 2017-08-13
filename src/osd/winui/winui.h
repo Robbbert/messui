@@ -62,6 +62,9 @@ typedef struct
 } ICONDATA;
 
 typedef BOOL (WINAPI *common_file_dialog_proc)(LPOPENFILENAME lpofn);
+
+typedef std::string string;
+
 BOOL CommonFileDialog(common_file_dialog_proc cfd,char *filename, int filetype);
 
 HWND GetMainWindow(void);

@@ -109,85 +109,85 @@ windows_options &MameUIGlobal(void);
 void LoadFolderFlags(void);
 
 // Start interface to directories.h
-const std::string GetRomDirs(void);
+const string GetRomDirs(void);
 void SetRomDirs(const char *paths);
 
-const std::string GetSampleDirs(void);
-void  SetSampleDirs(const char *paths);
+const string GetSampleDirs(void);
+void SetSampleDirs(const char *paths);
 
-const std::string GetArtDir(void);
+const string GetArtDir(void);
 void SetArtDir(const char *path);
 
-const std::string GetCabinetDir(void);
+const string GetCabinetDir(void);
 void SetCabinetDir(const char *path);
 
-const std::string GetCheatDir(void);
+const string GetCheatDir(void);
 void SetCheatDir(const char *path);
 
-const std::string GetCfgDir(void);
+const string GetCfgDir(void);
 void SetCfgDir(const char *path);
 
-const std::string GetControlPanelDir(void);
+const string GetControlPanelDir(void);
 void SetControlPanelDir(const char *path);
 
-const std::string GetCtrlrDir(void);
+const string GetCtrlrDir(void);
 void SetCtrlrDir(const char *path);
 
-const std::string GetCrosshairDir(void);
+const string GetCrosshairDir(void);
 void SetCrosshairDir(const char *paths);
 
-const std::string GetDatsDir(void);
+const string GetDatsDir(void);
 void SetDatsDir(const char *path);
 
-const std::string GetFlyerDir(void);
+const string GetFlyerDir(void);
 void SetFlyerDir(const char *path);
 
-const std::string GetFolderDir(void);
+const string GetFolderDir(void);
 void SetFolderDir(const char *path);
 
-const std::string GetFontDir(void);
+const string GetFontDir(void);
 void SetFontDir(const char *paths);
 
-const std::string GetHashDirs(void);
+const string GetHashDirs(void);
 void SetHashDirs(const char *paths);
 
-const std::string GetDiffDir(void);
+const string GetDiffDir(void);
 void SetDiffDir(const char *path);
 
-const std::string GetIconsDir(void);
+const string GetIconsDir(void);
 void SetIconsDir(const char *path);
 
 const char *GetIniDir(void);
 void SetIniDir(const char *path);
 
-const std::string GetInpDir(void);
+const string GetInpDir(void);
 void SetInpDir(const char *path);
 
-const std::string GetLangDir(void);
+const string GetLangDir(void);
 void SetLangDir(const char *path);
 
-const std::string GetMarqueeDir(void);
+const string GetMarqueeDir(void);
 void SetMarqueeDir(const char *path);
 
-const std::string GetNvramDir(void);
+const string GetNvramDir(void);
 void SetNvramDir(const char *path);
 
-const std::string GetPcbDir(void);
+const string GetPcbDir(void);
 void SetPcbDir(const char *path);
 
-const std::string GetPluginsDir(void);
+const string GetPluginsDir(void);
 void SetPluginsDir(const char *path);
 
-const std::string GetImgDir(void);
+const string GetImgDir(void);
 void SetImgDir(const char *path);
 
-const std::string GetStateDir(void);
+const string GetStateDir(void);
 void SetStateDir(const char *path);
 
-const std::string GetTitlesDir(void);
+const string GetTitlesDir(void);
 void SetTitlesDir(const char *path);
 
-const std::string GetSWDir(void);
+const string GetSWDir(void);
 void SetSWDir(const char *path);
 // End interface to directories.h
 
@@ -319,7 +319,7 @@ const char *GetPlugins(void);
 const char *GetSnapName(void);
 void SetSnapName(const char *pattern);
 
-const std::string GetBgDir(void);
+const string GetBgDir(void);
 void SetBgDir(const char *path);
 
 void ResetGameOptions(int driver_index);
@@ -482,7 +482,7 @@ int  GetSLSortColumn(void);
 void SetSLSortReverse(BOOL reverse);
 BOOL GetSLSortReverse(void);
 
-void SetSelectedSoftware(int driver_index, const device_image_interface *device, const char *software);
+void SetSelectedSoftware(int driver_index, string opt_name, const char *software);
 
 void SetCurrentSoftwareTab(const char *shortname);
 const char *GetCurrentSoftwareTab(void);

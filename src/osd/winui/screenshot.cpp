@@ -197,7 +197,7 @@ inline void store_pixels(UINT8 *buf, int len)
 static bool png_read_bitmap_gui(util::core_file &mfile, HGLOBAL *phDIB, HPALETTE *pPAL)
 {
 	png_info p;
-	if (png_read_file(mfile, &p) != PNGERR_NONE)
+	if (p.read_file(mfile) != PNGERR_NONE)
 		return 0;
 
 	if (p.color_type != 3 && p.color_type != 2)
@@ -210,17 +210,15 @@ static bool png_read_bitmap_gui(util::core_file &mfile, HGLOBAL *phDIB, HPALETTE
 	if (p.interlace_method != 0)
 	{
 		printf("PNG Interlace unsupported\n");
-		png_free(&p);
 		return 0;
 	}
 
 	/* Convert < 8 bit to 8 bit */
-	png_expand_buffer_8bit(&p);
+	p.expand_buffer_8bit();
 
 	if (!AllocatePNG(&p, phDIB, pPAL))
 	{
 		printf("PNG Unable to allocate memory to display screenshot\n");
-		png_free(&p);
 		return 0;
 	}
 
@@ -228,7 +226,7 @@ static bool png_read_bitmap_gui(util::core_file &mfile, HGLOBAL *phDIB, HPALETTE
 
 	for (uint32_t i = 0; i < p.height; i++)
 	{
-		UINT8 *ptr = p.image + i * (p.width * bytespp);
+		UINT8 *ptr = &p.image[i * (p.width * bytespp)];
 
 		if (p.color_type == 2) /*(p->bit_depth > 8) */
 		{
@@ -243,10 +241,8 @@ static bool png_read_bitmap_gui(util::core_file &mfile, HGLOBAL *phDIB, HPALETTE
 				ptr += 3;
 			}
 		}
-		store_pixels(p.image + i * (p.width * bytespp), p.width * bytespp);
+		store_pixels(&p.image[i * (p.width * bytespp)], p.width * bytespp);
 	}
-
-	png_free(&p);
 
 	return 1;
 }

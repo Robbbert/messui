@@ -13,33 +13,21 @@
 // standard windows headers
 #include <windows.h>
 #include <windowsx.h>
-#include <winreg.h>
-#include <commctrl.h>
 
 // standard C headers
-#include <assert.h>
-#include <stdio.h>
-#include <sys/stat.h>
-#include <math.h>
-#include <direct.h>
-#include <emu.h>
-#include <mameopts.h>
-#include <ui/moptions.h>
-#include <stddef.h>
 #include <tchar.h>
 
 // MAME/MAMEUI headers
+#include "emu.h"
+#include "ui/moptions.h"
 #include "drivenum.h"
 #include "game_opts.h"  // this must be under emu.h and drivenum.h
 #include "winui_opts.h"
-#include "bitmask.h"
 #include "winui.h"
 #include "mui_util.h"
 #include "treeview.h"
 #include "splitters.h"
 #include "mui_opts.h"
-#include "winutf8.h"
-#include "strconv.h"
 
 #ifdef _MSC_VER
 #define snprintf _snprintf
@@ -55,23 +43,23 @@ static void LoadSettingsFile(windows_options &opts, const char *filename);
 static void SaveSettingsFile(windows_options &opts, const char *filename);
 static void LoadSettingsFile(ui_options &opts, const char *filename);
 
-static std::string CusColorEncodeString(const COLORREF *value);
-static void CusColorDecodeString(std::string ss, COLORREF *value);
+static string CusColorEncodeString(const COLORREF *value);
+static void CusColorDecodeString(string ss, COLORREF *value);
 
-static std::string SplitterEncodeString(const int *value);
-static void SplitterDecodeString(std::string ss, int *value);
+static string SplitterEncodeString(const int *value);
+static void SplitterDecodeString(string ss, int *value);
 
-static std::string FontEncodeString(const LOGFONT *f);
-static void FontDecodeString(std::string ss, LOGFONT *f);
+static string FontEncodeString(const LOGFONT *f);
+static void FontDecodeString(string ss, LOGFONT *f);
 
-static std::string TabFlagsEncodeString(int data);
-static void TabFlagsDecodeString(std::string ss, int *data);
+static string TabFlagsEncodeString(int data);
+static void TabFlagsDecodeString(string ss, int *data);
 
-static DWORD DecodeFolderFlags(std::string ss);
+static DWORD DecodeFolderFlags(string ss);
 static const char * EncodeFolderFlags(DWORD value);
 
-static std::string ColumnEncodeStringWithCount(const int *value, int count);
-static void ColumnDecodeStringWithCount(std::string ss, int *value, int count);
+static string ColumnEncodeStringWithCount(const int *value, int count);
+static void ColumnDecodeStringWithCount(string ss, int *value, int count);
 
 static void ResetToDefaults(windows_options &opts, int priority);
 
@@ -261,7 +249,7 @@ static void options_set_color(const char *name, COLORREF value)
 	else
 		snprintf(value_str, ARRAY_LENGTH(value_str), "%d,%d,%d", (((int) value) >>  0) & 0xFF, (((int) value) >>  8) & 0xFF, (((int) value) >> 16) & 0xFF);
 
-	settings.setter(name, std::string(value_str));
+	settings.setter(name, string(value_str));
 }
 
 static COLORREF options_get_color_default(const char *name, int default_color)
@@ -478,7 +466,7 @@ void SetShowFolder(int folder,BOOL show)
 	LPBITS show_folder_flags = NewBits(MAX_FOLDERS);
 	int i = 0, j = 0;
 	int num_saved = 0;
-	std::string str;
+	string str;
 	extern const FOLDERDATA g_folderData[];
 
 	GetsShowFolderFlags(show_folder_flags);
@@ -781,9 +769,9 @@ const char* GetPlugins(void)
 	return global.value(OPTION_PLUGIN);
 }
 
-const std::string GetRomDirs(void)
+const string GetRomDirs(void)
 {
-	return std::string(global.media_path());
+	return string(global.media_path());
 }
 
 void SetRomDirs(const char* paths)
@@ -791,9 +779,9 @@ void SetRomDirs(const char* paths)
 	global.set_value(OPTION_MEDIAPATH, paths, OPTION_PRIORITY_CMDLINE);
 }
 
-const std::string GetHashDirs(void)
+const string GetHashDirs(void)
 {
-	return std::string(global.hash_path());
+	return string(global.hash_path());
 }
 
 void SetHashDirs(const char* paths)
@@ -801,9 +789,9 @@ void SetHashDirs(const char* paths)
 	global.set_value(OPTION_HASHPATH, paths, OPTION_PRIORITY_CMDLINE);
 }
 
-const std::string GetSampleDirs(void)
+const string GetSampleDirs(void)
 {
-	return std::string(global.value(OPTION_SAMPLEPATH));
+	return string(global.value(OPTION_SAMPLEPATH));
 }
 
 void SetSampleDirs(const char* paths)
@@ -831,7 +819,7 @@ void SetIniDir(const char *path)
 	global.set_value(OPTION_INIPATH, path, OPTION_PRIORITY_CMDLINE);
 }
 
-const std::string GetCtrlrDir(void)
+const string GetCtrlrDir(void)
 {
 	return global.value(OPTION_CTRLRPATH);
 }
@@ -841,9 +829,9 @@ void SetCtrlrDir(const char* path)
 	global.set_value(OPTION_CTRLRPATH, path, OPTION_PRIORITY_CMDLINE);
 }
 
-const std::string GetSWDir(void)
+const string GetSWDir(void)
 {
-	return std::string(global.value(OPTION_SWPATH));
+	return string(global.value(OPTION_SWPATH));
 }
 
 void SetSWDir(const char* path)
@@ -851,9 +839,9 @@ void SetSWDir(const char* path)
 	global.set_value(OPTION_SWPATH, path, OPTION_PRIORITY_CMDLINE);
 }
 
-const std::string GetCfgDir(void)
+const string GetCfgDir(void)
 {
-	return std::string(global.value(OPTION_CFG_DIRECTORY));
+	return string(global.value(OPTION_CFG_DIRECTORY));
 }
 
 void SetCfgDir(const char* path)
@@ -861,9 +849,9 @@ void SetCfgDir(const char* path)
 	global.set_value(OPTION_CFG_DIRECTORY, path, OPTION_PRIORITY_CMDLINE);
 }
 
-const std::string GetNvramDir(void)
+const string GetNvramDir(void)
 {
-	return std::string(global.value(OPTION_NVRAM_DIRECTORY));
+	return string(global.value(OPTION_NVRAM_DIRECTORY));
 }
 
 void SetNvramDir(const char* path)
@@ -871,9 +859,9 @@ void SetNvramDir(const char* path)
 	global.set_value(OPTION_NVRAM_DIRECTORY, path, OPTION_PRIORITY_CMDLINE);
 }
 
-const std::string GetInpDir(void)
+const string GetInpDir(void)
 {
-	return std::string(global.value(OPTION_INPUT_DIRECTORY));
+	return string(global.value(OPTION_INPUT_DIRECTORY));
 }
 
 void SetInpDir(const char* path)
@@ -881,9 +869,9 @@ void SetInpDir(const char* path)
 	global.set_value(OPTION_INPUT_DIRECTORY, path, OPTION_PRIORITY_CMDLINE);
 }
 
-const std::string GetImgDir(void)
+const string GetImgDir(void)
 {
-	return std::string(global.value(OPTION_SNAPSHOT_DIRECTORY));
+	return string(global.value(OPTION_SNAPSHOT_DIRECTORY));
 }
 
 void SetImgDir(const char* path)
@@ -891,9 +879,9 @@ void SetImgDir(const char* path)
 	global.set_value(OPTION_SNAPSHOT_DIRECTORY, path, OPTION_PRIORITY_CMDLINE);
 }
 
-const std::string GetStateDir(void)
+const string GetStateDir(void)
 {
-	return std::string(global.value(OPTION_STATE_DIRECTORY));
+	return string(global.value(OPTION_STATE_DIRECTORY));
 }
 
 void SetStateDir(const char* path)
@@ -901,9 +889,9 @@ void SetStateDir(const char* path)
 	global.set_value(OPTION_STATE_DIRECTORY, path, OPTION_PRIORITY_CMDLINE);
 }
 
-const std::string GetArtDir(void)
+const string GetArtDir(void)
 {
-	return std::string(global.value(OPTION_ARTPATH));
+	return string(global.value(OPTION_ARTPATH));
 }
 
 void SetArtDir(const char* path)
@@ -911,9 +899,9 @@ void SetArtDir(const char* path)
 	global.set_value(OPTION_ARTPATH, path, OPTION_PRIORITY_CMDLINE);
 }
 
-const std::string GetFontDir(void)
+const string GetFontDir(void)
 {
-	return std::string(global.value(OPTION_FONTPATH));
+	return string(global.value(OPTION_FONTPATH));
 }
 
 void SetFontDir(const char* paths)
@@ -921,9 +909,9 @@ void SetFontDir(const char* paths)
 	global.set_value(OPTION_FONTPATH, paths, OPTION_PRIORITY_CMDLINE);
 }
 
-const std::string GetCrosshairDir(void)
+const string GetCrosshairDir(void)
 {
-	return std::string(global.value(OPTION_CROSSHAIRPATH));
+	return string(global.value(OPTION_CROSSHAIRPATH));
 }
 
 void SetCrosshairDir(const char* paths)
@@ -931,9 +919,9 @@ void SetCrosshairDir(const char* paths)
 	global.set_value(OPTION_CROSSHAIRPATH, paths, OPTION_PRIORITY_CMDLINE);
 }
 
-const std::string GetFlyerDir(void)
+const string GetFlyerDir(void)
 {
-	return std::string(mewui.value(OPTION_FLYERS_PATH));
+	return string(mewui.value(OPTION_FLYERS_PATH));
 }
 
 void SetFlyerDir(const char* path)
@@ -941,9 +929,9 @@ void SetFlyerDir(const char* path)
 	mewui.set_value(OPTION_FLYERS_PATH, path, OPTION_PRIORITY_CMDLINE);
 }
 
-const std::string GetCabinetDir(void)
+const string GetCabinetDir(void)
 {
-	return std::string(mewui.value(OPTION_CABINETS_PATH));
+	return string(mewui.value(OPTION_CABINETS_PATH));
 }
 
 void SetCabinetDir(const char* path)
@@ -951,9 +939,9 @@ void SetCabinetDir(const char* path)
 	mewui.set_value(OPTION_CABINETS_PATH, path, OPTION_PRIORITY_CMDLINE);
 }
 
-const std::string GetMarqueeDir(void)
+const string GetMarqueeDir(void)
 {
-	return std::string(mewui.value(OPTION_MARQUEES_PATH));
+	return string(mewui.value(OPTION_MARQUEES_PATH));
 }
 
 void SetMarqueeDir(const char* path)
@@ -961,9 +949,9 @@ void SetMarqueeDir(const char* path)
 	mewui.set_value(OPTION_MARQUEES_PATH, path, OPTION_PRIORITY_CMDLINE);
 }
 
-const std::string GetTitlesDir(void)
+const string GetTitlesDir(void)
 {
-	return std::string(mewui.value(OPTION_TITLES_PATH));
+	return string(mewui.value(OPTION_TITLES_PATH));
 }
 
 void SetTitlesDir(const char* path)
@@ -971,9 +959,9 @@ void SetTitlesDir(const char* path)
 	mewui.set_value(OPTION_TITLES_PATH, path, OPTION_PRIORITY_CMDLINE);
 }
 
-const std::string GetControlPanelDir(void)
+const string GetControlPanelDir(void)
 {
-	return std::string(mewui.value(OPTION_CPANELS_PATH));
+	return string(mewui.value(OPTION_CPANELS_PATH));
 }
 
 void SetControlPanelDir(const char *path)
@@ -981,9 +969,9 @@ void SetControlPanelDir(const char *path)
 	mewui.set_value(OPTION_CPANELS_PATH, path, OPTION_PRIORITY_CMDLINE);
 }
 
-const std::string GetPcbDir(void)
+const string GetPcbDir(void)
 {
-	return std::string(mewui.value(OPTION_PCBS_PATH));
+	return string(mewui.value(OPTION_PCBS_PATH));
 }
 
 void SetPcbDir(const char *path)
@@ -991,9 +979,9 @@ void SetPcbDir(const char *path)
 	mewui.set_value(OPTION_PCBS_PATH, path, OPTION_PRIORITY_CMDLINE);
 }
 
-const std::string GetPluginsDir(void)
+const string GetPluginsDir(void)
 {
-	return std::string(global.value(OPTION_PLUGINSPATH));
+	return string(global.value(OPTION_PLUGINSPATH));
 }
 
 void SetPluginsDir(const char* path)
@@ -1001,9 +989,9 @@ void SetPluginsDir(const char* path)
 	global.set_value(OPTION_PLUGINSPATH, path, OPTION_PRIORITY_CMDLINE);
 }
 
-const std::string GetLangDir(void)
+const string GetLangDir(void)
 {
-	return std::string(global.value(OPTION_LANGUAGEPATH));
+	return string(global.value(OPTION_LANGUAGEPATH));
 }
 
 void SetLangDir(const char* path)
@@ -1011,9 +999,9 @@ void SetLangDir(const char* path)
 	global.set_value(OPTION_LANGUAGEPATH, path, OPTION_PRIORITY_CMDLINE);
 }
 
-const std::string GetDiffDir(void)
+const string GetDiffDir(void)
 {
-	return std::string(global.value(OPTION_DIFF_DIRECTORY));
+	return string(global.value(OPTION_DIFF_DIRECTORY));
 }
 
 void SetDiffDir(const char* path)
@@ -1021,7 +1009,7 @@ void SetDiffDir(const char* path)
 	global.set_value(OPTION_DIFF_DIRECTORY, path, OPTION_PRIORITY_CMDLINE);
 }
 
-const std::string GetIconsDir(void)
+const string GetIconsDir(void)
 {
 	return settings.getter(MUIOPTION_ICONS_DIRECTORY);
 }
@@ -1031,7 +1019,7 @@ void SetIconsDir(const char* path)
 	settings.setter(MUIOPTION_ICONS_DIRECTORY, path);
 }
 
-const std::string GetBgDir (void)
+const string GetBgDir (void)
 {
 	return settings.getter(MUIOPTION_BACKGROUND_DIRECTORY);
 }
@@ -1041,7 +1029,7 @@ void SetBgDir (const char* path)
 	settings.setter(MUIOPTION_BACKGROUND_DIRECTORY, path);
 }
 
-const std::string GetDatsDir(void)
+const string GetDatsDir(void)
 {
 	return settings.getter(MUIOPTION_DATS_DIRECTORY);
 	//return mewui.value(OPTION_HISTORY_PATH);
@@ -1055,9 +1043,9 @@ void SetDatsDir(const char *path)
 	mewui.set_value(OPTION_HISTORY_PATH, t1, OPTION_PRIORITY_CMDLINE);
 }
 
-const std::string GetFolderDir(void)
+const string GetFolderDir(void)
 {
-	return std::string(mewui.value(OPTION_CATEGORYINI_PATH));
+	return string(mewui.value(OPTION_CATEGORYINI_PATH));
 }
 
 void SetFolderDir(const char* path)
@@ -1065,9 +1053,9 @@ void SetFolderDir(const char* path)
 	mewui.set_value(OPTION_CATEGORYINI_PATH, path, OPTION_PRIORITY_CMDLINE);
 }
 
-const std::string GetCheatDir(void)
+const string GetCheatDir(void)
 {
-	return std::string(global.value(OPTION_CHEATPATH));
+	return string(global.value(OPTION_CHEATPATH));
 }
 
 void SetCheatDir(const char* path)
@@ -1574,9 +1562,9 @@ void SetRunFullScreen(BOOL fullScreen)
     Internal functions
  ***************************************************************************/
 
-static std::string CusColorEncodeString(const COLORREF *value)
+static string CusColorEncodeString(const COLORREF *value)
 {
-	std::string str = std::to_string(value[0]);
+	string str = std::to_string(value[0]);
 
 	for (int i = 1; i < 16; i++)
 		str.append(",").append(std::to_string(value[i]));
@@ -1584,7 +1572,7 @@ static std::string CusColorEncodeString(const COLORREF *value)
 	return str;
 }
 
-static void CusColorDecodeString(std::string ss, COLORREF *value)
+static void CusColorDecodeString(string ss, COLORREF *value)
 {
 	const char *str = ss.c_str();
 	char *s, *p;
@@ -1607,9 +1595,9 @@ static void CusColorDecodeString(std::string ss, COLORREF *value)
 }
 
 
-static std::string ColumnEncodeStringWithCount(const int *value, int count)
+static string ColumnEncodeStringWithCount(const int *value, int count)
 {
-	std::string str = std::to_string(value[0]);
+	string str = std::to_string(value[0]);
 
 	for (int i = 1; i < count; i++)
 		str.append(",").append(std::to_string(value[i]));
@@ -1617,7 +1605,7 @@ static std::string ColumnEncodeStringWithCount(const int *value, int count)
 	return str;
 }
 
-static void ColumnDecodeStringWithCount(std::string ss, int *value, int count)
+static void ColumnDecodeStringWithCount(string ss, int *value, int count)
 {
 	const char *str = ss.c_str();
 	char *s, *p;
@@ -1642,9 +1630,9 @@ static void ColumnDecodeStringWithCount(std::string ss, int *value, int count)
 	}
 }
 
-static std::string SplitterEncodeString(const int *value)
+static string SplitterEncodeString(const int *value)
 {
-	std::string str = std::to_string(value[0]);
+	string str = std::to_string(value[0]);
 
 	for (int i = 1; i < GetSplitterCount(); i++)
 		str.append(",").append(std::to_string(value[i]));
@@ -1652,7 +1640,7 @@ static std::string SplitterEncodeString(const int *value)
 	return str;
 }
 
-static void SplitterDecodeString(std::string ss, int *value)
+static void SplitterDecodeString(string ss, int *value)
 {
 	const char *str = ss.c_str();
 	char *s, *p;
@@ -1675,7 +1663,7 @@ static void SplitterDecodeString(std::string ss, int *value)
 }
 
 /* Parse the given comma-delimited string into a LOGFONT structure */
-static void FontDecodeString(std::string ss, LOGFONT *f)
+static void FontDecodeString(string ss, LOGFONT *f)
 {
 	const char* str = ss.c_str();
 	sscanf(str, "%li,%li,%li,%li,%li,%i,%i,%i,%i,%i,%i,%i,%i",
@@ -1704,7 +1692,7 @@ static void FontDecodeString(std::string ss, LOGFONT *f)
 }
 
 /* Encode the given LOGFONT structure into a comma-delimited string */
-static std::string FontEncodeString(const LOGFONT *f)
+static string FontEncodeString(const LOGFONT *f)
 {
 	char* utf8_FaceName = ui_utf8_from_wstring(f->lfFaceName);
 	if( !utf8_FaceName )
@@ -1728,13 +1716,13 @@ static std::string FontEncodeString(const LOGFONT *f)
 			utf8_FaceName);
 
 	free(utf8_FaceName);
-	return std::string(s);
+	return string(s);
 }
 
-static std::string TabFlagsEncodeString(int data)
+static string TabFlagsEncodeString(int data)
 {
 	int num_saved = 0;
-	std::string str;
+	string str;
 
 	// we save the ones that are NOT displayed, so we can add new ones
 	// and upgraders will see them
@@ -1752,7 +1740,7 @@ static std::string TabFlagsEncodeString(int data)
 	return str;
 }
 
-static void TabFlagsDecodeString(std::string ss, int *data)
+static void TabFlagsDecodeString(string ss, int *data)
 {
 	const char *str = ss.c_str();
 	int j = 0;
@@ -1822,7 +1810,7 @@ static void SaveSettingsFile(ui_options &opts, const char *filename)
 
 	if (filerr == osd_file::error::NONE)
 	{
-		std::string inistring = opts.output_ini();
+		string inistring = opts.output_ini();
 		file->puts(inistring.c_str());
 		file.reset();
 	}
@@ -1840,7 +1828,7 @@ static void SaveSettingsFile(windows_options &opts, const char *filename)
 
 	if (filerr == osd_file::error::NONE)
 	{
-		std::string inistring = opts.output_ini();
+		string inistring = opts.output_ini();
 		// printf("=====%s=====\n%s\n",filename,inistring.c_str());  // for debugging
 		file->puts(inistring.c_str());
 		file.reset();
@@ -1901,7 +1889,7 @@ DWORD GetFolderFlags(int folder_index)
 
 
 /* Decode the flags into a DWORD */
-static DWORD DecodeFolderFlags(std::string ss)
+static DWORD DecodeFolderFlags(string ss)
 {
 	const char *buf = ss.c_str();
 	DWORD flags = 0;
@@ -1971,7 +1959,7 @@ void LoadFolderFlags(void)
 				ptr++;
 			}
 
-			std::string option_name = std::string(folder_name) + "_filters";
+			string option_name = string(folder_name) + "_filters";
 		}
 	}
 
@@ -1998,7 +1986,7 @@ void LoadFolderFlags(void)
 				}
 				ptr++;
 			}
-			std::string option_name = std::string(folder_name) + "_filters";
+			string option_name = string(folder_name) + "_filters";
 
 			// get entry and decode it
 			lpFolder->m_dwFlags |= DecodeFolderFlags(settings.getter(option_name.c_str())) & F_MASK;
@@ -2038,7 +2026,7 @@ static void AddFolderFlags()
 				ptr++;
 			}
 
-			std::string option_name = std::string(folder_name) + "_filters";
+			string option_name = string(folder_name) + "_filters";
 
 			// store entry
 			settings.setter(option_name.c_str(), EncodeFolderFlags(lpFolder->m_dwFlags));
@@ -2066,7 +2054,7 @@ void SaveGameListOptions(void)
 
 void SaveDefaultOptions(void)
 {
-	std::string fname = std::string(GetIniDir()) + PATH_SEPARATOR + std::string(emulator_info::get_configname()).append(".ini");
+	string fname = string(GetIniDir()) + PATH_SEPARATOR + string(emulator_info::get_configname()).append(".ini");
 	SaveSettingsFile(global, fname.c_str());
 }
 
@@ -2084,12 +2072,12 @@ void load_options(windows_options &opts, OPTIONS_TYPE opt_type, int game_num)
 		driver = &driver_list::driver(game_num);
 
 	// Try base ini first
-	std::string fname = std::string(emulator_info::get_configname()).append(".ini");
+	string fname = string(emulator_info::get_configname()).append(".ini");
 	LoadSettingsFile(opts, fname.c_str());
 
 	if (opt_type == OPTIONS_SOURCE)
 	{
-		fname = std::string(GetIniDir()) + PATH_SEPARATOR + "source" + PATH_SEPARATOR + core_filename_extract_base(driver->type.source(), true) + ".ini";
+		fname = string(GetIniDir()) + PATH_SEPARATOR + "source" + PATH_SEPARATOR + core_filename_extract_base(driver->type.source(), true) + ".ini";
 		LoadSettingsFile(opts, fname.c_str());
 		return;
 	}
@@ -2098,7 +2086,7 @@ void load_options(windows_options &opts, OPTIONS_TYPE opt_type, int game_num)
 	{
 		driver = &driver_list::driver(game_num);
 		// Now try global ini
-		fname = std::string(GetIniDir()) + PATH_SEPARATOR + std::string(emulator_info::get_configname()).append(".ini");
+		fname = string(GetIniDir()) + PATH_SEPARATOR + string(emulator_info::get_configname()).append(".ini");
 		LoadSettingsFile(opts, fname.c_str());
 
 		if (game_num > -1)
@@ -2106,7 +2094,7 @@ void load_options(windows_options &opts, OPTIONS_TYPE opt_type, int game_num)
 			// Lastly, gamename.ini
 			if (driver)
 			{
-				fname = std::string(GetIniDir()) + PATH_SEPARATOR + std::string(driver->name).append(".ini");
+				fname = string(GetIniDir()) + PATH_SEPARATOR + string(driver->name).append(".ini");
 				const char* name = driver_list::driver(game_num).name;
 				opts.set_value(OPTION_SYSTEMNAME, name, OPTION_PRIORITY_CMDLINE);
 				LoadSettingsFile(opts, fname.c_str());
@@ -2120,7 +2108,7 @@ void load_options(windows_options &opts, OPTIONS_TYPE opt_type, int game_num)
 void save_options(windows_options &opts, OPTIONS_TYPE opt_type, int game_num)
 {
 	const game_driver *driver = NULL;
-	std::string filename, filepath;
+	string filename, filepath;
 
 	if (game_num >= 0)
 	{
@@ -2129,18 +2117,18 @@ void save_options(windows_options &opts, OPTIONS_TYPE opt_type, int game_num)
 		{
 			filename.assign(driver->name);
 			if (opt_type == OPTIONS_SOURCE)
-				filepath = std::string(GetIniDir()) + PATH_SEPARATOR + "source" + PATH_SEPARATOR + core_filename_extract_base(driver->type.source(), true) + ".ini";
+				filepath = string(GetIniDir()) + PATH_SEPARATOR + "source" + PATH_SEPARATOR + core_filename_extract_base(driver->type.source(), true) + ".ini";
 		}
 	}
 	else
 	if (game_num == -1)
-		filename = std::string(emulator_info::get_configname());
+		filename = string(emulator_info::get_configname());
 
 	if (!filename.empty() && filepath.empty())
-		filepath = std::string(GetIniDir()).append(PATH_SEPARATOR).append(filename.c_str()).append(".ini");
+		filepath = string(GetIniDir()).append(PATH_SEPARATOR).append(filename.c_str()).append(".ini");
 
 	if (game_num == -2)
-		filepath = std::string(emulator_info::get_configname()).append(".ini");
+		filepath = string(emulator_info::get_configname()).append(".ini");
 
 	if (!filepath.empty())
 	{
@@ -2186,7 +2174,7 @@ BOOL RequiredDriverCache(void)
 // from optionsms.cpp (MESSUI)
 
 
-#define LOG_SOFTWARE 0
+#define LOG_SOFTWARE 1
 
 void SetSLColumnOrder(int order[])
 {
@@ -2289,22 +2277,27 @@ BOOL GetSWSortReverse(void)
 }
 
 
-void SetSelectedSoftware(int driver_index, const device_image_interface *dev, const char *software)
+void SetSelectedSoftware(int driver_index, string opt_name, const char *software)
 {
-	std::string opt_name = dev->instance_name();
 	windows_options o;
+	const char *s = opt_name.c_str();
 
 	if (LOG_SOFTWARE)
 	{
-		printf("SetSelectedSoftware(): dev=%p (\'%s\') software='%s'\n", dev, driver_list::driver(driver_index).name, software);
+		printf("SetSelectedSoftware(): slot=%s driver=%s software='%s'\n", s, driver_list::driver(driver_index).name, software);
 	}
 
-	const char* name = driver_list::driver(driver_index).name;
-	o.set_value(OPTION_SYSTEMNAME, name, OPTION_PRIORITY_CMDLINE);
-	load_options(o, OPTIONS_GAME, driver_index);
-	o.set_value(opt_name.c_str(), software, OPTION_PRIORITY_CMDLINE);
-	//o.image_option(opt_name).specify(software);
-	save_options(o, OPTIONS_GAME, driver_index);
+	if (s)
+	{
+		printf("About to load %s into slot %s\n",software,s);
+		const char* name = driver_list::driver(driver_index).name;
+		o.set_value(OPTION_SYSTEMNAME, name, OPTION_PRIORITY_CMDLINE);
+		load_options(o, OPTIONS_GAME, driver_index);
+		o.set_value(s, software, OPTION_PRIORITY_CMDLINE);
+		//o.image_option(opt_name).specify(software);
+		printf("Done\n");
+		save_options(o, OPTIONS_GAME, driver_index);
+	}
 }
 
 void SetCurrentSoftwareTab(const char *shortname)

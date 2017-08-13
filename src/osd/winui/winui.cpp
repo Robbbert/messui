@@ -328,7 +328,7 @@ static HWND             InitStatusBar(HWND hParent);
 
 static LRESULT          Statusbar_MenuSelect (HWND hwnd, WPARAM wParam, LPARAM lParam);
 
-static void             UpdateHistory(std::string software);
+static void             UpdateHistory(string software);
 
 
 static void RemoveCurrentGameCustomFolder(void);
@@ -880,7 +880,7 @@ public:
 };
 
 
-static std::wstring s2ws(const std::string& s)
+static std::wstring s2ws(const string& s)
 {
 	int slength = (int)s.length() + 1;
 	int len = MultiByteToWideChar(CP_ACP, 0, s.c_str(), slength, 0, 0); 
@@ -904,12 +904,13 @@ static DWORD RunMAME(int nGameIndex, const play_options *playopts)
 	SetDirectories(global_opts);
 
 	CreateGameOptions(global_opts, OPTIONS_GLOBAL, nGameIndex);
+	const char* name = driver_list::driver(nGameIndex).name;
 
 	// set some startup options
 	global_opts.set_value(OPTION_LANGUAGE, GetLanguageUI(), OPTION_PRIORITY_CMDLINE);
 	global_opts.set_value(OPTION_PLUGINS, GetEnablePlugins(), OPTION_PRIORITY_CMDLINE);
 	global_opts.set_value(OPTION_PLUGIN, GetPlugins(), OPTION_PRIORITY_CMDLINE);
-	global_opts.set_value(OPTION_SYSTEMNAME, driver_list::driver(nGameIndex).name, OPTION_PRIORITY_CMDLINE);
+	global_opts.set_value(OPTION_SYSTEMNAME, name, OPTION_PRIORITY_CMDLINE);
 
 	// set any specified play options
 	if (playopts_apply == 0x57)
@@ -930,20 +931,10 @@ static DWORD RunMAME(int nGameIndex, const play_options *playopts)
 
 	// redirect messages to our handler
 	mameui_output_error winerror;
+	printf("********** STARTING %s **********\n", name);
 	osd_output::push(&winerror);
-	osd_printf_verbose("********** STARTING %s **********\n", driver_list::driver(nGameIndex).name);
-	osd_printf_info("********** STARTING %s **********\n", driver_list::driver(nGameIndex).name);
-	
-	//printf("Software=%s:%s\n",g_szSelectedDevice, g_szSelectedSoftware);
-	// These are needed when choosing an item from the SW List
-	if (g_szSelectedSoftware[0] && g_szSelectedDevice[0])
-	{
-		osd_printf_info("Loading from software list: %s %s\n", g_szSelectedDevice, g_szSelectedSoftware);
-		global_opts.set_value(g_szSelectedDevice, g_szSelectedSoftware, OPTION_PRIORITY_CMDLINE);
-		// Add params and clear so next start of driver is without parameters
-		g_szSelectedSoftware[0] = 0;
-		g_szSelectedDevice[0] = 0;
-	}
+	osd_printf_verbose("********** STARTING %s **********\n", name);
+	osd_printf_info("********** STARTING %s **********\n", name);
 	osd_output::pop(&winerror);
 	// Mame will parse all the needed .ini files.
 
@@ -967,7 +958,7 @@ static DWORD RunMAME(int nGameIndex, const play_options *playopts)
 	manager->start_luaengine();
 	// run the game
 	manager->execute();
-	osd_printf_info("********** FINISHED %s **********\n", driver_list::driver(nGameIndex).name);
+	osd_printf_info("********** FINISHED %s **********\n", name);
 	// turn off message redirect
 	osd_output::pop(&winerror);
 	global_free(manager);
@@ -975,6 +966,7 @@ static DWORD RunMAME(int nGameIndex, const play_options *playopts)
 	time(&end);
 	double elapsedtime = end - start;
 	IncrementPlayTime(nGameIndex, elapsedtime);
+	printf("********** FINISHED %s **********\n", name);
 
 	// clear any specified play options
 	// do it this way to preserve slots and software entries
@@ -1023,8 +1015,8 @@ int MameUIMain(HINSTANCE hInstance, LPWSTR lpCmdLine, int nCmdShow)
 	if (__argc != 1)
 	{
 		/* Rename main because gcc will use it instead of WinMain even with -mwindows */
-		extern int utf8_main(std::vector<std::string> &args);
-		std::vector<std::string> utf8_argv(__argc);
+		extern int utf8_main(std::vector<string> &args);
+		std::vector<string> utf8_argv(__argc);
 
 		/* convert arguments to UTF-8 */
 		for (int i = 0; i < __argc; i++)
@@ -1181,7 +1173,7 @@ HICON LoadIconFromFile(const char *iconname)
 	PBYTE bufferPtr = 0;
 	util::archive_file::ptr zip;
 
-	const std::string t = GetIconsDir();
+	const string t = GetIconsDir();
 	sprintf(tmpStr, "%s/%s.ico", t.c_str(), iconname);
 	if (stat(tmpStr, &file_stat) != 0 || (hIcon = win_extract_icon_utf8(hInst, tmpStr, 0)) == 0)
 	{
@@ -1425,7 +1417,7 @@ void UpdateScreenShot(void)
 	}
 
 	// figure out if we have a history or not, to place our other windows properly
-	std::string t_software = std::string(g_szSelectedItem);
+	string t_software = string(g_szSelectedItem);
 	UpdateHistory(t_software);
 
 	// setup the picture area
@@ -3036,7 +3028,7 @@ static void UpdateStatusBar()
 }
 
 
-static void UpdateHistory(std::string software)
+static void UpdateHistory(string software)
 {
 	//DWORD dwStyle = GetWindowLong(GetDlgItem(hMain, IDC_HISTORY), GWL_STYLE);
 	have_history = false;
@@ -4083,7 +4075,7 @@ static BOOL MameCommand(HWND hwnd,int id, HWND hwndCtl, UINT codeNotify)
 
 	case ID_TOOLBAR_EDIT:
 		{
-			std::string buf;
+			string buf;
 			HWND hToolbarEdit;
 
 			buf = win_get_window_text_utf8(hwndCtl);
@@ -4392,13 +4384,13 @@ static BOOL MameCommand(HWND hwnd,int id, HWND hwndCtl, UINT codeNotify)
 		{
 			// Get the path from the existing filename; if no filename go to root
 			TCHAR* t_bgdir = TEXT(".");
-			const std::string s = GetBgDir();
-			std::string as;
+			const string s = GetBgDir();
+			string as;
 			util::zippath_parent(as, s.c_str());
 			size_t t1 = as.length()-1;
 			if (as[t1] == '\\') as.substr(0, t1-1);
 			t1 = as.find(':');
-			if (t1 != std::string::npos)
+			if (t1 != string::npos)
 				t_bgdir = ui_wstring_from_utf8(as.c_str());
 
 			OPENFILENAME OFN;
@@ -4566,10 +4558,10 @@ static BOOL MameCommand(HWND hwnd,int id, HWND hwndCtl, UINT codeNotify)
 				printf("%X: %ls\n",g_helpInfo[i].bIsHtmlHelp, g_helpInfo[i].lpFile);fflush(stdout);
 				if (i == 1) // get current whatsnew.txt from mamedev.org
 				{
-					std::string version = std::string(GetVersionString()); // turn version string into std
+					string version = string(GetVersionString()); // turn version string into std
 					version.erase(1,1); // take out the decimal point
-					version.erase(4, std::string::npos); // take out the date
-					std::string url = "http://mamedev.org/releases/whatsnew_" + version + ".txt"; // construct url
+					version.erase(4, string::npos); // take out the date
+					string url = "http://mamedev.org/releases/whatsnew_" + version + ".txt"; // construct url
 					std::wstring stemp = s2ws(url); // convert to wide string (yeah, typical c++ mess)
 					LPCWSTR result = stemp.c_str(); // then convert to const wchar_t*
 					ShellExecute(hMain, TEXT("open"), result, TEXT(""), NULL, SW_SHOWNORMAL); // show web page
@@ -4737,9 +4729,6 @@ static const TCHAR *GamePicker_GetItemString(HWND hwndPicker, int nItem, int nCo
 static void GamePicker_LeavingItem(HWND hwndPicker, int nItem)
 {
 	// leaving item
-	// printf("leaving %s\n",driver_list::driver(nItem).name);fflush(stdout);
-	g_szSelectedSoftware[0] = 0;
-	g_szSelectedDevice[0] = 0;
 	g_szSelectedItem[0] = 0;
 }
 
@@ -5203,7 +5192,7 @@ static void SetRandomPickItem()
 BOOL CommonFileDialog(common_file_dialog_proc cfd, char *filename, int filetype)
 {
 	OPENFILENAME ofn;
-	std::string dirname;
+	string dirname;
 	TCHAR* t_filename;
 	TCHAR t_filename_buffer[MAX_PATH]  = {0, };
 
@@ -5273,7 +5262,7 @@ BOOL CommonFileDialog(common_file_dialog_proc cfd, char *filename, int filetype)
 
 	// Only want first directory
 	size_t i = dirname.find(";");
-	if (i != std::string::npos)
+	if (i != string::npos)
 		dirname.resize(i);
 	if (dirname.empty())
 		dirname = ".";
@@ -5431,7 +5420,7 @@ static void MamePlayBackGame()
 			return;
 		}
 
-		std::string const sysname = header.get_sysname();
+		string const sysname = header.get_sysname();
 		nGame = -1;
 		for (int i = 0; i < driver_list::total(); i++) // find game and play it
 		{
