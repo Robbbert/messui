@@ -973,7 +973,7 @@ static DWORD RunMAME(int nGameIndex, const play_options *playopts)
 	if (playopts_apply == 0x57)
 	{
 		windows_options o;
-		load_options(o, OPTIONS_GAME, nGameIndex);
+		load_options(o, OPTIONS_GAME, nGameIndex, 0);
 		if (playopts->record)
 			o.set_value(OPTION_RECORD, "", OPTION_PRIORITY_CMDLINE);
 		if (playopts->playback)
@@ -1377,6 +1377,7 @@ void UpdateSoftware(void)
 void UpdateScreenShot(void)
 {
 	/* first time through can't do this stuff */
+	printf("Update Screenshot: A\n");fflush(stdout);
 	if (hwndList == NULL)
 		return;
 
@@ -1386,11 +1387,13 @@ void UpdateScreenShot(void)
 	RECT rect;
 	GetClientRect(hMain, &rect);
 
+	printf("Update Screenshot: B\n");fflush(stdout);
 	if (bShowStatusBar)
 		rect.bottom -= bottomMargin;
 	if (bShowToolBar)
 		rect.top += topMargin;
 
+	printf("Update Screenshot: C\n");fflush(stdout);
 	if (GetShowScreenShot())
 	{
 		//nWidth = nSplitterOffset[GetSplitterCount() - 1];
@@ -1404,10 +1407,13 @@ void UpdateScreenShot(void)
 		ToolBar_CheckButton(s_hToolBar, ID_VIEW_PICTURE_AREA, MF_UNCHECKED);
 	}
 
+	printf("Update Screenshot: F\n");fflush(stdout);
 	ResizeTreeAndListViews(false);
 
+	printf("Update Screenshot: G\n");fflush(stdout);
 	FreeScreenShot();
 
+	printf("Update Screenshot: H\n");fflush(stdout);
 	if (have_selection)
 	{
 		if (g_szSelectedItem[0])
@@ -1417,11 +1423,13 @@ void UpdateScreenShot(void)
 	}
 
 	// figure out if we have a history or not, to place our other windows properly
+	printf("Update Screenshot: I\n");fflush(stdout);
 	string t_software = string(g_szSelectedItem);
 	UpdateHistory(t_software);
 
 	// setup the picture area
 
+	printf("Update Screenshot: J\n");fflush(stdout);
 	if (GetShowScreenShot())
 	{
 		DWORD dwStyle;
@@ -1448,8 +1456,7 @@ void UpdateScreenShot(void)
 		AdjustWindowRectEx(&rect, dwStyle, false, dwStyleEx);
 		MoveWindow(GetDlgItem(hMain, IDC_SSPICTURE), fRect.left + rect.left, fRect.top + rect.top, rect.right - rect.left, rect.bottom - rect.top, true);
 
-		ShowWindow(GetDlgItem(hMain,IDC_SSPICTURE),
-				   (TabView_GetCurrentTab(hTabCtrl) != TAB_HISTORY) ? SW_SHOW : SW_HIDE);
+		ShowWindow(GetDlgItem(hMain,IDC_SSPICTURE), (TabView_GetCurrentTab(hTabCtrl) != TAB_HISTORY) ? SW_SHOW : SW_HIDE);
 		ShowWindow(GetDlgItem(hMain,IDC_SSFRAME),SW_SHOW);
 		ShowWindow(GetDlgItem(hMain,IDC_SSTAB),bShowTabCtrl ? SW_SHOW : SW_HIDE);
 
@@ -1461,6 +1468,7 @@ void UpdateScreenShot(void)
 		ShowWindow(GetDlgItem(hMain,IDC_SSFRAME),SW_HIDE);
 		ShowWindow(GetDlgItem(hMain,IDC_SSTAB),SW_HIDE);
 	}
+	printf("Update Screenshot: Finished\n");fflush(stdout);
 }
 
 
@@ -1634,10 +1642,15 @@ int GetParentIndex(const game_driver *driver)
 
 int GetCompatIndex(const game_driver *driver)
 {
-	if (driver->compatible_with)
-		return GetGameNameIndex(driver->compatible_with);
+	const char *t = driver->compatible_with;
+	if (t)
+	{
+		return GetGameNameIndex(t);
+	}
 	else
+	{
 		return -1;
+	}
 }
 
 
@@ -3101,12 +3114,15 @@ static void DisableSelection()
 
 static void EnableSelection(int nGame)
 {
+	printf("EnableSelection: A\n");fflush(stdout);
 	MyFillSoftwareList(nGame, false); // messui.cpp
+	printf("EnableSelection: B\n");fflush(stdout);
 
 	TCHAR* t_description = ui_wstring_from_utf8(ConvertAmpersandString(ModifyThe(driver_list::driver(nGame).type.fullname())));
 	if( !t_description )
 		return;
 
+	printf("EnableSelection: C\n");fflush(stdout);
 	TCHAR buf[200];
 	_sntprintf(buf, sizeof(buf) / sizeof(buf[0]), g_szPlayGameString, t_description);
 	MENUITEMINFO mmi;
@@ -3118,6 +3134,7 @@ static void EnableSelection(int nGame)
 	HMENU hMenu = GetMenu(hMain);
 	SetMenuItemInfo(hMenu, ID_FILE_PLAY, false, &mmi);
 
+	printf("EnableSelection: D\n");fflush(stdout);
 	const char * pText;
 	pText = ModifyThe(driver_list::driver(nGame).type.fullname());
 	SetStatusBarText(0, pText);
@@ -3126,6 +3143,7 @@ static void EnableSelection(int nGame)
 	SetStatusBarText(1, pText);
 
 	// Show number of software_list items in box at bottom right.
+	printf("EnableSelection: E\n");fflush(stdout);
 	int items = SoftwareList_GetNumberOfItems();
 	if (items)
 	{
@@ -3137,19 +3155,23 @@ static void EnableSelection(int nGame)
 
 	/* If doing updating game status */
 
+	printf("EnableSelection: F\n");fflush(stdout);
 	EnableMenuItem(hMenu, ID_FILE_PLAY, MF_ENABLED);
 	EnableMenuItem(hMenu, ID_FILE_PLAY_RECORD, MF_ENABLED);
 
 	if (!oldControl)
 		EnableMenuItem(hMenu, ID_GAME_PROPERTIES, MF_ENABLED);
 
+	printf("EnableSelection: G\n");fflush(stdout);
 	if (bProgressShown && bListReady == true)
 		SetDefaultGame(ModifyThe(driver_list::driver(nGame).name));
 
 	have_selection = true;
 
+	printf("EnableSelection: H\n");fflush(stdout);
 	UpdateScreenShot();
 
+	printf("EnableSelection: Finished\n");fflush(stdout);
 	free(t_description);
 }
 

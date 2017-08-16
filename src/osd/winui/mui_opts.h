@@ -99,7 +99,7 @@ bool AreOptionsEqual(windows_options &opts1, windows_options &opts2);
 void OptionsCopy(windows_options &source, windows_options &dest);
 void SetDirectories(windows_options &opts);
 
-void load_options(windows_options &opts, OPTIONS_TYPE opt_type, int game_num);
+void load_options(windows_options &opts, OPTIONS_TYPE opt_type, int game_num, bool set_system_name);
 void save_options(windows_options &opts, OPTIONS_TYPE opt_type, int game_num);
 
 void CreateGameOptions(windows_options &opts, OPTIONS_TYPE opt_type, int driver_index);

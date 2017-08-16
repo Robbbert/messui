@@ -423,9 +423,9 @@ void InitDefaultPropertyPage(HINSTANCE hInst, HWND hWnd)
 	OptionsCopy(dummy,pCurrentOpts);
 
 	/* Get default options to populate property sheets */
-	load_options(pCurrentOpts, OPTIONS_GLOBAL, g_nGame);
-	load_options(pOrigOpts, OPTIONS_GLOBAL, g_nGame);
-	load_options(pDefaultOpts, OPTIONS_GLOBAL, -2);
+	load_options(pCurrentOpts, OPTIONS_GLOBAL, g_nGame, 0);
+	load_options(pOrigOpts, OPTIONS_GLOBAL, g_nGame, 0);
+	load_options(pDefaultOpts, OPTIONS_GLOBAL, -2, 0);
 
 	g_nPropertyMode = OPTIONS_GLOBAL;
 	BuildDataMap();
@@ -480,12 +480,12 @@ void InitPropertyPageToPage(HINSTANCE hInst, HWND hWnd, HICON hIcon, OPTIONS_TYP
 	OptionsCopy(dummy,pOrigOpts);
 	OptionsCopy(dummy,pCurrentOpts);
 
-	load_options(pCurrentOpts, opt_type, game_num);
-	load_options(pOrigOpts, opt_type, game_num);
+	load_options(pCurrentOpts, opt_type, game_num, 0);
+	load_options(pOrigOpts, opt_type, game_num, 0);
 	if (game_num == GLOBAL_OPTIONS)
-		load_options(pDefaultOpts, OPTIONS_GLOBAL, -2); // base opts is the backup for global
+		load_options(pDefaultOpts, OPTIONS_GLOBAL, -2, 0); // base opts is the backup for global
 	else
-		load_options(pDefaultOpts, OPTIONS_GLOBAL, -1); // global is the backup for games
+		load_options(pDefaultOpts, OPTIONS_GLOBAL, -1, 0); // global is the backup for games
 
 	// Copy icon to use for the property pages
 	g_hIcon = CopyIcon(hIcon);
@@ -2916,7 +2916,7 @@ static BOOL DirListPopulateControl(datamap *map, HWND dialog, HWND control, wind
 	// access the directory list, and convert to TCHARs
 	int driver_index = PropertiesCurrentGame(dialog);
 	windows_options o;
-	load_options(o, OPTIONS_GAME, driver_index);
+	load_options(o, OPTIONS_GAME, driver_index, 0);
 	const char* paths = o.value(OPTION_SWPATH);
 	TCHAR* t_dir_list = ui_wstring_from_utf8(paths);
 	paths = 0;

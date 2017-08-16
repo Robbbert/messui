@@ -181,7 +181,7 @@ BOOL OptionsInit()
 	settings.load_file(UI_INI_FILENAME);                    // parse MAMEUI.ini
 	LoadSettingsFile(mewui, MEWUI_FILENAME);                // parse UI.INI
 	game_opts.load_file(GAMEINFO_INI_FILENAME);             // parse MAME_g.ini
-	load_options(global, OPTIONS_GLOBAL, GLOBAL_OPTIONS);   // parse MAME.INI
+	load_options(global, OPTIONS_GLOBAL, GLOBAL_OPTIONS, 0);   // parse MAME.INI
 
 	return TRUE;
 
@@ -831,7 +831,11 @@ void SetCtrlrDir(const char* path)
 
 const string GetSWDir(void)
 {
-	return string(global.value(OPTION_SWPATH));
+	const char* t = global.value(OPTION_SWPATH);
+	if (t)
+		return string(global.value(OPTION_SWPATH));
+	else
+		return "";
 }
 
 void SetSWDir(const char* path)
@@ -2065,7 +2069,7 @@ const char * GetVersionString(void)
 
 
 /*  get options, based on passed in game number. */
-void load_options(windows_options &opts, OPTIONS_TYPE opt_type, int game_num)
+void load_options(windows_options &opts, OPTIONS_TYPE opt_type, int game_num, bool set_system_name)
 {
 	const game_driver *driver = NULL;
 	if (game_num > -1)
@@ -2084,7 +2088,6 @@ void load_options(windows_options &opts, OPTIONS_TYPE opt_type, int game_num)
 
 	if (game_num > -2)
 	{
-		driver = &driver_list::driver(game_num);
 		// Now try global ini
 		fname = string(GetIniDir()) + PATH_SEPARATOR + string(emulator_info::get_configname()).append(".ini");
 		LoadSettingsFile(opts, fname.c_str());
@@ -2095,8 +2098,8 @@ void load_options(windows_options &opts, OPTIONS_TYPE opt_type, int game_num)
 			if (driver)
 			{
 				fname = string(GetIniDir()) + PATH_SEPARATOR + string(driver->name).append(".ini");
-				const char* name = driver_list::driver(game_num).name;
-				opts.set_value(OPTION_SYSTEMNAME, name, OPTION_PRIORITY_CMDLINE);
+				if (set_system_name)
+					opts.set_value(OPTION_SYSTEMNAME, driver->name, OPTION_PRIORITY_CMDLINE);
 				LoadSettingsFile(opts, fname.c_str());
 			}
 		}
@@ -2163,6 +2166,7 @@ BOOL RequiredDriverCache(void)
 {
 	bool ret = false;
 
+	printf("Checking version string %s : %s\n",settings.getter(MUIOPTION_VERSION).c_str(), GetVersionString());
 	if ( strcmp(settings.getter(MUIOPTION_VERSION).c_str(), GetVersionString()) != 0 )
 		ret = true;
 
@@ -2279,7 +2283,6 @@ BOOL GetSWSortReverse(void)
 
 void SetSelectedSoftware(int driver_index, string opt_name, const char *software)
 {
-	windows_options o;
 	const char *s = opt_name.c_str();
 
 	if (LOG_SOFTWARE)
@@ -2290,9 +2293,9 @@ void SetSelectedSoftware(int driver_index, string opt_name, const char *software
 	if (s)
 	{
 		printf("About to load %s into slot %s\n",software,s);
-		const char* name = driver_list::driver(driver_index).name;
-		o.set_value(OPTION_SYSTEMNAME, name, OPTION_PRIORITY_CMDLINE);
-		load_options(o, OPTIONS_GAME, driver_index);
+		windows_options o;
+		//o.set_value(OPTION_SYSTEMNAME, driver_list::driver(driver_index).name, OPTION_PRIORITY_CMDLINE);
+		load_options(o, OPTIONS_GAME, driver_index, 1);
 		o.set_value(s, software, OPTION_PRIORITY_CMDLINE);
 		//o.image_option(opt_name).specify(software);
 		printf("Done\n");

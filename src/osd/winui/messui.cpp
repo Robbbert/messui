@@ -136,7 +136,9 @@ struct DevViewCallbacks
 struct DevViewInfo
 {
 	HFONT hFont;
-	int nWidth;
+	UINT nWidth;
+	UINT state;
+	UINT slots;
 	BOOL bSurpressFilenameChanged;
 	const software_config *config;
 	const struct DevViewCallbacks *pCallbacks;
@@ -425,43 +427,66 @@ static string ProcessSWDir(int drvindex)
 {
 	BOOL b_dir = false;
 	char dir0[2048];
+	char *t0 = 0;
+	printf("ProcessSWDir: A\n");fflush(stdout);
 	string t = GetSWDir();
-	strcpy(dir0, t.c_str()); // global SW
-	char* t0 = strtok(dir0, ";");
-	if (t0 && osd::directory::open(t0))  // make sure its valid
-		b_dir = true;
+	if (!t.empty())
+	{
+		printf("ProcessSWDir: B\n");fflush(stdout);
+		strcpy(dir0, t.c_str()); // global SW
+		t0 = strtok(dir0, ";");
+		if (t0 && osd::directory::open(t0))  // make sure its valid
+			b_dir = true;
+	}
 
 	// Get the game's software path
+	printf("ProcessSWDir: C\n");fflush(stdout);
 	windows_options o;
-	load_options(o, OPTIONS_GAME, drvindex);
+	load_options(o, OPTIONS_GAME, drvindex, 0);
 	char dir1[2048];
 	strcpy(dir1, o.value(OPTION_SWPATH));
 	char* t1 = strtok(dir1, ";");
+	printf("ProcessSWDir: D\n");fflush(stdout);
 	if (t1 && osd::directory::open(t1))  // make sure its valid
 		if (b_dir && (strcmp(t0, t1) != 0))
 			return string("1") + string(dir1);
 
 	// not specified in driver, try parent if it has one
+	printf("ProcessSWDir: E\n");fflush(stdout);
 	int nParentIndex = drvindex;
-	if (DriverIsClone(drvindex) == true)
+	if (DriverIsClone(drvindex)) // sometimes this returns true when it shouldn't (eg: milano)
 	{
+		printf("ProcessSWDir: F\n");fflush(stdout);
 		nParentIndex = GetParentIndex(&driver_list::driver(drvindex));
 		if (nParentIndex >= 0)
 		{
-			load_options(o, OPTIONS_PARENT, nParentIndex);
+			printf("ProcessSWDir: G\n");fflush(stdout);
+			load_options(o, OPTIONS_PARENT, nParentIndex, 0);
 			strcpy(dir1, o.value(OPTION_SWPATH));
 			t1 = strtok(dir1, ";");
+			printf("ProcessSWDir: GA = %s\n",dir1);fflush(stdout);
 			if (t1 && osd::directory::open(t1))  // make sure its valid
+			{
+				printf("ProcessSWDir: GB\n");fflush(stdout);
 				if (b_dir && (strcmp(t0, t1) != 0))
+				{
+					printf("ProcessSWDir: GC\n");fflush(stdout);
 					return string("1") + string(dir1);
+				}
+			}
 		}
+		else
+			nParentIndex = drvindex; // don't pass -1 to compat check
 	}
 
 	// Try compat if it has one
+	printf("ProcessSWDir: H = %d\n",nParentIndex);fflush(stdout);
 	int nCloneIndex = GetCompatIndex(&driver_list::driver(nParentIndex));
+	printf("ProcessSWDir: HA = %d\n",nCloneIndex);fflush(stdout);
 	if (nCloneIndex >= 0)
 	{
-		load_options(o, OPTIONS_PARENT, nCloneIndex);
+		printf("ProcessSWDir: I\n");fflush(stdout);
+		load_options(o, OPTIONS_PARENT, nCloneIndex, 0);
 		strcpy(dir1, o.value(OPTION_SWPATH));
 		t1 = strtok(dir1, ";");
 		if (t1 && osd::directory::open(t1))  // make sure its valid
@@ -470,12 +495,15 @@ static string ProcessSWDir(int drvindex)
 	}
 
 	// Try the global root
+	printf("ProcessSWDir: J\n");fflush(stdout);
 	if (b_dir)
 		return string("0") + string(dir0);
 
 	// nothing valid, drop to default emu directory
+	printf("ProcessSWDir: K\n");fflush(stdout);
 	string dst;
 	osd_get_full_path(dst,".");
+	printf("ProcessSWDir: L\n");fflush(stdout);
 	return string("1") + dst;
 }
 
@@ -536,16 +564,18 @@ static void DevView_Clear(HWND hwndDevView)
 	}
 
 	pDevViewInfo->config = NULL;
+	pDevViewInfo->state = 0;
+	pDevViewInfo->slots = 0;
 }
 
 
 static void DevView_GetColumns(HWND hwndDevView, int *pnStaticPos, int *pnStaticWidth, int *pnEditPos, int *pnEditWidth, int *pnButtonPos, int *pnButtonWidth)
 {
 	struct DevViewInfo *pDevViewInfo;
-	RECT r;
 
 	pDevViewInfo = GetDevViewInfo(hwndDevView);
 
+	RECT r;
 	GetClientRect(hwndDevView, &r);
 
 	*pnStaticPos = DEVVIEW_PADDING;
@@ -567,24 +597,17 @@ static void DevView_TextChanged(HWND hwndDevView, int nChangedEntry, LPCTSTR psz
 	struct DevViewInfo *pDevViewInfo;
 	pDevViewInfo = GetDevViewInfo(hwndDevView);
 	if (!pDevViewInfo->bSurpressFilenameChanged && pDevViewInfo->pCallbacks->pfnSetSelectedSoftware)
-	{
-		pDevViewInfo->pCallbacks->pfnSetSelectedSoftware(hwndDevView,
-			pDevViewInfo->config->driver_index,
-			pDevViewInfo->config->mconfig,
-			pDevViewInfo->pEntries[nChangedEntry].dev,
-			pszFilename);
-	}
+		pDevViewInfo->pCallbacks->pfnSetSelectedSoftware(hwndDevView, pDevViewInfo->config->driver_index,
+			pDevViewInfo->config->mconfig, pDevViewInfo->pEntries[nChangedEntry].dev, pszFilename);
 }
 
 
 static LRESULT CALLBACK DevView_EditWndProc(HWND hwndEdit, UINT nMessage, WPARAM wParam, LPARAM lParam)
 {
-	struct DevViewInfo *pDevViewInfo;
-	struct DevViewEntry *pEnt;
-	LRESULT rc;
-	HWND hwndDevView = 0;
 	LONG_PTR l = GetWindowLongPtr(hwndEdit, GWLP_USERDATA);
+	struct DevViewEntry *pEnt;
 	pEnt = (struct DevViewEntry *) l;
+	LRESULT rc;
 	if (IsWindowUnicode(hwndEdit))
 		rc = CallWindowProcW(pEnt->pfnEditWndProc, hwndEdit, nMessage, wParam, lParam);
 	else
@@ -592,7 +615,8 @@ static LRESULT CALLBACK DevView_EditWndProc(HWND hwndEdit, UINT nMessage, WPARAM
 
 	if (nMessage == WM_SETTEXT)
 	{
-		hwndDevView = GetParent(hwndEdit);
+		HWND hwndDevView = GetParent(hwndEdit);
+		struct DevViewInfo *pDevViewInfo;
 		pDevViewInfo = GetDevViewInfo(hwndDevView);
 		DevView_TextChanged(hwndDevView, pEnt - pDevViewInfo->pEntries, (LPCTSTR) lParam);
 	}
@@ -607,18 +631,17 @@ void DevView_Refresh(HWND hwndDevView)
 	TCHAR szBuffer[MAX_PATH];
 
 	pDevViewInfo = GetDevViewInfo(hwndDevView);
+	printf("DevView_Refresh: %s : %X\n", driver_list::driver(pDevViewInfo->config->driver_index).name, pDevViewInfo->state);fflush(stdout);
+	if (pDevViewInfo->state < 3)
+		return;
 
-	if (pDevViewInfo->pEntries)
+	if (pDevViewInfo->slots)
 	{
-		for (int i = 0; pDevViewInfo->pEntries[i].dev; i++)
+		for (int i = 0; i < pDevViewInfo->slots; i++)
 		{
-			pszSelection = pDevViewInfo->pCallbacks->pfnGetSelectedSoftware(
-				hwndDevView,
-				pDevViewInfo->config->driver_index,
-				pDevViewInfo->config->mconfig,
-				pDevViewInfo->pEntries[i].dev,
-				szBuffer, MAX_PATH);
-
+			pszSelection = pDevViewInfo->pCallbacks->pfnGetSelectedSoftware( hwndDevView, pDevViewInfo->config->driver_index,
+				pDevViewInfo->config->mconfig, pDevViewInfo->pEntries[i].dev, szBuffer, MAX_PATH);
+			printf("DevView_Refresh: Finished GetSelectSoftware\n");fflush(stdout);
 			if (!pszSelection)
 				pszSelection = TEXT("");
 
@@ -651,17 +674,19 @@ static BOOL DevView_SetDriver(HWND hwndDevView, const software_config *sconfig)
 
 	// copy the config
 	pDevViewInfo->config = sconfig;
+	pDevViewInfo->state = 1;
 
 	// count total amount of devices
-	int nDevCount = 0;
 	for (device_image_interface &dev : image_interface_iterator(pDevViewInfo->config->mconfig->root_device()))
 		if (dev.user_loadable())
-			nDevCount++;
+			pDevViewInfo->slots++;
 
-	if (nDevCount > 0)
+	pDevViewInfo->state = 2;
+
+	if (pDevViewInfo->slots)
 	{
 		// get the names of all of the media-slots so we can then work out how much space is needed to display them
-		ppszDevices = (LPTSTR *) alloca(nDevCount * sizeof(*ppszDevices));
+		ppszDevices = (LPTSTR *) alloca(pDevViewInfo->slots * sizeof(*ppszDevices));
 		i = 0;
 		for (device_image_interface &dev : image_interface_iterator(pDevViewInfo->config->mconfig->root_device()))
 		{
@@ -672,13 +697,13 @@ static BOOL DevView_SetDriver(HWND hwndDevView, const software_config *sconfig)
 			ppszDevices[i] = (TCHAR*)alloca((_tcslen(t_s) + 1) * sizeof(TCHAR));
 			_tcscpy(ppszDevices[i], t_s);
 			free(t_s);
-			i++;
+			i++; if (i > pDevViewInfo->slots) printf("Buffer overflow\n");fflush(stdout);
 		}
 
 		// Calculate the requisite size for the device column
 		pDevViewInfo->nWidth = 0;
 		hDc = GetDC(hwndDevView);
-		for (i = 0; i < nDevCount; i++)
+		for (i = 0; i < pDevViewInfo->slots; i++)
 		{
 			GetTextExtentPoint32(hDc, ppszDevices[i], _tcslen(ppszDevices[i]), &sz);
 			if (sz.cx > pDevViewInfo->nWidth)
@@ -686,10 +711,10 @@ static BOOL DevView_SetDriver(HWND hwndDevView, const software_config *sconfig)
 		}
 		ReleaseDC(hwndDevView, hDc);
 
-		pEnt = (struct DevViewEntry *) malloc(sizeof(struct DevViewEntry) * (nDevCount + 1));
+		pEnt = (struct DevViewEntry *) malloc(sizeof(struct DevViewEntry) * (pDevViewInfo->slots + 1));
 		if (!pEnt)
 			return false;
-		memset(pEnt, 0, sizeof(struct DevViewEntry) * (nDevCount + 1));
+		memset(pEnt, 0, sizeof(struct DevViewEntry) * (pDevViewInfo->slots + 1));
 		pDevViewInfo->pEntries = pEnt;
 
 		y = DEVVIEW_PADDING;
@@ -739,7 +764,10 @@ static BOOL DevView_SetDriver(HWND hwndDevView, const software_config *sconfig)
 		}
 	}
 
+	pDevViewInfo->state = 3;
+	printf("Calling DevView_Refresh\n");fflush(stdout);
 	DevView_Refresh(hwndDevView); // show names of already-loaded software
+	printf("Finished DevView_Refresh\n");fflush(stdout);
 	return true;
 }
 //#ifdef __GNUC__
@@ -777,14 +805,19 @@ void MyFillSoftwareList(int drvindex, BOOL bForce)
 	HWND hwndSoftwareDevView = GetDlgItem(GetMainWindow(), IDC_SWDEVVIEW);
 
 	// set up the device view
+	printf("MyFillSoftwareList: Calling DevView_SetDriver\n");fflush(stdout);
 	DevView_SetDriver(hwndSoftwareDevView, s_config);
 
 	// set up the software picker
+	printf("MyFillSoftwareList: Calling SoftwarePicker_Clear\n");fflush(stdout);
 	SoftwarePicker_Clear(hwndSoftwarePicker);
+	printf("MyFillSoftwareList: Calling SoftwarePicker_SetDriver\n");fflush(stdout);
 	SoftwarePicker_SetDriver(hwndSoftwarePicker, s_config);
 
 	// set up the Software Files by using swpath (can handle multiple paths)
+	printf("MyFillSoftwareList: Processing SWDir\n");fflush(stdout);
 	string paths = ProcessSWDir(drvindex);
+	printf("MyFillSoftwareList: Finished SWDir = %s\n", paths.c_str());fflush(stdout);
 	const char* t1 = paths.c_str();
 	if (t1[0] == '1')
 	{
@@ -793,18 +826,22 @@ void MyFillSoftwareList(int drvindex, BOOL bForce)
 	}
 
 	// set up the Software List
+	printf("MyFillSoftwareList: Calling SoftwarePicker_Clear\n");fflush(stdout);
 	SoftwareList_Clear(hwndSoftwareList);
+	printf("MyFillSoftwareList: Calling SoftwarePicker_SetDriver\n");fflush(stdout);
 	SoftwareList_SetDriver(hwndSoftwareList, s_config);
 
 	// Get the game's options including slots & software
+	printf("MyFillSoftwareList: Getting Options\n");fflush(stdout);
 	windows_options o;
-	const char* name = driver_list::driver(drvindex).name;
-	o.set_value(OPTION_SYSTEMNAME, name, OPTION_PRIORITY_CMDLINE);
-	load_options(o, OPTIONS_GAME, drvindex);
+	//o.set_value(OPTION_SYSTEMNAME, driver_list::driver(drvindex).name, OPTION_PRIORITY_CMDLINE);
+	load_options(o, OPTIONS_GAME, drvindex, 1);
 
 	/* allocate the machine config */
+	printf("MyFillSoftwareList: Allocate Machine Config\n");fflush(stdout);
 	machine_config config(driver_list::driver(drvindex), o);
 
+	printf("MyFillSoftwareList: Getting Softlist Information\n");fflush(stdout);
 	for (software_list_device &swlistdev : software_list_device_iterator(config.root_device()))
 	{
 		for (const software_info &swinfo : swlistdev.get_info())
@@ -835,6 +872,7 @@ void MyFillSoftwareList(int drvindex, BOOL bForce)
 			}
 		}
 	}
+	printf("MyFillSoftwareList: Finished\n");fflush(stdout);
 }
 
 
@@ -944,9 +982,8 @@ static void MessRefreshPicker(void)
 
 	// Get the game's options including slots & software
 	windows_options o;
-	const char* name = driver_list::driver(s_config->driver_index).name;
-	o.set_value(OPTION_SYSTEMNAME, name, OPTION_PRIORITY_CMDLINE);
-	load_options(o, OPTIONS_GAME, s_config->driver_index);
+	o.set_value(OPTION_SYSTEMNAME, driver_list::driver(s_config->driver_index).name, OPTION_PRIORITY_CMDLINE);
+	load_options(o, OPTIONS_GAME, s_config->driver_index, 1);
 	/* allocate the machine config */
 	machine_config config(driver_list::driver(s_config->driver_index), o);
 
@@ -1180,9 +1217,8 @@ static BOOL DevView_GetOpenFileName(HWND hwndDevView, const machine_config *conf
 	int drvindex = Picker_GetSelectedItem(hwndList);
 	string dst, opt_name = dev->instance_name();
 	windows_options o;
-	const char* name = driver_list::driver(drvindex).name;
-	o.set_value(OPTION_SYSTEMNAME, name, OPTION_PRIORITY_CMDLINE); // required
-	load_options(o, OPTIONS_GAME, drvindex);
+	//o.set_value(OPTION_SYSTEMNAME, driver_list::driver(drvindex).name, OPTION_PRIORITY_CMDLINE); // required
+	load_options(o, OPTIONS_GAME, drvindex, 1);
 	const char* s = o.value(opt_name.c_str());
 
 	/* Get the path to the currently mounted image */
@@ -1328,19 +1364,18 @@ static LPCTSTR DevView_GetSelectedSoftware(HWND hwndDevView, int nDriverIndex, c
 	if (dev && dev->user_loadable())  //!dev->instance_name().empty())
 	{
 		windows_options o;
-		const char* name = driver_list::driver(nDriverIndex).name;
-		o.set_value(OPTION_SYSTEMNAME, name, OPTION_PRIORITY_CMDLINE);
-		load_options(o, OPTIONS_GAME, nDriverIndex);
-
+		//o.set_value(OPTION_SYSTEMNAME, driver_list::driver(nDriverIndex).name, OPTION_PRIORITY_CMDLINE);
+		load_options(o, OPTIONS_GAME, nDriverIndex, 1);
+		printf("Got options\n");fflush(stdout);
 		opt_name = dev->instance_name();
 		//const char* temp = o.value(opt_name.c_str());
-		//if (o.find_image_option(opt_name))
+		if (o.find_image_option(opt_name))
 			opt_value = o.image_option(opt_name).value().empty() ? "" : o.image_option(opt_name).value();
-
+		printf("== %s : %s\n", opt_name.c_str(), opt_value.c_str());fflush(stdout);
 		if (!opt_value.empty())
 			res = true;
 	}
-
+	printf("Got values\n");fflush(stdout);
 	if (res)
 	{
 		TCHAR* t_s = ui_wstring_from_utf8(opt_value.c_str());
@@ -1350,11 +1385,13 @@ static LPCTSTR DevView_GetSelectedSoftware(HWND hwndDevView, int nDriverIndex, c
 			free(t_s);
 			LPCTSTR t_buffer = pszBuffer;
 			mvmap[opt_name] = 1;
+			printf("Got %s\n", opt_value.c_str());fflush(stdout);
 			return t_buffer;
 		}
 	}
-
-	mvmap[opt_name] = 0;
+	printf("Got nothing\n\n");fflush(stdout);
+	if (!opt_name.empty())
+		mvmap[opt_name] = 0;
 	return ui_wstring_from_utf8(""); // nothing loaded or error occurred
 }
 
@@ -1743,16 +1780,16 @@ static void SetupSoftwareTabView(void)
 
 
 static void DevView_ButtonClick(HWND hwndDevView, struct DevViewEntry *pEnt, HWND hwndButton)
-{printf("A\n");fflush(stdout);
+{
 	struct DevViewInfo *pDevViewInfo;
 	RECT r;
 	BOOL has_software = false, passes_tests = false;
 	TCHAR szPath[MAX_PATH];
 	string opt_name = pEnt->dev->instance_name();
 	pDevViewInfo = GetDevViewInfo(hwndDevView);
-printf("B\n");fflush(stdout);
+
 	HMENU hMenu = CreatePopupMenu();
-printf("C\n");fflush(stdout);
+
 	for (software_list_device &swlist : software_list_device_iterator(pDevViewInfo->config->mconfig->root_device()))
 	{
 		for (const software_info &swinfo : swlist.get_info())
@@ -1777,7 +1814,7 @@ printf("C\n");fflush(stdout);
 			}
 		}
 	}
-printf("D\n");fflush(stdout);
+
 	if (has_software)
 	{
 		string as, dst;
@@ -1800,15 +1837,15 @@ printf("D\n");fflush(stdout);
 		if (passes_tests)
 			slmap[opt_name] = as;
 	}
-printf("E\n");fflush(stdout);
+
 	if (pDevViewInfo->pCallbacks->pfnGetOpenFileName)
 		AppendMenu(hMenu, MF_STRING, 1, TEXT("Mount File..."));
-printf("F\n");fflush(stdout);
+
 	if (passes_tests && pDevViewInfo->pCallbacks->pfnGetOpenItemName)
 		AppendMenu(hMenu, MF_STRING, 4, TEXT("Mount Item..."));
-printf("G\n");fflush(stdout);
+
 	if (pEnt->dev->is_creatable())
-	{printf("H\n");fflush(stdout);
+	{
 		if (pDevViewInfo->pCallbacks->pfnGetCreateFileName)
 			AppendMenu(hMenu, MF_STRING, 2, TEXT("Create..."));
 	}
