@@ -4834,7 +4834,7 @@ static void InitListView()
 		return;
 
 	bki.ulFlags = LVBKIF_SOURCE_URL | LVBKIF_STYLE_TILE;
-	bki.pszImage = t_bgdir; //path;
+	bki.pszImage = t_bgdir;
 	if( hBackground )
 		res = ListView_SetBkImage(hwndList, &bki);
 
@@ -4871,7 +4871,7 @@ static void AddDriverIcon(int nItem,int default_icon_index)
 		}
 	}
 
-	if (hIcon != NULL)
+	if (hIcon)
 	{
 		int nIconPos = ImageList_AddIcon(hSmall, hIcon);
 		ImageList_AddIcon(hLarge, hIcon);

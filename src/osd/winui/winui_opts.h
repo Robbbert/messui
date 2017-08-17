@@ -101,14 +101,14 @@
 #ifdef MESS
 #define MUIOPTION_DEFAULT_GAME                   "default_system"
 #define MUIDEFAULT_SELECTION                     "3do"
-#define MUIDEFAULT_SPLITTERS                     "164,1006,1271"
+#define MUIDEFAULT_SPLITTERS                     "133,625,806"
 #else
 #define MUIOPTION_DEFAULT_GAME                   "default_machine"
 #define MUIDEFAULT_SELECTION                     "puckman"
-#define MUIDEFAULT_SPLITTERS                     "164,1006"
+#define MUIDEFAULT_SPLITTERS                     "164,800"
 #endif
 
-#define MUIOPTION_VERSION                        "version"
+#define MUIOPTION_TOTAL                        "total"
 
 #define MESSUI_SL_COLUMN_SHOWN        "sl_column_shown"
 #define MESSUI_SL_COLUMN_WIDTHS       "sl_column_widths"
@@ -133,7 +133,7 @@ WINUIOPTS;
 // UI options in MAMEui.ini
 const WINUIOPTS option_entries[] =
 {
-	{ MUIOPTION_VERSION,                      "ver",         OPTION_STRING,                 NULL },
+	{ MUIOPTION_TOTAL,                        "0",        OPTION_INTEGER,                 NULL },
 	{ MUIOPTION_DEFAULT_GAME,                 MUIDEFAULT_SELECTION, OPTION_STRING,       NULL },
 	{ MUIOPTION_DEFAULT_FOLDER_ID,            "0",        OPTION_INTEGER,                 NULL },
 	{ MUIOPTION_SHOW_IMAGE_SECTION,           "1",        OPTION_BOOLEAN,    NULL },
@@ -152,8 +152,8 @@ const WINUIOPTS option_entries[] =
 	{ MUIOPTION_SORT_REVERSED,                "0",        OPTION_BOOLEAN,    NULL },
 	{ MUIOPTION_WINDOW_X,                     "0",        OPTION_INTEGER,                 NULL },
 	{ MUIOPTION_WINDOW_Y,                     "0",        OPTION_INTEGER,                 NULL },
-	{ MUIOPTION_WINDOW_WIDTH,                 "800",      OPTION_INTEGER,                 NULL },
-	{ MUIOPTION_WINDOW_HEIGHT,                "600",      OPTION_INTEGER,                 NULL },
+	{ MUIOPTION_WINDOW_WIDTH,                 "1024",      OPTION_INTEGER,                 NULL },
+	{ MUIOPTION_WINDOW_HEIGHT,                "768",      OPTION_INTEGER,                 NULL },
 	{ MUIOPTION_WINDOW_STATE,                 "1",        OPTION_INTEGER,                 NULL },
 	{ MUIOPTION_TEXT_COLOR,                   "-1",       OPTION_INTEGER,                 NULL },
 	{ MUIOPTION_CLONE_COLOR,                  "-1",       OPTION_INTEGER,                 NULL },
