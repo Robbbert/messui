@@ -101,11 +101,11 @@
 #ifdef MESS
 #define MUIOPTION_DEFAULT_GAME                   "default_system"
 #define MUIDEFAULT_SELECTION                     "3do"
-#define MUIDEFAULT_SPLITTERS                     "152,310,468"
+#define MUIDEFAULT_SPLITTERS                     "164,1006,1271"
 #else
 #define MUIOPTION_DEFAULT_GAME                   "default_machine"
 #define MUIDEFAULT_SELECTION                     "puckman"
-#define MUIDEFAULT_SPLITTERS                     "152,362"
+#define MUIDEFAULT_SPLITTERS                     "164,1006"
 #endif
 
 #define MUIOPTION_VERSION                        "version"
@@ -161,7 +161,7 @@ const WINUIOPTS option_entries[] =
 	/* ListMode needs to be before ColumnWidths settings */
 	{ MUIOPTION_LIST_MODE,                    "5",       OPTION_INTEGER,                 NULL },
 	{ MUIOPTION_SPLITTERS,                    MUIDEFAULT_SPLITTERS, OPTION_STRING,       NULL },
-	{ MUIOPTION_LIST_FONT,                    "-8,0,0,0,400,0,0,0,0,0,0,0,MS Sans Serif", OPTION_STRING, NULL },
+	{ MUIOPTION_LIST_FONT,                    "-11,0,0,0,400,0,0,0,0,1,2,1,34,MS Sans Serif", OPTION_STRING, NULL },
 	{ MUIOPTION_COLUMN_WIDTHS,                "185,78,84,84,64,88,74,108,60,144,84,40,40", OPTION_STRING, NULL },
 	{ MUIOPTION_COLUMN_ORDER,                 "0,1,2,3,4,5,6,7,8,9,10,11,12", OPTION_STRING, NULL },
 	{ MUIOPTION_COLUMN_SHOWN,                 "1,1,1,1,1,1,1,1,1,1,1,1,0", OPTION_STRING,  NULL },

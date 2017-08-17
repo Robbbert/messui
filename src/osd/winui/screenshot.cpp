@@ -487,10 +487,10 @@ HBITMAP DIBToDDB(HDC hDC, HANDLE hDIB, LPMYBITMAPINFO desc)
 BOOL LoadScreenShot(int nGame, LPCSTR lpSoftwareName, int nType)
 {
 	/* Delete the last ones */
-	printf("LoadScreenShot: A\n");fflush(stdout);
+	//printf("LoadScreenShot: A\n");fflush(stdout);
 	FreeScreenShot();
 
-	printf("LoadScreenShot: B\n");fflush(stdout);
+	//printf("LoadScreenShot: B\n");fflush(stdout);
 	BOOL loaded = false;
 	BOOL isclone = DriverIsClone(nGame);
 	int nParentIndex = -1;
@@ -498,26 +498,26 @@ BOOL LoadScreenShot(int nGame, LPCSTR lpSoftwareName, int nType)
 		nParentIndex = GetParentIndex(&driver_list::driver(nGame));
 
 	// If software item, see if picture exist (correct parent is passed in lpSoftwareName)
-	printf("LoadScreenShot: C\n");fflush(stdout);
+	//printf("LoadScreenShot: C\n");fflush(stdout);
 	if (lpSoftwareName)
 		loaded = LoadDIB(lpSoftwareName, &m_hDIB, &m_hPal, nType);
 
 	// If game, see if picture exist. Or, if no picture for the software, use game's picture.
-	printf("LoadScreenShot: D\n");fflush(stdout);
+	//printf("LoadScreenShot: D\n");fflush(stdout);
 	if (!loaded)
 	{
-		printf("LoadScreenShot: E\n");fflush(stdout);
+		//printf("LoadScreenShot: E\n");fflush(stdout);
 		loaded = LoadDIB(driver_list::driver(nGame).name, &m_hDIB, &m_hPal, nType);
 		// none? try parent
-		printf("LoadScreenShot: F\n");fflush(stdout);
+		//printf("LoadScreenShot: F\n");fflush(stdout);
 		if (!loaded && isclone)
 		{
-			printf("LoadScreenShot: G\n");fflush(stdout);
+			//printf("LoadScreenShot: G\n");fflush(stdout);
 			loaded = LoadDIB(driver_list::driver(nParentIndex).name, &m_hDIB, &m_hPal, nType);
 		}
 	}
 
-	printf("LoadScreenShot: K\n");fflush(stdout);
+	//printf("LoadScreenShot: K\n");fflush(stdout);
 	if (loaded)
 	{
 		HDC hdc = GetDC(GetMainWindow());

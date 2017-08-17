@@ -321,14 +321,18 @@ void InitMessPicker(void)
 	s_config = NULL;
 	HWND hwndSoftware = GetDlgItem(GetMainWindow(), IDC_SWLIST);
 
+	printf("InitMessPicker: A\n");fflush(stdout);
 	memset(&opts, 0, sizeof(opts));
 	opts.pCallbacks = &s_softwarePickerCallbacks;
 	opts.nColumnCount = SW_COLUMN_MAX; // number of columns in picker
 	opts.ppszColumnNames = mess_column_names; // get picker column names
+	printf("InitMessPicker: B\n");fflush(stdout);
 	SetupSoftwarePicker(hwndSoftware, &opts); // display them
 
+	printf("InitMessPicker: C\n");fflush(stdout);
 	SetWindowLong(hwndSoftware, GWL_STYLE, GetWindowLong(hwndSoftware, GWL_STYLE) | LVS_REPORT | LVS_SHOWSELALWAYS | LVS_OWNERDRAWFIXED);
 
+	printf("InitMessPicker: D\n");fflush(stdout);
 	SetupSoftwareTabView();
 
 	{
@@ -346,13 +350,17 @@ void InitMessPicker(void)
 
 	HWND hwndSoftwareList = GetDlgItem(GetMainWindow(), IDC_SOFTLIST);
 
+	printf("InitMessPicker: H\n");fflush(stdout);
 	memset(&opts, 0, sizeof(opts));
 	opts.pCallbacks = &s_softwareListCallbacks;
 	opts.nColumnCount = SL_COLUMN_MAX; // number of columns in sw-list
 	opts.ppszColumnNames = softlist_column_names; // columns for sw-list
+	printf("InitMessPicker: I\n");fflush(stdout);
 	SetupSoftwareList(hwndSoftwareList, &opts); // show them
 
+	printf("InitMessPicker: J\n");fflush(stdout);
 	SetWindowLong(hwndSoftwareList, GWL_STYLE, GetWindowLong(hwndSoftwareList, GWL_STYLE) | LVS_REPORT | LVS_SHOWSELALWAYS | LVS_OWNERDRAWFIXED);
+	printf("InitMessPicker: Finished\n");fflush(stdout);
 }
 
 
@@ -659,15 +667,8 @@ void DevView_Refresh(HWND hwndDevView)
 static BOOL DevView_SetDriver(HWND hwndDevView, const software_config *sconfig)
 {
 	struct DevViewInfo *pDevViewInfo;
-	struct DevViewEntry *pEnt;
-	int i, y = 0, nHeight = 0;
-	int nStaticPos = 0, nStaticWidth = 0, nEditPos = 0, nEditWidth = 0, nButtonPos = 0, nButtonWidth = 0;
-	HDC hDc;
-	LPTSTR *ppszDevices;
-	SIZE sz;
-	LONG_PTR l = 0;
+	int i, y = 0, nHeight = 0, nStaticPos = 0, nStaticWidth = 0, nEditPos = 0, nEditWidth = 0, nButtonPos = 0, nButtonWidth = 0;
 	pDevViewInfo = GetDevViewInfo(hwndDevView);
-	string instance;
 
 	// clear out
 	DevView_Clear(hwndDevView);
@@ -681,11 +682,14 @@ static BOOL DevView_SetDriver(HWND hwndDevView, const software_config *sconfig)
 		if (dev.user_loadable())
 			pDevViewInfo->slots++;
 
+	printf("DevView_SetDriver: Number of slots = %d\n", pDevViewInfo->slots);fflush(stdout);
 	pDevViewInfo->state = 2;
 
 	if (pDevViewInfo->slots)
 	{
 		// get the names of all of the media-slots so we can then work out how much space is needed to display them
+		string instance;
+		LPTSTR *ppszDevices;
 		ppszDevices = (LPTSTR *) alloca(pDevViewInfo->slots * sizeof(*ppszDevices));
 		i = 0;
 		for (device_image_interface &dev : image_interface_iterator(pDevViewInfo->config->mconfig->root_device()))
@@ -697,12 +701,14 @@ static BOOL DevView_SetDriver(HWND hwndDevView, const software_config *sconfig)
 			ppszDevices[i] = (TCHAR*)alloca((_tcslen(t_s) + 1) * sizeof(TCHAR));
 			_tcscpy(ppszDevices[i], t_s);
 			free(t_s);
-			i++; if (i > pDevViewInfo->slots) printf("Buffer overflow\n");fflush(stdout);
+			i++;
 		}
+		printf("DevView_SetDriver: Number of media slots = %d\n", i);fflush(stdout);
 
 		// Calculate the requisite size for the device column
 		pDevViewInfo->nWidth = 0;
-		hDc = GetDC(hwndDevView);
+		HDC hDc = GetDC(hwndDevView);
+		SIZE sz;
 		for (i = 0; i < pDevViewInfo->slots; i++)
 		{
 			GetTextExtentPoint32(hDc, ppszDevices[i], _tcslen(ppszDevices[i]), &sz);
@@ -711,6 +717,7 @@ static BOOL DevView_SetDriver(HWND hwndDevView, const software_config *sconfig)
 		}
 		ReleaseDC(hwndDevView, hDc);
 
+		struct DevViewEntry *pEnt;
 		pEnt = (struct DevViewEntry *) malloc(sizeof(struct DevViewEntry) * (pDevViewInfo->slots + 1));
 		if (!pEnt)
 			return false;
@@ -722,6 +729,7 @@ static BOOL DevView_SetDriver(HWND hwndDevView, const software_config *sconfig)
 		DevView_GetColumns(hwndDevView, &nStaticPos, &nStaticWidth, &nEditPos, &nEditWidth, &nButtonPos, &nButtonWidth);
 
 		// Now actually display the media-slot names, and show the empty boxes and the browse button
+		LONG_PTR l = 0;
 		for (device_image_interface &dev : image_interface_iterator(pDevViewInfo->config->mconfig->root_device()))
 		{
 			if (!dev.user_loadable())
@@ -765,9 +773,9 @@ static BOOL DevView_SetDriver(HWND hwndDevView, const software_config *sconfig)
 	}
 
 	pDevViewInfo->state = 3;
-	printf("Calling DevView_Refresh\n");fflush(stdout);
+	printf("DevView_SetDriver: Calling DevView_Refresh\n");fflush(stdout);
 	DevView_Refresh(hwndDevView); // show names of already-loaded software
-	printf("Finished DevView_Refresh\n");fflush(stdout);
+	printf("DevView_SetDriver: Finished\n");fflush(stdout);
 	return true;
 }
 //#ifdef __GNUC__
@@ -831,25 +839,15 @@ void MyFillSoftwareList(int drvindex, BOOL bForce)
 	printf("MyFillSoftwareList: Calling SoftwarePicker_SetDriver\n");fflush(stdout);
 	SoftwareList_SetDriver(hwndSoftwareList, s_config);
 
-	// Get the game's options including slots & software
-	printf("MyFillSoftwareList: Getting Options\n");fflush(stdout);
-	windows_options o;
-	//o.set_value(OPTION_SYSTEMNAME, driver_list::driver(drvindex).name, OPTION_PRIORITY_CMDLINE);
-	load_options(o, OPTIONS_GAME, drvindex, 1);
-
-	/* allocate the machine config */
-	printf("MyFillSoftwareList: Allocate Machine Config\n");fflush(stdout);
-	machine_config config(driver_list::driver(drvindex), o);
-
 	printf("MyFillSoftwareList: Getting Softlist Information\n");fflush(stdout);
-	for (software_list_device &swlistdev : software_list_device_iterator(config.root_device()))
+	for (software_list_device &swlistdev : software_list_device_iterator(s_config->mconfig->root_device()))
 	{
 		for (const software_info &swinfo : swlistdev.get_info())
 		{
 			const software_part &swpart = swinfo.parts().front();
 
 			// search for a device with the right interface
-			for (const device_image_interface &image : image_interface_iterator(config.root_device()))
+			for (const device_image_interface &image : image_interface_iterator(s_config->mconfig->root_device()))
 			{
 				if (!image.user_loadable())
 					continue;
@@ -937,9 +935,8 @@ static void MessRemoveImage(int drvindex, const char *pszFilename)
 #if 0
 	const char *s;
 	windows_options o;
-	const char* name = driver_list::driver(drvindex).name;
-	o.set_value(OPTION_SYSTEMNAME, name, OPTION_PRIORITY_CMDLINE);
-	load_options(o, OPTIONS_GAME, drvindex);
+	//o.set_value(OPTION_SYSTEMNAME, driver_list::driver(drvindex).name, OPTION_PRIORITY_CMDLINE);
+	load_options(o, OPTIONS_GAME, drvindex, 1);
 
 	for (device_image_interface &dev : image_interface_iterator(s_config->mconfig->root_device()))
 	{
@@ -958,8 +955,8 @@ static void MessRemoveImage(int drvindex, const char *pszFilename)
 void MessReadMountedSoftware(int drvindex)
 {
 	// First read stuff into device view
-//	if (TabView_GetCurrentTab(GetDlgItem(GetMainWindow(), IDC_SWTAB))==1)
-//		DevView_Refresh(GetDlgItem(GetMainWindow(), IDC_SWDEVVIEW)); // crashes cocoe
+	if (TabView_GetCurrentTab(GetDlgItem(GetMainWindow(), IDC_SWTAB))==1)
+		DevView_Refresh(GetDlgItem(GetMainWindow(), IDC_SWDEVVIEW));
 
 	// Now read stuff into picker
 	if (TabView_GetCurrentTab(GetDlgItem(GetMainWindow(), IDC_SWTAB))==0)
@@ -982,7 +979,7 @@ static void MessRefreshPicker(void)
 
 	// Get the game's options including slots & software
 	windows_options o;
-	o.set_value(OPTION_SYSTEMNAME, driver_list::driver(s_config->driver_index).name, OPTION_PRIORITY_CMDLINE);
+	//o.set_value(OPTION_SYSTEMNAME, driver_list::driver(s_config->driver_index).name, OPTION_PRIORITY_CMDLINE);
 	load_options(o, OPTIONS_GAME, s_config->driver_index, 1);
 	/* allocate the machine config */
 	machine_config config(driver_list::driver(s_config->driver_index), o);
@@ -1361,21 +1358,21 @@ static LPCTSTR DevView_GetSelectedSoftware(HWND hwndDevView, int nDriverIndex, c
 {
 	BOOL res = false;
 	string opt_name, opt_value;
-	if (dev && dev->user_loadable())  //!dev->instance_name().empty())
+	if (dev && dev->user_loadable())
 	{
 		windows_options o;
 		//o.set_value(OPTION_SYSTEMNAME, driver_list::driver(nDriverIndex).name, OPTION_PRIORITY_CMDLINE);
 		load_options(o, OPTIONS_GAME, nDriverIndex, 1);
-		printf("Got options\n");fflush(stdout);
+		printf("DevView_GetSelectedSoftware: Got options\n");fflush(stdout);
 		opt_name = dev->instance_name();
 		//const char* temp = o.value(opt_name.c_str());
 		if (o.find_image_option(opt_name))
 			opt_value = o.image_option(opt_name).value().empty() ? "" : o.image_option(opt_name).value();
-		printf("== %s : %s\n", opt_name.c_str(), opt_value.c_str());fflush(stdout);
+		printf("DevView_GetSelectedSoftware: == %s : %s\n", opt_name.c_str(), opt_value.c_str());fflush(stdout);
 		if (!opt_value.empty())
 			res = true;
 	}
-	printf("Got values\n");fflush(stdout);
+	printf("DevView_GetSelectedSoftware: Got values\n");fflush(stdout);
 	if (res)
 	{
 		TCHAR* t_s = ui_wstring_from_utf8(opt_value.c_str());
@@ -1385,11 +1382,11 @@ static LPCTSTR DevView_GetSelectedSoftware(HWND hwndDevView, int nDriverIndex, c
 			free(t_s);
 			LPCTSTR t_buffer = pszBuffer;
 			mvmap[opt_name] = 1;
-			printf("Got %s\n", opt_value.c_str());fflush(stdout);
+			printf("DevView_GetSelectedSoftware: Got %s\n", opt_value.c_str());fflush(stdout);
 			return t_buffer;
 		}
 	}
-	printf("Got nothing\n\n");fflush(stdout);
+	printf("DevView_GetSelectedSoftware: Got nothing\n\n");fflush(stdout);
 	if (!opt_name.empty())
 		mvmap[opt_name] = 0;
 	return ui_wstring_from_utf8(""); // nothing loaded or error occurred
@@ -1505,9 +1502,7 @@ static int SoftwareList_GetItemImage(HWND hwndPicker, int nItem)
 static void SoftwareList_LeavingItem(HWND hwndSoftwareList, int nItem)
 {
 	if (!s_bIgnoreSoftwarePickerNotifies)
-	{
 		g_szSelectedItem[0] = 0;
-	}
 }
 
 
@@ -1521,9 +1516,8 @@ static void SoftwareList_EnteringItem(HWND hwndSoftwareList, int nItem)
 		int drvindex = Picker_GetSelectedItem(hwndList);
 
 		// Get the fullname for this file
-		LPCSTR pszFullName = SoftwareList_LookupFullname(hwndSoftwareList, nItem); // for the screenshot
+		LPCSTR pszFullName = SoftwareList_LookupFullname(hwndSoftwareList, nItem); // for the screenshot and SetSoftware.
 
-		// These 2 over to winui to load the SL item
 		char t[100];
 		strncpyz(t, SoftwareList_LookupDevice(hwndSoftwareList, nItem), ARRAY_LENGTH(t));
 		string opt_name = t[0] ? t : "";
@@ -1719,7 +1713,7 @@ static void SoftwareTabView_OnSelectionChanged(void)
 			ShowWindow(hwndSoftwarePicker, SW_HIDE);
 			ShowWindow(hwndSoftwareDevView, SW_SHOW);
 			ShowWindow(hwndSoftwareList, SW_HIDE);
-			//DevView_Refresh(GetDlgItem(GetMainWindow(), IDC_SWDEVVIEW));
+			//DevView_Refresh(GetDlgItem(GetMainWindow(), IDC_SWDEVVIEW)); // crashes MESSUI at start
 			break;
 		case 2:
 			ShowWindow(hwndSoftwarePicker, SW_HIDE);

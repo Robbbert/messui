@@ -291,7 +291,6 @@ static BOOL             FolderCheck(void);
 static void             ToggleScreenShot(void);
 static void             ToggleSoftware(void);
 static void             AdjustMetrics(void);
-//static void             EnablePlayOptions(int nIndex, windows_options *o);
 
 /* Icon routines */
 static DWORD            GetShellLargeIconSize(void);
@@ -1377,7 +1376,7 @@ void UpdateSoftware(void)
 void UpdateScreenShot(void)
 {
 	/* first time through can't do this stuff */
-	printf("Update Screenshot: A\n");fflush(stdout);
+	//printf("Update Screenshot: A\n");fflush(stdout);
 	if (hwndList == NULL)
 		return;
 
@@ -1387,13 +1386,13 @@ void UpdateScreenShot(void)
 	RECT rect;
 	GetClientRect(hMain, &rect);
 
-	printf("Update Screenshot: B\n");fflush(stdout);
+	//printf("Update Screenshot: B\n");fflush(stdout);
 	if (bShowStatusBar)
 		rect.bottom -= bottomMargin;
 	if (bShowToolBar)
 		rect.top += topMargin;
 
-	printf("Update Screenshot: C\n");fflush(stdout);
+	//printf("Update Screenshot: C\n");fflush(stdout);
 	if (GetShowScreenShot())
 	{
 		//nWidth = nSplitterOffset[GetSplitterCount() - 1];
@@ -1407,13 +1406,13 @@ void UpdateScreenShot(void)
 		ToolBar_CheckButton(s_hToolBar, ID_VIEW_PICTURE_AREA, MF_UNCHECKED);
 	}
 
-	printf("Update Screenshot: F\n");fflush(stdout);
+	//printf("Update Screenshot: F\n");fflush(stdout);
 	ResizeTreeAndListViews(false);
 
-	printf("Update Screenshot: G\n");fflush(stdout);
+	//printf("Update Screenshot: G\n");fflush(stdout);
 	FreeScreenShot();
 
-	printf("Update Screenshot: H\n");fflush(stdout);
+	//printf("Update Screenshot: H\n");fflush(stdout);
 	if (have_selection)
 	{
 		if (g_szSelectedItem[0])
@@ -1423,13 +1422,13 @@ void UpdateScreenShot(void)
 	}
 
 	// figure out if we have a history or not, to place our other windows properly
-	printf("Update Screenshot: I\n");fflush(stdout);
+	//printf("Update Screenshot: I\n");fflush(stdout);
 	string t_software = string(g_szSelectedItem);
 	UpdateHistory(t_software);
 
 	// setup the picture area
 
-	printf("Update Screenshot: J\n");fflush(stdout);
+	//printf("Update Screenshot: J\n");fflush(stdout);
 	if (GetShowScreenShot())
 	{
 		DWORD dwStyle;
@@ -1699,10 +1698,10 @@ static BOOL Win32UI_init(HINSTANCE hInstance, LPWSTR lpCmdLine, int nCmdShow)
 	extern const FOLDERDATA g_folderData[];
 	extern const FILTER_ITEM g_filterList[];
 
-	printf("about to init options\n");fflush(stdout);
+	printf("Win32UI_init: About to init options\n");fflush(stdout);
 	if (!OptionsInit())
 		return false;
-	printf("options loaded\n");fflush(stdout);
+	printf("Win32UI_init: Options loaded\n");fflush(stdout);
 	//win_message_box_utf8(hMain, "test", emulator_info::get_appname(), MB_OK);
 
 	// create the memory pool
@@ -1733,7 +1732,7 @@ static BOOL Win32UI_init(HINSTANCE hInstance, LPWSTR lpCmdLine, int nCmdShow)
 
 	// Are we using an Old comctl32.dll?
 	LONG common_control_version = GetCommonControlVersion();
-	printf("common controlversion %ld %ld\n", common_control_version >> 16, common_control_version & 0xffff);fflush(stdout);
+	printf("Win32UI_init: Common controlversion %ld %ld\n", common_control_version >> 16, common_control_version & 0xffff);fflush(stdout);
 
 	oldControl = (common_control_version < PACKVERSION(4,71));
 	xpControl = (common_control_version >= PACKVERSION(6,0));
@@ -1751,7 +1750,7 @@ static BOOL Win32UI_init(HINSTANCE hInstance, LPWSTR lpCmdLine, int nCmdShow)
 	hMain = CreateDialog(hInstance, MAKEINTRESOURCE(IDD_MAIN), 0, NULL);
 	if (hMain == NULL)
 	{
-		printf("error creating main dialog, aborting\n");fflush(stdout);
+		printf("Win32UI_init: Error creating main dialog, aborting\n");fflush(stdout);
 		return false;
 	}
 
@@ -1889,16 +1888,18 @@ static BOOL Win32UI_init(HINSTANCE hInstance, LPWSTR lpCmdLine, int nCmdShow)
 
 	LoadBackgroundBitmap();
 
-	printf("about to init tree\n");fflush(stdout);
+	printf("Win32UI_init: About to init tree\n");fflush(stdout);
 	InitTree(g_folderData, g_filterList);
-	printf("did init tree\n");fflush(stdout);
+	printf("Win32UI_init: Did init tree\n");fflush(stdout);
 
 	/* Initialize listview columns */
 	InitMessPicker(); // messui.cpp
+	printf("Win32UI_init: About to InitListView\n");fflush(stdout);
 	InitListView();
 	SetFocus(hwndList);
 
 	/* Reset the font */
+	printf("Win32UI_init: Reset the font\n");fflush(stdout);
 	{
 		LOGFONT logfont;
 
@@ -1914,12 +1915,14 @@ static BOOL Win32UI_init(HINSTANCE hInstance, LPWSTR lpCmdLine, int nCmdShow)
 	}
 
 	/* Init DirectInput */
+	printf("Win32UI_init: Init directinput\n");fflush(stdout);
 	if (!DirectInputInitialize())
 	{
 		DialogBox(GetModuleHandle(NULL),MAKEINTRESOURCE(IDD_DIRECTX), NULL, DirectXDialogProc);
 		return false;
 	}
 
+	printf("Win32UI_init: Adjusting..\n");fflush(stdout);
 	AdjustMetrics();
 	UpdateSoftware();
 	UpdateScreenShot();
@@ -1927,6 +1930,7 @@ static BOOL Win32UI_init(HINSTANCE hInstance, LPWSTR lpCmdLine, int nCmdShow)
 	hAccel = LoadAccelerators(hInstance, MAKEINTRESOURCE(IDA_TAB_KEYS));
 
 	/* clear keyboard state */
+	printf("Win32UI_init: Keyboard\n");fflush(stdout);
 	KeyboardStateClear();
 
 	if (GetJoyGUI() == true)
@@ -1940,6 +1944,7 @@ static BOOL Win32UI_init(HINSTANCE hInstance, LPWSTR lpCmdLine, int nCmdShow)
 	else
 		g_pJoyGUI = NULL;
 
+	printf("Win32UI_init: Mouse\n");fflush(stdout);
 	if (GetHideMouseOnStartup())
 	{
 		/*  For some reason the mouse is centered when a game is exited, which of
@@ -1952,7 +1957,7 @@ static BOOL Win32UI_init(HINSTANCE hInstance, LPWSTR lpCmdLine, int nCmdShow)
 		ShowCursor(false);
 	}
 
-	printf("about to show window\n");fflush(stdout);
+	printf("Win32UI_init: About to show window\n");fflush(stdout);
 
 	nCmdShow = GetWindowState();
 	if (nCmdShow == SW_HIDE || nCmdShow == SW_MINIMIZE || nCmdShow == SW_SHOWMINIMIZED)
@@ -4694,7 +4699,7 @@ static const TCHAR *GamePicker_GetItemString(HWND hwndPicker, int nItem, int nCo
 
 		case COLUMN_TYPE:
 			{
-				machine_config config(*&driver_list::driver(nItem),MameUIGlobal());
+				machine_config config(driver_list::driver(nItem),MameUIGlobal());
 				/* Vector/Raster */
 				if (isDriverVector(&config))
 					s = TEXT("Vector");

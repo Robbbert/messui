@@ -480,8 +480,8 @@ void InitPropertyPageToPage(HINSTANCE hInst, HWND hWnd, HICON hIcon, OPTIONS_TYP
 	OptionsCopy(dummy,pOrigOpts);
 	OptionsCopy(dummy,pCurrentOpts);
 
-	load_options(pCurrentOpts, opt_type, game_num, 0);
-	load_options(pOrigOpts, opt_type, game_num, 0);
+	load_options(pCurrentOpts, opt_type, game_num, 1);
+	load_options(pOrigOpts, opt_type, game_num, 1);
 	if (game_num == GLOBAL_OPTIONS)
 		load_options(pDefaultOpts, OPTIONS_GLOBAL, -2, 0); // base opts is the backup for global
 	else
