@@ -624,7 +624,7 @@ bool emu_options::add_and_remove_image_options()
 	// "cartridge" starting out, but become "cartridge1" when another cartridge device is added.
 	//
 	// To get around this behavior, our internal data structures work in terms of what is
-	// returned by cannonical_instance_name(), which will be something like "cartridge1" both
+	// returned by cannonical_instance_name(), which will be something like ":cartridge" both
 	// for a singular cartridge device and the first cartridge in a multi cartridge system.
 	//
 	// The need for this behavior was identified by Tafoid when the following command line
@@ -655,7 +655,7 @@ bool emu_options::add_and_remove_image_options()
 		// iterate through all image devices
 		for (device_image_interface &image : image_interface_iterator(config.root_device()))
 		{
-			const std::string &cannonical_name(image.cannonical_instance_name());
+			const char *cannonical_name = image.cannonical_instance_name();
 
 			// erase this option from existing (so we don't purge it later)
 			existing.remove(cannonical_name);
@@ -1046,6 +1046,23 @@ image_option &emu_options::image_option(const std::string &device_name)
 
 
 //-------------------------------------------------
+//  find_image_option_canonical
+//-------------------------------------------------
+
+const image_option *emu_options::find_image_option_canonical(const std::string &device_name) const
+{
+	auto iter = m_image_options_cannonical.find(device_name);
+	return iter != m_image_options_cannonical.end() ? &iter->second : nullptr;
+}
+
+image_option *emu_options::find_image_option_canonical(const std::string &device_name)
+{
+	auto iter = m_image_options_cannonical.find(device_name);
+	return iter != m_image_options_cannonical.end() ? &iter->second : nullptr;
+}
+
+
+//-------------------------------------------------
 //  command_argument_processed
 //-------------------------------------------------
 
@@ -1231,9 +1248,9 @@ core_options::entry::shared_ptr slot_option::setup_option_entry(const char *name
 //  image_option ctor
 //-------------------------------------------------
 
-image_option::image_option(emu_options &host, const std::string &cannonical_instance_name)
+image_option::image_option(emu_options &host, std::string &&cannonical_instance_name)
 	: m_host(host)
-	, m_canonical_instance_name(cannonical_instance_name)
+	, m_canonical_instance_name(std::move(cannonical_instance_name))
 {
 }
 
