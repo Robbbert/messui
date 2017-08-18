@@ -902,7 +902,7 @@ static DWORD RunMAME(int nGameIndex, const play_options *playopts)
 	// Tell mame where to get the INIs
 	SetDirectories(global_opts);
 
-	CreateGameOptions(global_opts, OPTIONS_GLOBAL, nGameIndex);
+	SetSystemName(global_opts, OPTIONS_GLOBAL, nGameIndex);
 	const char* name = driver_list::driver(nGameIndex).name;
 
 	// set some startup options
@@ -2069,8 +2069,6 @@ static void Win32UI_exit()
     /* DestroyTree(hTreeView); */
 
 	FreeScreenShot();
-
-	OptionsExit();
 
 	HelpExit();
 

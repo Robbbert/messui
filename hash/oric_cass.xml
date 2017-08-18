@@ -1,0 +1,27 @@
+﻿<?xml version="1.0"?>
+<!DOCTYPE softwarelist SYSTEM "softwarelist.dtd">
+
+<softwarelist name="oric_cass" description="Oric 1 cassettes">
+
+	<software name="zorgons">
+		<description>Zorgon's Revenge</description>
+		<year>1983</year>
+		<publisher>IJK Software Ltd</publisher>
+		<part name="cass1" interface="oric_cass">
+			<dataarea name="cass" size="37397">
+				<rom name="Zorgon's Revenge (1983)(IJK Software Ltd).tap" size="37397" crc="025dbcab" sha1="4bbe43b5cb99f67f9c1f9d3a84f0b336dd08e5fd" offset="0" />
+			</dataarea>
+		</part>
+	</software>
+	
+	<software name="xenon1">
+		<description>Xenon 1</description>
+		<year>1983</year>
+		<publisher>IJK Software Ltd</publisher>
+		<part name="cass1" interface="oric_cass">
+			<dataarea name="cass" size="37396">
+				<rom name="Xenon 1 (1983)(IJK Software Ltd).tap" size="37396" crc="ac9342ef" sha1="1acc057f7ce7d8432c59c7f43231b7e46c0213fa" offset="0" />
+			</dataarea>
+		</part>
+	</software>
+</softwarelist>
