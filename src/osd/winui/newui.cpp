@@ -3008,7 +3008,7 @@ static void device_command(HWND wnd, device_image_interface *img, int devoption)
 		case DEVOPTION_CLOSE:
 			img->unload();
 			img->device().machine().options().image_option(img->instance_name()).specify("");
-			img->device().machine().options().emu_options::set_value(img->instance_name().c_str(), "", OPTION_PRIORITY_CMDLINE);
+			//img->device().machine().options().emu_options::set_value(img->instance_name().c_str(), "", OPTION_PRIORITY_CMDLINE);
 			break;
 
 		default:
