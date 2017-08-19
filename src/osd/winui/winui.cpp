@@ -1726,7 +1726,7 @@ static BOOL Win32UI_init(HINSTANCE hInstance, LPWSTR lpCmdLine, int nCmdShow)
 
 	RegisterClass(&wndclass);
 
-	DevView_RegisterClass(); // messui.cpp
+	MView_RegisterClass(); // messui.cpp
 
 	InitCommonControls();
 

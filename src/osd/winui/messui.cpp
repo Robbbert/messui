@@ -33,8 +33,8 @@
 //  PARAMETERS
 //============================================================
 
-#define DEVVIEW_PADDING 10
-#define DEVVIEW_SPACING 21
+#define MVIEW_PADDING 10
+#define MVIEW_SPACING 21
 #define LOG_SOFTWARE 1
 
 
@@ -122,32 +122,31 @@ static const LPCTSTR softlist_column_names[] =
 	TEXT("Usage"),
 };
 
-
-struct DevViewCallbacks
+static BOOL MVstate = 0;
+struct MViewCallbacks
 {
-	BOOL (*pfnGetOpenFileName)(HWND hwndDevView, const machine_config *config, const device_image_interface *dev, LPTSTR pszFilename, UINT nFilenameLength);
-	BOOL (*pfnGetCreateFileName)(HWND hwndDevView, const machine_config *config, const device_image_interface *dev, LPTSTR pszFilename, UINT nFilenameLength);
-	void (*pfnSetSelectedSoftware)(HWND hwndDevView, int nGame, const machine_config *config, const device_image_interface *dev, LPCTSTR pszFilename);
-	LPCTSTR (*pfnGetSelectedSoftware)(HWND hwndDevView, int nGame, const machine_config *config, const device_image_interface *dev, LPTSTR pszBuffer, UINT nBufferLength);
-	BOOL (*pfnGetOpenItemName)(HWND hwndDevView, const machine_config *config, const device_image_interface *dev, LPTSTR pszFilename, UINT nFilenameLength);
-	BOOL (*pfnUnmount)(HWND hwndDevView, const machine_config *config, const device_image_interface *dev, LPTSTR pszFilename, UINT nFilenameLength);
+	BOOL (*pfnGetOpenFileName)(HWND hwndMView, const machine_config *config, const device_image_interface *dev, LPTSTR pszFilename, UINT nFilenameLength);
+	BOOL (*pfnGetCreateFileName)(HWND hwndMView, const machine_config *config, const device_image_interface *dev, LPTSTR pszFilename, UINT nFilenameLength);
+	void (*pfnSetSelectedSoftware)(HWND hwndMView, int nGame, const machine_config *config, const device_image_interface *dev, LPCTSTR pszFilename);
+	LPCTSTR (*pfnGetSelectedSoftware)(HWND hwndMView, int nGame, const machine_config *config, const device_image_interface *dev, LPTSTR pszBuffer, UINT nBufferLength);
+	BOOL (*pfnGetOpenItemName)(HWND hwndMView, const machine_config *config, const device_image_interface *dev, LPTSTR pszFilename, UINT nFilenameLength);
+	BOOL (*pfnUnmount)(HWND hwndMView, const machine_config *config, const device_image_interface *dev, LPTSTR pszFilename, UINT nFilenameLength);
 };
 
-struct DevViewInfo
+struct MViewInfo
 {
 	HFONT hFont;
 	UINT nWidth;
-	UINT state;
 	UINT slots;
 	BOOL bSurpressFilenameChanged;
 	const software_config *config;
-	const struct DevViewCallbacks *pCallbacks;
-	struct DevViewEntry *pEntries;
+	const struct MViewCallbacks *pCallbacks;
+	struct MViewEntry *pEntries;
 };
 
 
 
-struct DevViewEntry
+struct MViewEntry
 {
 	const device_image_interface *dev;
 	HWND hwndStatic;
@@ -180,12 +179,12 @@ static void SetupSoftwareTabView(void);
 
 static void MessRefreshPicker(void);
 
-static BOOL DevView_GetOpenFileName(HWND hwndDevView, const machine_config *config, const device_image_interface *dev, LPTSTR pszFilename, UINT nFilenameLength);
-static BOOL DevView_GetOpenItemName(HWND hwndDevView, const machine_config *config, const device_image_interface *dev, LPTSTR pszFilename, UINT nFilenameLength);
-static BOOL DevView_GetCreateFileName(HWND hwndDevView, const machine_config *config, const device_image_interface *dev, LPTSTR pszFilename, UINT nFilenameLength);
-static BOOL DevView_Unmount(HWND hwndDevView, const machine_config *config, const device_image_interface *dev, LPTSTR pszFilename, UINT nFilenameLength);
-static void DevView_SetSelectedSoftware(HWND hwndDevView, int nDriverIndex, const machine_config *config, const device_image_interface *dev, LPCTSTR pszFilename);
-static LPCTSTR DevView_GetSelectedSoftware(HWND hwndDevView, int nDriverIndex, const machine_config *config, const device_image_interface *dev, LPTSTR pszBuffer, UINT nBufferLength);
+static BOOL MView_GetOpenFileName(HWND hwndMView, const machine_config *config, const device_image_interface *dev, LPTSTR pszFilename, UINT nFilenameLength);
+static BOOL MView_GetOpenItemName(HWND hwndMView, const machine_config *config, const device_image_interface *dev, LPTSTR pszFilename, UINT nFilenameLength);
+static BOOL MView_GetCreateFileName(HWND hwndMView, const machine_config *config, const device_image_interface *dev, LPTSTR pszFilename, UINT nFilenameLength);
+static BOOL MView_Unmount(HWND hwndMView, const machine_config *config, const device_image_interface *dev, LPTSTR pszFilename, UINT nFilenameLength);
+static void MView_SetSelectedSoftware(HWND hwndMView, int nDriverIndex, const machine_config *config, const device_image_interface *dev, LPCTSTR pszFilename);
+static LPCTSTR MView_GetSelectedSoftware(HWND hwndMView, int nDriverIndex, const machine_config *config, const device_image_interface *dev, LPTSTR pszBuffer, UINT nBufferLength);
 
 
 
@@ -299,18 +298,18 @@ static const device_entry *lookupdevice(iodevice_t d)
 }
 
 
-static struct DevViewInfo *GetDevViewInfo(HWND hwndDevView)
+static struct MViewInfo *GetMViewInfo(HWND hwndMView)
 {
-	LONG_PTR l = GetWindowLongPtr(hwndDevView, GWLP_USERDATA);
-	return (struct DevViewInfo *) l;
+	LONG_PTR l = GetWindowLongPtr(hwndMView, GWLP_USERDATA);
+	return (struct MViewInfo *) l;
 }
 
 
-static void DevView_SetCallbacks(HWND hwndDevView, const struct DevViewCallbacks *pCallbacks)
+static void MView_SetCallbacks(HWND hwndMView, const struct MViewCallbacks *pCallbacks)
 {
-	struct DevViewInfo *pDevViewInfo;
-	pDevViewInfo = GetDevViewInfo(hwndDevView);
-	pDevViewInfo->pCallbacks = pCallbacks;
+	struct MViewInfo *pMViewInfo;
+	pMViewInfo = GetMViewInfo(hwndMView);
+	pMViewInfo->pCallbacks = pCallbacks;
 }
 
 
@@ -336,16 +335,16 @@ void InitMessPicker(void)
 	SetupSoftwareTabView();
 
 	{
-		static const struct DevViewCallbacks s_devViewCallbacks =
+		static const struct MViewCallbacks s_MViewCallbacks =
 		{
-			DevView_GetOpenFileName,
-			DevView_GetCreateFileName,
-			DevView_SetSelectedSoftware,
-			DevView_GetSelectedSoftware,
-			DevView_GetOpenItemName,
-			DevView_Unmount
+			MView_GetOpenFileName,
+			MView_GetCreateFileName,
+			MView_SetSelectedSoftware,
+			MView_GetSelectedSoftware,
+			MView_GetOpenItemName,
+			MView_Unmount
 		};
-		DevView_SetCallbacks(GetDlgItem(GetMainWindow(), IDC_SWDEVVIEW), &s_devViewCallbacks);
+		MView_SetCallbacks(GetDlgItem(GetMainWindow(), IDC_SWDEVVIEW), &s_MViewCallbacks);
 	}
 
 	HWND hwndSoftwareList = GetDlgItem(GetMainWindow(), IDC_SOFTLIST);
@@ -554,67 +553,67 @@ void MySoftwareListClose(void)
 }
 
 
-static void DevView_Clear(HWND hwndDevView)
+static void MView_Clear(HWND hwndMView)
 {
-	struct DevViewInfo *pDevViewInfo;
-	pDevViewInfo = GetDevViewInfo(hwndDevView);
+	struct MViewInfo *pMViewInfo;
+	pMViewInfo = GetMViewInfo(hwndMView);
 
-	if (pDevViewInfo->pEntries)
+	if (pMViewInfo->pEntries)
 	{
-		for (int i = 0; pDevViewInfo->pEntries[i].dev; i++)
+		for (int i = 0; pMViewInfo->pEntries[i].dev; i++)
 		{
-			DestroyWindow(pDevViewInfo->pEntries[i].hwndStatic);
-			DestroyWindow(pDevViewInfo->pEntries[i].hwndEdit);
-			DestroyWindow(pDevViewInfo->pEntries[i].hwndBrowseButton);
+			DestroyWindow(pMViewInfo->pEntries[i].hwndStatic);
+			DestroyWindow(pMViewInfo->pEntries[i].hwndEdit);
+			DestroyWindow(pMViewInfo->pEntries[i].hwndBrowseButton);
 		}
-		free(pDevViewInfo->pEntries);
-		pDevViewInfo->pEntries = NULL;
+		free(pMViewInfo->pEntries);
+		pMViewInfo->pEntries = NULL;
 	}
 
-	pDevViewInfo->config = NULL;
-	pDevViewInfo->state = 0;
-	pDevViewInfo->slots = 0;
+	pMViewInfo->config = NULL;
+	MVstate = 0;
+	pMViewInfo->slots = 0;
 }
 
 
-static void DevView_GetColumns(HWND hwndDevView, int *pnStaticPos, int *pnStaticWidth, int *pnEditPos, int *pnEditWidth, int *pnButtonPos, int *pnButtonWidth)
+static void MView_GetColumns(HWND hwndMView, int *pnStaticPos, int *pnStaticWidth, int *pnEditPos, int *pnEditWidth, int *pnButtonPos, int *pnButtonWidth)
 {
-	struct DevViewInfo *pDevViewInfo;
+	struct MViewInfo *pMViewInfo;
 
-	pDevViewInfo = GetDevViewInfo(hwndDevView);
+	pMViewInfo = GetMViewInfo(hwndMView);
 
 	RECT r;
-	GetClientRect(hwndDevView, &r);
+	GetClientRect(hwndMView, &r);
 
-	*pnStaticPos = DEVVIEW_PADDING;
-	*pnStaticWidth = pDevViewInfo->nWidth;
+	*pnStaticPos = MVIEW_PADDING;
+	*pnStaticWidth = pMViewInfo->nWidth;
 
 	*pnButtonWidth = 25;
-	*pnButtonPos = (r.right - r.left) - *pnButtonWidth - DEVVIEW_PADDING;
+	*pnButtonPos = (r.right - r.left) - *pnButtonWidth - MVIEW_PADDING;
 
-//	*pnEditPos = *pnStaticPos + *pnStaticWidth + DEVVIEW_PADDING;
-	*pnEditPos = DEVVIEW_PADDING;
-	*pnEditWidth = *pnButtonPos - *pnEditPos - DEVVIEW_PADDING;
+//	*pnEditPos = *pnStaticPos + *pnStaticWidth + MVIEW_PADDING;
+	*pnEditPos = MVIEW_PADDING;
+	*pnEditWidth = *pnButtonPos - *pnEditPos - MVIEW_PADDING;
 	if (*pnEditWidth < 0)
 		*pnEditWidth = 0;
 }
 
 
-static void DevView_TextChanged(HWND hwndDevView, int nChangedEntry, LPCTSTR pszFilename)
+static void MView_TextChanged(HWND hwndMView, int nChangedEntry, LPCTSTR pszFilename)
 {
-	struct DevViewInfo *pDevViewInfo;
-	pDevViewInfo = GetDevViewInfo(hwndDevView);
-	if (!pDevViewInfo->bSurpressFilenameChanged && pDevViewInfo->pCallbacks->pfnSetSelectedSoftware)
-		pDevViewInfo->pCallbacks->pfnSetSelectedSoftware(hwndDevView, pDevViewInfo->config->driver_index,
-			pDevViewInfo->config->mconfig, pDevViewInfo->pEntries[nChangedEntry].dev, pszFilename);
+	struct MViewInfo *pMViewInfo;
+	pMViewInfo = GetMViewInfo(hwndMView);
+	if (!pMViewInfo->bSurpressFilenameChanged && pMViewInfo->pCallbacks->pfnSetSelectedSoftware)
+		pMViewInfo->pCallbacks->pfnSetSelectedSoftware(hwndMView, pMViewInfo->config->driver_index,
+			pMViewInfo->config->mconfig, pMViewInfo->pEntries[nChangedEntry].dev, pszFilename);
 }
 
 
-static LRESULT CALLBACK DevView_EditWndProc(HWND hwndEdit, UINT nMessage, WPARAM wParam, LPARAM lParam)
+static LRESULT CALLBACK MView_EditWndProc(HWND hwndEdit, UINT nMessage, WPARAM wParam, LPARAM lParam)
 {
 	LONG_PTR l = GetWindowLongPtr(hwndEdit, GWLP_USERDATA);
-	struct DevViewEntry *pEnt;
-	pEnt = (struct DevViewEntry *) l;
+	struct MViewEntry *pEnt;
+	pEnt = (struct MViewEntry *) l;
 	LRESULT rc;
 	if (IsWindowUnicode(hwndEdit))
 		rc = CallWindowProcW(pEnt->pfnEditWndProc, hwndEdit, nMessage, wParam, lParam);
@@ -623,39 +622,40 @@ static LRESULT CALLBACK DevView_EditWndProc(HWND hwndEdit, UINT nMessage, WPARAM
 
 	if (nMessage == WM_SETTEXT)
 	{
-		HWND hwndDevView = GetParent(hwndEdit);
-		struct DevViewInfo *pDevViewInfo;
-		pDevViewInfo = GetDevViewInfo(hwndDevView);
-		DevView_TextChanged(hwndDevView, pEnt - pDevViewInfo->pEntries, (LPCTSTR) lParam);
+		HWND hwndMView = GetParent(hwndEdit);
+		struct MViewInfo *pMViewInfo;
+		pMViewInfo = GetMViewInfo(hwndMView);
+		MView_TextChanged(hwndMView, pEnt - pMViewInfo->pEntries, (LPCTSTR) lParam);
 	}
 	return rc;
 }
 
 
-void DevView_Refresh(HWND hwndDevView)
+void MView_Refresh(HWND hwndMView)
 {
-	struct DevViewInfo *pDevViewInfo;
+	if (!MVstate)
+		return;
+
+	struct MViewInfo *pMViewInfo;
 	LPCTSTR pszSelection;
 	TCHAR szBuffer[MAX_PATH];
 
-	pDevViewInfo = GetDevViewInfo(hwndDevView);
-	printf("DevView_Refresh: %s : %X\n", driver_list::driver(pDevViewInfo->config->driver_index).name, pDevViewInfo->state);fflush(stdout);
-	if (pDevViewInfo->state < 3)
-		return;
+	pMViewInfo = GetMViewInfo(hwndMView);
+	printf("MView_Refresh: %s\n", driver_list::driver(pMViewInfo->config->driver_index).name);fflush(stdout);
 
-	if (pDevViewInfo->slots)
+	if (pMViewInfo->slots)
 	{
-		for (int i = 0; i < pDevViewInfo->slots; i++)
+		for (int i = 0; i < pMViewInfo->slots; i++)
 		{
-			pszSelection = pDevViewInfo->pCallbacks->pfnGetSelectedSoftware( hwndDevView, pDevViewInfo->config->driver_index,
-				pDevViewInfo->config->mconfig, pDevViewInfo->pEntries[i].dev, szBuffer, MAX_PATH);
-			printf("DevView_Refresh: Finished GetSelectSoftware\n");fflush(stdout);
+			pszSelection = pMViewInfo->pCallbacks->pfnGetSelectedSoftware( hwndMView, pMViewInfo->config->driver_index,
+				pMViewInfo->config->mconfig, pMViewInfo->pEntries[i].dev, szBuffer, MAX_PATH);
+			printf("MView_Refresh: Finished GetSelectSoftware\n");fflush(stdout);
 			if (!pszSelection)
 				pszSelection = TEXT("");
 
-			pDevViewInfo->bSurpressFilenameChanged = true;
-			SetWindowText(pDevViewInfo->pEntries[i].hwndEdit, pszSelection);
-			pDevViewInfo->bSurpressFilenameChanged = false;
+			pMViewInfo->bSurpressFilenameChanged = true;
+			SetWindowText(pMViewInfo->pEntries[i].hwndEdit, pszSelection);
+			pMViewInfo->bSurpressFilenameChanged = false;
 		}
 	}
 }
@@ -664,35 +664,33 @@ void DevView_Refresh(HWND hwndDevView)
 //#ifdef __GNUC__
 //#pragma GCC diagnostic ignored "-Wunused-variable"
 //#endif
-static BOOL DevView_SetDriver(HWND hwndDevView, const software_config *sconfig)
+static BOOL MView_SetDriver(HWND hwndMView, const software_config *sconfig)
 {
-	struct DevViewInfo *pDevViewInfo;
+	struct MViewInfo *pMViewInfo;
 	int i, y = 0, nHeight = 0, nStaticPos = 0, nStaticWidth = 0, nEditPos = 0, nEditWidth = 0, nButtonPos = 0, nButtonWidth = 0;
-	pDevViewInfo = GetDevViewInfo(hwndDevView);
+	pMViewInfo = GetMViewInfo(hwndMView);
 
 	// clear out
-	DevView_Clear(hwndDevView);
+	MView_Clear(hwndMView);
 
 	// copy the config
-	pDevViewInfo->config = sconfig;
-	pDevViewInfo->state = 1;
+	pMViewInfo->config = sconfig;
 
 	// count total amount of devices
-	for (device_image_interface &dev : image_interface_iterator(pDevViewInfo->config->mconfig->root_device()))
+	for (device_image_interface &dev : image_interface_iterator(pMViewInfo->config->mconfig->root_device()))
 		if (dev.user_loadable())
-			pDevViewInfo->slots++;
+			pMViewInfo->slots++;
 
-	printf("DevView_SetDriver: Number of slots = %d\n", pDevViewInfo->slots);fflush(stdout);
-	pDevViewInfo->state = 2;
+	printf("MView_SetDriver: Number of slots = %d\n", pMViewInfo->slots);fflush(stdout);
 
-	if (pDevViewInfo->slots)
+	if (pMViewInfo->slots)
 	{
 		// get the names of all of the media-slots so we can then work out how much space is needed to display them
 		string instance;
 		LPTSTR *ppszDevices;
-		ppszDevices = (LPTSTR *) alloca(pDevViewInfo->slots * sizeof(*ppszDevices));
+		ppszDevices = (LPTSTR *) alloca(pMViewInfo->slots * sizeof(*ppszDevices));
 		i = 0;
-		for (device_image_interface &dev : image_interface_iterator(pDevViewInfo->config->mconfig->root_device()))
+		for (device_image_interface &dev : image_interface_iterator(pMViewInfo->config->mconfig->root_device()))
 		{
 			if (!dev.user_loadable())
 				continue;
@@ -703,34 +701,34 @@ static BOOL DevView_SetDriver(HWND hwndDevView, const software_config *sconfig)
 			free(t_s);
 			i++;
 		}
-		printf("DevView_SetDriver: Number of media slots = %d\n", i);fflush(stdout);
+		printf("MView_SetDriver: Number of media slots = %d\n", i);fflush(stdout);
 
 		// Calculate the requisite size for the device column
-		pDevViewInfo->nWidth = 0;
-		HDC hDc = GetDC(hwndDevView);
+		pMViewInfo->nWidth = 0;
+		HDC hDc = GetDC(hwndMView);
 		SIZE sz;
-		for (i = 0; i < pDevViewInfo->slots; i++)
+		for (i = 0; i < pMViewInfo->slots; i++)
 		{
 			GetTextExtentPoint32(hDc, ppszDevices[i], _tcslen(ppszDevices[i]), &sz);
-			if (sz.cx > pDevViewInfo->nWidth)
-				pDevViewInfo->nWidth = sz.cx;
+			if (sz.cx > pMViewInfo->nWidth)
+				pMViewInfo->nWidth = sz.cx;
 		}
-		ReleaseDC(hwndDevView, hDc);
+		ReleaseDC(hwndMView, hDc);
 
-		struct DevViewEntry *pEnt;
-		pEnt = (struct DevViewEntry *) malloc(sizeof(struct DevViewEntry) * (pDevViewInfo->slots + 1));
+		struct MViewEntry *pEnt;
+		pEnt = (struct MViewEntry *) malloc(sizeof(struct MViewEntry) * (pMViewInfo->slots + 1));
 		if (!pEnt)
 			return false;
-		memset(pEnt, 0, sizeof(struct DevViewEntry) * (pDevViewInfo->slots + 1));
-		pDevViewInfo->pEntries = pEnt;
+		memset(pEnt, 0, sizeof(struct MViewEntry) * (pMViewInfo->slots + 1));
+		pMViewInfo->pEntries = pEnt;
 
-		y = DEVVIEW_PADDING;
-		nHeight = DEVVIEW_SPACING;
-		DevView_GetColumns(hwndDevView, &nStaticPos, &nStaticWidth, &nEditPos, &nEditWidth, &nButtonPos, &nButtonWidth);
+		y = MVIEW_PADDING;
+		nHeight = MVIEW_SPACING;
+		MView_GetColumns(hwndMView, &nStaticPos, &nStaticWidth, &nEditPos, &nEditWidth, &nButtonPos, &nButtonWidth);
 
 		// Now actually display the media-slot names, and show the empty boxes and the browse button
 		LONG_PTR l = 0;
-		for (device_image_interface &dev : image_interface_iterator(pDevViewInfo->config->mconfig->root_device()))
+		for (device_image_interface &dev : image_interface_iterator(pMViewInfo->config->mconfig->root_device()))
 		{
 			if (!dev.user_loadable())
 				continue;
@@ -739,24 +737,24 @@ static BOOL DevView_SetDriver(HWND hwndDevView, const software_config *sconfig)
 			std::transform(instance.begin(), instance.begin()+1, instance.begin(), ::toupper); // turn first char to uppercase
 			pEnt->hwndStatic = win_create_window_ex_utf8(0, "STATIC", instance.c_str(), // display it
 				WS_VISIBLE | WS_CHILD, nStaticPos,
-				y, nStaticWidth, nHeight, hwndDevView, NULL, NULL, NULL);
+				y, nStaticWidth, nHeight, hwndMView, NULL, NULL, NULL);
 			y += nHeight;
 
 			pEnt->hwndEdit = win_create_window_ex_utf8(0, "EDIT", "",
 				WS_VISIBLE | WS_CHILD | WS_BORDER | ES_AUTOHSCROLL, nEditPos,
-				y, nEditWidth, nHeight, hwndDevView, NULL, NULL, NULL); // display blank edit box
+				y, nEditWidth, nHeight, hwndMView, NULL, NULL, NULL); // display blank edit box
 
 			pEnt->hwndBrowseButton = win_create_window_ex_utf8(0, "BUTTON", "...",
 				WS_VISIBLE | WS_CHILD, nButtonPos,
-				y, nButtonWidth, nHeight, hwndDevView, NULL, NULL, NULL); // display browse button
+				y, nButtonWidth, nHeight, hwndMView, NULL, NULL, NULL); // display browse button
 
 			if (pEnt->hwndStatic)
-				SendMessage(pEnt->hwndStatic, WM_SETFONT, (WPARAM) pDevViewInfo->hFont, true);
+				SendMessage(pEnt->hwndStatic, WM_SETFONT, (WPARAM) pMViewInfo->hFont, true);
 
 			if (pEnt->hwndEdit)
 			{
-				SendMessage(pEnt->hwndEdit, WM_SETFONT, (WPARAM) pDevViewInfo->hFont, true);
-				l = (LONG_PTR) DevView_EditWndProc;
+				SendMessage(pEnt->hwndEdit, WM_SETFONT, (WPARAM) pMViewInfo->hFont, true);
+				l = (LONG_PTR) MView_EditWndProc;
 				l = SetWindowLongPtr(pEnt->hwndEdit, GWLP_WNDPROC, l);
 				pEnt->pfnEditWndProc = (WNDPROC) l;
 				SetWindowLongPtr(pEnt->hwndEdit, GWLP_USERDATA, (LONG_PTR) pEnt);
@@ -772,10 +770,10 @@ static BOOL DevView_SetDriver(HWND hwndDevView, const software_config *sconfig)
 		}
 	}
 
-	pDevViewInfo->state = 3;
-	printf("DevView_SetDriver: Calling DevView_Refresh\n");fflush(stdout);
-	DevView_Refresh(hwndDevView); // show names of already-loaded software
-	printf("DevView_SetDriver: Finished\n");fflush(stdout);
+	MVstate = 1;
+	printf("MView_SetDriver: Calling MView_Refresh\n");fflush(stdout);
+	MView_Refresh(hwndMView); // show names of already-loaded software
+	printf("MView_SetDriver: Finished\n");fflush(stdout);
 	return true;
 }
 //#ifdef __GNUC__
@@ -810,11 +808,11 @@ void MyFillSoftwareList(int drvindex, BOOL bForce)
 	// locate key widgets
 	HWND hwndSoftwarePicker = GetDlgItem(GetMainWindow(), IDC_SWLIST);
 	HWND hwndSoftwareList = GetDlgItem(GetMainWindow(), IDC_SOFTLIST);
-	HWND hwndSoftwareDevView = GetDlgItem(GetMainWindow(), IDC_SWDEVVIEW);
+	HWND hwndSoftwareMView = GetDlgItem(GetMainWindow(), IDC_SWDEVVIEW);
 
 	// set up the device view
-	printf("MyFillSoftwareList: Calling DevView_SetDriver\n");fflush(stdout);
-	DevView_SetDriver(hwndSoftwareDevView, s_config);
+	printf("MyFillSoftwareList: Calling MView_SetDriver\n");fflush(stdout);
+	MView_SetDriver(hwndSoftwareMView, s_config);
 
 	// set up the software picker
 	printf("MyFillSoftwareList: Calling SoftwarePicker_Clear\n");fflush(stdout);
@@ -956,7 +954,7 @@ void MessReadMountedSoftware(int drvindex)
 {
 	// First read stuff into device view
 	if (TabView_GetCurrentTab(GetDlgItem(GetMainWindow(), IDC_SWTAB))==1)
-		DevView_Refresh(GetDlgItem(GetMainWindow(), IDC_SWDEVVIEW));
+		MView_Refresh(GetDlgItem(GetMainWindow(), IDC_SWDEVVIEW));
 
 	// Now read stuff into picker
 	if (TabView_GetCurrentTab(GetDlgItem(GetMainWindow(), IDC_SWTAB))==0)
@@ -1131,7 +1129,7 @@ static void SetupImageTypes(const machine_config *config, mess_image_type *types
 		}
 	}
 #endif
-		return; // used by DevView_MountItem
+		return; // used by MView_MountItem
 	else
 	{
 		char t1[256];
@@ -1196,8 +1194,8 @@ static void MessSetupDevice(common_file_dialog_proc cfd, const device_image_inte
 
 
 // This is used to Unmount a file from the Media View.
-// Unused fields: hwndDevView, config, pszFilename, nFilenameLength
-static BOOL DevView_Unmount(HWND hwndDevView, const machine_config *config, const device_image_interface *dev, LPTSTR pszFilename, UINT nFilenameLength)
+// Unused fields: hwndMView, config, pszFilename, nFilenameLength
+static BOOL MView_Unmount(HWND hwndMView, const machine_config *config, const device_image_interface *dev, LPTSTR pszFilename, UINT nFilenameLength)
 {
 	int drvindex = Picker_GetSelectedItem(GetDlgItem(GetMainWindow(), IDC_LIST));
 
@@ -1208,7 +1206,7 @@ static BOOL DevView_Unmount(HWND hwndDevView, const machine_config *config, cons
 
 
 // This is used to Mount an existing software File in the Media View
-static BOOL DevView_GetOpenFileName(HWND hwndDevView, const machine_config *config, const device_image_interface *dev, LPTSTR pszFilename, UINT nFilenameLength)
+static BOOL MView_GetOpenFileName(HWND hwndMView, const machine_config *config, const device_image_interface *dev, LPTSTR pszFilename, UINT nFilenameLength)
 {
 	HWND hwndList = GetDlgItem(GetMainWindow(), IDC_LIST);
 	int drvindex = Picker_GetSelectedItem(hwndList);
@@ -1251,13 +1249,13 @@ static BOOL DevView_GetOpenFileName(HWND hwndDevView, const machine_config *conf
 
 
 // This is used to Mount a software-list Item in the Media View.
-static BOOL DevView_GetOpenItemName(HWND hwndDevView, const machine_config *config, const device_image_interface *dev, LPTSTR pszFilename, UINT nFilenameLength)
+static BOOL MView_GetOpenItemName(HWND hwndMView, const machine_config *config, const device_image_interface *dev, LPTSTR pszFilename, UINT nFilenameLength)
 {
 	string opt_name = dev->instance_name();
 	// sanity check - should never happen
 	if (slmap.find(opt_name) == slmap.end())
 	{
-		printf ("DevView_GetOpenItemName used invalid device of %s\n", opt_name.c_str());
+		printf ("MView_GetOpenItemName used invalid device of %s\n", opt_name.c_str());
 		return false;
 	}
 
@@ -1310,7 +1308,7 @@ static BOOL DevView_GetOpenItemName(HWND hwndDevView, const machine_config *conf
 
 
 // This is used to Create an image in the Media View.
-static BOOL DevView_GetCreateFileName(HWND hwndDevView, const machine_config *config, const device_image_interface *dev, LPTSTR pszFilename, UINT nFilenameLength)
+static BOOL MView_GetCreateFileName(HWND hwndMView, const machine_config *config, const device_image_interface *dev, LPTSTR pszFilename, UINT nFilenameLength)
 {
 	HWND hwndList = GetDlgItem(GetMainWindow(), IDC_LIST);
 	int drvindex = Picker_GetSelectedItem(hwndList);
@@ -1341,8 +1339,8 @@ static BOOL DevView_GetCreateFileName(HWND hwndDevView, const machine_config *co
 }
 
 
-// Unused fields: hwndDevView, config
-static void DevView_SetSelectedSoftware(HWND hwndDevView, int drvindex, const machine_config *config, const device_image_interface *dev, LPCTSTR pszFilename)
+// Unused fields: hwndMView, config
+static void MView_SetSelectedSoftware(HWND hwndMView, int drvindex, const machine_config *config, const device_image_interface *dev, LPCTSTR pszFilename)
 {
 	char* utf8_filename = ui_utf8_from_wstring(pszFilename);
 	if( !utf8_filename )
@@ -1354,7 +1352,7 @@ static void DevView_SetSelectedSoftware(HWND hwndDevView, int drvindex, const ma
 
 
 // Unused fields: config
-static LPCTSTR DevView_GetSelectedSoftware(HWND hwndDevView, int nDriverIndex, const machine_config *config, const device_image_interface *dev, LPTSTR pszBuffer, UINT nBufferLength)
+static LPCTSTR MView_GetSelectedSoftware(HWND hwndMView, int nDriverIndex, const machine_config *config, const device_image_interface *dev, LPTSTR pszBuffer, UINT nBufferLength)
 {
 	BOOL res = false;
 	string opt_name, opt_value;
@@ -1363,16 +1361,16 @@ static LPCTSTR DevView_GetSelectedSoftware(HWND hwndDevView, int nDriverIndex, c
 		windows_options o;
 		//o.set_value(OPTION_SYSTEMNAME, driver_list::driver(nDriverIndex).name, OPTION_PRIORITY_CMDLINE);
 		load_options(o, OPTIONS_GAME, nDriverIndex, 1);
-		printf("DevView_GetSelectedSoftware: Got options\n");fflush(stdout);
+		printf("MView_GetSelectedSoftware: Got options\n");fflush(stdout);
 		opt_name = dev->instance_name();
 		//const char* temp = o.value(opt_name.c_str());
 		if (o.find_image_option(opt_name))
 			opt_value = o.image_option(opt_name).value().empty() ? "" : o.image_option(opt_name).value();
-		printf("DevView_GetSelectedSoftware: == %s : %s\n", opt_name.c_str(), opt_value.c_str());fflush(stdout);
+		printf("MView_GetSelectedSoftware: == %s : %s\n", opt_name.c_str(), opt_value.c_str());fflush(stdout);
 		if (!opt_value.empty())
 			res = true;
 	}
-	printf("DevView_GetSelectedSoftware: Got values\n");fflush(stdout);
+	printf("MView_GetSelectedSoftware: Got values\n");fflush(stdout);
 	if (res)
 	{
 		TCHAR* t_s = ui_wstring_from_utf8(opt_value.c_str());
@@ -1382,11 +1380,11 @@ static LPCTSTR DevView_GetSelectedSoftware(HWND hwndDevView, int nDriverIndex, c
 			free(t_s);
 			LPCTSTR t_buffer = pszBuffer;
 			mvmap[opt_name] = 1;
-			printf("DevView_GetSelectedSoftware: Got %s\n", opt_value.c_str());fflush(stdout);
+			printf("MView_GetSelectedSoftware: Got %s\n", opt_value.c_str());fflush(stdout);
 			return t_buffer;
 		}
 	}
-	printf("DevView_GetSelectedSoftware: Got nothing\n\n");fflush(stdout);
+	printf("MView_GetSelectedSoftware: Got nothing\n\n");fflush(stdout);
 	if (!opt_name.empty())
 		mvmap[opt_name] = 0;
 	return ui_wstring_from_utf8(""); // nothing loaded or error occurred
@@ -1675,7 +1673,7 @@ BOOL MessCommand(HWND hwnd,int id, HWND hwndCtl, UINT codeNotify)
 static LPCSTR s_tabs[] =
 {
 	"picker\0SW Files",
-	"devview\0Media View",
+	"MVIEW\0Media View",
 	"softlist\0SW Items",
 };
 
@@ -1695,7 +1693,7 @@ static LPCSTR SoftwareTabView_GetTabLongName(int tab)
 static void SoftwareTabView_OnSelectionChanged(void)
 {
 	HWND hwndSoftwarePicker = GetDlgItem(GetMainWindow(), IDC_SWLIST);
-	HWND hwndSoftwareDevView = GetDlgItem(GetMainWindow(), IDC_SWDEVVIEW);
+	HWND hwndSoftwareMView = GetDlgItem(GetMainWindow(), IDC_SWDEVVIEW);
 	HWND hwndSoftwareList = GetDlgItem(GetMainWindow(), IDC_SOFTLIST);
 
 	int nTab = TabView_GetCurrentTab(GetDlgItem(GetMainWindow(), IDC_SWTAB));
@@ -1704,20 +1702,20 @@ static void SoftwareTabView_OnSelectionChanged(void)
 	{
 		case 0:
 			ShowWindow(hwndSoftwarePicker, SW_SHOW);
-			ShowWindow(hwndSoftwareDevView, SW_HIDE);
+			ShowWindow(hwndSoftwareMView, SW_HIDE);
 			ShowWindow(hwndSoftwareList, SW_HIDE);
 			//MessRefreshPicker(); // crashes MESSUI at start
 			break;
 
 		case 1:
 			ShowWindow(hwndSoftwarePicker, SW_HIDE);
-			ShowWindow(hwndSoftwareDevView, SW_SHOW);
+			ShowWindow(hwndSoftwareMView, SW_SHOW);
 			ShowWindow(hwndSoftwareList, SW_HIDE);
-			//DevView_Refresh(GetDlgItem(GetMainWindow(), IDC_SWDEVVIEW)); // crashes MESSUI at start
+			MView_Refresh(GetDlgItem(GetMainWindow(), IDC_SWDEVVIEW)); // crashes MESSUI at start
 			break;
 		case 2:
 			ShowWindow(hwndSoftwarePicker, SW_HIDE);
-			ShowWindow(hwndSoftwareDevView, SW_HIDE);
+			ShowWindow(hwndSoftwareMView, SW_HIDE);
 			ShowWindow(hwndSoftwareList, SW_SHOW);
 			break;
 	}
@@ -1731,7 +1729,7 @@ static void SoftwareTabView_OnMoveSize(void)
 
 	HWND hwndSoftwareTabView = GetDlgItem(GetMainWindow(), IDC_SWTAB);
 	HWND hwndSoftwarePicker = GetDlgItem(GetMainWindow(), IDC_SWLIST);
-	HWND hwndSoftwareDevView = GetDlgItem(GetMainWindow(), IDC_SWDEVVIEW);
+	HWND hwndSoftwareMView = GetDlgItem(GetMainWindow(), IDC_SWDEVVIEW);
 	HWND hwndSoftwareList = GetDlgItem(GetMainWindow(), IDC_SOFTLIST);
 
 	GetWindowRect(hwndSoftwareTabView, &rSoftwareTabView);
@@ -1755,7 +1753,7 @@ static void SoftwareTabView_OnMoveSize(void)
 
 	/* Now actually move the controls */
 	MoveWindow(hwndSoftwarePicker, rClient.left, rClient.top, rClient.right - rClient.left, rClient.bottom - rClient.top, true);
-	MoveWindow(hwndSoftwareDevView, rClient.left + 3, rClient.top + 2, rClient.right - rClient.left - 6, rClient.bottom - rClient.top -4, true);
+	MoveWindow(hwndSoftwareMView, rClient.left + 3, rClient.top + 2, rClient.right - rClient.left - 6, rClient.bottom - rClient.top -4, true);
 	MoveWindow(hwndSoftwareList, rClient.left, rClient.top, rClient.right - rClient.left, rClient.bottom - rClient.top, true);
 	res++;
 }
@@ -1773,25 +1771,25 @@ static void SetupSoftwareTabView(void)
 }
 
 
-static void DevView_ButtonClick(HWND hwndDevView, struct DevViewEntry *pEnt, HWND hwndButton)
+static void MView_ButtonClick(HWND hwndMView, struct MViewEntry *pEnt, HWND hwndButton)
 {
-	struct DevViewInfo *pDevViewInfo;
+	struct MViewInfo *pMViewInfo;
 	RECT r;
 	BOOL has_software = false, passes_tests = false;
 	TCHAR szPath[MAX_PATH];
 	string opt_name = pEnt->dev->instance_name();
-	pDevViewInfo = GetDevViewInfo(hwndDevView);
+	pMViewInfo = GetMViewInfo(hwndMView);
 
 	HMENU hMenu = CreatePopupMenu();
 
-	for (software_list_device &swlist : software_list_device_iterator(pDevViewInfo->config->mconfig->root_device()))
+	for (software_list_device &swlist : software_list_device_iterator(pMViewInfo->config->mconfig->root_device()))
 	{
 		for (const software_info &swinfo : swlist.get_info())
 		{
 			const software_part &part = swinfo.parts().front();
 			if (swlist.is_compatible(part) == SOFTWARE_IS_COMPATIBLE)
 			{
-				for (device_image_interface &image : image_interface_iterator(pDevViewInfo->config->mconfig->root_device()))
+				for (device_image_interface &image : image_interface_iterator(pMViewInfo->config->mconfig->root_device()))
 				{
 					if (!image.user_loadable())
 						continue;
@@ -1832,15 +1830,15 @@ static void DevView_ButtonClick(HWND hwndDevView, struct DevViewEntry *pEnt, HWN
 			slmap[opt_name] = as;
 	}
 
-	if (pDevViewInfo->pCallbacks->pfnGetOpenFileName)
+	if (pMViewInfo->pCallbacks->pfnGetOpenFileName)
 		AppendMenu(hMenu, MF_STRING, 1, TEXT("Mount File..."));
 
-	if (passes_tests && pDevViewInfo->pCallbacks->pfnGetOpenItemName)
+	if (passes_tests && pMViewInfo->pCallbacks->pfnGetOpenItemName)
 		AppendMenu(hMenu, MF_STRING, 4, TEXT("Mount Item..."));
 
 	if (pEnt->dev->is_creatable())
 	{
-		if (pDevViewInfo->pCallbacks->pfnGetCreateFileName)
+		if (pMViewInfo->pCallbacks->pfnGetCreateFileName)
 			AppendMenu(hMenu, MF_STRING, 2, TEXT("Create..."));
 	}
 
@@ -1848,22 +1846,22 @@ static void DevView_ButtonClick(HWND hwndDevView, struct DevViewEntry *pEnt, HWN
 		AppendMenu(hMenu, MF_STRING, 3, TEXT("Unmount"));
 
 	GetWindowRect(hwndButton, &r);
-	int rc = TrackPopupMenu(hMenu, TPM_TOPALIGN | TPM_NONOTIFY | TPM_RETURNCMD, r.left, r.bottom, 0, hwndDevView, NULL);
+	int rc = TrackPopupMenu(hMenu, TPM_TOPALIGN | TPM_NONOTIFY | TPM_RETURNCMD, r.left, r.bottom, 0, hwndMView, NULL);
 	BOOL res = false;
 	switch(rc)
 	{
 		case 1:
-			res = pDevViewInfo->pCallbacks->pfnGetOpenFileName(hwndDevView, pDevViewInfo->config->mconfig, pEnt->dev, szPath, ARRAY_LENGTH(szPath));
+			res = pMViewInfo->pCallbacks->pfnGetOpenFileName(hwndMView, pMViewInfo->config->mconfig, pEnt->dev, szPath, ARRAY_LENGTH(szPath));
 			break;
 		case 2:
-			res = pDevViewInfo->pCallbacks->pfnGetCreateFileName(hwndDevView, pDevViewInfo->config->mconfig, pEnt->dev, szPath, ARRAY_LENGTH(szPath));
+			res = pMViewInfo->pCallbacks->pfnGetCreateFileName(hwndMView, pMViewInfo->config->mconfig, pEnt->dev, szPath, ARRAY_LENGTH(szPath));
 			break;
 		case 3:
-			res = pDevViewInfo->pCallbacks->pfnUnmount(hwndDevView, pDevViewInfo->config->mconfig, pEnt->dev, szPath, ARRAY_LENGTH(szPath));
+			res = pMViewInfo->pCallbacks->pfnUnmount(hwndMView, pMViewInfo->config->mconfig, pEnt->dev, szPath, ARRAY_LENGTH(szPath));
 			memset(szPath, 0, sizeof(szPath));
 			break;
 		case 4:
-			res = pDevViewInfo->pCallbacks->pfnGetOpenItemName(hwndDevView, pDevViewInfo->config->mconfig, pEnt->dev, szPath, ARRAY_LENGTH(szPath));
+			res = pMViewInfo->pCallbacks->pfnGetOpenItemName(hwndMView, pMViewInfo->config->mconfig, pEnt->dev, szPath, ARRAY_LENGTH(szPath));
 			break;
 		default:
 			break;
@@ -1873,40 +1871,40 @@ static void DevView_ButtonClick(HWND hwndDevView, struct DevViewEntry *pEnt, HWN
 }
 
 
-static BOOL DevView_Setup(HWND hwndDevView)
+static BOOL MView_Setup(HWND hwndMView)
 {
-	struct DevViewInfo *pDevViewInfo;
+	struct MViewInfo *pMViewInfo;
 
 	// allocate the device view info
-	pDevViewInfo = (DevViewInfo*)malloc(sizeof(struct DevViewInfo));
-	if (!pDevViewInfo)
+	pMViewInfo = (MViewInfo*)malloc(sizeof(struct MViewInfo));
+	if (!pMViewInfo)
 		return false;
-	memset(pDevViewInfo, 0, sizeof(*pDevViewInfo));
+	memset(pMViewInfo, 0, sizeof(*pMViewInfo));
 
-	SetWindowLongPtr(hwndDevView, GWLP_USERDATA, (LONG_PTR) pDevViewInfo);
+	SetWindowLongPtr(hwndMView, GWLP_USERDATA, (LONG_PTR) pMViewInfo);
 
 	// create and specify the font
-	pDevViewInfo->hFont = CreateFont(10, 0, 0, 0, FW_NORMAL, 0, 0, 0, 0, 0, 0, 0, 0, TEXT("MS Sans Serif"));
-	SendMessage(hwndDevView, WM_SETFONT, (WPARAM) pDevViewInfo->hFont, false);
+	pMViewInfo->hFont = CreateFont(10, 0, 0, 0, FW_NORMAL, 0, 0, 0, 0, 0, 0, 0, 0, TEXT("MS Sans Serif"));
+	SendMessage(hwndMView, WM_SETFONT, (WPARAM) pMViewInfo->hFont, false);
 	return true;
 }
 
 
-static void DevView_Free(HWND hwndDevView)
+static void MView_Free(HWND hwndMView)
 {
-	struct DevViewInfo *pDevViewInfo;
+	struct MViewInfo *pMViewInfo;
 
-	DevView_Clear(hwndDevView);
-	pDevViewInfo = GetDevViewInfo(hwndDevView);
-	DeleteObject(pDevViewInfo->hFont);
-	free(pDevViewInfo);
+	MView_Clear(hwndMView);
+	pMViewInfo = GetMViewInfo(hwndMView);
+	DeleteObject(pMViewInfo->hFont);
+	free(pMViewInfo);
 }
 
 
-static LRESULT CALLBACK DevView_WndProc(HWND hwndDevView, UINT nMessage, WPARAM wParam, LPARAM lParam)
+static LRESULT CALLBACK MView_WndProc(HWND hwndMView, UINT nMessage, WPARAM wParam, LPARAM lParam)
 {
-	struct DevViewInfo *pDevViewInfo;
-	struct DevViewEntry *pEnt;
+	struct MViewInfo *pMViewInfo;
+	struct MViewEntry *pEnt;
 	int nStaticPos, nStaticWidth, nEditPos, nEditWidth, nButtonPos, nButtonWidth;
 	RECT r;
 	LONG_PTR l = 0;
@@ -1917,14 +1915,14 @@ static LRESULT CALLBACK DevView_WndProc(HWND hwndDevView, UINT nMessage, WPARAM 
 	switch(nMessage)
 	{
 		case WM_DESTROY:
-			DevView_Free(hwndDevView);
+			MView_Free(hwndMView);
 			break;
 
 		case WM_SHOWWINDOW:
 			if (wParam)
 			{
-				pDevViewInfo = GetDevViewInfo(hwndDevView);
-				DevView_Refresh(hwndDevView);
+				pMViewInfo = GetMViewInfo(hwndMView);
+				MView_Refresh(hwndMView);
 			}
 			break;
 
@@ -1934,39 +1932,39 @@ static LRESULT CALLBACK DevView_WndProc(HWND hwndDevView, UINT nMessage, WPARAM 
 				case BN_CLICKED:
 					hwndButton = (HWND) lParam;
 					l = GetWindowLongPtr(hwndButton, GWLP_USERDATA);
-					pEnt = (struct DevViewEntry *) l;
-					DevView_ButtonClick(hwndDevView, pEnt, hwndButton);
+					pEnt = (struct MViewEntry *) l;
+					MView_ButtonClick(hwndMView, pEnt, hwndButton);
 					break;
 			}
 			break;
 	}
 
 	if (!bHandled)
-		rc = DefWindowProc(hwndDevView, nMessage, wParam, lParam);
+		rc = DefWindowProc(hwndMView, nMessage, wParam, lParam);
 
 	switch(nMessage)
 	{
 		case WM_CREATE:
-			if (!DevView_Setup(hwndDevView))
+			if (!MView_Setup(hwndMView))
 				return -1;
 			break;
 
 		case WM_MOVE:
 		case WM_SIZE:
-			pDevViewInfo = GetDevViewInfo(hwndDevView);
-			pEnt = pDevViewInfo->pEntries;
+			pMViewInfo = GetMViewInfo(hwndMView);
+			pEnt = pMViewInfo->pEntries;
 			if (pEnt)
 			{
-				DevView_GetColumns(hwndDevView, &nStaticPos, &nStaticWidth,
+				MView_GetColumns(hwndMView, &nStaticPos, &nStaticWidth,
 					&nEditPos, &nEditWidth, &nButtonPos, &nButtonWidth);
 				while(pEnt->dev)
 				{
 					GetClientRect(pEnt->hwndStatic, &r);
-					MapWindowPoints(pEnt->hwndStatic, hwndDevView, ((POINT *) &r), 2);
+					MapWindowPoints(pEnt->hwndStatic, hwndMView, ((POINT *) &r), 2);
 					//MoveWindow(pEnt->hwndStatic, nStaticPos, r.top, nStaticWidth, r.bottom - r.top, false); // has its own line, no need to move
-					// On next line, so need DEVVIEW_SPACING to put them down there.
-					MoveWindow(pEnt->hwndEdit, nEditPos, r.top+DEVVIEW_SPACING, nEditWidth, r.bottom - r.top, false);
-					MoveWindow(pEnt->hwndBrowseButton, nButtonPos, r.top+DEVVIEW_SPACING, nButtonWidth, r.bottom - r.top, false);
+					// On next line, so need MVIEW_SPACING to put them down there.
+					MoveWindow(pEnt->hwndEdit, nEditPos, r.top+MVIEW_SPACING, nEditWidth, r.bottom - r.top, false);
+					MoveWindow(pEnt->hwndBrowseButton, nButtonPos, r.top+MVIEW_SPACING, nButtonWidth, r.bottom - r.top, false);
 					pEnt++;
 				}
 			}
@@ -1976,13 +1974,13 @@ static LRESULT CALLBACK DevView_WndProc(HWND hwndDevView, UINT nMessage, WPARAM 
 }
 
 
-void DevView_RegisterClass(void)
+void MView_RegisterClass(void)
 {
 	WNDCLASS wc;
 	memset(&wc, 0, sizeof(wc));
-	wc.lpszClassName = TEXT("MessSoftwareDevView");
+	wc.lpszClassName = TEXT("MessSoftwareMView");
 	wc.hInstance = GetModuleHandle(NULL);
-	wc.lpfnWndProc = DevView_WndProc;
+	wc.lpfnWndProc = MView_WndProc;
 	wc.hbrBackground = GetSysColorBrush(COLOR_BTNFACE);
 	RegisterClass(&wc);
 }
