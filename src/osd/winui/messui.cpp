@@ -432,6 +432,13 @@ static int GetMessIcon(int drvindex, int nSoftwareType)
 // Some callers regard the defaults as invalid so prepend a character to indicate validity
 static string ProcessSWDir(int drvindex)
 {
+	if (drvindex < 0)
+	{
+		string dst;
+		osd_get_full_path(dst,".");
+		return string("1") + dst;
+	}
+
 	BOOL b_dir = false;
 	char dir0[2048];
 	char *t0 = 0;
@@ -461,7 +468,7 @@ static string ProcessSWDir(int drvindex)
 	// not specified in driver, try parent if it has one
 	printf("ProcessSWDir: E\n");fflush(stdout);
 	int nParentIndex = drvindex;
-	if (DriverIsClone(drvindex)) // sometimes this returns true when it shouldn't (eg: milano)
+	if (DriverIsClone(drvindex))
 	{
 		printf("ProcessSWDir: F\n");fflush(stdout);
 		nParentIndex = GetParentIndex(&driver_list::driver(drvindex));
@@ -553,8 +560,10 @@ void MySoftwareListClose(void)
 }
 
 
-static void MView_Clear(HWND hwndMView)
+void MView_Clear(HWND hwndMView)
 {
+	if (!hwndMView)
+		return;
 	struct MViewInfo *pMViewInfo;
 	pMViewInfo = GetMViewInfo(hwndMView);
 
@@ -671,12 +680,18 @@ static BOOL MView_SetDriver(HWND hwndMView, const software_config *sconfig)
 	pMViewInfo = GetMViewInfo(hwndMView);
 
 	// clear out
+	printf("MView_SetDriver: A\n");fflush(stdout);
 	MView_Clear(hwndMView);
 
 	// copy the config
+	printf("MView_SetDriver: B\n");fflush(stdout);
 	pMViewInfo->config = sconfig;
 
+	if (!sconfig)
+		return false;
+
 	// count total amount of devices
+	printf("MView_SetDriver: C\n");fflush(stdout);
 	for (device_image_interface &dev : image_interface_iterator(pMViewInfo->config->mconfig->root_device()))
 		if (dev.user_loadable())
 			pMViewInfo->slots++;
@@ -770,6 +785,9 @@ static BOOL MView_SetDriver(HWND hwndMView, const software_config *sconfig)
 		}
 	}
 
+	if (!pMViewInfo->slots)
+		return false;
+
 	MVstate = 1;
 	printf("MView_SetDriver: Calling MView_Refresh\n");fflush(stdout);
 	MView_Refresh(hwndMView); // show names of already-loaded software
@@ -810,15 +828,21 @@ void MyFillSoftwareList(int drvindex, BOOL bForce)
 	HWND hwndSoftwareList = GetDlgItem(GetMainWindow(), IDC_SOFTLIST);
 	HWND hwndSoftwareMView = GetDlgItem(GetMainWindow(), IDC_SWDEVVIEW);
 
+	printf("MyFillSoftwareList: Calling SoftwarePicker_Clear\n");fflush(stdout);
+	SoftwareList_Clear(hwndSoftwareList);
+	printf("MyFillSoftwareList: Calling SoftwarePicker_Clear\n");fflush(stdout);
+	SoftwarePicker_Clear(hwndSoftwarePicker);
+
 	// set up the device view
 	printf("MyFillSoftwareList: Calling MView_SetDriver\n");fflush(stdout);
 	MView_SetDriver(hwndSoftwareMView, s_config);
 
 	// set up the software picker
-	printf("MyFillSoftwareList: Calling SoftwarePicker_Clear\n");fflush(stdout);
-	SoftwarePicker_Clear(hwndSoftwarePicker);
 	printf("MyFillSoftwareList: Calling SoftwarePicker_SetDriver\n");fflush(stdout);
 	SoftwarePicker_SetDriver(hwndSoftwarePicker, s_config);
+
+	if (!s_config)
+		return;
 
 	// set up the Software Files by using swpath (can handle multiple paths)
 	printf("MyFillSoftwareList: Processing SWDir\n");fflush(stdout);
@@ -832,8 +856,6 @@ void MyFillSoftwareList(int drvindex, BOOL bForce)
 	}
 
 	// set up the Software List
-	printf("MyFillSoftwareList: Calling SoftwarePicker_Clear\n");fflush(stdout);
-	SoftwareList_Clear(hwndSoftwareList);
 	printf("MyFillSoftwareList: Calling SoftwarePicker_SetDriver\n");fflush(stdout);
 	SoftwareList_SetDriver(hwndSoftwareList, s_config);
 

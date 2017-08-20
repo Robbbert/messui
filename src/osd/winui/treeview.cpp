@@ -12,35 +12,25 @@
 // standard windows headers
 #include <windows.h>
 #include <windowsx.h>
-#include <shellapi.h>
-#include <commctrl.h>
 
 // standard C headers
-#include <stdio.h>  // for sprintf
-#include <stdlib.h> // For malloc and free
-#include <ctype.h> // For tolower
-#include <string.h>
 #include <sys/stat.h>
-#include <sys/types.h>
 
 #ifdef _MSC_VER
 #include <direct.h>
 #endif
 #include <tchar.h>
-#include <io.h>
 
 // MAME/MAMEUI headers
 #include "emu.h"
-#include "hash.h"
 #include "mui_util.h"
-#include "bitmask.h"
 #include "winui.h"
 #include "treeview.h"
 #include "resource.h"
 #include "mui_opts.h"
 #include "dialogs.h"
 #include "winutf8.h"
-#include "strconv.h"
+#include "screen.h"
 #include "drivenum.h"
 
 #ifdef _MSC_VER
@@ -881,7 +871,6 @@ static const char *TrimManufacturer(const char *s)
 	return strTemp2;
 }
 
-// This produces no output, so commented out in layout.cpp
 void CreateBIOSFolders(int parent_index)
 {
 	int i, nGames = driver_list::total();
@@ -1142,37 +1131,28 @@ void CreateDeficiencyFolders(int parent_index)
 	for (int jj = 0; jj < nGames; jj++)
 	{
 		if (driver_list::driver(jj).flags & MACHINE_WRONG_COLORS)
-		{
 			AddGame(lpWrongCol,jj);
-		}
+
 		if (driver_list::driver(jj).flags & MACHINE_UNEMULATED_PROTECTION)
-		{
 			AddGame(lpProt,jj);
-		}
+
 		if (driver_list::driver(jj).flags & MACHINE_IMPERFECT_COLORS)
-		{
 			AddGame(lpImpCol,jj);
-		}
+
 		if (driver_list::driver(jj).flags & MACHINE_IMPERFECT_GRAPHICS)
-		{
 			AddGame(lpImpGraph,jj);
-		}
+
 		if (driver_list::driver(jj).flags & MACHINE_NO_SOUND)
-		{
 			AddGame(lpMissSnd,jj);
-		}
+
 		if (driver_list::driver(jj).flags & MACHINE_IMPERFECT_SOUND)
-		{
 			AddGame(lpImpSnd,jj);
-		}
+
 		if (driver_list::driver(jj).flags & MACHINE_NO_COCKTAIL)
-		{
 			AddGame(lpFlip,jj);
-		}
+
 		if (driver_list::driver(jj).flags & MACHINE_REQUIRES_ARTWORK)
-		{
 			AddGame(lpArt,jj);
-		}
 	}
 }
 
@@ -1243,13 +1223,11 @@ void CreateDumpingFolders(int parent_index)
 			}
 		}
 		if (bBadDump)
-		{
 			AddGame(lpBad,jj);
-		}
+
 		if (bNoDump)
-		{
 			AddGame(lpNo,jj);
-		}
+
 	}
 }
 
@@ -1289,8 +1267,7 @@ void CreateYearFolders(int parent_index)
 		{
 			// nope, it's a year we haven't seen before, make it.
 			LPTREEFOLDER lpTemp;
-			lpTemp = NewFolder(s, next_folder_id, parent_index, IDI_YEAR,
-							   GetFolderFlags(numFolders));
+			lpTemp = NewFolder(s, next_folder_id, parent_index, IDI_YEAR, GetFolderFlags(numFolders));
 			ExtraFolderData[next_folder_id] = (EXFOLDERDATA*)malloc(sizeof(EXFOLDERDATA));
 			memset(ExtraFolderData[next_folder_id], 0, sizeof(EXFOLDERDATA));
 
@@ -1302,6 +1279,137 @@ void CreateYearFolders(int parent_index)
 			ExtraFolderData[next_folder_id++]->m_dwFlags = 0;
 			AddFolder(lpTemp);
 			AddGame(lpTemp, jj);
+		}
+	}
+}
+
+void CreateResolutionFolders(int parent_index)
+{
+	int i,jj;
+	int nGames = driver_list::total();
+	int start_folder = numFolders;
+	char Screen[40];
+	const game_driver *gamedrv;
+	LPTREEFOLDER lpFolder = treeFolders[parent_index];
+
+	// no games in top level folder
+	SetAllBits(lpFolder->m_lpGameBits, false);
+
+	for (jj = 0; jj < nGames; jj++)
+	{
+		gamedrv = &driver_list::driver(jj);
+		/* Allocate machine config */
+		machine_config config(*gamedrv,MameUIGlobal());
+
+		if (isDriverVector(&config))
+			sprintf(Screen, "Vector");
+		else
+		{
+			screen_device_iterator iter(config.root_device());
+			const screen_device *screen = iter.first();
+			if (screen == NULL)
+				strcpy(Screen, "Screenless Game");
+			else
+			{
+				for (screen_device &screen : screen_device_iterator(config.root_device()))
+				{
+					const rectangle &visarea = screen.visible_area();
+
+					sprintf(Screen,"%d x %d (%c)", visarea.max_y - visarea.min_y + 1, visarea.max_x - visarea.min_x + 1,
+						(driver_list::driver(jj).flags & ORIENTATION_SWAP_XY) ? 'V':'H');
+
+					// look for an existant screen treefolder for this game
+					// (likely to be the previous one, so start at the end)
+					for (i=numFolders-1;i>=start_folder;i--)
+					{
+						if (strcmp(treeFolders[i]->m_lpTitle, Screen) == 0)
+						{
+							AddGame(treeFolders[i],jj);
+							break;
+						}
+					}
+					if (i == start_folder-1)
+					{
+						// nope, it's a screen we haven't seen before, make it.
+						LPTREEFOLDER lpTemp = NewFolder(Screen, next_folder_id++, parent_index, IDI_FOLDER, GetFolderFlags(numFolders));
+						ExtraFolderData[next_folder_id] = (EXFOLDERDATA*)malloc(sizeof(EXFOLDERDATA));
+						memset(ExtraFolderData[next_folder_id], 0, sizeof(EXFOLDERDATA));
+
+						ExtraFolderData[next_folder_id]->m_nFolderId = next_folder_id;
+						ExtraFolderData[next_folder_id]->m_nIconId = IDI_FOLDER;
+						ExtraFolderData[next_folder_id]->m_nParent = lpFolder->m_nFolderId;
+						ExtraFolderData[next_folder_id]->m_nSubIconId = -1;
+						strcpy( ExtraFolderData[next_folder_id]->m_szTitle, Screen );
+						ExtraFolderData[next_folder_id++]->m_dwFlags = 0;
+						AddFolder(lpTemp);
+						AddGame(lpTemp,jj);
+					}
+				}
+			}
+		}
+	}
+}
+
+void CreateFPSFolders(int parent_index)
+{
+	int i,jj;
+	int nGames = driver_list::total();
+	int start_folder = numFolders;
+	char Screen[40];
+	const game_driver *gamedrv;
+	LPTREEFOLDER lpFolder = treeFolders[parent_index];
+
+	// no games in top level folder
+	SetAllBits(lpFolder->m_lpGameBits, false);
+
+	for (jj = 0; jj < nGames; jj++)
+	{
+		gamedrv = &driver_list::driver(jj);
+		/* Allocate machine config */
+		machine_config config(*gamedrv,MameUIGlobal());
+
+		if (isDriverVector(&config))
+			sprintf(Screen, "Vector");
+		else
+		{
+			screen_device_iterator iter(config.root_device());
+			const screen_device *screen = iter.first();
+			if (screen == NULL)
+				strcpy(Screen, "Screenless Game");
+			else
+			{
+				for (screen_device &screen : screen_device_iterator(config.root_device()))
+				{
+					sprintf(Screen,"%f Hz", ATTOSECONDS_TO_HZ(screen.refresh_attoseconds()));
+
+					// look for an existant screen treefolder for this game
+					// (likely to be the previous one, so start at the end)
+					for (i=numFolders-1;i>=start_folder;i--)
+					{
+						if (strcmp(treeFolders[i]->m_lpTitle, Screen) == 0)
+						{
+							AddGame(treeFolders[i],jj);
+							break;
+						}
+					}
+					if (i == start_folder-1)
+					{
+						// nope, it's a screen we haven't seen before, make it.
+						LPTREEFOLDER lpTemp = NewFolder(Screen, next_folder_id++, parent_index, IDI_FOLDER, GetFolderFlags(numFolders));
+						ExtraFolderData[next_folder_id] = (EXFOLDERDATA*)malloc(sizeof(EXFOLDERDATA));
+						memset(ExtraFolderData[next_folder_id], 0, sizeof(EXFOLDERDATA));
+
+						ExtraFolderData[next_folder_id]->m_nFolderId = next_folder_id;
+						ExtraFolderData[next_folder_id]->m_nIconId = IDI_FOLDER;
+						ExtraFolderData[next_folder_id]->m_nParent = lpFolder->m_nFolderId;
+						ExtraFolderData[next_folder_id]->m_nSubIconId = -1;
+						strcpy( ExtraFolderData[next_folder_id]->m_szTitle, Screen );
+						ExtraFolderData[next_folder_id++]->m_dwFlags = 0;
+						AddFolder(lpTemp);
+						AddGame(lpTemp,jj);
+					}
+				}
+			}
 		}
 	}
 }
@@ -1489,14 +1597,11 @@ void SelectTreeViewFolder(int folder_id)
  */
 static BOOL FolderHasIni(LPTREEFOLDER lpFolder)
 {
-	if (FOLDER_VECTOR == lpFolder->m_nFolderId ||
-		FOLDER_VERTICAL == lpFolder->m_nFolderId ||
-		FOLDER_HORIZONTAL == lpFolder->m_nFolderId)
-			return true;
+	if (FOLDER_VECTOR == lpFolder->m_nFolderId || FOLDER_VERTICAL == lpFolder->m_nFolderId || FOLDER_HORIZONTAL == lpFolder->m_nFolderId)
+		return true;
 
-	if (lpFolder->m_nParent != -1
-		&& FOLDER_SOURCE == treeFolders[lpFolder->m_nParent]->m_nFolderId)
-			return true;
+	if (lpFolder->m_nParent != -1 && FOLDER_SOURCE == treeFolders[lpFolder->m_nParent]->m_nFolderId)
+		return true;
 
 	return false;
 }
@@ -1601,7 +1706,7 @@ BOOL InitFolders(void)
 
 	for (i = 0; i < numExtraFolders; i++)
 	{
-		LPEXFOLDERDATA  fExData = ExtraFolderData[i];
+		LPEXFOLDERDATA fExData = ExtraFolderData[i];
 
 		// OR in the saved folder flags
 		dwFolderFlags = fExData->m_dwFlags | GetFolderFlags(numFolders);
