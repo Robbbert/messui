@@ -1718,6 +1718,7 @@ BOOL InitFolders(void)
 	CreateAllChildFolders();
 	CreateTreeIcons();
 	ResetWhichGamesInFolders();
+	// TODO: make this activate for the current folder when it is selected, instead of during initialisation
 	ResetTreeViewFolders();
 	SelectTreeViewFolder(GetSavedFolderID());
 	LoadFolderFlags();

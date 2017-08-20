@@ -3109,6 +3109,7 @@ static void DisableSelection()
 	EnableMenuItem(hMenu, ID_FILE_PLAY, MF_GRAYED);
 	EnableMenuItem(hMenu, ID_FILE_PLAY_RECORD, MF_GRAYED);
 	EnableMenuItem(hMenu, ID_GAME_PROPERTIES, MF_GRAYED);
+	EnableMenuItem(hMenu, ID_MESS_OPEN_SOFTWARE, MF_GRAYED);
 
 	SetStatusBarText(0, "No Selection");
 	SetStatusBarText(1, "");
@@ -3167,6 +3168,7 @@ static void EnableSelection(int nGame)
 	printf("EnableSelection: F\n");fflush(stdout);
 	EnableMenuItem(hMenu, ID_FILE_PLAY, MF_ENABLED);
 	EnableMenuItem(hMenu, ID_FILE_PLAY_RECORD, MF_ENABLED);
+	EnableMenuItem(hMenu, ID_MESS_OPEN_SOFTWARE, MF_ENABLED);
 
 	if (!oldControl)
 		EnableMenuItem(hMenu, ID_GAME_PROPERTIES, MF_ENABLED);

@@ -1192,6 +1192,8 @@ static void MessSetupDevice(common_file_dialog_proc cfd, const device_image_inte
 	//  begin_resource_tracking();
 	HWND hwndList = GetDlgItem(GetMainWindow(), IDC_LIST);
 	int drvindex = Picker_GetSelectedItem(hwndList);
+	if (drvindex < 0)
+		return;
 
 	// allocate the machine config
 	machine_config config(driver_list::driver(drvindex), MameUIGlobal());
@@ -1221,6 +1223,8 @@ static BOOL MView_Unmount(HWND hwndMView, const machine_config *config, const de
 {
 	int drvindex = Picker_GetSelectedItem(GetDlgItem(GetMainWindow(), IDC_LIST));
 
+	if (drvindex < 0)
+		return false;
 	SetSelectedSoftware(drvindex, dev->instance_name(), "");
 	mvmap[dev->instance_name()] = 0;
 	return true;
@@ -1232,6 +1236,8 @@ static BOOL MView_GetOpenFileName(HWND hwndMView, const machine_config *config, 
 {
 	HWND hwndList = GetDlgItem(GetMainWindow(), IDC_LIST);
 	int drvindex = Picker_GetSelectedItem(hwndList);
+	if (drvindex < 0)
+		return false;
 	string dst, opt_name = dev->instance_name();
 	windows_options o;
 	//o.set_value(OPTION_SYSTEMNAME, driver_list::driver(drvindex).name, OPTION_PRIORITY_CMDLINE); // required
@@ -1283,6 +1289,8 @@ static BOOL MView_GetOpenItemName(HWND hwndMView, const machine_config *config, 
 
 	HWND hwndList = GetDlgItem(GetMainWindow(), IDC_LIST);
 	int drvindex = Picker_GetSelectedItem(hwndList);
+	if (drvindex < 0)
+		return false;
 
 	string dst = slmap.find(opt_name)->second;
 
@@ -1334,6 +1342,8 @@ static BOOL MView_GetCreateFileName(HWND hwndMView, const machine_config *config
 {
 	HWND hwndList = GetDlgItem(GetMainWindow(), IDC_LIST);
 	int drvindex = Picker_GetSelectedItem(hwndList);
+	if (drvindex < 0)
+		return false;
 
 	string dst = ProcessSWDir(drvindex);
 	dst.erase(0,1);
@@ -1422,6 +1432,8 @@ static int SoftwarePicker_GetItemImage(HWND hwndPicker, int nItem)
 	HWND hwndGamePicker = GetDlgItem(GetMainWindow(), IDC_LIST);
 	HWND hwndSoftwarePicker = GetDlgItem(GetMainWindow(), IDC_SWLIST);
 	int drvindex = Picker_GetSelectedItem(hwndGamePicker);
+	if (drvindex < 0)
+		return -1;
 	iodevice_t nType = SoftwarePicker_GetImageType(hwndSoftwarePicker, nItem);
 	int nIcon = GetMessIcon(drvindex, nType);
 	if (!nIcon)
@@ -1452,8 +1464,10 @@ static void SoftwarePicker_LeavingItem(HWND hwndSoftwarePicker, int nItem)
 	{
 		HWND hwndList = GetDlgItem(GetMainWindow(), IDC_LIST);
 		int drvindex = Picker_GetSelectedItem(hwndList);
-		const char *pszFullName = SoftwarePicker_LookupFilename(hwndSoftwarePicker, nItem);
+		if (drvindex < 0)
+			return;
 
+		const char *pszFullName = SoftwarePicker_LookupFilename(hwndSoftwarePicker, nItem);
 		MessRemoveImage(drvindex, pszFullName);
 	}
 }
@@ -1466,6 +1480,11 @@ static void SoftwarePicker_EnteringItem(HWND hwndSoftwarePicker, int nItem)
 	if (!s_bIgnoreSoftwarePickerNotifies)
 	{
 		int drvindex = Picker_GetSelectedItem(hwndList);
+		if (drvindex < 0)
+		{
+			g_szSelectedItem[0] = 0;
+			return;
+		}
 
 		// Get the fullname and partialname for this file
 		LPCSTR pszFullName = SoftwarePicker_LookupFilename(hwndSoftwarePicker, nItem);
@@ -1495,6 +1514,9 @@ static int SoftwareList_GetItemImage(HWND hwndPicker, int nItem)
 	HWND hwndGamePicker = GetDlgItem(GetMainWindow(), IDC_LIST);
 	HWND hwndSoftwareList = GetDlgItem(GetMainWindow(), IDC_SOFTLIST);
 	int drvindex = Picker_GetSelectedItem(hwndGamePicker);
+	if (drvindex < 0)
+		return -1;
+
 	iodevice_t nType = SoftwareList_GetImageType(hwndSoftwareList, nItem);
 	int nIcon = GetMessIcon(drvindex, nType);
 	if (!nIcon)
@@ -1534,6 +1556,11 @@ static void SoftwareList_EnteringItem(HWND hwndSoftwareList, int nItem)
 	if (!s_bIgnoreSoftwarePickerNotifies)
 	{
 		int drvindex = Picker_GetSelectedItem(hwndList);
+		if (drvindex < 0)
+		{
+			g_szSelectedItem[0] = 0;
+			return;
+		}
 
 		// Get the fullname for this file
 		LPCSTR pszFullName = SoftwareList_LookupFullname(hwndSoftwareList, nItem); // for the screenshot and SetSoftware.
