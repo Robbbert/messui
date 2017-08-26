@@ -209,7 +209,7 @@ static ADDRESS_MAP_START( kickball_map, AS_PROGRAM, 16, aerofgt_state )
 	AM_RANGE(0xfff002, 0xfff003) AM_READ_PORT("IN1") AM_WRITE8(kickball_gfxbank_w, 0x00ff)
 	AM_RANGE(0xfff004, 0xfff005) AM_READ_PORT("DSW") AM_WRITE(aerofgt_bg1scrolly_w)
 	AM_RANGE(0xfff006, 0xfff007) AM_READ8(pending_command_r, 0x00ff) AM_DEVWRITE8("soundlatch", generic_latch_8_device, write, 0x00ff)
-	AM_RANGE(0xfff400, 0xfff403) AM_DEVWRITE8("gga", vsystem_gga_device, write, 0x00ff)
+	AM_RANGE(0xfff400, 0xfff403) AM_WRITENOP // GGA access
 ADDRESS_MAP_END
 
 static ADDRESS_MAP_START( karatblz_map, AS_PROGRAM, 16, aerofgt_state )
@@ -477,8 +477,8 @@ static ADDRESS_MAP_START( kickball_sound_portmap, AS_IO, 8, aerofgt_state )
 	ADDRESS_MAP_GLOBAL_MASK(0xff)
 	AM_RANGE(0x00, 0x00) AM_DEVREADWRITE("ymsnd", ym3812_device, status_port_r, control_port_w)
 	AM_RANGE(0x20, 0x20) AM_DEVWRITE("ymsnd", ym3812_device, write_port_w)
-	AM_RANGE(0x40, 0x40) AM_WRITENOP // oki?
-	AM_RANGE(0xc0, 0xc0) AM_WRITENOP // oki?
+	AM_RANGE(0x40, 0x40) AM_DEVREADWRITE("oki", okim6295_device, read, write)
+	AM_RANGE(0xc0, 0xc0) AM_DEVWRITE("soundlatch", generic_latch_8_device, acknowledge_w)
 ADDRESS_MAP_END
 
 
@@ -1563,7 +1563,7 @@ static MACHINE_CONFIG_START( kickball )
 	MCFG_VSYSTEM_SPR2_SET_GFXREGION(1)
 	MCFG_VSYSTEM_SPR2_GFXDECODE("gfxdecode")
 
-	MCFG_DEVICE_ADD("gga", VSYSTEM_GGA, 0) // still accessed as if it exists, in clone hardware?
+	//MCFG_DEVICE_ADD("gga", VSYSTEM_GGA, 0) // still accessed as if it exists, in clone hardware?
 
 	MCFG_VIDEO_START_OVERRIDE(aerofgt_state,pspikes)
 
@@ -3045,6 +3045,7 @@ GAME( 1991, spikes91,  pspikes,  spikes91, pspikes,  aerofgt_state, 0, ROT0,   "
 GAME( 1991, spikes91b, pspikes,  spikes91, pspikes,  aerofgt_state, 0, ROT0,   "bootleg",            "1991 Spikes (Italian bootleg, set 2)", MACHINE_SUPPORTS_SAVE | MACHINE_NO_SOUND | MACHINE_NO_COCKTAIL )
 GAME( 1991, pspikesc,  pspikes,  pspikesc, pspikesc, aerofgt_state, 0, ROT0,   "bootleg",            "Power Spikes (China)", MACHINE_SUPPORTS_SAVE | MACHINE_NO_COCKTAIL | MACHINE_IMPERFECT_SOUND )
 GAME( 1997, wbbc97,    0,        wbbc97,   wbbc97,   aerofgt_state, 0, ROT0,   "Comad",              "Beach Festival World Championship 1997", MACHINE_SUPPORTS_SAVE | MACHINE_NO_COCKTAIL ) // based on power spikes codebase
+GAME( 1998, kickball,  0,        kickball, pspikes,  aerofgt_state, kickball, ROT0, "Seoung Youn",   "Kick Ball", MACHINE_NOT_WORKING ) // based on power spikes codebase
 
 GAME( 1991, karatblz,   0,        karatblz,   karatblz, aerofgt_state, 0, ROT0,   "Video System Co.", "Karate Blazers (World, set 1)", MACHINE_SUPPORTS_SAVE | MACHINE_NO_COCKTAIL )
 GAME( 1991, karatblza,  karatblz, karatblz,   karatblz, aerofgt_state, 0, ROT0,   "Video System Co.", "Karate Blazers (World, set 2)", MACHINE_SUPPORTS_SAVE | MACHINE_NO_COCKTAIL )
@@ -3062,5 +3063,3 @@ GAME( 1992, aerofgtc, aerofgt,  aerofgtb, aerofgtb, aerofgt_state, 0,          R
 GAME( 1992, sonicwi,  aerofgt,  aerofgtb, aerofgtb, aerofgt_state, 0,          ROT270, "Video System Co.", "Sonic Wings (Japan)",                   MACHINE_SUPPORTS_SAVE )
 GAME( 1992, aerfboot, aerofgt,  aerfboot, aerofgtb, aerofgt_state, banked_oki, ROT270, "bootleg",          "Aero Fighters (bootleg set 1)",         MACHINE_SUPPORTS_SAVE | MACHINE_NO_COCKTAIL | MACHINE_IMPERFECT_SOUND )
 GAME( 1992, aerfboo2, aerofgt,  aerfboo2, aerofgtb, aerofgt_state, 0,          ROT270, "bootleg",          "Aero Fighters (bootleg set 2)",         MACHINE_SUPPORTS_SAVE | MACHINE_NO_COCKTAIL | MACHINE_IMPERFECT_SOUND )
-
-GAME( 1998, kickball,  0,       kickball, pspikes, aerofgt_state, kickball,   ROT0,   "Seoung Youn",            "Kick Ball", MACHINE_NOT_WORKING )
