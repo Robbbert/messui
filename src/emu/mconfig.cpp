@@ -82,9 +82,15 @@ machine_config::machine_config(const game_driver &gamedrv, emu_options &options)
 // MESSUI start
 			{
 				//throw emu_fatalerror("Unknown slot option '%s' in slot '%s'", selval, owner.tag()+1);
+				// the slot is valid, but the thing plugged into it is bad, we have to unplug it
 				printf("Unknown slot option '%s' in slot '%s'\n", selval, owner.tag()+1);fflush(stdout);
-				slot_option &opt = options.slot_option(slot_option_name);printf("Clearing slot...\n");fflush(stdout);
-				opt.specify("");printf("Done\n");fflush(stdout);
+				if (options.find_slot_option(slot_option_name))
+				{
+					slot_option &opt = options.slot_option(slot_option_name);
+					printf("Clearing slot...\n");fflush(stdout);
+					opt.specify("");
+					printf("Done\n");fflush(stdout);
+				}
 			}
 // MESSUI end
 		}
