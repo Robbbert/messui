@@ -25,7 +25,7 @@
 #include "winui.h"
 #include "mui_opts.h"
 #include <fstream>      // for *_opts.h (below)
-#include "game_opts.h"  // this must be under emu.h and drivenum.h
+#include "game_opts.h"
 #include "ui_opts.h"
 //#include "ini_opts.h"   // not ready yet
 #include "mui_util.h"
@@ -2115,6 +2115,23 @@ void save_options(windows_options &opts, OPTIONS_TYPE opt_type, int game_num)
 	}
 //	else
 //		printf("Unable to save settings\n");
+}
+
+
+// See if this driver has software support
+bool DriverHasSoftware(int drvindex)
+{
+	if (drvindex < 0)
+		return 0;
+	windows_options o;
+	load_options(o, OPTIONS_GAME, drvindex, 1);
+	machine_config config(driver_list::driver(drvindex), o);
+
+	for (device_image_interface &img : image_interface_iterator(config.root_device()))
+		if (img.user_loadable())
+			return 1;
+
+	return 0;
 }
 
 
