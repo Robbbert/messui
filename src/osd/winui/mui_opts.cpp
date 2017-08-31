@@ -987,7 +987,11 @@ void SetDiffDir(const char* path)
 
 const string GetIconsDir(void)
 {
-	return settings.getter(MUIOPTION_ICONS_DIRECTORY);
+	string t = settings.getter(MUIOPTION_ICONS_DIRECTORY);
+	if (t.empty())
+		return "icons";
+	else
+		return settings.getter(MUIOPTION_ICONS_DIRECTORY);
 }
 
 void SetIconsDir(const char* path)
@@ -997,7 +1001,11 @@ void SetIconsDir(const char* path)
 
 const string GetBgDir (void)
 {
-	return settings.getter(MUIOPTION_BACKGROUND_DIRECTORY);
+	string t = settings.getter(MUIOPTION_BACKGROUND_DIRECTORY);
+	if (t.empty())
+		return "bkground\\bkground.png";
+	else
+		return settings.getter(MUIOPTION_BACKGROUND_DIRECTORY);
 }
 
 void SetBgDir (const char* path)
@@ -1007,7 +1015,11 @@ void SetBgDir (const char* path)
 
 const string GetDatsDir(void)
 {
-	return settings.getter(MUIOPTION_DATS_DIRECTORY);
+	string t = settings.getter(MUIOPTION_DATS_DIRECTORY);
+	if (t.empty())
+		return "dats";
+	else
+		return settings.getter(MUIOPTION_DATS_DIRECTORY);
 	//return mewui.value(OPTION_HISTORY_PATH);
 }
 

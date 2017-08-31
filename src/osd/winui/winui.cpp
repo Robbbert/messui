@@ -4402,19 +4402,23 @@ static BOOL MameCommand(HWND hwnd,int id, HWND hwndCtl, UINT codeNotify)
 		{
 			// Get the path from the existing filename; if no filename go to root
 			TCHAR* t_bgdir = TEXT(".");
-			const string s = GetBgDir();
+			bool free_bgdir = false;
+			string s = GetBgDir();
 			string as;
 			util::zippath_parent(as, s.c_str());
 			size_t t1 = as.length()-1;
 			if (as[t1] == '\\') as.substr(0, t1-1);
 			t1 = as.find(':');
 			if (t1 != string::npos)
+			{
 				t_bgdir = ui_wstring_from_utf8(as.c_str());
+				free_bgdir = true;
+				if( !t_bgdir )
+					return false;
+			}
 
 			OPENFILENAME OFN;
-			static TCHAR szFile[MAX_PATH] = TEXT("\0");
-			if( !t_bgdir )
-				return false;
+			TCHAR szFile[MAX_PATH] = TEXT("\0");
 
 			OFN.lStructSize       = sizeof(OPENFILENAME);
 			OFN.hwndOwner         = hMain;
@@ -4437,9 +4441,11 @@ static BOOL MameCommand(HWND hwnd,int id, HWND hwndCtl, UINT codeNotify)
 			OFN.lpTemplateName    = NULL;
 			OFN.Flags             = OFN_NOCHANGEDIR | OFN_SHOWHELP | OFN_EXPLORER;
 
-			if (GetOpenFileName(&OFN))
+			BOOL res = GetOpenFileName(&OFN);
+			if (res)
 			{
-				free(t_bgdir);
+				if (free_bgdir)
+					free(t_bgdir);
 				utf8_szFile = ui_utf8_from_wstring(szFile);
 				if( !utf8_szFile )
 					return false;
@@ -4453,7 +4459,8 @@ static BOOL MameCommand(HWND hwnd,int id, HWND hwndCtl, UINT codeNotify)
 				free(utf8_szFile);
 				return true;
 			}
-			free(t_bgdir);
+			if (free_bgdir)
+				free(t_bgdir);
 		}
 		break;
 
