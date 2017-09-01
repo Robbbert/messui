@@ -1669,7 +1669,6 @@ static void memory_error(const char *message)
 
 static BOOL Win32UI_init(HINSTANCE hInstance, LPWSTR lpCmdLine, int nCmdShow)
 {
-	extern int mame_validitychecks(int game);
 	extern const FOLDERDATA g_folderData[];
 	extern const FILTER_ITEM g_filterList[];
 
