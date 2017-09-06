@@ -17,8 +17,6 @@
 #define MUIOPTION_INHERIT_FILTER                 "inherit_filter"
 #define MUIOPTION_OFFSET_CLONES                  "offset_clones"
 #define MUIOPTION_DEFAULT_FOLDER_ID              "default_folder_id"
-#define MUIOPTION_SHOW_IMAGE_SECTION             "show_image_section"
-#define MUIOPTION_SHOW_FOLDER_SECTION            "show_folder_section"
 #define MUIOPTION_HIDE_FOLDERS                   "hide_folders"
 #define MUIOPTION_SHOW_STATUS_BAR                "show_status_bar"
 #define MUIOPTION_SHOW_TABS                      "show_tabs"
@@ -29,6 +27,7 @@
 #define MUIOPTION_WINDOW_WIDTH                   "window_width"
 #define MUIOPTION_WINDOW_HEIGHT                  "window_height"
 #define MUIOPTION_WINDOW_STATE                   "window_state"
+#define MUIOPTION_WINDOW_PANES                   "window_panes"
 #define MUIOPTION_CUSTOM_COLOR                   "custom_color"
 #define MUIOPTION_LIST_FONT                      "list_font"
 #define MUIOPTION_TEXT_COLOR                     "text_color"
@@ -94,7 +93,6 @@
 #define MUIOPTION_EXEC_WAIT                      "exec_wait"
 #define MUIOPTION_HIDE_MOUSE                     "hide_mouse"
 #define MUIOPTION_FULL_SCREEN                    "full_screen"
-#define MUIOPTION_SHOW_SOFTWARE_SECTION          "show_software_section"
 #define MUIOPTION_UI_KEY_VIEW_SOFTWARE_AREA      "ui_key_view_software_area"
 
 #ifdef MESS
@@ -133,18 +131,15 @@ const WINUIOPTS option_entries[] =
 	{ MUIOPTION_EXTRA_FOLDERS,                "0",        OPTION_INTEGER,                 NULL },
 	{ MUIOPTION_DEFAULT_GAME,                 MUIDEFAULT_SELECTION, OPTION_INTEGER,       NULL },
 	{ MUIOPTION_DEFAULT_FOLDER_ID,            "0",        OPTION_INTEGER,                 NULL },
-	{ MUIOPTION_SHOW_IMAGE_SECTION,           "1",        OPTION_BOOLEAN,    NULL },
 	{ MUIOPTION_FULL_SCREEN,                  "0",        OPTION_BOOLEAN,    NULL },
 	{ MUIOPTION_CURRENT_TAB,                  "0",        OPTION_STRING,                 NULL },
 	{ MESSUI_SOFTWARE_TAB,                    "0",        OPTION_INTEGER, NULL },
 	{ MUIOPTION_SHOW_TOOLBAR,                 "1",        OPTION_BOOLEAN,    NULL },
 	{ MUIOPTION_SHOW_STATUS_BAR,              "1",        OPTION_BOOLEAN,    NULL },
 	{ MUIOPTION_HIDE_FOLDERS,                 "",         OPTION_STRING,                 NULL },
-	{ MUIOPTION_SHOW_FOLDER_SECTION,          "1",        OPTION_BOOLEAN,    NULL },
 	{ MUIOPTION_SHOW_TABS,                    "1",        OPTION_BOOLEAN,    NULL },
 	{ MUIOPTION_HIDE_TABS,                    "marquee, title, cpanel, pcb, history", OPTION_STRING, NULL },
 	{ MUIOPTION_HISTORY_TAB,                  "0",        OPTION_INTEGER,                 NULL },
-	{ MUIOPTION_SHOW_SOFTWARE_SECTION,        "1",        OPTION_BOOLEAN,    NULL },
 	{ MUIOPTION_SORT_COLUMN,                  "0",        OPTION_INTEGER,                 NULL },
 	{ MUIOPTION_SORT_REVERSED,                "0",        OPTION_BOOLEAN,    NULL },
 	{ MUIOPTION_WINDOW_X,                     "0",        OPTION_INTEGER,                 NULL },
@@ -152,6 +147,7 @@ const WINUIOPTS option_entries[] =
 	{ MUIOPTION_WINDOW_WIDTH,                 "1024",      OPTION_INTEGER,                 NULL },
 	{ MUIOPTION_WINDOW_HEIGHT,                "768",      OPTION_INTEGER,                 NULL },
 	{ MUIOPTION_WINDOW_STATE,                 "1",        OPTION_INTEGER,                 NULL },
+	{ MUIOPTION_WINDOW_PANES,                 "15",       OPTION_INTEGER,                 NULL },  // which windows are visible: bit 0 = tree, bit 1 = list, bit 2 = sw, bit 3 = images
 	{ MUIOPTION_TEXT_COLOR,                   "-1",       OPTION_INTEGER,                 NULL },
 	{ MUIOPTION_CLONE_COLOR,                  "-1",       OPTION_INTEGER,                 NULL },
 	{ MUIOPTION_CUSTOM_COLOR,                 "0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0", OPTION_STRING, NULL },
