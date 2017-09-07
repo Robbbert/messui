@@ -363,9 +363,12 @@ void InitMessPicker(void)
 	printf("InitMessPicker: Finished\n");fflush(stdout);
 
 	BOOL bShowSoftware = BIT(GetWindowPanes(), 2);
-	ShowWindow(GetDlgItem(GetMainWindow(), IDC_SWLIST), bShowSoftware ? SW_SHOW : SW_HIDE);
-	ShowWindow(GetDlgItem(GetMainWindow(), IDC_SWDEVVIEW), bShowSoftware ? SW_SHOW : SW_HIDE);
-	ShowWindow(GetDlgItem(GetMainWindow(), IDC_SOFTLIST), bShowSoftware ? SW_SHOW : SW_HIDE);
+	int swtab = GetCurrentSoftwareTab();
+	if (!bShowSoftware)
+		swtab = -1;
+	ShowWindow(GetDlgItem(GetMainWindow(), IDC_SWLIST), (swtab == 0) ? SW_SHOW : SW_HIDE);
+	ShowWindow(GetDlgItem(GetMainWindow(), IDC_SWDEVVIEW), (swtab == 1) ? SW_SHOW : SW_HIDE);
+	ShowWindow(GetDlgItem(GetMainWindow(), IDC_SOFTLIST), (swtab == 2) ? SW_SHOW : SW_HIDE);
 	ShowWindow(GetDlgItem(GetMainWindow(), IDC_SWTAB), bShowSoftware ? SW_SHOW : SW_HIDE);
 	CheckMenuItem(GetMenu(GetMainWindow()), ID_VIEW_SOFTWARE_AREA, bShowSoftware ? MF_CHECKED : MF_UNCHECKED);
 }
