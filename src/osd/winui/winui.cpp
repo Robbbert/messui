@@ -5664,7 +5664,7 @@ static void ToggleScreenShot(void)
 	UpdateScreenShot();
 
 	/* Redraw list view */
-	if (hBackground != NULL && show)
+	if (hBackground && show)
 		InvalidateRect(hwndList, NULL, false);
 }
 
