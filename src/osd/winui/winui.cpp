@@ -4777,10 +4777,7 @@ static void GamePicker_EnteringItem(HWND hwndPicker, int nItem)
 	MessReadMountedSoftware(nItem); // messui.cpp
 
 	// decide if it is valid to load a savestate
-	if (driver_list::driver(nItem).flags & MACHINE_SUPPORTS_SAVE)
-		EnableMenuItem(GetMenu(hMain), ID_FILE_LOADSTATE, MFS_ENABLED);
-	else
-		EnableMenuItem(GetMenu(hMain), ID_FILE_LOADSTATE, MFS_GRAYED);
+	EnableMenuItem(GetMenu(hMain), ID_FILE_LOADSTATE, (driver_list::driver(nItem).flags & MACHINE_SUPPORTS_SAVE) ? MFS_ENABLED : MFS_GRAYED);
 }
 
 

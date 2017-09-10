@@ -331,34 +331,45 @@ int numberOfSpeakers(const machine_config *config)
 
 static void SetDriversInfo(void)
 {
-	int cache = -1;
+	uint32_t cache;
 	int total = driver_list::total();
 	struct DriversInfo *gameinfo = NULL;
 
 	for (int ndriver = 0; ndriver < total; ndriver++)
 	{
 		gameinfo = &drivers_info[ndriver];
-		cache = (gameinfo->screenCount & DRIVER_CACHE_SCREEN);
+		cache = gameinfo->screenCount & DRIVER_CACHE_SCREEN;
+
 		if (gameinfo->isClone)
 			cache += DRIVER_CACHE_CLONE;
+
 		if (gameinfo->isHarddisk)
 			cache += DRIVER_CACHE_HARDDISK;
+
 		if (gameinfo->hasOptionalBIOS)
 			cache += DRIVER_CACHE_BIOS;
+
 		if (gameinfo->isStereo)
 			cache += DRIVER_CACHE_STEREO;
+
 		if (gameinfo->isVector)
 			cache += DRIVER_CACHE_VECTOR;
+
 		if (gameinfo->usesRoms)
 			cache += DRIVER_CACHE_ROMS;
+
 		if (gameinfo->usesSamples)
 			cache += DRIVER_CACHE_SAMPLES;
+
 		if (gameinfo->usesTrackball)
 			cache += DRIVER_CACHE_TRACKBALL;
+
 		if (gameinfo->usesLightGun)
 			cache += DRIVER_CACHE_LIGHTGUN;
+
 		if (gameinfo->usesMouse)
 			cache += DRIVER_CACHE_MOUSE;
+
 		if (gameinfo->hasRam)
 			cache += DRIVER_CACHE_RAM;
 
@@ -381,10 +392,11 @@ static void InitDriversInfo(void)
 		gamedrv = &driver_list::driver(ndriver);
 		gameinfo = &drivers_info[ndriver];
 		machine_config config(*gamedrv, MameUIGlobal());
+
 		bool const have_parent(strcmp(gamedrv->parent, "0"));
 		auto const parent_idx(have_parent ? driver_list::find(gamedrv->parent) : -1);
 		gameinfo->isClone = ( !have_parent || (0 > parent_idx) || BIT(GetDriverCacheLower(parent_idx),9)) ? false : true;
-		gameinfo->isBroken = (cache & 0x404040) ? true : false;  // (MACHINE_NOT_WORKING | MACHINE_MECHANICAL | protection)
+		gameinfo->isBroken = (cache & 0x4040) ? true : false;  // (MACHINE_NOT_WORKING | MACHINE_MECHANICAL)
 		gameinfo->supportsSaveState = BIT(cache, 7);  //MACHINE_SUPPORTS_SAVE
 		gameinfo->isHarddisk = false;
 		gameinfo->isVertical = BIT(cache, 2);  //ORIENTATION_SWAP_XY
@@ -417,14 +429,13 @@ static void InitDriversInfo(void)
 				for (rom = rom_first_file(region); rom; rom = rom_next_file(rom))
 					gameinfo->usesRoms = true;
 
-		gameinfo->usesSamples = true;
-
 		samples_device_iterator iter(config.root_device());
-		if (iter.count() == 0)
-			gameinfo->usesSamples = false;
+		gameinfo->usesSamples = iter.count() ? true : false;
 
 		gameinfo->usesTrackball = false;
 		gameinfo->usesLightGun = false;
+		gameinfo->usesMouse = false;
+
 		if (gamedrv->ipt)
 		{
 			ioport_list portlist;
@@ -478,14 +489,7 @@ static int InitDriversCache(void)
 		cache_lower = GetDriverCacheLower(ndriver);
 		cache_upper = GetDriverCacheUpper(ndriver);
 
-		//if (cache == 0)
-		//{
-		//	printf("InitDriversCache: F\n");fflush(stdout);
-		//	InitDriversInfo();
-		//	break;
-		//}
-
-		gameinfo->isBroken          =  (cache_lower & 0x404040) ? true : false; //MACHINE_NOT_WORKING | MACHINE_MECHANICAL | protection
+		gameinfo->isBroken          =  (cache_lower & 0x4040) ? true : false; //MACHINE_NOT_WORKING | MACHINE_MECHANICAL
 		gameinfo->supportsSaveState =  BIT(cache_lower, 7) ? true : false;  //MACHINE_SUPPORTS_SAVE
 		gameinfo->isVertical        =  BIT(cache_lower, 2) ? true : false;  //ORIENTATION_XY
 		gameinfo->screenCount       =   cache_upper & DRIVER_CACHE_SCREEN;
