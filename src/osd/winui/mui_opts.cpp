@@ -92,25 +92,6 @@ static windows_options global; // Global 'default' options
 static winui_game_options game_opts;    // game stats
 
 
-#if 0
-// no longer used, but keep in case we need to add more per-game options in the future
-static const options_entry perGameOptions[] =
-{
-	// per game options in messui.ini - transferred to swpath
-	{ "_extra_software",         "",         OPTION_STRING,  NULL },
-	{ NULL }
-};
-#endif
-
-static const options_entry filterOptions[] =
-{
-	// filters
-	{ "_filters",                "0",        OPTION_INTEGER,                 NULL },
-	{ NULL }
-};
-
-
-
 // Screen shot Page tab control text
 // these must match the order of the options flags in options.h
 // (TAB_...)
@@ -1991,13 +1972,8 @@ static const char * EncodeFolderFlags(DWORD value)
  */
 void LoadFolderFlags(void)
 {
-	int i, numFolders = 0;
 	LPTREEFOLDER lpFolder;
-	options_entry entries[2] = { { 0 }, { 0 } };
-
-	memcpy(entries, filterOptions, sizeof(filterOptions));
-
-	numFolders = GetNumFolders();
+	int i, numFolders = GetNumFolders();
 
 	for (i = 0; i < numFolders; i++)
 	{
@@ -2058,13 +2034,8 @@ void LoadFolderFlags(void)
 // Adds our folder flags to winui_options, for saving.
 static void AddFolderFlags()
 {
-	int numFolders = 0, num_entries = 0;
 	LPTREEFOLDER lpFolder;
-	//options_entry entries[2] = { { 0 }, { 0 } };
-
-	//memcpy(entries, filterOptions, sizeof(filterOptions));
-
-	numFolders = GetNumFolders();
+	int num_entries = 0, numFolders = GetNumFolders();
 
 	for (int i = 0; i < numFolders; i++)
 	{
