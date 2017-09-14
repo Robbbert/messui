@@ -442,6 +442,9 @@ uint32_t GetDriverCacheLower(int driver_index);
 uint32_t GetDriverCacheUpper(int driver_index);
 void SetDriverCache(int driver_index, uint32_t val);
 BOOL RequiredDriverCache(void);
+BOOL DriverIsComputer(int driver_index);
+BOOL DriverIsConsole(int driver_index);
+BOOL DriverIsModified(int driver_index);
 
 // from optionsms.h (MESSUI)
 

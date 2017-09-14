@@ -2255,6 +2255,23 @@ BOOL RequiredDriverCache(void)
 	return game_opts.rebuild();
 }
 
+BOOL DriverIsComputer(int driver_index)
+{
+	uint32_t cache = game_opts.cache_lower(driver_index) & 3;
+	return (cache == 2) ? true : false;
+}
+
+BOOL DriverIsConsole(int driver_index)
+{
+	uint32_t cache = game_opts.cache_lower(driver_index) & 3;
+	return (cache == 1) ? true : false;
+}
+
+BOOL DriverIsModified(int driver_index)
+{
+	return BIT(game_opts.cache_lower(driver_index), 12);
+}
+
 // from optionsms.cpp (MESSUI)
 
 
