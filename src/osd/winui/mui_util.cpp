@@ -133,6 +133,92 @@ void __cdecl dprintf(const char* fmt, ...)
 	va_end(va);
 }
 
+//============================================================
+//  winui_message_box_utf8
+//============================================================
+
+int winui_message_box_utf8(HWND hWnd, const char *text, const char *caption, UINT type)
+{
+	int result = IDCANCEL;
+	wchar_t *t_text = ui_wstring_from_utf8(text);
+	wchar_t *t_caption = ui_wstring_from_utf8(caption);
+
+	if (!t_text)
+		return result;
+
+	if (!t_caption)
+	{
+		free(t_text);
+		return result;
+	}
+
+	result = MessageBox(hWnd, t_text, t_caption, type);
+	free(t_text);
+	free(t_caption);
+	return result;
+}
+
+void ErrorMessageBox(const char *fmt, ...)
+{
+	char buf[1024];
+	va_list ptr;
+
+	va_start(ptr, fmt);
+	vsnprintf(buf, ARRAY_LENGTH(buf), fmt, ptr);
+	winui_message_box_utf8(GetMainWindow(), buf, MAMEUINAME, MB_ICONERROR | MB_OK);
+	va_end(ptr);
+}
+
+void ShellExecuteCommon(HWND hWnd, const char *cName)
+{
+	wchar_t *tName = ui_wstring_from_utf8(cName);
+
+	if(!tName)
+		return;
+
+	HINSTANCE hErr = ShellExecute(hWnd, NULL, tName, NULL, NULL, SW_SHOWNORMAL);
+
+	if ((uintptr_t)hErr > 32)
+	{
+		free(tName);
+		return;
+	}
+
+	const char *msg = NULL;
+	switch((uintptr_t)hErr)
+	{
+	case 0:
+		msg = "The Operating System is out of memory or resources.";
+		break;
+
+	case ERROR_FILE_NOT_FOUND:
+		msg = "The specified file was not found.";
+		break;
+
+	case SE_ERR_NOASSOC :
+		msg = "There is no application associated with the given filename extension.";
+		break;
+
+	case SE_ERR_OOM :
+		msg = "There was not enough memory to complete the operation.";
+		break;
+
+	case SE_ERR_PNF :
+		msg = "The specified path was not found.";
+		break;
+
+	case SE_ERR_SHARE :
+		msg = "A sharing violation occurred.";
+		break;
+
+	default:
+		msg = "Unknown error.";
+	}
+
+	ErrorMessageBox("%s\r\nPath: '%s'", msg, cName);
+	free(tName);
+}
+
 UINT GetDepth(HWND hWnd)
 {
 	UINT nBPP;

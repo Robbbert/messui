@@ -738,6 +738,34 @@ void SetDatsDir(const char *path)
 	mewui.set_value(OPTION_HISTORY_PATH, t1, OPTION_PRIORITY_CMDLINE);
 }
 
+const string GetVideoDir(void)
+{
+	string t = settings.getter(MUIOPTION_VIDEO_DIRECTORY);
+	if (t.empty())
+		return "video";
+	else
+		return settings.getter(MUIOPTION_VIDEO_DIRECTORY);
+}
+
+void SetVideoDir(const char *path)
+{
+	settings.setter(MUIOPTION_VIDEO_DIRECTORY, path);
+}
+
+const string GetManualsDir(void)
+{
+	string t = settings.getter(MUIOPTION_MANUALS_DIRECTORY);
+	if (t.empty())
+		return "manuals";
+	else
+		return settings.getter(MUIOPTION_MANUALS_DIRECTORY);
+}
+
+void SetManualsDir(const char *path)
+{
+	settings.setter(MUIOPTION_MANUALS_DIRECTORY, path);
+}
+
 // ***************************************************************** MAME.INI settings **************************************************************************
 const char* GetLanguageUI(void)
 {
