@@ -464,12 +464,18 @@ void SetDefaultGame(int val)
 {
 	if (val < 0)
 		val = 0;
-	settings.setter(MUIOPTION_DEFAULT_GAME, val);
+	settings.setter(MUIOPTION_DEFAULT_GAME, driver_list::driver(val).name);
 }
 
 int GetDefaultGame(void)
 {
-	return settings.int_value(MUIOPTION_DEFAULT_GAME);
+	string t = settings.getter(MUIOPTION_DEFAULT_GAME);
+	if (t.empty())
+		return 0;
+	int val = driver_list::find(t.c_str());
+	if (val < 0)
+		val = 0;
+	return val;
 }
 
 void SetWindowArea(const AREA *area)
