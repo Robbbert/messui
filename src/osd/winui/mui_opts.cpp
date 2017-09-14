@@ -171,15 +171,11 @@ void ResetGUI(void)
 
 const char * GetImageTabLongName(int tab_index)
 {
-	assert(tab_index >= 0);
-	assert(tab_index < ARRAY_LENGTH(image_tabs_long_name));
 	return image_tabs_long_name[tab_index];
 }
 
 const char * GetImageTabShortName(int tab_index)
 {
-	assert(tab_index >= 0);
-	assert(tab_index < ARRAY_LENGTH(image_tabs_short_name));
 	return image_tabs_short_name[tab_index];
 }
 
@@ -735,7 +731,11 @@ void SetRomDirs(const char* paths)
 
 const string GetHashDirs(void)
 {
-	return string(global.hash_path());
+	const char* t = global.value(OPTION_HASHPATH);
+	if (t)
+		return string(global.value(OPTION_HASHPATH));
+	else
+		return "hash";
 }
 
 void SetHashDirs(const char* paths)
@@ -745,7 +745,11 @@ void SetHashDirs(const char* paths)
 
 const string GetSampleDirs(void)
 {
-	return string(global.value(OPTION_SAMPLEPATH));
+	const char* t = global.value(OPTION_SAMPLEPATH);
+	if (t)
+		return string(global.value(OPTION_SAMPLEPATH));
+	else
+		return "samples";
 }
 
 void SetSampleDirs(const char* paths)
@@ -775,7 +779,11 @@ void SetIniDir(const char *path)
 
 const string GetCtrlrDir(void)
 {
-	return global.value(OPTION_CTRLRPATH);
+	const char* t = global.value(OPTION_CTRLRPATH);
+	if (t)
+		return string(global.value(OPTION_CTRLRPATH));
+	else
+		return "ctrlr";
 }
 
 void SetCtrlrDir(const char* path)
@@ -799,7 +807,11 @@ void SetSWDir(const char* path)
 
 const string GetCfgDir(void)
 {
-	return string(global.value(OPTION_CFG_DIRECTORY));
+	const char* t = global.value(OPTION_CFG_DIRECTORY);
+	if (t)
+		return string(global.value(OPTION_CFG_DIRECTORY));
+	else
+		return "cfg";
 }
 
 void SetCfgDir(const char* path)
@@ -809,7 +821,11 @@ void SetCfgDir(const char* path)
 
 const string GetNvramDir(void)
 {
-	return string(global.value(OPTION_NVRAM_DIRECTORY));
+	const char* t = global.value(OPTION_NVRAM_DIRECTORY);
+	if (t)
+		return string(global.value(OPTION_NVRAM_DIRECTORY));
+	else
+		return "nvram";
 }
 
 void SetNvramDir(const char* path)
@@ -819,7 +835,11 @@ void SetNvramDir(const char* path)
 
 const string GetInpDir(void)
 {
-	return string(global.value(OPTION_INPUT_DIRECTORY));
+	const char* t = global.value(OPTION_INPUT_DIRECTORY);
+	if (t)
+		return string(global.value(OPTION_INPUT_DIRECTORY));
+	else
+		return "inp";
 }
 
 void SetInpDir(const char* path)
@@ -829,7 +849,11 @@ void SetInpDir(const char* path)
 
 const string GetImgDir(void)
 {
-	return string(global.value(OPTION_SNAPSHOT_DIRECTORY));
+	const char* t = global.value(OPTION_SNAPSHOT_DIRECTORY);
+	if (t)
+		return string(global.value(OPTION_SNAPSHOT_DIRECTORY));
+	else
+		return "snap";
 }
 
 void SetImgDir(const char* path)
@@ -839,7 +863,11 @@ void SetImgDir(const char* path)
 
 const string GetStateDir(void)
 {
-	return string(global.value(OPTION_STATE_DIRECTORY));
+	const char* t = global.value(OPTION_STATE_DIRECTORY);
+	if (t)
+		return string(global.value(OPTION_STATE_DIRECTORY));
+	else
+		return "sta";
 }
 
 void SetStateDir(const char* path)
@@ -849,7 +877,11 @@ void SetStateDir(const char* path)
 
 const string GetArtDir(void)
 {
-	return string(global.value(OPTION_ARTPATH));
+	const char* t = global.value(OPTION_ARTPATH);
+	if (t)
+		return string(global.value(OPTION_ARTPATH));
+	else
+		return "artwork";
 }
 
 void SetArtDir(const char* path)
@@ -859,7 +891,11 @@ void SetArtDir(const char* path)
 
 const string GetFontDir(void)
 {
-	return string(global.value(OPTION_FONTPATH));
+	const char* t = global.value(OPTION_FONTPATH);
+	if (t)
+		return string(global.value(OPTION_FONTPATH));
+	else
+		return ".";
 }
 
 void SetFontDir(const char* paths)
@@ -869,7 +905,11 @@ void SetFontDir(const char* paths)
 
 const string GetCrosshairDir(void)
 {
-	return string(global.value(OPTION_CROSSHAIRPATH));
+	const char* t = global.value(OPTION_CROSSHAIRPATH);
+	if (t)
+		return string(global.value(OPTION_CROSSHAIRPATH));
+	else
+		return "crosshair";
 }
 
 void SetCrosshairDir(const char* paths)
@@ -939,7 +979,11 @@ void SetPcbDir(const char *path)
 
 const string GetPluginsDir(void)
 {
-	return string(global.value(OPTION_PLUGINSPATH));
+	const char* t = global.value(OPTION_PLUGINSPATH);
+	if (t)
+		return string(global.value(OPTION_PLUGINSPATH));
+	else
+		return "plugins";
 }
 
 void SetPluginsDir(const char* path)
@@ -949,7 +993,11 @@ void SetPluginsDir(const char* path)
 
 const string GetLangDir(void)
 {
-	return string(global.value(OPTION_LANGUAGEPATH));
+	const char* t = global.value(OPTION_LANGUAGEPATH);
+	if (t)
+		return string(global.value(OPTION_LANGUAGEPATH));
+	else
+		return "language";
 }
 
 void SetLangDir(const char* path)
@@ -959,7 +1007,11 @@ void SetLangDir(const char* path)
 
 const string GetDiffDir(void)
 {
-	return string(global.value(OPTION_DIFF_DIRECTORY));
+	const char* t = global.value(OPTION_DIFF_DIRECTORY);
+	if (t)
+		return string(global.value(OPTION_DIFF_DIRECTORY));
+	else
+		return "diff";
 }
 
 void SetDiffDir(const char* path)
@@ -1025,7 +1077,11 @@ void SetFolderDir(const char* path)
 
 const string GetCheatDir(void)
 {
-	return string(global.value(OPTION_CHEATPATH));
+	const char* t = global.value(OPTION_CHEATPATH);
+	if (t)
+		return string(global.value(OPTION_CHEATPATH));
+	else
+		return "cheat";
 }
 
 void SetCheatDir(const char* path)
@@ -1045,8 +1101,6 @@ void SetSnapName(const char* pattern)
 
 void ResetGameOptions(int driver_index)
 {
-	assert(0 <= driver_index && driver_index < driver_list::total());
-
 	//save_options(NULL, OPTIONS_GAME, driver_index);
 }
 
