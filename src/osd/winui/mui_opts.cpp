@@ -244,6 +244,7 @@ static input_seq *options_get_input_seq(const char *name)
 //  OPTIONS CALLS
 //============================================================
 
+// ***************************************************************** MAMEUI.INI settings **************************************************************************
 void SetViewMode(int val)
 {
 	settings.setter(MUIOPTION_LIST_MODE, val);
@@ -704,6 +705,53 @@ BOOL GetSortReverse(void)
 	return settings.bool_value( MUIOPTION_SORT_REVERSED);
 }
 
+const string GetIconsDir(void)
+{
+	string t = settings.getter(MUIOPTION_ICONS_DIRECTORY);
+	if (t.empty())
+		return "icons";
+	else
+		return settings.getter(MUIOPTION_ICONS_DIRECTORY);
+}
+
+void SetIconsDir(const char* path)
+{
+	settings.setter(MUIOPTION_ICONS_DIRECTORY, path);
+}
+
+const string GetBgDir (void)
+{
+	string t = settings.getter(MUIOPTION_BACKGROUND_DIRECTORY);
+	if (t.empty())
+		return "bkground\\bkground.png";
+	else
+		return settings.getter(MUIOPTION_BACKGROUND_DIRECTORY);
+}
+
+void SetBgDir (const char* path)
+{
+	settings.setter(MUIOPTION_BACKGROUND_DIRECTORY, path);
+}
+
+const string GetDatsDir(void)
+{
+	string t = settings.getter(MUIOPTION_DATS_DIRECTORY);
+	if (t.empty())
+		return "dats";
+	else
+		return settings.getter(MUIOPTION_DATS_DIRECTORY);
+	//return mewui.value(OPTION_HISTORY_PATH);
+}
+
+void SetDatsDir(const char *path)
+{
+	char t1[strlen(path)+1];
+	strcpy(t1, path);
+	settings.setter(MUIOPTION_DATS_DIRECTORY, path);
+	mewui.set_value(OPTION_HISTORY_PATH, t1, OPTION_PRIORITY_CMDLINE);
+}
+
+// ***************************************************************** MAME.INI settings **************************************************************************
 const char* GetLanguageUI(void)
 {
 	return global.value(OPTION_LANGUAGE);
@@ -721,7 +769,11 @@ const char* GetPlugins(void)
 
 const string GetRomDirs(void)
 {
-	return string(global.media_path());
+	const char* t = global.value(OPTION_MEDIAPATH);
+	if (t)
+		return string(global.value(OPTION_MEDIAPATH));
+	else
+		return "roms";
 }
 
 void SetRomDirs(const char* paths)
@@ -917,66 +969,6 @@ void SetCrosshairDir(const char* paths)
 	global.set_value(OPTION_CROSSHAIRPATH, paths, OPTION_PRIORITY_CMDLINE);
 }
 
-const string GetFlyerDir(void)
-{
-	return string(mewui.value(OPTION_FLYERS_PATH));
-}
-
-void SetFlyerDir(const char* path)
-{
-	mewui.set_value(OPTION_FLYERS_PATH, path, OPTION_PRIORITY_CMDLINE);
-}
-
-const string GetCabinetDir(void)
-{
-	return string(mewui.value(OPTION_CABINETS_PATH));
-}
-
-void SetCabinetDir(const char* path)
-{
-	mewui.set_value(OPTION_CABINETS_PATH, path, OPTION_PRIORITY_CMDLINE);
-}
-
-const string GetMarqueeDir(void)
-{
-	return string(mewui.value(OPTION_MARQUEES_PATH));
-}
-
-void SetMarqueeDir(const char* path)
-{
-	mewui.set_value(OPTION_MARQUEES_PATH, path, OPTION_PRIORITY_CMDLINE);
-}
-
-const string GetTitlesDir(void)
-{
-	return string(mewui.value(OPTION_TITLES_PATH));
-}
-
-void SetTitlesDir(const char* path)
-{
-	mewui.set_value(OPTION_TITLES_PATH, path, OPTION_PRIORITY_CMDLINE);
-}
-
-const string GetControlPanelDir(void)
-{
-	return string(mewui.value(OPTION_CPANELS_PATH));
-}
-
-void SetControlPanelDir(const char *path)
-{
-	mewui.set_value(OPTION_CPANELS_PATH, path, OPTION_PRIORITY_CMDLINE);
-}
-
-const string GetPcbDir(void)
-{
-	return string(mewui.value(OPTION_PCBS_PATH));
-}
-
-void SetPcbDir(const char *path)
-{
-	mewui.set_value(OPTION_PCBS_PATH, path, OPTION_PRIORITY_CMDLINE);
-}
-
 const string GetPluginsDir(void)
 {
 	const char* t = global.value(OPTION_PLUGINSPATH);
@@ -1019,62 +1011,6 @@ void SetDiffDir(const char* path)
 	global.set_value(OPTION_DIFF_DIRECTORY, path, OPTION_PRIORITY_CMDLINE);
 }
 
-const string GetIconsDir(void)
-{
-	string t = settings.getter(MUIOPTION_ICONS_DIRECTORY);
-	if (t.empty())
-		return "icons";
-	else
-		return settings.getter(MUIOPTION_ICONS_DIRECTORY);
-}
-
-void SetIconsDir(const char* path)
-{
-	settings.setter(MUIOPTION_ICONS_DIRECTORY, path);
-}
-
-const string GetBgDir (void)
-{
-	string t = settings.getter(MUIOPTION_BACKGROUND_DIRECTORY);
-	if (t.empty())
-		return "bkground\\bkground.png";
-	else
-		return settings.getter(MUIOPTION_BACKGROUND_DIRECTORY);
-}
-
-void SetBgDir (const char* path)
-{
-	settings.setter(MUIOPTION_BACKGROUND_DIRECTORY, path);
-}
-
-const string GetDatsDir(void)
-{
-	string t = settings.getter(MUIOPTION_DATS_DIRECTORY);
-	if (t.empty())
-		return "dats";
-	else
-		return settings.getter(MUIOPTION_DATS_DIRECTORY);
-	//return mewui.value(OPTION_HISTORY_PATH);
-}
-
-void SetDatsDir(const char *path)
-{
-	char t1[strlen(path)+1];
-	strcpy(t1, path);
-	settings.setter(MUIOPTION_DATS_DIRECTORY, path);
-	mewui.set_value(OPTION_HISTORY_PATH, t1, OPTION_PRIORITY_CMDLINE);
-}
-
-const string GetFolderDir(void)
-{
-	return string(mewui.value(OPTION_CATEGORYINI_PATH));
-}
-
-void SetFolderDir(const char* path)
-{
-	mewui.set_value(OPTION_CATEGORYINI_PATH, path, OPTION_PRIORITY_CMDLINE);
-}
-
 const string GetCheatDir(void)
 {
 	const char* t = global.value(OPTION_CHEATPATH);
@@ -1099,28 +1035,106 @@ void SetSnapName(const char* pattern)
 	global.set_value(OPTION_SNAPNAME, pattern, OPTION_PRIORITY_CMDLINE);
 }
 
-void ResetGameOptions(int driver_index)
+// ***************************************************************** UI.INI settings **************************************************************************
+const string GetFlyerDir(void)
 {
-	//save_options(NULL, OPTIONS_GAME, driver_index);
+	const char* t = mewui.value(OPTION_FLYERS_PATH);
+	if (t)
+		return string(mewui.value(OPTION_FLYERS_PATH));
+	else
+		return "flyers";
 }
 
-void ResetGameDefaults(void)
+void SetFlyerDir(const char* path)
 {
-	// Walk the global settings and reset everything to defaults;
-	ResetToDefaults(global, OPTION_PRIORITY_CMDLINE);
-	save_options(global, OPTIONS_GLOBAL, GLOBAL_OPTIONS);
+	mewui.set_value(OPTION_FLYERS_PATH, path, OPTION_PRIORITY_CMDLINE);
 }
 
-/*
- * Reset all game, vector and source options to defaults.
- * No reason to reboot if this is done.
- */
-void ResetAllGameOptions(void)
+const string GetCabinetDir(void)
 {
-	for (int i = 0; i < driver_list::total(); i++)
-		ResetGameOptions(i);
+	const char* t = mewui.value(OPTION_CABINETS_PATH);
+	if (t)
+		return string(mewui.value(OPTION_CABINETS_PATH));
+	else
+		return "cabinets";
 }
 
+void SetCabinetDir(const char* path)
+{
+	mewui.set_value(OPTION_CABINETS_PATH, path, OPTION_PRIORITY_CMDLINE);
+}
+
+const string GetMarqueeDir(void)
+{
+	const char* t = mewui.value(OPTION_MARQUEES_PATH);
+	if (t)
+		return string(mewui.value(OPTION_MARQUEES_PATH));
+	else
+		return "marquees";
+}
+
+void SetMarqueeDir(const char* path)
+{
+	mewui.set_value(OPTION_MARQUEES_PATH, path, OPTION_PRIORITY_CMDLINE);
+}
+
+const string GetTitlesDir(void)
+{
+	const char* t = mewui.value(OPTION_TITLES_PATH);
+	if (t)
+		return string(mewui.value(OPTION_TITLES_PATH));
+	else
+		return "titles";
+}
+
+void SetTitlesDir(const char* path)
+{
+	mewui.set_value(OPTION_TITLES_PATH, path, OPTION_PRIORITY_CMDLINE);
+}
+
+const string GetControlPanelDir(void)
+{
+	const char* t = mewui.value(OPTION_CPANELS_PATH);
+	if (t)
+		return string(mewui.value(OPTION_CPANELS_PATH));
+	else
+		return "cpanel";
+}
+
+void SetControlPanelDir(const char *path)
+{
+	mewui.set_value(OPTION_CPANELS_PATH, path, OPTION_PRIORITY_CMDLINE);
+}
+
+const string GetPcbDir(void)
+{
+	const char* t = mewui.value(OPTION_PCBS_PATH);
+	if (t)
+		return string(mewui.value(OPTION_PCBS_PATH));
+	else
+		return "pcb";
+}
+
+void SetPcbDir(const char *path)
+{
+	mewui.set_value(OPTION_PCBS_PATH, path, OPTION_PRIORITY_CMDLINE);
+}
+
+const string GetFolderDir(void)
+{
+	const char* t = mewui.value(OPTION_CATEGORYINI_PATH);
+	if (t)
+		return string(mewui.value(OPTION_CATEGORYINI_PATH));
+	else
+		return "folders";
+}
+
+void SetFolderDir(const char* path)
+{
+	mewui.set_value(OPTION_CATEGORYINI_PATH, path, OPTION_PRIORITY_CMDLINE);
+}
+
+// ***************************************************************** MAME_g.INI settings **************************************************************************
 int GetRomAuditResults(int driver_index)
 {
 	return game_opts.rom(driver_index);
@@ -1863,6 +1877,28 @@ static void SaveSettingsFile(windows_options &opts, const char *filename)
 
 
 
+void ResetGameOptions(int driver_index)
+{
+	//save_options(NULL, OPTIONS_GAME, driver_index);
+}
+
+void ResetGameDefaults(void)
+{
+	// Walk the global settings and reset everything to defaults;
+	ResetToDefaults(global, OPTION_PRIORITY_CMDLINE);
+	save_options(global, OPTIONS_GLOBAL, GLOBAL_OPTIONS);
+}
+
+/*
+ * Reset all game, vector and source options to defaults.
+ * No reason to reboot if this is done.
+ */
+void ResetAllGameOptions(void)
+{
+	for (int i = 0; i < driver_list::total(); i++)
+		ResetGameOptions(i);
+}
+
 void SetDirectories(windows_options &opts)
 {
 	opts.set_value(OPTION_MEDIAPATH, GetRomDirs(), OPTION_PRIORITY_CMDLINE);
@@ -1925,9 +1961,8 @@ static DWORD DecodeFolderFlags(string ss)
 	while (*ptr && (1 << shift) & F_MASK)
 	{
 		if (*ptr++ == '1')
-		{
 			flags |= (1 << shift);
-		}
+
 		shift++;
 	}
 	return flags;
@@ -1979,9 +2014,8 @@ void LoadFolderFlags(void)
 			while (*ptr && *ptr != '\0')
 			{
 				if ((*ptr == ' ') || (*ptr == '-'))
-				{
 					*ptr = '_';
-				}
+
 				ptr++;
 			}
 
@@ -2007,9 +2041,8 @@ void LoadFolderFlags(void)
 			while (*ptr && *ptr != '\0')
 			{
 				if ((*ptr == ' ') || (*ptr == '-'))
-				{
 					*ptr = '_';
-				}
+
 				ptr++;
 			}
 			string option_name = string(folder_name) + "_filters";
@@ -2046,9 +2079,8 @@ static void AddFolderFlags()
 			while (*ptr && *ptr != '\0')
 			{
 				if ((*ptr == ' ') || (*ptr == '-'))
-				{
 					*ptr = '_';
-				}
+
 				ptr++;
 			}
 
