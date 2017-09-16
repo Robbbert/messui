@@ -5801,14 +5801,13 @@ static int GetIconForDriver(int nItem)
 	if (DriverUsesRoms(nItem))
 	{
 		int audit_result = GetRomAuditResults(nItem);
-		if (IsAuditResultKnown(audit_result) == false)
+		if (audit_result == -1)
 			return 2;
-///#ifdef SHOW_MISSING_ROMS_ICON
+		else
 		if (IsAuditResultYes(audit_result))
 			iconRoms = 1;
 		else
 			iconRoms = 0;
-///#endif
 	}
 
 	// iconRoms is now either 0 (no roms), 1 (roms), or 2 (unknown)
@@ -5817,16 +5816,25 @@ static int GetIconForDriver(int nItem)
      * also must match IDI_WIN_NOROMS + iconRoms
      */
 
-	// Show Red-X if the ROMs are present and flagged as NOT WORKING
-	if (iconRoms == 1 && DriverIsBroken(nItem))
-		iconRoms = FindIconIndex(IDI_WIN_REDX);
-
-	// show clone icon if we have roms and game is working
-	if (iconRoms == 1 && DriverIsClone(nItem))
-		iconRoms = FindIconIndex(IDI_WIN_CLONE);
+	if (iconRoms == 1)
+	{
+		// Show Red-X if the ROMs are present and flagged as NOT WORKING
+		if (DriverIsBroken(nItem))
+			iconRoms = FindIconIndex(IDI_WIN_REDX);  // iconRoms now = 4
+		else
+		// Show imperfect if the ROMs are present and flagged as imperfect
+		if (DriverIsImperfect(nItem))
+			iconRoms = FindIconIndex(IDI_WIN_IMPERFECT); // iconRoms now = 5
+		else
+		// show clone icon if we have roms and game is working
+		if (DriverIsClone(nItem))
+			iconRoms = FindIconIndex(IDI_WIN_CLONE); // iconRoms now = 3
+	}
 
 	// if we have the roms, then look for a custom per-game icon to override
-	if (iconRoms == 1 || iconRoms == 3)
+	// not 2, because this indicates F5 must be done; not 0, because this indicates roms are missing; only use 4 if user chooses it
+	BOOL redx = GetOverrideRedX() & (iconRoms == 4);
+	if (iconRoms == 1 || iconRoms == 3 || iconRoms == 5 || redx)
 	{
 		if (icon_index[nItem] == 0)
 			AddDriverIcon(nItem,iconRoms);
