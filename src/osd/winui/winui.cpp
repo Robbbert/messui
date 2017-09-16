@@ -1281,7 +1281,7 @@ static void ResizeTreeAndListViews(BOOL bResizeHidden)
 		area.height = rect.bottom - rect.top;
 	}
 	SetWindowArea(&area);
-	int fullwidth = area.width;printf("Fullwidth = %d\n",fullwidth);
+	int fullwidth = area.width;//printf("Fullwidth = %d\n",fullwidth);
 
 	if (bShowStatusBar)
 		rect.bottom -= bottomMargin;
@@ -1302,7 +1302,7 @@ static void ResizeTreeAndListViews(BOOL bResizeHidden)
 			if (!bShowPicture && !bShowSoftware && !g_splitterInfo[i+1].nSplitterWindow)
 				//nLeftWindowWidth = rect.right - nLastWidth;
 				nLeftWindowWidth = fullwidth - nLastWidth;
-				printf("ResizeTreeAndListViews: %d,%d\n",SPLITTER_WIDTH,MIN_VIEW_WIDTH);
+			//printf("ResizeTreeAndListViews: %d,%d\n",SPLITTER_WIDTH,MIN_VIEW_WIDTH);
 			/* woah?  are we overlapping ourselves? */
 //			while ((nLeftWindowWidth + nLastWidth) > fullwidth)
 //				nLeftWindowWidth--;
@@ -1312,12 +1312,12 @@ static void ResizeTreeAndListViews(BOOL bResizeHidden)
 //				nLeftWindowWidth = nSplitterOffset[i] - MIN_VIEW_WIDTH - SPLITTER_WIDTH/2 - nLastWidth;
 //				//i--;
 //			}
-			printf("Sizes: nLastWidth %d, fullwidth %d, nLastWidth + nLeftWindowWidth %d\n",nLastWidth,fullwidth,nLastWidth + nLeftWindowWidth);
+			//printf("Sizes: nLastWidth %d, fullwidth %d, nLastWidth + nLeftWindowWidth %d\n",nLastWidth,fullwidth,nLastWidth + nLeftWindowWidth);
 			if (nLastWidth > fullwidth)
 				nLastWidth = fullwidth - MIN_VIEW_WIDTH;
 			if ((nLastWidth + nLeftWindowWidth) > fullwidth)
 				nLeftWindowWidth = MIN_VIEW_WIDTH;
-			printf("ResizeTreeAndListViews: Window %d, Left %d, Right %d\n",i,nLastWidth, nLeftWindowWidth + nLastWidth);
+			//printf("ResizeTreeAndListViews: Window %d, Left %d, Right %d\n",i,nLastWidth, nLeftWindowWidth + nLastWidth);
 			MoveWindow(GetDlgItem(hMain, g_splitterInfo[i].nLeftWindow), nLastWidth, rect.top + 2, nLeftWindowWidth, rect.bottom - rect.top - 4, true);
 
 			MoveWindow(GetDlgItem(hMain, g_splitterInfo[i].nSplitterWindow), nSplitterOffset[i], rect.top + 2, SPLITTER_WIDTH, rect.bottom - rect.top - 4, true);
