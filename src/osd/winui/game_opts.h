@@ -25,6 +25,39 @@ class winui_game_options
 
 	std::vector<driver_options> m_list;
 
+	// convert audit cache - normally only 1 digit, although we can do 2. If the input is -1, it is treated as invalid and -1 is returned.
+	int convert_to_int(const char* inp)
+	{
+		if (!inp)
+			return -1;
+		int c = inp[0];
+		if (c < 0x30 || c > 0x39)
+			return -1;
+		int oup = c - 0x30;
+		c = inp[1];
+		if (c < 0x30 || c > 0x39)
+			return oup;
+		else
+			return oup * 10 + (c - 0x30);
+	}
+
+	// convert all other numbers, up to end-of-string/invalid-character. If number is too large, return 0.
+	uint32_t convert_to_uint(const char* inp)
+	{
+		if (!inp)
+			return 0;
+		uint32_t oup = 0;
+		for (int i = 0; i < 11; i++)
+		{
+			int c = inp[i];
+			if (c >= 0x30 && c <= 0x39)
+				oup = oup * 10 + (c - 0x30);
+			else
+				return oup;
+		}
+		return 0; // numeric overflow
+	}
+
 	// true = recache needed
 	bool create_index(std::ifstream &fp)
 	{
@@ -46,7 +79,7 @@ class winui_game_options
 		if (!s2)
 			return true;  // file is corrupt
 
-		uint32_t total = std::atoll(s2);
+		uint32_t total = convert_to_uint(s2);
 		if (total == m_total)
 			m_rebuild = false; // everything is fine so far
 
@@ -55,7 +88,7 @@ class winui_game_options
 		if (!s2)
 			return true;  // file is corrupt or old version
 
-		uint32_t version = std::atoll(s2);
+		uint32_t version = convert_to_uint(s2);
 		if (version != m_version)
 			return true; // file is old version, complete rebuild necessary
 
@@ -78,22 +111,22 @@ class winui_game_options
 					m_list[index].game_number = index;  // get new game number
 					data = strtok(NULL, ",");    // get next part
 					if (data)
-						m_list[index].rom = std::atoll(data);
+						m_list[index].rom = convert_to_int(data);
 					data = strtok(NULL, ",");    // get next part
 					if (data)
-						m_list[index].sample = std::atoll(data);
+						m_list[index].sample = convert_to_int(data);
 					data = strtok(NULL, ",");    // get next part
 					if (data)
-						m_list[index].cache_lower = std::atoll(data);
+						m_list[index].cache_lower = convert_to_uint(data);
 					data = strtok(NULL, ",");    // get next part
 					if (data)
-						m_list[index].cache_upper = std::atoll(data);
+						m_list[index].cache_upper = convert_to_uint(data);
 					data = strtok(NULL, ",");    // get next part
 					if (data)
-						m_list[index].play_count = std::atoll(data);
+						m_list[index].play_count = convert_to_uint(data);
 					data = strtok(NULL, ",");    // get next part
 					if (data)
-						m_list[index].play_time = std::atoll(data);
+						m_list[index].play_time = convert_to_uint(data);
 				}
 			}
 			else
