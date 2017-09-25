@@ -5996,12 +5996,11 @@ static void UpdateMenu(HMENU hMenu)
 
 void InitTreeContextMenu(HMENU hTreeMenu)
 {
-	MENUITEMINFO mii;
 	extern const FOLDERDATA g_folderData[];
 
+	MENUITEMINFO mii;
 	ZeroMemory(&mii,sizeof(mii));
 	mii.cbSize = sizeof(mii);
-
 	mii.wID = -1;
 	mii.fMask = MIIM_SUBMENU | MIIM_ID;
 
@@ -6023,25 +6022,27 @@ void InitTreeContextMenu(HMENU hTreeMenu)
 
 	for (int i=0; g_folderData[i].m_lpTitle; i++)
 	{
-		TCHAR* t_title = ui_wstring_from_utf8(g_folderData[i].m_lpTitle);
-		if( !t_title )
-			return;
+		if (!g_folderData[i].m_process)
+		{
+			TCHAR* t_title = ui_wstring_from_utf8(g_folderData[i].m_lpTitle);
+			if( !t_title )
+				return;
 
-		mii.fMask = MIIM_TYPE | MIIM_ID;
-		mii.fType = MFT_STRING;
-		mii.dwTypeData = t_title;
-		mii.cch = _tcslen(mii.dwTypeData);
-		mii.wID = ID_CONTEXT_SHOW_FOLDER_START + g_folderData[i].m_nFolderId;
+			mii.fMask = MIIM_TYPE | MIIM_ID;
+			mii.fType = MFT_STRING;
+			mii.dwTypeData = t_title;
+			mii.cch = _tcslen(mii.dwTypeData);
+			mii.wID = ID_CONTEXT_SHOW_FOLDER_START + g_folderData[i].m_nFolderId;
 
+			// menu in resources has one empty item (needed for the submenu to setup properly)
+			// so overwrite this one, append after
+			if (i == 0)
+				SetMenuItemInfo(hMenu,ID_CONTEXT_SHOW_FOLDER_START,false,&mii);
+			else
+				InsertMenuItem(hMenu,i,false,&mii);
 
-		// menu in resources has one empty item (needed for the submenu to setup properly)
-		// so overwrite this one, append after
-		if (i == 0)
-			SetMenuItemInfo(hMenu,ID_CONTEXT_SHOW_FOLDER_START,false,&mii);
-		else
-			InsertMenuItem(hMenu,i,false,&mii);
-
-		free(t_title);
+			free(t_title);
+		}
 	}
 }
 
