@@ -346,16 +346,6 @@ UINT GetSavedFolderID(void)
 	return (UINT) settings.int_value(MUIOPTION_DEFAULT_FOLDER_ID);
 }
 
-void SetShowExtraFolders(BOOL val)
-{
-	settings.setter(MUIOPTION_EXTRA_FOLDERS, val);
-}
-
-BOOL GetShowExtraFolders(void)
-{
-	return settings.bool_value(MUIOPTION_EXTRA_FOLDERS);
-}
-
 void SetOverrideRedX(BOOL val)
 {
 	settings.setter(MUIOPTION_OVERRIDE_REDX, val);

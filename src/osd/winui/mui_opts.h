@@ -240,9 +240,6 @@ BOOL GetOffsetClones(void);
 void SetSavedFolderID(UINT val);
 UINT GetSavedFolderID(void);
 
-void SetShowExtraFolders(BOOL val);
-BOOL GetShowExtraFolders(void);
-
 void SetOverrideRedX(BOOL val);
 BOOL GetOverrideRedX(void);
 
