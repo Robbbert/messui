@@ -429,7 +429,7 @@ void SetUIJoyHistoryDown(int joycodeIndex, int val);
 int GetUIJoyExec(int joycodeIndex);
 void SetUIJoyExec(int joycodeIndex, int val);
 
-const char *GetExecCommand(void);
+const string GetExecCommand(void);
 void SetExecCommand(char *cmd);
 
 int GetExecWait(void);

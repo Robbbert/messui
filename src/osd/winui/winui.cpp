@@ -3557,105 +3557,88 @@ static void PollGUIJoystick()
 	if (g_pJoyGUI == NULL)
 		return;
 
-	// For the exec timer, will keep track of how long the button has been pressed
-	static int exec_counter = 0;
-	const char* exec_command;
-	TCHAR* t_exec_command;
-
 	g_pJoyGUI->poll_joysticks();
 
 	// User pressed UP
-	if (g_pJoyGUI->is_joy_pressed(JOYCODE(GetUIJoyUp(0), GetUIJoyUp(1), GetUIJoyUp(2),GetUIJoyUp(3))))
-	{
+	if (g_pJoyGUI->is_joy_pressed(JOYCODE(GetUIJoyUp(0), GetUIJoyUp(1), GetUIJoyUp(2), GetUIJoyUp(3))))
 		SendMessage(hMain, WM_COMMAND, ID_UI_UP, 0);
-	}
 
 	// User pressed DOWN
-	if (g_pJoyGUI->is_joy_pressed(JOYCODE(GetUIJoyDown(0), GetUIJoyDown(1), GetUIJoyDown(2),GetUIJoyDown(3))))
-	{
+	if (g_pJoyGUI->is_joy_pressed(JOYCODE(GetUIJoyDown(0), GetUIJoyDown(1), GetUIJoyDown(2), GetUIJoyDown(3))))
 		SendMessage(hMain, WM_COMMAND, ID_UI_DOWN, 0);
-	}
 
 	// User pressed LEFT
-	if (g_pJoyGUI->is_joy_pressed(JOYCODE(GetUIJoyLeft(0), GetUIJoyLeft(1), GetUIJoyLeft(2),GetUIJoyLeft(3))))
-	{
+	if (g_pJoyGUI->is_joy_pressed(JOYCODE(GetUIJoyLeft(0), GetUIJoyLeft(1), GetUIJoyLeft(2), GetUIJoyLeft(3))))
 		SendMessage(hMain, WM_COMMAND, ID_UI_LEFT, 0);
-	}
 
 	// User pressed RIGHT
-	if (g_pJoyGUI->is_joy_pressed(JOYCODE(GetUIJoyRight(0), GetUIJoyRight(1), GetUIJoyRight(2),GetUIJoyRight(3))))
-	{
+	if (g_pJoyGUI->is_joy_pressed(JOYCODE(GetUIJoyRight(0), GetUIJoyRight(1), GetUIJoyRight(2), GetUIJoyRight(3))))
 		SendMessage(hMain, WM_COMMAND, ID_UI_RIGHT, 0);
-	}
 
 	// User pressed START GAME
-	if (g_pJoyGUI->is_joy_pressed(JOYCODE(GetUIJoyStart(0), GetUIJoyStart(1), GetUIJoyStart(2),GetUIJoyStart(3))))
-	{
+	if (g_pJoyGUI->is_joy_pressed(JOYCODE(GetUIJoyStart(0), GetUIJoyStart(1), GetUIJoyStart(2), GetUIJoyStart(3))))
 		SendMessage(hMain, WM_COMMAND, ID_UI_START, 0);
-	}
 
 	// User pressed PAGE UP
-	if (g_pJoyGUI->is_joy_pressed(JOYCODE(GetUIJoyPageUp(0), GetUIJoyPageUp(1), GetUIJoyPageUp(2),GetUIJoyPageUp(3))))
-	{
+	if (g_pJoyGUI->is_joy_pressed(JOYCODE(GetUIJoyPageUp(0), GetUIJoyPageUp(1), GetUIJoyPageUp(2), GetUIJoyPageUp(3))))
 		SendMessage(hMain, WM_COMMAND, ID_UI_PGUP, 0);
-	}
 
 	// User pressed PAGE DOWN
-	if (g_pJoyGUI->is_joy_pressed(JOYCODE(GetUIJoyPageDown(0), GetUIJoyPageDown(1), GetUIJoyPageDown(2),GetUIJoyPageDown(3))))
-	{
+	if (g_pJoyGUI->is_joy_pressed(JOYCODE(GetUIJoyPageDown(0), GetUIJoyPageDown(1), GetUIJoyPageDown(2), GetUIJoyPageDown(3))))
 		SendMessage(hMain, WM_COMMAND, ID_UI_PGDOWN, 0);
-	}
 
 	// User pressed HOME
-	if (g_pJoyGUI->is_joy_pressed(JOYCODE(GetUIJoyHome(0), GetUIJoyHome(1), GetUIJoyHome(2),GetUIJoyHome(3))))
-	{
+	if (g_pJoyGUI->is_joy_pressed(JOYCODE(GetUIJoyHome(0), GetUIJoyHome(1), GetUIJoyHome(2), GetUIJoyHome(3))))
 		SendMessage(hMain, WM_COMMAND, ID_UI_HOME, 0);
-	}
 
 	// User pressed END
-	if (g_pJoyGUI->is_joy_pressed(JOYCODE(GetUIJoyEnd(0), GetUIJoyEnd(1), GetUIJoyEnd(2),GetUIJoyEnd(3))))
-	{
+	if (g_pJoyGUI->is_joy_pressed(JOYCODE(GetUIJoyEnd(0), GetUIJoyEnd(1), GetUIJoyEnd(2), GetUIJoyEnd(3))))
 		SendMessage(hMain, WM_COMMAND, ID_UI_END, 0);
-	}
 
 	// User pressed CHANGE SCREENSHOT
-	if (g_pJoyGUI->is_joy_pressed(JOYCODE(GetUIJoySSChange(0), GetUIJoySSChange(1), GetUIJoySSChange(2),GetUIJoySSChange(3))))
-	{
+	if (g_pJoyGUI->is_joy_pressed(JOYCODE(GetUIJoySSChange(0), GetUIJoySSChange(1), GetUIJoySSChange(2), GetUIJoySSChange(3))))
 		SendMessage(hMain, WM_COMMAND, IDC_SSFRAME, 0);
-	}
 
 	// User pressed SCROLL HISTORY UP
-	if (g_pJoyGUI->is_joy_pressed(JOYCODE(GetUIJoyHistoryUp(0), GetUIJoyHistoryUp(1), GetUIJoyHistoryUp(2),GetUIJoyHistoryUp(3))))
-	{
+	if (g_pJoyGUI->is_joy_pressed(JOYCODE(GetUIJoyHistoryUp(0), GetUIJoyHistoryUp(1), GetUIJoyHistoryUp(2), GetUIJoyHistoryUp(3))))
 		SendMessage(hMain, WM_COMMAND, ID_UI_HISTORY_UP, 0);
-	}
 
 	// User pressed SCROLL HISTORY DOWN
-	if (g_pJoyGUI->is_joy_pressed(JOYCODE(GetUIJoyHistoryDown(0), GetUIJoyHistoryDown(1), GetUIJoyHistoryDown(2),GetUIJoyHistoryDown(3))))
-	{
+	if (g_pJoyGUI->is_joy_pressed(JOYCODE(GetUIJoyHistoryDown(0), GetUIJoyHistoryDown(1), GetUIJoyHistoryDown(2), GetUIJoyHistoryDown(3))))
 		SendMessage(hMain, WM_COMMAND, ID_UI_HISTORY_DOWN, 0);
-	}
+
+	// For the exec timer, will keep track of how long the button has been pressed
+	static int exec_counter = 0;
 
 	// User pressed EXECUTE COMMANDLINE
-	if (g_pJoyGUI->is_joy_pressed(JOYCODE(GetUIJoyExec(0), GetUIJoyExec(1), GetUIJoyExec(2),GetUIJoyExec(3))))
+	// Note: this option is not documented, nor supported in the GUI.
+	if (g_pJoyGUI->is_joy_pressed(JOYCODE(GetUIJoyExec(0), GetUIJoyExec(1), GetUIJoyExec(2), GetUIJoyExec(3))))
 	{
-		if (++exec_counter >= GetExecWait()) // Button has been pressed > exec timeout
+		// validate
+		int execwait = GetExecWait();
+		if (execwait < 1)
+			return;
+		if (++exec_counter >= execwait) // Button has been pressed > exec timeout
 		{
-			PROCESS_INFORMATION pi;
-			STARTUPINFO si;
+			// validate
+			string exec_command = GetExecCommand();
+			if (exec_command.empty())
+				return;
+			TCHAR *t_exec_command = ui_wstring_from_utf8(exec_command.c_str());
+			if( !t_exec_command )
+				return;
 
 			// Reset counter
 			exec_counter = 0;
 
+			STARTUPINFO si;
 			ZeroMemory( &si, sizeof(si) );
-			ZeroMemory( &pi, sizeof(pi) );
 			si.dwFlags = STARTF_FORCEONFEEDBACK;
 			si.cb = sizeof(si);
 
-			exec_command = GetExecCommand();
-			t_exec_command = ui_wstring_from_utf8(exec_command);
-			if( !t_exec_command )
-				return;
+			PROCESS_INFORMATION pi;
+			ZeroMemory( &pi, sizeof(pi) );
+
 			CreateProcess(NULL, t_exec_command, NULL, NULL, false, 0, NULL, NULL, &si, &pi);
 
 			free(t_exec_command);
