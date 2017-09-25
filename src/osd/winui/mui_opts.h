@@ -449,6 +449,7 @@ BOOL DriverIsComputer(uint32_t driver_index);
 BOOL DriverIsConsole(uint32_t driver_index);
 BOOL DriverIsModified(uint32_t driver_index);
 BOOL DriverIsImperfect(uint32_t driver_index);
+string GetGameName(uint32_t driver_index);
 
 // from optionsms.h (MESSUI)
 

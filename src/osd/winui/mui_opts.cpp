@@ -129,6 +129,14 @@ void SetSystemName(windows_options &opts, OPTIONS_TYPE opt_type, int driver_inde
 		mameopts.set_system_name(driver_list::driver(driver_index).name);
 }
 
+string GetGameName(uint32_t driver_index)
+{
+	if (driver_index < driver_list::total())
+		return driver_list::driver(driver_index).name;
+	else
+		return "0";
+}
+
 BOOL OptionsInit()
 {
 	// set up global options
