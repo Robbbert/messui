@@ -356,13 +356,13 @@ BOOL GetOverrideRedX(void)
 	return settings.bool_value(MUIOPTION_OVERRIDE_REDX);
 }
 
-static void GetsShowFolderFlags(LPBITS bits)
+static LPBITS GetShowFolderFlags(LPBITS bits)
 {
 	SetAllBits(bits, TRUE);
 
 	string val = settings.getter(MUIOPTION_HIDE_FOLDERS);
 	if (val.empty())
-		return;
+		return bits;
 
 	extern const FOLDERDATA g_folderData[];
 	char s[val.size()+1];
@@ -381,18 +381,19 @@ static void GetsShowFolderFlags(LPBITS bits)
 		}
 		token = strtok(NULL,",");
 	}
+	return bits;
 }
 
 BOOL GetShowFolder(int folder)
 {
 	LPBITS show_folder_flags = NewBits(MAX_FOLDERS);
-	GetsShowFolderFlags(show_folder_flags);
+	show_folder_flags = GetShowFolderFlags(show_folder_flags);
 	BOOL result = TestBit(show_folder_flags, folder);
 	DeleteBits(show_folder_flags);
 	return result;
 }
 
-void SetShowFolder(int folder,BOOL show)
+void SetShowFolder(int folder, BOOL show)
 {
 	LPBITS show_folder_flags = NewBits(MAX_FOLDERS);
 	int i = 0, j = 0;
@@ -400,7 +401,7 @@ void SetShowFolder(int folder,BOOL show)
 	string str;
 	extern const FOLDERDATA g_folderData[];
 
-	GetsShowFolderFlags(show_folder_flags);
+	show_folder_flags = GetShowFolderFlags(show_folder_flags);
 
 	if (show)
 		SetBit(show_folder_flags, folder);

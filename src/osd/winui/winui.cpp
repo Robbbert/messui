@@ -4242,8 +4242,7 @@ static BOOL MameCommand(HWND hwnd,int id, HWND hwndCtl, UINT codeNotify)
 	case ID_GAME_PROPERTIES:
 		if (!oldControl && (current_game >= 0))
 		{
-			folder = GetFolderByName(FOLDER_SOURCE, GetDriverFilename(current_game) );
-			InitPropertyPage(hInst, hwnd, GetSelectedPickItemIcon(), OPTIONS_GAME, folder->m_nFolderId, current_game);
+			InitPropertyPageToPage(hInst, hwnd, GetSelectedPickItemIcon(), OPTIONS_GAME, -1, current_game, PROPERTIES_PAGE);
 			{
 				extern BOOL g_bModifiedSoftwarePaths;
 				if (g_bModifiedSoftwarePaths)
@@ -4256,15 +4255,19 @@ static BOOL MameCommand(HWND hwnd,int id, HWND hwndCtl, UINT codeNotify)
 		UpdateStatusBar();
 		break;
 
+	// NOT WORKING
 	case ID_FOLDER_PROPERTIES:
 		if (!oldControl && (current_game >= 0))
 		{
 			OPTIONS_TYPE curOptType = OPTIONS_SOURCE;
 			folder = GetSelectedFolder();
-			if(folder->m_nFolderId == FOLDER_VECTOR)
-				curOptType = OPTIONS_VECTOR;
+			if (folder)
+			{
+				if(folder->m_nFolderId == FOLDER_VECTOR)
+					curOptType = OPTIONS_VECTOR;
 
-			InitPropertyPage(hInst, hwnd, GetSelectedFolderIcon(), curOptType, folder->m_nFolderId, current_game);
+				InitPropertyPage(hInst, hwnd, GetSelectedFolderIcon(), curOptType, folder->m_nFolderId, current_game);
+			}
 		}
 		UpdateStatusBar();
 		break;
@@ -4273,9 +4276,7 @@ static BOOL MameCommand(HWND hwnd,int id, HWND hwndCtl, UINT codeNotify)
 	{
 		if (current_game < 0)
 			return true;
-		int game = current_game;
-		folder = GetFolderByName(FOLDER_SOURCE, GetDriverFilename(game));
-		InitPropertyPage(hInst, hwnd, GetSelectedFolderIcon(), OPTIONS_SOURCE, folder->m_nFolderId, game);
+		InitPropertyPage(hInst, hwnd, GetSelectedFolderIcon(), OPTIONS_SOURCE, -1, current_game);
 		UpdateStatusBar();
 		SetFocus(hwndList);
 		return true;
@@ -6047,21 +6048,22 @@ void InitTreeContextMenu(HMENU hTreeMenu)
 
 void InitBodyContextMenu(HMENU hBodyContextMenu)
 {
+	int current_game = Picker_GetSelectedItem(hwndList);
+	if (current_game < 0)
+		return;
+
 	TCHAR tmp[256];
 	MENUITEMINFO mii;
 	ZeroMemory(&mii,sizeof(mii));
 	mii.cbSize = sizeof(mii);
-	int current_game = Picker_GetSelectedItem(hwndList);
-	if (current_game < 0)
-		return;
 
 	if (GetMenuItemInfo(hBodyContextMenu,ID_FOLDER_SOURCEPROPERTIES,false,&mii) == false)
 	{
 		printf("can't find show folders context menu\n");fflush(stdout);
 		return;
 	}
-	LPTREEFOLDER lpFolder = GetFolderByName(FOLDER_SOURCE, GetDriverFilename(current_game) );
-	_sntprintf(tmp,ARRAY_LENGTH(tmp),TEXT("Properties for %s"),lpFolder->m_lptTitle );
+
+	_sntprintf(tmp,ARRAY_LENGTH(tmp),TEXT("Properties for %s"), ui_wstring_from_utf8(GetDriverFilename(current_game) ));
 	mii.fMask = MIIM_TYPE | MIIM_ID;
 	mii.fType = MFT_STRING;
 	mii.dwTypeData = tmp;
@@ -6071,8 +6073,7 @@ void InitBodyContextMenu(HMENU hBodyContextMenu)
 	// menu in resources has one default item
 	// so overwrite this one
 	SetMenuItemInfo(hBodyContextMenu,ID_FOLDER_SOURCEPROPERTIES,false,&mii);
-	if( ! DriverIsVector(current_game) )
-		EnableMenuItem(hBodyContextMenu, ID_FOLDER_VECTORPROPERTIES, MF_GRAYED);
+	EnableMenuItem(hBodyContextMenu, ID_FOLDER_VECTORPROPERTIES, DriverIsVector(current_game) ? MF_ENABLED : MF_GRAYED);
 }
 
 
