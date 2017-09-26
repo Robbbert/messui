@@ -655,14 +655,13 @@ void Picker_SetSelectedPick(HWND hWnd, uint32_t nIndex)
 	// nCount is one more than number of last game
 	int nCount = ListView_GetItemCount(hWnd);
 	// No games to show
-	if (nCount == 0)
+	if (nCount < 1)
 		return;
 	nCount--;
 	if (nCount < nIndex)
 		nIndex = nCount;
 	// Highlight a game
-	if (nIndex > -1)
-		ListView_SetItemState(hWnd, nIndex, LVIS_FOCUSED | LVIS_SELECTED, LVIS_FOCUSED | LVIS_SELECTED);
+	ListView_SetItemState(hWnd, nIndex, LVIS_FOCUSED | LVIS_SELECTED, LVIS_FOCUSED | LVIS_SELECTED);
 	// Bring the game into view
 	(void)ListView_EnsureVisible(hWnd, nIndex, false);
 }
