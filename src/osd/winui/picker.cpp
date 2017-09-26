@@ -650,11 +650,8 @@ int Picker_GetSelectedItem(HWND hWnd)
 
 
 // This highlights a selected game, and scrolls it into view
-void Picker_SetSelectedPick(HWND hWnd, int nIndex)
+void Picker_SetSelectedPick(HWND hWnd, uint32_t nIndex)
 {
-	if (nIndex < 0)
-		nIndex = 0;
-	// Protection against bad coding elsewhere
 	// nCount is one more than number of last game
 	int nCount = ListView_GetItemCount(hWnd);
 	// No games to show
@@ -672,11 +669,8 @@ void Picker_SetSelectedPick(HWND hWnd, int nIndex)
 
 
 
-void Picker_SetSelectedItem(HWND hWnd, int nItem)
+void Picker_SetSelectedItem(HWND hWnd, uint32_t nItem)
 {
-	if (nItem < 0)
-		return;
-
 	LV_FINDINFO lvfi;
 	lvfi.flags = LVFI_PARAM;
 	lvfi.lParam = nItem;

@@ -258,8 +258,8 @@ BOOL GetShowTabCtrl(void);
 void SetCurrentTab(int val);
 int GetCurrentTab(void);
 
-void SetDefaultGame(int val);
-int GetDefaultGame(void);
+void SetDefaultGame(uint32_t val);
+uint32_t GetDefaultGame(void);
 
 void SetWindowArea(const AREA *area);
 void GetWindowArea(AREA *area);
