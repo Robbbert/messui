@@ -2261,6 +2261,11 @@ BOOL RequiredDriverCache(void)
 	return game_opts.rebuild();
 }
 
+void ForceRebuild(void)
+{
+	game_opts.force_rebuild();
+}
+
 BOOL DriverIsComputer(uint32_t driver_index)
 {
 	uint32_t cache = game_opts.cache_lower(driver_index) & 3;
