@@ -10,7 +10,6 @@ configuration { "mingw*-gcc or vs*" }
 	defines {
 		"UNICODE",
 		"_UNICODE",
-		"main=utf8_main",
 	}
 
 configuration { "Debug" }
