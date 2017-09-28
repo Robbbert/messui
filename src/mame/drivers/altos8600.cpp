@@ -55,10 +55,12 @@ public:
 	DECLARE_WRITE8_MEMBER(cattn_w);
 	DECLARE_READ8_MEMBER(romport_r);
 	DECLARE_WRITE8_MEMBER(romport_w);
+	DECLARE_WRITE8_MEMBER(clrsys_w);
 	DECLARE_WRITE16_MEMBER(mode_w);
 	DECLARE_WRITE_LINE_MEMBER(cpuif_w);
 	DECLARE_WRITE_LINE_MEMBER(fddrq_w);
 	DECLARE_WRITE8_MEMBER(ics_attn_w);
+	IRQ_CALLBACK_MEMBER(inta);
 protected:
 	virtual void machine_start() override;
 	virtual void machine_reset() override;
@@ -155,7 +157,11 @@ READ16_MEMBER(altos8600_state::mmuflags_r)
 WRITE16_MEMBER(altos8600_state::mmuflags_w)
 {
 	data &= ~0x17;
-	COMBINE_DATA(&m_mmuflags[offset & 0xff]);
+	if(mem_mask == 0xff)
+		data |= 0xff00;
+	else if(mem_mask == 0xff00)
+		return;
+	m_mmuflags[offset & 0xff] = data;
 }
 
 WRITE8_MEMBER(altos8600_state::cattn_w)
@@ -197,7 +203,11 @@ WRITE8_MEMBER(altos8600_state::romport_w)
 				m_fdc->set_floppy(nullptr);
 
 			if(m_nmistat && m_nmiinh && !BIT(data, 4))
+			{
+				m_mode &= ~1;
+				m_user = false;
 				m_maincpu->set_input_line(INPUT_LINE_NMI, ASSERT_LINE);
+			}
 			else if(BIT(data, 4) && m_nmistat)
 				m_maincpu->set_input_line(INPUT_LINE_NMI, CLEAR_LINE);
 			m_nmiinh = BIT(data, 4) ? true : false;
@@ -213,6 +223,11 @@ WRITE8_MEMBER(altos8600_state::romport_w)
 			m_romport[3] = data;
 			break;
 	}
+}
+
+WRITE8_MEMBER(altos8600_state::clrsys_w)
+{
+	m_pic1->ir0_w(CLEAR_LINE);
 }
 
 WRITE8_MEMBER(altos8600_state::ics_attn_w)
@@ -233,7 +248,6 @@ WRITE16_MEMBER(altos8600_state::mode_w)
 
 READ8_MEMBER(altos8600_state::get_slave_ack)
 {
-	m_user = false;
 	if(offset == 2)
 		return m_pic2->acknowledge();
 	else if(offset == 3)
@@ -245,9 +259,13 @@ void altos8600_state::seterr(offs_t offset, u16 mem_mask, u16 err_mask)
 {
 	if(machine().side_effect_disabled())
 		return;
-	logerror("Fault at %06x type %04x\n", offset << 1, err_mask);
+	logerror("Fault at %05x type %04x\n", offset << 1, err_mask);
 	if(!m_nmiinh)
+	{
+		m_mode &= ~1;
+		m_user = false;
 		m_maincpu->set_input_line(INPUT_LINE_NMI, ASSERT_LINE);
+	}
 	m_nmistat = true;
 	m_mmuerr &= ~err_mask;
 	m_mmueaddr[0] = (offset << 1) | (!(mem_mask & 0xff) ? 1 : 0);
@@ -332,9 +350,9 @@ WRITE16_MEMBER(altos8600_state::xtraram_w)
 
 READ16_MEMBER(altos8600_state::cpuio_r)
 {
-	if(m_user)
+	if(m_user && !machine().side_effect_disabled())
 	{
-		seterr(offset, mem_mask, 0x800);
+		m_pic1->ir0_w(ASSERT_LINE);
 		return 0;
 	}
 	return m_dmac->space(AS_IO).read_word_unaligned(offset << 1, mem_mask);
@@ -342,9 +360,9 @@ READ16_MEMBER(altos8600_state::cpuio_r)
 
 WRITE16_MEMBER(altos8600_state::cpuio_w)
 {
-	if(m_user)
+	if(m_user && !machine().side_effect_disabled())
 	{
-		seterr(offset, mem_mask, 0x800);
+		m_pic1->ir0_w(ASSERT_LINE);
 		return;
 	}
 	m_dmac->space(AS_IO).write_word_unaligned(offset << 1, data, mem_mask);
@@ -386,6 +404,13 @@ WRITE16_MEMBER(altos8600_state::nmi_w)
 	seterr(offset, mem_mask, 0x100);
 }
 
+IRQ_CALLBACK_MEMBER(altos8600_state::inta)
+{
+	m_user = false;
+	m_mode &= ~1;
+	return m_pic1->acknowledge();
+}
+
 static ADDRESS_MAP_START(cpu_mem, AS_PROGRAM, 16, altos8600_state)
 	AM_RANGE(0x00000, 0xfffff) AM_READWRITE(cpuram_r, cpuram_w)
 ADDRESS_MAP_END
@@ -423,6 +448,7 @@ static ADDRESS_MAP_START(dmac_io, AS_IO, 16, altos8600_state)
 	AM_RANGE(0x0048, 0x004f) AM_DEVREADWRITE8("pit", pit8253_device, read, write, 0xff00)
 	AM_RANGE(0x0050, 0x0057) AM_READWRITE8(romport_r, romport_w, 0xffff)
 	AM_RANGE(0x0058, 0x005f) AM_DEVREADWRITE8("pic8259_1", pic8259_device, read, write, 0x00ff)
+	AM_RANGE(0x0058, 0x005f) AM_WRITE8(clrsys_w, 0xff00)
 	AM_RANGE(0x0060, 0x0067) AM_DEVREADWRITE8("pic8259_2", pic8259_device, read, write, 0x00ff)
 	AM_RANGE(0x0068, 0x006f) AM_DEVREADWRITE8("pic8259_3", pic8259_device, read, write, 0x00ff)
 	AM_RANGE(0x0070, 0x0077) AM_NOP
@@ -436,15 +462,6 @@ static SLOT_INTERFACE_START(altos8600_floppies)
 	SLOT_INTERFACE( "8dd", FLOPPY_8_DSDD )
 SLOT_INTERFACE_END
 
-static DEVICE_INPUT_DEFAULTS_START(altos8600_terminal)
-	DEVICE_INPUT_DEFAULTS( "RS232_TXBAUD", 0xff, RS232_BAUD_9600 )
-	DEVICE_INPUT_DEFAULTS( "RS232_RXBAUD", 0xff, RS232_BAUD_9600 )
-	DEVICE_INPUT_DEFAULTS( "RS232_STARTBITS", 0xff, RS232_STARTBITS_1 )
-	DEVICE_INPUT_DEFAULTS( "RS232_DATABITS", 0xff, RS232_DATABITS_8 )
-	DEVICE_INPUT_DEFAULTS( "RS232_PARITY", 0xff, RS232_PARITY_NONE )
-	DEVICE_INPUT_DEFAULTS( "RS232_STOPBITS", 0xff, RS232_STOPBITS_1 )
-DEVICE_INPUT_DEFAULTS_END
-
 static MACHINE_CONFIG_START(altos8600)
 	MCFG_CPU_ADD("maincpu", I8086, XTAL_5MHz)
 	MCFG_CPU_PROGRAM_MAP(cpu_mem)
@@ -453,7 +470,7 @@ static MACHINE_CONFIG_START(altos8600)
 	MCFG_I8086_STACK_MAP(stack_mem)
 	MCFG_I8086_CODE_MAP(code_mem)
 	MCFG_I8086_EXTRA_MAP(extra_mem)
-	MCFG_CPU_IRQ_ACKNOWLEDGE_DEVICE("pic8259_1", pic8259_device, inta_cb)
+	MCFG_CPU_IRQ_ACKNOWLEDGE_DRIVER(altos8600_state, inta)
 	MCFG_I8086_IF_HANDLER(WRITELINE(altos8600_state, cpuif_w))
 
 	MCFG_CPU_ADD("dmac", I8089, XTAL_5MHz)
@@ -480,7 +497,7 @@ static MACHINE_CONFIG_START(altos8600)
 	MCFG_RAM_DEFAULT_SIZE("1M")
 	//MCFG_RAM_EXTRA_OPTIONS("512K")
 
-	MCFG_I8274_ADD("uart8274", XTAL_16MHz/4, 0, 0, 0, 0)
+	MCFG_DEVICE_ADD("uart8274", I8274_NEW, XTAL_16MHz/4)
 	MCFG_Z80SIO_OUT_TXDA_CB(DEVWRITELINE("rs232a", rs232_port_device, write_txd))
 	MCFG_Z80SIO_OUT_DTRA_CB(DEVWRITELINE("rs232a", rs232_port_device, write_dtr))
 	MCFG_Z80SIO_OUT_RTSA_CB(DEVWRITELINE("rs232a", rs232_port_device, write_rts))
@@ -494,22 +511,21 @@ static MACHINE_CONFIG_START(altos8600)
 	MCFG_RS232_DCD_HANDLER(DEVWRITELINE("uart8274", i8274_new_device, dcda_w))
 	MCFG_RS232_CTS_HANDLER(DEVWRITELINE("uart8274", i8274_new_device, ctsa_w))
 
-	MCFG_RS232_PORT_ADD("rs232b", default_rs232_devices, "terminal")
+	MCFG_RS232_PORT_ADD("rs232b", default_rs232_devices, nullptr)
 	MCFG_RS232_RXD_HANDLER(DEVWRITELINE("uart8274", i8274_new_device, rxb_w))
 	MCFG_RS232_DCD_HANDLER(DEVWRITELINE("uart8274", i8274_new_device, dcdb_w))
 	MCFG_RS232_CTS_HANDLER(DEVWRITELINE("uart8274", i8274_new_device, ctsb_w))
-	MCFG_DEVICE_CARD_DEVICE_INPUT_DEFAULTS("terminal", altos8600_terminal)
 
 	MCFG_DEVICE_ADD("ppi", I8255A, 0)
 
 	MCFG_DEVICE_ADD("pit", PIT8253, 0)
 	MCFG_PIT8253_CLK0(1228800)
-	MCFG_PIT8253_OUT1_HANDLER(DEVWRITELINE("uart8274", i8274_new_device, rxca_w))
+	MCFG_PIT8253_OUT0_HANDLER(DEVWRITELINE("uart8274", i8274_new_device, rxca_w))
 	MCFG_DEVCB_CHAIN_OUTPUT(DEVWRITELINE("uart8274", i8274_new_device, txca_w))
 	MCFG_PIT8253_CLK1(1228800)
 	MCFG_PIT8253_OUT1_HANDLER(DEVWRITELINE("uart8274", i8274_new_device, rxtxcb_w))
 	MCFG_PIT8253_CLK2(1228800)
-	MCFG_PIT8253_OUT0_HANDLER(DEVWRITELINE("pic8259_1", pic8259_device, ir1_w))
+	MCFG_PIT8253_OUT2_HANDLER(DEVWRITELINE("pic8259_1", pic8259_device, ir1_w))
 
 	MCFG_FD1797_ADD("fd1797", 2000000)
 	MCFG_WD_FDC_INTRQ_CALLBACK(DEVWRITELINE("pic8259_2", pic8259_device, ir1_w))
