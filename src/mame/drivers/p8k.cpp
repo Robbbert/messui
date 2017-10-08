@@ -42,10 +42,8 @@
     TODO:
       * properly implement Z80 daisy chain in 16 bit board
       * Find out how to enter hardware check on 16 bit board
-      * Find out how interrupts work on 16 bit board, an attempt to use Z8000_VI
-        (needed for daisy-chain) results in a crash. Once that is fixed and working,
-        then the use of sio0 can be attempted.
-      * Need full 16-bit schematics.
+      * Vectored interrupts use Z8000_VI, but this results in a crash. Once
+        that is fixed and working, then the use of sio0 can be attempted.
 
 ****************************************************************************/
 
@@ -560,6 +558,10 @@ ROM_START( p8000 )
 	ROM_REGION( 0x1000, "chargen", 0 )
 	ROM_LOAD("p8t_zs",    0x0000, 0x0800, CRC(f9321251) SHA1(a6a796b58d50ec4a416f2accc34bd76bc83f18ea))
 	ROM_LOAD("p8tdzs.2",  0x0800, 0x0800, CRC(32736503) SHA1(6a1d7c55dddc64a7d601dfdbf917ce1afaefbb0a))
+
+	ROM_REGION( 0x2000, "user1", 0 )
+	ROM_LOAD( "wdc4.2_1-2c43.bin", 0x0000, 0x1000, CRC(2646f1ee) SHA1(f62574ad57a2c8ac55c5df89256a707c0cafc0eb) )
+	ROM_LOAD( "wdc4.2_2-5d66.bin", 0x1000, 0x1000, CRC(5d496b65) SHA1(42166d7ec51fce086c65ea829d8a3d63088815ca) )
 ROM_END
 
 ROM_START( p8000_16 )
