@@ -1079,7 +1079,9 @@ asma2k                          //
 asmapro                         //
 
 @source:alphatpx.cpp
+alphatp2
 alphatp3                        // 1982 Triumph-Adler
+alphatp30
 
 @source:alphatro.cpp
 alphatro                        //
@@ -1441,6 +1443,7 @@ blackpnt                        // (c) 1996
 bootsctn                        // (c) 1998
 bootsctnu                       // (c) 1999
 bootsctnua                      // (c) 1999
+bootsctnub                      // (c) 1999
 bparty                          // (c) 2000
 bpartya                         // (c) 2000
 bumblbug                        // (c) 1996
@@ -1529,7 +1532,6 @@ mammothm                        // (c) 1997
 marmagic                        // (c) 2000
 marmagicu                       // (c) 2000
 marmagicua                      // (c) 2000
-marmagicub                      // (c) 2000
 minemine                        // (c) 1996
 minemineu                       // (c) 1996
 monmouse                        // (c) 1997
@@ -1558,6 +1560,8 @@ pengpayb                        // (c) 1997
 pengpayc                        // (c) 1995
 pengpayd                        // (c) 1995
 pengpayu                        // (c) 1997
+pengpayua                       // (c) 1997
+pengpayub                       // (c) 1997
 pengpuck                        // (c) 2001
 penpir                          // (c) 1998
 penpira                         // (c) 1998
@@ -8811,10 +8815,12 @@ blockoutj                       // TA-0029 (c) 1989 + California Dreams (Japan)
 
 @source:bloodbro.cpp
 bloodbro                        // (c) 1990 Tad
-bloodbroa                       // (c) 1990 Tad
-bloodbrob                       // (c) 1990 Tad
+bloodbroj                       // (c) 1990 Tad
+bloodbroja                      // (c) 1990 Tad
+bloodbrou                       // (c) 1990 Tad + Fabtek license
 skysmash                        // (c) 1990 Nihon System Inc.
-weststry                        // bootleg
+weststory                       // bootleg
+weststorya                      // bootleg
 
 @source:blstroid.cpp
 blstroid                        // 136057           (c) 1987
@@ -12599,6 +12605,7 @@ super9ccg                       // * German
 super9ccsp                      // * Spanish
 
 @source:fidel68k.cpp
+fdes2265                        //
 feagv10                         //
 feagv11                         //
 feagv2                          //
@@ -14702,6 +14709,7 @@ tbatman                         // Tiger
 tddragon                        // Tiger
 tgaunt                          // Tiger
 tjdredd                         // Tiger
+tsharr2                         // Tiger
 tsjam                           // Tiger
 tsonic                          // Tiger
 tswampt                         // Tiger
@@ -14739,6 +14747,7 @@ eleciq                          // Conic
 esbattle                        // Entex
 esoccer                         // Entex
 f2pbball                        // Fonas
+f3in1                           // Fonas
 fxmcr165                        // Gakken
 ginv1000                        // Gakken
 gjackpot                        // Gakken
@@ -14773,6 +14782,7 @@ tbreakup                        // Tomy
 tc4                             // Coleco
 tcfball                         // Tandy Radio Shack
 tcfballa                        // Tandy Radio Shack
+xl25                            // Vulcan
 zodiac                          // Coleco
 
 @source:hh_ucom4.cpp
@@ -28888,7 +28898,8 @@ cspike                          // 2000.10 Gun Spike / Cannon Spike
 cvs2mf                          // 2001.07.05 Capcom Vs. SNK 2 Millionaire Fighting 2001 (Rev A)
 cvs2                            // 2001.08.04 Capcom Vs. SNK 2 Mark Of The Millennium 2001
 cvsgd                           // 2001.05 Capcom Vs. SNK Millennium Fight 2000 Pro
-deathcox                        // 2000.10 Death Crimson OX
+deathcoxo                       // 2000.10 Death Crimson OX
+deathcox                        // 2000.10 Death Crimson OX (Rev A)
 demofist                        // 2003.06 Demolish Fist
 derbyo2k                        // 2000.06 Derby Owners Club 2000 Ver.2 (Japan) (Rev A)
 derbyoc                         // 1999.10 Derby Owners Club (Japan) (Rev B)
@@ -31280,6 +31291,7 @@ kov3_100                        //
 orleg2                          // (c) 2007
 orleg2_103                      //
 orleg2_101                      //
+kof98umh						// (c) 2009
 
 @source:pgm3.cpp
 kov3hd
@@ -31348,6 +31360,9 @@ photoply                        //
 
 @source:phunsy.cpp
 phunsy                          //
+
+@source:picno.cpp
+picno                           // Konami Picno (1993)
 
 @source:piggypas.cpp
 3lilpigs                        //
@@ -32388,7 +32403,8 @@ rbislande                       // B39 (c) 1988 Taito Corporation
 rbislando                       // B22 (c) 1987 Taito Corporation
 
 @source:rbmk.cpp
-rbmk                            // (c) 1995 GMS
+rbmk                            // (c) 1998 GMS
+rbspm                           // (c) 1998 GMS
 
 @source:rc702.cpp
 rc702                           // 1979 RC702
@@ -35566,6 +35582,7 @@ svmu                            // 1998 Sega Visual Memory Unit
 
 @source:swtpc.cpp
 swtpc                           //
+swtpcm                          //
 
 @source:swtpc09.cpp
 swtpc09                         // S09, DMF2 Floppy SBUG rom - FLEX
