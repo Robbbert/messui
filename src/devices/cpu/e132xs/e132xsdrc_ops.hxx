@@ -83,8 +83,16 @@ void hyperstone_device::generate_decode_immediate_s(drcuml_block *block, compile
 	}
 }
 
-void hyperstone_device::generate_ignore_immediate_s(drcuml_block *block, compiler_state *compiler, const opcode_desc *desc)
+void hyperstone_device::generate_ignore_immediate_s(drcuml_block *block, const opcode_desc *desc)
 {
+	uint16_t op = desc->opptr.w[0];
+
+	static const uint32_t lengths[16] = { 1<<19, 3<<19, 2<<19, 2<<19, 1<<19, 1<<19, 1<<19, 1<<19, 1<<19, 1<<19, 1<<19, 1<<19, 1<<19, 1<<19, 1<<19, 1<<19 };
+	static const uint32_t offsets[16] = { 0, 4, 2, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
+	const uint8_t nybble = op & 0x0f;
+
+	UML_MOV(block, mem(&m_instruction_length), lengths[nybble]);
+	UML_ADD(block, DRC_PC, DRC_PC, offsets[nybble]);
 }
 
 void hyperstone_device::generate_decode_pcrel(drcuml_block *block, const opcode_desc *desc)
@@ -233,24 +241,29 @@ void hyperstone_device::generate_set_global_register(drcuml_block *block, compil
 
 void hyperstone_device::generate_trap(drcuml_block *block, compiler_state *compiler, const opcode_desc *desc, uint32_t addr)
 {
+	printf("Unimplemented: generate_trap (%08x)\n", desc->pc);
 }
 
 void hyperstone_device::generate_int(drcuml_block *block, compiler_state *compiler, const opcode_desc *desc, uint32_t addr)
 {
+	printf("Unimplemented: generate_int (%08x)\n", desc->pc);
 }
 
 void hyperstone_device::generate_exception(drcuml_block *block, compiler_state *compiler, const opcode_desc *desc, uint32_t addr)
 {
+	printf("Unimplemented: generate_exception (%08x)\n", desc->pc);
 }
 
 void hyperstone_device::generate_software(drcuml_block *block, compiler_state *compiler, const opcode_desc *desc)
 {
+	printf("Unimplemented: generate_software (%08x)\n", desc->pc);
 }
 
 
 template <hyperstone_device::reg_bank DST_GLOBAL, hyperstone_device::reg_bank SRC_GLOBAL>
 void hyperstone_device::generate_chk(drcuml_block *block, compiler_state *compiler, const opcode_desc *desc)
 {
+	printf("Unimplemented: generate_chk (%08x)\n", desc->pc);
 }
 
 
@@ -282,21 +295,17 @@ void hyperstone_device::generate_movd(drcuml_block *block, compiler_state *compi
 		}
 		else
 		{
-			UML_ROLAND(block, I2, DRC_SR, 7, 0x7f);
-			UML_ADD(block, I3, I2, src_code);
+			UML_ROLAND(block, I5, DRC_SR, 7, 0x7f);
+			UML_ADD(block, I3, I5, src_code);
 			UML_AND(block, I4, I3, 0x3f);
 			UML_LOAD(block, I2, (void *)m_local_regs, I4, SIZE_DWORD, SCALE_x4);
 
-			UML_ADD(block, I6, I2, srcf_code);
+			UML_ADD(block, I6, I5, srcf_code);
 			UML_AND(block, I5, I6, 0x3f);
 			UML_LOAD(block, I3, (void *)m_local_regs, I5, SIZE_DWORD, SCALE_x4);
 		}
 
 		UML_AND(block, DRC_PC, I2, ~1);
-
-		UML_MOV(block, mem(&m_drc_arg0), (uint32_t)'0');
-		UML_MOV(block, mem(&m_drc_arg1), I2);
-		UML_CALLC(block, cfunc_print, this);
 
 		UML_AND(block, DRC_SR, I3, 0xffe3ffff);
 		UML_ROLINS(block, DRC_SR, I2, S_SHIFT, S_MASK);
@@ -437,6 +446,7 @@ void hyperstone_device::generate_movd(drcuml_block *block, compiler_state *compi
 template <hyperstone_device::reg_bank DST_GLOBAL, hyperstone_device::reg_bank SRC_GLOBAL, hyperstone_device::sign_mode SIGNED>
 void hyperstone_device::generate_divsu(drcuml_block *block, compiler_state *compiler, const opcode_desc *desc)
 {
+	printf("Unimplemented: generate_divsu (%08x)\n", desc->pc);
 }
 
 
@@ -639,6 +649,7 @@ void hyperstone_device::generate_sum(drcuml_block *block, compiler_state *compil
 template <hyperstone_device::reg_bank DST_GLOBAL, hyperstone_device::reg_bank SRC_GLOBAL>
 void hyperstone_device::generate_sums(drcuml_block *block, compiler_state *compiler, const opcode_desc *desc)
 {
+	printf("Unimplemented: generate_sums (%08x)\n", desc->pc);
 }
 
 
@@ -745,7 +756,7 @@ void hyperstone_device::generate_mov(drcuml_block *block, compiler_state *compil
 	UML_TEST(block, I3, ~0);
 	UML_SETc(block, uml::COND_Z, I2);
 	UML_ROLINS(block, DRC_SR, I2, 1, Z_MASK);
-	UML_ROLINS(block, DRC_SR, I5, 28, N_MASK);
+	UML_ROLINS(block, DRC_SR, I5, 3, N_MASK);
 
 	if (DST_GLOBAL)
 	{
@@ -838,18 +849,21 @@ void hyperstone_device::generate_add(drcuml_block *block, compiler_state *compil
 template <hyperstone_device::reg_bank DST_GLOBAL, hyperstone_device::reg_bank SRC_GLOBAL>
 void hyperstone_device::generate_adds(drcuml_block *block, compiler_state *compiler, const opcode_desc *desc)
 {
+	printf("Unimplemented: generate_adds (%08x)\n", desc->pc);
 }
 
 
 template <hyperstone_device::reg_bank DST_GLOBAL, hyperstone_device::reg_bank SRC_GLOBAL>
 void hyperstone_device::generate_cmpb(drcuml_block *block, compiler_state *compiler, const opcode_desc *desc)
 {
+	printf("Unimplemented: generate_cmpb (%08x)\n", desc->pc);
 }
 
 
 template <hyperstone_device::reg_bank DST_GLOBAL, hyperstone_device::reg_bank SRC_GLOBAL>
 void hyperstone_device::generate_subc(drcuml_block *block, compiler_state *compiler, const opcode_desc *desc)
 {
+	printf("Unimplemented: generate_subc (%08x)\n", desc->pc);
 }
 
 
@@ -931,54 +945,63 @@ void hyperstone_device::generate_sub(drcuml_block *block, compiler_state *compil
 template <hyperstone_device::reg_bank DST_GLOBAL, hyperstone_device::reg_bank SRC_GLOBAL>
 void hyperstone_device::generate_subs(drcuml_block *block, compiler_state *compiler, const opcode_desc *desc)
 {
+	printf("Unimplemented: generate_ (%08x)\n", desc->pc);
 }
 
 
 template <hyperstone_device::reg_bank DST_GLOBAL, hyperstone_device::reg_bank SRC_GLOBAL>
 void hyperstone_device::generate_addc(drcuml_block *block, compiler_state *compiler, const opcode_desc *desc)
 {
+	printf("Unimplemented: generate_addc (%08x)\n", desc->pc);
 }
 
 
 template <hyperstone_device::reg_bank DST_GLOBAL, hyperstone_device::reg_bank SRC_GLOBAL>
 void hyperstone_device::generate_neg(drcuml_block *block, compiler_state *compiler, const opcode_desc *desc)
 {
+	printf("Unimplemented: generate_neg (%08x)\n", desc->pc);
 }
 
 
 template <hyperstone_device::reg_bank DST_GLOBAL, hyperstone_device::reg_bank SRC_GLOBAL>
 void hyperstone_device::generate_negs(drcuml_block *block, compiler_state *compiler, const opcode_desc *desc)
 {
+	printf("Unimplemented: generate_negs (%08x)\n", desc->pc);
 }
 
 
 template <hyperstone_device::reg_bank DST_GLOBAL, hyperstone_device::reg_bank SRC_GLOBAL>
 void hyperstone_device::generate_and(drcuml_block *block, compiler_state *compiler, const opcode_desc *desc)
 {
+	printf("Unimplemented: generate_and (%08x)\n", desc->pc);
 }
 
 
 template <hyperstone_device::reg_bank DST_GLOBAL, hyperstone_device::reg_bank SRC_GLOBAL>
 void hyperstone_device::generate_andn(drcuml_block *block, compiler_state *compiler, const opcode_desc *desc)
 {
+	printf("Unimplemented: generate_andn (%08x)\n", desc->pc);
 }
 
 
 template <hyperstone_device::reg_bank DST_GLOBAL, hyperstone_device::reg_bank SRC_GLOBAL>
 void hyperstone_device::generate_or(drcuml_block *block, compiler_state *compiler, const opcode_desc *desc)
 {
+	printf("Unimplemented: generate_or (%08x)\n", desc->pc);
 }
 
 
 template <hyperstone_device::reg_bank DST_GLOBAL, hyperstone_device::reg_bank SRC_GLOBAL>
 void hyperstone_device::generate_xor(drcuml_block *block, compiler_state *compiler, const opcode_desc *desc)
 {
+	printf("Unimplemented: generate_xor (%08x)\n", desc->pc);
 }
 
 
 template <hyperstone_device::reg_bank DST_GLOBAL, hyperstone_device::reg_bank SRC_GLOBAL>
 void hyperstone_device::generate_not(drcuml_block *block, compiler_state *compiler, const opcode_desc *desc)
 {
+	printf("Unimplemented: generate_not (%08x)\n", desc->pc);
 }
 
 
@@ -1027,7 +1050,7 @@ void hyperstone_device::generate_cmpi(drcuml_block *block, compiler_state *compi
 	UML_CMP(block, I2, I1);
 	UML_MOVc(block, uml::COND_E, I3, Z_MASK);
 	UML_MOVc(block, uml::COND_B, I3, C_MASK);
-	UML_JMPc(block, uml::COND_L, no_n = compiler->m_labelnum++);
+	UML_JMPc(block, uml::COND_GE, no_n = compiler->m_labelnum++);
 	UML_OR(block, I3, I3, N_MASK);
 	UML_LABEL(block, no_n);
 	UML_OR(block, DRC_SR, DRC_SR, I3);
@@ -1042,15 +1065,12 @@ void hyperstone_device::generate_movi(drcuml_block *block, compiler_state *compi
 {
 	uint16_t op = desc->opptr.w[0];
 	const uint32_t dst_code = (op & 0xf0) >> 4;
+	const uint32_t src_code = op & 0xf;
 
 	if (IMM_LONG)
-	{
-		generate_decode_immediate_s(block, compiler, desc); // I1 <-- imm32
-	}
+		generate_decode_immediate_s(block, compiler, desc);
 	else
-	{
-		UML_AND(block, I1, I0, 0xf);
-	}
+		UML_MOV(block, I1, src_code);
 
 	generate_check_delay_pc(block);
 
@@ -1092,7 +1112,7 @@ void hyperstone_device::generate_movi(drcuml_block *block, compiler_state *compi
 		UML_MOV(block, I5, I1);
 		generate_set_global_register(block, compiler, desc);
 
-		UML_TEST(block, I0, 0xf0);
+		UML_TEST(block, op, 0xf0);
 		UML_JMPc(block, uml::COND_NZ, done);
 		UML_AND(block, DRC_SR, DRC_SR, ~M_MASK);
 		generate_delay_slot_and_branch(block, compiler, desc);
@@ -1112,24 +1132,205 @@ void hyperstone_device::generate_movi(drcuml_block *block, compiler_state *compi
 template <hyperstone_device::reg_bank DST_GLOBAL, hyperstone_device::imm_size IMM_LONG>
 void hyperstone_device::generate_addi(drcuml_block *block, compiler_state *compiler, const opcode_desc *desc)
 {
+	uint16_t op = desc->opptr.w[0];
+	const uint32_t dst_code = (op & 0xf0) >> 4;
+	const uint32_t src_code = op & 0xf;
+
+	if (IMM_LONG)
+		generate_decode_immediate_s(block, compiler, desc); // I1 <-- imm32
+	else
+		UML_MOV(block, I1, src_code);
+
+	generate_check_delay_pc(block);
+
+	if (DST_GLOBAL)
+	{
+		UML_LOAD(block, I2, (void *)m_global_regs, dst_code, SIZE_DWORD, SCALE_x4);
+	}
+	else
+	{
+		UML_ROLAND(block, I3, DRC_SR, 7, 0x7f);
+		UML_ADD(block, I4, I3, dst_code);
+		UML_AND(block, I5, I4, 0x3f);
+		UML_LOAD(block, I2, (void *)m_local_regs, I5, SIZE_DWORD, SCALE_x4);
+	}
+
+	if (!(op & 0x10f))
+	{
+		UML_TEST(block, DRC_SR, Z_MASK);
+		UML_SETc(block, uml::COND_Z, I4);
+		UML_AND(block, I5, I2, 1);
+		UML_OR(block, I6, I4, I5);
+		UML_AND(block, I1, DRC_SR, I6);
+	}
+
+	UML_AND(block, DRC_SR, DRC_SR, ~(C_MASK | V_MASK | Z_MASK | N_MASK));
+
+	UML_DADD(block, I0, I1, I2);
+
+	UML_DTEST(block, I2, 0x100000000U);
+	UML_SETc(block, uml::COND_NZ, I4);
+	UML_ROLINS(block, DRC_SR, I4, 0, C_MASK);
+
+	UML_XOR(block, I4, I2, I0);
+	UML_XOR(block, I5, I1, I0);
+	UML_AND(block, I6, I4, I5);
+	UML_ROLINS(block, DRC_SR, I6, 4, V_MASK);
+
+	UML_ADD(block, I0, I1, I2);
+
+	UML_TEST(block, I0, ~0);
+	UML_SETc(block, uml::COND_Z, I4);
+	UML_ROLINS(block, DRC_SR, I4, 0, Z_MASK);
+	UML_ROLINS(block, DRC_SR, I0, 3, N_MASK);
+
+	if (DST_GLOBAL)
+	{
+		UML_MOV(block, I4, dst_code);
+		UML_MOV(block, I5, I0);
+		generate_set_global_register(block, compiler, desc);
+
+		if (dst_code == 0)
+			UML_AND(block, DRC_SR, DRC_SR, ~M_MASK);
+	}
+	else
+	{
+		UML_ADD(block, I4, I3, dst_code);
+		UML_AND(block, I5, I4, 0x3f);
+		UML_STORE(block, (void *)m_local_regs, I5, I0, SIZE_DWORD, SCALE_x4);
+	}
 }
 
 
 template <hyperstone_device::reg_bank DST_GLOBAL, hyperstone_device::imm_size IMM_LONG>
 void hyperstone_device::generate_addsi(drcuml_block *block, compiler_state *compiler, const opcode_desc *desc)
 {
+	printf("Unimplemented: generate_addsi (%08x)\n", desc->pc);
 }
 
 
 template <hyperstone_device::reg_bank DST_GLOBAL, hyperstone_device::imm_size IMM_LONG>
 void hyperstone_device::generate_cmpbi(drcuml_block *block, compiler_state *compiler, const opcode_desc *desc)
 {
+	uint16_t op = desc->opptr.w[0];
+	const uint32_t dst_code = (op & 0xf0) >> 4;
+
+	if (!IMM_LONG)
+		generate_check_delay_pc(block);
+
+	if (DST_GLOBAL)
+	{
+		UML_LOAD(block, I2, (void *)m_global_regs, dst_code, SIZE_DWORD, SCALE_x4);
+	}
+	else
+	{
+		UML_ROLAND(block, I3, DRC_SR, 7, 0x7f);
+		UML_ADD(block, I4, I3, dst_code);
+		UML_AND(block, I5, I4, 0x3f);
+		UML_LOAD(block, I2, (void *)m_local_regs, I5, SIZE_DWORD, SCALE_x4);
+	}
+
+	const uint32_t n = ((op & 0x100) >> 4) | (op & 0x0f);
+	if (n)
+	{
+		if (n == 31)
+		{
+			if (IMM_LONG)
+			{
+				generate_ignore_immediate_s(block, desc);
+				generate_check_delay_pc(block);
+			}
+			UML_MOV(block, I1, 0x7fffffff);
+		}
+		else
+		{
+			if (IMM_LONG)
+			{
+				generate_decode_immediate_s(block, compiler, desc);
+				generate_check_delay_pc(block);
+			}
+			else
+			{
+				UML_MOV(block, I1, op & 0xf);
+			}
+		}
+
+		UML_AND(block, DRC_SR, DRC_SR, ~Z_MASK);
+		UML_TEST(block, I2, I1);
+		UML_SETc(block, uml::COND_Z, I3);
+		UML_ROLINS(block, DRC_SR, I3, Z_SHIFT, Z_MASK);
+	}
+	else
+	{
+		if (IMM_LONG)
+		{
+			generate_ignore_immediate_s(block, desc);
+			generate_check_delay_pc(block);
+		}
+
+		int or_mask, done;
+		UML_TEST(block, I2, 0xff000000);
+		UML_JMPc(block, uml::COND_Z, or_mask = compiler->m_labelnum++);
+		UML_TEST(block, I2, 0x00ff0000);
+		UML_JMPc(block, uml::COND_Z, or_mask);
+		UML_TEST(block, I2, 0x0000ff00);
+		UML_JMPc(block, uml::COND_Z, or_mask);
+		UML_TEST(block, I2, 0x000000ff);
+		UML_JMPc(block, uml::COND_Z, or_mask);
+		UML_AND(block, DRC_SR, DRC_SR, ~Z_MASK);
+		UML_JMP(block, done = compiler->m_labelnum++);
+
+		UML_LABEL(block, or_mask);
+		UML_OR(block, DRC_SR, DRC_SR, Z_MASK);
+
+		UML_LABEL(block, done);
+	}
 }
 
 
 template <hyperstone_device::reg_bank DST_GLOBAL, hyperstone_device::imm_size IMM_LONG>
 void hyperstone_device::generate_andni(drcuml_block *block, compiler_state *compiler, const opcode_desc *desc)
 {
+	uint16_t op = desc->opptr.w[0];
+	const uint32_t dst_code = (op & 0xf0) >> 4;
+
+	if (IMM_LONG)
+	{
+		generate_decode_immediate_s(block, compiler, desc); // I1 <-- imm32
+	}
+	else
+	{
+		UML_AND(block, I1, I0, 0xf);
+	}
+
+	generate_check_delay_pc(block);
+
+	if (DST_GLOBAL)
+	{
+		UML_LOAD(block, I2, (void *)m_global_regs, dst_code, SIZE_DWORD, SCALE_x4);
+	}
+	else
+	{
+		UML_ROLAND(block, I3, DRC_SR, 7, 0x7f);
+		UML_ADD(block, I2, I3, dst_code);
+		UML_LOAD(block, I2, (void *)m_local_regs, I2, SIZE_DWORD, SCALE_x4);
+	}
+
+	UML_AND(block, DRC_SR, DRC_SR, ~Z_MASK);
+	UML_XOR(block, I1, I1, ~0);
+	UML_AND(block, I5, I2, I1);
+
+	if (DST_GLOBAL)
+	{
+		UML_MOV(block, I4, dst_code);
+		generate_set_global_register(block, compiler, desc);
+	}
+	else
+	{
+		UML_ADD(block, I4, I3, dst_code);
+		UML_AND(block, I4, I4, 0x3f);
+		UML_STORE(block, (void *)m_local_regs, I4, I5, SIZE_DWORD, SCALE_x4);
+	}
 }
 
 
@@ -1171,7 +1372,7 @@ void hyperstone_device::generate_ori(drcuml_block *block, compiler_state *compil
 	}
 	else
 	{
-		UML_ADD(block, I4, I2, dst_code);
+		UML_ADD(block, I4, I3, dst_code);
 		UML_AND(block, I4, I4, 0x3f);
 		UML_STORE(block, (void *)m_local_regs, I4, I5, SIZE_DWORD, SCALE_x4);
 	}
@@ -1181,82 +1382,97 @@ void hyperstone_device::generate_ori(drcuml_block *block, compiler_state *compil
 template <hyperstone_device::reg_bank DST_GLOBAL, hyperstone_device::imm_size IMM_LONG>
 void hyperstone_device::generate_xori(drcuml_block *block, compiler_state *compiler, const opcode_desc *desc)
 {
+	printf("Unimplemented: generate_xori (%08x)\n", desc->pc);
 }
 
 
 template <hyperstone_device::shift_type HI_N>
 void hyperstone_device::generate_shrdi(drcuml_block *block, compiler_state *compiler, const opcode_desc *desc)
 {
+	printf("Unimplemented: generate_shrdi (%08x)\n", desc->pc);
 }
 
 
 void hyperstone_device::generate_shrd(drcuml_block *block, compiler_state *compiler, const opcode_desc *desc)
 {
+	printf("Unimplemented: generate_shrd (%08x)\n", desc->pc);
 }
 
 
 void hyperstone_device::generate_shr(drcuml_block *block, compiler_state *compiler, const opcode_desc *desc)
 {
+	printf("Unimplemented: generate_shr (%08x)\n", desc->pc);
 }
 
 
 template <hyperstone_device::shift_type HI_N, hyperstone_device::reg_bank DST_GLOBAL>
 void hyperstone_device::generate_shri(drcuml_block *block, compiler_state *compiler, const opcode_desc *desc)
 {
+	printf("Unimplemented: generate_shri (%08x)\n", desc->pc);
 }
 
 
 template <hyperstone_device::shift_type HI_N>
 void hyperstone_device::generate_sardi(drcuml_block *block, compiler_state *compiler, const opcode_desc *desc)
 {
+	printf("Unimplemented: generate_sardi (%08x)\n", desc->pc);
 }
 
 
 void hyperstone_device::generate_sard(drcuml_block *block, compiler_state *compiler, const opcode_desc *desc)
 {
+	printf("Unimplemented: generate_sard (%08x)\n", desc->pc);
 }
 
 
 void hyperstone_device::generate_sar(drcuml_block *block, compiler_state *compiler, const opcode_desc *desc)
 {
+	printf("Unimplemented: generate_sar (%08x)\n", desc->pc);
 }
 
 
 template <hyperstone_device::shift_type HI_N, hyperstone_device::reg_bank DST_GLOBAL>
 void hyperstone_device::generate_sari(drcuml_block *block, compiler_state *compiler, const opcode_desc *desc)
 {
+	printf("Unimplemented: generate_sari (%08x)\n", desc->pc);
 }
 
 
 template <hyperstone_device::shift_type HI_N>
 void hyperstone_device::generate_shldi(drcuml_block *block, compiler_state *compiler, const opcode_desc *desc)
 {
+	printf("Unimplemented: generate_shldi (%08x)\n", desc->pc);
 }
 
 
 void hyperstone_device::generate_shld(drcuml_block *block, compiler_state *compiler, const opcode_desc *desc)
 {
+	printf("Unimplemented: generate_shld (%08x)\n", desc->pc);
 }
 
 
 void hyperstone_device::generate_shl(drcuml_block *block, compiler_state *compiler, const opcode_desc *desc)
 {
+	printf("Unimplemented: generate_shl (%08x)\n", desc->pc);
 }
 
 
 template <hyperstone_device::shift_type HI_N, hyperstone_device::reg_bank DST_GLOBAL>
 void hyperstone_device::generate_shli(drcuml_block *block, compiler_state *compiler, const opcode_desc *desc)
 {
+	printf("Unimplemented: generate_shli (%08x)\n", desc->pc);
 }
 
 
 void hyperstone_device::generate_testlz(drcuml_block *block, compiler_state *compiler, const opcode_desc *desc)
 {
+	printf("Unimplemented: generate_testlz (%08x)\n", desc->pc);
 }
 
 
 void hyperstone_device::generate_rol(drcuml_block *block, compiler_state *compiler, const opcode_desc *desc)
 {
+	printf("Unimplemented: generate_rol (%08x)\n", desc->pc);
 }
 
 
@@ -1507,6 +1723,7 @@ void hyperstone_device::generate_ldxx1(drcuml_block *block, compiler_state *comp
 template <hyperstone_device::reg_bank DST_GLOBAL, hyperstone_device::reg_bank SRC_GLOBAL>
 void hyperstone_device::generate_ldxx2(drcuml_block *block, compiler_state *compiler, const opcode_desc *desc)
 {
+	printf("Unimplemented: generate_ldxx2 (%08x)\n", desc->pc);
 }
 
 
@@ -1653,24 +1870,28 @@ void hyperstone_device::generate_stxx1(drcuml_block *block, compiler_state *comp
 template <hyperstone_device::reg_bank DST_GLOBAL, hyperstone_device::reg_bank SRC_GLOBAL>
 void hyperstone_device::generate_stxx2(drcuml_block *block, compiler_state *compiler, const opcode_desc *desc)
 {
+	printf("Unimplemented: generate_stxx2 (%08x)\n", desc->pc);
 }
 
 
 template <hyperstone_device::reg_bank DST_GLOBAL, hyperstone_device::reg_bank SRC_GLOBAL, hyperstone_device::sign_mode SIGNED>
 void hyperstone_device::generate_mulsu(drcuml_block *block, compiler_state *compiler, const opcode_desc *desc)
 {
+	printf("Unimplemented: generate_mulsu (%08x)\n", desc->pc);
 }
 
 
 template <hyperstone_device::reg_bank DST_GLOBAL, hyperstone_device::reg_bank SRC_GLOBAL>
 void hyperstone_device::generate_mul(drcuml_block *block, compiler_state *compiler, const opcode_desc *desc)
 {
+	printf("Unimplemented: generate_mul (%08x)\n", desc->pc);
 }
 
 
 template <hyperstone_device::shift_type HI_N, hyperstone_device::reg_bank DST_GLOBAL>
 void hyperstone_device::generate_set(drcuml_block *block, compiler_state *compiler, const opcode_desc *desc)
 {
+	printf("Unimplemented: generate_set (%08x)\n", desc->pc);
 }
 
 
@@ -1707,18 +1928,108 @@ void hyperstone_device::generate_ldwr(drcuml_block *block, compiler_state *compi
 template <hyperstone_device::reg_bank SRC_GLOBAL>
 void hyperstone_device::generate_lddr(drcuml_block *block, compiler_state *compiler, const opcode_desc *desc)
 {
+	printf("Unimplemented: generate_lddr (%08x)\n", desc->pc);
 }
 
 
 template <hyperstone_device::reg_bank SRC_GLOBAL>
 void hyperstone_device::generate_ldwp(drcuml_block *block, compiler_state *compiler, const opcode_desc *desc)
 {
+	const uint16_t op = desc->opptr.w[0];
+
+	generate_check_delay_pc(block);
+
+	const uint32_t src_code = op & 0xf;
+	const uint32_t dst_code = (op & 0xf0) >> 4;
+
+	UML_ROLAND(block, I0, DRC_SR, 7, 0x7f);
+	UML_ADD(block, I1, I0, dst_code);
+	UML_AND(block, I2, I1, 0x3f);
+	UML_LOAD(block, I0, (void *)m_local_regs, I2, SIZE_DWORD, SCALE_x4);
+
+	UML_ADD(block, I3, I0, 4);
+	UML_CALLH(block, *m_mem_read32);
+
+	if (SRC_GLOBAL)
+	{
+		UML_MOV(block, I4, src_code);
+		UML_MOV(block, I5, I1);
+		generate_set_global_register(block, compiler, desc);
+
+		UML_ROLAND(block, I0, DRC_SR, 7, 0x7f);
+		UML_ADD(block, I1, I0, dst_code);
+		UML_AND(block, I2, I1, 0x3f);
+		UML_STORE(block, (void *)m_local_regs, I2, I3, SIZE_DWORD, SCALE_x4);
+	}
+	else
+	{
+		UML_ROLAND(block, I0, DRC_SR, 7, 0x7f);
+		UML_ADD(block, I4, I0, src_code);
+		UML_AND(block, I5, I4, 0x3f);
+		UML_STORE(block, (void *)m_local_regs, I5, I1, SIZE_DWORD, SCALE_x4);
+
+		if (src_code != dst_code)
+		{
+			UML_ADD(block, I4, I0, dst_code);
+			UML_AND(block, I5, I4, 0x3f);
+			UML_STORE(block, (void *)m_local_regs, I5, I3, SIZE_DWORD, SCALE_x4);
+		}
+	}
 }
 
 
 template <hyperstone_device::reg_bank SRC_GLOBAL>
 void hyperstone_device::generate_lddp(drcuml_block *block, compiler_state *compiler, const opcode_desc *desc)
 {
+	const uint16_t op = desc->opptr.w[0];
+
+	generate_check_delay_pc(block);
+
+	const uint32_t src_code = op & 0xf;
+	const uint32_t dst_code = (op & 0xf0) >> 4;
+
+	UML_ROLAND(block, I0, DRC_SR, 7, 0x7f);
+	UML_ADD(block, I1, I0, dst_code);
+	UML_AND(block, I2, I1, 0x3f);
+	UML_LOAD(block, I0, (void *)m_local_regs, I2, SIZE_DWORD, SCALE_x4);
+
+	UML_ADD(block, I3, I0, 8);
+	UML_CALLH(block, *m_mem_read32);
+	UML_MOV(block, I2, I1);				// I2: dreg[0]
+	UML_ADD(block, I0, I0, 4);
+	UML_CALLH(block, *m_mem_read32);	// I1: dreg[4]
+
+	if (SRC_GLOBAL)
+	{
+		UML_MOV(block, I4, src_code);
+		UML_MOV(block, I5, I2);
+		generate_set_global_register(block, compiler, desc);
+		UML_MOV(block, I4, src_code + 1);
+		UML_MOV(block, I5, I1);
+		generate_set_global_register(block, compiler, desc);
+
+		UML_ROLAND(block, I0, DRC_SR, 7, 0x7f);
+		UML_ADD(block, I1, I0, dst_code);
+		UML_AND(block, I2, I1, 0x3f);
+		UML_STORE(block, (void *)m_local_regs, I2, I3, SIZE_DWORD, SCALE_x4);
+	}
+	else
+	{
+		UML_ROLAND(block, I0, DRC_SR, 7, 0x7f);
+		UML_ADD(block, I4, I0, src_code);
+		UML_AND(block, I5, I4, 0x3f);
+		UML_STORE(block, (void *)m_local_regs, I5, I2, SIZE_DWORD, SCALE_x4);
+		UML_ADD(block, I4, I0, src_code + 1);
+		UML_AND(block, I5, I4, 0x3f);
+		UML_STORE(block, (void *)m_local_regs, I5, I1, SIZE_DWORD, SCALE_x4);
+
+		if (src_code != dst_code && (src_code + 1) != dst_code)
+		{
+			UML_ADD(block, I4, I0, dst_code);
+			UML_AND(block, I5, I4, 0x3f);
+			UML_STORE(block, (void *)m_local_regs, I5, I3, SIZE_DWORD, SCALE_x4);
+		}
+	}
 }
 
 
@@ -1758,18 +2069,21 @@ void hyperstone_device::generate_stwr(drcuml_block *block, compiler_state *compi
 template <hyperstone_device::reg_bank SRC_GLOBAL>
 void hyperstone_device::generate_stdr(drcuml_block *block, compiler_state *compiler, const opcode_desc *desc)
 {
+	printf("Unimplemented: generate_stdr (%08x)\n", desc->pc);
 }
 
 
 template <hyperstone_device::reg_bank SRC_GLOBAL>
 void hyperstone_device::generate_stwp(drcuml_block *block, compiler_state *compiler, const opcode_desc *desc)
 {
+	printf("Unimplemented: generate_stwp (%08x)\n", desc->pc);
 }
 
 
 template <hyperstone_device::reg_bank SRC_GLOBAL>
 void hyperstone_device::generate_stdp(drcuml_block *block, compiler_state *compiler, const opcode_desc *desc)
 {
+	printf("Unimplemented: generate_stdp (%08x)\n", desc->pc);
 }
 
 
@@ -1812,6 +2126,7 @@ void hyperstone_device::generate_br(drcuml_block *block, compiler_state *compile
 template <hyperstone_device::branch_condition CONDITION, hyperstone_device::condition_set COND_SET>
 void hyperstone_device::generate_db(drcuml_block *block, compiler_state *compiler, const opcode_desc *desc)
 {
+	printf("Unimplemented: generate_db (%08x)\n", desc->pc);
 }
 
 
@@ -1855,7 +2170,7 @@ void hyperstone_device::generate_frame(drcuml_block *block, compiler_state *comp
 	UML_LABEL(block, diff_in_range);
 
 	UML_CMP(block, I0, mem(&UB));
-	UML_SETc(block, uml::COND_GE, I4);
+	UML_SETc(block, uml::COND_AE, I4);
 	UML_CMP(block, I3, 0);
 	UML_JMPc(block, uml::COND_GE, done);
 
@@ -1866,8 +2181,11 @@ void hyperstone_device::generate_frame(drcuml_block *block, compiler_state *comp
 	UML_CALLH(block, *m_mem_write32);
 	UML_ADD(block, I0, I0, 4);
 	UML_ADD(block, I3, I3, 1);
+
 	UML_TEST(block, I3, ~0);
 	UML_JMPc(block, uml::COND_NZ, push_next);
+
+	UML_MOV(block, mem(&SP), I0);
 
 	UML_TEST(block, I4, ~0);
 	UML_EXHc(block, uml::COND_NZ, *m_exception[EXCEPTION_FRAME_ERROR], 0);
@@ -1960,18 +2278,22 @@ void hyperstone_device::generate_call(drcuml_block *block, compiler_state *compi
 
 void hyperstone_device::generate_trap_op(drcuml_block *block, compiler_state *compiler, const opcode_desc *desc)
 {
+	printf("Unimplemented: generate_trap_op (%08x)\n", desc->pc);
 }
 
 void hyperstone_device::generate_extend(drcuml_block *block, compiler_state *compiler, const opcode_desc *desc)
 {
+	printf("Unimplemented: generate_extend (%08x)\n", desc->pc);
 }
 
 
 void hyperstone_device::generate_reserved(drcuml_block *block, compiler_state *compiler, const opcode_desc *desc)
 {
+	printf("Unimplemented: generate_reserved (%08x)\n", desc->pc);
 }
 
 void hyperstone_device::generate_do(drcuml_block *block, compiler_state *compiler, const opcode_desc *desc)
 {
+	printf("Unimplemented: generate_do (%08x)\n", desc->pc);
 }
 
