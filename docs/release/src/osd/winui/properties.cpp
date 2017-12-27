@@ -1616,13 +1616,13 @@ static void SetPropEnabledControls(HWND hWnd)
 	/* Joystick options */
 	joystick_attached = DIJoystick.Available();
 
-	Button_Enable(GetDlgItem(hWnd,IDC_JOYSTICK),		joystick_attached);
-	EnableWindow(GetDlgItem(hWnd, IDC_JDZTEXT),			joystick_attached);
-	EnableWindow(GetDlgItem(hWnd, IDC_JDZDISP),			joystick_attached);
-	EnableWindow(GetDlgItem(hWnd, IDC_JDZ),				joystick_attached);
-	EnableWindow(GetDlgItem(hWnd, IDC_JSATTEXT),			joystick_attached);
-	EnableWindow(GetDlgItem(hWnd, IDC_JSATDISP),			joystick_attached);
-	EnableWindow(GetDlgItem(hWnd, IDC_JSAT),				joystick_attached);
+	Button_Enable(GetDlgItem(hWnd,IDC_JOYSTICK), joystick_attached);
+	EnableWindow(GetDlgItem(hWnd, IDC_JDZTEXT),  joystick_attached);
+	EnableWindow(GetDlgItem(hWnd, IDC_JDZDISP),  joystick_attached);
+	EnableWindow(GetDlgItem(hWnd, IDC_JDZ),      joystick_attached);
+	EnableWindow(GetDlgItem(hWnd, IDC_JSATTEXT), joystick_attached);
+	EnableWindow(GetDlgItem(hWnd, IDC_JSATDISP), joystick_attached);
+	EnableWindow(GetDlgItem(hWnd, IDC_JSAT),     joystick_attached);
 	/* Trackball / Mouse options */
 	if (nIndex <= -1 || DriverUsesTrackball(nIndex) || DriverUsesLightGun(nIndex))
 		Button_Enable(GetDlgItem(hWnd,IDC_USE_MOUSE),true);
@@ -1722,11 +1722,11 @@ static BOOL RotateReadControl(datamap *map, HWND dialog, HWND control, windows_o
 	if (selected_index != original_selection)
 	{
 		// Set the options based on the new selection.
-		opts->set_value(OPTION_ROR,	selected_index == 1, OPTION_PRIORITY_CMDLINE);
-		opts->set_value(OPTION_ROL,	selected_index == 2, OPTION_PRIORITY_CMDLINE);
-		opts->set_value(OPTION_ROTATE,	selected_index != 3, OPTION_PRIORITY_CMDLINE);
-		opts->set_value(OPTION_AUTOROR,	selected_index == 4, OPTION_PRIORITY_CMDLINE);
-		opts->set_value(OPTION_AUTOROL,	selected_index == 5, OPTION_PRIORITY_CMDLINE);
+		opts->set_value(OPTION_ROR, selected_index == 1, OPTION_PRIORITY_CMDLINE);
+		opts->set_value(OPTION_ROL, selected_index == 2, OPTION_PRIORITY_CMDLINE);
+		opts->set_value(OPTION_ROTATE, selected_index != 3, OPTION_PRIORITY_CMDLINE);
+		opts->set_value(OPTION_AUTOROR, selected_index == 4, OPTION_PRIORITY_CMDLINE);
+		opts->set_value(OPTION_AUTOROL, selected_index == 5, OPTION_PRIORITY_CMDLINE);
 		return true;
 	}
 
@@ -1940,7 +1940,7 @@ static BOOL DefaultInputPopulateControl(datamap *map, HWND dialog, HWND control,
 
 					// add it as an option
 					res = ComboBox_InsertString(control, index, root);
-					res = ComboBox_SetItemData(control, index, (void*)win_tstring_strdup(root));	// FIXME - leaks memory!
+					res = ComboBox_SetItemData(control, index, (void*)win_tstring_strdup(root)); // FIXME - leaks memory!
 					index++;
 				}
 			}
@@ -2140,7 +2140,7 @@ static void BuildDataMap(void)
 	datamap_add(properties_datamap, IDC_ARTWORK_CROP,			DM_BOOL,	OPTION_ARTWORK_CROP);
 	datamap_add(properties_datamap, IDC_BACKDROPS,				DM_BOOL,	OPTION_USE_BACKDROPS);
 	datamap_add(properties_datamap, IDC_OVERLAYS,				DM_BOOL,	OPTION_USE_OVERLAYS);
-	datamap_add(properties_datamap, IDC_BEZELS,				DM_BOOL,	OPTION_USE_BEZELS);
+	datamap_add(properties_datamap, IDC_BEZELS,					DM_BOOL,	OPTION_USE_BEZELS);
 	datamap_add(properties_datamap, IDC_CPANELS,				DM_BOOL,	OPTION_USE_CPANELS);
 	datamap_add(properties_datamap, IDC_MARQUEES,				DM_BOOL,	OPTION_USE_MARQUEES);
 
@@ -2155,7 +2155,7 @@ static void BuildDataMap(void)
 	datamap_add(properties_datamap, IDC_PAUSEBRIGHTDISP,		DM_FLOAT,	OPTION_PAUSE_BRIGHTNESS);
 
 	// core vector options
-	datamap_add(properties_datamap, IDC_BEAM,				DM_FLOAT,	OPTION_BEAM_WIDTH_MAX);
+	datamap_add(properties_datamap, IDC_BEAM,					DM_FLOAT,	OPTION_BEAM_WIDTH_MAX);
 	datamap_add(properties_datamap, IDC_BEAMDISP,				DM_FLOAT,	OPTION_BEAM_WIDTH_MAX);
 	datamap_add(properties_datamap, IDC_FLICKER,				DM_FLOAT,	OPTION_FLICKER);
 	datamap_add(properties_datamap, IDC_FLICKERDISP,			DM_FLOAT,	OPTION_FLICKER);
@@ -2222,7 +2222,7 @@ static void BuildDataMap(void)
 	datamap_add(properties_datamap, IDC_KEEPASPECT,				DM_BOOL,	OPTION_KEEPASPECT);
 	datamap_add(properties_datamap, IDC_PRESCALE,				DM_INT,		OSDOPTION_PRESCALE);
 	datamap_add(properties_datamap, IDC_PRESCALEDISP,			DM_INT,		OSDOPTION_PRESCALE);
-	datamap_add(properties_datamap, IDC_EFFECT,				DM_STRING,	OPTION_EFFECT);
+	datamap_add(properties_datamap, IDC_EFFECT,					DM_STRING,	OPTION_EFFECT);
 	datamap_add(properties_datamap, IDC_WAITVSYNC,				DM_BOOL,	OSDOPTION_WAITVSYNC);
 	datamap_add(properties_datamap, IDC_SYNCREFRESH,			DM_BOOL,	OSDOPTION_SYNCREFRESH);
 
@@ -2341,10 +2341,8 @@ static void SetSamplesEnabled(HWND hWnd, int nIndex, BOOL bSoundEnabled)
 			machine_config config(driver_list::driver(nIndex),pCurrentOpts);
 
 			for (device_sound_interface &sound : sound_interface_iterator(config.root_device()))
-			{
 				if (sound.device().type() == SAMPLES)
 					enabled = true;
-			}
 		}
 		enabled = enabled && bSoundEnabled;
 		EnableWindow(hCtrl, enabled);
