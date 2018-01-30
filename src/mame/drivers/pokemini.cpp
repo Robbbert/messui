@@ -75,7 +75,6 @@ public:
 	DECLARE_WRITE8_MEMBER(hwreg_w);
 	DECLARE_READ8_MEMBER(hwreg_r);
 	DECLARE_READ8_MEMBER(rom_r);
-	TIMER_CALLBACK_MEMBER(sound_timer);
 	DECLARE_DEVICE_IMAGE_LOAD_MEMBER(pokemini_cart);
 
 	void pokemini(machine_config &config);
@@ -114,34 +113,8 @@ protected:
 	void timer3_hi_callback();
 	void prc_counter_callback();
 
-	emu_timer *m_sound_timer;
-	bool m_sound_enable;
-	bool m_sound_state;
-	uint64_t m_sound_freq;
-	uint64_t m_sound_0;
-	uint64_t m_sound_1;
 };
 
-
-TIMER_CALLBACK_MEMBER(pokemini_state::sound_timer)
-{
-	static const int levels[4] = { 0, 1, 1, 2 };
-	if (m_sound_enable)
-	{
-		if (m_sound_state == 0)
-		{
-			m_speaker->level_w(levels[m_pm_reg[0x71] & 3]);
-			m_sound_state = 1;
-			m_sound_timer->adjust(attotime::from_hz(m_sound_1), 0, attotime::from_hz(m_sound_1));
-		}
-		else
-		{
-			m_speaker->level_w(0);
-			m_sound_state = 0;
-			m_sound_timer->adjust(attotime::from_hz(m_sound_0), 0, attotime::from_hz(m_sound_0));
-		}
-	}
-}
 
 READ8_MEMBER( pokemini_state::rom_r )
 {
@@ -334,45 +307,24 @@ void pokemini_state::check_irqs()
 
 void pokemini_state::update_sound()
 {
-	// Check if sound is enabled
-	static uint16_t dd[8] = { 2,8,32,64,128,256,1024,4096 };
-	m_sound_enable = false;
-	if (((m_pm_reg[0x71] & 3) > 0)
-//		&& (m_pm_reg[0x1c] & 8)
-//		&& (m_pm_reg[0x19] & 0x20)
-		&& ((m_pm_reg[0x48] & 0x80) == 0x80)) // 84
-			m_sound_enable = true;
-
-	// get prescaled frequency
-	m_sound_freq = 4e6 / dd[m_pm_reg[0x1c] & 7];
-	// calculate timer intervals
-	uint16_t preset = ((m_pm_reg[0x4a] << 8) | m_pm_reg[0x4b]) + 1;
-	uint16_t pivot = ((m_pm_reg[0x4c] << 8) | m_pm_reg[0x4d]) + 1;
-	if (preset && pivot && (pivot < preset))
+	/* Check if sound should be muted */
+	if ( m_pm_reg[0x70] & 0x03 )
 	{
-		m_sound_0 = m_sound_freq / pivot; // interval between count reload and pivot expiry
-		m_sound_1 = m_sound_freq / (preset - pivot); // interval remaining
+		m_speaker->level_w(0);
 	}
 	else
-		m_sound_enable = false;
-	/* Check if sound should be muted */
-//	if ( m_pm_reg[0x70] & 0x03 )
-//	{
-//		m_speaker->level_w(0);
-//	}
-//	else
-//	{
+	{
 		///static const int levels[4] = { 0, 1, 1, 2 };
-//		int level; /// silence clang warning/// = levels[ m_pm_reg[0x71] & 0x03 ];
+		int level; /// silence clang warning/// = levels[ m_pm_reg[0x71] & 0x03 ];
 
 //      if ( ( ( m_pm_reg[0x48] & 0x80 ) && ( m_pm_reg[0x4E] | ( m_pm_reg[0x4F] << 8 ) ) > ( m_pm_reg[0x4C] | ( m_pm_reg[0x4D] << 8 ) ) )
 //        || ( ( m_pm_reg[0x48] & 0x80 ) && m_pm_reg[0x4F] > m_pm_reg[0x4D] ) )
 //      {
-//			level = 0;
+			level = 0;
 //      }
 
-//		m_speaker->level_w(level);
-//	}
+		m_speaker->level_w(level);
+	}
 }
 
 
@@ -1741,12 +1693,6 @@ void pokemini_state::machine_start()
 	m_prc.max_frame_count = 2;
 	m_prc.count_timer = timer_alloc(TIMER_PRC);
 	m_prc.count_timer->adjust( attotime::zero, 0, m_maincpu->cycles_to_attotime(55640 / 65) );
-
-	m_sound_timer = machine().scheduler().timer_alloc(timer_expired_delegate(FUNC(pokemini_state::sound_timer),this));
-	m_sound_timer->adjust(attotime::from_seconds(1), 0, attotime::from_seconds(1));
-	m_sound_enable = false;
-	m_sound_state = 0;
-	m_sound_freq = 0;
 }
 
 
