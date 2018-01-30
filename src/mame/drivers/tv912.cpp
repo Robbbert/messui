@@ -10,7 +10,9 @@
     suffix indicated a typewriter-style keyboard. The TVI-920 added a row of
     function keys but was otherwise mostly identical to the TVI-912. The
     TVI-912C keyboard matrix and ribbon connector pinout are almost the same
-    as in the TVI-910.
+    as in the TVI-910. The system self-test can be triggered by shorting two
+    wires on the keyboard unit near the connector (TODO: figure out how to do
+    this on the emulated system).
 
     Settings for these terminals are controlled by DIP switches, which are not
     read by the CPU except for those of S4 (which is usually left as a block of
@@ -230,15 +232,17 @@ WRITE_LINE_MEMBER(tv912_state::uart_reset_w)
 
 WRITE8_MEMBER(tv912_state::output_40c)
 {
-	// Bit 5: +FORCE BLANK
+	// DB6: -PRTOL
+
+	// DB5: +FORCE BLANK
 	m_force_blank = BIT(data, 5);
 
-	// Bit 4: +SEL LPT
+	// DB4: +SEL LPT
 	m_lpt_select = BIT(data, 4);
 
-	// Bit 3: -BREAK
+	// DB3: -BREAK
 
-	// Bit 2: -RQS
+	// DB2: -RQS
 	ioport_value dtr = m_dtr->read();
 	m_rs232->write_rts(BIT(data, 2));
 	if (!BIT(dtr, 0))
@@ -246,10 +250,10 @@ WRITE8_MEMBER(tv912_state::output_40c)
 	if (!BIT(dtr, 1))
 		m_rs232->write_dtr(0);
 
-	// Bit 1: +BEEP
+	// DB1: +BEEP
 	m_beep->set_state(BIT(data, 1));
 
-	// Bit 0: +PG SEL
+	// DB0: +PG SEL
 	m_dispram_bank->set_entry(BIT(data, 0));
 }
 
@@ -267,7 +271,7 @@ void tv912_state::device_timer(emu_timer &timer, device_timer_id id, int param, 
 			if (!BIT(sel, b))
 			{
 				unsigned divisor = 11 * (b < 9 ? 1 << b : 176);
-				m_baudgen_timer->adjust(attotime::from_hz(XTAL_23_814MHz / 3.5 / divisor), !param);
+				m_baudgen_timer->adjust(attotime::from_hz(XTAL(23'814'000) / 3.5 / divisor), !param);
 				break;
 			}
 		}
@@ -671,7 +675,7 @@ static INPUT_PORTS_START( tv912b )
 	PORT_BIT(0xdc, IP_ACTIVE_LOW, IPT_UNUSED)
 
 	PORT_START("KEY30")
-	PORT_BIT(0x01, IP_ACTIVE_LOW, IPT_UNKNOWN) PORT_CHAR(UCHAR_MAMEKEY(DOWN)) PORT_CODE(KEYCODE_DOWN)
+	PORT_BIT(0x01, IP_ACTIVE_LOW, IPT_KEYBOARD) PORT_CHAR(UCHAR_MAMEKEY(DOWN)) PORT_CODE(KEYCODE_DOWN)
 	PORT_BIT(0x02, IP_ACTIVE_LOW, IPT_UNKNOWN) // control character (CLR TAB)
 	PORT_BIT(0x20, IP_ACTIVE_LOW, IPT_UNKNOWN)
 	PORT_BIT(0xdc, IP_ACTIVE_LOW, IPT_UNUSED)
@@ -813,7 +817,7 @@ static INPUT_PORTS_START( tv912c )
 	PORT_BIT(0xdc, IP_ACTIVE_LOW, IPT_UNUSED)
 
 	PORT_START("KEY21")
-	PORT_BIT(0x01, IP_ACTIVE_LOW, IPT_UNKNOWN) // backspace?
+	PORT_BIT(0x01, IP_ACTIVE_LOW, IPT_KEYBOARD) PORT_CHAR(UCHAR_MAMEKEY(LEFT)) PORT_CODE(KEYCODE_LEFT)
 	PORT_BIT(0x02, IP_ACTIVE_LOW, IPT_KEYBOARD) PORT_CHAR(';') PORT_CHAR(':') PORT_CODE(KEYCODE_COLON)
 	PORT_BIT(0x20, IP_ACTIVE_LOW, IPT_UNKNOWN)
 	PORT_BIT(0xdc, IP_ACTIVE_LOW, IPT_UNUSED)
@@ -855,19 +859,19 @@ static INPUT_PORTS_START( tv912c )
 	PORT_BIT(0xdc, IP_ACTIVE_LOW, IPT_UNUSED)
 
 	PORT_START("KEY28")
-	PORT_BIT(0x01, IP_ACTIVE_LOW, IPT_UNKNOWN) // control character 0x0c
+	PORT_BIT(0x01, IP_ACTIVE_LOW, IPT_KEYBOARD) PORT_CHAR(UCHAR_MAMEKEY(RIGHT)) PORT_CODE(KEYCODE_RIGHT)
 	PORT_BIT(0x02, IP_ACTIVE_LOW, IPT_KEYBOARD) PORT_CHAR('z') PORT_CHAR('Z') PORT_CHAR(0x1a) PORT_CODE(KEYCODE_Z)
 	PORT_BIT(0x20, IP_ACTIVE_LOW, IPT_UNKNOWN)
 	PORT_BIT(0xdc, IP_ACTIVE_LOW, IPT_UNUSED)
 
 	PORT_START("KEY29")
-	PORT_BIT(0x01, IP_ACTIVE_LOW, IPT_UNKNOWN) // non-printing character
+	PORT_BIT(0x01, IP_ACTIVE_LOW, IPT_KEYBOARD) PORT_CHAR(UCHAR_MAMEKEY(UP)) PORT_CODE(KEYCODE_UP)
 	PORT_BIT(0x02, IP_ACTIVE_LOW, IPT_UNKNOWN) // control character 0xbb (CLEAR)
 	PORT_BIT(0x20, IP_ACTIVE_LOW, IPT_UNKNOWN)
 	PORT_BIT(0xdc, IP_ACTIVE_LOW, IPT_UNUSED)
 
 	PORT_START("KEY30")
-	PORT_BIT(0x01, IP_ACTIVE_LOW, IPT_UNKNOWN)
+	PORT_BIT(0x01, IP_ACTIVE_LOW, IPT_KEYBOARD) PORT_CHAR(UCHAR_MAMEKEY(DOWN)) PORT_CODE(KEYCODE_DOWN)
 	PORT_BIT(0x02, IP_ACTIVE_LOW, IPT_UNKNOWN) // (DEL)
 	PORT_BIT(0x20, IP_ACTIVE_LOW, IPT_UNKNOWN)
 	PORT_BIT(0xdc, IP_ACTIVE_LOW, IPT_UNUSED)
@@ -880,7 +884,7 @@ static INPUT_PORTS_START( tv912c )
 INPUT_PORTS_END
 
 MACHINE_CONFIG_START(tv912_state::tv912)
-	MCFG_CPU_ADD("maincpu", I8035, XTAL_23_814MHz / 4) // nominally +6MHz, actually 5.9535 MHz
+	MCFG_CPU_ADD("maincpu", I8035, XTAL(23'814'000) / 4) // nominally +6MHz, actually 5.9535 MHz
 	MCFG_CPU_PROGRAM_MAP(prog_map)
 	MCFG_CPU_IO_MAP(io_map)
 	MCFG_MCS48_PORT_P1_OUT_CB(WRITE8(tv912_state, p1_w))
@@ -897,10 +901,10 @@ MACHINE_CONFIG_START(tv912_state::tv912)
 	MCFG_ADDRESS_MAP_BANK_STRIDE(0x100)
 
 	MCFG_SCREEN_ADD("screen", RASTER)
-	MCFG_SCREEN_RAW_PARAMS(XTAL_23_814MHz, 105 * CHAR_WIDTH, 0, 80 * CHAR_WIDTH, 270, 0, 240)
+	MCFG_SCREEN_RAW_PARAMS(XTAL(23'814'000), 105 * CHAR_WIDTH, 0, 80 * CHAR_WIDTH, 270, 0, 240)
 	MCFG_SCREEN_UPDATE_DRIVER(tv912_state, screen_update)
 
-	MCFG_DEVICE_ADD("crtc", TMS9927, XTAL_23_814MHz)
+	MCFG_DEVICE_ADD("crtc", TMS9927, XTAL(23'814'000))
 	MCFG_TMS9927_CHAR_WIDTH(CHAR_WIDTH)
 	MCFG_TMS9927_VSYN_CALLBACK(INPUTLINE("maincpu", MCS48_INPUT_IRQ))
 	MCFG_VIDEO_SET_SCREEN("screen")
@@ -912,7 +916,7 @@ MACHINE_CONFIG_START(tv912_state::tv912)
 	MCFG_RS232_PORT_ADD("rs232", default_rs232_devices, "loopback")
 
 	MCFG_SPEAKER_STANDARD_MONO("mono")
-	MCFG_SOUND_ADD("beep", BEEP, XTAL_23_814MHz / 7 / 11 / 256) // nominally 1200 Hz
+	MCFG_SOUND_ADD("beep", BEEP, XTAL(23'814'000) / 7 / 11 / 256) // nominally 1200 Hz
 	MCFG_SOUND_ROUTE(ALL_OUTPUTS, "mono", 0.50)
 MACHINE_CONFIG_END
 
@@ -941,5 +945,5 @@ ROM_START( tv912b )
 	ROM_LOAD( "televideo912b_rom_a3.bin", 0x0000, 0x0800, CRC(bb9a7fbd) SHA1(5f1c4d41b25bd3ca4dbc336873362935daf283da) ) // AMI 8110QV (A3-2)
 ROM_END
 
-COMP( 1978, tv912c, 0,      0, tv912, tv912c, tv912_state, 0, "TeleVideo Systems", "TVI-912C", MACHINE_NOT_WORKING )
-COMP( 1978, tv912b, tv912c, 0, tv912, tv912b, tv912_state, 0, "TeleVideo Systems", "TVI-912B", MACHINE_NOT_WORKING )
+COMP( 1978, tv912c, 0,      0, tv912, tv912c, tv912_state, 0, "TeleVideo Systems", "TVI-912C", MACHINE_NOT_WORKING | MACHINE_IMPERFECT_GRAPHICS ) // attributes not emulated
+COMP( 1978, tv912b, tv912c, 0, tv912, tv912b, tv912_state, 0, "TeleVideo Systems", "TVI-912B", MACHINE_NOT_WORKING | MACHINE_IMPERFECT_GRAPHICS ) // attributes not emulated
