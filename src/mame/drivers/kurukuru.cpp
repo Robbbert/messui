@@ -405,7 +405,6 @@ public:
 		m_v9938(*this, "v9938"),
 		m_adpcm(*this, "adpcm"),
 		m_hopper(*this, "hopper"),
-		m_soundlatch(*this, "soundlatch"),
 		m_bank1(*this, "bank1")
 	{ }
 
@@ -414,7 +413,6 @@ public:
 	required_device<v9938_device> m_v9938;
 	required_device<msm5205_device> m_adpcm;
 	required_device<ticket_dispenser_device> m_hopper;
-	required_device<generic_latch_8_device> m_soundlatch;
 	required_memory_bank m_bank1;
 
 	uint8_t m_sound_irq_cause;
@@ -422,8 +420,7 @@ public:
 
 	DECLARE_WRITE8_MEMBER(kurukuru_out_latch_w);
 	DECLARE_WRITE8_MEMBER(kurukuru_bankswitch_w);
-	DECLARE_WRITE8_MEMBER(kurukuru_soundlatch_w);
-	DECLARE_READ8_MEMBER(kurukuru_soundlatch_r);
+	DECLARE_WRITE_LINE_MEMBER(soundlatch_irq_w);
 	DECLARE_WRITE8_MEMBER(kurukuru_adpcm_reset_w);
 	DECLARE_READ8_MEMBER(kurukuru_adpcm_timer_irqack_r);
 	DECLARE_WRITE8_MEMBER(kurukuru_adpcm_data_w);
@@ -436,6 +433,14 @@ public:
 	DECLARE_WRITE_LINE_MEMBER(kurukuru_msm5205_vck);
 	void ppj(machine_config &config);
 	void kurukuru(machine_config &config);
+	void kurukuru_audio_io(address_map &map);
+	void kurukuru_audio_map(address_map &map);
+	void kurukuru_io(address_map &map);
+	void kurukuru_map(address_map &map);
+	void ppj_audio_io(address_map &map);
+	void ppj_audio_map(address_map &map);
+	void ppj_io(address_map &map);
+	void ppj_map(address_map &map);
 };
 
 #define MAIN_CLOCK      XTAL(21'477'272)
@@ -468,6 +473,15 @@ void kurukuru_state::update_sound_irq(uint8_t cause)
 	{
 		m_audiocpu->set_input_line(0, CLEAR_LINE);
 	}
+}
+
+
+WRITE_LINE_MEMBER(kurukuru_state::soundlatch_irq_w)
+{
+	if (state)
+		update_sound_irq(m_sound_irq_cause | 1);
+	else
+		update_sound_irq(m_sound_irq_cause & ~1);
 }
 
 
@@ -529,25 +543,19 @@ WRITE8_MEMBER(kurukuru_state::kurukuru_bankswitch_w)
 	}
 }
 
-WRITE8_MEMBER(kurukuru_state::kurukuru_soundlatch_w)
-{
-	m_soundlatch->write(space, 0, data);
-	update_sound_irq(m_sound_irq_cause | 1);
-}
 
-
-static ADDRESS_MAP_START( kurukuru_map, AS_PROGRAM, 8, kurukuru_state )
+ADDRESS_MAP_START(kurukuru_state::kurukuru_map)
 	AM_RANGE(0x0000, 0x5fff) AM_ROM
 	AM_RANGE(0x6000, 0xdfff) AM_ROMBANK("bank1")
 	AM_RANGE(0xe000, 0xffff) AM_RAM AM_SHARE("nvram")
 ADDRESS_MAP_END
 
-static ADDRESS_MAP_START( kurukuru_io, AS_IO, 8, kurukuru_state )
+ADDRESS_MAP_START(kurukuru_state::kurukuru_io)
 	ADDRESS_MAP_GLOBAL_MASK(0xff)
 	AM_RANGE(0x00, 0x00) AM_MIRROR(0x0f) AM_WRITE(kurukuru_out_latch_w)
 	AM_RANGE(0x10, 0x10) AM_MIRROR(0x0f) AM_READ_PORT("DSW1")
-	AM_RANGE(0x20, 0x20) AM_MIRROR(0x0f) AM_WRITE(kurukuru_soundlatch_w)
-	AM_RANGE(0x80, 0x83) AM_MIRROR(0x0c) AM_DEVREADWRITE( "v9938", v9938_device, read, write )
+	AM_RANGE(0x20, 0x20) AM_MIRROR(0x0f) AM_DEVWRITE("soundlatch", generic_latch_8_device, write)
+	AM_RANGE(0x80, 0x83) AM_MIRROR(0x0c) AM_DEVREADWRITE("v9938", v9938_device, read, write)
 	AM_RANGE(0x90, 0x90) AM_MIRROR(0x0f) AM_WRITE(kurukuru_bankswitch_w)
 	AM_RANGE(0xa0, 0xa0) AM_MIRROR(0x0f) AM_READ_PORT("IN0")
 	AM_RANGE(0xb0, 0xb0) AM_MIRROR(0x0f) AM_READ_PORT("IN1")
@@ -555,17 +563,17 @@ static ADDRESS_MAP_START( kurukuru_io, AS_IO, 8, kurukuru_state )
 	AM_RANGE(0xd0, 0xd0) AM_MIRROR(0x0f) AM_DEVWRITE("ym2149", ay8910_device, data_w)
 ADDRESS_MAP_END
 
-static ADDRESS_MAP_START( ppj_map, AS_PROGRAM, 8, kurukuru_state )
+ADDRESS_MAP_START(kurukuru_state::ppj_map)
 	AM_RANGE(0x0000, 0x5fff) AM_ROM
 	AM_RANGE(0x6000, 0xdfff) AM_ROMBANK("bank1")
 	AM_RANGE(0xe000, 0xffff) AM_RAM AM_SHARE("nvram")
 ADDRESS_MAP_END
 
-static ADDRESS_MAP_START( ppj_io, AS_IO, 8, kurukuru_state )
+ADDRESS_MAP_START(kurukuru_state::ppj_io)
 	ADDRESS_MAP_GLOBAL_MASK(0xff)
 	AM_RANGE(0x00, 0x00) AM_MIRROR(0x0f) AM_WRITE(kurukuru_bankswitch_w)
-	AM_RANGE(0x10, 0x13) AM_MIRROR(0x0c) AM_DEVREADWRITE( "v9938", v9938_device, read, write )
-	AM_RANGE(0x30, 0x30) AM_MIRROR(0x0f) AM_WRITE(kurukuru_soundlatch_w)
+	AM_RANGE(0x10, 0x13) AM_MIRROR(0x0c) AM_DEVREADWRITE("v9938", v9938_device, read, write)
+	AM_RANGE(0x30, 0x30) AM_MIRROR(0x0f) AM_DEVWRITE("soundlatch", generic_latch_8_device, write)
 	AM_RANGE(0x40, 0x40) AM_MIRROR(0x0f) AM_READ_PORT("DSW1")
 	AM_RANGE(0x50, 0x50) AM_MIRROR(0x0f) AM_WRITE(kurukuru_out_latch_w)
 	AM_RANGE(0x60, 0x60) AM_MIRROR(0x0f) AM_READ_PORT("IN1")
@@ -618,12 +626,6 @@ WRITE8_MEMBER(kurukuru_state::kurukuru_adpcm_reset_w)
 	m_adpcm->reset_w(data & 1);
 }
 
-READ8_MEMBER(kurukuru_state::kurukuru_soundlatch_r)
-{
-	update_sound_irq(m_sound_irq_cause & ~1);
-	return m_soundlatch->read(space, 0);
-}
-
 READ8_MEMBER(kurukuru_state::kurukuru_adpcm_timer_irqack_r)
 {
 	update_sound_irq(m_sound_irq_cause & ~2);
@@ -631,29 +633,29 @@ READ8_MEMBER(kurukuru_state::kurukuru_adpcm_timer_irqack_r)
 }
 
 
-static ADDRESS_MAP_START( kurukuru_audio_map, AS_PROGRAM, 8, kurukuru_state )
+ADDRESS_MAP_START(kurukuru_state::kurukuru_audio_map)
 	AM_RANGE(0x0000, 0xf7ff) AM_ROM
 	AM_RANGE(0xf800, 0xffff) AM_RAM
 ADDRESS_MAP_END
 
-static ADDRESS_MAP_START( kurukuru_audio_io, AS_IO, 8, kurukuru_state )
+ADDRESS_MAP_START(kurukuru_state::kurukuru_audio_io)
 	ADDRESS_MAP_GLOBAL_MASK(0x7f)
 	AM_RANGE(0x40, 0x40) AM_MIRROR(0x0f) AM_WRITE(kurukuru_adpcm_data_w)
 	AM_RANGE(0x50, 0x50) AM_MIRROR(0x0f) AM_WRITE(kurukuru_adpcm_reset_w)
-	AM_RANGE(0x60, 0x60) AM_MIRROR(0x0f) AM_READ(kurukuru_soundlatch_r)
+	AM_RANGE(0x60, 0x60) AM_MIRROR(0x0f) AM_DEVREAD("soundlatch", generic_latch_8_device, read)
 	AM_RANGE(0x70, 0x70) AM_MIRROR(0x0f) AM_READ(kurukuru_adpcm_timer_irqack_r)
 ADDRESS_MAP_END
 
-static ADDRESS_MAP_START( ppj_audio_map, AS_PROGRAM, 8, kurukuru_state )
+ADDRESS_MAP_START(kurukuru_state::ppj_audio_map)
 	AM_RANGE(0x0000, 0xf7ff) AM_ROM
 	AM_RANGE(0xf800, 0xffff) AM_RAM
 ADDRESS_MAP_END
 
-static ADDRESS_MAP_START( ppj_audio_io, AS_IO, 8, kurukuru_state )
+ADDRESS_MAP_START(kurukuru_state::ppj_audio_io)
 	ADDRESS_MAP_GLOBAL_MASK(0x7f)
 	AM_RANGE(0x20, 0x20) AM_MIRROR(0x0f) AM_WRITE(kurukuru_adpcm_data_w)
 	AM_RANGE(0x30, 0x30) AM_MIRROR(0x0f) AM_WRITE(kurukuru_adpcm_reset_w)
-	AM_RANGE(0x40, 0x40) AM_MIRROR(0x0f) AM_READ(kurukuru_soundlatch_r)
+	AM_RANGE(0x40, 0x40) AM_MIRROR(0x0f) AM_DEVREAD("soundlatch", generic_latch_8_device, read)
 	AM_RANGE(0x50, 0x50) AM_MIRROR(0x0f) AM_READ(kurukuru_adpcm_timer_irqack_r)
 ADDRESS_MAP_END
 /*
@@ -882,6 +884,7 @@ MACHINE_CONFIG_START(kurukuru_state::kurukuru)
 	MCFG_SPEAKER_STANDARD_MONO("mono")
 
 	MCFG_GENERIC_LATCH_8_ADD("soundlatch")
+	MCFG_GENERIC_LATCH_DATA_PENDING_CB(WRITELINE(kurukuru_state, soundlatch_irq_w))
 
 	MCFG_SOUND_ADD("ym2149", YM2149, YM2149_CLOCK)
 	MCFG_AY8910_PORT_B_READ_CB(IOPORT("DSW2"))
