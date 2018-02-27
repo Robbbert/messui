@@ -1,1 +1,1 @@
-call v:\uprel.bat
+call x:\uprel.bat

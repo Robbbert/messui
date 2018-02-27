@@ -1,1 +1,1 @@
-call v:\update.bat
+call x:\update.bat
