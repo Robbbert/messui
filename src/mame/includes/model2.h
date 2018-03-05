@@ -17,6 +17,7 @@
 class model2_renderer;
 struct raster_state;
 struct geo_state;
+struct triangle;
 
 class model2_state : public driver_device
 {
@@ -179,10 +180,9 @@ public:
 	DECLARE_READ32_MEMBER(model2_serial_r);
 	DECLARE_WRITE32_MEMBER(model2o_serial_w);
 	DECLARE_WRITE32_MEMBER(model2_serial_w);
-	DECLARE_READ32_MEMBER(model2_5881prot_r);
-	DECLARE_WRITE32_MEMBER(model2_5881prot_w);
-	int first_read;
-
+	DECLARE_WRITE16_MEMBER(horizontal_sync_w);
+	DECLARE_WRITE16_MEMBER(vertical_sync_w);
+	
 	void raster_init(memory_region *texture_rom);
 	void geo_init(memory_region *polygon_rom);
 	DECLARE_READ32_MEMBER(render_mode_r);
@@ -210,7 +210,6 @@ public:
 	DECLARE_DRIVER_INIT(overrev);
 	DECLARE_DRIVER_INIT(pltkids);
 	DECLARE_DRIVER_INIT(rchase2);
-	DECLARE_DRIVER_INIT(genprot);
 	DECLARE_DRIVER_INIT(manxttdx);
 	DECLARE_DRIVER_INIT(srallyc);
 	DECLARE_DRIVER_INIT(doa);
@@ -246,6 +245,7 @@ public:
 
 	void model2_3d_frame_start( void );
 	void geo_parse( void );
+	
 	void model2_3d_frame_end( bitmap_rgb32 &bitmap, const rectangle &cliprect );
 
 	void model2_timers(machine_config &config);
@@ -259,16 +259,67 @@ public:
 	void drive_map(address_map &map);
 	void geo_sharc_map(address_map &map);
 	void model2_base_mem(address_map &map);
+	void model2_5881_mem(address_map &map);
 	void model2_snd(address_map &map);
 
 	uint8_t m_gamma_table[256];
 
+	void debug_init();
+	void debug_commands( int ref, const std::vector<std::string> &params );
+	void debug_geo_dasm_command(int ref, const std::vector<std::string> &params);
+	void debug_tri_dump_command(int ref, const std::vector<std::string> &params);
+	void debug_help_command(int ref, const std::vector<std::string> &params);
+	
 protected:
 	virtual void video_start() override;
 
 private:
+	void tri_list_dump(FILE *dst);
+
 	bool m_render_unk;
 	bool m_render_mode;
+	int16 m_crtc_xoffset, m_crtc_yoffset;
+
+	uint32_t *geo_process_command( geo_state *geo, uint32_t opcode, uint32_t *input, bool *end_code );
+	// geo commands
+	uint32_t *geo_nop( geo_state *geo, uint32_t opcode, uint32_t *input );
+	uint32_t *geo_object_data( geo_state *geo, uint32_t opcode, uint32_t *input );
+	uint32_t *geo_direct_data( geo_state *geo, uint32_t opcode, uint32_t *input );           
+	uint32_t *geo_window_data( geo_state *geo, uint32_t opcode, uint32_t *input );           
+	uint32_t *geo_texture_data( geo_state *geo, uint32_t opcode, uint32_t *input );          
+	uint32_t *geo_polygon_data( geo_state *geo, uint32_t opcode, uint32_t *input );          
+	uint32_t *geo_texture_parameters( geo_state *geo, uint32_t opcode, uint32_t *input );    
+	uint32_t *geo_mode( geo_state *geo, uint32_t opcode, uint32_t *input );                  
+	uint32_t *geo_zsort_mode( geo_state *geo, uint32_t opcode, uint32_t *input );            
+	uint32_t *geo_focal_distance( geo_state *geo, uint32_t opcode, uint32_t *input );        
+	uint32_t *geo_light_source( geo_state *geo, uint32_t opcode, uint32_t *input );          
+	uint32_t *geo_matrix_write( geo_state *geo, uint32_t opcode, uint32_t *input );          
+	uint32_t *geo_translate_write( geo_state *geo, uint32_t opcode, uint32_t *input );       
+	uint32_t *geo_data_mem_push( geo_state *geo, uint32_t opcode, uint32_t *input );         
+	uint32_t *geo_test( geo_state *geo, uint32_t opcode, uint32_t *input );                  
+	uint32_t *geo_end( geo_state *geo, uint32_t opcode, uint32_t *input );
+	uint32_t *geo_dummy( geo_state *geo, uint32_t opcode, uint32_t *input );
+	uint32_t *geo_log_data( geo_state *geo, uint32_t opcode, uint32_t *input );
+	uint32_t *geo_lod( geo_state *geo, uint32_t opcode, uint32_t *input );
+	uint32_t *geo_code_upload( geo_state *geo, uint32_t opcode, uint32_t *input );
+	uint32_t *geo_code_jump( geo_state *geo, uint32_t opcode, uint32_t *input );
+	// geo code drawing paths
+	void geo_parse_np_ns( geo_state *geo, uint32_t *input, uint32_t count );
+	void geo_parse_np_s( geo_state *geo, uint32_t *input, uint32_t count );
+	void geo_parse_nn_ns( geo_state *geo, uint32_t *input, uint32_t count );
+	void geo_parse_nn_s( geo_state *geo, uint32_t *input, uint32_t count );
+	
+	// raster functions
+	// main data input port
+	void model2_3d_push( raster_state *raster, uint32_t input );
+	// quad & triangle push paths
+	void model2_3d_process_quad( raster_state *raster, uint32_t attr );
+	void model2_3d_process_triangle( raster_state *raster, uint32_t attr );
+
+	// inliners
+	inline void model2_3d_project( triangle *tri );
+	inline uint16_t float_to_zval( float floatval );
+
 };
 
 /*****************************
@@ -334,6 +385,7 @@ public:
 	void model2a_5881(machine_config &config);
 	void srallyc(machine_config &config);
 	void model2a_crx_mem(address_map &map);
+	void model2a_5881_mem(address_map &map);
 };
 
 /*****************************
@@ -355,6 +407,8 @@ public:
 	void indy500(machine_config &config);
 	void rchase2(machine_config &config);
 	void model2b_crx_mem(address_map &map);
+	void model2b_5881_mem(address_map &map);
+	// TODO: split into own class
 	void rchase2_iocpu_map(address_map &map);
 	void rchase2_ioport_map(address_map &map);
 };
@@ -377,6 +431,7 @@ public:
 	void overrev2c(machine_config &config);
 	void stcc(machine_config &config);
 	void model2c_crx_mem(address_map &map);
+	void model2c_5881_mem(address_map &map);
 };
 
 /*****************************
@@ -418,16 +473,15 @@ static inline uint16_t get_texel( uint32_t base_x, uint32_t base_y, int x, int y
 	return (texel & 0x0f);
 }
 
-struct triangle;
-
-class model2_renderer : public poly_manager<float, m2_poly_extra_data, 4, 32768>
+// 0x10000 = size of the tri_sorted_list array
+class model2_renderer : public poly_manager<float, m2_poly_extra_data, 4, 0x10000>
 {
 public:
 	typedef void (model2_renderer::*scanline_render_func)(int32_t scanline, const extent_t& extent, const m2_poly_extra_data& object, int threadid);
 
 public:
 	model2_renderer(model2_state& state)
-		: poly_manager<float, m2_poly_extra_data, 4, 32768>(state.machine())
+		: poly_manager<float, m2_poly_extra_data, 4, 0x10000>(state.machine())
 		, m_state(state)
 		, m_destmap(512, 512)
 	{
@@ -439,12 +493,16 @@ public:
 		m_renderfuncs[5] = &model2_renderer::model2_3d_render_5;
 		m_renderfuncs[6] = &model2_renderer::model2_3d_render_6;
 		m_renderfuncs[7] = &model2_renderer::model2_3d_render_7;
+		m_xoffs = 90;
+		m_yoffs = -8;
 	}
 
 	bitmap_rgb32& destmap() { return m_destmap; }
 
 	void model2_3d_render(triangle *tri, const rectangle &cliprect);
-
+	void set_xoffset(int16 xoffs) { m_xoffs = xoffs; }
+	void set_yoffset(int16 yoffs) { m_yoffs = yoffs; }
+	
 	/* checker = 0, textured = 0, transparent = 0 */
 	#define MODEL2_FUNC 0
 	#define MODEL2_FUNC_NAME    model2_3d_render_0
@@ -506,6 +564,7 @@ public:
 private:
 	model2_state& m_state;
 	bitmap_rgb32 m_destmap;
+	int16_t m_xoffs,m_yoffs;
 };
 
 typedef model2_renderer::vertex_t poly_vertex;

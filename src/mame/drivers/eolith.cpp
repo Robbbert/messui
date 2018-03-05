@@ -266,7 +266,6 @@ ADDRESS_MAP_END
 ADDRESS_MAP_START(eolith_state::sound_io_map)
 	AM_RANGE(0x0000, 0x7fff) AM_ROMBANK("sound_bank")
 	AM_RANGE(0x8000, 0x8000) AM_READ(sound_cmd_r)
-	AM_RANGE(MCS51_PORT_P1, MCS51_PORT_P1) AM_WRITE(sound_p1_w)
 ADDRESS_MAP_END
 
 
@@ -387,11 +386,11 @@ static INPUT_PORTS_START( ironfort )
 	PORT_DIPSETTING(          0x00000080, DEF_STR( Easy ) )
 INPUT_PORTS_END
 
-static INPUT_PORTS_START( ironfortj )
+static INPUT_PORTS_START( ironfortc )
 	PORT_INCLUDE(ironfort)
 
 	PORT_MODIFY("DSW1")
-	PORT_DIPNAME( 0x00000002, 0x00000000, DEF_STR( Free_Play ) ) PORT_DIPLOCATION("SW4:2")
+	PORT_DIPNAME( 0x00000002, 0x00000002, DEF_STR( Free_Play ) ) PORT_DIPLOCATION("SW4:2")
 	PORT_DIPSETTING(          0x00000002, DEF_STR( Off ) )
 	PORT_DIPSETTING(          0x00000000, DEF_STR( On ) )
 	PORT_DIPNAME( 0x00000030, 0x00000030, DEF_STR( Coinage ) ) PORT_DIPLOCATION("SW3:1,2")
@@ -553,6 +552,7 @@ MACHINE_CONFIG_START(eolith_state::eolith45)
 	MCFG_CPU_ADD("soundcpu", I8032, XTAL(12'000'000))
 	MCFG_CPU_PROGRAM_MAP(sound_prg_map)
 	MCFG_CPU_IO_MAP(sound_io_map)
+	MCFG_MCS51_PORT_P1_OUT_CB(WRITE8(eolith_state, sound_p1_w))
 	MCFG_MCS51_SERIAL_TX_CB(WRITE8(eolith_state, soundcpu_to_qs1000)) // Sound CPU -> QS1000 CPU serial link
 
 	MCFG_MACHINE_RESET_OVERRIDE(eolith_state,eolith)
@@ -687,7 +687,10 @@ ROM_START( ironfort )
 	ROM_LOAD( "qs1001a.u96", 0x80000, 0x80000, CRC(d13c6407) SHA1(57b14f97c7d4f9b5d9745d3571a0b7115fbe3176) )
 ROM_END
 
-ROM_START( ironfortj )
+// 鋼鐵要塞 Iron Fortress (Gong3tit3 Jiu3coi3)
+// Eolith
+// 卓任有限公司 Excellent Competence Ltd.
+ROM_START( ironfortc )
 	ROM_REGION( 0x80000, "maincpu", 0 ) /* Hyperstone CPU Code */
 	ROM_LOAD( "u43.bin", 0x00000, 0x80000, CRC(f1f19c9a) SHA1(98531ecedd1277e6d10395794a66d615df7ddbd6) ) /* 27C040 eprom with no label */
 
@@ -1640,7 +1643,7 @@ static const struct
 	/* eolith.c */
 	{ "linkypip", 0x4000825c, -1,/*0x4000ABAE,*/ 240 }, // 2nd address is used on the planet cutscene between but idle skipping between levels, but seems too aggressive
 	{ "ironfort", 0x40020854, -1, 240 },
-	{ "ironfortj",0x40020234, -1, 240 },
+	{ "ironfortc",0x40020234, -1, 240 },
 	{ "hidnctch", 0x4000bba0, -1, 240 },
 	{ "raccoon",  0x40008204, -1, 240 },
 	{ "puzzlekg", 0x40029458, -1, 240 },
@@ -1737,7 +1740,7 @@ CUSTOM_INPUT_MEMBER(eolith_state::stealsee_speedup_getvblank)
 
 GAME( 1998, linkypip,  0,        eolith45, linkypip,  eolith_state, eolith,   ROT0, "Eolith", "Linky Pipe", MACHINE_IMPERFECT_SOUND | MACHINE_SUPPORTS_SAVE )
 GAME( 1998, ironfort,  0,        ironfort, ironfort,  eolith_state, eolith,   ROT0, "Eolith", "Iron Fortress", MACHINE_IMPERFECT_SOUND | MACHINE_SUPPORTS_SAVE )
-GAME( 1998, ironfortj, ironfort, ironfort, ironfortj, eolith_state, eolith,   ROT0, "Eolith", "Iron Fortress (Japan)", MACHINE_IMPERFECT_SOUND | MACHINE_SUPPORTS_SAVE )
+GAME( 1998, ironfortc, ironfort, ironfort, ironfortc, eolith_state, eolith,   ROT0, "Eolith (Excellent Competence Ltd. license)", "Gongtit Jiucoi Iron Fortress (Hong Kong)", MACHINE_IMPERFECT_SOUND | MACHINE_SUPPORTS_SAVE ) // Licensed/Distributed to Hong Kong company Excellent Competence Ltd.
 GAME( 1998, hidnctch,  0,        eolith45, hidnctch,  eolith_state, eolith,   ROT0, "Eolith", "Hidden Catch (World) / Tul Lin Gu Lim Chat Ki '98 (Korea) (pcb ver 3.03)",  MACHINE_IMPERFECT_SOUND | MACHINE_SUPPORTS_SAVE ) // or Teurrin Geurim Chajgi '98
 GAME( 1998, raccoon,   0,        eolith45, raccoon,   eolith_state, eolith,   ROT0, "Eolith", "Raccoon World", MACHINE_IMPERFECT_SOUND | MACHINE_SUPPORTS_SAVE )
 GAME( 1998, puzzlekg,  0,        eolith45, puzzlekg,  eolith_state, eolith,   ROT0, "Eolith", "Puzzle King (Dance & Puzzle)",  MACHINE_IMPERFECT_SOUND | MACHINE_SUPPORTS_SAVE )

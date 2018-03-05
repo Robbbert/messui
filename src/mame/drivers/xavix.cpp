@@ -21,9 +21,37 @@
     SSD COMPANY LIMITED is already working on their next chip called "XaviX II" that is said to be a 32-bit RISC processor
     with 3D capabilities.
 
-    Important addresses
+    Notes:
+	
+	To access service mode in Monster Truck hold Horn and Nitro on startup
 
-    0x18340 in Monster Truck is the self-test mode, shows me which registers need to retain their values etc.
+	There are multiple revisions of the CPU hardware, the SSD 2000 / SSD 2002 chips definitely add more opcodes
+	(thanks to Sean Riddle for this table)
+
+	name						PCB ID		ROM width	TSOP pads	ROM size		SEEPROM			die markings
+
+	Play TV Ping Pong			8028		x8			48			1M				no				SSD 97 PA7270-107
+
+	Play TV Bass Fishin'		71008		x8			40			1M				no				SSD 98 PA7351-107
+	Play TV Boxing				72039		x8			48			2M				no				SSD 98 PA7351-107
+	Play TV Card Night			71063		x8			40			1M				no				SSD 98 PA7351-107
+
+	Play TV Baseball 2			72042		x8			48			2M				no				SSD 98 PL7351-181
+	Play TV Monster Truck		74026		x8			48			4M				no				SSD 98 PL7351-181
+	Radica/EA Madden Football	74021		x8			48			not dumped		no				SSD 98 PL7351-181
+	Play TV Snowboarder Blue	71023		x8			40			1M				no				SSD 98 PL7351-181
+	Namco Nostalgia 2			CGSJ		x8			48			1M				24LC04			SSD 98 PL7351-181
+
+	Star Wars Saga Lightsaber	SWSA		x8			48			8M				24C02			SSD 2000 NEC 85605-621
+	Lord of the Rings			LORA		x8			48			8M				24C02			SSD 2000 NEC 85605-621
+	MX Rebel Dirt				MTXA		x8			48			8M				24C04			SSD 2000 NEC 85605-621
+
+	XaviXTennis					SGM6446		x16			48			8M				24C08			SSD 2002 NEC 85054-611
+
+	Real Swing Golf				74037		x16			48			not dumped		
+	Play TV Football 2			L7278		x16			48			not dumped		
+	XaviXBowling				SGM644C		x16			48			not dumped		
+	Basketball					75029		x16			48			not dumped		
 
 ***************************************************************************/
 
@@ -34,7 +62,7 @@
 #include "screen.h"
 #include "speaker.h"
 
-
+// not confirmed for all games
 #define MAIN_CLOCK XTAL(21'477'272)
 
 class xavix_state : public driver_device
@@ -154,7 +182,6 @@ public:
 	DECLARE_DRIVER_INIT(xavix);
 	DECLARE_DRIVER_INIT(taitons1);
 	DECLARE_DRIVER_INIT(rad_box);
-	DECLARE_DRIVER_INIT(rad_crdn);
 
 	void xavix_map(address_map &map);
 protected:
@@ -381,8 +408,6 @@ void xavix_state::draw_tilemap(screen_device &screen, bitmap_ind16 &bitmap, cons
 		opaque = 0;
 	}
 
-	//printf("draw tilemap %d, regs base0 %02x base1 %02x base2 %02x tilesize,bpp %02x scrollx %02x scrolly %02x pal %02x mode %02x\n", which, tileregs[0x0], tileregs[0x1], tileregs[0x2], tileregs[0x3], tileregs[0x4], tileregs[0x5], tileregs[0x6], tileregs[0x7]);
-
 	switch (tileregs[0x3] & 0x30)
 	{
 	case 0x00:
@@ -440,6 +465,8 @@ void xavix_state::draw_tilemap(screen_device &screen, bitmap_ind16 &bitmap, cons
 
 	if (tileregs[0x7] & 0x80)
 	{
+		//printf("draw tilemap %d, regs base0 %02x base1 %02x base2 %02x tilesize,bpp %02x scrollx %02x scrolly %02x pal %02x mode %02x\n", which, tileregs[0x0], tileregs[0x1], tileregs[0x2], tileregs[0x3], tileregs[0x4], tileregs[0x5], tileregs[0x6], tileregs[0x7]);
+
 		// there's a tilemap register to specify base in main ram, although in the monster truck test mode it points to an unmapped region
 		// and expected a fixed layout, we handle that in the memory map at the moment
 		int count;
@@ -451,6 +478,7 @@ void xavix_state::draw_tilemap(screen_device &screen, bitmap_ind16 &bitmap, cons
 			{
 				int bpp, pal, scrolly, scrollx;
 				int tile = 0;
+				int extraattr = 0;
 
 				// the register being 0 probably isn't the condition here
 				if (tileregs[0x0] != 0x00) tile |= mainspace.read_byte((tileregs[0x0] << 8) + count);
@@ -458,7 +486,7 @@ void xavix_state::draw_tilemap(screen_device &screen, bitmap_ind16 &bitmap, cons
 
 				// at the very least boxing leaves unwanted bits set in ram after changing between mode 0x8a and 0x82, expecting them to not be used
 				if (tileregs[0x7] & 0x08)
-					tile |= mainspace.read_byte((tileregs[0x2] << 8) + count) << 16;
+					extraattr = mainspace.read_byte((tileregs[0x2] << 8) + count);
 
 				count++;
 
@@ -494,37 +522,17 @@ void xavix_state::draw_tilemap(screen_device &screen, bitmap_ind16 &bitmap, cons
 					}
 					else
 					{
+						tile = tile * 8;
+						basereg = (tile & 0x70000) >> 16;
+						tile &= 0xffff;
+						gfxbase = (m_spr_attra[(basereg * 2) + 1] << 16) | (m_spr_attra[(basereg * 2)] << 8);
+						tile += gfxbase;
+
 						if (tileregs[0x7] & 0x08)
 						{
-							// seems to be an alt mode where there more tile data comes from an additional attribute table including palette and the banking indirection is changed
-							tile = tile * 8; // << 3
-
-							// boxing suggests this check happens here
-							if ((tile & 0xffff) == 0)
-								continue;
-
-							tile &= 0x0ffff;
-
-							// how we use the banking bits is not clear..
-							tile += hackx * 0x10000;
-
-							/* 0x03 = bass fishing company logo, 0x01 = xavix logo, title, 0x04 = menu background
-
-							   0x05 = card night title (ntsc) 0x01 = xavix logo, menu background, 0x08 = card night title (pal)  (potentially buggy, code flow seems wrong)
-
-							   0x0e = boxing (instruction stuff) also needs palette settings.. also some bits on same layer using different bank? (0xd) or just disabled?
-
-							*/
-
-						}
-						else
-						{
-							// fixed multiplier? or just different? only seen this in 16x8 tile mode at the moment.
-							tile = tile * 8;
-							basereg = (tile & 0xf0000) >> 16;
-							tile &= 0xffff;
-							gfxbase = (m_spr_attra[(basereg * 2) + 1] << 16) | (m_spr_attra[(basereg * 2)] << 8);
-							tile += gfxbase;
+							// make use of the extraattr stuff?
+							pal = (extraattr & 0xf0)>>4;
+							// low bits are priority?
 						}
 					}
 				}
@@ -1307,9 +1315,9 @@ WRITE8_MEMBER(xavix_state::xavix_6fd8_w) // also related to tilemap 2?
 {
 	// possibly just a mirror of tmap2_regs_w, at least it writes 0x04 here which would be the correct
 	// base address to otherwise write at tmap2_regs_w offset 0
-	tmap2_regs_w(space,offset,data);
+//	tmap2_regs_w(space,offset,data);
 
-	//logerror("%s: xavix_6fd8_w data %02x\n", machine().describe_context(), data);
+	logerror("%s: xavix_6fd8_w data %02x\n", machine().describe_context(), data);
 }
 
 WRITE8_MEMBER(xavix_state::tmap2_regs_w)
@@ -1605,6 +1613,34 @@ static INPUT_PORTS_START( rad_boxp )
 INPUT_PORTS_END
 
 
+static INPUT_PORTS_START( rad_snow )
+	PORT_INCLUDE(xavix)
+
+	PORT_MODIFY("IN0")
+	PORT_BIT( 0x01, IP_ACTIVE_HIGH, IPT_BUTTON1 ) PORT_NAME("Go") // is this a button, or 'up' ?
+
+	PORT_BIT( 0x08, IP_ACTIVE_HIGH, IPT_JOYSTICK_DOWN )
+	PORT_BIT( 0x10, IP_ACTIVE_HIGH, IPT_JOYSTICK_LEFT )
+	PORT_BIT( 0x20, IP_ACTIVE_HIGH, IPT_JOYSTICK_RIGHT )
+INPUT_PORTS_END
+
+static INPUT_PORTS_START( rad_snowp )
+	PORT_INCLUDE(rad_snow)
+
+	PORT_MODIFY("REGION") // PAL/NTSC flag
+	PORT_BIT( 0x10, IP_ACTIVE_LOW, IPT_SPECIAL )
+INPUT_PORTS_END
+
+static INPUT_PORTS_START( namcons2 )
+	PORT_INCLUDE(xavix)
+
+	PORT_MODIFY("IN0")
+	PORT_BIT( 0x01, IP_ACTIVE_HIGH, IPT_BUTTON1 )
+	PORT_BIT( 0x02, IP_ACTIVE_HIGH, IPT_BUTTON2 )
+	PORT_BIT( 0x04, IP_ACTIVE_HIGH, IPT_BUTTON3 )
+	PORT_BIT( 0x08, IP_ACTIVE_HIGH, IPT_BUTTON4 )
+INPUT_PORTS_END
+
 /* correct, 4bpp gfxs */
 static const gfx_layout charlayout =
 {
@@ -1741,6 +1777,7 @@ MACHINE_CONFIG_START(xavix_state::xavix)
 	/* basic machine hardware */
 	MCFG_CPU_ADD("maincpu",XAVIX,MAIN_CLOCK)
 	MCFG_CPU_PROGRAM_MAP(xavix_map)
+	MCFG_M6502_DISABLE_DIRECT()
 	MCFG_CPU_VBLANK_INT_DRIVER("screen", xavix_state,  interrupt)
 	MCFG_XAVIX_VECTOR_CALLBACK(xavix_state, get_vectors)
 
@@ -1796,12 +1833,6 @@ DRIVER_INIT_MEMBER(xavix_state, rad_box)
 	m_alt_addressing = 2;
 }
 
-DRIVER_INIT_MEMBER(xavix_state, rad_crdn)
-{
-	DRIVER_INIT_CALL(xavix);
-	m_alt_addressing = 2;
-}
-
 /***************************************************************************
 
   Game driver(s)
@@ -1811,6 +1842,11 @@ DRIVER_INIT_MEMBER(xavix_state, rad_crdn)
 ROM_START( taitons1 )
 	ROM_REGION( 0x200000, "bios", ROMREGION_ERASE00 )
 	ROM_LOAD( "taitonostalgia1.u3", 0x000000, 0x200000, CRC(25bd8c67) SHA1(a109cd2da6aa4596e3ca3abd1afce2d0001a473f) )
+ROM_END
+
+ROM_START( namcons2 )
+	ROM_REGION( 0x100000, "bios", ROMREGION_ERASE00 )
+	ROM_LOAD( "nostalgia.bin", 0x000000, 0x100000, CRC(03f7f755) SHA1(bdf1b10ab0104ed580951b0c428c4e93e7373afe) )
 ROM_END
 
 ROM_START( rad_box )
@@ -1832,6 +1868,17 @@ ROM_START( rad_bassp )
 	ROM_REGION(0x100000, "bios", ROMREGION_ERASE00)
 	ROM_LOAD("bassfishin.bin", 0x000000, 0x100000, CRC(b54eb1c5) SHA1(084faa9349369f2b8846950765f9c8f758db3e9e) )
 ROM_END
+
+ROM_START( rad_snow )
+	ROM_REGION(0x100000, "bios", ROMREGION_ERASE00)
+	ROM_LOAD("snoblu.bin", 0x000000, 0x100000, CRC(593e40b3) SHA1(03483ac39eddd7746470fb60018e704382b0da59) )
+ROM_END
+
+ROM_START( rad_snowp )
+	ROM_REGION(0x100000, "bios", ROMREGION_ERASE00)
+	ROM_LOAD("snoblu.bin", 0x000000, 0x100000, CRC(593e40b3) SHA1(03483ac39eddd7746470fb60018e704382b0da59) )
+ROM_END
+
 
 ROM_START( rad_ping )
 	ROM_REGION( 0x100000, "bios", ROMREGION_ERASE00 )
@@ -1872,6 +1919,8 @@ ROM_END
 
 CONS( 2006, taitons1,  0,          0,  xavix,  xavix,    xavix_state, taitons1, "Bandai / SSD Company LTD / Taito", "Let's! TV Play Classic - Taito Nostalgia 1", MACHINE_IS_SKELETON )
 
+CONS( 2006, namcons2,  0,          0,  xavix,  namcons2, xavix_state, taitons1, "Bandai / SSD Company LTD / Namco", "Let's! TV Play Classic - Namco Nostalgia 2", MACHINE_IS_SKELETON )
+
 CONS( 2000, rad_ping,  0,          0,  xavix,  xavix,    xavix_state, xavix,    "Radica / SSD Company LTD / Simmer Technology", "Play TV Ping Pong", MACHINE_IS_SKELETON ) // "Simmer Technology" is also known as "Hummer Technology Co., Ltd"
 
 CONS( 2003, rad_mtrk,  0,          0,  xavix,  rad_mtrk, xavix_state, xavix,    "Radica / SSD Company LTD",                     "Play TV Monster Truck (NTSC)", MACHINE_IS_SKELETON )
@@ -1879,37 +1928,23 @@ CONS( 2003, rad_mtrkp, rad_mtrk,   0,  xavixp, rad_mtrkp,xavix_state, xavix,    
 
 CONS( 200?, rad_box,   0,          0,  xavix,  rad_box,  xavix_state, rad_box,  "Radica / SSD Company LTD",                     "Play TV Boxing (NTSC)", MACHINE_IS_SKELETON)
 CONS( 200?, rad_boxp,  rad_box,    0,  xavixp, rad_boxp, xavix_state, rad_box,  "Radica / SSD Company LTD",                     "ConnecTV Boxing (PAL)", MACHINE_IS_SKELETON)
-
-CONS( 200?, rad_crdn,  0,          0,  xavix,  rad_crdn, xavix_state, rad_crdn, "Radica / SSD Company LTD",                     "Play TV Card Night (NTSC)", MACHINE_IS_SKELETON)
-CONS( 200?, rad_crdnp, rad_crdn,   0,  xavixp, rad_crdnp,xavix_state, rad_crdn, "Radica / SSD Company LTD",                     "ConnecTV Card Night (PAL)", MACHINE_IS_SKELETON)
+ 
+CONS( 200?, rad_crdn,  0,          0,  xavix,  rad_crdn, xavix_state, rad_box,  "Radica / SSD Company LTD",                     "Play TV Card Night (NTSC)", MACHINE_IS_SKELETON)
+CONS( 200?, rad_crdnp, rad_crdn,   0,  xavixp, rad_crdnp,xavix_state, rad_box,  "Radica / SSD Company LTD",                     "ConnecTV Card Night (PAL)", MACHINE_IS_SKELETON)
 
 CONS( 2002, rad_bb2,   0,          0,  xavix,  xavix,    xavix_state, xavix,    "Radica / SSD Company LTD",                     "Play TV Baseball 2", MACHINE_IS_SKELETON ) // contains string "Radica RBB2 V1.0"
 
 CONS( 2001, rad_bass,  0,          0,  xavix,  xavix,    xavix_state, rad_box,  "Radica / SSD Company LTD",                     "Play TV Bass Fishin'", MACHINE_IS_SKELETON)
 CONS( 2001, rad_bassp, rad_bass,   0,  xavixp, xavixp,   xavix_state, rad_box,  "Radica / SSD Company LTD",                     "ConnecTV Bass Fishin'", MACHINE_IS_SKELETON)
 
+// there is another 'Snowboarder' with a white coloured board, it appears to be a newer game closer to 'SSX Snowboarder' but without the SSX license.
+CONS( 2001, rad_snow,  0,          0,  xavix,  rad_snow, xavix_state, rad_box,  "Radica / SSD Company LTD",                     "Play TV Snowboarder (Blue)", MACHINE_IS_SKELETON)
+CONS( 2001, rad_snowp, rad_snow,   0,  xavixp, rad_snowp,xavix_state, rad_box,  "Radica / SSD Company LTD",                     "ConnecTV Snowboarder (Blue)", MACHINE_IS_SKELETON)
+
 CONS (200?, eka_strt,  0,          0,  xavix,  xavix,    xavix_state, xavix, "Takara / SSD Company LTD",                     "e-kara Starter", MACHINE_IS_SKELETON)
 
 /* The 'XaviXPORT' isn't a real console, more of a TV adapter, all the actual hardware (CPU including video hw, sound hw) is in the cartridges and controllers
    and can vary between games, see notes at top of driver.
-
-   According to sources XaviX Tennis should be a standard XaviX CPU, but at the very least makes significantly more use of custom opcodes than the above titles
-   which only appears to use the call far / return far for extended memory space.
-
-   Furthermore it also seems to require some regular 6502 opcodes to be replaced with custom ones, yet the other games expect these to act normally.  This
-   leads me to believe that XaviX Tennis is almost certainly a Super XaviX title.
-
-   The CPU die on XaviX Tennis is internally marked as NEC 85054-611 and is very different to the two below
-
-   Radica Monster truck die is marked SSD PL7351 with SSD98 also printed on the die
-   Radia Ping Pong      die is marked SSD PA7270 with SSD97 also printed on the die (otherwise looks identical to Monster Truck)
-
-   Boxing, Baseball 2 and Card Night all have the SSD98 logo
-   Boxing, Bass Fishin' and Card Night are all PA7351-107.  Baseball 2 looks like PL7351-181.
-
-   Star Wars Saga Edition also seems to be making use of additional opcodes, meaning it could also be Super Xavix, or something in-between (unless they're
-   caused by the bad dump, but it looks intentional)
-
 */
 
 ROM_START( xavtenni )
@@ -1917,14 +1952,27 @@ ROM_START( xavtenni )
 	ROM_LOAD( "xavixtennis.bin", 0x000000, 0x800000, CRC(23a1d918) SHA1(2241c59e8ea8328013e55952ebf9060ea0a4675b) )
 ROM_END
 
+/* Tiger games have extended opcodes too */
+
 
 ROM_START( ttv_sw )
 	ROM_REGION( 0x800000, "bios", ROMREGION_ERASE00 )
 	ROM_LOAD( "jedi.bin", 0x000000, 0x800000, CRC(51cae5fd) SHA1(1ed8d556f31b4182259ca8c766d60c824d8d9744) )
 ROM_END
 
+ROM_START( ttv_lotr )
+	ROM_REGION( 0x800000, "bios", ROMREGION_ERASE00 )
+	ROM_LOAD( "lotr.bin", 0x000000, 0x800000, CRC(a034ecd5) SHA1(264a9d4327af0a075841ad6129db67d82cf741f1) )
+ROM_END
+
+ROM_START( ttv_mx )
+	ROM_REGION( 0x800000, "bios", ROMREGION_ERASE00 )
+	ROM_LOAD( "mxdirtrebel.bin", 0x000000, 0x800000, CRC(e64bf1a1) SHA1(137f97d7d857697a13e0c8984509994dc7bc5fc5) )
+ROM_END
+
 
 CONS( 2004, xavtenni,  0,   0,  xavix,  xavix, xavix_state, xavix, "SSD Company LTD",         "XaviX Tennis (XaviXPORT)", MACHINE_IS_SKELETON )
+
 CONS( 2005, ttv_sw,    0,   0,  xavix,  xavix, xavix_state, xavix, "Tiger / SSD Company LTD", "Star Wars Saga Edition - Lightsaber Battle Game", MACHINE_IS_SKELETON )
-
-
+CONS( 2005, ttv_lotr,  0,   0,  xavix,  xavix, xavix_state, xavix, "Tiger / SSD Company LTD", "Lord Of The Rings - Warrior of Middle-Earth", MACHINE_IS_SKELETON )
+CONS( 2005, ttv_mx,    0,   0,  xavix,  xavix, xavix_state, xavix, "Tiger / SSD Company LTD", "MX Dirt Rebel", MACHINE_IS_SKELETON )

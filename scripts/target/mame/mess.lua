@@ -101,6 +101,7 @@ CPUS["TMS7000"] = true
 CPUS["SM8500"] = true
 CPUS["MINX"] = true
 CPUS["SSEM"] = true
+CPUS["DIABLO"] = true
 CPUS["AVR8"] = true
 CPUS["TMS1000"] = true
 CPUS["MCS40"] = true
@@ -220,7 +221,7 @@ SOUNDS["ES5506"] = true
 --SOUNDS["GAELCO_CG1V"] = true
 --SOUNDS["GAELCO_GAE1"] = true
 SOUNDS["C6280"] = true
---SOUNDS["SP0250"] = true
+SOUNDS["SP0250"] = true
 SOUNDS["SPU"] = true
 SOUNDS["CDDA"] = true
 --SOUNDS["ICS2115"] = true
@@ -3524,6 +3525,7 @@ files {
 	MAME_DIR .. "src/mame/drivers/d6800.cpp",
 	MAME_DIR .. "src/mame/drivers/d6809.cpp",
 	MAME_DIR .. "src/mame/drivers/daruma.cpp",
+	MAME_DIR .. "src/mame/drivers/diablo1300.cpp",
 	MAME_DIR .. "src/mame/drivers/didact.cpp",
 	MAME_DIR .. "src/mame/drivers/digel804.cpp",
 	MAME_DIR .. "src/mame/drivers/digijet.cpp",
@@ -3589,6 +3591,7 @@ files {
 	MAME_DIR .. "src/mame/includes/micronic.h",
 	MAME_DIR .. "src/mame/drivers/microterm.cpp",
 	MAME_DIR .. "src/mame/drivers/mightyframe.cpp",
+	MAME_DIR .. "src/mame/drivers/milton6805.cpp",
 	MAME_DIR .. "src/mame/drivers/milwaukee.cpp",
 	MAME_DIR .. "src/mame/drivers/mini2440.cpp",
 	MAME_DIR .. "src/mame/drivers/miniframe.cpp",

@@ -11338,6 +11338,9 @@ kdynastg                        // (c) 1999 EZ Graphics
 xfiles                          // (c) 1999 dgPIX Entertainment Inc
 xfilesk                         // (c) 1999 dgPIX Entertainment Inc (censored for the Korean market)
 
+@source:diablo1300.cpp
+diablo				//
+
 @source:didact.cpp
 md6802                          //
 mp68a                           //
@@ -11570,6 +11573,8 @@ dragon200e                      // Dragon 200E
 dragon32                        // Dragon 32
 dragon64                        // Dragon 64
 tanodr64                        // Tano Dragon 64 (NTSC)
+dragon64h                       // Dragon 64 with HD6309
+tanodr64h                       // Tano Dragon 64 (NTSC) with HD6309
 
 @source:dragrace.cpp
 dragrace                        // 008505-008521    1977/06 [6800]
@@ -12232,7 +12237,7 @@ hidctch3                        // (c) 2000 Eolith
 hidnc2k                         // (c) 2000 Eolith
 hidnctch                        // (c) 1998 Eolith
 ironfort                        // (c) 1998 Eolith
-ironfortj                       // (c) 1998 Eolith
+ironfortc                       // (c) 1998 Eolith
 landbrk                         // (c) 1999 Eolith
 landbrka                        // (c) 1999 Eolith
 landbrkb                        // (c) 1999 Eolith
@@ -21129,6 +21134,9 @@ mil4000b                        // (c) 2000 Sure Milano
 mil4000c                        // (c) 2000 Sure Milano
 top21                           // (c) 200? Assogiochi Assago (Mi)
 
+@source:milton6805.cpp
+milton                          // 1980 Milton Bradley
+
 @source:milwaukee.cpp
 mc1200                          //
 
@@ -29957,7 +29965,6 @@ acrobatm                        // UPL-91073 (c) 1991 UPL + Taito license
 airattck                        // (c) 1996 Comad
 airattcka                       // (c) 1996 Comad
 arcadian                        // (c) 1994 NMK
-atombjt                         // bootleg
 bigbang                         // UPL-93091 (c) 1993 NMK
 bioship                         // UPL-90062 (c) 1990 UPL + American Sammy license
 bjtwin                          // UPL-93087 (c) 1993 NMK
@@ -31577,6 +31584,7 @@ kok                             //
 
 @source:photoply.cpp
 photoply                        //
+photoply2k4						//
 
 @source:phunsy.cpp
 phunsy                          //
@@ -32037,6 +32045,7 @@ potgoldu                        // (c) 200? U.S. Games
 potgoldu580                     // (c) 200? U.S. Games
 
 @source:powerbal.cpp
+atombjt                         // bootleg
 hotminda                        // (c) 1995
 magicstk                        // (c) 1995
 powerbal                        // (c) 1994
@@ -36741,15 +36750,28 @@ ti74                            // 1985 TI-74
 ti95                            // 1986 TI-95
 
 @source:ti85.cpp
-ti73                            // 1990 TI-73
+ti73                            // 1998 TI-73 Explorer
+ti73b                           // 20?? TI-73 Explorer (Bootleg)
 ti81                            // 1990 TI-81 (Z80 2 MHz)
-ti81v2                          // 1990 TI-81 (Z80 2 MHz)
+ti81v2                          // 1994 TI-81 v2.0 (Z80 2 MHz)
 ti82                            // 1993 TI-82 (Z80 6 MHz)
 ti83                            // 1996 TI-83 (Z80 6 MHz)
 ti83p                           // 1999 TI-83 Plus (Boot Code 1.00) (Z80 6 MHz)
+ti83pb                          // 20?? TI-83 Plus (Bootleg) (Z80 6 MHz)
 ti83pse                         // 2001 TI-83 Plus Silver Edition (Boot Code 1.00)
 ti84p                           // 2004 TI-84 Plus (Boot Code 1.00)
+ti84pv2                         // 200? TI-84 Plus (Boot Code 1.02)
+ti84pv3                         // 2011 TI-84 Plus (Boot Code 1.03)
+ti84pb                          // 20?? TI-84 Plus (Bootleg)
 ti84pse                         // 2004 TI-84 Plus Silver Edition (Boot Code 1.00)
+ti84psev3                       // 2011 TI-84 Plus Silver Edition (Boot Code 1.03)
+ti84pseb                        // 20?? TI-84 Plus Silver Edition (Bootleg)
+ti84pob                         // 201? TI-84 Plus Orion (Bootleg)
+ti84pov3                        // 201? TI-84 Plus Orion (Boot Code 1.03)
+ti84pcse                        // 20?? TI-84 Plus Color Silver Edition (Boot Code 4.0)
+ti84pce                         // 2015 TI-84 Plus Color Edition (Boot Code 5.00)
+ti84pcev15                      // 2016 TI-84 Plus Color Edition (Boot Code 5.15)
+ti84pcev30                      // 2017 TI-84 Plus Color Edition (Boot Code 5.30)
 ti85                            // 1992 TI-85 (Z80 6 MHz)
 ti86                            // 1997 TI-86 (Z80 6 MHz)
 
@@ -38976,6 +38998,7 @@ xsleenaj                        // TA-0019 (c) 1986
 
 @source:xavix.cpp
 taitons1                        //
+namcons2                        //
 rad_ping                        //
 rad_mtrk                        //
 rad_mtrkp                       //
@@ -38986,9 +39009,13 @@ rad_crdn                        //
 rad_crdnp                       //
 rad_bass                        //
 rad_bassp                       //
+rad_snow                        //
+rad_snowp                       //
 eka_strt                        //
 xavtenni                        //
 ttv_sw                          //
+ttv_lotr                        //
+ttv_mx                          //
 
 @source:xbox.cpp
 xbox                            //
