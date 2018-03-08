@@ -1180,7 +1180,8 @@ static void SetupImageTypes(const machine_config *config, mess_image_type *types
 		return; // used by MView_MountItem
 	else
 	{
-		char t1[256];
+		string exts = dev->file_extensions();
+		char t1[exts.size()+1];
 		strcpy(t1, dev->file_extensions());
 		char *ext = strtok(t1,",");
 		while (ext)
