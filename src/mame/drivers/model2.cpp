@@ -9,70 +9,34 @@
     Hardware and protection reverse-engineering and general assistance by ElSemi.
     MAME driver by R. Belmont, Olivier Galibert, ElSemi and Angelo Salese.
 
-    TODO (updated as for April 2014):
-    - all Model 2B games: FIFO comms looks way wrong, and 3d is mostly missing/incomplete. Games also tends to stalls at some point, culprit might be when i960 tries
-      to use a burst type opcode read;
-    - Inputs needs device-ification and clean-ups;
-    - daytona: runs at half speed in gameplay;
-    - desert: several 3d bugs, presumably down to FIFO;
-    - dynamcop: stalls at stage select screen;
+	TODO:
+	- z-sort, focal distance, color gamma and Mip Mapping still needs to be properly sorted in the renderer;
+	- FIFO needs to be properly emulated in the various CPU cores (we currently rely on some workarounds);
+	- sound comms still needs some work (sometimes m68k doesn't get some commands or play them with a delay);
+	- 2C games needs TGPx4 emulation;
+	- clean-ups;
+
+	TODO (per-game issues)
+	- daytona: crashes when coining it up with master network active
+	           culprit is a wrong command parameter in geo_parse texture data opcode;
+	- daytona: car glasses doesn't get loaded during gameplay;
+	- doa, doaa: corrupted sound, eventually becomes silent;
+	- dynamcopc: corrupts palette for 2d (most likely unrelated with the lack of DSP);
+	- fvipers, schamp: rasterizer has issues displaying some characters @see video/model2.cpp
     - fvipers: enables timers, but then irq register is empty, hence it crashes with an "interrupt halt" at POST (regression);
     - lastbrnx: uses external DMA port 0 for uploading SHARC program, hook-up might not be 100% right;
-    - lastbrnx: uses a shitload of unsupported SHARC opcodes (compute_fmul_avg, shift operation 0x11, ALU operation 0x89 (compute_favg));
-    - lastbrnx: eventually crashes in attract mode, geo_parse_nn_s() is the culprit apparently;
-    - manxtt: missing 3d;
-    - motoraid: stalls after course select;
-    - pltkidsa: after few secs of gameplay, background 3d disappears and everything reports a collision against the player;
-    - skytargt: MAME hardlocks after disclaimer screen;
-    - srallyc: opponent cars flickers like wild;
-    - vcop: lightgun input is offsetted;
-    - vcop: sound dies at enter initial screen (i.e. after played the game once);
-    - vcop: tilemap priority bug at stage select screen;
-    - vf2: stalls after disclaimer screen;
-    - vstriker: countdown in team select goes way too fast ...
-    - vstriker: ... meanwhile gameplay is way too slow!?
-    - zeroguna: stalls after some seconds of gameplay;
-
-    OK (controls may be wrong/missing/incomplete)
-    --
-    daytona/daytonat/daytonam
-    desert
-    vcop
-    vf2
-    vcop2
-    zerogun
-    gunblade
-    indy500
-    bel
-    hotd
-    topskatr
-    von
-    fvipers
-    schamp
-    stcc
-    srallyc
-    skytargt
-    dynamcop
-    dynabb97
-    lastbrnj/lastbrnx
-    skisuprg
-
-    almost OK
-    ---------
-    overrev: sound CPU crashes.
-    vstriker: shows some attract mode, then hangs
-    manxtt: no escape from "active motion slider" tutorial (needs analog inputs), bypass it by entering then exiting service mode
-    manxtt: crashes after the title screen, the TGP is the cause
-    pltkids/pltkidsa: crashes after some time of gameplay.
-    rchase2: fails drive bd i/o check
-
-    TODO
-    ----
-    Controls are pretty basic right now
-    Some games (sgt24h, indy500) hangs at random places, presumably due to a regression with the SHARC fifo comms
-    Sound doesn't work properly in all games
-    System 24 tilemaps need more advanced linescroll support (see fvipers, daytona)
-    2C needs DSP still
+	- lastbrnx: has wrong graphics, uses several SHARC opcodes that needs to be double checked 
+	            (compute_fmul_avg, shift operation 0x11, ALU operation 0x89 (compute_favg));
+	- manxtt: no escape from "active motion slider" tutorial (needs analog inputs), 
+	          bypass it by entering then exiting service mode;
+    - manxtt: no bikes are visible (not a z-sort issue!);
+	- sgt24h: first turn in easy reverse course has ugly rendered mountain in background;
+	- skytargt: really slow during gameplay;
+    - srallyc: some 3d elements doesn't show up properly (trees models, last hill in course 1 is often black colored);
+    - vcop: sound dies at enter initial screen (i.e. after played the game once) (untested);
+    - vcop: lightgun input is offsetted (needs to be calibrated in service mode);
+	- vcop: missing 3d bug at stage select screen (priority?);
+	- vstriker: stadium ads have terrible colors (they uses the wrong color table, @see video/model2rd.hxx)
 
 ======================================================================================================================================
 
@@ -442,6 +406,13 @@ MACHINE_RESET_MEMBER(model2_state,model2_common)
 	// TODO: HW can probably parse this at will somehow ...
 	for (i=0;i<0x20000/4;i++)
 		m_bufferram[i] = 0x07800f0f;
+
+	m_copro_fifoin_rpos = 0;
+	m_copro_fifoin_wpos = 0;
+	m_copro_fifoin_num = 0;
+	m_copro_fifoout_rpos = 0;
+	m_copro_fifoout_wpos = 0;
+	m_copro_fifoout_num = 0;
 }
 
 MACHINE_RESET_MEMBER(model2_state,model2o)
@@ -554,7 +525,9 @@ READ32_MEMBER(model2_state::fifoctl_r)
 	}
 
 	// #### 1 if fifo empty, zerogun needs | 0x04 set
-	return r | 0x04;
+	// TODO: 0x04 is probably fifo full, zeroguna stalls with a fresh nvram with that enabled!
+	return r;
+//	return r | 0x04;
 }
 
 READ32_MEMBER(model2_state::videoctl_r)
@@ -1043,7 +1016,7 @@ READ32_MEMBER(model2_state::geo_r)
 	}
 
 //  fatalerror("geo_r: %08X, %08X\n", address, mem_mask);
-	osd_printf_debug("geo_r: PC:%08x - %08X\n", m_maincpu->pc(), address);
+	logerror("geo_r: PC:%08x - %08X\n", m_maincpu->pc(), address);
 
 	return 0;
 }
@@ -6164,10 +6137,10 @@ GAME( 1994, vcop,      0,       model2o,     vcop,    model2o_state,       0,   
 GAME( 1994, vcopa,     vcop,    model2o,     vcop,    model2o_state,       0,       ROT0, "Sega", "Virtua Cop (Revision A)", MACHINE_NOT_WORKING|MACHINE_IMPERFECT_GRAPHICS )
 
 // Model 2A-CRX (TGPs, SCSP sound board)
-GAME( 1994, vf2,       0,       model2a,      model2,   model2a_state, 0,       ROT0, "Sega",   "Virtua Fighter 2 (Version 2.1)", MACHINE_NOT_WORKING|MACHINE_IMPERFECT_GRAPHICS )
-GAME( 1994, vf2b,      vf2,     model2a,      model2,   model2a_state, 0,       ROT0, "Sega",   "Virtua Fighter 2 (Revision B)", MACHINE_NOT_WORKING|MACHINE_IMPERFECT_GRAPHICS )
-GAME( 1994, vf2a,      vf2,     model2a,      model2,   model2a_state, 0,       ROT0, "Sega",   "Virtua Fighter 2 (Revision A)", MACHINE_NOT_WORKING|MACHINE_IMPERFECT_GRAPHICS )
-GAME( 1994, vf2o,      vf2,     model2a,      model2,   model2a_state, 0,       ROT0, "Sega",   "Virtua Fighter 2", MACHINE_NOT_WORKING|MACHINE_IMPERFECT_GRAPHICS )
+GAME( 1994, vf2,       0,       model2a,      model2,   model2a_state, 0,       ROT0, "Sega",   "Virtua Fighter 2 (Version 2.1)", MACHINE_IMPERFECT_GRAPHICS | MACHINE_IMPERFECT_SOUND )
+GAME( 1994, vf2b,      vf2,     model2a,      model2,   model2a_state, 0,       ROT0, "Sega",   "Virtua Fighter 2 (Revision B)", MACHINE_IMPERFECT_GRAPHICS | MACHINE_IMPERFECT_SOUND )
+GAME( 1994, vf2a,      vf2,     model2a,      model2,   model2a_state, 0,       ROT0, "Sega",   "Virtua Fighter 2 (Revision A)", MACHINE_IMPERFECT_GRAPHICS | MACHINE_IMPERFECT_SOUND )
+GAME( 1994, vf2o,      vf2,     model2a,      model2,   model2a_state, 0,       ROT0, "Sega",   "Virtua Fighter 2", MACHINE_IMPERFECT_GRAPHICS | MACHINE_IMPERFECT_SOUND )
 GAME( 1995, manxtt,    0,       manxttdx,     manxtt,   model2a_state, 0,       ROT0, "Sega",   "Manx TT Superbike - DX (Revision D)", MACHINE_NOT_WORKING|MACHINE_IMPERFECT_GRAPHICS )
 GAME( 1995, manxttc,   0,       manxtt,       manxtt,   model2a_state, 0,       ROT0, "Sega",   "Manx TT Superbike - Twin (Revision C)", MACHINE_NOT_WORKING|MACHINE_IMPERFECT_GRAPHICS )
 GAME( 1995, srallyc,   0,       srallyc,      srallyc,  model2a_state, srallyc, ROT0, "Sega",   "Sega Rally Championship - Twin/DX (Revision C)", MACHINE_NOT_WORKING|MACHINE_IMPERFECT_GRAPHICS )
@@ -6179,7 +6152,7 @@ GAME( 1995, skytargt,  0,       model2a,      skytargt, model2a_state, 0,       
 GAME( 1996, doaa,      doa,     model2a_0229, model2,   model2a_state, doa,     ROT0, "Sega",   "Dead or Alive (Model 2A, Revision A)", MACHINE_NOT_WORKING|MACHINE_IMPERFECT_GRAPHICS )
 GAME( 1997, zeroguna,  zerogun, model2a_5881, model2,   model2a_state, zerogun, ROT0, "Psikyo", "Zero Gunner (Export, Model 2A)", MACHINE_NOT_WORKING|MACHINE_IMPERFECT_GRAPHICS )
 GAME( 1997, zerogunaj, zerogun, model2a_5881, model2,   model2a_state, zerogun, ROT0, "Psikyo", "Zero Gunner (Japan, Model 2A)", MACHINE_NOT_WORKING|MACHINE_IMPERFECT_GRAPHICS )
-GAME( 1997, motoraid,  0,       manxtt,       motoraid, model2a_state, 0,       ROT0, "Sega",   "Motor Raid - Twin", MACHINE_NOT_WORKING|MACHINE_IMPERFECT_GRAPHICS )
+GAME( 1997, motoraid,  0,       manxtt,       motoraid, model2a_state, 0,       ROT0, "Sega",   "Motor Raid - Twin", MACHINE_IMPERFECT_GRAPHICS | MACHINE_IMPERFECT_SOUND )
 GAME( 1997, motoraiddx,motoraid,manxtt,       motoraid, model2a_state, 0,       ROT0, "Sega",   "Motor Raid - Twin/DX", MACHINE_NOT_WORKING|MACHINE_IMPERFECT_GRAPHICS )
 GAME( 1998, dynamcop,  0,       model2a_5881, model2,   model2a_state, 0,       ROT0, "Sega",   "Dynamite Cop (Export, Model 2A)", MACHINE_NOT_WORKING|MACHINE_IMPERFECT_GRAPHICS )
 GAME( 1998, dyndeka2,  dynamcop,model2a_5881, model2,   model2a_state, 0,       ROT0, "Sega",   "Dynamite Deka 2 (Japan, Model 2A)", MACHINE_NOT_WORKING|MACHINE_IMPERFECT_GRAPHICS )
