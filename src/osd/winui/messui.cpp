@@ -1883,8 +1883,8 @@ static void MView_ButtonClick(HWND hwndMView, struct MViewEntry *pEnt, HWND hwnd
 	if (software)
 	{
 		string as, dst;
-		char rompath[512];
 		string t = GetRomDirs();
+		char rompath[t.size()+1];
 		strcpy(rompath, t.c_str());
 		char* sl_root = strtok(rompath, ";");
 		while (sl_root && !passes_tests)
