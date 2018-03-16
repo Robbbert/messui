@@ -9772,6 +9772,9 @@ f1gpstr2                        // (c) 1993 Jaleco
 scudhamm                        // (c) 1994 Jaleco
 wildplt                         // (c) 1992 Jaleco
 
+@source:cit101.cpp
+cit101                          // (c) 1981 C. Itoh
+
 @source:cit220.cpp
 cit220p                         // (c) 1984 C. Itoh
 
@@ -11688,6 +11691,7 @@ tenkai2b                        // (c) 1991 bootleg
 tenkaibb                        // (c) 1991 bootleg
 tenkaicb                        // (c) 1991 bootleg
 tenkaie                         // (c) 1991 Dynax
+warahana                        // "613" Warai no Hana Tenshi 1991 Dynax
 yarunara                        // "55" Mahjong Yarunara 1991 Dynax
 
 @source:dynduke.cpp
@@ -14173,6 +14177,7 @@ schery97a                       // (c) 1998 Amcoe
 scmaster                        // 1994, unknown
 skill98                         // (c) 1998 Amcoe
 star100                         // (c) 199? Sang Ho
+super7                          // bootleg (New Impeuropex?)
 super9                          // (c) 2001 Playmark
 super972                        // unknown
 tonypok                         // (c) 1991 Corsica

@@ -73,6 +73,7 @@ address_map_entry::address_map_entry(device_t &device, address_map &map, offs_t 
 		m_share(nullptr),
 		m_region(nullptr),
 		m_rgnoffs(0),
+		m_submap_device(nullptr),
 		m_memory(nullptr)
 {
 }
@@ -97,7 +98,7 @@ address_map_entry &address_map_entry::mask(offs_t _mask)
 
 address_map_entry &address_map_entry::umask16(u16 _mask)
 {
-	m_mask = (u64(_mask) << 48) | (u64(_mask) << 32) | (_mask << 16) | _mask;
+	m_mask = (u64(_mask) << 48) | (u64(_mask) << 32) | (u64(_mask) << 16) | _mask;
 	return *this;
 }
 
@@ -449,7 +450,7 @@ address_map::address_map(const address_space &space, offs_t start, offs_t end, u
 		m_unmapval(space.unmap()),
 		m_globalmask(space.addrmask())
 {
-	(*this)(start, end).m(&device, submap_delegate).umask64(unitmask).cswidth(cswidth);
+	(*this)(start, end).m(DEVICE_SELF, submap_delegate).umask64(unitmask).cswidth(cswidth);
 }
 
 
