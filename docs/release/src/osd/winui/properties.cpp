@@ -664,9 +664,9 @@ static char *GameInfoSound(int nIndex)
 /* Build Display info string */
 static char *GameInfoScreen(UINT nIndex)
 {
-	static char buf[1024];
+	static char buf[2048];
 	machine_config config(driver_list::driver(nIndex),pCurrentOpts);
-	memset(buf, '\0', 1024);
+	memset(buf, '\0', 2048);
 
 	if (isDriverVector(&config))
 		strcpy(buf, "Vector Game");
@@ -678,9 +678,9 @@ static char *GameInfoScreen(UINT nIndex)
 			strcpy(buf, "Screenless Game");
 		else
 		{
-		for (screen_device &screen : screen_device_iterator(config.root_device()))
+			for (screen_device &screen : screen_device_iterator(config.root_device()))
 			{
-				char tmpbuf[256];
+				char tmpbuf[2048];
 				const rectangle &visarea = screen.visible_area();
 
 				if (BIT(GetDriverCacheLower(nIndex), 2)) //ORIENTATION_SWAP_XY
@@ -708,8 +708,8 @@ static char *GameInfoScreen(UINT nIndex)
 /* Build game status string */
 const char *GameInfoStatus(int driver_index, BOOL bRomStatus)
 {
-	static char buffer[1024];
-	memset(buffer,0,sizeof(char)*1024);
+	static char buffer[2048];
+	memset(buffer,0,sizeof(char)*2048);
 	if (driver_index < 0)
 		return buffer;
 
