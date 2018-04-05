@@ -673,11 +673,11 @@ WRITE16_MEMBER(model1_state::io_w)
 		output().set_led_value(4, data & 0x40);  // VIEW4
 		output().set_led_value(5, data & 0x80);  // RACE LEADER
 		m_lamp_state = data;
-		output().set_digit_value(1, data);
+		m_digits[1] = data;
 		return;
 	} else if (offset == 0x11) {
 		// drive board commands
-		output().set_digit_value(0, data);
+		m_digits[0] = data;
 		return;
 	}
 	logerror("IOW: %02x %02x\n", offset, data);
@@ -1660,7 +1660,7 @@ MACHINE_CONFIG_START(model1_state::wingwar)
 	MCFG_CPU_PROGRAM_MAP(model1_comm_mem)
 
 	MCFG_M1COMM_ADD(M1COMM_TAG)
-	// use EPR-15112
+	MCFG_DEVICE_BIOS("epr15112");
 MACHINE_CONFIG_END
 
 MACHINE_CONFIG_START(model1_state::swa)
@@ -1738,14 +1738,14 @@ MACHINE_CONFIG_START(model1_state::vr)
 	model1_vr(config);
 
 	MCFG_M1COMM_ADD(M1COMM_TAG)
-	// use EPR-15112
+	MCFG_DEVICE_BIOS("epr15112");
 MACHINE_CONFIG_END
 
 MACHINE_CONFIG_START(model1_state::vformula)
 	model1_vr(config);
 
 	MCFG_M1COMM_ADD(M1COMM_TAG)
-	// use EPR-15624
+	MCFG_DEVICE_BIOS("epr15624");
 MACHINE_CONFIG_END
 
 DRIVER_INIT_MEMBER(model1_state,wingwar360)
