@@ -180,7 +180,7 @@ public:
 	// helpers
 	void set_led_value(int index, int value) { set_indexed_value("led", index, value ? 1 : 0); }
 	void set_lamp_value(int index, int value) { set_indexed_value("lamp", index, value); }
-	/*[[deprecated("string format and hash in critical path")]]*/ void set_digit_value(int index, int value) { set_indexed_value("digit", index, value); }
+	[[deprecated("string format and hash in critical path")]] void set_digit_value(int index, int value) { set_indexed_value("digit", index, value); }
 
 	void pause();
 	void resume();
