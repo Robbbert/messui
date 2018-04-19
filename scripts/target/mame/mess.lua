@@ -506,6 +506,7 @@ MACHINES["MSM6242"] = true
 MACHINES["MYB3K_KEYBOARD"] = true
 MACHINES["NCR5380"] = true
 MACHINES["NCR5380N"] = true
+MACHINES["NCR5385"] = true
 MACHINES["NCR5390"] = true
 MACHINES["NCR539x"] = true
 MACHINES["NCR53C7XX"] = true
@@ -1954,6 +1955,8 @@ files {
 	MAME_DIR .. "src/mame/drivers/mk85.cpp",
 	MAME_DIR .. "src/mame/drivers/mk90.cpp",
 	MAME_DIR .. "src/mame/drivers/ms6102.cpp",
+	MAME_DIR .. "src/mame/machine/kr1601rr1.cpp",
+	MAME_DIR .. "src/mame/machine/kr1601rr1.h",
 }
 
 createMESSProjects(_target, _subtarget, "elektor")
