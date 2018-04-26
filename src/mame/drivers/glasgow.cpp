@@ -413,14 +413,6 @@ READ8_MEMBER( amsterd_state::read_newkeys )  //Amsterdam, Roma, Dallas 32, Roma 
 }
 
 
-#ifdef UNUSED_FUNCTION
-READ16_MEMBER(read_test)
-{
-	logerror("read test Offset = %x Data = %x\n  ",offset,data);
-	return 0xffff;    // Mephisto need it for working
-}
-#endif
-
 /*
 
     *****           32 Bit Read and write Handler   ***********
@@ -727,10 +719,10 @@ ROM_START( dallas16 )
 	ROM_LOAD16_BYTE("dallas-l.bin",0x00001, 0x06f00,CRC(f0d5bc03) SHA1(4b1b9a71663d5321820b4cf7da205e5fe5d3d001))
 ROM_END
 
-// This set needs checking. It cannot possibly work with this rom and hardware.
 ROM_START( roma )
 	ROM_REGION16_BE( 0x1000000, "maincpu", 0 )
-	ROM_LOAD("roma32.bin", 0x000000, 0x10000, CRC(587d03bf) SHA1(504e9ff958084700076d633f9c306fc7baf64ffd))
+	ROM_LOAD16_BYTE("roma16-u.bin", 0x00000, 0x08000, CRC(111d030f) SHA1(e027f7e7018d28ab794e7730392506056809db6b))
+	ROM_LOAD16_BYTE("roma16-l.bin", 0x00001, 0x08000, CRC(8245ddd2) SHA1(ab048b60fdc4358913a5d07b6fee863b66dd6734))
 ROM_END
 
 ROM_START( dallas32 )
@@ -750,9 +742,9 @@ ROM_END
 
 /*     YEAR, NAME,     PARENT,   COMPAT, MACHINE,     INPUT,          CLASS,         INIT, COMPANY,                      FULLNAME,                 FLAGS */
 CONS(  1984, glasgow,  0,        0,      glasgow,     old_keyboard,   glasgow_state, 0,    "Hegener & Glaser Muenchen",  "Mephisto III S Glasgow", 0)
-CONS(  1984, amsterd,  0,        0,      amsterd,     new_keyboard,   amsterd_state, 0,    "Hegener & Glaser Muenchen",  "Mephisto Amsterdam",     MACHINE_NOT_WORKING)
-CONS(  1984, dallas,   glasgow,  0,      glasgow,     old_keyboard,   glasgow_state, 0,    "Hegener & Glaser Muenchen",  "Mephisto Dallas",        MACHINE_NOT_WORKING)
-CONS(  1984, roma,     amsterd,  0,      glasgow,     new_keyboard,   glasgow_state, 0,    "Hegener & Glaser Muenchen",  "Mephisto Roma",          MACHINE_NOT_WORKING)
-CONS(  1984, dallas32, amsterd,  0,      dallas32,    new_keyboard,   amsterd_state, 0,    "Hegener & Glaser Muenchen",  "Mephisto Dallas 32 Bit", MACHINE_NOT_WORKING)
-CONS(  1984, roma32,   amsterd,  0,      dallas32,    new_keyboard,   amsterd_state, 0,    "Hegener & Glaser Muenchen",  "Mephisto Roma 32 Bit",   MACHINE_NOT_WORKING)
-CONS(  1984, dallas16, amsterd,  0,      amsterd,     new_keyboard,   amsterd_state, 0,    "Hegener & Glaser Muenchen",  "Mephisto Dallas 16 Bit", MACHINE_NOT_WORKING)
+CONS(  1985, amsterd,  0,        0,      amsterd,     new_keyboard,   amsterd_state, 0,    "Hegener & Glaser Muenchen",  "Mephisto Amsterdam",     MACHINE_NOT_WORKING)
+CONS(  1986, dallas,   glasgow,  0,      glasgow,     old_keyboard,   glasgow_state, 0,    "Hegener & Glaser Muenchen",  "Mephisto Dallas",        MACHINE_NOT_WORKING)
+CONS(  1986, dallas16, amsterd,  0,      amsterd,     new_keyboard,   amsterd_state, 0,    "Hegener & Glaser Muenchen",  "Mephisto Dallas 16 Bit", MACHINE_NOT_WORKING)
+CONS(  1986, dallas32, amsterd,  0,      dallas32,    new_keyboard,   amsterd_state, 0,    "Hegener & Glaser Muenchen",  "Mephisto Dallas 32 Bit", MACHINE_NOT_WORKING)
+CONS(  1987, roma,     amsterd,  0,      amsterd,     new_keyboard,   amsterd_state, 0,    "Hegener & Glaser Muenchen",  "Mephisto Roma",          MACHINE_NOT_WORKING)
+CONS(  1987, roma32,   amsterd,  0,      dallas32,    new_keyboard,   amsterd_state, 0,    "Hegener & Glaser Muenchen",  "Mephisto Roma 32 Bit",   MACHINE_NOT_WORKING)
