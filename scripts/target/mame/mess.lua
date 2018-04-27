@@ -566,6 +566,7 @@ MACHINES["TMS5501"] = true
 MACHINES["TMS6100"] = true
 MACHINES["TMS9901"] = true
 MACHINES["TMS9902"] = true
+MACHINES["TMS9914"] = true
 MACHINES["TPI6525"] = true
 MACHINES["TTL7400"] = true
 MACHINES["TTL7404"] = true
@@ -618,6 +619,7 @@ MACHINES["DIABLO_HD"] = true
 MACHINES["TMS1024"] = true
 MACHINES["NSC810"] = true
 MACHINES["VT82C496"] = true
+MACHINES["FDC37C93X"] = true
 MACHINES["GENPC"] = true
 MACHINES["GEN_LATCH"] = true
 MACHINES["WATCHDOG"] = true
@@ -2911,6 +2913,12 @@ createMESSProjects(_target, _subtarget, "sgi")
 files {
 	MAME_DIR .. "src/mame/machine/sgi.cpp",
 	MAME_DIR .. "src/mame/machine/sgi.h",
+	MAME_DIR .. "src/mame/machine/hal2.cpp",
+	MAME_DIR .. "src/mame/machine/hal2.h",
+	MAME_DIR .. "src/mame/machine/hpc3.cpp",
+	MAME_DIR .. "src/mame/machine/hpc3.h",
+	MAME_DIR .. "src/mame/machine/ioc2.cpp",
+	MAME_DIR .. "src/mame/machine/ioc2.h",
 	MAME_DIR .. "src/mame/drivers/iris3130.cpp",
 	MAME_DIR .. "src/mame/drivers/4dpi.cpp",
 	MAME_DIR .. "src/mame/drivers/indigo.cpp",
@@ -3720,6 +3728,7 @@ files {
 	MAME_DIR .. "src/mame/drivers/vectrix.cpp",
 	MAME_DIR .. "src/mame/drivers/vp60.cpp",
 	MAME_DIR .. "src/mame/drivers/vp122.cpp",
+	MAME_DIR .. "src/mame/includes/vp415.h",
 	MAME_DIR .. "src/mame/drivers/vp415.cpp",
 	MAME_DIR .. "src/mame/drivers/vsmilepro.cpp",
 	MAME_DIR .. "src/mame/drivers/wicat.cpp",
