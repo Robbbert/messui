@@ -103,6 +103,7 @@ class devcb_write_base;
 
 // declared in devfind.h
 class finder_base;
+template <class DeviceClass, bool Required> class device_finder;
 
 // declared in device.h
 class device_interface;
@@ -178,6 +179,7 @@ struct ioport_port_live;
 class running_machine;
 
 // declared in mconfig.h
+namespace emu { namespace detail { struct machine_config_replace; } }
 class machine_config;
 
 // declared in natkeyboard.h
@@ -224,6 +226,9 @@ class software_list_loader;
 // declared in sound.h
 class sound_manager;
 class sound_stream;
+
+// declared in speaker.h
+class speaker_device;
 
 // declared in tilemap.h
 class tilemap_device;
