@@ -108,9 +108,10 @@ void deadang_state::sub_map(address_map &map)
 
 void popnrun_state::popnrun_sub_map(address_map &map)
 {
-	sub_map(map);
-//	map(0x00000, 0x007ff).ram().w(this, FUNC(deadang_state::foreground_w)).share("video_data");
-//	map(0x00800, 0x03fff).ram();
+	map(0x00000, 0x003ff).ram().w(this, FUNC(deadang_state::foreground_w)).share("video_data");
+	map(0x00400, 0x03fff).ram();
+	map(0x04000, 0x04fff).ram().share("share1");
+	map(0xe0000, 0xfffff).rom();
 }
 
 void deadang_state::sound_map(address_map &map)
@@ -379,7 +380,7 @@ MACHINE_CONFIG_START(deadang_state::deadang)
 	MCFG_PALETTE_FORMAT(xxxxBBBBGGGGRRRR)
 
 	/* sound hardware */
-	MCFG_SPEAKER_STANDARD_MONO("mono")
+	SPEAKER(config, "mono").front_center();
 
 	MCFG_DEVICE_ADD("seibu_sound", SEIBU_SOUND, 0)
 	MCFG_SEIBU_SOUND_CPU("audiocpu")
@@ -416,6 +417,8 @@ MACHINE_CONFIG_START(popnrun_state::popnrun)
 
 	MCFG_SCREEN_MODIFY("screen")
 	MCFG_SCREEN_UPDATE_DRIVER(popnrun_state, popnrun_screen_update)
+	
+	MCFG_DEVICE_REMOVE("watchdog")
 	
 	MCFG_GFXDECODE_MODIFY("gfxdecode", popnrun)
 	
