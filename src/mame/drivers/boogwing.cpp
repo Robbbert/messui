@@ -302,7 +302,7 @@ static const gfx_layout spritelayout =
 };
 
 
-static GFXDECODE_START( boogwing )
+static GFXDECODE_START( gfx_boogwing )
 	GFXDECODE_ENTRY( "tiles1", 0, tile_8x8_layout,            0, 16 )   /* Tiles (8x8) */
 	GFXDECODE_ENTRY( "tiles2", 0, tile_16x16_layout_5bpp, 0x100, 16 )   /* Tiles (16x16) */
 	GFXDECODE_ENTRY( "tiles3", 0, tile_16x16_layout,      0x300, 32 )   /* Tiles (16x16) */
@@ -354,7 +354,7 @@ MACHINE_CONFIG_START(boogwing_state::boogwing)
 	MCFG_SCREEN_RAW_PARAMS(MAIN_XTAL / 4, 442, 0, 320, 274, 8, 248) // same as robocop2(cninja.cpp)? verify this from real pcb.
 	MCFG_SCREEN_UPDATE_DRIVER(boogwing_state, screen_update_boogwing)
 
-	MCFG_GFXDECODE_ADD("gfxdecode", "deco_ace", boogwing)
+	MCFG_DEVICE_ADD("gfxdecode", GFXDECODE, "deco_ace", gfx_boogwing)
 
 	MCFG_DEVICE_ADD("spriteram1", BUFFERED_SPRITERAM16)
 	MCFG_DEVICE_ADD("spriteram2", BUFFERED_SPRITERAM16)
@@ -650,7 +650,7 @@ ROM_START( ragtimea ) /* VER 1.3 JPN 92.11.26 */
 	ROM_LOAD( "kj-00.15n",    0x000000, 0x00400, CRC(add4d50b) SHA1(080e5a8192a146d5141aef5c8d9996ddf8cd3ab4) )
 ROM_END
 
-DRIVER_INIT_MEMBER(boogwing_state,boogwing)
+void boogwing_state::init_boogwing()
 {
 	const uint8_t* src = memregion("gfx6")->base();
 	uint8_t* dst = memregion("tiles2")->base() + 0x200000;
@@ -663,8 +663,8 @@ DRIVER_INIT_MEMBER(boogwing_state,boogwing)
 	memcpy(dst, src, 0x100000);
 }
 
-GAME( 1992, boogwing, 0,        boogwing, boogwing, boogwing_state,  boogwing,  ROT0, "Data East Corporation", "Boogie Wings (Euro v1.5, 92.12.07)",            MACHINE_IMPERFECT_GRAPHICS | MACHINE_SUPPORTS_SAVE )
-GAME( 1992, boogwingu,boogwing, boogwing, boogwing, boogwing_state,  boogwing,  ROT0, "Data East Corporation", "Boogie Wings (USA v1.7, 92.12.14)",             MACHINE_IMPERFECT_GRAPHICS | MACHINE_SUPPORTS_SAVE )
-GAME( 1992, boogwinga,boogwing, boogwing, boogwing, boogwing_state,  boogwing,  ROT0, "Data East Corporation", "Boogie Wings (Asia v1.5, 92.12.07)",            MACHINE_IMPERFECT_GRAPHICS | MACHINE_SUPPORTS_SAVE )
-GAME( 1992, ragtime,  boogwing, boogwing, boogwing, boogwing_state,  boogwing,  ROT0, "Data East Corporation", "The Great Ragtime Show (Japan v1.5, 92.12.07)", MACHINE_IMPERFECT_GRAPHICS | MACHINE_SUPPORTS_SAVE )
-GAME( 1992, ragtimea, boogwing, boogwing, boogwing, boogwing_state,  boogwing,  ROT0, "Data East Corporation", "The Great Ragtime Show (Japan v1.3, 92.11.26)", MACHINE_IMPERFECT_GRAPHICS | MACHINE_SUPPORTS_SAVE )
+GAME( 1992, boogwing,  0,        boogwing, boogwing, boogwing_state, init_boogwing, ROT0, "Data East Corporation", "Boogie Wings (Euro v1.5, 92.12.07)",            MACHINE_IMPERFECT_GRAPHICS | MACHINE_SUPPORTS_SAVE )
+GAME( 1992, boogwingu, boogwing, boogwing, boogwing, boogwing_state, init_boogwing, ROT0, "Data East Corporation", "Boogie Wings (USA v1.7, 92.12.14)",             MACHINE_IMPERFECT_GRAPHICS | MACHINE_SUPPORTS_SAVE )
+GAME( 1992, boogwinga, boogwing, boogwing, boogwing, boogwing_state, init_boogwing, ROT0, "Data East Corporation", "Boogie Wings (Asia v1.5, 92.12.07)",            MACHINE_IMPERFECT_GRAPHICS | MACHINE_SUPPORTS_SAVE )
+GAME( 1992, ragtime,   boogwing, boogwing, boogwing, boogwing_state, init_boogwing, ROT0, "Data East Corporation", "The Great Ragtime Show (Japan v1.5, 92.12.07)", MACHINE_IMPERFECT_GRAPHICS | MACHINE_SUPPORTS_SAVE )
+GAME( 1992, ragtimea,  boogwing, boogwing, boogwing, boogwing_state, init_boogwing, ROT0, "Data East Corporation", "The Great Ragtime Show (Japan v1.3, 92.11.26)", MACHINE_IMPERFECT_GRAPHICS | MACHINE_SUPPORTS_SAVE )

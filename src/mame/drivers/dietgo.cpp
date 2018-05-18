@@ -195,7 +195,7 @@ static const gfx_layout spritelayout =
 	32*32
 };
 
-static GFXDECODE_START( dietgo )
+static GFXDECODE_START( gfx_dietgo )
 	GFXDECODE_ENTRY( "gfx1", 0, tile_8x8_layout,     0, 32 )    /* Tiles (8x8) */
 	GFXDECODE_ENTRY( "gfx1", 0, tile_16x16_layout,   0, 32 )    /* Tiles (16x16) */
 	GFXDECODE_ENTRY( "gfx2", 0, spritelayout,      512, 16 )    /* Sprites (16x16) */
@@ -229,7 +229,7 @@ MACHINE_CONFIG_START(dietgo_state::dietgo)
 	MCFG_PALETTE_ADD("palette", 1024)
 	MCFG_PALETTE_FORMAT(XBGR)
 
-	MCFG_GFXDECODE_ADD("gfxdecode", "palette", dietgo)
+	MCFG_DEVICE_ADD("gfxdecode", GFXDECODE, "palette", gfx_dietgo)
 
 	MCFG_DEVICE_ADD("tilegen", DECO16IC, 0)
 	MCFG_DECO16IC_SPLIT(0)
@@ -370,13 +370,13 @@ ROM_START( dietgoj )
 ROM_END
 
 
-DRIVER_INIT_MEMBER(dietgo_state,dietgo)
+void dietgo_state::init_dietgo()
 {
 	deco56_decrypt_gfx(machine(), "gfx1");
 	deco102_decrypt_cpu((uint16_t *)memregion("maincpu")->base(), m_decrypted_opcodes, 0x80000, 0xe9ba, 0x01, 0x19);
 }
 
-GAME( 1992, dietgo,   0,      dietgo, dietgo, dietgo_state,  dietgo,    ROT0, "Data East Corporation", "Diet Go Go (Euro v1.1 1992.09.26)", MACHINE_SUPPORTS_SAVE )
-GAME( 1992, dietgoe,  dietgo, dietgo, dietgo, dietgo_state,  dietgo,    ROT0, "Data East Corporation", "Diet Go Go (Euro v1.1 1992.08.04)" , MACHINE_SUPPORTS_SAVE )
-GAME( 1992, dietgou,  dietgo, dietgo, dietgo, dietgo_state,  dietgo,    ROT0, "Data East Corporation", "Diet Go Go (USA v1.1 1992.09.26)", MACHINE_SUPPORTS_SAVE )
-GAME( 1992, dietgoj,  dietgo, dietgo, dietgo, dietgo_state,  dietgo,    ROT0, "Data East Corporation", "Diet Go Go (Japan v1.1 1992.09.26)", MACHINE_SUPPORTS_SAVE )
+GAME( 1992, dietgo,  0,      dietgo, dietgo, dietgo_state, init_dietgo, ROT0, "Data East Corporation", "Diet Go Go (Euro v1.1 1992.09.26)", MACHINE_SUPPORTS_SAVE )
+GAME( 1992, dietgoe, dietgo, dietgo, dietgo, dietgo_state, init_dietgo, ROT0, "Data East Corporation", "Diet Go Go (Euro v1.1 1992.08.04)" , MACHINE_SUPPORTS_SAVE )
+GAME( 1992, dietgou, dietgo, dietgo, dietgo, dietgo_state, init_dietgo, ROT0, "Data East Corporation", "Diet Go Go (USA v1.1 1992.09.26)", MACHINE_SUPPORTS_SAVE )
+GAME( 1992, dietgoj, dietgo, dietgo, dietgo, dietgo_state, init_dietgo, ROT0, "Data East Corporation", "Diet Go Go (Japan v1.1 1992.09.26)", MACHINE_SUPPORTS_SAVE )

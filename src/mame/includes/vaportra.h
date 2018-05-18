@@ -5,6 +5,10 @@
     Vapor Trail
 
 *************************************************************************/
+#ifndef MAME_INCLUDES_VAPORTRA_H
+#define MAME_INCLUDES_VAPORTRA_H
+
+#pragma once
 
 #include "cpu/h6280/h6280.h"
 #include "machine/gen_latch.h"
@@ -22,7 +26,7 @@ public:
 		, m_deco_tilegen(*this, "tilegen%u", 1U)
 		, m_spritegen(*this, "spritegen")
 		, m_spriteram(*this, "spriteram")
-		, m_palette(*this, "palette")
+		, m_palette(*this, "colors")
 		, m_soundlatch(*this, "soundlatch")
 		, m_paletteram(*this, "palette")
 		, m_paletteram_ext(*this, "palette_ext")
@@ -49,7 +53,7 @@ public:
 	DECLARE_WRITE16_MEMBER(palette_w);
 	DECLARE_WRITE16_MEMBER(palette_ext_w);
 
-	DECLARE_DRIVER_INIT(vaportra);
+	void init_vaportra();
 	virtual void machine_start() override;
 	virtual void machine_reset() override;
 
@@ -61,3 +65,5 @@ public:
 	void main_map(address_map &map);
 	void sound_map(address_map &map);
 };
+
+#endif // MAME_INCLUDES_VAPORTRA_H

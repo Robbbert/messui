@@ -702,14 +702,14 @@ static const gfx_layout tilelayout_8bpp =
 	64*8
 };
 
-static GFXDECODE_START( cninja )
+static GFXDECODE_START( gfx_cninja )
 	GFXDECODE_ENTRY( "gfx1", 0, charlayout,    0, 32 )  /* Characters 8x8 */
 	GFXDECODE_ENTRY( "gfx2", 0, tilelayout,    0, 32 )  /* Tiles 16x16 */
 	GFXDECODE_ENTRY( "gfx3", 0, tilelayout,  512, 64 )  /* Tiles 16x16 */
 	GFXDECODE_ENTRY( "gfx4", 0, spritelayout,768, 32 )  /* Sprites 16x16 */
 GFXDECODE_END
 
-static GFXDECODE_START( cninjabl )
+static GFXDECODE_START( gfx_cninjabl )
 	GFXDECODE_ENTRY( "gfx1", 0, charlayout_boot,  0, 32 )   /* Characters 8x8 */
 	GFXDECODE_ENTRY( "gfx2", 0, spritelayout,0, 32 )    /* Tiles 16x16 */
 	GFXDECODE_ENTRY( "gfx3", 0, spritelayout,512, 64 )  /* Tiles 16x16 */
@@ -717,7 +717,7 @@ static GFXDECODE_START( cninjabl )
 GFXDECODE_END
 
 
-static GFXDECODE_START( robocop2 )
+static GFXDECODE_START( gfx_robocop2 )
 	GFXDECODE_ENTRY( "gfx1", 0, charlayout,    0, 32 )  /* Characters 8x8 */
 	GFXDECODE_ENTRY( "gfx2", 0, tilelayout,    0, 32 )  /* Tiles 16x16 */
 	GFXDECODE_ENTRY( "gfx3", 0, tilelayout,  512, 64 )  /* Tiles 16x16 */
@@ -725,7 +725,7 @@ static GFXDECODE_START( robocop2 )
 	GFXDECODE_ENTRY( "gfx3", 0, tilelayout_8bpp,  512, 1 )  /* Tiles 16x16 */
 GFXDECODE_END
 
-static GFXDECODE_START( mutantf )
+static GFXDECODE_START( gfx_mutantf )
 	GFXDECODE_ENTRY( "gfx1", 0, charlayout,          0, 64 )    /* Characters 8x8 */
 	GFXDECODE_ENTRY( "gfx2", 0, tilelayout,          0, 64 )    /* Tiles 16x16 */
 	GFXDECODE_ENTRY( "gfx3", 0, tilelayout,          0, 80 )    /* Tiles 16x16 */
@@ -815,7 +815,7 @@ MACHINE_CONFIG_START(cninja_state::cninja)
 	MCFG_SCREEN_UPDATE_DRIVER(cninja_state, screen_update_cninja)
 	MCFG_SCREEN_PALETTE("palette")
 
-	MCFG_GFXDECODE_ADD("gfxdecode", "palette", cninja)
+	MCFG_DEVICE_ADD("gfxdecode", GFXDECODE, "palette", gfx_cninja)
 	MCFG_PALETTE_ADD("palette", 2048)
 	MCFG_PALETTE_FORMAT(XBGR)
 
@@ -903,7 +903,7 @@ MACHINE_CONFIG_START(cninja_state::stoneage)
 	MCFG_SCREEN_UPDATE_DRIVER(cninja_state, screen_update_cninja)
 	MCFG_SCREEN_PALETTE("palette")
 
-	MCFG_GFXDECODE_ADD("gfxdecode", "palette", cninja)
+	MCFG_DEVICE_ADD("gfxdecode", GFXDECODE, "palette", gfx_cninja)
 	MCFG_PALETTE_ADD("palette", 2048)
 	MCFG_PALETTE_FORMAT(XBGR)
 
@@ -1003,7 +1003,7 @@ MACHINE_CONFIG_START(cninja_state::cninjabl)
 	MCFG_SCREEN_UPDATE_DRIVER(cninja_state, screen_update_cninjabl)
 	MCFG_SCREEN_PALETTE("palette")
 
-	MCFG_GFXDECODE_ADD("gfxdecode", "palette", cninjabl)
+	MCFG_DEVICE_ADD("gfxdecode", GFXDECODE, "palette", gfx_cninjabl)
 	MCFG_PALETTE_ADD("palette", 2048)
 	MCFG_PALETTE_FORMAT(XBGR)
 
@@ -1075,7 +1075,7 @@ MACHINE_CONFIG_START(cninja_state::edrandy)
 	MCFG_SCREEN_UPDATE_DRIVER(cninja_state, screen_update_edrandy)
 	MCFG_SCREEN_PALETTE("palette")
 
-	MCFG_GFXDECODE_ADD("gfxdecode", "palette", cninja)
+	MCFG_DEVICE_ADD("gfxdecode", GFXDECODE, "palette", gfx_cninja)
 	MCFG_PALETTE_ADD("palette", 2048)
 	MCFG_PALETTE_FORMAT(XBGR)
 
@@ -1165,7 +1165,7 @@ MACHINE_CONFIG_START(cninja_state::robocop2)
 	MCFG_MACHINE_START_OVERRIDE(cninja_state,robocop2)
 	MCFG_MACHINE_RESET_OVERRIDE(cninja_state,robocop2)
 
-	MCFG_GFXDECODE_ADD("gfxdecode", "palette", robocop2)
+	MCFG_DEVICE_ADD("gfxdecode", GFXDECODE, "palette", gfx_robocop2)
 	MCFG_PALETTE_ADD("palette", 2048)
 	MCFG_PALETTE_FORMAT(XBGR)
 
@@ -1258,7 +1258,7 @@ MACHINE_CONFIG_START(cninja_state::mutantf)
 	MCFG_MACHINE_RESET_OVERRIDE(cninja_state,robocop2)
 	MCFG_VIDEO_START_OVERRIDE(cninja_state,mutantf)
 
-	MCFG_GFXDECODE_ADD("gfxdecode", "palette", mutantf)
+	MCFG_DEVICE_ADD("gfxdecode", GFXDECODE, "palette", gfx_mutantf)
 	MCFG_PALETTE_ADD("palette", 2048)
 	MCFG_PALETTE_FORMAT(XBGR)
 
@@ -2259,7 +2259,7 @@ ROM_END
 
 /**********************************************************************************/
 
-DRIVER_INIT_MEMBER(cninja_state,cninjabl2)
+void cninja_state::init_cninjabl2()
 {
 	m_maincpu->space(AS_PROGRAM).install_ram(0x180000, 0x18ffff);
 	m_maincpu->space(AS_PROGRAM).install_read_handler(0x1b4000, 0x1b4001, read16_delegate(FUNC(cninja_state::cninjabl2_sprite_dma_r),this));
@@ -2267,7 +2267,7 @@ DRIVER_INIT_MEMBER(cninja_state,cninjabl2)
 	m_okibank->configure_entries(0, 8, memregion("oki2")->base(), 0x10000);
 }
 
-DRIVER_INIT_MEMBER(cninja_state,mutantf)
+void cninja_state::init_mutantf()
 {
 	const uint8_t *src = memregion("gfx2")->base();
 	uint8_t *dst = memregion("gfx1")->base();
@@ -2283,26 +2283,26 @@ DRIVER_INIT_MEMBER(cninja_state,mutantf)
 
 /**********************************************************************************/
 
-GAME( 1990, edrandy,  0,        edrandy,  edrandy,  cninja_state, 0,        ROT0, "Data East Corporation", "The Cliffhanger - Edward Randy (World ver 3)", MACHINE_SUPPORTS_SAVE )
-GAME( 1990, edrandy2, edrandy,  edrandy,  edrandc,  cninja_state, 0,        ROT0, "Data East Corporation", "The Cliffhanger - Edward Randy (World ver 2)", MACHINE_SUPPORTS_SAVE )
-GAME( 1990, edrandy1, edrandy,  edrandy,  edrandc,  cninja_state, 0,        ROT0, "Data East Corporation", "The Cliffhanger - Edward Randy (World ver 1)", MACHINE_SUPPORTS_SAVE )
-GAME( 1990, edrandyj, edrandy,  edrandy,  edrandc,  cninja_state, 0,        ROT0, "Data East Corporation", "The Cliffhanger - Edward Randy (Japan ver 3)", MACHINE_SUPPORTS_SAVE )
+GAME( 1990, edrandy,    0,        edrandy,   edrandy,  cninja_state, empty_init,     ROT0, "Data East Corporation", "The Cliffhanger - Edward Randy (World ver 3)", MACHINE_SUPPORTS_SAVE )
+GAME( 1990, edrandy2,   edrandy,  edrandy,   edrandc,  cninja_state, empty_init,     ROT0, "Data East Corporation", "The Cliffhanger - Edward Randy (World ver 2)", MACHINE_SUPPORTS_SAVE )
+GAME( 1990, edrandy1,   edrandy,  edrandy,   edrandc,  cninja_state, empty_init,     ROT0, "Data East Corporation", "The Cliffhanger - Edward Randy (World ver 1)", MACHINE_SUPPORTS_SAVE )
+GAME( 1990, edrandyj,   edrandy,  edrandy,   edrandc,  cninja_state, empty_init,     ROT0, "Data East Corporation", "The Cliffhanger - Edward Randy (Japan ver 3)", MACHINE_SUPPORTS_SAVE )
 
-GAME( 1991, cninja,   0,        cninja,   cninja,   cninja_state, 0,        ROT0, "Data East Corporation", "Caveman Ninja (World ver 4)",                  MACHINE_SUPPORTS_SAVE )
-GAME( 1991, cninja1,  cninja,   cninja,   cninja,   cninja_state, 0,        ROT0, "Data East Corporation", "Caveman Ninja (World ver 1)",                  MACHINE_SUPPORTS_SAVE )
-GAME( 1991, cninjau,  cninja,   cninja,   cninjau,  cninja_state, 0,        ROT0, "Data East Corporation", "Caveman Ninja (US ver 4)",                     MACHINE_SUPPORTS_SAVE )
-GAME( 1991, joemac,   cninja,   cninja,   cninja,   cninja_state, 0,        ROT0, "Data East Corporation", "Tatakae Genshizin Joe & Mac (Japan ver 1)",    MACHINE_SUPPORTS_SAVE )
-GAME( 1991, stoneage, cninja,   stoneage, cninja,   cninja_state, 0,        ROT0, "bootleg",               "Stoneage (bootleg of Caveman Ninja)",          MACHINE_SUPPORTS_SAVE )
-GAME( 1991, cninjabl, cninja,   cninjabl, cninja,   cninja_state, 0,        ROT0, "bootleg",               "Caveman Ninja (bootleg)",                      MACHINE_SUPPORTS_SAVE )
-GAME( 1991, cninjabl2,cninja,   cninjabl2,cninja,   cninja_state, cninjabl2,ROT0, "bootleg",               "Tatakae Genshizin Joe & Mac (Japan, bootleg)", MACHINE_IMPERFECT_GRAPHICS | MACHINE_SUPPORTS_SAVE ) // tile layers need adjusting
+GAME( 1991, cninja,     0,        cninja,    cninja,   cninja_state, empty_init,     ROT0, "Data East Corporation", "Caveman Ninja (World ver 4)",                  MACHINE_SUPPORTS_SAVE )
+GAME( 1991, cninja1,    cninja,   cninja,    cninja,   cninja_state, empty_init,     ROT0, "Data East Corporation", "Caveman Ninja (World ver 1)",                  MACHINE_SUPPORTS_SAVE )
+GAME( 1991, cninjau,    cninja,   cninja,    cninjau,  cninja_state, empty_init,     ROT0, "Data East Corporation", "Caveman Ninja (US ver 4)",                     MACHINE_SUPPORTS_SAVE )
+GAME( 1991, joemac,     cninja,   cninja,    cninja,   cninja_state, empty_init,     ROT0, "Data East Corporation", "Tatakae Genshizin Joe & Mac (Japan ver 1)",    MACHINE_SUPPORTS_SAVE )
+GAME( 1991, stoneage,   cninja,   stoneage,  cninja,   cninja_state, empty_init,     ROT0, "bootleg",               "Stoneage (bootleg of Caveman Ninja)",          MACHINE_SUPPORTS_SAVE )
+GAME( 1991, cninjabl,   cninja,   cninjabl,  cninja,   cninja_state, empty_init,     ROT0, "bootleg",               "Caveman Ninja (bootleg)",                      MACHINE_SUPPORTS_SAVE )
+GAME( 1991, cninjabl2,  cninja,   cninjabl2, cninja,   cninja_state, init_cninjabl2, ROT0, "bootleg",               "Tatakae Genshizin Joe & Mac (Japan, bootleg)", MACHINE_IMPERFECT_GRAPHICS | MACHINE_SUPPORTS_SAVE ) // tile layers need adjusting
 
-GAME( 1991, robocop2, 0,        robocop2, robocop2, cninja_state, 0,        ROT0, "Data East Corporation", "Robocop 2 (Euro/Asia v0.10)", MACHINE_SUPPORTS_SAVE )
-GAME( 1991, robocop2u,robocop2, robocop2, robocop2, cninja_state, 0,        ROT0, "Data East Corporation", "Robocop 2 (US v0.10)",        MACHINE_SUPPORTS_SAVE )
-GAME( 1991, robocop2ua,robocop2,robocop2, robocop2, cninja_state, 0,        ROT0, "Data East Corporation", "Robocop 2 (US v0.05)",        MACHINE_SUPPORTS_SAVE )
-GAME( 1991, robocop2j,robocop2, robocop2, robocop2, cninja_state, 0,        ROT0, "Data East Corporation", "Robocop 2 (Japan v0.11)",     MACHINE_SUPPORTS_SAVE )
+GAME( 1991, robocop2,   0,        robocop2,  robocop2, cninja_state, empty_init,     ROT0, "Data East Corporation", "Robocop 2 (Euro/Asia v0.10)", MACHINE_SUPPORTS_SAVE )
+GAME( 1991, robocop2u,  robocop2, robocop2,  robocop2, cninja_state, empty_init,     ROT0, "Data East Corporation", "Robocop 2 (US v0.10)",        MACHINE_SUPPORTS_SAVE )
+GAME( 1991, robocop2ua, robocop2, robocop2,  robocop2, cninja_state, empty_init,     ROT0, "Data East Corporation", "Robocop 2 (US v0.05)",        MACHINE_SUPPORTS_SAVE )
+GAME( 1991, robocop2j,  robocop2, robocop2,  robocop2, cninja_state, empty_init,     ROT0, "Data East Corporation", "Robocop 2 (Japan v0.11)",     MACHINE_SUPPORTS_SAVE )
 
-GAME( 1992, mutantf,  0,        mutantf,  mutantf,  cninja_state, mutantf,  ROT0, "Data East Corporation", "Mutant Fighter (World ver EM-5)", MACHINE_SUPPORTS_SAVE )
-GAME( 1992, mutantf4, mutantf,  mutantf,  mutantf,  cninja_state, mutantf,  ROT0, "Data East Corporation", "Mutant Fighter (World ver EM-4)", MACHINE_SUPPORTS_SAVE )
-GAME( 1992, mutantf3, mutantf,  mutantf,  mutantf,  cninja_state, mutantf,  ROT0, "Data East Corporation", "Mutant Fighter (World ver EM-3)", MACHINE_SUPPORTS_SAVE )
-GAME( 1992, mutantf2, mutantf,  mutantf,  mutantf,  cninja_state, mutantf,  ROT0, "Data East Corporation", "Mutant Fighter (World ver EM-2)", MACHINE_SUPPORTS_SAVE )
-GAME( 1992, deathbrd, mutantf,  mutantf,  mutantf,  cninja_state, mutantf,  ROT0, "Data East Corporation", "Death Brade (Japan ver JM-3)",    MACHINE_SUPPORTS_SAVE )
+GAME( 1992, mutantf,    0,        mutantf,   mutantf,  cninja_state, init_mutantf,   ROT0, "Data East Corporation", "Mutant Fighter (World ver EM-5)", MACHINE_SUPPORTS_SAVE )
+GAME( 1992, mutantf4,   mutantf,  mutantf,   mutantf,  cninja_state, init_mutantf,   ROT0, "Data East Corporation", "Mutant Fighter (World ver EM-4)", MACHINE_SUPPORTS_SAVE )
+GAME( 1992, mutantf3,   mutantf,  mutantf,   mutantf,  cninja_state, init_mutantf,   ROT0, "Data East Corporation", "Mutant Fighter (World ver EM-3)", MACHINE_SUPPORTS_SAVE )
+GAME( 1992, mutantf2,   mutantf,  mutantf,   mutantf,  cninja_state, init_mutantf,   ROT0, "Data East Corporation", "Mutant Fighter (World ver EM-2)", MACHINE_SUPPORTS_SAVE )
+GAME( 1992, deathbrd,   mutantf,  mutantf,   mutantf,  cninja_state, init_mutantf,   ROT0, "Data East Corporation", "Death Brade (Japan ver JM-3)",    MACHINE_SUPPORTS_SAVE )

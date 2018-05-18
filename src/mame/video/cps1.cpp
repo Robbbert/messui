@@ -1551,6 +1551,7 @@ static const struct CPS1config cps1_config_table[]=
 	{"sf2amf",      CPS_B_21_DEF, mapper_S9263B, 0x36, 0, 0, 1 }, // probably wrong but this set is not completely dumped anyway
 	{"sf2amf2",     CPS_B_21_DEF, mapper_S9263B, 0x36, 0, 0, 1 },
 	{"sf2dkot2",    CPS_B_21_DEF, mapper_S9263B, 0x36 },
+	{"sf2level",    HACK_B_1,     mapper_S9263B, 0,    0, 0, 2 },
 	{"sf2m1",       CPS_B_21_DEF, mapper_S9263B, 0x36 },
 	{"sf2m2",       CPS_B_21_DEF, mapper_S9263B, 0x36, 0, 0, 1 },
 	{"sf2m3",       HACK_B_1,     mapper_S9263B, 0,    0, 0, 2 },
@@ -1921,7 +1922,7 @@ void cps_state::cps2_gfx_decode()
 }
 
 
-DRIVER_INIT_MEMBER(cps_state,cps1)
+void cps_state::init_cps1()
 {
 	m_scanline1 = 0;
 	m_scanline2 = 0;
@@ -1933,7 +1934,7 @@ DRIVER_INIT_MEMBER(cps_state,cps1)
 
 
 
-DRIVER_INIT_MEMBER(cps_state,cps2_video)
+void cps_state::init_cps2_video()
 {
 	cps2_gfx_decode();
 

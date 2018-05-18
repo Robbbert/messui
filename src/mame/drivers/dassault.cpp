@@ -495,7 +495,7 @@ static const gfx_layout tilelayout =
 	64*8
 };
 
-static GFXDECODE_START( dassault )
+static GFXDECODE_START( gfx_dassault )
 	/* "gfx1" is copied to "gfx2" at runtime */
 	GFXDECODE_ENTRY( "gfx2", 0, charlayout,     0,  32 )    /* Characters 8x8 */
 	GFXDECODE_ENTRY( "gfx2", 0, tilelayout,     0,  32 )    /* Tiles 16x16 */
@@ -550,7 +550,7 @@ MACHINE_CONFIG_START(dassault_state::dassault)
 	MCFG_SCREEN_RAW_PARAMS(XTAL(28'000'000) / 4, 442, 0, 320, 274, 8, 248)  // same as robocop2(cninja.cpp)? verify this from real pcb.
 	MCFG_SCREEN_UPDATE_DRIVER(dassault_state, screen_update_dassault)
 
-	MCFG_GFXDECODE_ADD("gfxdecode", "palette", dassault)
+	MCFG_DEVICE_ADD("gfxdecode", GFXDECODE, "palette", gfx_dassault)
 	MCFG_PALETTE_ADD("palette", 4096)
 	MCFG_PALETTE_FORMAT(XBGR)
 
@@ -1039,7 +1039,7 @@ ROM_END
 /**********************************************************************************/
 
 
-DRIVER_INIT_MEMBER(dassault_state,dassault)
+void dassault_state::init_dassault()
 {
 	const uint8_t *src = memregion("gfx1")->base();
 	uint8_t *dst = memregion("gfx2")->base();
@@ -1056,9 +1056,9 @@ DRIVER_INIT_MEMBER(dassault_state,dassault)
 
 /**********************************************************************************/
 
-GAME( 1991, thndzone,  0,        dassault, thndzone,  dassault_state, dassault, ROT0, "Data East Corporation", "Thunder Zone (World, Rev 1)",    MACHINE_IMPERFECT_GRAPHICS | MACHINE_SUPPORTS_SAVE )
-GAME( 1991, thndzonea, thndzone, dassault, thndzone,  dassault_state, dassault, ROT0, "Data East Corporation", "Thunder Zone (World)",           MACHINE_IMPERFECT_GRAPHICS | MACHINE_SUPPORTS_SAVE )
-GAME( 1991, thndzone4, thndzone, dassault, thndzone4, dassault_state, dassault, ROT0, "Data East Corporation", "Thunder Zone (World 4 Players)", MACHINE_IMPERFECT_GRAPHICS | MACHINE_SUPPORTS_SAVE )
-GAME( 1991, thndzonej, thndzone, dassault, thndzone,  dassault_state, dassault, ROT0, "Data East Corporation", "Thunder Zone (Japan)",           MACHINE_IMPERFECT_GRAPHICS | MACHINE_SUPPORTS_SAVE )
-GAME( 1991, dassault,  thndzone, dassault, dassault,  dassault_state, dassault, ROT0, "Data East Corporation", "Desert Assault (US)",            MACHINE_IMPERFECT_GRAPHICS | MACHINE_SUPPORTS_SAVE )
-GAME( 1991, dassault4, thndzone, dassault, dassault4, dassault_state, dassault, ROT0, "Data East Corporation", "Desert Assault (US 4 Players)",  MACHINE_IMPERFECT_GRAPHICS | MACHINE_SUPPORTS_SAVE )
+GAME( 1991, thndzone,  0,        dassault, thndzone,  dassault_state, init_dassault, ROT0, "Data East Corporation", "Thunder Zone (World, Rev 1)",    MACHINE_IMPERFECT_GRAPHICS | MACHINE_SUPPORTS_SAVE )
+GAME( 1991, thndzonea, thndzone, dassault, thndzone,  dassault_state, init_dassault, ROT0, "Data East Corporation", "Thunder Zone (World)",           MACHINE_IMPERFECT_GRAPHICS | MACHINE_SUPPORTS_SAVE )
+GAME( 1991, thndzone4, thndzone, dassault, thndzone4, dassault_state, init_dassault, ROT0, "Data East Corporation", "Thunder Zone (World 4 Players)", MACHINE_IMPERFECT_GRAPHICS | MACHINE_SUPPORTS_SAVE )
+GAME( 1991, thndzonej, thndzone, dassault, thndzone,  dassault_state, init_dassault, ROT0, "Data East Corporation", "Thunder Zone (Japan)",           MACHINE_IMPERFECT_GRAPHICS | MACHINE_SUPPORTS_SAVE )
+GAME( 1991, dassault,  thndzone, dassault, dassault,  dassault_state, init_dassault, ROT0, "Data East Corporation", "Desert Assault (US)",            MACHINE_IMPERFECT_GRAPHICS | MACHINE_SUPPORTS_SAVE )
+GAME( 1991, dassault4, thndzone, dassault, dassault4, dassault_state, init_dassault, ROT0, "Data East Corporation", "Desert Assault (US 4 Players)",  MACHINE_IMPERFECT_GRAPHICS | MACHINE_SUPPORTS_SAVE )

@@ -275,7 +275,7 @@ static const gfx_layout spritelayout =
 	64*8
 };
 
-static GFXDECODE_START( cbuster )
+static GFXDECODE_START( gfx_cbuster )
 	GFXDECODE_ENTRY( "gfx1", 0, charlayout,       0, 128 )   /* Characters 8x8 */
 	GFXDECODE_ENTRY( "gfx1", 0, tilelayout,       0, 128 )  /* Tiles 16x16 */
 	GFXDECODE_ENTRY( "gfx2", 0, tilelayout,       0, 128 )  /* Tiles 16x16 */
@@ -286,7 +286,7 @@ GFXDECODE_END
 
 DECO16IC_BANK_CB_MEMBER(cbuster_state::bank_callback)
 {
-	return ((bank >> 4) & 0x7) * 0x1000;
+	return (bank & 0x70) << 8;
 }
 
 void cbuster_state::machine_start()
@@ -318,7 +318,7 @@ MACHINE_CONFIG_START(cbuster_state::twocrude)
 	MCFG_SCREEN_VISIBLE_AREA(0*8, 32*8-1, 1*8, 31*8-1)
 	MCFG_SCREEN_UPDATE_DRIVER(cbuster_state, screen_update_twocrude)
 
-	MCFG_GFXDECODE_ADD("gfxdecode", "palette", cbuster)
+	MCFG_DEVICE_ADD("gfxdecode", GFXDECODE, "palette", gfx_cbuster)
 	MCFG_PALETTE_ADD("palette", 2048)
 	MCFG_PALETTE_FORMAT(XBGR)
 
@@ -583,14 +583,12 @@ ROM_END
 
 /******************************************************************************/
 
-DRIVER_INIT_MEMBER(cbuster_state,twocrude)
+void cbuster_state::init_twocrude()
 {
 	uint8_t *RAM = memregion("maincpu")->base();
-	uint8_t *PTR;
-	int i, j;
 
 	/* Main cpu decrypt */
-	for (i = 0x00000; i < 0x80000; i += 2)
+	for (int i = 0x00000; i < 0x80000; i += 2)
 	{
 		int h = i + NATIVE_ENDIAN_VALUE_LE_BE(1,0), l = i + NATIVE_ENDIAN_VALUE_LE_BE(0,1);
 
@@ -603,10 +601,10 @@ DRIVER_INIT_MEMBER(cbuster_state,twocrude)
 
 	/* Rearrange the 'extra' sprite bank to be in the same format as main sprites */
 	RAM = memregion("gfx3")->base() + 0x080000;
-	PTR = memregion("gfx3")->base() + 0x140000;
-	for (i = 0; i < 0x20000; i += 64)
+	uint8_t *PTR = memregion("gfx3")->base() + 0x140000;
+	for (int i = 0; i < 0x20000; i += 64)
 	{
-		for (j = 0; j < 16; j += 1)
+		for (int j = 0; j < 16; j += 1)
 		{ /* Copy 16 lines down */
 			RAM[i +       0 + j * 2] = PTR[i / 2 +       0 + j]; /* Pixels 0-7 for each plane */
 			RAM[i +       1 + j * 2] = PTR[i / 2 + 0x10000 + j];
@@ -614,7 +612,7 @@ DRIVER_INIT_MEMBER(cbuster_state,twocrude)
 			RAM[i + 0xa0001 + j * 2] = PTR[i / 2 + 0x30000 + j];
 		}
 
-		for (j = 0; j < 16; j += 1)
+		for (int j = 0; j < 16; j += 1)
 		{ /* Copy 16 lines down */
 			RAM[i +    0x20 + j * 2] = PTR[i / 2 +    0x10 + j]; /* Pixels 8-15 for each plane */
 			RAM[i +    0x21 + j * 2] = PTR[i / 2 + 0x10010 + j];
@@ -626,8 +624,8 @@ DRIVER_INIT_MEMBER(cbuster_state,twocrude)
 
 /******************************************************************************/
 
-GAME( 1990, cbuster,  0,       twocrude, twocrude, cbuster_state, twocrude, ROT0, "Data East Corporation", "Crude Buster (World FX version)", MACHINE_SUPPORTS_SAVE )
-GAME( 1990, cbusterw, cbuster, twocrude, twocrude, cbuster_state, twocrude, ROT0, "Data East Corporation", "Crude Buster (World FU version)", MACHINE_SUPPORTS_SAVE )
-GAME( 1990, cbusterj, cbuster, twocrude, twocrude, cbuster_state, twocrude, ROT0, "Data East Corporation", "Crude Buster (Japan FR revision 1)", MACHINE_SUPPORTS_SAVE )
-GAME( 1990, twocrude, cbuster, twocrude, twocrude, cbuster_state, twocrude, ROT0, "Data East USA", "Two Crude (US FT revision 1)", MACHINE_SUPPORTS_SAVE )
-GAME( 1990, twocrudea,cbuster, twocrude, twocrude, cbuster_state, twocrude, ROT0, "Data East USA", "Two Crude (US FT version)", MACHINE_SUPPORTS_SAVE )
+GAME( 1990, cbuster,   0,       twocrude, twocrude, cbuster_state, init_twocrude, ROT0, "Data East Corporation", "Crude Buster (World FX version)", MACHINE_SUPPORTS_SAVE )
+GAME( 1990, cbusterw,  cbuster, twocrude, twocrude, cbuster_state, init_twocrude, ROT0, "Data East Corporation", "Crude Buster (World FU version)", MACHINE_SUPPORTS_SAVE )
+GAME( 1990, cbusterj,  cbuster, twocrude, twocrude, cbuster_state, init_twocrude, ROT0, "Data East Corporation", "Crude Buster (Japan FR revision 1)", MACHINE_SUPPORTS_SAVE )
+GAME( 1990, twocrude,  cbuster, twocrude, twocrude, cbuster_state, init_twocrude, ROT0, "Data East USA", "Two Crude (US FT revision 1)", MACHINE_SUPPORTS_SAVE )
+GAME( 1990, twocrudea, cbuster, twocrude, twocrude, cbuster_state, init_twocrude, ROT0, "Data East USA", "Two Crude (US FT version)", MACHINE_SUPPORTS_SAVE )
