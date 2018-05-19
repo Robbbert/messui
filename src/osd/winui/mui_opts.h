@@ -11,10 +11,6 @@
 #if 0
 enum class m_optnum
 {
-	MOPT_SYSTEMNAME,
-	MOPT_SOFTWARENAME,
-	MOPT_READCONFIG,
-	MOPT_WRITECONFIG,
 	MOPT_ROMPATH,
 	MOPT_HASHPATH,
 	MOPT_SAMPLEPATH,
@@ -68,10 +64,6 @@ MAINOPTINFO;
 // must be in same order as enum above
 const MAINOPTINFO m_opt_info [] =
 {
-	{ m_optnum::MOPT_SYSTEMNAME,      OPTION_SYSTEMNAME,         "",          0x01 },
-	{ m_optnum::MOPT_SOFTWARENAME,    OPTION_SOFTWARENAME,       "",          0x01 },
-	{ m_optnum::MOPT_READCONFIG,      OPTION_READCONFIG,         "1",         0x01 },
-	{ m_optnum::MOPT_WRITECONFIG,     OPTION_WRITECONFIG,        "1",         0x01 },
 	{ m_optnum::MOPT_ROMPATH,         OPTION_MEDIAPATH,          "roms",      0x01 },
 	{ m_optnum::MOPT_HASHPATH,        OPTION_HASHPATH,           "hash",      0x01 },
 	{ m_optnum::MOPT_SAMPLEPATH,      OPTION_SAMPLEPATH,         "samples",   0x01 },
