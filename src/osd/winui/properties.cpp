@@ -1646,24 +1646,24 @@ static void SetPropEnabledControls(HWND hWnd)
 			bOsVersionInfoEx = GetVersionEx ( (OSVERSIONINFO *) &osvi);
 		}
 
-		if( bOsVersionInfoEx && (osvi.dwPlatformId == VER_PLATFORM_WIN32_NT) && (osvi.dwMajorVersion >= 5) )
-		{
+//		if( bOsVersionInfoEx && (osvi.dwPlatformId == VER_PLATFORM_WIN32_NT) && (osvi.dwMajorVersion >= 5) )
+//		{
 			BOOL use_lightgun;
 			//XP and above...
 			Button_Enable(GetDlgItem(hWnd,IDC_LIGHTGUN),false);
 			use_lightgun = Button_GetCheck(GetDlgItem(hWnd,IDC_USE_MOUSE));
 			Button_Enable(GetDlgItem(hWnd,IDC_DUAL_LIGHTGUN),false);
 			Button_Enable(GetDlgItem(hWnd,IDC_RELOAD),use_lightgun);
-		}
-		else
-		{
-			BOOL use_lightgun;
+//		}
+//		else
+//		{
+//			BOOL use_lightgun;
 			// Older than XP
-			Button_Enable(GetDlgItem(hWnd,IDC_LIGHTGUN),true);
-			use_lightgun = Button_GetCheck(GetDlgItem(hWnd,IDC_LIGHTGUN));
-			Button_Enable(GetDlgItem(hWnd,IDC_DUAL_LIGHTGUN),use_lightgun);
-			Button_Enable(GetDlgItem(hWnd,IDC_RELOAD),use_lightgun);
-		}
+//			Button_Enable(GetDlgItem(hWnd,IDC_LIGHTGUN),true);
+//			use_lightgun = Button_GetCheck(GetDlgItem(hWnd,IDC_LIGHTGUN));
+//			Button_Enable(GetDlgItem(hWnd,IDC_DUAL_LIGHTGUN),use_lightgun);
+//			Button_Enable(GetDlgItem(hWnd,IDC_RELOAD),use_lightgun);
+//		}
 	}
 	else
 	{
