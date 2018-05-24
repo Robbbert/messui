@@ -795,7 +795,7 @@ void SetManualsDir(const char *path)
 }
 
 // ***************************************************************** MAME.INI settings **************************************************************************
-const char* GetLanguageUI(void)
+const string GetLanguageUI(void)
 {
 	return global.value(OPTION_LANGUAGE);
 }
@@ -805,7 +805,7 @@ bool GetEnablePlugins(void)
 	return global.bool_value(OPTION_PLUGINS);
 }
 
-const char* GetPlugins(void)
+const string GetPlugins(void)
 {
 	return global.value(OPTION_PLUGIN);
 }
