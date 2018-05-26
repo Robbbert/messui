@@ -2817,6 +2817,7 @@ econx25                         // 1986 Econet X25 Gateway
 ltmpbp                          // 1985 LTM Portable (B+)
 ltmpm                           // 1986 LTM Portable (Master)
 pro128s                         // 1987 Olivetti Prodest PC 128S
+autoc15                         // 1988 Autocue 1500
 reutapm                         // 1985 Reuters APM Board
 torchf                          // 1982 Torch CF240
 torchh10                        // 1982 Torch CH240/10
@@ -11065,6 +11066,7 @@ aar_101                         //
 btmn_101                        //
 btmn_103                        //
 btmn_106                        //
+btmn_f13                        //
 btmn_g13                        //
 ckpt_a17                        //
 gnr_300                         //
@@ -29575,6 +29577,7 @@ imekura                         // (c) 1994 SPHINX/AV JAPAN
 janbari                         // (c) 1992 Nichibutsu/Yubis/AV JAPAN
 jituroku                        // (c) 1993 Windom
 koinomp                         // (c) 1992
+ldquiz4                         // (c) 1992
 mjanbari                        // (c) 1992 Nichibutsu/Yubis/AV JAPAN
 mjegolf                         // (c) 1994 FUJIC/AV JAPAN
 mjgottsu                        // (c) 1991
@@ -32126,7 +32129,10 @@ sshooter12                      // (c) 1998 P&P Marketing
 sshooter17                      // (c) 1998 P&P Marketing
 
 @source:poly.cpp
-poly1                           //
+poly1                           // Poly 1
+poly1e                          // Poly 1 (early)
+poly2                           // Poly 2
+polydev                         // Poly Development
 
 @source:poly88.cpp
 poly88                          //
@@ -34196,6 +34202,9 @@ ochaken                         //
 segasp                          //
 tetgiano                        //
 tetgiant                        //
+
+@source:segattl.cpp
+fonz                            //
 
 @source:segaufo.cpp
 newufo                          //
