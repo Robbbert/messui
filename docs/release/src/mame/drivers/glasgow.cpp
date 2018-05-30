@@ -413,14 +413,6 @@ READ8_MEMBER( amsterd_state::read_newkeys )  //Amsterdam, Roma, Dallas 32, Roma 
 }
 
 
-#ifdef UNUSED_FUNCTION
-READ16_MEMBER(read_test)
-{
-	logerror("read test Offset = %x Data = %x\n  ",offset,data);
-	return 0xffff;    // Mephisto need it for working
-}
-#endif
-
 /*
 
     *****           32 Bit Read and write Handler   ***********
@@ -659,14 +651,14 @@ INPUT_PORTS_END
 
 MACHINE_CONFIG_START(glasgow_state::glasgow)
 	/* basic machine hardware */
-	MCFG_CPU_ADD("maincpu", M68000, 12000000)
-	MCFG_CPU_PROGRAM_MAP(glasgow_mem)
+	MCFG_DEVICE_ADD("maincpu", M68000, 12_MHz_XTAL)
+	MCFG_DEVICE_PROGRAM_MAP(glasgow_mem)
 
 	/* video hardware */
 	MCFG_DEFAULT_LAYOUT(layout_glasgow)
 
-	MCFG_SPEAKER_STANDARD_MONO("mono")
-	MCFG_SOUND_ADD("beeper", BEEP, 44)
+	SPEAKER(config, "mono").front_center();
+	MCFG_DEVICE_ADD("beeper", BEEP, 44)
 	MCFG_SOUND_ROUTE(ALL_OUTPUTS, "mono", 0.50)
 
 	MCFG_TIMER_DRIVER_ADD_PERIODIC("nmi_timer", glasgow_state, update_nmi, attotime::from_hz(50))
@@ -676,16 +668,16 @@ MACHINE_CONFIG_START(amsterd_state::amsterd)
 	glasgow(config);
 
 	/* basic machine hardware */
-	MCFG_CPU_MODIFY("maincpu")
-	MCFG_CPU_PROGRAM_MAP(amsterd_mem)
+	MCFG_DEVICE_MODIFY("maincpu")
+	MCFG_DEVICE_PROGRAM_MAP(amsterd_mem)
 MACHINE_CONFIG_END
 
 MACHINE_CONFIG_START(amsterd_state::dallas32)
 	glasgow(config);
 
 	/* basic machine hardware */
-	MCFG_CPU_REPLACE("maincpu", M68020, 14000000)
-	MCFG_CPU_PROGRAM_MAP(dallas32_mem)
+	MCFG_DEVICE_REPLACE("maincpu", M68020, 14_MHz_XTAL)
+	MCFG_DEVICE_PROGRAM_MAP(dallas32_mem)
 
 	MCFG_DEVICE_REMOVE("nmi_timer")
 	MCFG_TIMER_DRIVER_ADD_PERIODIC("nmi_timer", amsterd_state, update_nmi32, attotime::from_hz(50))
@@ -727,10 +719,10 @@ ROM_START( dallas16 )
 	ROM_LOAD16_BYTE("dallas-l.bin",0x00001, 0x06f00,CRC(f0d5bc03) SHA1(4b1b9a71663d5321820b4cf7da205e5fe5d3d001))
 ROM_END
 
-// This set needs checking. It cannot possibly work with this rom and hardware.
 ROM_START( roma )
 	ROM_REGION16_BE( 0x1000000, "maincpu", 0 )
-	ROM_LOAD("roma32.bin", 0x000000, 0x10000, CRC(587d03bf) SHA1(504e9ff958084700076d633f9c306fc7baf64ffd))
+	ROM_LOAD16_BYTE("roma16-u.bin", 0x00000, 0x08000, CRC(111d030f) SHA1(e027f7e7018d28ab794e7730392506056809db6b))
+	ROM_LOAD16_BYTE("roma16-l.bin", 0x00001, 0x08000, CRC(8245ddd2) SHA1(ab048b60fdc4358913a5d07b6fee863b66dd6734))
 ROM_END
 
 ROM_START( dallas32 )
@@ -749,10 +741,11 @@ ROM_END
 ***************************************************************************/
 
 /*     YEAR, NAME,     PARENT,   COMPAT, MACHINE,     INPUT,          CLASS,         INIT, COMPANY,                      FULLNAME,                 FLAGS */
-CONS(  1984, glasgow,  0,        0,      glasgow,     old_keyboard,   glasgow_state, 0,    "Hegener & Glaser Muenchen",  "Mephisto III S Glasgow", 0)
-CONS(  1984, amsterd,  0,        0,      amsterd,     new_keyboard,   amsterd_state, 0,    "Hegener & Glaser Muenchen",  "Mephisto Amsterdam",     MACHINE_NOT_WORKING)
-CONS(  1984, dallas,   glasgow,  0,      glasgow,     old_keyboard,   glasgow_state, 0,    "Hegener & Glaser Muenchen",  "Mephisto Dallas",        MACHINE_NOT_WORKING)
-CONS(  1984, roma,     amsterd,  0,      glasgow,     new_keyboard,   glasgow_state, 0,    "Hegener & Glaser Muenchen",  "Mephisto Roma",          MACHINE_NOT_WORKING)
-CONS(  1984, dallas32, amsterd,  0,      dallas32,    new_keyboard,   amsterd_state, 0,    "Hegener & Glaser Muenchen",  "Mephisto Dallas 32 Bit", MACHINE_NOT_WORKING)
-CONS(  1984, roma32,   amsterd,  0,      dallas32,    new_keyboard,   amsterd_state, 0,    "Hegener & Glaser Muenchen",  "Mephisto Roma 32 Bit",   MACHINE_NOT_WORKING)
-CONS(  1984, dallas16, amsterd,  0,      amsterd,     new_keyboard,   amsterd_state, 0,    "Hegener & Glaser Muenchen",  "Mephisto Dallas 16 Bit", MACHINE_NOT_WORKING)
+CONS(  1984, glasgow,  0,        0,      glasgow,     old_keyboard,   glasgow_state, empty_init,    "Hegener & Glaser Muenchen",  "Mephisto III S Glasgow", 0)
+CONS(  1985, amsterd,  0,        0,      amsterd,     new_keyboard,   amsterd_state, empty_init,    "Hegener & Glaser Muenchen",  "Mephisto Amsterdam",     MACHINE_NOT_WORKING)
+CONS(  1986, dallas,   glasgow,  0,      glasgow,     old_keyboard,   glasgow_state, empty_init,    "Hegener & Glaser Muenchen",  "Mephisto Dallas",        MACHINE_NOT_WORKING)
+CONS(  1986, dallas16, amsterd,  0,      amsterd,     new_keyboard,   amsterd_state, empty_init,    "Hegener & Glaser Muenchen",  "Mephisto Dallas 16 Bit", MACHINE_NOT_WORKING)
+CONS(  1986, dallas32, amsterd,  0,      dallas32,    new_keyboard,   amsterd_state, empty_init,    "Hegener & Glaser Muenchen",  "Mephisto Dallas 32 Bit", MACHINE_NOT_WORKING)
+CONS(  1987, roma,     amsterd,  0,      amsterd,     new_keyboard,   amsterd_state, empty_init,    "Hegener & Glaser Muenchen",  "Mephisto Roma",          MACHINE_NOT_WORKING)
+CONS(  1987, roma32,   amsterd,  0,      dallas32,    new_keyboard,   amsterd_state, empty_init,    "Hegener & Glaser Muenchen",  "Mephisto Roma 32 Bit",   MACHINE_NOT_WORKING)
+
