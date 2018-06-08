@@ -27,7 +27,7 @@
 #include <fstream>      // for *_opts.h (below)
 #include "game_opts.h"
 #include "ui_opts.h"
-//#include "ini_opts.h"   // not ready yet
+#include "ini_opts.h"   // not ready yet
 #include "mui_util.h"
 #include "treeview.h"
 #include "splitters.h"
@@ -84,6 +84,7 @@ static void ResetToDefaults(windows_options &opts, int priority);
 
 static emu_options mameopts; // core options
 static ui_options mewui; // ui.ini
+static winui_ini_options iniopts; // TEST
 static winui_ui_options settings; // mameui.ini
 static windows_options global; // Global 'default' options
 static winui_game_options game_opts;    // game stats
