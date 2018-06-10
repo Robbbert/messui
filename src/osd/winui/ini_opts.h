@@ -330,40 +330,7 @@ class winui_ini_options
 	std::map<string, string> map_done;
 	const char *m_filename;
 	string m_inipath;
-
-#if 0
-	void create_index(std::ifstream &fp) // not used
-	{
-		if (!fp.good())
-			return;
-		bool is_ready = false;
-		std::string file_line;
-		std::getline(fp, file_line);
-		while (fp.good())
-		{
-			if (is_ready)
-			{
-				char s[file_line.length()+1];
-				strcpy(s, file_line.c_str());
-
-				const char* name = strtok(s, "\t");  // get adjustment name
-				char* data = strtok(NULL, "\t");    // get next part (there's no next tab, so just return whatever is left)
-				if (name)
-					m_list[name] = data ? data : "";
-			}
-			else
-			{
-				if (file_line == "$start")
-					is_ready = true;
-			}
-
-			std::getline(fp, file_line);
-		}
-
-		fp.close();
-		return;
-	}
-#endif
+	int m_gnumber;
 
 	void trim_spaces_and_quotes(std::string &data)
 	{
@@ -379,7 +346,7 @@ class winui_ini_options
 	}
 	
 	// convert all other numbers, up to end-of-string/invalid-character. If number is too large, return 0.
-	uint32_t convert_to_uint(const char* inp)
+	uint32_t convert_to_uint(const char* inp) // not used
 	{
 		if (!inp)
 			return 0;
@@ -420,7 +387,7 @@ class winui_ini_options
 					if (action)  // accept anything (slots & software)
 						ok = true;
 					else
-					if (map_default.find(string(name)) != map_default.end()) // standard options only
+					if (map_default.count(string(name))) // standard options only
 						ok = true;
 
 					if (ok)
@@ -450,7 +417,7 @@ class winui_ini_options
 		string fname = m_inipath + "\\" + filename + ".ini";
 		std::ifstream infile (fname.c_str());
 		if (read_ini (infile, action))
-			if (map_ini.find("readconfig") != map_ini.end()) // specifically need "readconfig 0" to prevent reading
+			if (map_ini.count("readconfig")) // specifically need "readconfig 0" to prevent reading
 				if (map_ini.find("readconfig")->second != "0")
 				{
 					map_ini.insert(map_merge.begin(),map_merge.end());
@@ -472,6 +439,8 @@ public:
 			// set up default settings
 			map_default[optentries[i].optname] = optentries[i].optvalue;
 		}
+		m_gnumber = 0;
+		m_inipath = ".";
 
 		//printf("*** START DUMP OF DEFAULT ***\n");
 		//for (auto const &it : map_struct)
@@ -482,15 +451,15 @@ public:
 	}
 
 	// get ini settings to the requested game
-	void read_merged_ini(int gnumber)
+	// action: false = get diff ; true = get the game
+	void read_merged_ini(bool action)
 	{
 		m_inipath = ".";
-		std::map<string, string> map_merge;
 		map_merge = map_default;
 		string filename = "mame";
 		merge_ini(filename, false);
 		merge_ini(filename, false);
-		const game_driver *drv = &driver_list::driver(gnumber);
+		const game_driver *drv = &driver_list::driver(m_gnumber);
 		if (!drv)
 			return;
 		// orientation
@@ -542,46 +511,76 @@ public:
 			merge_ini(driver_list::driver(gparent).name, false);
 		if (parent != -1)
 			merge_ini(driver_list::driver(parent).name, false);
+		// if getting diff leave now
+		if (!action)
+			return;
 		// at last, the actual game... and we want any preloaded slots & software
 		merge_ini(drv->name, true);
 	}
 
-	void load_file(const char *filename) // not used
-	{
-		if (!m_filename)
-			m_filename = filename;
-		std::ifstream infile (filename);
-		//create_index(infile);
-	}
-
-	void save_file(const char *filename)
+	// we ignore the writeconfig flag
+	void save_diff_ini(const char *filename)
 	{
 		if (!filename)
 			return;
+
+		bool file_ok = false;
+
+		// get the diff
+		read_merged_ini(false);
+		// now, map_merge has the diff, and map_done has the current to be saved
+		// save lines that are different between them, also save any extra lines found in map_done, to game.ini
+
 		// initialise with UTF-8 BOM
 		std::string inistring = "\0xef\0xbb\0xbf\n";
 		for (auto const &it : map_done)
-			inistring.append(it.first).append(" ").append(it.second).append("\n");
+		{
+			bool ok = true;
+			if (map_merge.count(it.first)) // ==if key exists
+				if (map_merge.find(it.first)->second == it.second)
+					ok = false;
 
-		std::ofstream outfile (filename, std::ios::out | std::ios::trunc);
-		size_t size = inistring.size();
-		char t1[size+1];
-		strcpy(t1, inistring.c_str());
-		outfile.write(t1, size);
-		outfile.close();
+			if (ok)
+			{
+				inistring.append(it.first).append(" ").append(it.second).append("\n");
+				file_ok = true;
+			}
+		}
+
+		if (file_ok)
+		{
+			std::ofstream outfile (filename, std::ios::out | std::ios::trunc);
+			size_t size = inistring.size();
+			char t1[size+1];
+			strcpy(t1, inistring.c_str());
+			outfile.write(t1, size);
+			outfile.close();
+		}
+		else
+			unlink (filename);
+
 		return;
 	}
 
-	void reset_and_save(const char *filename) // not used
+	// select which game to work with
+	void setgame(int gnumber)
 	{
-		map_merge = map_default;
-		save_file(filename);
+		m_gnumber = gnumber;
 	}
 
-	void setter(const char* name, std::string value) // not used
+	// save a setting
+	void setter(string name, string value)
 	{
 		map_merge[name] = value;
-		save_file(m_filename);
+	}
+
+	// read a setting
+	std::string getter(string name)
+	{
+		if (map_merge.count(name))
+			return map_merge.find(name)->second;
+		else
+			return "";
 	}
 
 	// cannot be "setter" otherwise most strings use it, causing "1" to be saved.
@@ -591,18 +590,16 @@ public:
 	//	save_file(m_filename);
 	//}
 
+	void reset_and_save(const char *filename) // not used
+	{
+		map_merge = map_default;
+		//save_file(filename);
+	}
+
 	void setter(const char* name, int value) // not used
 	{
 		map_merge[name] = std::to_string(value);
-		save_file(m_filename);
-	}
-
-	std::string getter(const char* name) // not used
-	{
-		if (map_merge.count(name))
-			return map_merge.find(name)->second;
-		else
-			return "";
+		//save_file(m_filename);
 	}
 
 	int int_value(const char* name) // not used
@@ -613,6 +610,14 @@ public:
 	bool bool_value(const char* name) // not used
 	{
 		return int_value(name) ? 1 : 0;
+	}
+
+	void load_file(const char *filename) // not used
+	{
+		if (!m_filename)
+			m_filename = filename;
+		std::ifstream infile (filename);
+		//create_index(infile);
 	}
 };
 

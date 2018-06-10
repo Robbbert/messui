@@ -72,7 +72,7 @@ struct _datamap_entry
 struct _datamap
 {
 	int entry_count;
-	datamap_entry entries[256];	// 256 options entries seems enough for now...
+	datamap_entry entries[512];
 };
 
 typedef void (*datamap_default_callback)(datamap *map, HWND control, windows_options *opts, datamap_entry *entry, const char *option_name);
@@ -369,8 +369,7 @@ static void broadcast_changes(datamap *map, HWND dialog, windows_options *opts, 
 
 	for (int i = 0; i < map->entry_count; i++)
 	{
-		// search for an entry with the same option_name, but is not the exact
-		// same entry
+		// search for an entry with the same option_name, but is not the exact same entry
 		that_option_name = map->entries[i].option_name;
 		if (map->entries[i].option_name && (&map->entries[i] != entry) && !strcmp(that_option_name, option_name))
 		{
@@ -700,8 +699,7 @@ static void populate_control(datamap *map, HWND control, windows_options *opts, 
 			// the range
 			if (entry->use_trackbar_options)
 			{
-				trackbar_range_d = floor(((entry->trackbar_max - entry->trackbar_min)
-					/ entry->trackbar_increments) + 0.5);
+				trackbar_range_d = floor(((entry->trackbar_max - entry->trackbar_min) / entry->trackbar_increments) + 0.5);
 				trackbar_range = (int) trackbar_range_d;
 				SendMessage(control, TBM_SETRANGEMIN, (WPARAM) FALSE, (LPARAM) 0);
 				SendMessage(control, TBM_SETRANGEMAX, (WPARAM) FALSE, (LPARAM) trackbar_range);
