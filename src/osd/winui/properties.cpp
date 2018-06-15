@@ -491,12 +491,12 @@ void InitPropertyPageToPage(HINSTANCE hInst, HWND hWnd, HICON hIcon, OPTIONS_TYP
 	OptionsCopy(dummy,pOrigOpts);
 	OptionsCopy(dummy,pCurrentOpts);
 
-	load_options(pCurrentOpts, opt_type, game_num, 1);
-	load_options(pOrigOpts, opt_type, game_num, 1);
 	if (game_num == GLOBAL_OPTIONS)
 		load_options(pDefaultOpts, OPTIONS_GLOBAL, -2, 0); // base opts is the backup for global
 	else
 		load_options(pDefaultOpts, OPTIONS_GLOBAL, -1, 0); // global is the backup for games
+	load_options(pCurrentOpts, opt_type, game_num, 1);
+	load_options(pOrigOpts, opt_type, game_num, 1);
 
 	// Copy icon to use for the property pages
 	g_hIcon = CopyIcon(hIcon);
@@ -540,6 +540,33 @@ void InitPropertyPageToPage(HINSTANCE hInst, HWND hWnd, HICON hIcon, OPTIONS_TYP
 		break;
 	case OPTIONS_GLOBAL:
 		t_description = ui_wstring_from_utf8("Default Settings");
+		break;
+	case OPTIONS_HORIZONTAL:
+		t_description = ui_wstring_from_utf8("Horizontal");
+		break;
+	case OPTIONS_VERTICAL:
+		t_description = ui_wstring_from_utf8("Vertical");
+		break;
+	case OPTIONS_RASTER:
+		t_description = ui_wstring_from_utf8("Raster");
+		break;
+	case OPTIONS_VECTOR:
+		t_description = ui_wstring_from_utf8("Vector");
+		break;
+	case OPTIONS_LCD:
+		t_description = ui_wstring_from_utf8("LCD");
+		break;
+	case OPTIONS_ARCADE:
+		t_description = ui_wstring_from_utf8("Arcade");
+		break;
+	case OPTIONS_CONSOLE:
+		t_description = ui_wstring_from_utf8("Console");
+		break;
+	case OPTIONS_COMPUTER:
+		t_description = ui_wstring_from_utf8("Computer");
+		break;
+	case OPTIONS_OTHERSYS:
+		t_description = ui_wstring_from_utf8("Othersys");
 		break;
 	default:
 		return;

@@ -2276,6 +2276,7 @@ const char * GetVersionString(void)
 /*  get options, based on passed in game number. */
 void load_options(windows_options &opts, OPTIONS_TYPE opt_type, int game_num, bool set_system_name)
 {
+	new_setgame(game_num, opt_type);
 	const game_driver *driver = NULL;
 	if (game_num > -1)
 		driver = &driver_list::driver(game_num);
@@ -2315,6 +2316,8 @@ void load_options(windows_options &opts, OPTIONS_TYPE opt_type, int game_num, bo
 /* Save ini file based on game_number. */
 void save_options(windows_options &opts, OPTIONS_TYPE opt_type, int game_num)
 {
+	new_saveini();
+#if 0
 	const game_driver *driver = NULL;
 	string filename, filepath;
 
@@ -2346,6 +2349,7 @@ void save_options(windows_options &opts, OPTIONS_TYPE opt_type, int game_num)
 	}
 //	else
 //		printf("Unable to save settings\n");
+#endif
 }
 
 
@@ -2598,3 +2602,27 @@ void OptionsCopy(windows_options &source, windows_options &dest)
 		}
 	}
 }
+
+
+// Test for new iniopts
+
+void new_setgame(int gamenum, OPTIONS_TYPE opttype)
+{
+	iniopts.setgame(gamenum, opttype);
+}
+
+string new_getter(string name)
+{
+	return iniopts.getter(name);
+}
+
+void new_setter(string name, string value)
+{
+	iniopts.setter(name, value);
+}
+
+void new_saveini()
+{
+	iniopts.save_diff_ini();
+}
+

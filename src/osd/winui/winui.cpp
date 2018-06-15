@@ -4294,9 +4294,9 @@ static BOOL MameCommand(HWND hwnd,int id, HWND hwndCtl, UINT codeNotify)
 		UpdateStatusBar();
 		break;
 
-	// NOT WORKING
+	// NOT WORKING -- right click on a tree item (vertical, console, etc) then Properties - should open matching ini file
 	case ID_FOLDER_PROPERTIES:
-		if (!oldControl && (current_game >= 0))
+		//if (!oldControl && (current_game >= 0))
 		{
 			OPTIONS_TYPE curOptType = OPTIONS_SOURCE;
 			folder = GetSelectedFolder();
@@ -4304,6 +4304,30 @@ static BOOL MameCommand(HWND hwnd,int id, HWND hwndCtl, UINT codeNotify)
 			{
 				if(folder->m_nFolderId == FOLDER_VECTOR)
 					curOptType = OPTIONS_VECTOR;
+				else
+				if(folder->m_nFolderId == FOLDER_RASTER)
+					curOptType = OPTIONS_RASTER;
+				else
+				if(folder->m_nFolderId == FOLDER_LCD)
+					curOptType = OPTIONS_LCD;
+				else
+				if(folder->m_nFolderId == FOLDER_HORIZONTAL)
+					curOptType = OPTIONS_HORIZONTAL;
+				else
+				if(folder->m_nFolderId == FOLDER_VERTICAL)
+					curOptType = OPTIONS_VERTICAL;
+				else
+				if(folder->m_nFolderId == FOLDER_ARCADE)
+					curOptType = OPTIONS_ARCADE;
+				else
+				if(folder->m_nFolderId == FOLDER_COMPUTER)
+					curOptType = OPTIONS_COMPUTER;
+				else
+				if(folder->m_nFolderId == FOLDER_CONSOLE)
+					curOptType = OPTIONS_CONSOLE;
+				else
+				if(folder->m_nFolderId == FOLDER_OTHERSYS)
+					curOptType = OPTIONS_OTHERSYS;
 
 				InitPropertyPage(hInst, hwnd, GetSelectedFolderIcon(), curOptType, folder->m_nFolderId, current_game);
 			}

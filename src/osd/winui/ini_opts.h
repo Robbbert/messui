@@ -329,8 +329,11 @@ class winui_ini_options
 	std::map<string, string> map_merge;
 	std::map<string, string> map_done;
 	const char *m_filename;
-	string m_inipath;
-	int m_gnumber;
+	string t_inipath; // temporary
+	string m_inipath; // used for file saving
+	string m_gamename;
+	int m_gamenum;
+	OPTIONS_TYPE m_opttype;
 
 	void trim_spaces_and_quotes(std::string &data)
 	{
@@ -344,7 +347,7 @@ class winui_ini_options
 			data.erase(data.length() - 1, 1);
 		}
 	}
-	
+
 	// convert all other numbers, up to end-of-string/invalid-character. If number is too large, return 0.
 	uint32_t convert_to_uint(const char* inp) // not used
 	{
@@ -372,15 +375,23 @@ class winui_ini_options
 		if (!fp.good())
 			return false;
 
-		string file_line, optdata;
+		string file_line, optdata, name, data;
 		std::getline(fp, file_line);
 		while (fp.good())
 		{
-			char s[file_line.length()+1];
-			strcpy(s, file_line.c_str());
 			bool ok = false;
-			const char* name = strtok(s, " ");  // get optname
-			if (name)
+			size_t pos = file_line.find_first_of(" ");
+			if (pos == string::npos)
+			{
+				name = file_line;
+				data = "";
+			}
+			else
+			{
+				name = file_line.substr(0, pos);
+				data = file_line.substr(pos);
+			}
+			if (name.length())
 			{
 				if (name[0] >= 'a' && name[0] <= 'z')
 				{
@@ -392,16 +403,8 @@ class winui_ini_options
 
 					if (ok)
 					{
-						char* data = s;    // get remainder
-						if (data)
-						{
-							optdata = string(data);
-							trim_spaces_and_quotes(optdata);
-						}
-						else
-							optdata = "";
-
-						map_ini[string(name)] = optdata;
+						trim_spaces_and_quotes(data);
+						map_ini[string(name)] = data;
 					}
 				}
 			}
@@ -414,7 +417,7 @@ class winui_ini_options
 
 	void merge_ini(string filename, bool action)
 	{
-		string fname = m_inipath + "\\" + filename + ".ini";
+		string fname = t_inipath + "\\" + filename + ".ini";
 		std::ifstream infile (fname.c_str());
 		if (read_ini (infile, action))
 			if (map_ini.count("readconfig")) // specifically need "readconfig 0" to prevent reading
@@ -424,42 +427,26 @@ class winui_ini_options
 					std::swap(map_merge, map_ini);
 					if (map_ini.find("inipath") != map_ini.end())
 						if (map_ini.find("inipath")->second != "")
-							m_inipath = map_ini.find("inipath")->second;
+							t_inipath = map_ini.find("inipath")->second;
 				}
-	}
-
-public:
-	// construction/destruction
-	winui_ini_options()
-	{
-		for (int i = 0; optentries[i].optname != "$end"; i++)
-		{
-			// set up indexed struct
-			map_struct[optentries[i].optname] = optentries[i];
-			// set up default settings
-			map_default[optentries[i].optname] = optentries[i].optvalue;
-		}
-		m_gnumber = 0;
-		m_inipath = ".";
-
-		//printf("*** START DUMP OF DEFAULT ***\n");
-		//for (auto const &it : map_struct)
-			//printf("%s = %s\n", it.first.c_str(), it.second.optmin.c_str());
-		//for (auto const &it : map_default)
-			//printf("%s = %s\n", it.first.c_str(), it.second.c_str());
-		//printf("*** END DUMP OF DEFAULT ***\n");
 	}
 
 	// get ini settings to the requested game
 	// action: false = get diff ; true = get the game
-	void read_merged_ini(bool action)
+	void read_merged_ini(int action)
 	{
-		m_inipath = ".";
+		t_inipath = ".";
 		map_merge = map_default;
+		// only wanted defaults
+		if (action == 2)
+			return;
 		string filename = "mame";
 		merge_ini(filename, false);
-		merge_ini(filename, false);
-		const game_driver *drv = &driver_list::driver(m_gnumber);
+//		merge_ini(filename, false);
+		// only wanted global settings
+		if (action == 3)
+			return;
+		const game_driver *drv = &driver_list::driver(m_gamenum);
 		if (!drv)
 			return;
 		// orientation
@@ -504,6 +491,9 @@ public:
 		// source
 		string sourcename = core_filename_extract_base(drv->type.source(), true).insert(0, "source" PATH_SEPARATOR);
 		merge_ini(sourcename, false);
+		if (m_opttype == OPTIONS_SOURCE)
+			return;
+
 		// then parse the grandparent, parent, and system-specific INIs
 		int parent = driver_list::clone(*drv);
 		int gparent = (parent != -1) ? driver_list::clone(parent) : -1;
@@ -512,22 +502,49 @@ public:
 		if (parent != -1)
 			merge_ini(driver_list::driver(parent).name, false);
 		// if getting diff leave now
-		if (!action)
+		if (action == 0)
 			return;
 		// at last, the actual game... and we want any preloaded slots & software
 		merge_ini(drv->name, true);
 	}
 
-	// we ignore the writeconfig flag
-	void save_diff_ini(const char *filename)
+public:
+	// construction/destruction
+	winui_ini_options()
 	{
-		if (!filename)
-			return;
+		for (int i = 0; optentries[i].optname != "$end"; i++)
+		{
+			// set up indexed struct
+			map_struct[optentries[i].optname] = optentries[i];
+			// set up default settings
+			map_default[optentries[i].optname] = optentries[i].optvalue;
+		}
+		m_gamenum = 0;
+		t_inipath = ".";
 
+		//printf("*** START DUMP OF DEFAULT ***\n");
+		//for (auto const &it : map_struct)
+			//printf("%s = %s\n", it.first.c_str(), it.second.optmin.c_str());
+		//for (auto const &it : map_default)
+			//printf("%s = %s\n", it.first.c_str(), it.second.c_str());
+		//printf("*** END DUMP OF DEFAULT ***\n");
+	}
+
+	// we ignore the writeconfig flag
+	void save_diff_ini()
+	{
 		bool file_ok = false;
 
+		map_done = std::move(map_merge);
+
 		// get the diff
-		read_merged_ini(false);
+		if (m_opttype == OPTIONS_GAME)
+			read_merged_ini(0);
+		else
+		if (m_opttype == OPTIONS_GLOBAL)
+			read_merged_ini(2);
+		else
+			read_merged_ini(3);
 		// now, map_merge has the diff, and map_done has the current to be saved
 		// save lines that are different between them, also save any extra lines found in map_done, to game.ini
 
@@ -547,7 +564,17 @@ public:
 			}
 		}
 
-		if (file_ok)
+		string fname = m_inipath + "\\" + m_gamename + ".ini";
+
+		if (m_opttype == OPTIONS_GLOBAL)
+			fname = m_gamename + ".ini";
+		else
+		if (m_opttype == OPTIONS_SOURCE)
+			fname = m_inipath + "\\source\\" + m_gamename + ".ini";
+
+		const char* filename = fname.c_str();
+printf("Saving to: %s, file_ok = %d\n", filename,file_ok);
+//		if (file_ok)
 		{
 			std::ofstream outfile (filename, std::ios::out | std::ios::trunc);
 			size_t size = inistring.size();
@@ -556,16 +583,53 @@ public:
 			outfile.write(t1, size);
 			outfile.close();
 		}
-		else
-			unlink (filename);
+//		else
+//			unlink (filename);
 
 		return;
 	}
 
 	// select which game to work with
-	void setgame(int gnumber)
+	// This sets up everything for if we want to save changes
+	void setgame(int gamenum, OPTIONS_TYPE opttype)
 	{
-		m_gnumber = gnumber;
+		m_opttype = opttype;
+		if (opttype == OPTIONS_GAME || opttype == OPTIONS_SOURCE)
+		{
+			m_gamenum = gamenum;
+			m_gamename = driver_list::driver(gamenum).name;
+			read_merged_ini(1);
+		}
+		else
+		{
+			m_gamenum = -1;
+			switch(opttype)
+			{
+				case OPTIONS_GLOBAL:     m_gamename = "mame"; break;
+				case OPTIONS_HORIZONTAL: m_gamename = "horizont"; break;
+				case OPTIONS_VERTICAL:   m_gamename = "vertical"; break;
+				case OPTIONS_RASTER:     m_gamename = "raster"; break;
+				case OPTIONS_VECTOR:     m_gamename = "vector"; break;
+				case OPTIONS_LCD:        m_gamename = "lcd"; break;
+				case OPTIONS_ARCADE:     m_gamename = "arcade"; break;
+				case OPTIONS_CONSOLE:    m_gamename = "console"; break;
+				case OPTIONS_COMPUTER:   m_gamename = "computer"; break;
+				case OPTIONS_OTHERSYS:   m_gamename = "othersys"; break;
+				default: m_gamename = ""; printf("iniopts: We shouldn't be here.\n"); return;
+			}
+			// for these special ones, read default then mame.ini then this one
+			t_inipath = ".";
+			map_merge = map_default;
+			string filename = "mame";
+			merge_ini(filename, false);
+//			merge_ini(filename, false);
+			if (opttype != OPTIONS_GLOBAL)
+			{
+				filename = m_gamename;
+				merge_ini(filename, false);
+			}
+		}
+		m_inipath = t_inipath;
 	}
 
 	// save a setting
