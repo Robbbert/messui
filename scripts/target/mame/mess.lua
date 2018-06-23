@@ -2633,6 +2633,7 @@ files {
 createMESSProjects(_target, _subtarget, "olympia")
 files {
 	MAME_DIR .. "src/mame/drivers/olyboss.cpp",
+	MAME_DIR .. "src/mame/drivers/olytext.cpp",
 	MAME_DIR .. "src/mame/drivers/peoplepc.cpp",
 }
 
