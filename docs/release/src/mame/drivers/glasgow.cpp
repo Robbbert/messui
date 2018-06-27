@@ -486,11 +486,11 @@ void glasgow_state::glasgow_mem(address_map &map)
 {
 	map.global_mask(0x1ffff);
 	map(0x000000, 0x00ffff).rom();
-	map(0x010000, 0x010000).w(this, FUNC(glasgow_state::glasgow_lcd_w));
-	map(0x010002, 0x010003).rw(this, FUNC(glasgow_state::glasgow_keys_r), FUNC(glasgow_state::glasgow_keys_w));
-	map(0x010004, 0x010004).w(this, FUNC(glasgow_state::glasgow_lcd_flag_w));
-	map(0x010006, 0x010007).rw(this, FUNC(glasgow_state::glasgow_board_r), FUNC(glasgow_state::glasgow_beeper_w));
-	map(0x010008, 0x010009).w(this, FUNC(glasgow_state::glasgow_board_w));
+	map(0x010000, 0x010000).w(FUNC(glasgow_state::glasgow_lcd_w));
+	map(0x010002, 0x010003).rw(FUNC(glasgow_state::glasgow_keys_r), FUNC(glasgow_state::glasgow_keys_w));
+	map(0x010004, 0x010004).w(FUNC(glasgow_state::glasgow_lcd_flag_w));
+	map(0x010006, 0x010007).rw(FUNC(glasgow_state::glasgow_board_r), FUNC(glasgow_state::glasgow_beeper_w));
+	map(0x010008, 0x010009).w(FUNC(glasgow_state::glasgow_board_w));
 	map(0x01c000, 0x01ffff).ram(); // 16KB
 }
 
@@ -498,13 +498,13 @@ void amsterd_state::amsterd_mem(address_map &map)
 {
 	// ADDRESS_MAP_GLOBAL_MASK(0x7FFFF)
 	map(0x000000, 0x00ffff).rom();
-	map(0x800002, 0x800002).w(this, FUNC(amsterd_state::write_lcd));
-	map(0x800008, 0x800008).w(this, FUNC(amsterd_state::write_lcd_flag));
-	map(0x800004, 0x800004).w(this, FUNC(amsterd_state::write_beeper));
-	map(0x800010, 0x800010).w(this, FUNC(amsterd_state::write_board));
-	map(0x800020, 0x800021).r(this, FUNC(amsterd_state::read_board));
-	map(0x800040, 0x800040).r(this, FUNC(amsterd_state::read_newkeys));
-	map(0x800088, 0x800089).w(this, FUNC(amsterd_state::write_lcd_invert));
+	map(0x800002, 0x800002).w(FUNC(amsterd_state::write_lcd));
+	map(0x800008, 0x800008).w(FUNC(amsterd_state::write_lcd_flag));
+	map(0x800004, 0x800004).w(FUNC(amsterd_state::write_beeper));
+	map(0x800010, 0x800010).w(FUNC(amsterd_state::write_board));
+	map(0x800020, 0x800021).r(FUNC(amsterd_state::read_board));
+	map(0x800040, 0x800040).r(FUNC(amsterd_state::read_newkeys));
+	map(0x800088, 0x800089).w(FUNC(amsterd_state::write_lcd_invert));
 	map(0xffc000, 0xffffff).ram(); // 16KB
 }
 
@@ -513,13 +513,13 @@ void amsterd_state::dallas32_mem(address_map &map)
 	// ADDRESS_MAP_GLOBAL_MASK(0x1FFFF)
 	map(0x000000, 0x00ffff).rom();
 	map(0x010000, 0x01ffff).ram(); // 64KB
-	map(0x800002, 0x800002).w(this, FUNC(amsterd_state::write_lcd));
-	map(0x800004, 0x800004).w(this, FUNC(amsterd_state::write_beeper));
-	map(0x800008, 0x800008).w(this, FUNC(amsterd_state::write_lcd_flag));
-	map(0x800010, 0x800010).w(this, FUNC(amsterd_state::write_board));
-	map(0x800020, 0x800023).r(this, FUNC(amsterd_state::read_board32));
-	map(0x800040, 0x800040).r(this, FUNC(amsterd_state::read_newkeys));
-	map(0x800088, 0x80008b).w(this, FUNC(amsterd_state::write_keys32));
+	map(0x800002, 0x800002).w(FUNC(amsterd_state::write_lcd));
+	map(0x800004, 0x800004).w(FUNC(amsterd_state::write_beeper));
+	map(0x800008, 0x800008).w(FUNC(amsterd_state::write_lcd_flag));
+	map(0x800010, 0x800010).w(FUNC(amsterd_state::write_board));
+	map(0x800020, 0x800023).r(FUNC(amsterd_state::read_board32));
+	map(0x800040, 0x800040).r(FUNC(amsterd_state::read_newkeys));
+	map(0x800088, 0x80008b).w(FUNC(amsterd_state::write_keys32));
 }
 
 

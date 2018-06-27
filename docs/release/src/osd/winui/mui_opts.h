@@ -639,6 +639,13 @@ void SetSelectedSoftware(int driver_index, string opt_name, const char *software
 void SetCurrentSoftwareTab(int val);
 int GetCurrentSoftwareTab(void);
 
+// Test for new iniopts
+
+void new_setgame(int gamenum, OPTIONS_TYPE opttype);
+string new_getter(string name);
+void new_setter(string name, string value);
+void new_saveini();
+
 
 #endif
 

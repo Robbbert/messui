@@ -7,13 +7,13 @@
 
 typedef struct
 {
-	std::string   optname;
-	std::string   optvalue;
+	string   optname;
+	string   optvalue;
 	int           opttype;
-	std::string   optmin;
-	std::string   optmax;
-	std::string   optstep;
-	std::string   opthelp;
+	string   optmin;
+	string   optmax;
+	string   optstep;
+	string   opthelp;
 }
 INIOPTS;
 // INI options
@@ -135,7 +135,7 @@ const INIOPTS optentries[] =
 	{ "drc_log_native",         "0",         0, "", "", "",    "write DRC native disassembly log" },
 	{ "bios",                   "",     4, "", "", "",     "select the system BIOS to use" },
 	{ "cheat",                  "0",         0, "", "", "",    "enable cheat subsystem" },
-	{ "skip_gameinfo",          "0",         0, "", "", "",    "skip displaying the information screen at startup" },
+	{ "skip_gameinfo",          "1",         0, "", "", "",    "skip displaying the information screen at startup" },
 	{ "uifont",                 "default",   4, "", "", "",     "specify a font to use" },
 	{ "ui",                     "cabinet",   4, "", "", "",     "type of UI (simple|cabinet)" },
 	{ "ramsize",                "",     4, "", "", "",     "size of RAM (if supported by driver)" },
@@ -146,14 +146,15 @@ const INIOPTS optentries[] =
 	{ "comm_framesync",         "0",         0, "", "", "",    "sync frames" },
 	{ "confirm_quit",           "0",         0, "", "", "",    "display confirm quit screen on exit" },
 	{ "ui_mouse",               "1",         0, "", "", "",    "display ui mouse cursor" },
+	{ "language",               "English",   4, "", "", "",     "display language" },
+	{ "nvram_save",             "1",   4, "", "", "",     "save nvram" },
 	{ "autoboot_command",       "",     4, "", "", "",     "command to execute after machine boot" },
 	{ "autoboot_delay",         "0",         1, "0", "0", "0",    "timer delay in sec to trigger command execution on autoboot" },
 	{ "autoboot_script",        "",     4, "", "", "",     "lua script to execute after machine boot" },
 	{ "console",                "0",         0, "", "", "",    "enable emulator LUA console" },
 	{ "plugins",                "1",         0, "", "", "",    "enable LUA plugin support" },
-	{ "plugin",                 "",     4, "", "", "",     "list of plugins to enable" },
+	{ "plugin",                 "data",     4, "", "", "",     "list of plugins to enable" },
 	{ "noplugin",               "",     4, "", "", "",     "list of plugins to disable" },
-	{ "language",               "English",   4, "", "", "",     "display language" },
 	{ "http",                   "0",         0, "", "", "",    "HTTP server enable" },
 	{ "http_port",              "8080",      1, "0", "0", "0",    "HTTP server port" },
 	{ "http_root",              "web",       4, "", "", "",     "HTTP server document root" },
@@ -172,7 +173,7 @@ const INIOPTS optentries[] =
 	{ "bench",                  "0",              1, "0", "0", "0",   "benchmark for the given number of emulated seconds; implies -video none -sound none -nothrottle" },
 	{ "video",                  "auto",   4, "", "", "",    "video output method: " },
 	{ "numscreens",             "1",              1, "0", "0", "0",   "number of screens to create; usually, you want just one" },
-	{ "window",                 "0",              0, "", "", "",   "enable window mode; otherwise, full screen mode is assumed" },
+	{ "window",                 "1",              0, "", "", "",   "enable window mode; otherwise, full screen mode is assumed" },
 	{ "maximize",               "1",              0, "", "", "",   "default to maximized windows; otherwise, windows will be minimized" },
 	{ "waitvsync",              "0",              0, "", "", "",   "enable waiting for the start of VBLANK before flipping screens; reduces tearing effects" },
 	{ "syncrefresh",            "0",              0, "", "", "",   "enable using the start of VBLANK for throttling instead of the game time" },
@@ -198,7 +199,7 @@ const INIOPTS optentries[] =
 	{ "resolution3",            "auto",   4, "", "", "",    "preferred resolution of the fourth screen; format is <width>x<height>[@<refreshrate>] or 'auto'" },
 	{ "view3",                  "auto",   4, "", "", "",    "preferred view for the fourth screen" },
 	{ "switchres",              "0",              0, "", "", "",   "enable resolution switching" },
-	{ "filter",                 "1",              0, "", "", "",   "enable bilinear filtering on screen output" },
+	{ "filter",                 "0",              0, "", "", "",   "enable bilinear filtering on screen output" },
 	{ "prescale",               "1",              1, "0", "0", "0",   "scale screen rendering by this amount in software" },
 	{ "gl_forcepow2texture",    "0",              0, "", "", "",   "force power of two textures  (default no)" },
 	{ "gl_notexturerect",       "0",              0, "", "", "",   "don't use OpenGL GL_ARB_texture_rectangle (default on)" },
@@ -328,14 +329,14 @@ class winui_ini_options
 	std::map<string, string> map_ini;
 	std::map<string, string> map_merge;
 	std::map<string, string> map_done;
-	const char *m_filename;
 	string t_inipath; // temporary
 	string m_inipath; // used for file saving
 	string m_gamename;
 	int m_gamenum;
 	OPTIONS_TYPE m_opttype;
+	string m_emuname;
 
-	void trim_spaces_and_quotes(std::string &data)
+	void trim_spaces_and_quotes(string &data)
 	{
 		// trim any whitespace
 		strtrimspace(data);
@@ -417,18 +418,25 @@ class winui_ini_options
 
 	void merge_ini(string filename, bool action)
 	{
+		bool ok = true;
 		string fname = t_inipath + "\\" + filename + ".ini";
 		std::ifstream infile (fname.c_str());
 		if (read_ini (infile, action))
 			if (map_ini.count("readconfig")) // specifically need "readconfig 0" to prevent reading
-				if (map_ini.find("readconfig")->second != "0")
-				{
-					map_ini.insert(map_merge.begin(),map_merge.end());
-					std::swap(map_merge, map_ini);
-					if (map_ini.find("inipath") != map_ini.end())
-						if (map_ini.find("inipath")->second != "")
-							t_inipath = map_ini.find("inipath")->second;
-				}
+				if (map_ini.find("readconfig")->second == "0")
+					ok = false;
+
+		if (ok)
+		{
+			for (auto const &it : map_ini)
+				map_merge[it.first] = it.second;
+					//map_ini.insert(map_merge.begin(),map_merge.end());
+					//std::swap(map_merge, map_ini);
+			if (map_ini.find("inipath") != map_ini.end())
+				if (map_ini.find("inipath")->second != "")
+					t_inipath = map_ini.find("inipath")->second;
+		}
+		map_ini.clear();
 	}
 
 	// get ini settings to the requested game
@@ -440,7 +448,7 @@ class winui_ini_options
 		// only wanted defaults
 		if (action == 2)
 			return;
-		string filename = "mame";
+		string filename = m_emuname;
 		merge_ini(filename, false);
 //		merge_ini(filename, false);
 		// only wanted global settings
@@ -535,8 +543,6 @@ public:
 	{
 		bool file_ok = false;
 
-		map_done = std::move(map_merge);
-
 		// get the diff
 		if (m_opttype == OPTIONS_GAME)
 			read_merged_ini(0);
@@ -549,7 +555,7 @@ public:
 		// save lines that are different between them, also save any extra lines found in map_done, to game.ini
 
 		// initialise with UTF-8 BOM
-		std::string inistring = "\0xef\0xbb\0xbf\n";
+		string inistring = "\xef\xbb\xbf\n";
 		for (auto const &it : map_done)
 		{
 			bool ok = true;
@@ -564,6 +570,7 @@ public:
 			}
 		}
 
+		map_merge.clear();
 		string fname = m_inipath + "\\" + m_gamename + ".ini";
 
 		if (m_opttype == OPTIONS_GLOBAL)
@@ -575,7 +582,7 @@ public:
 		const char* filename = fname.c_str();
 printf("Saving to: %s, file_ok = %d\n", filename,file_ok);
 //		if (file_ok)
-		{
+		{printf("inistring=%s\n",inistring.c_str());
 			std::ofstream outfile (filename, std::ios::out | std::ios::trunc);
 			size_t size = inistring.size();
 			char t1[size+1];
@@ -593,6 +600,9 @@ printf("Saving to: %s, file_ok = %d\n", filename,file_ok);
 	// This sets up everything for if we want to save changes
 	void setgame(int gamenum, OPTIONS_TYPE opttype)
 	{
+		map_done.clear();
+		map_merge.clear();
+		m_emuname = emulator_info::get_configname();
 		m_opttype = opttype;
 		if (opttype == OPTIONS_GAME || opttype == OPTIONS_SOURCE)
 		{
@@ -602,10 +612,9 @@ printf("Saving to: %s, file_ok = %d\n", filename,file_ok);
 		}
 		else
 		{
-			m_gamenum = -1;
 			switch(opttype)
 			{
-				case OPTIONS_GLOBAL:     m_gamename = "mame"; break;
+				case OPTIONS_GLOBAL:     m_gamename = m_emuname; break;
 				case OPTIONS_HORIZONTAL: m_gamename = "horizont"; break;
 				case OPTIONS_VERTICAL:   m_gamename = "vertical"; break;
 				case OPTIONS_RASTER:     m_gamename = "raster"; break;
@@ -618,48 +627,31 @@ printf("Saving to: %s, file_ok = %d\n", filename,file_ok);
 				default: m_gamename = ""; printf("iniopts: We shouldn't be here.\n"); return;
 			}
 			// for these special ones, read default then mame.ini then this one
-			t_inipath = ".";
-			map_merge = map_default;
-			string filename = "mame";
-			merge_ini(filename, false);
-//			merge_ini(filename, false);
+			read_merged_ini(3);
 			if (opttype != OPTIONS_GLOBAL)
-			{
-				filename = m_gamename;
-				merge_ini(filename, false);
-			}
+				merge_ini(m_gamename, false);
 		}
+		map_done = std::move(map_merge);
+		map_merge.clear();
 		m_inipath = t_inipath;
 	}
 
 	// save a setting
 	void setter(string name, string value)
 	{
-		map_merge[name] = value;
+		map_done[name] = value;
 	}
 
 	// read a setting
-	std::string getter(string name)
-	{
-		if (map_merge.count(name))
-			return map_merge.find(name)->second;
+	string getter(string name)
+	{printf("Getting: %s\n",name.c_str());fflush(stdout);
+		if (map_done.count(name)>0)
+			return map_done.find(name)->second;
 		else
 			return "";
 	}
 
-	// cannot be "setter" otherwise most strings use it, causing "1" to be saved.
-	//void bool_setter(const char* name, bool value)
-	//{
-	//	m_list[name] = value ? "1" : "0";
-	//	save_file(m_filename);
-	//}
-
-	void reset_and_save(const char *filename) // not used
-	{
-		map_merge = map_default;
-		//save_file(filename);
-	}
-
+#if 0
 	void setter(const char* name, int value) // not used
 	{
 		map_merge[name] = std::to_string(value);
@@ -675,14 +667,7 @@ printf("Saving to: %s, file_ok = %d\n", filename,file_ok);
 	{
 		return int_value(name) ? 1 : 0;
 	}
-
-	void load_file(const char *filename) // not used
-	{
-		if (!m_filename)
-			m_filename = filename;
-		std::ifstream infile (filename);
-		//create_index(infile);
-	}
+#endif
 };
 
 #endif //  INI_OPTS_H

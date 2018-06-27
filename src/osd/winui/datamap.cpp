@@ -418,7 +418,10 @@ static int control_operation(datamap *map, HWND dialog, windows_options *opts, d
 
 			// if reading, get the option value, solely for the purposes of comparison
 			if ((callback_type == DCT_READ_CONTROL) && option_name)
-				snprintf(option_value, ARRAY_LENGTH(option_value), "%s", opts->value(option_name));
+			{printf("1=%s\n",option_name);fflush(stdout);
+				string t = new_getter(option_name);
+				snprintf(option_value, ARRAY_LENGTH(option_value), "%s", t.c_str()); //opts->value(option_name));
+			}
 
 			if (entry->callbacks[callback_type])
 			{
@@ -435,10 +438,13 @@ static int control_operation(datamap *map, HWND dialog, windows_options *opts, d
 			switch(callback_type)
 			{
 				case DCT_READ_CONTROL:
+				{
 					// For callbacks that returned TRUE, do not broadcast_changes.
-					if (!result) {
+					if (!result && option_name)
+					{printf("2=%s\n",option_name);fflush(stdout);
 						// do a check to see if the control changed
-						result = (option_name) && (strcmp(option_value, opts->value(option_name)) != 0);
+						string t = new_getter(option_name);
+						result = (strcmp(option_value, t.c_str() /*opts->value(option_name)*/) != 0);
 						if (result)
 						{
 							// the value has changed; we may need to broadcast the change
@@ -446,6 +452,7 @@ static int control_operation(datamap *map, HWND dialog, windows_options *opts, d
 						}
 					}
 					break;
+				}
 
 				default:
 					// do nothing
@@ -506,7 +513,8 @@ static void read_control(datamap *map, HWND control, windows_options *opts, data
 		case CT_BUTTON:
 			//assert(entry->type == DM_BOOL);
 			bool_value = Button_GetCheck(control);
-			opts->set_value(option_name, bool_value, OPTION_PRIORITY_CMDLINE);
+			new_setter(option_name, bool_value ? "1" : "0");
+			//opts->set_value(option_name, bool_value, OPTION_PRIORITY_CMDLINE);
 			break;
 
 		case CT_COMBOBOX:
@@ -517,12 +525,14 @@ static void read_control(datamap *map, HWND control, windows_options *opts, data
 				{
 					case DM_INT:
 						int_value = (int) ComboBox_GetItemData(control, selected_index);
-						opts->set_value(option_name, int_value, OPTION_PRIORITY_CMDLINE);
+						new_setter(option_name, std::to_string(int_value));
+						//opts->set_value(option_name, int_value, OPTION_PRIORITY_CMDLINE);
 						break;
 
 					case DM_STRING:
 						string_value = (const char *) ComboBox_GetItemData(control, selected_index);
-						opts->set_value(option_name, string_value ? string_value : "", OPTION_PRIORITY_CMDLINE);
+						new_setter(option_name, string_value ? string_value : "");
+						//opts->set_value(option_name, string_value ? string_value : "", OPTION_PRIORITY_CMDLINE);
 						break;
 
 					default:
@@ -537,18 +547,30 @@ static void read_control(datamap *map, HWND control, windows_options *opts, data
 			switch(entry->type)
 			{
 				case DM_INT:
+				{
 					int_value = (int) float_value;
-					if (int_value != opts->int_value(option_name)) {
-						opts->set_value(option_name, int_value, OPTION_PRIORITY_CMDLINE);
+					string t = new_getter(option_name);
+					if (int_value != stoi(t))
+					//if (int_value != opts->int_value(option_name))
+					{
+						new_setter(option_name, std::to_string(int_value));
+						//opts->set_value(option_name, int_value, OPTION_PRIORITY_CMDLINE);
 					}
 					break;
+				}
 
 				case DM_FLOAT:
+				{
+					string t = new_getter(option_name);
 					// Use tztrim(float_value) or we get trailing zero's that break options_equal().
-					if (float_value != opts->float_value(option_name)) {
-						opts->set_value(option_name, tztrim(float_value), OPTION_PRIORITY_CMDLINE);
+					if (float_value != stof(t))
+					//if (float_value != opts->float_value(option_name))
+					{
+						new_setter(option_name, tztrim(float_value));
+						//opts->set_value(option_name, tztrim(float_value), OPTION_PRIORITY_CMDLINE);
 					}
 					break;
+				}
 
 				default:
 					break;
@@ -591,36 +613,51 @@ static void populate_control(datamap *map, HWND control, windows_options *opts, 
 	switch(get_control_type(control))
 	{
 		case CT_BUTTON:
-			assert(entry->type == DM_BOOL);
-			bool_value = opts->bool_value(option_name);
+		{
+			//assert(entry->type == DM_BOOL);
+			string t = new_getter(option_name);
+			bool_value = (t == "1");
+			//bool_value = opts->bool_value(option_name);
 			Button_SetCheck(control, bool_value);
 			break;
+		}
 
 		case CT_EDIT:
 		case CT_STATIC:
 			switch(entry->type)
 			{
 				case DM_STRING:
-					string_value = opts->value(option_name);
+				{
+					string t = new_getter(option_name);
+					string_value = t.c_str();  //opts->value(option_name);
 					break;
+				}
 
 				case DM_INT:
-					int_value = opts->int_value(option_name);
-					if (entry->int_format != NULL)
+				{
+					string t = new_getter(option_name);
+					int_value = stoi(t);
+					//int_value = opts->int_value(option_name);
+					if (entry->int_format)
 						snprintf(buffer, ARRAY_LENGTH(buffer), entry->int_format, int_value);
 					else
 						snprintf(buffer, ARRAY_LENGTH(buffer), "%d", int_value);
 					string_value = buffer;
 					break;
+				}
 
 				case DM_FLOAT:
-					float_value = opts->float_value(option_name);
-					if (entry->float_format != NULL)
+				{
+					string t = new_getter(option_name);
+					float_value = stof(t);
+					//float_value = opts->float_value(option_name);
+					if (entry->float_format)
 						snprintf(buffer, ARRAY_LENGTH(buffer), entry->float_format, float_value);
 					else
 						snprintf(buffer, ARRAY_LENGTH(buffer), "%f", float_value);
 					string_value = buffer;
 					break;
+				}
 
 				default:
 					string_value = "";
@@ -636,7 +673,10 @@ static void populate_control(datamap *map, HWND control, windows_options *opts, 
 			switch(entry->type)
 			{
 				case DM_INT:
-					int_value = opts->int_value(option_name);
+				{
+					string t = new_getter(option_name);
+					int_value = stoi(t);
+					//int_value = opts->int_value(option_name);
 					for (i = 0; i < ComboBox_GetCount(control); i++)
 					{
 						if (int_value == (int) ComboBox_GetItemData(control, i))
@@ -646,9 +686,12 @@ static void populate_control(datamap *map, HWND control, windows_options *opts, 
 						}
 					}
 					break;
+				}
 
 				case DM_STRING:
-					string_value = opts->value(option_name);
+				{
+					string t = new_getter(option_name);
+					string_value = t.c_str(); //opts->value(option_name);
 					for (i = 0; i < ComboBox_GetCount(control); i++)
 					{
 						item_string = (const char *) ComboBox_GetItemData(control, i);
@@ -659,6 +702,7 @@ static void populate_control(datamap *map, HWND control, windows_options *opts, 
 						}
 					}
 					break;
+				}
 
 				default:
 					break;
@@ -708,14 +752,22 @@ static void populate_control(datamap *map, HWND control, windows_options *opts, 
 			switch(entry->type)
 			{
 				case DM_INT:
-					int_value = opts->int_value(option_name);
+				{
+					string t = new_getter(option_name);
+					int_value = stoi(t);
+					//int_value = opts->int_value(option_name);
 					trackbar_pos = trackbar_position_from_value(entry, int_value);
 					break;
+				}
 
 				case DM_FLOAT:
-					float_value = opts->float_value(option_name);
+				{
+					string t = new_getter(option_name);
+					float_value = stof(t);
+					//float_value = opts->float_value(option_name);
 					trackbar_pos = trackbar_position_from_value(entry, float_value);
 					break;
+				}
 
 				default:
 					trackbar_pos = 0;

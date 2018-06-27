@@ -796,21 +796,6 @@ void SetManualsDir(const char *path)
 }
 
 // ***************************************************************** MAME.INI settings **************************************************************************
-const string GetLanguageUI(void)
-{
-	return global.value(OPTION_LANGUAGE);
-}
-
-bool GetEnablePlugins(void)
-{
-	return global.bool_value(OPTION_PLUGINS);
-}
-
-const string GetPlugins(void)
-{
-	return global.value(OPTION_PLUGIN);
-}
-
 const string GetRomDirs(void)
 {
 	const char* t = global.value(OPTION_MEDIAPATH);
@@ -1081,16 +1066,6 @@ const string GetHLSLDir(void)
 void SetHLSLDir(const char* path)
 {
 	global.set_value(WINOPTION_HLSLPATH, path, OPTION_PRIORITY_CMDLINE);
-}
-
-const char* GetSnapName(void)
-{
-	return global.value(OPTION_SNAPNAME);
-}
-
-void SetSnapName(const char* pattern)
-{
-	global.set_value(OPTION_SNAPNAME, pattern, OPTION_PRIORITY_CMDLINE);
 }
 
 // ***************************************************************** UI.INI settings **************************************************************************
@@ -2098,21 +2073,21 @@ void ResetAllGameOptions(void)
 
 void SetDirectories(windows_options &opts)
 {
-	opts.set_value(OPTION_MEDIAPATH, GetRomDirs(), OPTION_PRIORITY_CMDLINE);
-	opts.set_value(OPTION_SAMPLEPATH, GetSampleDirs(), OPTION_PRIORITY_CMDLINE);
-	opts.set_value(OPTION_INIPATH, GetIniDir(), OPTION_PRIORITY_CMDLINE);
-	opts.set_value(OPTION_CFG_DIRECTORY, GetCfgDir(), OPTION_PRIORITY_CMDLINE);
-	opts.set_value(OPTION_SNAPSHOT_DIRECTORY, GetImgDir(), OPTION_PRIORITY_CMDLINE);
-	opts.set_value(OPTION_INPUT_DIRECTORY, GetInpDir(), OPTION_PRIORITY_CMDLINE);
-	opts.set_value(OPTION_STATE_DIRECTORY, GetStateDir(), OPTION_PRIORITY_CMDLINE);
-	opts.set_value(OPTION_ARTPATH, GetArtDir(), OPTION_PRIORITY_CMDLINE);
-	opts.set_value(OPTION_NVRAM_DIRECTORY, GetNvramDir(), OPTION_PRIORITY_CMDLINE);
-	opts.set_value(OPTION_CTRLRPATH, GetCtrlrDir(), OPTION_PRIORITY_CMDLINE);
-	opts.set_value(OPTION_CHEATPATH, GetCheatDir(), OPTION_PRIORITY_CMDLINE);
-	opts.set_value(OPTION_CROSSHAIRPATH, GetCrosshairDir(), OPTION_PRIORITY_CMDLINE);
-	opts.set_value(OPTION_FONTPATH, GetFontDir(), OPTION_PRIORITY_CMDLINE);
-	opts.set_value(OPTION_DIFF_DIRECTORY, GetDiffDir(), OPTION_PRIORITY_CMDLINE);
-	opts.set_value(OPTION_SNAPNAME, GetSnapName(), OPTION_PRIORITY_CMDLINE);
+	//opts.set_value(OPTION_MEDIAPATH, GetRomDirs(), OPTION_PRIORITY_CMDLINE);
+	//opts.set_value(OPTION_SAMPLEPATH, GetSampleDirs(), OPTION_PRIORITY_CMDLINE);
+	//opts.set_value(OPTION_INIPATH, GetIniDir(), OPTION_PRIORITY_CMDLINE);
+	//opts.set_value(OPTION_CFG_DIRECTORY, GetCfgDir(), OPTION_PRIORITY_CMDLINE);
+	//opts.set_value(OPTION_SNAPSHOT_DIRECTORY, GetImgDir(), OPTION_PRIORITY_CMDLINE);
+	//opts.set_value(OPTION_INPUT_DIRECTORY, GetInpDir(), OPTION_PRIORITY_CMDLINE);
+	//opts.set_value(OPTION_STATE_DIRECTORY, GetStateDir(), OPTION_PRIORITY_CMDLINE);
+	//opts.set_value(OPTION_ARTPATH, GetArtDir(), OPTION_PRIORITY_CMDLINE);
+	//opts.set_value(OPTION_NVRAM_DIRECTORY, GetNvramDir(), OPTION_PRIORITY_CMDLINE);
+	//opts.set_value(OPTION_CTRLRPATH, GetCtrlrDir(), OPTION_PRIORITY_CMDLINE);
+	//opts.set_value(OPTION_CHEATPATH, GetCheatDir(), OPTION_PRIORITY_CMDLINE);
+	//opts.set_value(OPTION_CROSSHAIRPATH, GetCrosshairDir(), OPTION_PRIORITY_CMDLINE);
+	//opts.set_value(OPTION_FONTPATH, GetFontDir(), OPTION_PRIORITY_CMDLINE);
+	//opts.set_value(OPTION_DIFF_DIRECTORY, GetDiffDir(), OPTION_PRIORITY_CMDLINE);
+	//opts.set_value(OPTION_SNAPNAME, GetSnapName(), OPTION_PRIORITY_CMDLINE);
 }
 
 // not used
@@ -2321,7 +2296,7 @@ void save_options(windows_options &opts, OPTIONS_TYPE opt_type, int game_num)
 	const game_driver *driver = NULL;
 	string filename, filepath;
 
-	if (game_num >= 0)
+	if (opt_type == OPTIONS_GAME || opt_type == OPTIONS_SOURCE)
 	{
 		driver = &driver_list::driver(game_num);
 		if (driver)
@@ -2332,7 +2307,7 @@ void save_options(windows_options &opts, OPTIONS_TYPE opt_type, int game_num)
 		}
 	}
 	else
-	if (game_num == -1)
+	if (opt_type == OPTIONS_GLOBAL)
 		filename = string(emulator_info::get_configname());
 
 	if (!filename.empty() && filepath.empty())

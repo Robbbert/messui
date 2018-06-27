@@ -243,20 +243,20 @@ INT_PTR CALLBACK InterfaceDialogProc(HWND hDlg, UINT Msg, WPARAM wParam, LPARAM 
 		(void)ComboBox_SetCurSel(GetDlgItem(hDlg, IDC_SNAPNAME), nPatternCount++);
 
 		{
-			const char* snapname = GetSnapName();
-			if (core_stricmp(snapname,"%g" )==0)
+			string snapname = new_getter("snapname"); //GetSnapName();
+			if (snapname == "%g" )
 				(void)ComboBox_SetCurSel(GetDlgItem(hDlg, IDC_SNAPNAME), 0);
 			else
-			if (core_stricmp(snapname,"%g%i" )==0)
+			if (snapname == "%g%i" )
 				(void)ComboBox_SetCurSel(GetDlgItem(hDlg, IDC_SNAPNAME), 1);
 			else
-			if (core_stricmp(snapname,"%g/%g" )==0)
+			if (snapname == "%g/%g" )
 				(void)ComboBox_SetCurSel(GetDlgItem(hDlg, IDC_SNAPNAME), 2);
 			else
-			if (core_stricmp(snapname,"%g/%g%i" )==0)
+			if (snapname == "%g/%g%i" )
 				(void)ComboBox_SetCurSel(GetDlgItem(hDlg, IDC_SNAPNAME), 3);
 			else
-			if (core_stricmp(snapname,"%g/%i" )==0)
+			if (snapname == "%g/%i" )
 				(void)ComboBox_SetCurSel(GetDlgItem(hDlg, IDC_SNAPNAME), 4);
 		}
 
@@ -352,8 +352,10 @@ INT_PTR CALLBACK InterfaceDialogProc(HWND hDlg, UINT Msg, WPARAM wParam, LPARAM 
 			nCurSelection = ComboBox_GetCurSel(GetDlgItem(hDlg,IDC_SNAPNAME));
 			if (nCurSelection != CB_ERR) {
 				const char* snapname_selection = (const char*)ComboBox_GetItemData(GetDlgItem(hDlg,IDC_SNAPNAME), nCurSelection);
-				if (snapname_selection) {
-					SetSnapName(snapname_selection);
+				if (snapname_selection)
+				{
+					//SetSnapName(snapname_selection);
+					new_setter("snapname", snapname_selection);
 				}
 			}
 			EndDialog(hDlg, 0);
