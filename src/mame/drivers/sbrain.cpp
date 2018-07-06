@@ -73,9 +73,14 @@ public:
 		, m_bankw0(*this, "bankw0")
 		, m_bank2(*this, "bank2")
 		, m_keyboard(*this, "X%u", 0)
-		{}
+	{
+	}
+
+	void sbrain(machine_config &config);
 
 	void init_sbrain();
+
+private:
 	DECLARE_MACHINE_RESET(sbrain);
 	DECLARE_READ8_MEMBER(ppi_pa_r);
 	DECLARE_WRITE8_MEMBER(ppi_pa_w);
@@ -90,12 +95,11 @@ public:
 	u32 screen_update(screen_device &screen, bitmap_ind16 &bitmap, const rectangle &cliprect);
 	TIMER_DEVICE_CALLBACK_MEMBER(kbd_scan);
 
-	void sbrain(machine_config &config);
 	void sbrain_io(address_map &map);
 	void sbrain_mem(address_map &map);
 	void sbrain_subio(address_map &map);
 	void sbrain_submem(address_map &map);
-private:
+
 	bool m_busak;
 	u8 m_keydown;
 	u8 m_porta;

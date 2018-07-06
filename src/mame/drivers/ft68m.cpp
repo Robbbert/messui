@@ -22,18 +22,20 @@ Interrupts: INT6 is output of Timer 2, INT7 is output of Timer 3 (refresh),
 class ft68m_state : public driver_device
 {
 public:
-	ft68m_state(const machine_config &mconfig, device_type type, const char *tag)
-		: driver_device(mconfig, type, tag),
+	ft68m_state(const machine_config &mconfig, device_type type, const char *tag) :
+		driver_device(mconfig, type, tag),
 		m_p_base(*this, "rambase"),
 		m_maincpu(*this, "maincpu")
 	{
 	}
 
+	void ft68m(machine_config &config);
+
+private:
 	DECLARE_READ16_MEMBER(switches_r);
 
-	void ft68m(machine_config &config);
 	void mem_map(address_map &map);
-private:
+
 	virtual void machine_start() override;
 	virtual void machine_reset() override;
 

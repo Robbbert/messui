@@ -40,8 +40,8 @@ Wicat - various systems.
 class wicat_state : public driver_device
 {
 public:
-	wicat_state(const machine_config &mconfig, device_type type, const char *tag)
-		: driver_device(mconfig, type, tag),
+	wicat_state(const machine_config &mconfig, device_type type, const char *tag) :
+		driver_device(mconfig, type, tag),
 		m_vram(*this, "vram"),
 		m_maincpu(*this, "maincpu"),
 		m_rtc(*this, "rtc"),
@@ -68,6 +68,9 @@ public:
 	{
 	}
 
+	void wicat(machine_config &config);
+
+private:
 	DECLARE_READ16_MEMBER(invalid_r);
 	DECLARE_WRITE16_MEMBER(invalid_w);
 	DECLARE_READ16_MEMBER(memmap_r);
@@ -131,14 +134,12 @@ public:
 	uint32_t screen_update(screen_device &screen, bitmap_rgb32 &bitmap, const rectangle &cliprect) { return 0; }
 	virtual void device_timer(emu_timer &timer, device_timer_id id, int param, void *ptr) override;
 
-
-	void wicat(machine_config &config);
 	void wicat_mem(address_map &map);
 	void wicat_video_io(address_map &map);
 	void wicat_video_mem(address_map &map);
 	void wicat_wd1000_io(address_map &map);
 	void wicat_wd1000_mem(address_map &map);
-private:
+
 	virtual void machine_start() override;
 	virtual void machine_reset() override;
 	virtual void driver_start() override;

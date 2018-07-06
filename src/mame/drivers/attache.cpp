@@ -92,39 +92,59 @@ class attache_state : public driver_device
 {
 public:
 	attache_state(const machine_config &mconfig, device_type type, const char *tag)
-		: driver_device(mconfig, type, tag),
-			m_maincpu(*this,"maincpu"),
-			m_rom(*this,"boot"),
-			m_ram(*this,RAM_TAG),
-			m_char_rom(*this,"video"),
-			m_rtc(*this,"rtc"),
-			m_psg(*this,"psg"),
-			m_fdc(*this,"fdc"),
-			m_sio(*this,"sio"),
-			m_pio(*this,"pio"),
-			m_ctc(*this,"ctc"),
-			m_crtc(*this,"crtc"),
-			m_dma(*this, "dma"),
-			m_palette(*this, "palette"),
-			m_floppy0(*this, "fdc:0:525dd"),
-			m_floppy1(*this, "fdc:1:525dd"),
-			m_kb_rows(*this, {"row0", "row1", "row2", "row3", "row4", "row5", "row6", "row7"}),
-			m_kb_mod(*this, "modifiers"),
-			m_membank1(*this, "bank1"),
-			m_membank2(*this, "bank2"),
-			m_membank3(*this, "bank3"),
-			m_membank4(*this, "bank4"),
-			m_membank5(*this, "bank5"),
-			m_membank6(*this, "bank6"),
-			m_membank7(*this, "bank7"),
-			m_membank8(*this, "bank8"),
-			m_nvram(*this, "nvram"),
-			m_rom_active(true),
-			m_gfx_enabled(false),
-			m_kb_clock(true),
-			m_kb_empty(true)
+		: driver_device(mconfig, type, tag)
+		, m_maincpu(*this, "maincpu")
+		, m_rom(*this, "boot")
+		, m_ram(*this, RAM_TAG)
+		, m_char_rom(*this, "video")
+		, m_rtc(*this, "rtc")
+		, m_psg(*this, "psg")
+		, m_fdc(*this, "fdc")
+		, m_sio(*this, "sio")
+		, m_pio(*this, "pio")
+		, m_ctc(*this, "ctc")
+		, m_crtc(*this, "crtc")
+		, m_dma(*this, "dma")
+		, m_palette(*this, "palette")
+		, m_floppy0(*this, "fdc:0:525dd")
+		, m_floppy1(*this, "fdc:1:525dd")
+		, m_kb_rows(*this, "row%u", 0U)
+		, m_kb_mod(*this, "modifiers")
+		, m_membank1(*this, "bank1")
+		, m_membank2(*this, "bank2")
+		, m_membank3(*this, "bank3")
+		, m_membank4(*this, "bank4")
+		, m_membank5(*this, "bank5")
+		, m_membank6(*this, "bank6")
+		, m_membank7(*this, "bank7")
+		, m_membank8(*this, "bank8")
+		, m_nvram(*this, "nvram")
+		, m_rom_active(true)
+		, m_gfx_enabled(false)
+		, m_kb_clock(true)
+		, m_kb_empty(true)
 	{ }
 
+	void attache(machine_config &config);
+
+	uint32_t screen_update(screen_device &screen, bitmap_rgb32 &bitmap, const rectangle &cliprect);
+
+	DECLARE_READ8_MEMBER(pio_portA_r);
+	DECLARE_READ8_MEMBER(pio_portB_r);
+	DECLARE_WRITE8_MEMBER(pio_portA_w);
+	DECLARE_WRITE8_MEMBER(pio_portB_w);
+
+	DECLARE_READ8_MEMBER(dma_mem_r);
+	DECLARE_WRITE8_MEMBER(dma_mem_w);
+
+	DECLARE_READ8_MEMBER(fdc_dma_r);
+	DECLARE_WRITE8_MEMBER(fdc_dma_w);
+
+	DECLARE_WRITE_LINE_MEMBER(hreq_w);
+	DECLARE_WRITE_LINE_MEMBER(eop_w);
+	DECLARE_WRITE_LINE_MEMBER(fdc_dack_w);
+
+protected:
 	// PIO port B operation select
 	enum
 	{
@@ -152,39 +172,30 @@ public:
 	};
 
 	// overrides
-	uint32_t screen_update(screen_device &screen, bitmap_rgb32 &bitmap, const rectangle &cliprect);
 	virtual void driver_start() override;
 	virtual void machine_start() override;
 	virtual void machine_reset() override;
 
 	DECLARE_READ8_MEMBER(rom_r);
 	DECLARE_WRITE8_MEMBER(rom_w);
-	DECLARE_READ8_MEMBER(pio_portA_r);
-	DECLARE_READ8_MEMBER(pio_portB_r);
-	DECLARE_WRITE8_MEMBER(pio_portA_w);
-	DECLARE_WRITE8_MEMBER(pio_portB_w);
+
 	DECLARE_WRITE8_MEMBER(display_command_w);
 	DECLARE_READ8_MEMBER(display_data_r);
 	DECLARE_WRITE8_MEMBER(display_data_w);
 	DECLARE_READ8_MEMBER(dma_mask_r);
 	DECLARE_WRITE8_MEMBER(dma_mask_w);
-	DECLARE_READ8_MEMBER(fdc_dma_r);
-	DECLARE_WRITE8_MEMBER(fdc_dma_w);
+
 	DECLARE_READ8_MEMBER(memmap_r);
 	DECLARE_WRITE8_MEMBER(memmap_w);
-	DECLARE_READ8_MEMBER(dma_mem_r);
-	DECLARE_WRITE8_MEMBER(dma_mem_w);
-	DECLARE_WRITE_LINE_MEMBER(hreq_w);
-	DECLARE_WRITE_LINE_MEMBER(eop_w);
-	DECLARE_WRITE_LINE_MEMBER(fdc_dack_w);
+
 	void operation_strobe(address_space& space,uint8_t data);
 	void keyboard_clock_w(bool state);
 	uint8_t keyboard_data_r();
 	uint16_t get_key();
-	void attache(machine_config &config);
+
 	void attache_io(address_map &map);
 	void attache_map(address_map &map);
-protected:
+
 	required_device<cpu_device> m_maincpu;
 	required_memory_region m_rom;
 	required_device<ram_device> m_ram;
@@ -239,15 +250,18 @@ class attache816_state : public attache_state
 {
 public:
 	attache816_state(const machine_config &mconfig, device_type type, const char *tag)
-		: attache_state(mconfig, type, tag),
-		  m_extcpu(*this,"extcpu"),
-		  m_ppi(*this,"ppi"),
-		  m_comms_val(0),
-		  m_x86_irq_enable(0),
-		  m_z80_rx_ready(false),
-		  m_z80_tx_ready(false)
+		: attache_state(mconfig, type, tag)
+		, m_extcpu(*this,"extcpu")
+		, m_ppi(*this,"ppi")
+		, m_comms_val(0)
+		, m_x86_irq_enable(0)
+		, m_z80_rx_ready(false)
+		, m_z80_tx_ready(false)
 	{ }
 
+	void attache816(machine_config &config);
+
+private:
 	DECLARE_WRITE8_MEMBER(x86_comms_w);
 	DECLARE_READ8_MEMBER(x86_comms_r);
 	DECLARE_WRITE8_MEMBER(x86_irq_enable);
@@ -261,11 +275,10 @@ public:
 
 	virtual void machine_reset() override;
 
-	void attache816(machine_config &config);
 	void attache816_io(address_map &map);
 	void attache_x86_io(address_map &map);
 	void attache_x86_map(address_map &map);
-private:
+
 	required_device<cpu_device> m_extcpu;
 	required_device<i8255_device> m_ppi;
 
