@@ -215,80 +215,6 @@ void trs80_state::lnw80_io(address_map &map)
 	map(0xff, 0xff).rw(FUNC(trs80_state::trs80_ff_r), FUNC(trs80_state::trs80_ff_w));
 }
 
-void trs80_state::model3_map(address_map &map)
-{
-}
-
-void trs80_state::model3_io(address_map &map)
-{
-	map.global_mask(0xff);
-	map.unmap_value_high();
-	map(0xe0, 0xe3).rw(FUNC(trs80_state::trs80m4_e0_r), FUNC(trs80_state::trs80m4_e0_w));
-	map(0xe4, 0xe4).rw(FUNC(trs80_state::trs80m4_e4_r), FUNC(trs80_state::trs80m4_e4_w));
-	map(0xe8, 0xe8).rw(FUNC(trs80_state::trs80m4_e8_r), FUNC(trs80_state::trs80m4_e8_w));
-	map(0xe9, 0xe9).portr("E9").w(FUNC(trs80_state::trs80m4_e9_w));
-	map(0xea, 0xea).rw(FUNC(trs80_state::trs80m4_ea_r), FUNC(trs80_state::trs80m4_ea_w));
-	map(0xeb, 0xeb).rw("uart", FUNC(ay31015_device::receive), FUNC(ay31015_device::transmit));
-	map(0xec, 0xef).rw(FUNC(trs80_state::trs80m4_ec_r), FUNC(trs80_state::trs80m4_ec_w));
-	map(0xf0, 0xf0).r(FUNC(trs80_state::trs80_wd179x_r));
-	map(0xf0, 0xf0).w(m_fdc, FUNC(fd1793_device::cmd_w));
-	map(0xf1, 0xf1).rw(m_fdc, FUNC(fd1793_device::track_r), FUNC(fd1793_device::track_w));
-	map(0xf2, 0xf2).rw(m_fdc, FUNC(fd1793_device::sector_r), FUNC(fd1793_device::sector_w));
-	map(0xf3, 0xf3).rw(m_fdc, FUNC(fd1793_device::data_r), FUNC(fd1793_device::data_w));
-	map(0xf4, 0xf4).w(FUNC(trs80_state::trs80m4_f4_w));
-	map(0xf8, 0xfb).rw(FUNC(trs80_state::trs80_printer_r), FUNC(trs80_state::trs80_printer_w));
-	map(0xfc, 0xff).rw(FUNC(trs80_state::trs80m4_ff_r), FUNC(trs80_state::trs80m4_ff_w));
-}
-
-void trs80_state::model4_io(address_map &map)
-{
-	map.global_mask(0xff);
-	map.unmap_value_high();
-	map(0x84, 0x87).w(FUNC(trs80_state::trs80m4_84_w));
-	map(0x88, 0x89).w(FUNC(trs80_state::trs80m4_88_w));
-	map(0x90, 0x93).w(FUNC(trs80_state::trs80m4_90_w));
-	map(0xe0, 0xe3).rw(FUNC(trs80_state::trs80m4_e0_r), FUNC(trs80_state::trs80m4_e0_w));
-	map(0xe4, 0xe4).rw(FUNC(trs80_state::trs80m4_e4_r), FUNC(trs80_state::trs80m4_e4_w));
-	map(0xe8, 0xe8).rw(FUNC(trs80_state::trs80m4_e8_r), FUNC(trs80_state::trs80m4_e8_w));
-	map(0xe9, 0xe9).portr("E9").w(FUNC(trs80_state::trs80m4_e9_w));
-	map(0xea, 0xea).rw(FUNC(trs80_state::trs80m4_ea_r), FUNC(trs80_state::trs80m4_ea_w));
-	map(0xeb, 0xeb).rw("uart", FUNC(ay31015_device::receive), FUNC(ay31015_device::transmit));
-	map(0xec, 0xef).rw(FUNC(trs80_state::trs80m4_ec_r), FUNC(trs80_state::trs80m4_ec_w));
-	map(0xf0, 0xf0).r(FUNC(trs80_state::trs80_wd179x_r));
-	map(0xf0, 0xf0).w(m_fdc, FUNC(fd1793_device::cmd_w));
-	map(0xf1, 0xf1).rw(m_fdc, FUNC(fd1793_device::track_r), FUNC(fd1793_device::track_w));
-	map(0xf2, 0xf2).rw(m_fdc, FUNC(fd1793_device::sector_r), FUNC(fd1793_device::sector_w));
-	map(0xf3, 0xf3).rw(m_fdc, FUNC(fd1793_device::data_r), FUNC(fd1793_device::data_w));
-	map(0xf4, 0xf4).w(FUNC(trs80_state::trs80m4_f4_w));
-	map(0xf8, 0xfb).rw(FUNC(trs80_state::trs80_printer_r), FUNC(trs80_state::trs80_printer_w));
-	map(0xfc, 0xff).rw(FUNC(trs80_state::trs80m4_ff_r), FUNC(trs80_state::trs80m4_ff_w));
-}
-
-void trs80_state::model4p_io(address_map &map)
-{
-	map.global_mask(0xff);
-	map.unmap_value_high();
-	map(0x84, 0x87).w(FUNC(trs80_state::trs80m4_84_w));
-	map(0x88, 0x89).w(FUNC(trs80_state::trs80m4_88_w));
-	map(0x90, 0x93).w(FUNC(trs80_state::trs80m4_90_w));
-	map(0x9c, 0x9f).w(FUNC(trs80_state::trs80m4p_9c_w));
-	map(0xe0, 0xe3).rw(FUNC(trs80_state::trs80m4_e0_r), FUNC(trs80_state::trs80m4_e0_w));
-	map(0xe4, 0xe4).rw(FUNC(trs80_state::trs80m4_e4_r), FUNC(trs80_state::trs80m4_e4_w));
-	map(0xe8, 0xe8).rw(FUNC(trs80_state::trs80m4_e8_r), FUNC(trs80_state::trs80m4_e8_w));
-	map(0xe9, 0xe9).portr("E9").w(FUNC(trs80_state::trs80m4_e9_w));
-	map(0xea, 0xea).rw(FUNC(trs80_state::trs80m4_ea_r), FUNC(trs80_state::trs80m4_ea_w));
-	map(0xeb, 0xeb).rw("uart", FUNC(ay31015_device::receive), FUNC(ay31015_device::transmit));
-	map(0xec, 0xef).rw(FUNC(trs80_state::trs80m4_ec_r), FUNC(trs80_state::trs80m4_ec_w));
-	map(0xf0, 0xf0).r(FUNC(trs80_state::trs80_wd179x_r));
-	map(0xf0, 0xf0).w(m_fdc, FUNC(fd1793_device::cmd_w));
-	map(0xf1, 0xf1).rw(m_fdc, FUNC(fd1793_device::track_r), FUNC(fd1793_device::track_w));
-	map(0xf2, 0xf2).rw(m_fdc, FUNC(fd1793_device::sector_r), FUNC(fd1793_device::sector_w));
-	map(0xf3, 0xf3).rw(m_fdc, FUNC(fd1793_device::data_r), FUNC(fd1793_device::data_w));
-	map(0xf4, 0xf4).w(FUNC(trs80_state::trs80m4_f4_w));
-	map(0xf8, 0xfb).rw(FUNC(trs80_state::trs80_printer_r), FUNC(trs80_state::trs80_printer_w));
-	map(0xfc, 0xff).rw(FUNC(trs80_state::trs80m4_ff_r), FUNC(trs80_state::trs80m4_ff_w));
-}
-
 void trs80_state::meritum_map(address_map &map)
 {
 	map(0x0000, 0x37ff).rom();
@@ -315,28 +241,6 @@ void trs80_state::meritum_io(address_map &map)
 	map(0xf8, 0xfb).rw(FUNC(trs80_state::trs80_printer_r), FUNC(trs80_state::trs80_printer_w));
 	//AM_RANGE(0xfc, 0xfd) unknown
 	map(0xff, 0xff).rw(FUNC(trs80_state::trs80_ff_r), FUNC(trs80_state::trs80_ff_w));
-}
-
-void trs80_state::cp500_io(address_map &map)
-{
-	map.global_mask(0xff);
-	map.unmap_value_high();
-	map(0xe0, 0xe3).rw(FUNC(trs80_state::trs80m4_e0_r), FUNC(trs80_state::trs80m4_e0_w));
-	map(0xe4, 0xe4).rw(FUNC(trs80_state::trs80m4_e4_r), FUNC(trs80_state::trs80m4_e4_w));
-	map(0xe8, 0xe8).rw(FUNC(trs80_state::trs80m4_e8_r), FUNC(trs80_state::trs80m4_e8_w));
-	map(0xe9, 0xe9).portr("E9").w(FUNC(trs80_state::trs80m4_e9_w));
-	map(0xea, 0xea).rw(FUNC(trs80_state::trs80m4_ea_r), FUNC(trs80_state::trs80m4_ea_w));
-	map(0xeb, 0xeb).rw("uart", FUNC(ay31015_device::receive), FUNC(ay31015_device::transmit));
-	map(0xec, 0xef).rw(FUNC(trs80_state::trs80m4_ec_r), FUNC(trs80_state::trs80m4_ec_w));
-	map(0xf0, 0xf0).r(FUNC(trs80_state::trs80_wd179x_r));
-	map(0xf0, 0xf0).w(m_fdc, FUNC(fd1793_device::cmd_w));
-	map(0xf1, 0xf1).rw(m_fdc, FUNC(fd1793_device::track_r), FUNC(fd1793_device::track_w));
-	map(0xf2, 0xf2).rw(m_fdc, FUNC(fd1793_device::sector_r), FUNC(fd1793_device::sector_w));
-	map(0xf3, 0xf3).rw(m_fdc, FUNC(fd1793_device::data_r), FUNC(fd1793_device::data_w));
-	map(0xf4, 0xf4).w(FUNC(trs80_state::trs80m4_f4_w));
-	map(0xf4, 0xf7).r(FUNC(trs80_state::cp500_a11_flipflop_toggle));
-	map(0xf8, 0xfb).rw(FUNC(trs80_state::trs80_printer_r), FUNC(trs80_state::trs80_printer_w));
-	map(0xfc, 0xff).rw(FUNC(trs80_state::trs80m4_ff_r), FUNC(trs80_state::trs80m4_ff_w));
 }
 
 /**************************************************************************
@@ -474,7 +378,7 @@ static INPUT_PORTS_START( trs80 )
 	PORT_BIT(0x80, 0x00, IPT_UNUSED)
 INPUT_PORTS_END
 
-static INPUT_PORTS_START( trs80m3 )
+static INPUT_PORTS_START( lnw )
 	PORT_INCLUDE (trs80)
 	PORT_START("E9")    // these are the power-on uart settings
 	PORT_BIT(0x07, IP_ACTIVE_LOW, IPT_UNUSED )
@@ -518,19 +422,6 @@ static const gfx_layout ht1080z_charlayout =
 	/* y offsets */
 	{  0*8, 1*8, 2*8, 3*8, 4*8, 5*8, 6*8, 7*8, 8*8, 9*8, 10*8, 11*8, 12*8, 13*8, 14*8, 15*8 },
 	8*16           /* every char takes 16 bytes */
-};
-
-static const gfx_layout trs80m4_charlayout =
-{
-	8, 8,           /* 8 x 8 characters */
-	256,            /* 256 characters */
-	1,          /* 1 bits per pixel */
-	{ 0 },          /* no bitplanes */
-	/* x offsets */
-	{ 0, 1, 2, 3, 4, 5, 6, 7 },
-	/* y offsets */
-	{  0*8, 1*8, 2*8, 3*8, 4*8, 5*8, 6*8, 7*8 },
-	8*8        /* every char takes 8 bytes */
 };
 
 static const gfx_layout lnw80_charlayout =
@@ -578,10 +469,6 @@ GFXDECODE_END
 
 static GFXDECODE_START(gfx_ht1080z)
 	GFXDECODE_ENTRY( "chargen", 0, ht1080z_charlayout, 0, 1 )
-GFXDECODE_END
-
-static GFXDECODE_START(gfx_trs80m4)
-	GFXDECODE_ENTRY( "chargen", 0, trs80m4_charlayout, 0, 1 )
 GFXDECODE_END
 
 static GFXDECODE_START(gfx_lnw80)
@@ -673,35 +560,6 @@ MACHINE_CONFIG_START(trs80_state::model1)      // model I, level II
 	MCFG_AY31015_AUTO_RDAV(true)
 MACHINE_CONFIG_END
 
-MACHINE_CONFIG_START(trs80_state::model3)
-	model1(config);
-	MCFG_DEVICE_MODIFY("maincpu")
-	MCFG_DEVICE_CLOCK(20.2752_MHz_XTAL / 10)
-	MCFG_DEVICE_PROGRAM_MAP(model3_map)
-	MCFG_DEVICE_IO_MAP(model3_io)
-	MCFG_DEVICE_PERIODIC_INT_DRIVER(trs80_state, trs80_rtc_interrupt, 20.2752_MHz_XTAL / 10 / 67584)
-
-	MCFG_MACHINE_RESET_OVERRIDE(trs80_state, trs80m4)
-
-	MCFG_GFXDECODE_MODIFY("gfxdecode", gfx_trs80m4)
-
-	MCFG_SCREEN_MODIFY("screen")
-	MCFG_SCREEN_UPDATE_DRIVER(trs80_state, screen_update_trs80m4)
-	MCFG_SCREEN_RAW_PARAMS(12.672_MHz_XTAL, 800, 0, 640, 264, 0, 240)
-MACHINE_CONFIG_END
-
-MACHINE_CONFIG_START(trs80_state::model4)
-	model3(config);
-	MCFG_DEVICE_MODIFY("maincpu")
-	MCFG_DEVICE_IO_MAP(model4_io)
-MACHINE_CONFIG_END
-
-MACHINE_CONFIG_START(trs80_state::model4p)
-	model3(config);
-	MCFG_DEVICE_MODIFY("maincpu")
-	MCFG_DEVICE_IO_MAP(model4p_io)
-MACHINE_CONFIG_END
-
 MACHINE_CONFIG_START(trs80_state::sys80)
 	model1(config);
 	MCFG_DEVICE_MODIFY("maincpu")
@@ -757,14 +615,6 @@ MACHINE_CONFIG_START(trs80_state::meritum)
 	MCFG_SCREEN_MODIFY("screen")
 	MCFG_SCREEN_UPDATE_DRIVER(trs80_state, screen_update_meritum)
 	MCFG_GFXDECODE_MODIFY("gfxdecode", gfx_meritum)
-MACHINE_CONFIG_END
-
-MACHINE_CONFIG_START(trs80_state::cp500)
-	model3(config);
-	MCFG_DEVICE_MODIFY("maincpu")
-	MCFG_DEVICE_IO_MAP(cp500_io)
-
-	MCFG_MACHINE_RESET_OVERRIDE(trs80_state, cp500)
 MACHINE_CONFIG_END
 
 /***************************************************************************
@@ -837,64 +687,6 @@ ROM_START(lnw80)
 	ROM_REGION(0x04400, "gfx2", ROMREGION_ERASEFF) /* 0x4000 for trs80_gfxram + 0x400 for videoram */
 ROM_END
 
-ROM_START(trs80m3)
-/* ROMS we have and are missing:
-HAVE    TRS-80 Model III Level 1 ROM (U104)
-MISSING TRS-80 Model III Level 2 (ENGLISH) ROM A (U104) ver. CRC BBC4
-MISSING TRS-80 Model III Level 2 (ENGLISH) ROM A (U104) ver. CRC DA75
-HAVE    TRS-80 Model III Level 2 (ENGLISH) ROM A (U104) ver. CRC 9639
-HAVE    TRS-80 Model III Level 2 (ENGLISH) ROM B (U105) ver. CRC 407C
-MISSING TRS-80 Model III Level 2 (ENGLISH) ROM C (U106) ver. CRC 2B91 - early mfg. #80040316
-MISSING TRS-80 Model III Level 2 (ENGLISH) ROM C (U106) ver. CRC 278A - no production REV A
-HAVE    TRS-80 Model III Level 2 (ENGLISH) ROM C (U106) ver. CRC 2EF8 - Manufacturing #80040316 REV B
-HAVE    TRS-80 Model III Level 2 (ENGLISH) ROM C (U106) ver. CRC 2F84 - Manufacturing #80040316 REV C
-MISSING TRS-80 Model III Level 2 (ENGLISH) ROM C ver. CRC 2764 - Network III v1
-HAVE    TRS-80 Model III Level 2 (ENGLISH) ROM C ver. CRC 276A - Network III v2
-MISSING TRS-80 Model III Level 2 (BELGIUM) CRC ????
-Note: Be careful when dumping rom C: if dumped on the trs-80 m3 with software, bytes 0x7e8 and 0x7e9 (addresses 0x37e8, 0x0x37e9)
-      will read as 0xFF 0xFF; on the original rom, these bytes are 0x00 0x00 (for eproms) or 0xAA 0xAA (for mask roms), those two bytes are used for printer status on the trs-80 and are mapped on top of the rom; This problem should be avoided by pulling the rom chips and dumping them directly.
-*/
-	ROM_REGION(0x20000, "maincpu",0)
-	ROM_SYSTEM_BIOS(0, "trs80m3_revc", "Level 2 bios, RomC Rev C")
-	ROMX_LOAD("8041364.u104", 0x0000, 0x2000, CRC(ec0c6daa) SHA1(257cea6b9b46912d4681251019ec2b84f1b95fc8), ROM_BIOS(0)) // Label: "SCM91248C // Tandy (c) 80 // 8041364 // 8134" (Level 2 bios ROM A '9639')
-	ROMX_LOAD("8040332.u105", 0x2000, 0x1000, CRC(ed4ee921) SHA1(ec0a19d4b72f71e51965de63250009c3c4e4cab3), ROM_BIOS(0)) // Label: "SCM91619P // Tandy (c) 80 // 8040332 // QQ8117", (Level 2 bios ROM B '407c')
-	ROMX_LOAD("8040316c.u106", 0x3000, 0x0800, CRC(c8f79433) SHA1(6f395bba822d39d3cd2b73c8ea25aab4c4c26da7), ROM_BIOS(0)) // Label: "SCM91692P // Tandy (c) 81 // 8040316-C // QQ8220" (Level 2 bios ROM C REV C '2f84')
-	ROM_SYSTEM_BIOS(1, "trs80m3_revb", "Level 2 bios, RomC Rev B")
-	ROMX_LOAD("8041364.u104", 0x0000, 0x2000, CRC(ec0c6daa) SHA1(257cea6b9b46912d4681251019ec2b84f1b95fc8), ROM_BIOS(1)) // Label: "SCM91248C // Tandy (c) 80 // 8041364 // 8134" (Level 2 bios ROM A '9639')
-	ROMX_LOAD("8040332.u105", 0x2000, 0x1000, CRC(ed4ee921) SHA1(ec0a19d4b72f71e51965de63250009c3c4e4cab3), ROM_BIOS(1)) // Label: "SCM91619P // Tandy (c) 80 // 8040332 // QQ8117", (Level 2 bios ROM B '407c')
-	ROMX_LOAD("8040316b.u106", 0x3000, 0x0800, CRC(84a5702d) SHA1(297dca756a9d3c6fd13e0fa6f93d172ff795b520), ROM_BIOS(1)) // Label: "SCM91692P // Tandy (c) 80 // 8040316B // QQ8040" (Level 2 bios ROM C REV B '2ef8')
-	ROM_SYSTEM_BIOS(2, "trs80m3_n3v2", "Level 2 bios, Network III v2 (student)")
-	ROMX_LOAD("8041364.u104", 0x0000, 0x2000, CRC(ec0c6daa) SHA1(257cea6b9b46912d4681251019ec2b84f1b95fc8), ROM_BIOS(2)) // Label: "SCM91248C // Tandy (c) 80 // 8041364 // 8134" (Level 2 bios ROM A '9639')
-	ROMX_LOAD("8040332.u105", 0x2000, 0x1000, CRC(ed4ee921) SHA1(ec0a19d4b72f71e51965de63250009c3c4e4cab3), ROM_BIOS(2)) // Label: "SCM91619P // Tandy (c) 80 // 8040332 // QQ8117" (Level 2 bios ROM B '407c')
-	ROMX_LOAD("276a.u106", 0x3000, 0x0800, CRC(7d38720a) SHA1(bef621e5ae2a8c1f9e7f6325b7841f5ab8ab7e6a), ROM_BIOS(2)) // 2716 EPROM Label: "MOD.III // ROM C // (276A)" (Network III v2 ROM C '276a')
-	ROM_SYSTEM_BIOS(3, "trs80m3_l1", "Level 1 bios")
-	ROMX_LOAD("8040032.u104", 0x0000, 0x1000, CRC(6418d641) SHA1(f823ab6ceb102588d27e5f5c751e31175289291c), ROM_BIOS(3) ) // Label: "8040032 // (M) QQ8028 // SCM91616P"; Silkscreen: "TANDY // (C) '80"; (Level 1 bios)
-
-	ROM_REGION(0x00800, "chargen",0)    /* correct for later systems; the trs80m3_l1 bios uses the non-a version of this rom, dump is pending */
-	ROM_LOAD("8044316.u36", 0x0000, 0x0800, NO_DUMP) // Label: "(M) // SCM91665P // 8044316 // QQ8029" ('no-letter' revision)
-	ROM_LOAD("8044316a.u36", 0x0000, 0x0800, CRC(444c8b60) SHA1(c52ee41439bd5e57c3b113ebfd61c951e2af4446)) // Label: "Tandy (C) 81 // 8044316A // 8206" (rev A)
-ROM_END
-
-// for model 4 and 4p info, see http://vt100.net/mirror/harte/Radio%20Shack/TRS-80%20Model%204_4P%20Soft%20Tech%20Ref.pdf
-ROM_START(trs80m4)
-	ROM_REGION(0x20000, "maincpu",0)
-	ROM_LOAD("trs80m4.rom",  0x0000, 0x3800, BAD_DUMP CRC(1a92d54d) SHA1(752555fdd0ff23abc9f35c6e03d9d9b4c0e9677b)) // should be split into 3 roms, roms A, B, C, exactly like trs80m3; in fact, roms A and B are shared between both systems.
-
-	ROM_REGION(0x00800, "chargen",0)
-	ROM_LOAD("8044316a.u36", 0x0000, 0x0800, CRC(444c8b60) SHA1(c52ee41439bd5e57c3b113ebfd61c951e2af4446)) // according to parts catalog, this is the correct rom for both model 3 and 4
-ROM_END
-
-ROM_START(trs80m4p) // uses a completely different memory map scheme to the others; the trs-80 model 3 roms are loaded from a boot disk, the only rom on the machine is a bootloader; bootloader can be banked out of 0x0000-0x1000 space which is replaced with ram; see the tech ref pdf, pdf page 62
-	ROM_REGION(0x20000, "maincpu",0)
-	ROM_SYSTEM_BIOS(0, "trs80m4p", "Level 2 bios, gate array machine")
-	ROMX_LOAD("8075332.u69", 0x0000, 0x1000, CRC(3a738aa9) SHA1(6393396eaa10a84b9e9f0cf5930aba73defc5c52), ROM_BIOS(0)) // Label: "SCM95060P // 8075332 // TANDY (C) 1983 // 8421" at location U69 (may be located at U70 on some pcb revisions)
-	ROM_SYSTEM_BIOS(1, "trs80m4p_hack", "Disk loader hack")
-	ROMX_LOAD("trs80m4p_loader_hack.rom", 0x0000, 0x01f8, CRC(7ff336f4) SHA1(41184f5240b4b54f3804f5a22b4d78bbba52ed1d), ROM_BIOS(1))
-
-	ROM_REGION(0x00800, "chargen",0)
-	ROM_LOAD("8049007.u103", 0x0000, 0x0800, CRC(1ac44bea) SHA1(c9426ab2b2aa5380dc97a7b9c048ccd1bbde92ca)) // Label: "SCM95987P // 8049007 // TANDY (C) 1983 // 8447" at location U103 (may be located at U43 on some pcb revisions)
-ROM_END
-
 ROM_START(ht1080z)
 	ROM_REGION(0x10000, "maincpu",0)
 	ROM_LOAD("ht1080z.rom",  0x0000, 0x3000, CRC(2bfef8f7) SHA1(7a350925fd05c20a3c95118c1ae56040c621be8f))
@@ -948,17 +740,6 @@ ROM_START( meritum_net )
 	ROM_LOAD( "char.bin", 0x0000, 0x1000, CRC(2c09a5a7) SHA1(146891b3ddfc2de95e6a5371536394a657880054))
 ROM_END
 
-ROM_START( cp500 )
-	ROM_REGION(0x20000, "maincpu", 0)
-	ROM_LOAD("s_8407_cn62516n_cp500a_prologica_83.ci111", 0x0000, 0x4000, CRC(c2fc1b92) SHA1(0eb07baee80f1ee1f28a609eb63a9245dcb68adb))
-
-	ROM_REGION(0x20000, "bootrom", 0)
-	ROM_LOAD("s_8407_cn62516n_cp500a_prologica_83.ci111", 0x0000, 0x4000, CRC(c2fc1b92) SHA1(0eb07baee80f1ee1f28a609eb63a9245dcb68adb))
-
-	ROM_REGION(0x0800, "chargen", 0)
-	ROM_LOAD( "100.105.ci36", 0x0000, 0x800, CRC(1765931e) SHA1(49176ceea6cc003efa04fad2f31829b9432fe10f))
-ROM_END
-
 void trs80_state::init_trs80()
 {
 	m_mode = 0;
@@ -969,20 +750,6 @@ void trs80_state::init_trs80l2()
 {
 	m_mode = 2;
 	m_model4 = 0;
-}
-
-void trs80_state::init_trs80m4()
-{
-	m_mode = 0;
-	m_model4 = 2;
-	m_p_videoram.set_target(memregion("maincpu")->base()+0x4000,m_p_videoram.bytes());
-}
-
-void trs80_state::init_trs80m4p()
-{
-	m_mode = 0;
-	m_model4 = 4;
-	m_p_videoram.set_target(memregion("maincpu")->base()+0x4000,m_p_videoram.bytes());
 }
 
 void trs80_state::init_lnw80()
@@ -998,13 +765,9 @@ COMP( 1977, trs80,       0,      0,      trs80,    trs80,   trs80_state, init_tr
 COMP( 1978, trs80l2,     trs80,  0,      model1,   trs80,   trs80_state, init_trs80l2,  "Tandy Radio Shack",           "TRS-80 Model I (Level II Basic)", 0 )
 COMP( 1983, radionic,    trs80,  0,      radionic, trs80,   trs80_state, init_trs80,    "Komtek",                      "Radionic",                        0 )
 COMP( 1980, sys80,       trs80,  0,      sys80,    trs80,   trs80_state, init_trs80l2,  "EACA Computers Ltd",          "System-80",                       0 )
-COMP( 1981, lnw80,       trs80,  0,      lnw80,    trs80m3, trs80_state, init_lnw80,    "LNW Research",                "LNW-80",                          0 )
-COMP( 1980, trs80m3,     trs80,  0,      model3,   trs80m3, trs80_state, init_trs80m4,  "Tandy Radio Shack",           "TRS-80 Model III",                0 )
-COMP( 1980, trs80m4,     trs80,  0,      model4,   trs80m3, trs80_state, init_trs80m4,  "Tandy Radio Shack",           "TRS-80 Model 4",                  0 )
-COMP( 1983, trs80m4p,    trs80,  0,      model4p,  trs80m3, trs80_state, init_trs80m4p, "Tandy Radio Shack",           "TRS-80 Model 4P",                 0 )
+COMP( 1981, lnw80,       trs80,  0,      lnw80,    lnw,     trs80_state, init_lnw80,    "LNW Research",                "LNW-80",                          0 )
 COMP( 1983, ht1080z,     trs80,  0,      ht1080z,  trs80,   trs80_state, init_trs80l2,  "Hiradastechnika Szovetkezet", "HT-1080Z Series I",               0 )
 COMP( 1984, ht1080z2,    trs80,  0,      ht1080z,  trs80,   trs80_state, init_trs80l2,  "Hiradastechnika Szovetkezet", "HT-1080Z Series II",              0 )
 COMP( 1985, ht108064,    trs80,  0,      ht1080z,  trs80,   trs80_state, init_trs80,    "Hiradastechnika Szovetkezet", "HT-1080Z/64",                     0 )
 COMP( 1985, meritum,     trs80,  0,      meritum,  trs80,   trs80_state, init_trs80l2,  "Mera-Elzab",                  "Meritum I (Model 2)",             0 )
 COMP( 1985, meritum_net, trs80,  0,      meritum,  trs80,   trs80_state, init_trs80l2,  "Mera-Elzab",                  "Meritum I (Model 2) (network)",   0 )
-COMP( 1982, cp500,       trs80,  0,      cp500,    trs80m3, trs80_state, init_trs80m4,  "Prológica",                  "CP-500 (PVIII REV.3)",            0 )
