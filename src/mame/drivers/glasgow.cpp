@@ -655,7 +655,7 @@ MACHINE_CONFIG_START(glasgow_state::glasgow)
 	MCFG_DEVICE_PROGRAM_MAP(glasgow_mem)
 
 	/* video hardware */
-	MCFG_DEFAULT_LAYOUT(layout_glasgow)
+	config.set_default_layout(layout_glasgow);
 
 	SPEAKER(config, "mono").front_center();
 	MCFG_DEVICE_ADD("beeper", BEEP, 44)
