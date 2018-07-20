@@ -3370,6 +3370,7 @@ files {
 	MAME_DIR .. "src/mame/includes/dgnalpha.h",
 	MAME_DIR .. "src/mame/video/gime.cpp",
 	MAME_DIR .. "src/mame/video/gime.h",
+	MAME_DIR .. "src/mame/drivers/meritum.cpp",
 	MAME_DIR .. "src/mame/drivers/trs80.cpp",
 	MAME_DIR .. "src/mame/includes/trs80.h",
 	MAME_DIR .. "src/mame/machine/trs80.cpp",

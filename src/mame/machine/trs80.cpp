@@ -1,17 +1,6 @@
 // license:BSD-3-Clause
 // copyright-holders:Juergen Buchmueller, Robbbert
-/***************************************************************************
-
-  machine.c
-
-  Functions to emulate general aspects of the machine (RAM, ROM, interrupts,
-  I/O ports)
-
-MAX_LUMPS   192     crude storage units - don't know much about it
-MAX_GRANULES    8       lumps consisted of granules.. aha
-MAX_SECTORS     5       and granules of sectors
-
-***************************************************************************/
+//***************************************************************************
 
 #include "emu.h"
 #include "includes/trs80.h"
@@ -19,10 +8,6 @@ MAX_SECTORS     5       and granules of sectors
 
 #define IRQ_M1_RTC      0x80    /* RTC on Model I */
 #define IRQ_M1_FDC      0x40    /* FDC on Model I */
-#define IRQ_M4_RTC      0x04    /* RTC on Model 4 */
-#define CASS_RISE       0x01    /* high speed cass on Model III/4) */
-#define CASS_FALL       0x02    /* high speed cass on Model III/4) */
-#define MODEL4_MASTER_CLOCK 20275200
 
 
 TIMER_CALLBACK_MEMBER(trs80_state::cassette_data_callback)
@@ -34,25 +19,7 @@ TIMER_CALLBACK_MEMBER(trs80_state::cassette_data_callback)
 
 	/* Check for HI-LO transition */
 	if ( m_old_cassette_val > -0.2 && new_val < -0.2 )
-	{
-		m_cassette_data |= 0x80;        /* 500 baud */
-		if (m_mask & CASS_FALL) /* see if 1500 baud */
-		{
-			m_cassette_data = 0;
-			m_irq |= CASS_FALL;
-			m_maincpu->set_input_line(0, HOLD_LINE);
-		}
-	}
-	else
-	if ( m_old_cassette_val < -0.2 && new_val > -0.2 )
-	{
-		if (m_mask & CASS_RISE) /* 1500 baud */
-		{
-			m_cassette_data = 1;
-			m_irq |= CASS_RISE;
-			m_maincpu->set_input_line(0, HOLD_LINE);
-		}
-	}
+		m_cassette_data = true;
 
 	m_old_cassette_val = new_val;
 }
@@ -63,6 +30,86 @@ TIMER_CALLBACK_MEMBER(trs80_state::cassette_data_callback)
  *              Port handlers.
  *
  *************************************/
+
+
+READ8_MEMBER( trs80_state::port_e8_r )
+{
+/* not emulated
+    d7 Clear-to-Send (CTS), Pin 5
+    d6 Data-Set-Ready (DSR), pin 6
+    d5 Carrier Detect (CD), pin 8
+    d4 Ring Indicator (RI), pin 22
+    d3,d2,d0 Not used
+    d1 UART Receiver Input, pin 20 (pin 20 is also DTR) */
+
+	return 0;
+}
+
+READ8_MEMBER( trs80_state::port_ea_r )
+{
+/* UART Status Register
+    d7 Data Received ('1'=condition true)
+    d6 Transmitter Holding Register empty ('1'=condition true)
+    d5 Overrun Error ('1'=condition true)
+    d4 Framing Error ('1'=condition true)
+    d3 Parity Error ('1'=condition true)
+    d2..d0 Not used */
+
+	uint8_t data=7;
+	m_uart->write_swe(0);
+	data |= m_uart->tbmt_r() ? 0x40 : 0;
+	data |= m_uart->dav_r( ) ? 0x80 : 0;
+	data |= m_uart->or_r(  ) ? 0x20 : 0;
+	data |= m_uart->fe_r(  ) ? 0x10 : 0;
+	data |= m_uart->pe_r(  ) ? 0x08 : 0;
+	m_uart->write_swe(1);
+
+	return data;
+}
+
+WRITE8_MEMBER( trs80_state::port_e8_w )
+{
+	m_reg_load = BIT(data, 1);
+}
+
+WRITE8_MEMBER( trs80_state::port_ea_w )
+{
+	if (m_reg_load)
+
+/* d2..d0 not emulated
+    d7 Even Parity Enable ('1'=even, '0'=odd)
+    d6='1',d5='1' for 8 bits
+    d6='0',d5='1' for 7 bits
+    d6='1',d5='0' for 6 bits
+    d6='0',d5='0' for 5 bits
+    d4 Stop Bit Select ('1'=two stop bits, '0'=one stop bit)
+    d3 Parity Inhibit ('1'=disable; No parity, '0'=parity enabled)
+    d2 Break ('0'=disable transmit data; continuous RS232 'SPACE' condition)
+    d1 Request-to-Send (RTS), pin 4
+    d0 Data-Terminal-Ready (DTR), pin 20 */
+
+	{
+		m_uart->write_cs(0);
+		m_uart->write_nb1(BIT(data, 6));
+		m_uart->write_nb2(BIT(data, 5));
+		m_uart->write_tsb(BIT(data, 4));
+		m_uart->write_eps(BIT(data, 7));
+		m_uart->write_np(BIT(data, 3));
+		m_uart->write_cs(1);
+	}
+	else
+	{
+/* not emulated
+    d7,d6 Not used
+    d5 Secondary Unassigned, pin 18
+    d4 Secondary Transmit Data, pin 14
+    d3 Secondary Request-to-Send, pin 19
+    d2 Break ('0'=disable transmit data; continuous RS232 'SPACE' condition)
+    d1 Data-Terminal-Ready (DTR), pin 20
+    d0 Request-to-Send (RTS), pin 4 */
+
+	}
+}
 
 
 READ8_MEMBER( trs80_state::sys80_f9_r )
@@ -77,7 +124,7 @@ READ8_MEMBER( trs80_state::sys80_f9_r )
     d1 Overrun
     d0 Data Available */
 
-	uint8_t data = 70;
+	uint8_t data = 0x70;
 	m_uart->write_swe(0);
 	data |= m_uart->tbmt_r() ? 0 : 0x80;
 	data |= m_uart->dav_r( ) ? 0x01 : 0;
@@ -91,17 +138,16 @@ READ8_MEMBER( trs80_state::sys80_f9_r )
 
 READ8_MEMBER( trs80_state::lnw80_fe_r )
 {
-	return ((m_mode & 0x78) >> 3) | 0xf0;
+	return m_lnw_mode;
 }
 
-READ8_MEMBER( trs80_state::trs80_ff_r )
+READ8_MEMBER( trs80_state::port_ff_r )
 {
 /* ModeSel and cassette data
     d7 cassette data from tape
-    d2 modesel setting */
+    d6 modesel setting */
 
-	uint8_t data = (~m_mode & 1) << 5;
-	return data | m_cassette_data;
+	return (BIT(m_mode, 0) ? 0 : 0x40) | (m_cassette_data ? 0x80 : 0) | 0x3f;
 }
 
 WRITE8_MEMBER( trs80_state::sys80_f8_w )
@@ -117,7 +163,7 @@ WRITE8_MEMBER( trs80_state::sys80_fe_w )
 /* not emulated
     d4 select internal or external cassette player */
 
-	m_tape_unit = (data & 0x10) ? 2 : 1;
+	m_tape_unit = BIT(data, 4) ? 2 : 1;
 }
 
 /* lnw80 can switch out all the devices, roms and video ram to be replaced by graphics ram. */
@@ -126,61 +172,39 @@ WRITE8_MEMBER( trs80_state::lnw80_fe_w )
 /* lnw80 video options
     d3 bankswitch lower 16k between roms and hires ram (1=hires)
     d2 enable colour    \
-    d1 hres         /   these 2 are the bits from the MODE command of LNWBASIC
+    d1 hres             /   these 2 are the bits from the MODE command of LNWBASIC
     d0 inverse video (entire screen) */
 
-	/* get address space instead of io space */
-	address_space &mem = m_maincpu->space(AS_PROGRAM);
+	m_lnw_mode = data;
 
-	m_mode = (m_mode & 0x87) | ((data & 0x0f) << 3);
-
-	if (data & 8)
-	{
-		mem.unmap_readwrite (0x0000, 0x3fff);
-		mem.install_readwrite_handler (0x0000, 0x3fff, read8_delegate(FUNC(trs80_state::trs80_gfxram_r), this), write8_delegate(FUNC(trs80_state::trs80_gfxram_w), this));
-	}
-	else
-	{
-		mem.unmap_readwrite (0x0000, 0x3fff);
-		mem.install_read_bank (0x0000, 0x2fff, "bank1");
-		membank("bank1")->set_base(m_region_maincpu->base());
-		mem.install_readwrite_handler (0x37e0, 0x37e3, read8_delegate(FUNC(trs80_state::trs80_irq_status_r), this), write8_delegate(FUNC(trs80_state::trs80_motor_w), this));
-		mem.install_readwrite_handler (0x37e8, 0x37eb, read8_delegate(FUNC(trs80_state::trs80_printer_r), this), write8_delegate(FUNC(trs80_state::trs80_printer_w), this));
-		mem.install_read_handler (0x37ec, 0x37ec, read8_delegate(FUNC(trs80_state::trs80_wd179x_r), this));
-		mem.install_write_handler (0x37ec, 0x37ec, write8_delegate(FUNC(fd1793_device::cmd_w),(fd1793_device*)m_fdc));
-		mem.install_readwrite_handler (0x37ed, 0x37ed, read8_delegate(FUNC(fd1793_device::track_r),(fd1793_device*)m_fdc), write8_delegate(FUNC(fd1793_device::track_w),(fd1793_device*)m_fdc));
-		mem.install_readwrite_handler (0x37ee, 0x37ee, read8_delegate(FUNC(fd1793_device::sector_r),(fd1793_device*)m_fdc), write8_delegate(FUNC(fd1793_device::sector_w),(fd1793_device*)m_fdc));
-		mem.install_readwrite_handler (0x37ef, 0x37ef, read8_delegate(FUNC(fd1793_device::data_r),(fd1793_device*)m_fdc),write8_delegate( FUNC(fd1793_device::data_w),(fd1793_device*)m_fdc));
-		mem.install_read_handler (0x3800, 0x38ff, 0, 0x0300, 0, read8_delegate(FUNC(trs80_state::trs80_keyboard_r), this));
-		mem.install_readwrite_handler (0x3c00, 0x3fff, read8_delegate(FUNC(trs80_state::trs80_videoram_r), this), write8_delegate(FUNC(trs80_state::trs80_videoram_w), this));
-	}
+	m_lnw_bank->set_bank(BIT(data, 3));
 }
 
-WRITE8_MEMBER( trs80_state::trs80_ff_w )
+WRITE8_MEMBER( trs80_state::port_ff_w )
 {
 /* Standard output port of Model I
     d3 ModeSel bit
     d2 Relay
     d1, d0 Cassette output */
 
-	static const double levels[4] = { 0.0, -1.0, 0.0, 1.0 };
-	static int init = 0;
+	static const double levels[4] = { 0.0, 1.0, -1.0, 0.0 };
+	static bool init = 0;
 
-	m_cassette->change_state(( data & 4 ) ? CASSETTE_MOTOR_ENABLED : CASSETTE_MOTOR_DISABLED,CASSETTE_MASK_MOTOR );
+	m_cassette->change_state(BIT(data, 2) ? CASSETTE_MOTOR_ENABLED : CASSETTE_MOTOR_DISABLED, CASSETTE_MASK_MOTOR );
 	m_cassette->output(levels[data & 3]);
-	m_cassette_data &= ~0x80;
+	m_cassette_data = false;
 
-	m_mode = (m_mode & 0xfe) | ((data & 8) >> 3);
+	m_mode = (m_mode & 0xfe) | BIT(data, 3);
 
 	if (!init)
 	{
 		init = 1;
-		static int16_t speaker_levels[4] = { 0, -32768, 0, 32767 };
+		static int16_t speaker_levels[4] = { 0, -32767, 0, 32767 };
 		m_speaker->set_levels(4, speaker_levels);
 
 	}
 	/* Speaker for System-80 MK II - only sounds if relay is off */
-	if (~data & 4)
+	if (!(BIT(data, 2)))
 		m_speaker->level_w(data & 3);
 }
 
@@ -190,62 +214,35 @@ WRITE8_MEMBER( trs80_state::trs80_ff_w )
  *
  *************************************/
 
-INTERRUPT_GEN_MEMBER(trs80_state::trs80_rtc_interrupt)
+INTERRUPT_GEN_MEMBER(trs80_state::rtc_interrupt)
 {
 /* This enables the processing of interrupts for the clock and the flashing cursor.
-    The OS counts one tick for each interrupt. The Model I has 40 ticks per
-    second, while the Model III/4 has 30. */
+    The OS counts one tick for each interrupt. It is called 40 times per second. */
 
-	if (m_model4)   // Model 4
-	{
-		if (m_mask & IRQ_M4_RTC)
-		{
-			m_irq |= IRQ_M4_RTC;
-			device.execute().set_input_line(0, HOLD_LINE);
-		}
-	}
-	else        // Model 1
-	{
-		m_irq |= IRQ_M1_RTC;
-		device.execute().set_input_line(0, HOLD_LINE);
-	}
+	m_irq |= IRQ_M1_RTC;
+	m_maincpu->set_input_line(0, HOLD_LINE);
+
+	// While we're here, let's countdown the motor timeout too.
+	// Let's not... LDOS often freezes
+//	if (m_timeout)
+//	{
+//		m_timeout--;
+//		if (m_timeout == 0)
+//			if (m_floppy)
+//				m_floppy->mon_w(1);  // motor off
+//	}
 }
 
-void trs80_state::trs80_fdc_interrupt_internal()
+
+WRITE_LINE_MEMBER(trs80_state::intrq_w)
 {
-	if (m_model4)
-	{
-		if (m_nmi_mask & 0x80)   // Model 4 does a NMI
-		{
-			m_nmi_data = 0x80;
-			m_maincpu->pulse_input_line(INPUT_LINE_NMI, attotime::zero);
-		}
-	}
-	else        // Model 1 does a IRQ
+	if (state)
 	{
 		m_irq |= IRQ_M1_FDC;
 		m_maincpu->set_input_line(0, HOLD_LINE);
 	}
-}
-
-INTERRUPT_GEN_MEMBER(trs80_state::trs80_fdc_interrupt)/* not used - should it be? */
-{
-	trs80_fdc_interrupt_internal();
-}
-
-WRITE_LINE_MEMBER(trs80_state::trs80_fdc_intrq_w)
-{
-	if (state)
-	{
-		trs80_fdc_interrupt_internal();
-	}
 	else
-	{
-		if (m_model4)
-			m_nmi_data = 0;
-		else
-			m_irq &= ~IRQ_M1_FDC;
-	}
+		m_irq &= ~IRQ_M1_FDC;
 }
 
 
@@ -255,7 +252,7 @@ WRITE_LINE_MEMBER(trs80_state::trs80_fdc_intrq_w)
  *                                   *
  *************************************/
 
-READ8_MEMBER( trs80_state::trs80_wd179x_r )
+READ8_MEMBER( trs80_state::wd179x_r )
 {
 	uint8_t data = 0xff;
 	if (BIT(m_io_config->read(), 7))
@@ -264,19 +261,19 @@ READ8_MEMBER( trs80_state::trs80_wd179x_r )
 	return data;
 }
 
-READ8_MEMBER( trs80_state::trs80_printer_r )
+READ8_MEMBER( trs80_state::printer_r )
 {
 	return m_cent_status_in->read();
 }
 
-WRITE8_MEMBER( trs80_state::trs80_printer_w )
+WRITE8_MEMBER( trs80_state::printer_w )
 {
 	m_cent_data_out->write(data);
 	m_centronics->write_strobe(0);
 	m_centronics->write_strobe(1);
 }
 
-WRITE8_MEMBER( trs80_state::trs80_cassunit_w )
+WRITE8_MEMBER( trs80_state::cassunit_w )
 {
 /* not emulated
     01 for unit 1 (default)
@@ -285,7 +282,7 @@ WRITE8_MEMBER( trs80_state::trs80_cassunit_w )
 	m_tape_unit = data;
 }
 
-READ8_MEMBER( trs80_state::trs80_irq_status_r )
+READ8_MEMBER( trs80_state::irq_status_r )
 {
 /* (trs80l2) Whenever an interrupt occurs, 37E0 is read to see what devices require service.
     d7 = RTC
@@ -294,28 +291,29 @@ READ8_MEMBER( trs80_state::trs80_irq_status_r )
     All interrupting devices are serviced in a single interrupt. There is a mask byte,
     which is dealt with by the DOS. We take the opportunity to reset the cpu INT line. */
 
-	int result = m_irq;
+	u8 result = m_irq;
 	m_maincpu->set_input_line(0, CLEAR_LINE);
 	m_irq = 0;
 	return result;
 }
 
 
-WRITE8_MEMBER( trs80_state::trs80_motor_w )
+WRITE8_MEMBER( trs80_state::motor_w )
 {
-	floppy_image_device *floppy = nullptr;
+	m_floppy = nullptr;
 
-	if (BIT(data, 0)) floppy = m_floppy0->get_device();
-	if (BIT(data, 1)) floppy = m_floppy1->get_device();
-	if (BIT(data, 2)) floppy = m_floppy2->get_device();
-	if (BIT(data, 3)) floppy = m_floppy3->get_device();
+	if (BIT(data, 0)) m_floppy = m_floppy0->get_device();
+	if (BIT(data, 1)) m_floppy = m_floppy1->get_device();
+	if (BIT(data, 2)) m_floppy = m_floppy2->get_device();
+	if (BIT(data, 3)) m_floppy = m_floppy3->get_device();
 
-	m_fdc->set_floppy(floppy);
+	m_fdc->set_floppy(m_floppy);
 
-	if (floppy)
+	if (m_floppy)
 	{
-		floppy->mon_w(0);
-		floppy->ss_w(BIT(data, 4));
+		m_floppy->mon_w(0);
+		m_floppy->ss_w(BIT(data, 4));
+		m_timeout = 200;
 	}
 
 	// switch to fm
@@ -325,7 +323,7 @@ WRITE8_MEMBER( trs80_state::trs80_motor_w )
 /*************************************
  *      Keyboard         *
  *************************************/
-READ8_MEMBER( trs80_state::trs80_keyboard_r )
+READ8_MEMBER( trs80_state::keyboard_r )
 {
 	u8 i, result = 0;
 
@@ -343,9 +341,9 @@ READ8_MEMBER( trs80_state::trs80_keyboard_r )
 
 void trs80_state::machine_start()
 {
+	m_size_store = 0xff;
 	m_tape_unit=1;
 	m_reg_load=1;
-	m_nmi_data=0xff;
 
 	m_cassette_data_timer = machine().scheduler().timer_alloc(timer_expired_delegate(FUNC(trs80_state::cassette_data_callback),this));
 	m_cassette_data_timer->adjust( attotime::zero, 0, attotime::from_hz(11025) );
@@ -353,14 +351,22 @@ void trs80_state::machine_start()
 
 void trs80_state::machine_reset()
 {
-	m_cassette_data = 0;
+	m_cassette_data = false;
+	if (m_io_baud)
+	{
+		const uint16_t s_bauds[8]={ 110, 300, 600, 1200, 2400, 4800, 9600, 19200 };
+		u16 s_clock = s_bauds[m_io_baud->read()] << 4;
+		m_uart->set_receiver_clock(s_clock);
+		m_uart->set_transmitter_clock(s_clock);
+	}
 }
 
 MACHINE_RESET_MEMBER(trs80_state,lnw80)
 {
-	address_space &space = m_maincpu->space(AS_PROGRAM);
-	m_cassette_data = 0;
+	machine_reset();
+	address_space &space = m_maincpu->space(AS_IO);
 	m_reg_load = 1;
+	m_lnw_mode = 0;
 	lnw80_fe_w(space, 0, 0);
 }
 
