@@ -36,10 +36,15 @@ perhaps III:
 - Add 4-colour mode, 4 shades of grey mode, and 512x192 monochrome.
 
 ****************************************************************************/
+
 #include "emu.h"
 #include "cpu/z80/z80.h"
 #include "imagedev/cassette.h"
 #include "imagedev/snapquik.h"
+#include "bus/rs232/rs232.h"
+#include "machine/i8251.h"
+#include "machine/i8255.h"
+#include "machine/pit8253.h"
 #include "sound/spkrdev.h"
 #include "sound/wave.h"
 #include "screen.h"
@@ -75,8 +80,6 @@ private:
 
 	bool m_mode;
 	bool m_size_store;
-	uint8_t m_irq;
-	uint8_t m_mask;
 	bool m_cassette_data;
 	emu_timer *m_cassette_data_timer;
 	double m_old_cassette_val;
@@ -102,11 +105,12 @@ void meritum_state::io_map(address_map &map)
 {
 	map.global_mask(0xff);
 	map.unmap_value_high();
-	// map(0x00, 0x03).rw 8253-2 (optional audio interface?)
-	// map(0xf0, 0xf3).rw 8255-2 (floppy disk interface)
-	// map(0xf4, 0xf7).rw 8255-1 (parallel interface)
-	// map(0xf8, 0xfb).rw 8253-1 (nmi, int, baud pulse generators)
-	// map(0xfc, 0xfd).rw 8251   (RS-232)
+	map(0x00, 0x03).rw("audiopit", FUNC(pit8253_device::read), FUNC(pit8253_device::write));
+	map(0xf0, 0xf3).rw("flopppi", FUNC(i8255_device::read), FUNC(i8255_device::write));
+	map(0xf4, 0xf7).rw("mainppi", FUNC(i8255_device::read), FUNC(i8255_device::write));
+	map(0xf8, 0xfb).rw("mainpit", FUNC(pit8253_device::read), FUNC(pit8253_device::write));
+	map(0xfc, 0xfc).rw("usart", FUNC(i8251_device::data_r), FUNC(i8251_device::data_w));
+	map(0xfd, 0xfd).rw("usart", FUNC(i8251_device::status_r), FUNC(i8251_device::control_w));
 	// map(0xfe, 0xfe) audio interface
 	map(0xff, 0xff).rw(FUNC(meritum_state::port_ff_r), FUNC(meritum_state::port_ff_w));
 }
@@ -186,7 +190,7 @@ static INPUT_PORTS_START( meritum )
 INPUT_PORTS_END
 
 uint32_t meritum_state::screen_update_meritum(screen_device &screen, bitmap_ind16 &bitmap, const rectangle &cliprect)
-/* lores characters are in the character generator. Each character is 6x11. */
+/* lores characters are in the character generator. Each character is 6x12 (basic characters are 6x7 excluding descenders/ascenders). */
 {
 	uint8_t y,ra,chr,gfx;
 	uint16_t sy=0,ma=0,x;
@@ -196,12 +200,12 @@ uint32_t meritum_state::screen_update_meritum(screen_device &screen, bitmap_ind1
 	if (m_mode != m_size_store)
 	{
 		m_size_store = m_mode;
-		screen.set_visible_area(0, cols*6-1, 0, 16*11-1);
+		screen.set_visible_area(0, cols*6-1, 0, 16*12-1);
 	}
 
 	for (y = 0; y < 16; y++)
 	{
-		for (ra = 0; ra < 11; ra++)
+		for (ra = 0; ra < 12; ra++)
 		{
 			uint16_t *p = &bitmap.pix16(sy++);
 
@@ -369,14 +373,14 @@ QUICKLOAD_LOAD_MEMBER( meritum_state, trs80_cmd )
 /**************************** F4 CHARACTER DISPLAYER ***********************************************************/
 static const gfx_layout meritum_charlayout =
 {
-	6, 11,          /* 8 x 16 characters */
+	6, 12,          /* 6 x 12 characters */
 	256,            /* 256 characters */
 	1,          /* 1 bits per pixel */
 	{ 0 },          /* no bitplanes */
 	/* x offsets */
 	{ 2, 3, 4, 5, 6, 7 },
 	/* y offsets */
-	{  0*8, 1*8, 2*8, 3*8, 4*8, 5*8, 6*8, 7*8, 8*8, 9*8, 10*8 },
+	{  0*8, 1*8, 2*8, 3*8, 4*8, 5*8, 6*8, 7*8, 8*8, 9*8, 10*8, 11*8 },
 	8*16           /* every char takes 16 bytes (unused scanlines are blank) */
 };
 
@@ -388,13 +392,33 @@ GFXDECODE_END
 
 MACHINE_CONFIG_START(meritum_state::meritum)
 	/* basic machine hardware */
-	MCFG_DEVICE_ADD("maincpu", Z80, 10.6445_MHz_XTAL / 6)
+	MCFG_DEVICE_ADD("maincpu", Z80, 10_MHz_XTAL / 4) // U880D @ 2.5 MHz or 1.67 MHz by jumper selection
 	MCFG_DEVICE_PROGRAM_MAP(mem_map)
 	MCFG_DEVICE_IO_MAP(io_map)
 
+	MCFG_DEVICE_ADD("usart", I8251, 10_MHz_XTAL / 4) // same as CPU clock
+	MCFG_I8251_TXD_HANDLER(WRITELINE("rs232", rs232_port_device, write_txd))
+
+	MCFG_DEVICE_ADD("rs232", RS232_PORT, default_rs232_devices, nullptr)
+	MCFG_RS232_RXD_HANDLER(WRITELINE("usart", i8251_device, write_rxd))
+	MCFG_RS232_CTS_HANDLER(WRITELINE("usart", i8251_device, write_cts))
+
+	pit8253_device &pit(PIT8253(config, "mainpit", 0));
+	pit.set_clk<0>(10_MHz_XTAL / 5); // 2 MHz
+	pit.set_clk<1>(10_MHz_XTAL / 10); // 1 MHz
+	pit.set_clk<2>(10_MHz_XTAL / 4); // same as CPU clock
+	pit.out_handler<0>().set("usart", FUNC(i8251_device::write_txc));
+	pit.out_handler<0>().append("usart", FUNC(i8251_device::write_rxc));
+	// Channel 1 generates INT pulse through 123 monostable
+	// Channel 2 (gated) generates NMI
+
+	MCFG_DEVICE_ADD("mainppi", I8255, 0) // parallel interface
+	MCFG_DEVICE_ADD("flopppi", I8255, 0) // floppy disk interface
+	MCFG_DEVICE_ADD("audiopit", PIT8253, 0) // optional audio interface
+
 	/* video hardware */
 	MCFG_SCREEN_ADD("screen", RASTER)
-	MCFG_SCREEN_RAW_PARAMS(10.6445_MHz_XTAL, 672, 0, 384, 264, 0, 192)
+	MCFG_SCREEN_RAW_PARAMS(10_MHz_XTAL, 107 * 6, 0, 64 * 6, 312, 0, 192)
 	MCFG_SCREEN_UPDATE_DRIVER(meritum_state, screen_update_meritum)
 	MCFG_SCREEN_PALETTE("palette")
 
