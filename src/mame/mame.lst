@@ -13054,6 +13054,7 @@ pool10f                         // (c) 1997 C.M.C.
 pool10g                         // (c) 1996 C.M.C.
 pool10h                         // (c) 1996 C.M.C.
 pool10i                         // (c) 1997 C.M.C.
+pool10j                         // (c) 1996 bootleg
 potgame                         // (c) 1996 C.M.C.
 powercrd                        // (c) 1993 Fun World
 rcdino4                         // 1998 unknown
@@ -21590,6 +21591,9 @@ vs2v991                         // 1999.?? Virtual Striker 2 ver.99.1
 
 @source:modellot.cpp
 modellot                        //
+
+@source:modena.cpp
+modena                          // 1992 Mephisto Modena
 
 @source:mogura.cpp
 mogura                          // GX141 (c) 1991
@@ -31886,8 +31890,10 @@ plan80                          //
 bigtown                         //
 chance                          //
 lastlap                         //
+ngtfever                        //
 party                           //
 spcgambl                        //
+thrdwrld                        //
 
 @source:play_2.cpp
 antar                           //
@@ -32186,7 +32192,6 @@ mrisc                           // 1992 Mephisto RISC 1MB
 mrisc2                          // 1994 Mephisto RISC II
 academy                         // 1989 Mephisto Academy
 milano                          // 1991 Mephisto Milano
-modena                          // 1992 Mephisto Modena
 nshort                          // 1993 Mephisto Nigel Short
 
 @source:policetr.cpp
@@ -35157,6 +35162,7 @@ hal21                           // A4031      (c) 1985
 hal21j                          // (c) 1985 (Japan)
 ikari                           // A5004 'IW' (c) 1986
 ikaria                          // A5004 'IW' (c) 1986
+ikaria2                         // A5004 'IW' (c) 1986
 ikarijp                         // A5004 'IW' (c) 1986 (Japan)
 ikarijpb                        // bootleg
 ikarinc                         // A5004 'IW' (c) 1986
@@ -36133,6 +36139,7 @@ flickya                         // (c) 1984 (S1)
 flickyo                         // (c) 1984 (S1)
 flickys1                        // (c) 1984 (S1)
 flickys2                        // (c) 1984 (S1)
+flickyup                        // (c) 1984 (Converted from Up'n Down)
 gardia                          // 834-6119 (S2?)
 gardiab                         // bootleg
 gardiaj                         //
