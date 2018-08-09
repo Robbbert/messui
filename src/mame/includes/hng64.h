@@ -154,24 +154,17 @@ public:
 		m_3d_2(*this, "3d_2"),
 		m_com_ram(*this, "com_ram"),
 		m_gfxdecode(*this, "gfxdecode"),
-		m_buriki_hack(0),
+		m_intest(*this, "IN%u", 0U),
 		m_samsho64_3d_hack(0)
 	{}
 
 	void hng64(machine_config &config);
 
 	void init_hng64_race();
-	void init_fatfurwa();
-	void init_buriki();
 	void init_hng64();
 	void init_hng64_shoot();
 	void init_ss64();
 	void init_hng64_fght();
-
-	DECLARE_CUSTOM_INPUT_MEMBER(left_handle_r);
-	DECLARE_CUSTOM_INPUT_MEMBER(right_handle_r);
-	DECLARE_CUSTOM_INPUT_MEMBER(acc_down_r);
-	DECLARE_CUSTOM_INPUT_MEMBER(brake_down_r);
 
 	uint8_t *m_texturerom;
 	required_device<screen_device> m_screen;
@@ -206,7 +199,8 @@ private:
 
 	required_device<gfxdecode_device> m_gfxdecode;
 
-	int m_buriki_hack;
+	optional_ioport_array<8> m_intest;
+
 	int m_samsho64_3d_hack;
 
 	std::unique_ptr<uint16_t[]> m_soundram;
@@ -221,9 +215,6 @@ private:
 	int32_t m_dma_dst;
 	int32_t m_dma_len;
 
-#if 0
-	uint32_t m_mcu_fake_time;
-#endif
 	uint16_t m_mcu_en;
 
 	uint32_t m_activeDisplayList;

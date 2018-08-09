@@ -21137,6 +21137,9 @@ microtan                        // 1979 Microtan 65
 mt420                           //
 mt5510                          //
 
+@source:microterm_f8.cpp
+act5a                           //
+
 @source:microvsn.cpp
 microvsn                        // Milton Bradley
 
