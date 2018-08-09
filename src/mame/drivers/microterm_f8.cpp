@@ -11,7 +11,9 @@
 #include "cpu/f8/f8.h"
 #include "machine/ay31015.h"
 #include "machine/f3853.h"
+#include "sound/beep.h"
 #include "screen.h"
+#include "speaker.h"
 
 class microterm_f8_state : public driver_device
 {
@@ -22,6 +24,8 @@ public:
 		, m_uart(*this, "uart")
 		, m_io(*this, "io")
 		, m_aux(*this, "aux")
+		, m_screen(*this, "screen")
+		, m_bell(*this, "bell")
 		, m_kbdecode(*this, "kbdecode")
 		, m_chargen(*this, "chargen")
 		, m_keys(*this, "KEY%u", 0U)
@@ -31,9 +35,21 @@ public:
 	void act5a(machine_config &config);
 
 private:
+	virtual void machine_start() override;
+
 	u32 screen_update(screen_device &screen, bitmap_rgb32 &bitmap, const rectangle &cliprect);
 
 	F3853_INTERRUPT_REQ_CB(f3853_interrupt);
+	DECLARE_WRITE_LINE_MEMBER(vblank_w);
+
+	DECLARE_READ8_MEMBER(bell_r);
+	DECLARE_READ8_MEMBER(vram_r);
+	DECLARE_WRITE8_MEMBER(vram_w);
+	bool poll_keyboard();
+	DECLARE_READ8_MEMBER(key_r);
+	DECLARE_READ8_MEMBER(port00_r);
+	DECLARE_WRITE8_MEMBER(port00_w);
+	DECLARE_READ8_MEMBER(port01_r);
 
 	void f8_mem(address_map &map);
 	void f8_io(address_map &map);
@@ -42,14 +58,56 @@ private:
 	required_device<ay51013_device> m_uart;
 	required_device<rs232_port_device> m_io;
 	required_device<rs232_port_device> m_aux;
+	required_device<screen_device> m_screen;
+	required_device<beep_device> m_bell;
 	required_region_ptr<u8> m_kbdecode;
 	required_region_ptr<u8> m_chargen;
 	required_ioport_array<11> m_keys;
 	required_ioport m_modifiers;
+
+	u8 m_port00;
+	u8 m_keylatch;
+	std::unique_ptr<u8[]> m_vram;
 };
+
+void microterm_f8_state::machine_start()
+{
+	m_port00 = 0;
+	m_keylatch = 0;
+	m_vram = make_unique_clear<u8[]>(0xc00); // 6x MM2114 with weird addressing
+
+	save_item(NAME(m_port00));
+	save_item(NAME(m_keylatch));
+	save_pointer(NAME(m_vram), 0xc00);
+}
 
 u32 microterm_f8_state::screen_update(screen_device &screen, bitmap_rgb32 &bitmap, const rectangle &cliprect)
 {
+	unsigned y = cliprect.top();
+	offs_t rowbase = (y / 12) * 0x80;
+	unsigned line = y % 12;
+	if (line >= 6)
+		line += 2;
+
+	while (y <= cliprect.bottom())
+	{
+		for (unsigned x = cliprect.left(); x <= cliprect.right(); x++)
+		{
+			u8 ch = m_vram[rowbase + (x / 9)];
+			u8 dots = m_chargen[(line << 7) | (ch & 0x7f)];
+			bitmap.pix32(y, x) = BIT(dots, 8 - (x % 9)) ? rgb_t::white() : rgb_t::black();
+		}
+
+		y++;
+		line++;
+		if ((line & 7) >= 6)
+		{
+			line = (line + 2) & 15;
+			if (line == 0)
+				rowbase += 0x80;
+		}
+	}
+
 	return 0;
 }
 
@@ -58,14 +116,104 @@ F3853_INTERRUPT_REQ_CB(microterm_f8_state::f3853_interrupt)
 	m_maincpu->set_input_line_and_vector(F8_INPUT_LINE_INT_REQ, level ? ASSERT_LINE : CLEAR_LINE, addr);
 }
 
+WRITE_LINE_MEMBER(microterm_f8_state::vblank_w)
+{
+	if (state)
+		m_bell->set_state(0);
+}
+
+READ8_MEMBER(microterm_f8_state::bell_r)
+{
+	if (!machine().side_effects_disabled())
+		m_bell->set_state(1);
+	return 0;
+}
+
+READ8_MEMBER(microterm_f8_state::vram_r)
+{
+	return m_vram[(offset & 0x1f00) >> 1 | (offset & 0x007f)];
+}
+
+WRITE8_MEMBER(microterm_f8_state::vram_w)
+{
+	m_vram[(offset & 0x1f00) >> 1 | (offset & 0x007f)] = data;
+}
+
+bool microterm_f8_state::poll_keyboard()
+{
+	for (int row = 0; row < 11; row++)
+	{
+		u8 polled = m_keys[row]->read();
+		if (polled == 0xff)
+			continue;
+
+		offs_t keyaddr = (m_modifiers->read() << 7) | (row << 3);
+		while (BIT(polled, 0))
+		{
+			polled >>= 1;
+			keyaddr++;
+		}
+		m_keylatch = m_kbdecode[keyaddr];
+		return true;
+	}
+
+	return false;
+}
+
+READ8_MEMBER(microterm_f8_state::key_r)
+{
+	return m_keylatch;
+}
+
+READ8_MEMBER(microterm_f8_state::port00_r)
+{
+	u8 flags = m_port00;
+
+	// ???
+	if (m_uart->tbmt_r())
+		flags |= 0x02;
+
+	return flags;
+}
+
+WRITE8_MEMBER(microterm_f8_state::port00_w)
+{
+	m_port00 = data;
+}
+
+READ8_MEMBER(microterm_f8_state::port01_r)
+{
+	u8 flags = 0;
+
+	// Some timing flag (not necessarily HBLANK?)
+	if (!m_screen->hblank())
+		flags |= 0x80;
+
+	// Keyboard polling
+	if (poll_keyboard())
+		flags |= 0x40;
+
+	// ???
+	if (!m_screen->vblank())
+		flags |= 0x20;
+
+	return flags;
+}
+
 void microterm_f8_state::f8_mem(address_map &map)
 {
 	map(0x0000, 0x0bff).rom().region("maincpu", 0);
+	map(0x0c00, 0x0c00).r(FUNC(microterm_f8_state::bell_r));
+	map(0x4000, 0x407f).select(0x1f00).rw(FUNC(microterm_f8_state::vram_r), FUNC(microterm_f8_state::vram_w));
+	map(0x8000, 0x8000).rw(m_uart, FUNC(ay51013_device::receive), FUNC(ay51013_device::transmit));
+	map(0xf000, 0xf000).r(FUNC(microterm_f8_state::key_r));
 }
 
 void microterm_f8_state::f8_io(address_map &map)
 {
 	map.unmap_value_high();
+	map(0x00, 0x00).rw(FUNC(microterm_f8_state::port00_r), FUNC(microterm_f8_state::port00_w));
+	map(0x01, 0x01).r(FUNC(microterm_f8_state::port01_r)).nopw();
 	map(0x0c, 0x0f).rw("smi", FUNC(f3853_device::read), FUNC(f3853_device::write));
 }
 
@@ -246,13 +394,20 @@ void microterm_f8_state::act5a(machine_config &config)
 	AY51013(config, m_uart, 0);
 	m_uart->read_si_callback().set(m_io, FUNC(rs232_port_device::rxd_r));
 	m_uart->write_so_callback().set(m_io, FUNC(rs232_port_device::write_txd));
+	m_uart->write_dav_callback().set("smi", FUNC(f3853_device::set_external_interrupt_in_line)).invert();
+	m_uart->set_auto_rdav(true);
 
 	RS232_PORT(config, m_io, default_rs232_devices, nullptr);
 	RS232_PORT(config, m_aux, default_rs232_devices, nullptr);
 
 	screen_device &screen(SCREEN(config, "screen", SCREEN_TYPE_RASTER));
-	screen.set_raw(16.572_MHz_XTAL, 1080, 0, 800, 256, 0, 240); // more or less guessed
+	screen.set_raw(16.572_MHz_XTAL, 918, 0, 720, 301, 0, 288); // more or less guessed
 	screen.set_screen_update(FUNC(microterm_f8_state::screen_update));
+	screen.screen_vblank().set(FUNC(microterm_f8_state::vblank_w));
+
+	SPEAKER(config, "mono").front_center();
+	BEEP(config, m_bell, 1760);
+	m_bell->add_route(ALL_OUTPUTS, "mono", 0.50);
 }
 
 ROM_START(act5a)
@@ -268,6 +423,6 @@ ROM_START(act5a)
 	ROM_LOAD("act5a_9316.u55", 0x0000, 0x2000, CRC(8f96b7c8) SHA1(652d420ab5be9412cae322cd1799f8a9e3959c44))
 ROM_END
 
-//COMP(1976, act4, 0, 0, act5a, act5a, microterm_f8_state, empty_init, "Micro-Term", "ACT-IV", MACHINE_IS_SKELETON)
-//COMP(1978, act5, 0, 0, act5a, act5a, microterm_f8_state, empty_init, "Micro-Term", "ACT-V", MACHINE_IS_SKELETON)
-COMP(1980, act5a, 0, 0, act5a, act5a, microterm_f8_state, empty_init, "Micro-Term", "ACT-5A", MACHINE_IS_SKELETON)
+//COMP(1976, act4, 0, 0, act5a, act5a, microterm_f8_state, empty_init, "Micro-Term", "ACT-IV", MACHINE_NOT_WORKING)
+//COMP(1978, act5, 0, 0, act5a, act5a, microterm_f8_state, empty_init, "Micro-Term", "ACT-V", MACHINE_NOT_WORKING)
+COMP(1980, act5a, 0, 0, act5a, act5a, microterm_f8_state, empty_init, "Micro-Term", "ACT-5A", MACHINE_NOT_WORKING)
