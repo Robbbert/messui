@@ -1576,7 +1576,16 @@ void SelectTreeViewFolder(int folder_id)
  */
 static BOOL FolderHasIni(LPTREEFOLDER lpFolder)
 {
-	if (FOLDER_VECTOR == lpFolder->m_nFolderId || FOLDER_VERTICAL == lpFolder->m_nFolderId || FOLDER_HORIZONTAL == lpFolder->m_nFolderId)
+	if (FOLDER_VECTOR == lpFolder->m_nFolderId
+		|| FOLDER_RASTER == lpFolder->m_nFolderId
+		|| FOLDER_LCD == lpFolder->m_nFolderId
+		|| FOLDER_VERTICAL == lpFolder->m_nFolderId
+		|| FOLDER_HORIZONTAL == lpFolder->m_nFolderId
+		|| FOLDER_ARCADE == lpFolder->m_nFolderId
+		|| FOLDER_CONSOLE == lpFolder->m_nFolderId
+		|| FOLDER_COMPUTER == lpFolder->m_nFolderId
+		|| FOLDER_OTHERSYS == lpFolder->m_nFolderId
+		)
 		return true;
 
 	if (lpFolder->m_nParent != -1 && FOLDER_SOURCE == treeFolders[lpFolder->m_nParent]->m_nFolderId)

@@ -923,9 +923,9 @@ static DWORD RunMAME(int nGameIndex, const play_options *playopts)
 	const char* name = driver_list::driver(nGameIndex).name;
 
 	// set some startup options
-	global_opts.set_value(OPTION_LANGUAGE, GetLanguageUI(), OPTION_PRIORITY_CMDLINE);
-	global_opts.set_value(OPTION_PLUGINS, GetEnablePlugins(), OPTION_PRIORITY_CMDLINE);
-	global_opts.set_value(OPTION_PLUGIN, GetPlugins(), OPTION_PRIORITY_CMDLINE);
+	//global_opts.set_value(OPTION_LANGUAGE, GetLanguageUI(), OPTION_PRIORITY_CMDLINE);
+	//global_opts.set_value(OPTION_PLUGINS, GetEnablePlugins(), OPTION_PRIORITY_CMDLINE);
+	//global_opts.set_value(OPTION_PLUGIN, GetPlugins(), OPTION_PRIORITY_CMDLINE);
 	global_opts.set_value(OPTION_SYSTEMNAME, name, OPTION_PRIORITY_CMDLINE);
 
 	// set any specified play options
@@ -1032,6 +1032,7 @@ int MameUIMain(HINSTANCE hInstance, LPWSTR lpCmdLine, int nCmdShow)
 		extern int main_(int argc, char *argv[]);
 		exit(main_(__argc, __argv));
 	}
+
 	// printf's not allowed before here, else they get into mame queries
 
 	printf("MAMEUI starting\n");fflush(stdout);
@@ -4296,9 +4297,9 @@ static BOOL MameCommand(HWND hwnd,int id, HWND hwndCtl, UINT codeNotify)
 		UpdateStatusBar();
 		break;
 
-	// NOT WORKING
+	// NOT WORKING -- right click on a tree item (vertical, console, etc) then Properties - should open matching ini file
 	case ID_FOLDER_PROPERTIES:
-		if (!oldControl && (current_game >= 0))
+		//if (!oldControl && (current_game >= 0))
 		{
 			OPTIONS_TYPE curOptType = OPTIONS_SOURCE;
 			folder = GetSelectedFolder();
@@ -4306,6 +4307,30 @@ static BOOL MameCommand(HWND hwnd,int id, HWND hwndCtl, UINT codeNotify)
 			{
 				if(folder->m_nFolderId == FOLDER_VECTOR)
 					curOptType = OPTIONS_VECTOR;
+				else
+				if(folder->m_nFolderId == FOLDER_RASTER)
+					curOptType = OPTIONS_RASTER;
+				else
+				if(folder->m_nFolderId == FOLDER_LCD)
+					curOptType = OPTIONS_LCD;
+				else
+				if(folder->m_nFolderId == FOLDER_HORIZONTAL)
+					curOptType = OPTIONS_HORIZONTAL;
+				else
+				if(folder->m_nFolderId == FOLDER_VERTICAL)
+					curOptType = OPTIONS_VERTICAL;
+				else
+				if(folder->m_nFolderId == FOLDER_ARCADE)
+					curOptType = OPTIONS_ARCADE;
+				else
+				if(folder->m_nFolderId == FOLDER_COMPUTER)
+					curOptType = OPTIONS_COMPUTER;
+				else
+				if(folder->m_nFolderId == FOLDER_CONSOLE)
+					curOptType = OPTIONS_CONSOLE;
+				else
+				if(folder->m_nFolderId == FOLDER_OTHERSYS)
+					curOptType = OPTIONS_OTHERSYS;
 
 				InitPropertyPage(hInst, hwnd, GetSelectedFolderIcon(), curOptType, folder->m_nFolderId, current_game);
 			}
