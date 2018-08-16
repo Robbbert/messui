@@ -18645,6 +18645,7 @@ mastboyia                       // (c) 1991 - No Ref on the PCB
 
 @source:mastboyo.cpp
 mastboyo                        // (c) 1987 - No Ref on the PCB
+mastboyoa                       // (c) 1987 - No Ref on the PCB
 
 @source:matmania.cpp
 excthour                        // TA-0015 (c) 1985 + Taito license
@@ -29247,6 +29248,7 @@ alpilot                         // 1999.?? Airline Pilots (World, Rev B)
 anmlbskt                        // 2005.01 Animal Basket (date is inside of ROM, probably earlier than release)
 anmlbskta                       // 2005.01 Animal Basket (date is inside of ROM, probably earlier than release)
 asndynmt                        // 2007.07 Dynamite Deka EX - Asian dynamite
+asndynmto                       // 2007.07 Dynamite Deka EX - Asian dynamite (older)
 ausfache                        // 2008.02.20 Akatsuki Blitzkampf Ausf. Achse
 awbios                          // 2002.?? Atomiswave BIOS
 azumanga                        // 2002.12 Azumanga Daiou Puzzle Bobble
