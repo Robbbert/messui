@@ -37994,6 +37994,7 @@ vaportra3                       // MAA (c) 1989 Data East Corporation (World)
 vaportrau                       // MAA (c) 1989 Data East Corporation (US)
 
 @source:vastar.cpp
+dogfightp                       // (c) 1983 Orca
 pprobe                          // Kyugo?
 vastar                          // (c) 1983 Sesame Japan
 vastar2                         // (c) 1983 Sesame Japan
@@ -39298,6 +39299,9 @@ wwfsstaru7                      // TA-0024 (c) 1989 (US, newer)
 wwfsstaru6                      // TA-0024 (c) 1989 (US)
 wwfsstaru4                      // TA-0024 (c) 1989 (US)
 
+@source:wy100.cpp
+wy100                           // WY-100
+
 @source:wyse.cpp
 wy50                            // WY-50
 wy55                            // WY-55
@@ -39465,6 +39469,9 @@ z1013a2                         //
 z1013k69                        //
 z1013k76                        //
 z1013s60                        //
+
+@source:z29.cpp
+z29                             //
 
 @source:z80dev.cpp
 z80dev                          //
