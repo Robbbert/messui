@@ -27,7 +27,7 @@
 #include <fstream>      // for *_opts.h (below)
 #include "game_opts.h"
 #include "ui_opts.h"
-#include "ini_opts.h"   // not ready yet
+//#include "ini_opts.h"   // not ready yet
 #include "mui_util.h"
 #include "treeview.h"
 #include "splitters.h"
@@ -84,7 +84,6 @@ static void ResetToDefaults(windows_options &opts, int priority);
 
 static emu_options mameopts; // core options
 static ui_options mewui; // ui.ini
-static winui_ini_options iniopts; // TEST
 static winui_ui_options settings; // mameui.ini
 static windows_options global; // Global 'default' options
 static winui_game_options game_opts;    // game stats
@@ -796,6 +795,21 @@ void SetManualsDir(const char *path)
 }
 
 // ***************************************************************** MAME.INI settings **************************************************************************
+const string GetLanguageUI(void)
+{
+	return global.value(OPTION_LANGUAGE);
+}
+
+bool GetEnablePlugins(void)
+{
+	return global.bool_value(OPTION_PLUGINS);
+}
+
+const string GetPlugins(void)
+{
+	return global.value(OPTION_PLUGIN);
+}
+
 const string GetRomDirs(void)
 {
 	const char* t = global.value(OPTION_MEDIAPATH);
@@ -1066,6 +1080,16 @@ const string GetHLSLDir(void)
 void SetHLSLDir(const char* path)
 {
 	global.set_value(WINOPTION_HLSLPATH, path, OPTION_PRIORITY_CMDLINE);
+}
+
+const char* GetSnapName(void)
+{
+	return global.value(OPTION_SNAPNAME);
+}
+
+void SetSnapName(const char* pattern)
+{
+	global.set_value(OPTION_SNAPNAME, pattern, OPTION_PRIORITY_CMDLINE);
 }
 
 // ***************************************************************** UI.INI settings **************************************************************************
@@ -2073,21 +2097,21 @@ void ResetAllGameOptions(void)
 
 void SetDirectories(windows_options &opts)
 {
-	//opts.set_value(OPTION_MEDIAPATH, GetRomDirs(), OPTION_PRIORITY_CMDLINE);
-	//opts.set_value(OPTION_SAMPLEPATH, GetSampleDirs(), OPTION_PRIORITY_CMDLINE);
-	//opts.set_value(OPTION_INIPATH, GetIniDir(), OPTION_PRIORITY_CMDLINE);
-	//opts.set_value(OPTION_CFG_DIRECTORY, GetCfgDir(), OPTION_PRIORITY_CMDLINE);
-	//opts.set_value(OPTION_SNAPSHOT_DIRECTORY, GetImgDir(), OPTION_PRIORITY_CMDLINE);
-	//opts.set_value(OPTION_INPUT_DIRECTORY, GetInpDir(), OPTION_PRIORITY_CMDLINE);
-	//opts.set_value(OPTION_STATE_DIRECTORY, GetStateDir(), OPTION_PRIORITY_CMDLINE);
-	//opts.set_value(OPTION_ARTPATH, GetArtDir(), OPTION_PRIORITY_CMDLINE);
-	//opts.set_value(OPTION_NVRAM_DIRECTORY, GetNvramDir(), OPTION_PRIORITY_CMDLINE);
-	//opts.set_value(OPTION_CTRLRPATH, GetCtrlrDir(), OPTION_PRIORITY_CMDLINE);
-	//opts.set_value(OPTION_CHEATPATH, GetCheatDir(), OPTION_PRIORITY_CMDLINE);
-	//opts.set_value(OPTION_CROSSHAIRPATH, GetCrosshairDir(), OPTION_PRIORITY_CMDLINE);
-	//opts.set_value(OPTION_FONTPATH, GetFontDir(), OPTION_PRIORITY_CMDLINE);
-	//opts.set_value(OPTION_DIFF_DIRECTORY, GetDiffDir(), OPTION_PRIORITY_CMDLINE);
-	//opts.set_value(OPTION_SNAPNAME, GetSnapName(), OPTION_PRIORITY_CMDLINE);
+	opts.set_value(OPTION_MEDIAPATH, GetRomDirs(), OPTION_PRIORITY_CMDLINE);
+	opts.set_value(OPTION_SAMPLEPATH, GetSampleDirs(), OPTION_PRIORITY_CMDLINE);
+	opts.set_value(OPTION_INIPATH, GetIniDir(), OPTION_PRIORITY_CMDLINE);
+	opts.set_value(OPTION_CFG_DIRECTORY, GetCfgDir(), OPTION_PRIORITY_CMDLINE);
+	opts.set_value(OPTION_SNAPSHOT_DIRECTORY, GetImgDir(), OPTION_PRIORITY_CMDLINE);
+	opts.set_value(OPTION_INPUT_DIRECTORY, GetInpDir(), OPTION_PRIORITY_CMDLINE);
+	opts.set_value(OPTION_STATE_DIRECTORY, GetStateDir(), OPTION_PRIORITY_CMDLINE);
+	opts.set_value(OPTION_ARTPATH, GetArtDir(), OPTION_PRIORITY_CMDLINE);
+	opts.set_value(OPTION_NVRAM_DIRECTORY, GetNvramDir(), OPTION_PRIORITY_CMDLINE);
+	opts.set_value(OPTION_CTRLRPATH, GetCtrlrDir(), OPTION_PRIORITY_CMDLINE);
+	opts.set_value(OPTION_CHEATPATH, GetCheatDir(), OPTION_PRIORITY_CMDLINE);
+	opts.set_value(OPTION_CROSSHAIRPATH, GetCrosshairDir(), OPTION_PRIORITY_CMDLINE);
+	opts.set_value(OPTION_FONTPATH, GetFontDir(), OPTION_PRIORITY_CMDLINE);
+	opts.set_value(OPTION_DIFF_DIRECTORY, GetDiffDir(), OPTION_PRIORITY_CMDLINE);
+	opts.set_value(OPTION_SNAPNAME, GetSnapName(), OPTION_PRIORITY_CMDLINE);
 }
 
 // not used
@@ -2251,7 +2275,6 @@ const char * GetVersionString(void)
 /*  get options, based on passed in game number. */
 void load_options(windows_options &opts, OPTIONS_TYPE opt_type, int game_num, bool set_system_name)
 {
-	new_setgame(game_num, opt_type);
 	const game_driver *driver = NULL;
 	if (game_num > -1)
 		driver = &driver_list::driver(game_num);
@@ -2291,12 +2314,10 @@ void load_options(windows_options &opts, OPTIONS_TYPE opt_type, int game_num, bo
 /* Save ini file based on game_number. */
 void save_options(windows_options &opts, OPTIONS_TYPE opt_type, int game_num)
 {
-	new_saveini();
-#if 0
 	const game_driver *driver = NULL;
 	string filename, filepath;
 
-	if (opt_type == OPTIONS_GAME || opt_type == OPTIONS_SOURCE)
+	if (game_num >= 0)
 	{
 		driver = &driver_list::driver(game_num);
 		if (driver)
@@ -2307,7 +2328,7 @@ void save_options(windows_options &opts, OPTIONS_TYPE opt_type, int game_num)
 		}
 	}
 	else
-	if (opt_type == OPTIONS_GLOBAL)
+	if (game_num == -1)
 		filename = string(emulator_info::get_configname());
 
 	if (!filename.empty() && filepath.empty())
@@ -2324,7 +2345,6 @@ void save_options(windows_options &opts, OPTIONS_TYPE opt_type, int game_num)
 	}
 //	else
 //		printf("Unable to save settings\n");
-#endif
 }
 
 
@@ -2577,27 +2597,3 @@ void OptionsCopy(windows_options &source, windows_options &dest)
 		}
 	}
 }
-
-
-// Test for new iniopts
-
-void new_setgame(int gamenum, OPTIONS_TYPE opttype)
-{
-	iniopts.setgame(gamenum, opttype);
-}
-
-string new_getter(string name)
-{
-	return iniopts.getter(name);
-}
-
-void new_setter(string name, string value)
-{
-	iniopts.setter(name, value);
-}
-
-void new_saveini()
-{
-	iniopts.save_diff_ini();
-}
-

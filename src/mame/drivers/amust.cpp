@@ -225,7 +225,7 @@ INPUT_PORTS_END
 // bodgy
 INTERRUPT_GEN_MEMBER( amust_state::irq_vs )
 {
-	m_maincpu->set_input_line_and_vector(INPUT_LINE_IRQ0, ASSERT_LINE, 0xff);
+	m_maincpu->set_input_line_and_vector(INPUT_LINE_IRQ0, HOLD_LINE, 0xc9);
 }
 
 READ8_MEMBER( amust_state::port04_r )
