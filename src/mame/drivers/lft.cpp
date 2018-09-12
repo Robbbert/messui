@@ -2,9 +2,11 @@
 // copyright-holders:Robbbert
 /******************************************************************************************
 
-2013-09-09 Skeleton of LFT computer system. A search on the net produces no finds.
-Everything in here is a guess.
+2013-09-09 Skeleton of LFT computer system.
 
+These are the monitor programs for 80186-based "S100+" systems by L/F Technologies. Many
+of these boards were distributed under the IMS International name. Documentation available
+online is woefully inadequate.
 
 LFT1230 does extensive testing of devices at boot time. As they are mostly missing,
 it gets caught in a loop. There's unknown devices in the i/o 008x, 00Ax, 00Cx range.
@@ -27,6 +29,7 @@ Note: Backspace/delete performs oddly.
 #include "machine/mm58167.h"
 #include "machine/z80scc.h"
 #include "bus/rs232/rs232.h"
+//#include "bus/s100/s100.h"
 
 
 class lft_state : public driver_device
@@ -49,7 +52,7 @@ private:
 	virtual void machine_reset() override;
 	required_device<cpu_device> m_maincpu;
 	required_device<mm58167_device> m_rtc;
-	required_device<scc85c30_device> m_scc;
+	required_device<scc8530_device> m_scc;
 };
 
 void lft_state::mem_map(address_map &map)
@@ -82,31 +85,31 @@ void lft_state::machine_reset()
 
 MACHINE_CONFIG_START(lft_state::lft)
 	/* basic machine hardware */
-	MCFG_DEVICE_ADD("maincpu", I80186, 4000000) // no idea
+	MCFG_DEVICE_ADD("maincpu", I80186, 16_MHz_XTAL)
 	MCFG_DEVICE_PROGRAM_MAP(mem_map)
 	MCFG_DEVICE_IO_MAP(io_map)
 
 	// Devices
-	MM58167(config, m_rtc, XTAL(32'768));
+	MM58167(config, m_rtc, 32.768_kHz_XTAL);
 
-	SCC85C30(config, m_scc, 4'915'200);   // required value for 9600 baud
+	SCC8530N(config, m_scc, 4.9152_MHz_XTAL);
 	m_scc->out_txda_callback().set("rs232a", FUNC(rs232_port_device::write_txd));
 	m_scc->out_dtra_callback().set("rs232a", FUNC(rs232_port_device::write_dtr));
 	m_scc->out_rtsa_callback().set("rs232a", FUNC(rs232_port_device::write_rts));
 
 	MCFG_DEVICE_ADD("rs232a", RS232_PORT, default_rs232_devices, nullptr)
-	MCFG_RS232_RXD_HANDLER(WRITELINE(m_scc, scc85c30_device, rxa_w))
-	MCFG_RS232_DCD_HANDLER(WRITELINE(m_scc, scc85c30_device, dcda_w))
-	MCFG_RS232_CTS_HANDLER(WRITELINE(m_scc, scc85c30_device, ctsa_w))
+	MCFG_RS232_RXD_HANDLER(WRITELINE(m_scc, scc8530_device, rxa_w))
+	MCFG_RS232_DCD_HANDLER(WRITELINE(m_scc, scc8530_device, dcda_w))
+	MCFG_RS232_CTS_HANDLER(WRITELINE(m_scc, scc8530_device, ctsa_w))
 
 	m_scc->out_txdb_callback().set("rs232b", FUNC(rs232_port_device::write_txd));
 	m_scc->out_dtrb_callback().set("rs232b", FUNC(rs232_port_device::write_dtr));
 	m_scc->out_rtsb_callback().set("rs232b", FUNC(rs232_port_device::write_rts));
 
 	MCFG_DEVICE_ADD("rs232b", RS232_PORT, default_rs232_devices, "terminal")
-	MCFG_RS232_RXD_HANDLER(WRITELINE(m_scc, scc85c30_device, rxb_w))
-	MCFG_RS232_DCD_HANDLER(WRITELINE(m_scc, scc85c30_device, dcdb_w))
-	MCFG_RS232_CTS_HANDLER(WRITELINE(m_scc, scc85c30_device, ctsb_w))
+	MCFG_RS232_RXD_HANDLER(WRITELINE(m_scc, scc8530_device, rxb_w))
+	MCFG_RS232_DCD_HANDLER(WRITELINE(m_scc, scc8530_device, dcdb_w))
+	MCFG_RS232_CTS_HANDLER(WRITELINE(m_scc, scc8530_device, ctsb_w))
 MACHINE_CONFIG_END
 
 
@@ -128,7 +131,6 @@ ROM_END
 
 /* Driver */
 
-//    YEAR  NAME     PARENT   COMPAT  MACHINE  INPUT  CLASS      INIT        COMPANY  FULLNAME    FLAGS
-COMP( 198?, lft1510, 0,       0,      lft,     lft,   lft_state, empty_init, "LFT",   "LFT 1510", MACHINE_IS_SKELETON)
-COMP( 198?, lft1230, lft1510, 0,      lft,     lft,   lft_state, empty_init, "LFT",   "LFT 1230", MACHINE_IS_SKELETON)
-
+//    YEAR  NAME     PARENT   COMPAT  MACHINE  INPUT  CLASS      INIT        COMPANY             FULLNAME                      FLAGS
+COMP( 1986, lft1510, 0,       0,      lft,     lft,   lft_state, empty_init, "L/F Technologies", "A1510 186 User Processor",   MACHINE_IS_SKELETON)
+COMP( 1985, lft1230, lft1510, 0,      lft,     lft,   lft_state, empty_init, "L/F Technologies", "A1230 186 Master Processor", MACHINE_IS_SKELETON)
