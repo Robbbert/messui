@@ -65,6 +65,7 @@ private:
 	sound_stream *  m_stream;
 	emu_timer *     m_timer[2];
 	devcb_write_line m_irq_handler;
+	const std::string m_adpcm_b_region_name;
 	optional_memory_region m_adpcm_a_region;
 	optional_memory_region m_adpcm_b_region;
 
