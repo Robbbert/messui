@@ -155,35 +155,29 @@ enum
 
 struct GAMECOM_DMA
 {
-	int enabled;
-	int transfer_mode;
-	int decrement_y;
-	int decrement_x;
-	int overwrite_mode;
-	int width_x;
-	int width_y;
-	int width_x_count;
-	int width_y_count;
-	int source_x;
-	int source_x_current;
-	int source_y;
-	int source_width;
-	int dest_x;
-	int dest_x_current;
-	int dest_y;
-	int dest_width;
-	int state_count;
-	int state_pixel;
-	int state_limit;
-	uint8_t palette[4];
-	uint8_t *source_bank;
-	unsigned int source_current;
-	unsigned int source_line;
-	unsigned int source_mask;
-	uint8_t *dest_bank;
-	unsigned int dest_current;
-	unsigned int dest_line;
-	unsigned int dest_mask;
+	u8 transfer_mode;
+	bool decrement_y;
+	bool decrement_x;
+	bool overwrite_mode;
+	u8 width_x;
+	u8 width_y;
+	u8 source_x;
+	u8 source_x_current;
+	u8 source_y;
+	u8 source_width;
+	u8 dest_x;
+	u8 dest_x_current;
+	u8 dest_y;
+	u8 dest_width;
+	u8 palette[4];
+	u8 *source_bank;
+	u16 source_current;
+	u16 source_line;
+	u16 source_mask;
+	u8 *dest_bank;
+	u16 dest_current;
+	u16 dest_line;
+	u16 dest_mask;
 };
 
 struct GAMECOM_TIMER

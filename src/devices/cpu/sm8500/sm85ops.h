@@ -377,7 +377,7 @@
 #define OP_AND8(X,Y)    d1 = X; \
 			d2 = Y; \
 			res = d1 & d2; \
-			m_PS1 = m_PS1 & ( FLAG_B | FLAG_I | FLAG_H | FLAG_D ); \
+			m_PS1 = m_PS1 & ( FLAG_B | FLAG_C | FLAG_I | FLAG_H | FLAG_D ); \
 			m_PS1 = m_PS1 | ( ( ( res & 0xFF ) == 0 ) ? FLAG_Z : 0 ); \
 			m_PS1 = m_PS1 | ( ( res & 0x80 ) ? FLAG_S : 0 );
 
@@ -390,7 +390,7 @@
 #define OP_OR8(X,Y) d1 = X; \
 			d2 = Y; \
 			res = d1 | d2; \
-			m_PS1 = m_PS1 & ( FLAG_B | FLAG_I | FLAG_H | FLAG_D ); \
+			m_PS1 = m_PS1 & ( FLAG_B | FLAG_C | FLAG_I | FLAG_H | FLAG_D ); \
 			m_PS1 = m_PS1 | ( ( ( res & 0xFF ) == 0 ) ? FLAG_Z : 0 ); \
 			m_PS1 = m_PS1 | ( ( res & 0x80 ) ? FLAG_S : 0 );
 
@@ -403,7 +403,7 @@
 #define OP_XOR8(X,Y)    d1 = X; \
 			d2 = Y; \
 			res = d1 ^ d2; \
-			m_PS1 = m_PS1 & ( FLAG_B | FLAG_I | FLAG_H | FLAG_D ); \
+			m_PS1 = m_PS1 & ( FLAG_B | FLAG_C | FLAG_I | FLAG_H | FLAG_D ); \
 			m_PS1 = m_PS1 | ( ( ( res & 0xFF ) == 0 ) ? FLAG_Z : 0 ); \
 			m_PS1 = m_PS1 | ( ( res & 0x80 ) ? FLAG_S : 0 );
 
@@ -1302,7 +1302,7 @@ case 0x5B:  /* unk5B - 6,7,11,8,7 cycles */
 case 0x5C:  /* DIV RRr,RRs - 47 cycles - Flags affected: -Z-V---- */
 		/* lower 8 bits of RRs is used to divide */
 		/* remainder in stored upper 8 bits of RRs */
-logerror( "%04X: DIV RRr,Rs!\n", m_PC-1 );
+//  logerror( "%04X: DIV RRr,Rs!\n", m_PC-1 );
 	ARG_RR;
 	m_PS1 = m_PS1 & ~ ( FLAG_Z | FLAG_V );
 	s1 = mem_readbyte( r2 + 1 );
@@ -1318,7 +1318,7 @@ logerror( "%04X: DIV RRr,Rs!\n", m_PC-1 );
 	mycycles += 47;
 	break;
 case 0x5D:  /* DIV RRr,i - 44 cycles - Flags affected: -Z-V---- */
-logerror( "%04X: DIV RRr,i!\n", m_PC-1 );
+//  logerror( "%04X: DIV RRr,i!\n", m_PC-1 );
 	ARG_iR;
 	m_PS1 = m_PS1 & ~ ( FLAG_Z | FLAG_V );
 	if ( r2 ) {
