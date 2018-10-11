@@ -666,18 +666,21 @@ bool emu_options::add_and_remove_image_options()
 		// iterate through all image devices
 		for (device_image_interface &image : image_interface_iterator(config.root_device()))
 		{
-			const std::string &cannonical_name(image.cannonical_instance_name());
+		// MESSUI start - the MAME code through here is broken, won't save images loaded via the menu
+		// to ini file, so we use older code instead.
+			const char *cn = image.device().tag();
 
 			// erase this option from existing (so we don't purge it later)
-			existing.remove(cannonical_name);
+			existing.remove(cn);
 
 			// do we need to add this option?
-			auto iter = m_image_options_cannonical.find(cannonical_name);
+			auto iter = m_image_options_cannonical.find(cn);
 			::image_option *this_option = iter != m_image_options_cannonical.end() ? &iter->second : nullptr;
 			if (!this_option)
 			{
 				// we do - add it to both m_image_options_cannonical and m_image_options
-				auto pair = std::make_pair(cannonical_name, ::image_option(*this, image.cannonical_instance_name()));
+				auto pair = std::make_pair(cn, ::image_option(*this, cn));
+				// MESSUI end
 				this_option = &m_image_options_cannonical.emplace(std::move(pair)).first->second;
 				changed = true;
 
