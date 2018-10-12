@@ -1090,6 +1090,7 @@ function linkProjects_mame_mess(_target, _subtarget)
 		"mgu",
 		"microkey",
 		"microsoft",
+		"mips",
 		"mit",
 		"mits",
 		"mitsubishi",
@@ -2487,6 +2488,12 @@ files {
 	MAME_DIR .. "src/mame/includes/xbox.h",
 	MAME_DIR .. "src/mame/includes/xbox_usb.h",
 	MAME_DIR .. "src/mame/includes/xbox_pci.h",
+}
+
+createMESSProjects(_target, _subtarget, "mips")
+files {
+	MAME_DIR .. "src/mame/drivers/mips.cpp",
+	MAME_DIR .. "src/mame/includes/mips.h",
 }
 
 createMESSProjects(_target, _subtarget, "mit")
