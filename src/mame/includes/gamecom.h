@@ -155,10 +155,6 @@ enum
 
 struct GAMECOM_DMA
 {
-	u8 transfer_mode;
-	bool decrement_y;
-	bool decrement_x;
-	bool overwrite_mode;
 	u8 width_x;
 	u8 width_y;
 	u8 source_x;
@@ -169,7 +165,9 @@ struct GAMECOM_DMA
 	u8 dest_x_current;
 	u8 dest_y;
 	u8 dest_width;
-	u8 palette[4];
+	u8 palette;
+	u8 block_width;
+	u8 block_height;
 	u8 *source_bank;
 	u16 source_current;
 	u16 source_line;
@@ -178,14 +176,18 @@ struct GAMECOM_DMA
 	u16 dest_current;
 	u16 dest_line;
 	u16 dest_mask;
+	u8 transfer_mode;
+	s16 adjust_x;
+	bool decrement_y;
+	bool overwrite_mode;
 };
 
 struct GAMECOM_TIMER
 {
-	int enabled;
-	int state_count;
-	int state_limit;
-	int check_value;
+	bool enabled;
+	u32 prescale_count;
+	u32 prescale_max;
+	u8 upcounter_max;
 };
 
 struct gamecom_sound_t
