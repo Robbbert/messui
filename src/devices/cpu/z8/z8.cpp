@@ -1060,7 +1060,7 @@ void z8_device::state_import(const device_state_entry &entry)
 			m_pc = m_ppc;
 			break;
 
-			case Z8_SP:
+		case Z8_SP:
 		case STATE_GENSP:
 			m_r[Z8_REGISTER_SPH] = m_fake_sp >> 8;
 			m_r[Z8_REGISTER_SPL] = m_fake_sp & 0xff;
