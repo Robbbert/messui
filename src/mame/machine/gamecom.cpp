@@ -296,7 +296,7 @@ WRITE8_MEMBER( gamecom_state::gamecom_internal_w )
 		break;
 	case SM8521_TM0C:
 		m_timer[0].enabled = BIT(data, 7);
-		m_timer[0].prescale_max = gamecom_timer_limit[data & 0x07] >> 1;
+		m_timer[0].prescale_max = gamecom_timer_limit[data & 0x07];
 		m_timer[0].prescale_count = 0;
 		m_p_ram[SM8521_TM0D] = 0;
 		break;
@@ -306,7 +306,7 @@ WRITE8_MEMBER( gamecom_state::gamecom_internal_w )
 		break;
 	case SM8521_TM1C:
 		m_timer[1].enabled = BIT(data, 7);
-		m_timer[1].prescale_max = gamecom_timer_limit[data & 0x07] >> 1;
+		m_timer[1].prescale_max = gamecom_timer_limit[data & 0x07];
 		m_timer[1].prescale_count = 0;
 		m_p_ram[SM8521_TM1D] = 0;
 		break;
