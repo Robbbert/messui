@@ -2854,6 +2854,7 @@ files {
 createMESSProjects(_target, _subtarget, "qume")
 files {
 	MAME_DIR .. "src/mame/drivers/qvt70.cpp",
+	MAME_DIR .. "src/mame/drivers/qvt102.cpp",
 	MAME_DIR .. "src/mame/drivers/qvt103.cpp",
 	MAME_DIR .. "src/mame/drivers/qvt201.cpp",
 	MAME_DIR .. "src/mame/drivers/qvt6800.cpp",
@@ -3022,6 +3023,8 @@ files {
 	MAME_DIR .. "src/mame/machine/sgi.h",
 	MAME_DIR .. "src/mame/machine/hal2.cpp",
 	MAME_DIR .. "src/mame/machine/hal2.h",
+	MAME_DIR .. "src/mame/machine/hpc1.cpp",
+	MAME_DIR .. "src/mame/machine/hpc1.h",
 	MAME_DIR .. "src/mame/machine/hpc3.cpp",
 	MAME_DIR .. "src/mame/machine/hpc3.h",
 	MAME_DIR .. "src/mame/machine/ioc2.cpp",
@@ -3736,6 +3739,7 @@ files {
 	MAME_DIR .. "src/mame/drivers/excali64.cpp",
 	MAME_DIR .. "src/mame/drivers/facit4440.cpp",
 	MAME_DIR .. "src/mame/drivers/falco5220.cpp",
+	MAME_DIR .. "src/mame/drivers/falcots.cpp",
 	MAME_DIR .. "src/mame/drivers/fanucs15.cpp",
 	MAME_DIR .. "src/mame/drivers/fanucspmg.cpp",
 	MAME_DIR .. "src/mame/drivers/fc100.cpp",
@@ -3767,7 +3771,6 @@ files {
 	MAME_DIR .. "src/mame/drivers/jade.cpp",
 	MAME_DIR .. "src/mame/drivers/jonos.cpp",
 	MAME_DIR .. "src/mame/drivers/kron.cpp",
-	MAME_DIR .. "src/mame/drivers/lb4.cpp",
 	MAME_DIR .. "src/mame/drivers/leapster.cpp",
 	MAME_DIR .. "src/mame/drivers/lee1214.cpp",
 	MAME_DIR .. "src/mame/drivers/learnwin.cpp",
