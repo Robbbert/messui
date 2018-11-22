@@ -2578,6 +2578,7 @@ createMESSProjects(_target, _subtarget, "ncd")
 files {
 	MAME_DIR .. "src/mame/drivers/ncd17c.cpp",
 	MAME_DIR .. "src/mame/drivers/ncdmips.cpp",
+	MAME_DIR .. "src/mame/drivers/ncdppc.cpp",
 }
 
 createMESSProjects(_target, _subtarget, "ne")
@@ -3767,6 +3768,7 @@ files {
 	MAME_DIR .. "src/mame/drivers/icatel.cpp",
 	MAME_DIR .. "src/mame/drivers/icebox.cpp",
 	MAME_DIR .. "src/mame/drivers/if800.cpp",
+	MAME_DIR .. "src/mame/drivers/ikt5a.cpp",
 	MAME_DIR .. "src/mame/drivers/imsai.cpp",
 	MAME_DIR .. "src/mame/drivers/indiana.cpp",
 	MAME_DIR .. "src/mame/drivers/is48x.cpp",

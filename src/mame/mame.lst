@@ -12677,6 +12677,7 @@ falco5220e                      // 1987
 falco5220s                      // 1989
 
 @source:falcots.cpp
+ts1                             // 1980
 ts2624                          // 1982
 
 @source:famibox.cpp
@@ -15559,6 +15560,9 @@ stellecu                        // (c) 1998
 @source:ikki.cpp
 farmer                          // TVG17 (c) 1985 Sun Electronics
 ikki                            // TVG17 (c) 1985 Sun Electronics (Japan)
+
+@source:ikt5a.cpp
+ikt5a                           //
 
 @source:imds2.cpp
 imds2                           // Intellec MDS series-II
@@ -29849,6 +29853,9 @@ ncd19                           // 1990 Network Computing Devices
 @source:ncdmips.cpp
 hmxpro                          // 1994 Network Computing Devices
 
+@source:ncdppc.cpp
+explorapro                      // 1995 Network Computing Devices
+
 @source:nds.cpp
 nds                             // 2004 Nintendo
 
@@ -37123,7 +37130,6 @@ t4490                           // Terco 4490 Mill CNC Control (c) 1986
 7951om                          //
 alcat258                        //
 feap90                          //
-ikt5a                           //
 itt9216                         //
 loewe715                        //
 loewed                          //
