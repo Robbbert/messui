@@ -205,8 +205,8 @@ void catseye_device::window_move()
 		return;
 
 	LOGMASKED(LOG_WMOVE, "%s%d: %3ux%3u -> %3ux%3u / %3ux%3u planemode %04x wrr %04x, trr %04x m_trrctl %04x acntr %04x\n",
-			__func__, idx, m_wmsourcex, m_wmsourcey, m_wmdestx,	m_wmdesty, m_wmwidth, m_wmheight, m_planemode[idx],
-			m_wrr[idx], m_trr[idx],	m_trrctl[idx], m_acntrl);
+			__func__, idx, m_wmsourcex, m_wmsourcey, m_wmdestx, m_wmdesty, m_wmwidth, m_wmheight, m_planemode[idx],
+			m_wrr[idx], m_trr[idx], m_trrctl[idx], m_acntrl);
 
 	int line, endline, lineincr;
 
@@ -878,6 +878,10 @@ READ16_MEMBER(catseye_device::ctrl_r)
 	}
 
 	switch(offset) {
+	case TOPCAT_REG_WMOVE_ACTIVE:
+		ret = 0;
+		break;
+
 	case TOPCAT_REG_ENABLE_BLINK_PLANES:
 		ret = m_blink_enable;
 		break;
