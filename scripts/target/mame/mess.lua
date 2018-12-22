@@ -137,6 +137,7 @@ CPUS["MB86901"] = true
 CPUS["NANOPROCESSOR"] = true
 CPUS["CLIPPER"] = true
 CPUS["CAPRICORN"] = true
+--CPUS["DSPP"] = true
 
 --------------------------------------------------
 -- specify available sound cores; some of these are
@@ -3610,6 +3611,7 @@ files {
 	MAME_DIR .. "src/mame/audio/socrates.cpp",
 	MAME_DIR .. "src/mame/audio/socrates.h",
 	MAME_DIR .. "src/mame/drivers/inteladv.cpp",
+	MAME_DIR .. "src/mame/drivers/vsmile.cpp",
 }
 
 createMESSProjects(_target, _subtarget, "wang")
