@@ -158,7 +158,7 @@ detail::queue_t::queue_t(netlist_t &nl)
 
 void detail::queue_t::register_state(plib::state_manager_t &manager, const pstring &module)
 {
-	netlist().log().debug("register_state\n");
+	//netlist().log().debug("register_state\n");
 	manager.save_item(this, m_qsize, module + "." + "qsize");
 	manager.save_item(this, &m_times[0], module + "." + "times", m_times.size());
 	manager.save_item(this, &m_net_ids[0], module + "." + "names", m_net_ids.size());
@@ -343,8 +343,8 @@ void netlist_t::start()
 			auto p = setup().m_param_values.find(d->name() + ".HINT_NO_DEACTIVATE");
 			if (p != setup().m_param_values.end())
 			{
-				//FIXME: turn this into a proper function
-				auto v = plib::pstod(p->second);;
+				//FIXME: check for errors ...
+				double v = plib::pstonum<double>(p->second);;
 				if (std::abs(v - std::floor(v)) > 1e-6 )
 					log().fatal(MF_1_HND_VAL_NOT_SUPPORTED, p->second);
 				d->set_hint_deactivate(v == 0.0);
@@ -506,6 +506,7 @@ void netlist_t::reset()
 		break;
 		case 1:     // brute force backward
 		{
+			log().verbose("Using brute force backward startup strategy");
 			std::size_t i = m_devices.size();
 			while (i>0)
 				m_devices[--i]->update_dev();
@@ -513,6 +514,7 @@ void netlist_t::reset()
 		break;
 		case 2:     // brute force forward
 		{
+			log().verbose("Using brute force forward startup strategy");
 			for (auto &d : m_devices)
 				d->update_dev();
 		}
@@ -886,16 +888,15 @@ void detail::net_t::reset()
 	if (p != nullptr)
 		p->m_cur_Analog = 0.0;
 
-	/* rebuild m_list */
+	/* rebuild m_list and reset terminals to active or analog out state */
 
 	m_list_active.clear();
 	for (core_terminal_t *ct : m_core_terms)
+	{
+		ct->reset();
 		if (ct->state() != logic_t::STATE_INP_PASSIVE)
 			m_list_active.push_back(ct);
-
-	for (core_terminal_t *ct : m_core_terms)
-		ct->reset();
-
+	}
 }
 
 void detail::net_t::add_terminal(detail::core_terminal_t &terminal)
