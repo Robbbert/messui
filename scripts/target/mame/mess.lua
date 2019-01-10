@@ -307,6 +307,7 @@ VIDEOS["EF9345"] = true
 VIDEOS["EF9364"] = true
 VIDEOS["EF9365"] = true
 --VIDEOS["EF9369"] = true
+VIDEOS["FIXFREQ"] = true
 VIDEOS["GF4500"] = true
 --VIDEOS["EPIC12"] = true
 --VIDEOS["FIXFREQ"] = true
@@ -3928,6 +3929,9 @@ files {
 	MAME_DIR .. "src/mame/machine/zorbakbd.cpp",
 	MAME_DIR .. "src/mame/machine/zorbakbd.h",
 	MAME_DIR .. "src/mame/drivers/zt8802.cpp",
+	MAME_DIR .. "src/mame/drivers/testpat.cpp",
+	MAME_DIR .. "src/mame/machine/nl_tp1983.cpp",
+	MAME_DIR .. "src/mame/machine/nl_tp1985.cpp",
 }
 
 end
