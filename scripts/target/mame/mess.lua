@@ -310,7 +310,6 @@ VIDEOS["EF9365"] = true
 VIDEOS["FIXFREQ"] = true
 VIDEOS["GF4500"] = true
 --VIDEOS["EPIC12"] = true
---VIDEOS["FIXFREQ"] = true
 VIDEOS["NT7534"] = true
 VIDEOS["HD44102"] = true
 VIDEOS["HD44352"] = true
