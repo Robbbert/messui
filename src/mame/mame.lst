@@ -1268,7 +1268,6 @@ kccomp                          // VEB KC compact
 @source:amusco.cpp
 amusco                          // 1987, Amusco.
 draw88pkr                       // 1988, BTE, Inc.
-freeway
 
 @source:amust.cpp
 amust                           //
@@ -2925,6 +2924,9 @@ fairyl2bl                       //
 ldrink                          //
 ldrinka                         //
 merryjn                         //
+
+@source:bert.cpp
+bert                            //
 
 @source:berzerk.cpp
 berzerk                         // (c) 1980
@@ -13063,6 +13065,9 @@ pbillrd                         // (c) 1987 Nihon System
 pbillrds                        // (c) 1987 Nihon System (Sega license?)
 pbillrdsa                       // (c) 1987 Nihon System (Sega license?)
 
+@source:freeway.cpp
+freeway
+
 @source:fresh.cpp
 fresh                           // (c) Chain Leisure
 
@@ -15031,6 +15036,7 @@ gnw_mariocm                     // Nintendo
 gnw_mmouse                      // Nintendo
 gnw_mickdon                     // Nintendo
 gnw_opanic                      // Nintendo
+gnw_rshower                     // Nintendo
 gnw_smb                         // Nintendo
 gnw_squish                      // Nintendo
 gnw_tfish                       // Nintendo
@@ -35642,7 +35648,14 @@ sorcerer2                       // monitor 1.1 1979
 sorcererd                       // Sorcerer with floppies
 
 @source:storio.cpp
-storio                          // (c)200? VTech
+vreader                         // (c) 2011 V.Tech
+vreadercaen                     // (c) 2011 V.Tech
+vreadercafr                     // (c) 2011 V.Tech
+storio                          // (c) 2011 V.Tech
+storiode                        // (c) 2011 V.Tech
+storioes                        // (c) 2011 V.Tech
+storiofr                        // (c) 2011 V.Tech
+storionl                        // (c) 2011 V.Tech
 
 @source:sothello.cpp
 sothello                        // (c) 1986 Success / Fujiwara.

@@ -127,6 +127,9 @@ protected:
 	DECLARE_READ16_MEMBER(rad_portb_r);
 	DECLARE_READ16_MEMBER(rad_portc_r);
 
+	DECLARE_WRITE16_MEMBER(jakks_porta_w);
+	DECLARE_WRITE16_MEMBER(jakks_portb_w);
+
 	required_device<unsp_device> m_maincpu;
 	required_device<screen_device> m_screen;
 	required_device<spg2xx_device> m_spg;
@@ -135,7 +138,9 @@ protected:
 	DECLARE_READ16_MEMBER(walle_portc_r);
 	DECLARE_WRITE16_MEMBER(walle_portc_w);
 
-	virtual void mem_map(address_map &map);
+	virtual void mem_map_4m(address_map &map);
+	virtual void mem_map_2m(address_map &map);
+	virtual void mem_map_1m(address_map &map);
 
 	uint32_t m_current_bank;
 
@@ -157,16 +162,23 @@ class jakks_gkr_state : public spg2xx_game_state
 public:
 	jakks_gkr_state(const machine_config &mconfig, device_type type, const char *tag)
 		: spg2xx_game_state(mconfig, type, tag)
+		, m_porta_key_mode(false)
 		, m_cart(*this, "cartslot")
 		, m_cart_region(nullptr)
 	{ }
 
 	void jakks_gkr(machine_config &config);
+	void jakks_gkr_1m(machine_config &config);
+	void jakks_gkr_2m(machine_config &config);
 	void jakks_gkr_nk(machine_config &config);
 	void jakks_gkr_dy(machine_config &config);
 
 private:
 	virtual void machine_start() override;
+
+	DECLARE_WRITE16_MEMBER(jakks_porta_key_io_w);
+	DECLARE_READ16_MEMBER(jakks_porta_key_io_r);
+	bool m_porta_key_mode;
 
 	DECLARE_DEVICE_IMAGE_LOAD_MEMBER(gamekey_cart);
 
@@ -305,7 +317,48 @@ WRITE16_MEMBER(spg2xx_game_state::walle_portc_w)
 
 READ16_MEMBER(spg2xx_game_state::jakks_porta_r)
 {
+	//logerror("%s: jakks_porta_r\n", machine().describe_context());
 	return m_io_p1->read();
+}
+
+WRITE16_MEMBER(spg2xx_game_state::jakks_porta_w)
+{
+	//logerror("%s: jakks_porta_w %04x\n", machine().describe_context(), data);
+}
+
+WRITE16_MEMBER(spg2xx_game_state::jakks_portb_w)
+{
+	//logerror("%s: jakks_portb_w %04x\n", machine().describe_context(), data);
+}
+
+READ16_MEMBER(jakks_gkr_state::jakks_porta_key_io_r)
+{
+	//logerror("%s: jakks_porta_key_io_r\n", machine().describe_context());
+	if (m_porta_key_mode == false)
+	{
+		return m_io_p1->read();
+	}
+	else
+	{
+		/* masks with 0xf, inverts, and combines it with a previous read (when data written to jakks_porta_key_io_w was 0x0000) and expects result to be 0x0000
+		   could just expect data written to be returned, but that would be a strange check.
+		   all systems seem to respond to the same result, so how is the per-system lock implemented? */
+		return (m_io_p1->read() & 0xfff0) | 0x000f;
+	}
+}
+
+WRITE16_MEMBER(jakks_gkr_state::jakks_porta_key_io_w)
+{
+	//logerror("%s: jakks_porta_key_io_w %04x\n", machine().describe_context(), data);
+	// only seen 0xffff and 0x0000 written here.. writes 0xffff before the 2nd part of the port a gamekey check read.
+	if (data == 0xffff)
+	{
+		m_porta_key_mode = true;
+	}
+	else
+	{
+		m_porta_key_mode = false;
+	}
 }
 
 READ16_MEMBER(spg2xx_game_state::rad_porta_r)
@@ -329,9 +382,21 @@ READ16_MEMBER(spg2xx_game_state::rad_portc_r)
 	return data;
 }
 
-void spg2xx_game_state::mem_map(address_map &map)
+void spg2xx_game_state::mem_map_4m(address_map &map)
 {
 	map(0x000000, 0x3fffff).bankr("cartbank");
+	map(0x000000, 0x003fff).m(m_spg, FUNC(spg2xx_device::map));
+}
+
+void spg2xx_game_state::mem_map_2m(address_map &map)
+{
+	map(0x000000, 0x1fffff).mirror(0x200000).bankr("cartbank");
+	map(0x000000, 0x003fff).m(m_spg, FUNC(spg2xx_device::map));
+}
+
+void spg2xx_game_state::mem_map_1m(address_map &map)
+{
+	map(0x000000, 0x0fffff).mirror(0x300000).bankr("cartbank");
 	map(0x000000, 0x003fff).m(m_spg, FUNC(spg2xx_device::map));
 }
 
@@ -763,7 +828,7 @@ DEVICE_IMAGE_LOAD_MEMBER(vii_state, vii_cart)
 void spg2xx_game_state::spg2xx_base(machine_config &config)
 {
 	UNSP(config, m_maincpu, XTAL(27'000'000));
-	m_maincpu->set_addrmap(AS_PROGRAM, &spg2xx_game_state::mem_map);
+	m_maincpu->set_addrmap(AS_PROGRAM, &spg2xx_game_state::mem_map_4m);
 
 	SCREEN(config, m_screen, SCREEN_TYPE_RASTER);
 	m_screen->set_refresh_hz(60);
@@ -828,6 +893,8 @@ void spg2xx_game_state::jakks(machine_config &config)
 	spg2xx_base(config);
 
 	m_spg->porta_in().set(FUNC(spg2xx_game_state::jakks_porta_r));
+	m_spg->porta_out().set(FUNC(spg2xx_game_state::jakks_porta_w));
+	m_spg->portb_out().set(FUNC(spg2xx_game_state::jakks_portb_w));
 
 	I2CMEM(config, m_i2cmem, 0).set_data_size(0x200);
 }
@@ -861,23 +928,37 @@ void jakks_gkr_state::jakks_gkr(machine_config &config)
 {
 	walle(config);
 
+	m_spg->porta_in().set(FUNC(jakks_gkr_state::jakks_porta_key_io_r));
+	m_spg->porta_out().set(FUNC(jakks_gkr_state::jakks_porta_key_io_w));
+
 	GENERIC_CARTSLOT(config, m_cart, generic_plain_slot, "jakks_gamekey");
 	m_cart->set_width(GENERIC_ROM16_WIDTH);
 	m_cart->set_device_load(device_image_load_delegate(&jakks_gkr_state::device_image_load_gamekey_cart, this));
+}
 
+void jakks_gkr_state::jakks_gkr_1m(machine_config &config)
+{
+	jakks_gkr(config);
+	m_maincpu->set_addrmap(AS_PROGRAM, &jakks_gkr_state::mem_map_1m);
+}
+
+void jakks_gkr_state::jakks_gkr_2m(machine_config &config)
+{
+	jakks_gkr(config);
+	m_maincpu->set_addrmap(AS_PROGRAM, &jakks_gkr_state::mem_map_2m);
 }
 
 void jakks_gkr_state::jakks_gkr_nk(machine_config &config)
 {
 	jakks_gkr(config);
-
+	m_maincpu->set_addrmap(AS_PROGRAM, &jakks_gkr_state::mem_map_1m);
 	SOFTWARE_LIST(config, "jakks_gamekey_nk").set_original("jakks_gamekey_nk");
 }
 
 void jakks_gkr_state::jakks_gkr_dy(machine_config &config)
 {
 	jakks_gkr(config);
-
+	m_maincpu->set_addrmap(AS_PROGRAM, &jakks_gkr_state::mem_map_1m);
 	SOFTWARE_LIST(config, "jakks_gamekey_dy").set_original("jakks_gamekey_dy");
 }
 
@@ -885,7 +966,7 @@ void jakks_gkr_state::jakks_gkr_dy(machine_config &config)
 void spg2xx_game_state::walle(machine_config &config)
 {
 	jakks(config);
-
+	m_maincpu->set_addrmap(AS_PROGRAM, &spg2xx_game_state::mem_map_2m);
 	m_spg->portc_in().set_ioport("C");
 	m_spg->portc_out().set(FUNC(spg2xx_game_state::walle_portc_w));
 }
@@ -1179,11 +1260,11 @@ CONS( 2004, jak_batm, 0, 0, jakks, batman, spg2xx_game_state, empty_init, "JAKKS
 CONS( 2008, jak_wall, 0, 0, walle, walle,  spg2xx_game_state, empty_init, "JAKKS Pacific Inc / HotGen Ltd", "Wall-E (JAKKS Pacific TV Game)",              MACHINE_IMPERFECT_SOUND | MACHINE_IMPERFECT_GRAPHICS )
 
 // 'Game-Key Ready' JAKKS games (these can also take per-game specific expansion cartridges, although not all games had them released)  Some of these were available in versions without Game-Key ports, it is unconfirmed if code was the same unless otherwise stated
-CONS( 2005, jak_wwe,  0, 0, jakks_gkr,    jak_gkr,jakks_gkr_state, empty_init, "JAKKS Pacific Inc / HotGen Ltd",          "WWE (JAKKS Pacific TV Game, Game-Key Ready)",            MACHINE_IMPERFECT_SOUND | MACHINE_IMPERFECT_GRAPHICS ) // WW (no game-keys released)
-CONS( 2005, jak_fan4, 0, 0, jakks_gkr,    jak_gkr,jakks_gkr_state, empty_init, "JAKKS Pacific Inc / Digital Eclipse",     "Fantastic Four (JAKKS Pacific TV Game, Game-Key Ready)", MACHINE_IMPERFECT_SOUND | MACHINE_IMPERFECT_GRAPHICS ) // F4 (no game-keys released)
-CONS( 2005, jak_just, 0, 0, jakks_gkr,    jak_gkr,jakks_gkr_state, empty_init, "JAKKS Pacific Inc / Taniko",              "Justice League (JAKKS Pacific TV Game, Game-Key Ready)", MACHINE_NOT_WORKING | MACHINE_IMPERFECT_SOUND | MACHINE_IMPERFECT_GRAPHICS ) // DC (no game-keys released)
-CONS( 2005, jak_dora, 0, 0, jakks_gkr_nk, jak_gkr,jakks_gkr_state, empty_init, "JAKKS Pacific Inc / Handheld Games",      "Dora the Explorer (JAKKS Pacific TV Game, Game-Key Ready)", MACHINE_NOT_WORKING | MACHINE_IMPERFECT_SOUND | MACHINE_IMPERFECT_GRAPHICS ) // uses NK keys (same as Nicktoons & Spongebob) (3+ released)
-CONS( 2005, jak_sdoo, 0, 0, jakks_gkr,    jak_gkr,jakks_gkr_state, empty_init, "JAKKS Pacific Inc / Jolliford Management","Scooby-Doo! and the Mystery of the Castle (JAKKS Pacific TV Game, Game-Key Ready)", MACHINE_NOT_WORKING | MACHINE_IMPERFECT_SOUND | MACHINE_IMPERFECT_GRAPHICS ) //  SD (no game-keys released)
+CONS( 2005, jak_wwe,  0, 0, jakks_gkr_1m, jak_gkr,jakks_gkr_state, empty_init, "JAKKS Pacific Inc / HotGen Ltd",          "WWE (JAKKS Pacific TV Game, Game-Key Ready)",            MACHINE_IMPERFECT_SOUND | MACHINE_IMPERFECT_GRAPHICS ) // WW (no game-keys released)
+CONS( 2005, jak_fan4, 0, 0, jakks_gkr_1m, jak_gkr,jakks_gkr_state, empty_init, "JAKKS Pacific Inc / Digital Eclipse",     "Fantastic Four (JAKKS Pacific TV Game, Game-Key Ready)", MACHINE_IMPERFECT_SOUND | MACHINE_IMPERFECT_GRAPHICS ) // F4 (no game-keys released)
+CONS( 2005, jak_just, 0, 0, jakks_gkr_1m, jak_gkr,jakks_gkr_state, empty_init, "JAKKS Pacific Inc / Taniko",              "Justice League (JAKKS Pacific TV Game, Game-Key Ready)", MACHINE_NOT_WORKING | MACHINE_IMPERFECT_SOUND | MACHINE_IMPERFECT_GRAPHICS ) // DC (no game-keys released)
+CONS( 2005, jak_dora, 0, 0, jakks_gkr_nk, jak_gkr,jakks_gkr_state, empty_init, "JAKKS Pacific Inc / Handheld Games",      "Dora the Explorer - Race To Play Park (JAKKS Pacific TV Game, Game-Key Ready)", MACHINE_IMPERFECT_SOUND | MACHINE_IMPERFECT_GRAPHICS ) // uses NK keys (same as Nicktoons & Spongebob) (3+ released)
+CONS( 2005, jak_sdoo, 0, 0, jakks_gkr_2m, jak_gkr,jakks_gkr_state, empty_init, "JAKKS Pacific Inc / Jolliford Management","Scooby-Doo! and the Mystery of the Castle (JAKKS Pacific TV Game, Game-Key Ready)", MACHINE_NOT_WORKING | MACHINE_IMPERFECT_SOUND | MACHINE_IMPERFECT_GRAPHICS ) //  SD (no game-keys released)
 CONS( 2005, jak_disf, 0, 0, jakks_gkr_dy, jak_gkr,jakks_gkr_state, empty_init, "JAKKS Pacific Inc / HotGen Ltd",          "Disney Friends (JAKKS Pacific TV Game, Game-Key Ready)", MACHINE_NOT_WORKING | MACHINE_IMPERFECT_SOUND | MACHINE_IMPERFECT_GRAPHICS ) // uses DY keys (3 released)
 
 // Nicktoons                                   NK (3? keys available) (same keys as Dora the Explorer)
