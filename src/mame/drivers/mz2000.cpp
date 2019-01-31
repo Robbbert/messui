@@ -903,19 +903,19 @@ MACHINE_CONFIG_START(mz2000_state::mz2000)
 
 	MB8877(config, m_mb8877a, 1_MHz_XTAL);
 
-	MCFG_FLOPPY_DRIVE_ADD("mb8877a:0", mz2000_floppies, "dd", mz2000_state::floppy_formats)
-	MCFG_FLOPPY_DRIVE_ADD("mb8877a:1", mz2000_floppies, "dd", mz2000_state::floppy_formats)
-	MCFG_FLOPPY_DRIVE_ADD("mb8877a:2", mz2000_floppies, "dd", mz2000_state::floppy_formats)
-	MCFG_FLOPPY_DRIVE_ADD("mb8877a:3", mz2000_floppies, "dd", mz2000_state::floppy_formats)
+	FLOPPY_CONNECTOR(config, "mb8877a:0", mz2000_floppies, "dd", mz2000_state::floppy_formats);
+	FLOPPY_CONNECTOR(config, "mb8877a:1", mz2000_floppies, "dd", mz2000_state::floppy_formats);
+	FLOPPY_CONNECTOR(config, "mb8877a:2", mz2000_floppies, "dd", mz2000_state::floppy_formats);
+	FLOPPY_CONNECTOR(config, "mb8877a:3", mz2000_floppies, "dd", mz2000_state::floppy_formats);
 
-	MCFG_SOFTWARE_LIST_ADD("flop_list", "mz2000_flop")
+	SOFTWARE_LIST(config, "flop_list").set_original("mz2000_flop");
 
 	CASSETTE(config, m_cass);
 	m_cass->set_formats(mz700_cassette_formats);
 	m_cass->set_default_state(CASSETTE_STOPPED | CASSETTE_MOTOR_ENABLED | CASSETTE_SPEAKER_ENABLED);
 	m_cass->set_interface("mz_cass");
 
-	MCFG_SOFTWARE_LIST_ADD("cass_list","mz2000_cass")
+	SOFTWARE_LIST(config, "cass_list").set_original("mz2000_cass");
 
 	/* video hardware */
 	MCFG_SCREEN_ADD("screen", RASTER)

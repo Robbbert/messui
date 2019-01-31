@@ -441,7 +441,7 @@ MACHINE_CONFIG_START(z80ne_state::z80ne)
 	RAM(config, m_ram).set_default_size("32K");
 
 	// all known tapes require LX.388 expansion
-	//MCFG_SOFTWARE_LIST_ADD("cass_list","z80ne_cass")
+	//SOFTWARE_LIST(config, "cass_list").set_original("z80ne_cass");
 MACHINE_CONFIG_END
 
 MACHINE_CONFIG_START(z80ne_state::z80net)
@@ -480,7 +480,7 @@ MACHINE_CONFIG_START(z80ne_state::z80net)
 	/* internal ram */
 	m_ram->set_default_size("32K").set_extra_options("1K");
 
-	MCFG_SOFTWARE_LIST_ADD("cass_list","z80ne_cass")
+	SOFTWARE_LIST(config, "cass_list").set_original("z80ne_cass");
 MACHINE_CONFIG_END
 
 MACHINE_CONFIG_START(z80ne_state::z80netb)
@@ -530,7 +530,7 @@ MACHINE_CONFIG_START(z80ne_state::z80netb)
 	/* internal ram */
 	RAM(config, m_ram).set_default_size("32K").set_extra_options("1K");
 
-	MCFG_SOFTWARE_LIST_ADD("cass_list","z80ne_cass")
+	SOFTWARE_LIST(config, "cass_list").set_original("z80ne_cass");
 MACHINE_CONFIG_END
 
 MACHINE_CONFIG_START(z80netf_state::z80netf)
@@ -566,18 +566,18 @@ MACHINE_CONFIG_START(z80netf_state::z80netf)
 	// other lines not connected
 
 	FD1771(config, m_wd1771, 2_MHz_XTAL / 2);
-	MCFG_FLOPPY_DRIVE_ADD("wd1771:0", z80ne_floppies, "sssd", z80ne_state::floppy_formats)
-	MCFG_FLOPPY_DRIVE_ADD("wd1771:1", z80ne_floppies, "sssd", z80ne_state::floppy_formats)
-	MCFG_FLOPPY_DRIVE_ADD("wd1771:2", z80ne_floppies, nullptr,   z80ne_state::floppy_formats)
-	MCFG_FLOPPY_DRIVE_ADD("wd1771:3", z80ne_floppies, nullptr,   z80ne_state::floppy_formats)
+	FLOPPY_CONNECTOR(config, "wd1771:0", z80ne_floppies, "sssd", z80ne_state::floppy_formats);
+	FLOPPY_CONNECTOR(config, "wd1771:1", z80ne_floppies, "sssd", z80ne_state::floppy_formats);
+	FLOPPY_CONNECTOR(config, "wd1771:2", z80ne_floppies, nullptr,   z80ne_state::floppy_formats);
+	FLOPPY_CONNECTOR(config, "wd1771:3", z80ne_floppies, nullptr,   z80ne_state::floppy_formats);
 
 	config.set_default_layout(layout_z80netf);
 
 	/* internal ram */
 	RAM(config, m_ram).set_default_size("56K");
 
-	MCFG_SOFTWARE_LIST_ADD("cass_list","z80ne_cass")
-	MCFG_SOFTWARE_LIST_ADD("flop_list","z80ne_flop")
+	SOFTWARE_LIST(config, "cass_list").set_original("z80ne_cass");
+	SOFTWARE_LIST(config, "flop_list").set_original("z80ne_flop");
 MACHINE_CONFIG_END
 
 /******************************************************************************

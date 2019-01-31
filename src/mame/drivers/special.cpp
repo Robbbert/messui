@@ -403,7 +403,7 @@ MACHINE_CONFIG_START(special_state::special)
 	m_cassette->set_default_state(CASSETTE_STOPPED | CASSETTE_SPEAKER_ENABLED | CASSETTE_MOTOR_ENABLED);
 	m_cassette->set_interface("special_cass");
 
-	MCFG_SOFTWARE_LIST_ADD("cass_list","special_cass")
+	SOFTWARE_LIST(config, "cass_list").set_original("special_cass");
 MACHINE_CONFIG_END
 
 MACHINE_CONFIG_START(special_state::specialp)
@@ -466,9 +466,9 @@ MACHINE_CONFIG_START(special_state::specimx)
 
 	FD1793(config, m_fdc, 8_MHz_XTAL / 8);
 	m_fdc->drq_wr_callback().set(FUNC(special_state::fdc_drq));
-	MCFG_FLOPPY_DRIVE_ADD("fd0", specimx_floppies, "525qd", special_state::specimx_floppy_formats)
-	MCFG_FLOPPY_DRIVE_ADD("fd1", specimx_floppies, "525qd", special_state::specimx_floppy_formats)
-	MCFG_SOFTWARE_LIST_ADD("flop_list","special_flop")
+	FLOPPY_CONNECTOR(config, "fd0", specimx_floppies, "525qd", special_state::specimx_floppy_formats);
+	FLOPPY_CONNECTOR(config, "fd1", specimx_floppies, "525qd", special_state::specimx_floppy_formats);
+	SOFTWARE_LIST(config, "flop_list").set_original("special_flop");
 
 	/* internal ram */
 	RAM(config, m_ram).set_default_size("128K").set_default_value(0x00);
@@ -516,8 +516,8 @@ MACHINE_CONFIG_START(special_state::erik)
 
 	FD1793(config, m_fdc, 8_MHz_XTAL / 8);
 	m_fdc->drq_wr_callback().set(FUNC(special_state::fdc_drq));
-	MCFG_FLOPPY_DRIVE_ADD("fd0", specimx_floppies, "525qd", special_state::specimx_floppy_formats)
-	MCFG_FLOPPY_DRIVE_ADD("fd1", specimx_floppies, "525qd", special_state::specimx_floppy_formats)
+	FLOPPY_CONNECTOR(config, "fd0", specimx_floppies, "525qd", special_state::specimx_floppy_formats);
+	FLOPPY_CONNECTOR(config, "fd1", specimx_floppies, "525qd", special_state::specimx_floppy_formats);
 
 	/* internal ram */
 	RAM(config, m_ram).set_default_size("192K").set_default_value(0x00);

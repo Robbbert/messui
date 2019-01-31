@@ -705,17 +705,18 @@ MACHINE_CONFIG_START(kdt6_state::psi98)
 	m_centronics->select_handler().set("pio", FUNC(z80pio_device::pa5_w));
 
 	INPUT_BUFFER(config, "cent_data_in");
-	MCFG_CENTRONICS_OUTPUT_LATCH_ADD("cent_data_out", "centronics")
+	output_latch_device &latch(OUTPUT_LATCH(config, "cent_data_out"));
+	m_centronics->set_output_latch(latch);
 
 	UPD1990A(config, m_rtc);
 
 	UPD765A(config, m_fdc, 8'000'000, true, true);
 	m_fdc->intrq_wr_callback().set("ctc1", FUNC(z80ctc_device::trg0));
 	m_fdc->drq_wr_callback().set(FUNC(kdt6_state::fdc_drq_w));
-	MCFG_FLOPPY_DRIVE_ADD("fdc:0", kdt6_floppies, "fd55f", floppy_image_device::default_floppy_formats)
-	MCFG_FLOPPY_DRIVE_ADD("fdc:1", kdt6_floppies, "fd55f", floppy_image_device::default_floppy_formats)
+	FLOPPY_CONNECTOR(config, "fdc:0", kdt6_floppies, "fd55f", floppy_image_device::default_floppy_formats);
+	FLOPPY_CONNECTOR(config, "fdc:1", kdt6_floppies, "fd55f", floppy_image_device::default_floppy_formats);
 
-	MCFG_SOFTWARE_LIST_ADD("floppy_list", "psi98")
+	SOFTWARE_LIST(config, "floppy_list").set_original("psi98");
 
 	MCFG_PSI_KEYBOARD_INTERFACE_ADD("kbd", "hle")
 	MCFG_PSI_KEYBOARD_RX_HANDLER(WRITELINE(*this, kdt6_state, keyboard_rx_w))

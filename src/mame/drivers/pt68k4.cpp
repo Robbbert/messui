@@ -422,8 +422,8 @@ MACHINE_CONFIG_START(pt68k4_state::pt68k2)
 	MCFG_DEVICE_ADD(TIMEKEEPER_TAG, M48T02, 0)
 
 	WD1772(config, m_wdfdc, 16_MHz_XTAL / 2);
-	MCFG_FLOPPY_DRIVE_ADD(m_floppy_connector[0], pt68k_floppies, "525dd", pt68k4_state::floppy_formats)
-	MCFG_FLOPPY_DRIVE_ADD(m_floppy_connector[1], pt68k_floppies, "525dd", pt68k4_state::floppy_formats)
+	FLOPPY_CONNECTOR(config, m_floppy_connector[0], pt68k_floppies, "525dd", pt68k4_state::floppy_formats);
+	FLOPPY_CONNECTOR(config, m_floppy_connector[1], pt68k_floppies, "525dd", pt68k4_state::floppy_formats);
 
 	ISA8(config, m_isa, 0);
 	m_isa->set_custom_spaces();
@@ -440,7 +440,7 @@ MACHINE_CONFIG_START(pt68k4_state::pt68k2)
 	MCFG_DEVICE_ADD(SPEAKER_TAG, SPEAKER_SOUND)
 	MCFG_SOUND_ROUTE(ALL_OUTPUTS, "mono", 1.00)
 
-	MCFG_SOFTWARE_LIST_ADD("flop525_list", "pt68k2")
+	SOFTWARE_LIST(config, "flop525_list").set_original("pt68k2");
 MACHINE_CONFIG_END
 
 MACHINE_CONFIG_START(pt68k4_state::pt68k4)
@@ -477,7 +477,7 @@ MACHINE_CONFIG_START(pt68k4_state::pt68k4)
 	MCFG_DEVICE_ADD(SPEAKER_TAG, SPEAKER_SOUND)
 	MCFG_SOUND_ROUTE(ALL_OUTPUTS, "mono", 1.00)
 
-	MCFG_SOFTWARE_LIST_ADD("flop525_list", "pt68k2")
+	SOFTWARE_LIST(config, "flop525_list").set_original("pt68k2");
 MACHINE_CONFIG_END
 
 /* ROM definition */

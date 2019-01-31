@@ -52,8 +52,7 @@ DEFINE_DEVICE_TYPE(SPG28X, spg28x_device, "spg28x", "SPG280-series System-on-a-C
 #define LOG_PPU             (LOG_PPU_READS | LOG_PPU_WRITES | LOG_UNKNOWN_PPU)
 #define LOG_ALL             (LOG_IO | LOG_SPU | LOG_PPU | LOG_VLINES | LOG_SEGMENT | LOG_FIQ)
 
-#define VERBOSE             (LOG_ALL & ~LOG_SPU)
-//#define VERBOSE             (0)
+//#define VERBOSE             (LOG_ALL & ~LOG_SPU)
 #include "logmacro.h"
 
 #define SPG_DEBUG_VIDEO     (0)
@@ -73,7 +72,7 @@ spg2xx_device::spg2xx_device(const machine_config &mconfig, device_type type, co
 	, m_porta_in(*this)
 	, m_portb_in(*this)
 	, m_portc_in(*this)
-	, m_adc_in(*this)
+	, m_adc_in{{*this}, {*this}}
 	, m_eeprom_w(*this)
 	, m_eeprom_r(*this)
 	, m_uart_tx(*this)
@@ -125,7 +124,8 @@ void spg2xx_device::device_start()
 	m_porta_in.resolve_safe(0);
 	m_portb_in.resolve_safe(0);
 	m_portc_in.resolve_safe(0);
-	m_adc_in.resolve_safe(0x0fff);
+	m_adc_in[0].resolve_safe(0x0fff);
+	m_adc_in[1].resolve_safe(0x0fff);
 	m_eeprom_w.resolve_safe();
 	m_eeprom_r.resolve_safe(0);
 	m_uart_tx.resolve_safe();
@@ -1634,9 +1634,13 @@ WRITE16_MEMBER(spg2xx_device::io_w)
 	{
 		LOGMASKED(LOG_IO_WRITES, "%s: io_w: ADC Control = %04x\n", machine().describe_context(), data);
 		m_io_regs[offset] = data & ~0x1000;
+		if (BIT(data, 0))
+		{
+			m_io_regs[0x27] = 0x8000 | (m_adc_in[BIT(data, 5)]() & 0x7fff);
+			m_io_regs[0x25] |= 0x2000;
+		}
 		if (BIT(data, 12) && !BIT(m_io_regs[offset], 1))
 		{
-			m_io_regs[0x27] = 0x8000 | (m_adc_in() & 0x7fff);
 			const uint16_t old = IO_IRQ_STATUS;
 			IO_IRQ_STATUS |= 0x2000;
 			const uint16_t changed = (old & IO_IRQ_ENABLE) ^ (IO_IRQ_STATUS & IO_IRQ_ENABLE);

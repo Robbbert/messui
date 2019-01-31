@@ -2162,12 +2162,12 @@ MACHINE_CONFIG_START(cmi_state::cmi2x)
 	MCFG_DEVICE_ADD("maincpu1", MC6809E, Q209_CPU_CLOCK)
 	MCFG_DEVICE_PROGRAM_MAP(maincpu1_map)
 	MCFG_DEVICE_IRQ_ACKNOWLEDGE_DRIVER(cmi_state, cpu1_interrupt_callback)
-	MCFG_QUANTUM_PERFECT_CPU("maincpu1")
+	config.m_perfect_cpu_quantum = subtag("maincpu1");
 
 	MCFG_DEVICE_ADD("maincpu2", MC6809E, Q209_CPU_CLOCK)
 	MCFG_DEVICE_PROGRAM_MAP(maincpu2_map)
 	MCFG_DEVICE_IRQ_ACKNOWLEDGE_DRIVER(cmi_state, cpu2_interrupt_callback)
-	MCFG_QUANTUM_PERFECT_CPU("maincpu2")
+	config.m_perfect_cpu_quantum = subtag("maincpu2");
 
 	MCFG_DEVICE_ADD("muskeys", M6802, 4_MHz_XTAL)
 	MCFG_DEVICE_PROGRAM_MAP(muskeys_map)
@@ -2283,8 +2283,8 @@ MACHINE_CONFIG_START(cmi_state::cmi2x)
 	FD1791(config, m_wd1791, 16_MHz_XTAL / 8); // wd1791_interface
 	m_wd1791->intrq_wr_callback().set(FUNC(cmi_state::wd1791_irq));
 	m_wd1791->drq_wr_callback().set(FUNC(cmi_state::wd1791_drq));
-	MCFG_FLOPPY_DRIVE_ADD("wd1791:0", cmi2x_floppies, "8dsdd", floppy_image_device::default_floppy_formats)
-	MCFG_FLOPPY_DRIVE_ADD("wd1791:1", cmi2x_floppies, "8dsdd", floppy_image_device::default_floppy_formats)
+	FLOPPY_CONNECTOR(config, "wd1791:0", cmi2x_floppies, "8dsdd", floppy_image_device::default_floppy_formats);
+	FLOPPY_CONNECTOR(config, "wd1791:1", cmi2x_floppies, "8dsdd", floppy_image_device::default_floppy_formats);
 
 	/* Musical keyboard */
 	PIA6821(config, m_cmi10_pia_u20, 0);
