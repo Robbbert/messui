@@ -907,6 +907,9 @@ adam                            // Coleco Adam
 @source:adm23.cpp
 adm23                           //
 
+@source:adm31.cpp
+adm31                           //
+
 @source:adp.cpp
 fashiong                        // (c) 1997
 fashiong2                       // (c) 1997
@@ -1847,6 +1850,7 @@ lovestuk                        // (c) 200?
 luigibal                        // (c) 2007
 lucky88                         // (c) 2007
 magforst                        // (c) 2005
+magician                        // (c) 2006
 magmerm                         // (c) 2003
 mchilli                         // (c) 2008
 mchilliq                        // (c) 2010
@@ -9262,6 +9266,9 @@ c128dcr_se                      //
 c128dcrp                        //
 c128dp                          //
 c128p                           //
+
+@source:c2color.cpp
+c2color
 
 @source:c64.cpp
 c64                             //
@@ -18142,6 +18149,10 @@ lckydraw                        // (c) 1979 Mirco
 
 @source:lcmate2.cpp
 lcmate2                         //
+
+@source:leapfrog_leappad.cpp
+leappad
+mfleappad
 
 @source:leapster.cpp
 leapster                        //
@@ -28688,6 +28699,7 @@ mugsmash                        // (c) Electronic Devices (Italy) / 3D Games (En
 crzmon2                         // (c) 2010
 crzmon2_2                       // (c) 2010
 crzmon2_3                       // (c) 2010
+crzmon2_4                       // (c) 2010
 czmon_13                        // (c) 2003
 czmon_15                        // (c) 2003
 czmon_16                        // (c) 2003
@@ -28729,6 +28741,7 @@ gnome_9                         // (c) 2007
 goldfish                        // (c) 2002 - Prototype of Multifish
 island                          // (c) 2005
 island_2                        // (c) 2005
+island_3                        // (c) 2005
 island2                         // (c) 2006
 island2_3                       // (c) 2006
 island2_4                       // (c) 2006
@@ -28739,6 +28752,8 @@ keks_2                          // (c) 2006
 keks_3                          // (c) 2006
 keks_4                          // (c) 2006
 keks_5                          // (c) 2006
+keks_6                          // (c) 2006
+keks_7                          // (c) 2006
 lhaunt_10                       // (c) 2003
 lhaunt_11                       // (c) 2003
 lhaunt_2                        // (c) 2003
@@ -28756,6 +28771,7 @@ mfish_8                         // (c) 2002
 pirate_2                        // (c) 2005
 pirate_3                        // (c) 2005
 pirate_4                        // (c) 2005
+pirate_5                        // (c) 2005
 pirate2                         // (c) 2006
 pirate2_2                       // (c) 2006
 pirate2_3                       // (c) 2006
@@ -28773,9 +28789,11 @@ resdnt_8                        // (c) 2004
 resdnt_9                        // (c) 2004
 rollfr_2                        // (c) 2003
 rollfr_3                        // (c) 2003
-rollfr_4                        // (c) 2003 (bootleg?)
+rollfr_4                        // (c) 2003
+rollfr_5                        // (c) 2003
 sweetl                          // (c) 2004
 sweetl_2                        // (c) 2004
+sweetl_3                        // (c) 2004
 sweetl2                         // (c) 2007
 sweetl2_2                       // (c) 2007
 sweetl2_3                       // (c) 2007
@@ -29767,7 +29785,8 @@ vf4tunedd                       // 2004.10 Virtua Fighter 4 Final Tuned (Rev D)
 vfurlong                        // 2005.03 Net Select Keiba Victory Furlong
 virnba                          // 2000.02 Virtua NBA (USA)
 virnbao                         // 2000.02 Virtua NBA
-virnbap                         // 2000.02 Virtua NBA (prototype)
+virnbap                         // 1999.?? Virtua NBA (prototype)
+virnbapa                        // 1999.11 Virtua NBA (prototype, 15.11)
 vonot                           // 2000.06 Virtual-on Oratorio Tangram M.S.B.S. Ver.5.66 2000 Edition
 vs2_2ko                         // 1999.08 Virtua Striker 2 version 2000
 vs2_2k                          // 1999.08 Virtua Striker 2 version 2000 (Rev C)
@@ -30299,6 +30318,7 @@ svcpcba                         // 0269 (c) 2003 Playmore / Capcom - JAMMA PCB
 98best44                        //
 neoprint                        //
 npcartv1                        //
+npmillen                        //
 nprsp                           //
 
 @source:neptunp2.cpp
@@ -30335,6 +30355,7 @@ mc_aa2
 mc_105te
 mc_sp69
 polmega
+silv35
 mc_dcat8
 mc_dcat8a
 pjoyn50
@@ -33105,6 +33126,8 @@ rad_bb3
 rad_bb3p
 rad_hnt3
 rad_hnt3p
+rad_bask
+rad_baskp
 
 @source:rad_eu3a05.cpp
 rad_sinv
@@ -36293,7 +36316,10 @@ humlan                          // (c) 2001 Subsino & Truemax
 mtrain                          // (c) 1996 Subsino
 new2001                         // (c) 2000 Subsino
 ptrain                          // (c) 1999 Subsino
-queenbee                        // (c) 2001 Subsino
+queenbee                        // (c) 2001 American Alpha
+queenbeeb                       // (c) 2001 Subsino
+queenbeei                       // (c) 2001 Subsino
+queenbeesa                      // (c) 2001 Subsino
 saklove                         // (c) 1998 Subsino
 squeenb                         // (c) 2002 Subsino
 wtrnymph                        // (c) 1996 Subsino
@@ -37442,6 +37468,8 @@ ti83                            // 1996 TI-83 (Z80 6 MHz)
 ti83p                           // 1999 TI-83 Plus (Boot Code 1.00) (Z80 6 MHz)
 ti83pb                          // 20?? TI-83 Plus (Bootleg) (Z80 6 MHz)
 ti83pse                         // 2001 TI-83 Plus Silver Edition (Boot Code 1.00)
+ti83pseb                        // 20?? TI-83 Plus Silver Edition (Bootleg)
+ti83pcev15                      //
 ti84p                           // 2004 TI-84 Plus (Boot Code 1.00)
 ti84pv2                         // 200? TI-84 Plus (Boot Code 1.02)
 ti84pv3                         // 2011 TI-84 Plus (Boot Code 1.03)
@@ -37453,6 +37481,7 @@ ti84pob                         // 201? TI-84 Plus Orion (Bootleg)
 ti84pov2                        // 201? TI-84 Plus Orion (Boot Code 1.02)
 ti84pov3                        // 201? TI-84 Plus Orion (Boot Code 1.03)
 ti84pcse                        // 20?? TI-84 Plus Color Silver Edition (Boot Code 4.0)
+ti84pcsev2                      //
 ti84pce                         // 2015 TI-84 Plus Color Edition (Boot Code 5.00)
 ti84pcev15                      // 2016 TI-84 Plus Color Edition (Boot Code 5.15)
 ti84pcev30                      // 2017 TI-84 Plus Color Edition (Boot Code 5.30)
@@ -38652,6 +38681,7 @@ mattelcs                        //
 vsmile                          //
 vsmilef                         //
 vsmileg                         //
+vsmilem                         //
 
 @source:vsmileb.cpp
 vsmileb                         //
@@ -39801,6 +39831,10 @@ epo_sdb                         //
 epo_guru                        //
 epo_dmon                        //
 rad_rh                          //
+rad_ssx                         //
+rad_ssxp                        //
+rad_sbw                         //
+rad_bdp                         //
 has_wamg                        //
 ekara                           //
 ekaraa                          //
@@ -39814,15 +39848,17 @@ ttv_sw                          //
 ttv_lotr                        //
 ttv_mx                          //
 drgqst                          //
+tmy_thom                        //
 xavtenni                        //
 xavbaseb                        //
 xavbassf                        //
 xavbowl                         //
 xavbox                          //
 xavjmat                         //
-tmy_thom                        //
+xavmusic                        //
 domfitex                        //
 domfitch                        //
+domdance                        //
 domfitad                        //
 dombikec                        //
 
@@ -39855,6 +39891,7 @@ xmena                           // GX065 (c) 1992 (Asia)
 xmenaa                          // GX065 (c) 1992 (Asia)
 xmene                           // GX065 (c) 1992 (World)
 xmenj                           // GX065 (c) 1992 (Japan)
+xmenja                          // GX065 (c) 1992 (Japan)
 
 @source:xor100.cpp
 xor100                          //

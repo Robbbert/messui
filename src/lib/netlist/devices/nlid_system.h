@@ -52,7 +52,7 @@ namespace netlist
 
 		NETLIB_RESETI()
 		{
-			m_Q.net().set_time(netlist_time::zero());
+			m_Q.net().set_next_scheduled_time(netlist_time::zero());
 		}
 
 		NETLIB_UPDATE_PARAMI()
@@ -65,7 +65,7 @@ namespace netlist
 			logic_net_t &net = m_Q.net();
 			// this is only called during setup ...
 			net.toggle_new_Q();
-			net.set_time(exec().time() + m_inc);
+			net.set_next_scheduled_time(exec().time() + m_inc);
 		}
 
 	public:
@@ -73,13 +73,6 @@ namespace netlist
 
 		param_double_t m_freq;
 		netlist_time m_inc;
-
-		static void mc_update(logic_net_t &net)
-		{
-			net.toggle_new_Q();
-			net.update_devs();
-		}
-
 	};
 
 	// -----------------------------------------------------------------------------
@@ -158,6 +151,10 @@ namespace netlist
 		NETLIB_UPDATEI();
 		NETLIB_RESETI();
 		//NETLIB_UPDATE_PARAMI();
+
+		NETLIB_HANDLERI(clk2);
+		NETLIB_HANDLERI(clk2_pow2);
+
 	protected:
 
 		param_double_t m_freq;
@@ -187,11 +184,9 @@ namespace netlist
 			set_logic_family(setup().family_from_model(m_FAMILY()));
 		}
 
-		NETLIB_UPDATE_AFTER_PARAM_CHANGE()
-
-		NETLIB_UPDATEI();
-		NETLIB_RESETI();
-		NETLIB_UPDATE_PARAMI();
+		NETLIB_UPDATEI() { }
+		NETLIB_RESETI() { m_Q.initial(0); }
+		NETLIB_UPDATE_PARAMI() { m_Q.push(m_IN() & 1, netlist_time::from_nsec(1)); }
 
 	protected:
 		logic_output_t m_Q;
@@ -207,11 +202,11 @@ namespace netlist
 		, m_IN(*this, "IN", 0.0)
 		{
 		}
-		NETLIB_UPDATE_AFTER_PARAM_CHANGE()
 
-		NETLIB_UPDATEI();
-		NETLIB_RESETI();
-		NETLIB_UPDATE_PARAMI();
+		NETLIB_UPDATEI() { 	}
+		NETLIB_RESETI() { m_Q.initial(0.0); }
+		NETLIB_UPDATE_PARAMI() { m_Q.push(m_IN()); }
+
 	protected:
 		analog_output_t m_Q;
 		param_double_t m_IN;

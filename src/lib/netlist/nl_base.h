@@ -123,36 +123,30 @@ class NETLIB_NAME(name) : public device_t
 #define NETLIB_TIMESTEPI()                                                     \
 	public: virtual void timestep(const nl_double step) override
 
-#define NETLIB_UPDATE_AFTER_PARAM_CHANGE()                                     \
-	public: virtual bool needs_update_after_param_change() const override { return true; }
-
 #define NETLIB_FAMILY(family) , m_famsetter(*this, family)
 
 #define NETLIB_DELEGATE(chip, name) nldelegate(&NETLIB_NAME(chip) :: name, this)
 
 #define NETLIB_UPDATE_TERMINALSI() public: virtual void update_terminals() override
 #define NETLIB_HANDLERI(name) private: virtual void name() NL_NOEXCEPT
-#define NETLIB_UPDATEI() protected: virtual void update() NL_NOEXCEPT override
+#define NETLIB_UPDATEI() public: virtual void update() NL_NOEXCEPT override
 #define NETLIB_UPDATE_PARAMI() public: virtual void update_param() override
-#define NETLIB_RESETI() protected: virtual void reset() override
+#define NETLIB_RESETI() public: virtual void reset() override
 
 #define NETLIB_TIMESTEP(chip) void NETLIB_NAME(chip) :: timestep(const nl_double step)
 
 #define NETLIB_SUB(chip) nld_ ## chip
 #define NETLIB_SUBXX(ns, chip) std::unique_ptr< ns :: nld_ ## chip >
 
-#define NETLIB_HANDLER(chip, name) void NETLIB_NAME(chip) :: name(void) NL_NOEXCEPT
+#define NETLIB_HANDLER(chip, name) void NETLIB_NAME(chip) :: name() NL_NOEXCEPT
 #define NETLIB_UPDATE(chip) NETLIB_HANDLER(chip, update)
-
-// FIXME: NETLIB_PARENT_UPDATE should disappear
-#define NETLIB_PARENT_UPDATE(chip) NETLIB_NAME(chip) :: update()
 
 #define NETLIB_RESET(chip) void NETLIB_NAME(chip) :: reset(void)
 
-#define NETLIB_UPDATE_PARAM(chip) void NETLIB_NAME(chip) :: update_param(void)
+#define NETLIB_UPDATE_PARAM(chip) void NETLIB_NAME(chip) :: update_param()
 #define NETLIB_FUNC_VOID(chip, name, params) void NETLIB_NAME(chip) :: name params
 
-#define NETLIB_UPDATE_TERMINALS(chip) void NETLIB_NAME(chip) :: update_terminals(void)
+#define NETLIB_UPDATE_TERMINALS(chip) void NETLIB_NAME(chip) :: update_terminals()
 
 //============================================================
 //  Asserts
@@ -499,9 +493,9 @@ namespace netlist
 
 		using list_t = std::vector<core_terminal_t *>;
 
-		static constexpr const unsigned INP_HL_SHIFT = 0;
-		static constexpr const unsigned INP_LH_SHIFT = 1;
-		static constexpr const unsigned INP_ACTIVE_SHIFT = 2;
+		static constexpr const auto INP_HL_SHIFT = 0;
+		static constexpr const auto INP_LH_SHIFT = 1;
+		static constexpr const auto INP_ACTIVE_SHIFT = 2;
 
 		enum state_e {
 			STATE_INP_PASSIVE = 0,
@@ -530,7 +524,6 @@ namespace netlist
 		void clear_net() noexcept { m_net = nullptr; }
 		bool has_net() const noexcept { return (m_net != nullptr); }
 
-
 		const net_t & net() const noexcept { return *m_net;}
 		net_t & net() noexcept { return *m_net;}
 
@@ -544,6 +537,16 @@ namespace netlist
 		void reset() noexcept { set_state(is_type(OUTPUT) ? STATE_OUT : STATE_INP_ACTIVE); }
 
 		nldelegate m_delegate;
+#if USE_COPY_INSTEAD_OF_REFERENCE
+		void set_copied_input(netlist_sig_t val)
+		{
+			m_Q = val;
+		}
+
+		state_var_sig m_Q;
+#else
+		void set_copied_input(netlist_sig_t val) const { plib::unused_var(val); }
+#endif
 
 	private:
 		net_t * m_net;
@@ -713,11 +716,11 @@ namespace netlist
 	{
 	public:
 
-		enum queue_status
+		enum class queue_status
 		{
-			QS_DELAYED_DUE_TO_INACTIVE = 0,
-			QS_QUEUED,
-			QS_DELIVERED
+			DELAYED_DUE_TO_INACTIVE = 0,
+			QUEUED,
+			DELIVERED
 		};
 
 		net_t(netlist_base_t &nl, const pstring &aname, core_terminal_t *mr = nullptr);
@@ -727,19 +730,19 @@ namespace netlist
 
 		void toggle_new_Q() noexcept { m_new_Q = (m_cur_Q ^ 1);   }
 
-		void toggle_and_push_to_queue(const netlist_time delay) NL_NOEXCEPT
+		void toggle_and_push_to_queue(netlist_time delay) NL_NOEXCEPT
 		{
 			toggle_new_Q();
 			push_to_queue(delay);
 		}
 
-		void push_to_queue(const netlist_time delay) NL_NOEXCEPT;
-		bool is_queued() const noexcept { return m_in_queue == QS_QUEUED; }
+		void push_to_queue(netlist_time delay) NL_NOEXCEPT;
+		bool is_queued() const noexcept { return m_in_queue == queue_status::QUEUED; }
 
 		void update_devs() NL_NOEXCEPT;
 
-		const netlist_time time() const noexcept { return m_time; }
-		void set_time(const netlist_time ntime) noexcept { m_time = ntime; }
+		const netlist_time next_scheduled_time() const noexcept { return m_next_scheduled_time; }
+		void set_next_scheduled_time(netlist_time ntime) noexcept { m_next_scheduled_time = ntime; }
 
 		bool isRailNet() const noexcept { return !(m_railterminal == nullptr); }
 		core_terminal_t & railterminal() const noexcept { return *m_railterminal; }
@@ -761,20 +764,31 @@ namespace netlist
 		void move_connections(net_t &dest_net);
 
 		std::vector<core_terminal_t *> m_core_terms; // save post-start m_list ...
-
+#if USE_COPY_INSTEAD_OF_REFERENCE
+		void update_inputs()
+		{
+			for (auto & term : m_core_terms)
+				term->m_Q = m_cur_Q;
+		}
+#else
+		void update_inputs() const
+		{
+			/* nothing needs to be done */
+		}
+#endif
 	protected:
 		state_var<netlist_sig_t> m_new_Q;
 		state_var<netlist_sig_t> m_cur_Q;
 		state_var<queue_status>  m_in_queue;    /* 0: not in queue, 1: in queue, 2: last was taken */
 
-		state_var<netlist_time>  m_time;
+		state_var<netlist_time>  m_next_scheduled_time;
 
 	private:
 		plib::linkedlist_t<core_terminal_t> m_list_active;
 		core_terminal_t * m_railterminal;
 
 		template <typename T>
-		void process(const T mask);
+		void process(const T mask, netlist_sig_t sig);
 	};
 
 	class logic_net_t : public detail::net_t
@@ -785,11 +799,15 @@ namespace netlist
 		virtual ~logic_net_t();
 
 		netlist_sig_t Q() const noexcept { return m_cur_Q; }
-		void initial(const netlist_sig_t val) noexcept { m_cur_Q = m_new_Q = val; }
+		void initial(const netlist_sig_t val) noexcept
+		{
+			m_cur_Q = m_new_Q = val;
+			update_inputs();
+		}
 
 		void set_Q_and_push(const netlist_sig_t newQ, const netlist_time delay) NL_NOEXCEPT
 		{
-			if (newQ != m_new_Q )
+			if (newQ != m_new_Q)
 			{
 				m_new_Q = newQ;
 				push_to_queue(delay);
@@ -808,10 +826,11 @@ namespace netlist
 		{
 			if (newQ != m_new_Q)
 			{
-				m_in_queue = QS_DELAYED_DUE_TO_INACTIVE;
-				m_time = at;
+				m_in_queue = queue_status::DELAYED_DUE_TO_INACTIVE;
+				m_next_scheduled_time = at;
 			}
 			m_cur_Q = m_new_Q = newQ;
+			update_inputs();
 		}
 
 		/* internal state support
@@ -979,7 +998,7 @@ namespace netlist
 		virtual ~param_str_t();
 
 		const pstring &operator()() const NL_NOEXCEPT { return Value(); }
-		void setTo(const pstring &param) NL_NOEXCEPT
+		void setTo(netlist_time time, const pstring &param) NL_NOEXCEPT
 		{
 			if (m_param != param)
 			{
@@ -1086,29 +1105,31 @@ namespace netlist
 
 		virtual ~core_device_t();
 
-		void update_dev() NL_NOEXCEPT
-		{
-			do_update();
-		}
-
 		void do_inc_active() NL_NOEXCEPT
 		{
 			if (m_hint_deactivate)
 			{
-				m_stat_inc_active.inc();
-				inc_active();
+				if (++m_active_outputs == 1)
+				{
+					m_stat_inc_active.inc();
+					inc_active();
+				}
 			}
 		}
 
 		void do_dec_active() NL_NOEXCEPT
 		{
 			if (m_hint_deactivate)
-				dec_active();
+				if (--m_active_outputs == 0)
+				{
+					dec_active();
+				}
 		}
 
-		void do_reset() { reset(); }
 		void set_hint_deactivate(bool v) { m_hint_deactivate = v; }
 		bool get_hint_deactivate() { return m_hint_deactivate; }
+		/* Has to be set in device reset */
+		void set_active_outputs(int n) { m_active_outputs = n; }
 
 		void set_default_delegate(detail::core_terminal_t &term);
 
@@ -1117,18 +1138,13 @@ namespace netlist
 		nperfcount_t<NL_KEEP_STATISTICS> m_stat_call_count;
 		nperfcount_t<NL_KEEP_STATISTICS> m_stat_inc_active;
 
+		virtual void update() NL_NOEXCEPT { }
+		virtual void reset() { }
 
 	protected:
 
-		virtual void update() NL_NOEXCEPT { }
 		virtual void inc_active() NL_NOEXCEPT {  }
 		virtual void dec_active() NL_NOEXCEPT {  }
-		virtual void reset() { }
-
-		void do_update() NL_NOEXCEPT
-		{
-			update();
-		}
 
 		log_type & log();
 
@@ -1139,10 +1155,10 @@ namespace netlist
 		virtual void update_param() {}
 		virtual bool is_dynamic() const { return false; }
 		virtual bool is_timestep() const { return false; }
-		virtual bool needs_update_after_param_change() const { return false; }
 
 	private:
-		bool m_hint_deactivate;
+		bool 			m_hint_deactivate;
+		state_var_s32   m_active_outputs;
 	};
 
 	// -----------------------------------------------------------------------------
@@ -1222,8 +1238,8 @@ namespace netlist
 	protected:
 
 		void register_state(plib::state_manager_t &manager, const pstring &module) override;
-		void on_pre_save() override;
-		void on_post_load() override;
+		void on_pre_save(plib::state_manager_t &manager) override;
+		void on_post_load(plib::state_manager_t &manager) override;
 
 	private:
 		std::size_t m_qsize;
@@ -1289,8 +1305,6 @@ namespace netlist
 
 		template <typename T>
 		void register_net(plib::owned_ptr<T> &&net) { m_nets.push_back(std::move(net)); }
-
-		devices::NETLIB_NAME(netlistparams) *m_params;
 
 		template<class device_class>
 		inline std::vector<device_class *> get_device_list()
@@ -1405,11 +1419,10 @@ namespace netlist
 		void print_stats() const;
 
 	private:
-		std::unique_ptr<netlist_state_t>    m_state;
-
 		/* mostly rw */
 		netlist_time                        m_time;
 		devices::NETLIB_NAME(mainclock) *   m_mainclock;
+		std::unique_ptr<netlist_state_t>    m_state;
 		detail::queue_t                     m_queue;
 
 		devices::NETLIB_NAME(solver) *      m_solver;
@@ -1535,13 +1548,57 @@ namespace netlist
 	{
 		if ((num_cons() != 0))
 		{
+			auto &lexec(exec());
+			auto &q(lexec.queue());
+			auto nst(lexec.time() + delay);
+
 			if (is_queued())
-				exec().queue().remove(this);
-			m_time = exec().time() + delay;
-			m_in_queue = (!m_list_active.empty()) ? QS_QUEUED : QS_DELAYED_DUE_TO_INACTIVE;    /* queued ? */
-			if (m_in_queue == QS_QUEUED)
-				exec().queue().push(queue_t::entry_t(m_time, this));
+				q.remove(this);
+			m_in_queue = (!m_list_active.empty()) ?
+				queue_status::QUEUED : queue_status::DELAYED_DUE_TO_INACTIVE;    /* queued ? */
+			if (m_in_queue == queue_status::QUEUED)
+				q.push(queue_t::entry_t(nst, this));
+			else
+				update_inputs();
+			m_next_scheduled_time = nst;
 		}
+	}
+
+	inline void detail::net_t::add_to_active_list(core_terminal_t &term) NL_NOEXCEPT
+	{
+		if (m_list_active.empty())
+		{
+			m_list_active.push_front(&term);
+			railterminal().device().do_inc_active();
+			if (m_in_queue == queue_status::DELAYED_DUE_TO_INACTIVE)
+			{
+				if (m_next_scheduled_time > exec().time())
+				{
+					m_in_queue = queue_status::QUEUED;     /* pending */
+					exec().queue().push({m_next_scheduled_time, this});
+				}
+				else
+				{
+					m_in_queue = queue_status::DELIVERED;
+					m_cur_Q = m_new_Q;
+				}
+				update_inputs();
+			}
+			else
+				term.set_copied_input(m_cur_Q);
+		}
+		else
+		{
+			term.set_copied_input(m_cur_Q);
+			m_list_active.push_front(&term);
+		}
+	}
+
+	inline void detail::net_t::remove_from_active_list(core_terminal_t &term) NL_NOEXCEPT
+	{
+		m_list_active.remove(&term);
+		if (m_list_active.empty())
+			railterminal().device().do_dec_active();
 	}
 
 	inline const analog_net_t & analog_t::net() const NL_NOEXCEPT
@@ -1569,7 +1626,13 @@ namespace netlist
 	inline netlist_sig_t logic_input_t::Q() const NL_NOEXCEPT
 	{
 		nl_assert(terminal_state() != STATE_INP_PASSIVE);
+		//if (net().Q() != m_Q)
+		//	printf("term: %s, %d %d TS %d\n", this->name().c_str(), net().Q(), m_Q, terminal_state());
+#if USE_COPY_INSTEAD_OF_REFERENCE
+		return m_Q;
+#else
 		return net().Q();
+#endif
 	}
 
 	inline nl_double analog_input_t::Q_Analog() const NL_NOEXCEPT

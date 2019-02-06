@@ -64,22 +64,13 @@ namespace netlist
 		}
 		if (R > NL_FCONST(0.0))
 		{
-			// We only need to update the net first if this is a time stepping net
-			if ((1)) // m_R.m_P.net().as_analog().solver().is_timestep())
-			{
-				m_R.update_dev();
-				m_R.set_R(R);
-				m_R.m_P.schedule_solve_after(NLTIME_FROM_NS(1));
-			}
-			else
-			{
-				m_R.set_R(R);
-				m_R.update_dev();
-			}
+			m_R.update();
+			m_R.set_R(R);
+			m_R.solve_later();
 		}
 	}
 
-	NETLIB_DEVICE_IMPL_DEPRECATED(CD4066_GATE)
+	NETLIB_DEVICE_IMPL(CD4066_GATE,         "CD4066_GATE",            "")
 
 	} //namespace devices
 } // namespace netlist

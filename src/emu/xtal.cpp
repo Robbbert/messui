@@ -242,12 +242,14 @@ const double XTAL::known_xtals[] = {
 	 17'734'472, /* 17.734472_MHz_XTAL     actually ~4x PAL subcarrier */
 	 17'971'200, /* 17.9712_MHz_XTAL       Compucolor II, Hazeltine Esprit III */
 	 18'000'000, /* 18_MHz_XTAL            S.A.R, Ikari Warriors 3 */
+	 18'414'000, /* 18.414_MHz_XTAL        Ann Arbor Ambassador */
 	 18'432'000, /* 18.432_MHz_XTAL        Extremely common, used on 100's of PCBs (48000 * 384) */
 	 18'480'000, /* 18.48_MHz_XTAL         Wyse WY-100 video */
 	 18'575'000, /* 18.575_MHz_XTAL        Visual 102, Visual 220 */
 	 18'720'000, /* 18.72_MHz_XTAL         Nokia MikroMikko 1 */
 	 18'869'600, /* 18.8696_MHz_XTAL       Memorex 2178 */
 	 19'339'600, /* 19.3396_MHz_XTAL       TeleVideo TVI-955 80-column display clock */
+	 19'584'000, /* 19.584_MHz_XTAL        ADM-42 */
 	 19'600'000, /* 19.6_MHz_XTAL          Universal Mr. Do - Model 8021 PCB */
 	 19'602'000, /* 19.602_MHz_XTAL        Ampex 210+ 80-column display clock */
 	 19'660'800, /* 19.6608_MHz_XTAL       Euro League (bootleg), labeled as "UKI 19.6608 20PF" */

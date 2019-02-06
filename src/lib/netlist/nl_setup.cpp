@@ -27,6 +27,7 @@ namespace netlist
 {
 setup_t::setup_t(netlist_t &netlist)
 	: m_netlist(netlist)
+	, m_netlist_params(nullptr)
 	, m_factory(*this)
 	, m_proxy_cnt(0)
 	, m_frontier_cnt(0)
@@ -295,6 +296,42 @@ const pstring setup_t::resolve_alias(const pstring &name) const
 	return ret;
 }
 
+std::vector<pstring> setup_t::get_terminals_for_device_name(const pstring &devname)
+{
+	std::vector<pstring> terms;
+	for (auto & t : m_terminals)
+	{
+		if (plib::startsWith(t.second->name(), devname))
+		{
+			pstring tn(t.second->name().substr(devname.length()+1));
+			if (tn.find(".") == pstring::npos)
+				terms.push_back(tn);
+		}
+	}
+
+	for (auto & t : m_alias)
+	{
+		if (plib::startsWith(t.first, devname))
+		{
+			pstring tn(t.first.substr(devname.length()+1));
+			//printf("\t%s %s %s\n", t.first.c_str(), t.second.c_str(), tn.c_str());
+			if (tn.find(".") == pstring::npos)
+			{
+				terms.push_back(tn);
+				pstring resolved = resolve_alias(t.first);
+				//printf("\t%s %s %s\n", t.first.c_str(), t.second.c_str(), resolved.c_str());
+				if (resolved != t.first)
+				{
+					auto found = std::find(terms.begin(), terms.end(), resolved.substr(devname.length()+1));
+					if (found!=terms.end())
+						terms.erase(found);
+				}
+			}
+		}
+	}
+	return terms;
+}
+
 detail::core_terminal_t *setup_t::find_terminal(const pstring &terminal_in, bool required)
 {
 	const pstring &tname = resolve_alias(terminal_in);
@@ -371,9 +408,6 @@ devices::nld_base_proxy *setup_t::get_d_a_proxy(detail::core_terminal_t &out)
 		auto new_proxy =
 				out_cast.logic_family()->create_d_a_proxy(netlist(), x, &out_cast);
 		m_proxy_cnt++;
-
-		//new_proxy->start_dev();
-
 		/* connect all existing terminals to new net */
 
 		for (auto & p : out.net().m_core_terms)
@@ -937,13 +971,13 @@ std::unique_ptr<plib::pistream> setup_t::get_data_stream(const pstring &name)
 	return std::unique_ptr<plib::pistream>(nullptr);
 }
 
-void setup_t::register_define(const pstring &defstr)
+void setup_t::add_define(const pstring &defstr)
 {
 	auto p = defstr.find("=");
 	if (p != pstring::npos)
-		register_define(plib::left(defstr, p), defstr.substr(p+1));
+		add_define(plib::left(defstr, p), defstr.substr(p+1));
 	else
-		register_define(defstr, "1");
+		add_define(defstr, "1");
 }
 
 // ----------------------------------------------------------------------------------------
@@ -991,7 +1025,7 @@ void setup_t::prepare_to_run()
 	log().debug("Searching for solver and parameters ...\n");
 
 	auto solver = netlist().get_single_device<devices::NETLIB_NAME(solver)>("solver");
-	netlist().m_params = netlist().get_single_device<devices::NETLIB_NAME(netlistparams)>("parameter");
+	m_netlist_params = netlist().get_single_device<devices::NETLIB_NAME(netlistparams)>("parameter");
 
 	/* create devices */
 
@@ -1006,7 +1040,7 @@ void setup_t::prepare_to_run()
 		}
 	}
 
-	bool use_deactivate = (netlist().m_params->m_use_deactivate() ? true : false);
+	bool use_deactivate = m_netlist_params->m_use_deactivate() ? true : false;
 
 	for (auto &d : netlist().devices())
 	{

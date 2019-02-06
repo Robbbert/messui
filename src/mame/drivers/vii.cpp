@@ -678,21 +678,18 @@ static INPUT_PORTS_START( rad_sktv )
 	PORT_BIT( 0xffff, IP_ACTIVE_HIGH, IPT_UNUSED )
 INPUT_PORTS_END
 
-static INPUT_PORTS_START( mattelcs ) // there is a 'secret test mode' that previously got activated before inputs were mapped, might need unused inputs to active?  there also needs to be 'difficult' selection somewhere
+static INPUT_PORTS_START( mattelcs ) // there is a 'secret test mode' that previously got activated before inputs were mapped, might need unused inputs to active?
 	PORT_START("P1")
-	PORT_DIPNAME( 0x0001, 0x0001, DEF_STR( Unknown ) )
-	PORT_DIPSETTING(      0x0001, DEF_STR( Off ) )
-	PORT_DIPSETTING(      0x0000, DEF_STR( On ) )
-	PORT_DIPNAME( 0x0002, 0x0002, DEF_STR( Unknown ) )
-	PORT_DIPSETTING(      0x0002, DEF_STR( Off ) )
-	PORT_DIPSETTING(      0x0000, DEF_STR( On ) )
-	PORT_BIT( 0x0004, IP_ACTIVE_LOW, IPT_UNUSED ) // must be IP_ACTIVE_LOW or you can't switch to Football properly?
+	PORT_BIT( 0x0007, IP_ACTIVE_LOW, IPT_UNUSED ) // must be IP_ACTIVE_LOW or you can't switch to Football properly?
 	PORT_DIPNAME( 0x0018, 0x0000, "Game Select Slider" ) // technically not a dipswitch, a 3 position slider, but how best map it?
 	PORT_DIPSETTING(      0x0008, "Baseball (Left)" )
 	PORT_DIPSETTING(      0x0010, "Basketball (Middle)" )
 	PORT_DIPSETTING(      0x0000, "Football (Right)" )
 	// no 4th position possible
-	PORT_BIT( 0xffe0, IP_ACTIVE_HIGH, IPT_UNUSED )
+	PORT_DIPNAME( 0x0040, 0x0040, DEF_STR( Difficulty ) )
+	PORT_DIPSETTING(      0x0040, DEF_STR( Hard ) )
+	PORT_DIPSETTING(      0x0000, DEF_STR( Normal ) )
+	PORT_BIT( 0xffa0, IP_ACTIVE_HIGH, IPT_UNUSED )
 
 	PORT_START("P2")
 	PORT_BIT( 0x0001, IP_ACTIVE_HIGH, IPT_JOYSTICK_UP )    PORT_NAME("Joypad Up")
@@ -1295,7 +1292,8 @@ CONS( 2008, jak_wall, 0, 0, walle, walle,  spg2xx_game_state, empty_init, "JAKKS
 CONS( 2005, jak_wwe,  0, 0, jakks_gkr_1m, jak_gkr,  jakks_gkr_state, empty_init, "JAKKS Pacific Inc / HotGen Ltd",          "WWE (JAKKS Pacific TV Game, Game-Key Ready)",            MACHINE_IMPERFECT_SOUND | MACHINE_IMPERFECT_GRAPHICS ) // WW (no game-keys released)
 CONS( 2005, jak_fan4, 0, 0, jakks_gkr_1m, jak_gkr,  jakks_gkr_state, empty_init, "JAKKS Pacific Inc / Digital Eclipse",     "Fantastic Four (JAKKS Pacific TV Game, Game-Key Ready)", MACHINE_IMPERFECT_SOUND | MACHINE_IMPERFECT_GRAPHICS ) // F4 (no game-keys released)
 CONS( 2005, jak_just, 0, 0, jakks_gkr_1m, jak_gkr,  jakks_gkr_state, empty_init, "JAKKS Pacific Inc / Taniko",              "Justice League (JAKKS Pacific TV Game, Game-Key Ready)", MACHINE_NOT_WORKING | MACHINE_IMPERFECT_SOUND | MACHINE_IMPERFECT_GRAPHICS ) // DC (no game-keys released)
-CONS( 2005, jak_dora, 0, 0, jakks_gkr_nk, jak_gkr,  jakks_gkr_state, empty_init, "JAKKS Pacific Inc / Handheld Games",      "Dora the Explorer - Race To Play Park (JAKKS Pacific TV Game, Game-Key Ready)", MACHINE_IMPERFECT_SOUND | MACHINE_IMPERFECT_GRAPHICS ) // uses NK keys (same as Nicktoons & Spongebob) (3+ released)
+CONS( 2005, jak_dora, 0, 0, jakks_gkr_nk, jak_gkr,  jakks_gkr_state, empty_init, "JAKKS Pacific Inc / Handheld Games",      "Dora the Explorer - Nursery Rhyme Adventure (JAKKS Pacific TV Game, Game-Key Ready)", MACHINE_IMPERFECT_SOUND | MACHINE_IMPERFECT_GRAPHICS ) // uses NK keys (same as Nicktoons & Spongebob) (3+ released) - The upper part of this one is pink/purple.
+// there is also a Dora the Explorer 'Race to Play Park' which is also a GameKeyReady unit with NK code, and different games - the upper part of this one is blue.
 CONS( 2005, jak_sdoo, 0, 0, jakks_gkr_2m, jak_gkr,  jakks_gkr_state, empty_init, "JAKKS Pacific Inc / Jolliford Management","Scooby-Doo! and the Mystery of the Castle (JAKKS Pacific TV Game, Game-Key Ready)", MACHINE_NOT_WORKING | MACHINE_IMPERFECT_SOUND | MACHINE_IMPERFECT_GRAPHICS ) //  SD (no game-keys released)
 CONS( 2005, jak_disf, 0, 0, jakks_gkr_dy, jak_gkr,  jakks_gkr_state, empty_init, "JAKKS Pacific Inc / HotGen Ltd",          "Disney Friends (JAKKS Pacific TV Game, Game-Key Ready)", MACHINE_NOT_WORKING | MACHINE_IMPERFECT_SOUND | MACHINE_IMPERFECT_GRAPHICS ) // uses DY keys (3 released)
 CONS( 2005, jak_sith, 0, 0, jakks_gkr_sw, jak_sith, jakks_gkr_state, empty_init, "JAKKS Pacific Inc / Griptonite Games",    "Star Wars - Revenge of the Sith (JAKKS Pacific TV Game, Game-Key Ready)", MACHINE_IMPERFECT_SOUND | MACHINE_IMPERFECT_GRAPHICS ) // uses SW keys (1 released)
@@ -1321,7 +1319,7 @@ CONS( 2007, rad_sktv,  0,        0, rad_sktv, rad_sktv,   spg2xx_game_state, ini
 CONS( 2007, rad_fb2,   0,        0, rad_skat, rad_fb2,    spg2xx_game_state, init_crc, "Radica", "Play TV Football 2",          MACHINE_IMPERFECT_SOUND | MACHINE_NOT_WORKING )
 
 // Mattel games
-CONS( 2005, mattelcs,  0,        0, rad_skat, mattelcs,   spg2xx_game_state, empty_init, "Mattel", "Mattel Classic Sports",          MACHINE_IMPERFECT_SOUND | MACHINE_NOT_WORKING )
+CONS( 2005, mattelcs,  0,        0, rad_skat, mattelcs,   spg2xx_game_state, empty_init, "Mattel", "Mattel Classic Sports",     MACHINE_IMPERFECT_SOUND )
 
 // might not fit here.  First 0x8000 bytes are blank (not too uncommon for these) then rest of rom looks like it's probably encrypted at least
 // could be later model VT based instead? even after decrypting (simple word xor) the vectors have a different format and are at a different location to the SunPlus titles
