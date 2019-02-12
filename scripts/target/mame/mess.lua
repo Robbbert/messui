@@ -683,6 +683,7 @@ MACHINES["IOPTIMER"] = true
 MACHINES["Z8038"] = true
 MACHINES["AIC6250"] = true
 MACHINES["DC7085"] = true
+MACHINES["I82357"] = true
 
 --------------------------------------------------
 -- specify available bus cores
@@ -756,6 +757,7 @@ BUSES["INTV_CTRL"] = true
 BUSES["IQ151"] = true
 BUSES["ISA"] = true
 BUSES["ISBX"] = true
+BUSES["JAKKS_GAMEKEY"] = true
 BUSES["HP_OPTROM"] = true
 BUSES["HP80_OPTROM"] = true
 BUSES["HP80_IO"] = true
