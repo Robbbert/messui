@@ -9897,7 +9897,7 @@ citycon                         // (c) 1985 Jaleco
 citycona                        // (c) 1985 Jaleco
 cruisin                         // (c) 1985 Jaleco/Kitkorp
 
-@source:ckz80.cpp
+@source:cking_master.cpp
 ckmaster                        //
 
 @source:clayshoo.cpp
@@ -10915,7 +10915,7 @@ wallst                          // (c) 1982 Century
 @source:cwheel.cpp
 cwheel                          // (c) 19?? Gamebar
 
-@source:cxgz80.cpp
+@source:cxg_ch2001.cpp
 ch2001                          //
 
 @source:cxhumax.cpp
@@ -12849,64 +12849,42 @@ feversoc                        // (c) 2004
 fgoal                           // TF  (c) 1979 Taito Corporation
 fgoala                          // MF  (c) 1979 Taito Corporation
 
-@source:fidel6502.cpp
+@source:fidel_as12.cpp
+feleg                           //
+
+@source:fidel_cc10.cpp
+cc10                            //
+
+@source:fidel_cc7.cpp
+backgamc                        //
+cc7                             //
+
+@source:fidel_chesster.cpp
 chesster                        //
 chesstera                       //
 kishon                          //
+
+@source:fidel_csc.cpp
 csc                             // CSC: Champion Sensory Chess Challenger (English)
 cscfr                           // * French
 cscg                            // * German
 cscsp                           // * Spanish
-fdes2000                        //
-fdes2100                        //
-fdes2000d                       //
-fdes2100d                       //
-feasbu                          // EAS: Elite A/S Challenger (Budapest program, English)
-feasbufr                        // * French
-feasbug                         // * German
-feasbusp                        // * Spanish
-feasgla                         // EAS: Elite A/S Challenger (Glasgow program, English)
-feasglafr                       // * French
-feasglag                        // * German
-feasglasp                       // * Spanish
-feag2100                        // EAG: Elite Avant Garde 2100 (English)
-feag2100fr                      // * French
-feag2100g                       // * German
-feag2100sp                      // * Spanish
-feleg                           //
-fexcel                          //
-fexcel12                        //
-fexcel124                       //
-fexcela                         //
-fexceld                         //
-fexcelp                         //
-fexcelpb                        //
-fexcelv                         //
-fphantom                        //
-fpres                           //
-fpressp                         //
-fpresg                          //
-fpresfr                         //
-fpresbu                         //
-fpresbusp                       //
-fpresbug                        //
-fpresbufr                       //
-fscc9                           //
-fscc9b                          //
-fscc9c                          //
-fscc9ps                         //
-fscc12                          //
-fscc12b                         //
-granits                         // RCS
 reversic                        //
 super9cc                        // SU9: Super 9 Sensory Chess Challenger (English)
 super9ccfr                      // * French
 super9ccg                       // * German
 super9ccsp                      // * Spanish
 
-@source:fidel68k.cpp
+@source:fidel_dames.cpp
+damesc                          //
+
+@source:fidel_desdis.cpp
+fdes2000d                       //
+fdes2100d                       //
 fdes2265                        //
 fdes2325                        //
+
+@source:fidel_eag68k.cpp
 feagv10                         //
 feagv11                         //
 feagv2                          //
@@ -12921,17 +12899,63 @@ fex68kb                         //
 fex68km2                        //
 fex68km3                        //
 
-@source:fidelmcs48.cpp
+@source:fidel_elite.cpp
+feasbu                          // EAS: Elite A/S Challenger (Budapest program, English)
+feasbufr                        // * French
+feasbug                         // * German
+feasbusp                        // * Spanish
+feasgla                         // EAS: Elite A/S Challenger (Glasgow program, English)
+feasglafr                       // * French
+feasglag                        // * German
+feasglasp                       // * Spanish
+feag2100                        // EAG: Elite Avant Garde 2100 (English)
+feag2100fr                      // * French
+feag2100g                       // * German
+feag2100sp                      // * Spanish
+fpres                           //
+fpressp                         //
+fpresg                          //
+fpresfr                         //
+fpresbu                         //
+fpresbusp                       //
+fpresbug                        //
+fpresbufr                       //
+
+@source:fidel_excel.cpp
+fdes2000                        //
+fdes2100                        //
+fexcel                          //
+fexcel12                        //
+fexcel124                       //
+fexcela                         //
+fexceld                         //
+fexcelp                         //
+fexcelpb                        //
+fexcelv                         //
+granits                         // RCS
+
+@source:fidel_phantom.cpp
+fphantom                        //
+
+@source:fidel_sc12.cpp
+fscc12                          //
+fscc12b                         //
+
+@source:fidel_sc6.cpp
 fscc6                           //
 
-@source:fidelz80.cpp
-backgamc                        //
+@source:fidel_sc8.cpp
+fscc8                           //
+
+@source:fidel_sc9.cpp
+fscc9                           //
+fscc9b                          //
+fscc9c                          //
+fscc9ps                         //
+
+@source:fidelbase.cpp
 bridgec3                        //
 bridgeca                        //
-cc10                            //
-cc7                             //
-damesc                          //
-fscc8                           //
 uvc                             // UVC: Advanced Voice Chess Challenger (English)
 uvcfr                           // * French
 uvcg                            // * German
@@ -15074,6 +15098,7 @@ gnw_opanic                      // Nintendo
 gnw_rshower                     // Nintendo
 gnw_smb                         // Nintendo
 gnw_squish                      // Nintendo
+gnw_stennis                     // Nintendo
 gnw_tfish                       // Nintendo
 kbilly                          // Konami
 kblades                         // Konami
@@ -15426,6 +15451,7 @@ hp95lx                          //
 
 @source:hp9825.cpp
 hp9825b                         // HP 9825B
+hp9825t                         // HP 9825T
 
 @source:hp9845.cpp
 hp9835a                         //
@@ -16123,6 +16149,11 @@ jclub2v220                      // v2.20      14 APR. 1998
 
 @source:jedi.cpp
 jedi                            // 136030           (c) 1984
+
+@source:jensen.cpp
+d2k300axp                       // DEC 2000 Model 300 AXP
+d2k500axp                       // DEC 2000 Model 500 AXP
+dpcaxp150                       // DECpc AXP 150
 
 @source:jeutel.cpp
 leking                          //
@@ -30527,6 +30558,7 @@ dolmen                          // (c) 1995
 firehawk                        // (c) 2001 ESD
 firehawkv                       // (c) 2001 ESD
 grdnstrm                        // (c) 1998 Apples Industries license
+grdnstrmau                      // (c) 1998 (Australia)
 grdnstrmg                       // (c) 1998
 grdnstrmj                       // (c) 1998 (Japan)
 grdnstrmk                       // (c) 1998 (Korea)
@@ -34203,6 +34235,9 @@ wg3dh                           // (c) 1996 Atari Games
 @source:seattlecmp.cpp
 scp300f                         // Seattle SCP-300F
 
+@source:sega_beena.cpp
+beena                           //
+
 @source:sega_sawatte.cpp
 sawatte                         //
 
@@ -37026,6 +37061,7 @@ contcircu                       // B33 (c) 1987 Taito America Corporation (US)
 contcircua                      // B33 (c) 1987 Taito America Corporation (US)
 dblaxle                         // C78 (c) 1991 Taito America Corporation (US)
 dblaxleu                        // C78 (c) 1991 Taito America Corporation (US)
+dblaxleul                       // C78 (c) 1991 Taito America Corporation (US)
 enforce                         // B58 (c) 1988 Taito Corporation Japan (World)
 enforcej                        // B58 (c) 1988 Taito Corporation (Japan)
 enforceja                       // B58 (c) 1988 Taito Corporation (Japan)
@@ -38672,6 +38708,7 @@ jak_wwe                         //
 jak_fan4                        //
 jak_just                        //
 jak_dora                        //
+jak_dorr                        //
 jak_disf                        //
 jak_disp                        //
 jak_sith                        //
@@ -38679,6 +38716,9 @@ jak_sdoo                        //
 jak_dbz                         //
 jak_mpac                        //
 jak_wof                         //
+jak_spdm                        //
+jak_pooh                        //
+jak_nick                        //
 lexizeus                        // Lexibook
 vii                             // KenSingTon / Jungle Soft / Siatronics Vii
 wrlshunt                        // Wireless: Hunting Video Game System
@@ -38692,6 +38732,7 @@ rad_sktv                        //
 rad_crik                        //
 rad_fb2                         //
 mattelcs                        //
+dreamlif                        //
 
 @source:vsmile.cpp
 vsmile                          //
@@ -39842,8 +39883,11 @@ rad_snow                        //
 rad_snowp                       //
 rad_madf                        //
 rad_fb                          //
+rad_socr                        //
 epo_epp                         //
+epo_epp3                        //
 epo_efdx                        //
+epo_ebox                        //
 epo_sdb                         //
 epo_guru                        //
 epo_dmon                        //
@@ -39854,6 +39898,7 @@ rad_sbw                         //
 rad_bdp                         //
 has_wamg                        //
 ltv_tam                         //
+ban_onep                        //
 ekara                           //
 ekaraa                          //
 ekaraj                          //

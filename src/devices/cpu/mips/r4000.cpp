@@ -486,48 +486,12 @@ void r4000_base_device::cpu_execute(u32 const op)
 			m_icount -= 35;
 			break;
 		case 0x1c: // DMULT
-			{
-				u64 const a_hi = u32(m_r[RSREG] >> 32);
-				u64 const b_hi = u32(m_r[RTREG] >> 32);
-				u64 const a_lo = u32(m_r[RSREG]);
-				u64 const b_lo = u32(m_r[RTREG]);
-
-				u64 const p1 = a_lo * b_lo;
-				u64 const p2 = a_hi * b_lo;
-				u64 const p3 = a_lo * b_hi;
-				u64 const p4 = a_hi * b_hi;
-				u64 const carry = u32(((p1 >> 32) + u32(p2) + u32(p3)) >> 32);
-
-				m_lo = p1 + (p2 << 32) + (p3 << 32);
-				m_hi = p4 + (p2 >> 32) + (p3 >> 32) + carry;
-
-				// adjust for sign
-				if (s64(m_r[RSREG]) < 0)
-					m_hi -= m_r[RTREG];
-				if (s64(m_r[RTREG]) < 0)
-					m_hi -= m_r[RSREG];
-
-				m_icount -= 7;
-			}
+			m_lo = mul_64x64(m_r[RSREG], m_r[RTREG], reinterpret_cast<s64 *>(&m_hi));
+			m_icount -= 7;
 			break;
 		case 0x1d: // DMULTU
-			{
-				u64 const a_hi = u32(m_r[RSREG] >> 32);
-				u64 const b_hi = u32(m_r[RTREG] >> 32);
-				u64 const a_lo = u32(m_r[RSREG]);
-				u64 const b_lo = u32(m_r[RTREG]);
-
-				u64 const p1 = a_lo * b_lo;
-				u64 const p2 = a_hi * b_lo;
-				u64 const p3 = a_lo * b_hi;
-				u64 const p4 = a_hi * b_hi;
-				u64 const carry = u32(((p1 >> 32) + u32(p2) + u32(p3)) >> 32);
-
-				m_lo = p1 + (p2 << 32) + (p3 << 32);
-				m_hi = p4 + (p2 >> 32) + (p3 >> 32) + carry;
-
-				m_icount -= 7;
-			}
+			m_lo = mulu_64x64(m_r[RSREG], m_r[RTREG], &m_hi);
+			m_icount -= 7;
 			break;
 		case 0x1e: // DDIV
 			if (m_r[RTREG])
@@ -1793,8 +1757,12 @@ void r4000_base_device::cp1_execute(u32 const op)
 				break;
 			case 0x05: // ABS.S
 				if ((SR & SR_FR) || !(op & ODD_REGS))
+				{
 					if (f32_lt(float32_t{ u32(m_f[FSREG]) }, float32_t{ 0 }))
 						cp1_set(FDREG, f32_mul(float32_t{ u32(m_f[FSREG]) }, i32_to_f32(-1)).v);
+					else
+						cp1_set(FDREG, m_f[FSREG]);
+				}
 				break;
 			case 0x06: // MOV.S
 				if ((SR & SR_FR) || !(op & ODD_REGS))
@@ -2077,8 +2045,12 @@ void r4000_base_device::cp1_execute(u32 const op)
 				break;
 			case 0x05: // ABS.D
 				if ((SR & SR_FR) || !(op & ODD_REGS))
+				{
 					if (f64_lt(float64_t{ m_f[FSREG] }, float64_t{ 0 }))
 						cp1_set(FDREG, f64_mul(float64_t{ m_f[FSREG] }, i32_to_f64(-1)).v);
+					else
+						cp1_set(FDREG, m_f[FSREG]);
+				}
 				break;
 			case 0x06: // MOV.D
 				if ((SR & SR_FR) || !(op & ODD_REGS))
@@ -2800,6 +2772,9 @@ void r4000_base_device::address_error(int intention, u64 const address)
 			m_cp0[CP0_BadVAddr] = address;
 
 		cpu_exception((intention & TRANSLATE_WRITE) ? EXCEPTION_ADES : EXCEPTION_ADEL);
+
+		// address errors shouldn't typically occur, so a breakpoint is handy
+		machine().debug_break();
 	}
 }
 

@@ -1218,6 +1218,7 @@ function linkProjects_mame_mess(_target, _subtarget)
 		"vtech",
 		"wang",
 		"wavemate",
+		"wyse",
 		"westinghouse",
 		"xerox",
 		"xussrpc",
@@ -1837,7 +1838,9 @@ files {
 
 createMESSProjects(_target, _subtarget, "chessking")
 files {
-	MAME_DIR .. "src/mame/drivers/ckz80.cpp",
+	MAME_DIR .. "src/mame/drivers/ckingbase.cpp",
+	MAME_DIR .. "src/mame/includes/ckingbase.h",
+	MAME_DIR .. "src/mame/drivers/cking_master.cpp",
 }
 
 createMESSProjects(_target, _subtarget, "chromatics")
@@ -1899,7 +1902,9 @@ files {
 
 createMESSProjects(_target, _subtarget, "cxg")
 files {
-	MAME_DIR .. "src/mame/drivers/cxgz80.cpp",
+	MAME_DIR .. "src/mame/drivers/cxgbase.cpp",
+	MAME_DIR .. "src/mame/includes/cxgbase.h",
+	MAME_DIR .. "src/mame/drivers/cxg_ch2001.cpp",
 }
 
 createMESSProjects(_target, _subtarget, "cybiko")
@@ -1955,6 +1960,8 @@ files {
 	MAME_DIR .. "src/mame/machine/decioga.h",
 	MAME_DIR .. "src/mame/drivers/dectalk.cpp",
 	MAME_DIR .. "src/mame/drivers/decwritr.cpp",
+	MAME_DIR .. "src/mame/drivers/jensen.cpp",
+	MAME_DIR .. "src/mame/includes/jensen.h",
 	MAME_DIR .. "src/mame/drivers/pdp11.cpp",
 	MAME_DIR .. "src/mame/drivers/vax11.cpp",
 	MAME_DIR .. "src/mame/drivers/rainbow.cpp",
@@ -2127,11 +2134,23 @@ files {
 
 createMESSProjects(_target, _subtarget, "fidelity")
 files {
-	MAME_DIR .. "src/mame/drivers/fidelz80.cpp",
+	MAME_DIR .. "src/mame/drivers/fidelbase.cpp",
 	MAME_DIR .. "src/mame/includes/fidelbase.h",
-	MAME_DIR .. "src/mame/drivers/fidel6502.cpp",
-	MAME_DIR .. "src/mame/drivers/fidel68k.cpp",
-	MAME_DIR .. "src/mame/drivers/fidelmcs48.cpp",
+	MAME_DIR .. "src/mame/drivers/fidel_as12.cpp",
+	MAME_DIR .. "src/mame/drivers/fidel_cc10.cpp",
+	MAME_DIR .. "src/mame/drivers/fidel_cc7.cpp",
+	MAME_DIR .. "src/mame/drivers/fidel_chesster.cpp",
+	MAME_DIR .. "src/mame/drivers/fidel_csc.cpp",
+	MAME_DIR .. "src/mame/drivers/fidel_dames.cpp",
+	MAME_DIR .. "src/mame/drivers/fidel_desdis.cpp",
+	MAME_DIR .. "src/mame/drivers/fidel_eag68k.cpp",
+	MAME_DIR .. "src/mame/drivers/fidel_elite.cpp",
+	MAME_DIR .. "src/mame/drivers/fidel_excel.cpp",
+	MAME_DIR .. "src/mame/drivers/fidel_phantom.cpp",
+	MAME_DIR .. "src/mame/drivers/fidel_sc12.cpp",
+	MAME_DIR .. "src/mame/drivers/fidel_sc6.cpp",
+	MAME_DIR .. "src/mame/drivers/fidel_sc8.cpp",
+	MAME_DIR .. "src/mame/drivers/fidel_sc9.cpp",
 }
 
 createMESSProjects(_target, _subtarget, "force")
@@ -3027,6 +3046,7 @@ files {
 	MAME_DIR .. "src/mame/includes/megadriv_rad.h",
 	MAME_DIR .. "src/mame/drivers/segapico.cpp",
 	MAME_DIR .. "src/mame/drivers/sega_sawatte.cpp",
+	MAME_DIR .. "src/mame/drivers/sega_beena.cpp",
 	MAME_DIR .. "src/mame/drivers/segapm.cpp",
 	MAME_DIR .. "src/mame/drivers/sg1000.cpp",
 	MAME_DIR .. "src/mame/includes/sg1000.h",
@@ -3671,6 +3691,16 @@ files {
 	MAME_DIR .. "src/mame/includes/jupiter.h",
 }
 
+createMESSProjects(_target, _subtarget, "wyse")
+files {
+	MAME_DIR .. "src/mame/drivers/wy100.cpp",
+	MAME_DIR .. "src/mame/drivers/wy50.cpp",
+	MAME_DIR .. "src/mame/drivers/wy85.cpp",
+	MAME_DIR .. "src/mame/drivers/wyse.cpp",
+	MAME_DIR .. "src/mame/machine/wy50kb.cpp",
+	MAME_DIR .. "src/mame/machine/wy50kb.h",
+}
+
 createMESSProjects(_target, _subtarget, "xerox")
 files {
 	MAME_DIR .. "src/mame/drivers/xerox820.cpp",
@@ -3944,10 +3974,6 @@ files {
 	MAME_DIR .. "src/mame/drivers/vp415.cpp",
 	MAME_DIR .. "src/mame/drivers/vsmilepro.cpp",
 	MAME_DIR .. "src/mame/drivers/wicat.cpp",
-	MAME_DIR .. "src/mame/drivers/wy100.cpp",
-	MAME_DIR .. "src/mame/drivers/wy50.cpp",
-	MAME_DIR .. "src/mame/drivers/wy85.cpp",
-	MAME_DIR .. "src/mame/drivers/wyse.cpp",
 	MAME_DIR .. "src/mame/drivers/xor100.cpp",
 	MAME_DIR .. "src/mame/includes/xor100.h",
 	MAME_DIR .. "src/mame/drivers/zms8085.cpp",

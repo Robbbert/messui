@@ -19,6 +19,7 @@
 #include "plib/palloc.h" // owned_ptr
 #include "plib/pdynlib.h"
 #include "plib/pfmtlog.h"
+#include "plib/pmempool.h"
 #include "plib/ppmf.h"
 #include "plib/pstate.h"
 #include "plib/pstream.h"
@@ -70,7 +71,7 @@ class NETLIB_NAME(name) : public device_t
 	/*! Used to define the destructor of a netlist device.
 	*  The use of a destructor for netlist device should normally not be necessary.
 	*/
-#define NETLIB_DESTRUCTOR(name) public: virtual ~NETLIB_NAME(name)()
+#define NETLIB_DESTRUCTOR(name) public: virtual ~NETLIB_NAME(name)() noexcept
 
 	/*! Define an extended constructor and add further parameters to it.
 	*  The macro allows to add further parameters to a device constructor. This is
@@ -138,7 +139,7 @@ class NETLIB_NAME(name) : public device_t
 #define NETLIB_TIMESTEP(chip) void NETLIB_NAME(chip) :: timestep(const nl_double step)
 
 #define NETLIB_SUB(chip) nld_ ## chip
-#define NETLIB_SUBXX(ns, chip) std::unique_ptr< ns :: nld_ ## chip >
+#define NETLIB_SUBXX(ns, chip) poolptr< ns :: nld_ ## chip >
 
 #define NETLIB_HANDLER(chip, name) void NETLIB_NAME(chip) :: name() NL_NOEXCEPT
 #define NETLIB_UPDATE(chip) NETLIB_HANDLER(chip, update)
@@ -242,9 +243,9 @@ namespace netlist
 
 		virtual ~logic_family_desc_t() noexcept = default;
 
-		virtual plib::owned_ptr<devices::nld_base_d_to_a_proxy> create_d_a_proxy(netlist_state_t &anetlist, const pstring &name,
+		virtual poolptr<devices::nld_base_d_to_a_proxy> create_d_a_proxy(netlist_state_t &anetlist, const pstring &name,
 				logic_output_t *proxied) const = 0;
-		virtual plib::owned_ptr<devices::nld_base_a_to_d_proxy> create_a_d_proxy(netlist_state_t &anetlist, const pstring &name,
+		virtual poolptr<devices::nld_base_a_to_d_proxy> create_a_d_proxy(netlist_state_t &anetlist, const pstring &name,
 				logic_input_t *proxied) const = 0;
 
 		double fixed_V() const { return m_fixed_V; }
@@ -417,10 +418,12 @@ namespace netlist
 		 */
 		pstring name() const;
 
+#if 0
 		void * operator new (size_t size, void *ptr) { plib::unused_var(size); return ptr; }
 		void operator delete (void *ptr, void *) { plib::unused_var(ptr); }
-		void * operator new (size_t size);
-		void operator delete (void * mem);
+		void * operator new (size_t size) = delete;
+		void operator delete (void * mem) = delete;
+#endif
 	protected:
 		~object_t() noexcept = default; // only childs should be destructible
 
@@ -449,7 +452,7 @@ namespace netlist
 		const netlist_t & exec() const noexcept { return m_netlist; }
 
 	protected:
-		~netlist_ref() = default; // prohibit polymorphic destruction
+		~netlist_ref() noexcept = default; // prohibit polymorphic destruction
 
 	private:
 		netlist_t & m_netlist;
@@ -748,7 +751,7 @@ namespace netlist
 
 		void update_devs() NL_NOEXCEPT;
 
-		const netlist_time next_scheduled_time() const noexcept { return m_next_scheduled_time; }
+		netlist_time next_scheduled_time() const noexcept { return m_next_scheduled_time; }
 		void set_next_scheduled_time(netlist_time ntime) noexcept { m_next_scheduled_time = ntime; }
 
 		bool isRailNet() const noexcept { return !(m_railterminal == nullptr); }
@@ -939,7 +942,7 @@ namespace netlist
 		param_type_t param_type() const;
 
 	protected:
-		virtual ~param_t() = default; /* not intended to be destroyed */
+		virtual ~param_t() noexcept = default; /* not intended to be destroyed */
 
 		void update_param();
 
@@ -1180,15 +1183,16 @@ namespace netlist
 
 		COPYASSIGNMOVE(device_t, delete)
 
-		~device_t() override = default;
+		~device_t() noexcept override = default;
 
 		setup_t &setup();
 		const setup_t &setup() const;
 
 		template<class C, typename... Args>
-		void register_sub(const pstring &name, std::unique_ptr<C> &dev, const Args&... args)
+		void register_sub(const pstring &name, poolptr<C> &dev, const Args&... args)
 		{
-			dev.reset(plib::palloc<C>(*this, name, args...));
+			//dev.reset(plib::palloc<C>(*this, name, args...));
+			dev = pool().make_poolptr<C>(*this, name, args...);
 		}
 
 		void register_subalias(const pstring &name, detail::core_terminal_t &term);
@@ -1263,13 +1267,14 @@ namespace netlist
 	// netlist_state__t
 	// -----------------------------------------------------------------------------
 
-	class netlist_state_t : private plib::nocopyassignmove
+	class netlist_state_t
 	{
 	public:
-		using nets_collection_type = std::vector<plib::owned_ptr<detail::net_t>>;
+
+		using nets_collection_type = std::vector<poolptr<detail::net_t>>;
 
 		/* need to preserve order of device creation ... */
-		using devices_collection_type = std::vector<std::pair<pstring, plib::owned_ptr<core_device_t>>>;
+		using devices_collection_type = std::vector<std::pair<pstring, poolptr<core_device_t>>>;
 		netlist_state_t(const pstring &aname,
 			std::unique_ptr<callbacks_t> &&callbacks,
 			std::unique_ptr<setup_t> &&setup);
@@ -1302,7 +1307,6 @@ namespace netlist
 		plib::dynlib &lib() { return *m_lib; }
 
 		/* state handling */
-
 		plib::state_manager_t &run_state_manager() { return m_state; }
 
 		template<typename O, typename C>
@@ -1322,7 +1326,7 @@ namespace netlist
 		std::size_t find_net_id(const detail::net_t *net) const;
 
 		template <typename T>
-		void register_net(plib::owned_ptr<T> &&net) { m_nets.push_back(std::move(net)); }
+		void register_net(poolptr<T> &&net) { m_nets.push_back(std::move(net)); }
 
 		template<class device_class>
 		inline std::vector<device_class *> get_device_list()
@@ -1338,7 +1342,7 @@ namespace netlist
 		}
 
 		template <typename T>
-		void add_dev(const pstring &name, plib::owned_ptr<T> &&dev)
+		void add_dev(const pstring &name, poolptr<T> &&dev)
 		{
 			for (auto & d : m_devices)
 				if (d.first == name)
@@ -1393,6 +1397,8 @@ namespace netlist
 		/* sole use is to manage lifetime of net objects */
 		devices_collection_type             m_devices;
 
+
+
 	};
 
 	// -----------------------------------------------------------------------------
@@ -1411,7 +1417,7 @@ namespace netlist
 
 		/* run functions */
 
-		const netlist_time time() const NL_NOEXCEPT { return m_time; }
+		netlist_time time() const NL_NOEXCEPT { return m_time; }
 
 		void process_queue(const netlist_time delta) NL_NOEXCEPT;
 		void abort_current_queue_slice() NL_NOEXCEPT { m_queue.retime(detail::queue_t::entry_t(m_time, nullptr)); }
@@ -1448,13 +1454,15 @@ namespace netlist
 		void print_stats() const;
 
 	private:
+		std::unique_ptr<netlist_state_t>    m_state;
+		devices::NETLIB_NAME(solver) *      m_solver;
+
 		/* mostly rw */
+		PALIGNAS_CACHELINE()
 		netlist_time                        m_time;
 		devices::NETLIB_NAME(mainclock) *   m_mainclock;
-		std::unique_ptr<netlist_state_t>    m_state;
-		detail::queue_t                     m_queue;
 
-		devices::NETLIB_NAME(solver) *      m_solver;
+		detail::queue_t                     m_queue;
 
 		// performance
 		nperftime_t<NL_KEEP_STATISTICS>     m_stat_mainloop;

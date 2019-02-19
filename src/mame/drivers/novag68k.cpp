@@ -11,9 +11,9 @@
     such as Arena(in editmode).
 
     TODO:
-    - RS232 port
+    - RS232 port (when connected, I'm only getting "New Game")
 
-******************************************************************************
+*******************************************************************************
 
 Diablo 68000:
 - M68000 @ 16MHz, IPL1 256Hz, IPL2 from ACIA IRQ(always high)
@@ -43,8 +43,8 @@ Scorpio 68000 hardware is very similar, but with chessboard buttons and side led
 class novag68k_state : public novagbase_state
 {
 public:
-	novag68k_state(const machine_config &mconfig, device_type type, const char *tag)
-		: novagbase_state(mconfig, type, tag)
+	novag68k_state(const machine_config &mconfig, device_type type, const char *tag) :
+		novagbase_state(mconfig, type, tag)
 	{ }
 
 	void diablo68k(machine_config &config);
