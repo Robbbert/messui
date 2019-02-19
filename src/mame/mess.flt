@@ -242,6 +242,7 @@ fc100.cpp
 fccpu20.cpp
 fccpu30.cpp
 fidel_as12.cpp
+fidel_card.cpp
 fidel_cc10.cpp
 fidel_cc7.cpp
 fidel_chesster.cpp
@@ -256,6 +257,8 @@ fidel_sc12.cpp
 fidel_sc6.cpp
 fidel_sc8.cpp
 fidel_sc9.cpp
+fidel_vcc.cpp
+fidel_vsc.cpp
 fidelbase.cpp
 fk1.cpp
 fm7.cpp
@@ -520,10 +523,10 @@ ngen.cpp
 ngp.cpp
 nokia_3310.cpp
 notetaker.cpp
-novag6502.cpp
-novag68k.cpp
-novagf8.cpp
-novagmcs48.cpp
+novag_delta1.cpp
+novag_diablo.cpp
+novag_presto.cpp
+novagbase.cpp
 o2.cpp
 ob68k1a.cpp
 octane.cpp
