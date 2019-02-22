@@ -2,6 +2,8 @@
 // copyright-holders:Kevin Horton,Jonathan Gevaryahu,Sandro Ronco,hap
 // thanks-to:Berger,yoyo_chessboard
 /******************************************************************************
+*
+* fidel_csc.cpp, subdriver of machine/fidelbase.cpp, machine/chessbase.cpp
 
 Fidelity CSC(and derived) hardware
 - Champion Sensory Chess Challenger
@@ -152,7 +154,6 @@ Super 9 Sensory Chess Challenger (SU9/DS9)
 This is basically the Fidelity Elite A/S program on CSC hardware.
 Model DS9(Deluxe) has a 5MHz XTAL, but is otherwise same.
 ---------------------------------
-
 R6502AP CPU, 1.95MHz(3.9MHz resonator)
 2 RAM chips, assume 4KB
 2*8KB ROM + 1*2KB ROM
@@ -166,7 +167,6 @@ Reversi Sensory Challenger (RSC)
 The 1st version came out in 1980, a program revision was released in 1981.
 Another distinction is the board color and layout, the 1981 version is green.
 ---------------------------------
-
 8*(8+1) buttons, 8*8+1 LEDs
 1KB RAM(2*2114), 4KB ROM
 MOS MPS 6502B CPU, frequency unknown
@@ -419,7 +419,7 @@ void csc_state::rsc_map(address_map &map)
 ******************************************************************************/
 
 static INPUT_PORTS_START( csc )
-	PORT_INCLUDE( fidel_cb_buttons )
+	PORT_INCLUDE( generic_cb_buttons )
 
 	PORT_MODIFY("IN.0")
 	PORT_BIT(0x100, IP_ACTIVE_HIGH, IPT_KEYPAD) PORT_CODE(KEYCODE_SPACE) PORT_NAME("Speaker")
@@ -468,7 +468,7 @@ static INPUT_PORTS_START( su9 )
 INPUT_PORTS_END
 
 static INPUT_PORTS_START( rsc )
-	PORT_INCLUDE( fidel_cb_buttons )
+	PORT_INCLUDE( generic_cb_buttons )
 
 	PORT_START("IN.8")
 	PORT_BIT(0x01, IP_ACTIVE_HIGH, IPT_KEYPAD) PORT_CODE(KEYCODE_8) PORT_CODE(KEYCODE_1_PAD) PORT_NAME("ST")
@@ -513,7 +513,7 @@ void csc_state::csc(machine_config &config)
 	m_pia[1]->writepb_handler().set(FUNC(csc_state::pia1_pb_w));
 	m_pia[1]->ca2_handler().set(FUNC(csc_state::pia1_ca2_w));
 
-	TIMER(config, "display_decay").configure_periodic(FUNC(fidelbase_state::display_decay_tick), attotime::from_msec(1));
+	TIMER(config, "display_decay").configure_periodic(FUNC(csc_state::display_decay_tick), attotime::from_msec(1));
 	config.set_default_layout(layout_fidel_csc);
 
 	/* sound hardware */
@@ -522,7 +522,7 @@ void csc_state::csc(machine_config &config)
 	m_speech->ext_read().set(FUNC(csc_state::speech_r));
 	m_speech->add_route(ALL_OUTPUTS, "speaker", 0.75);
 
-	DAC_1BIT(config, m_dac, 0).add_route(ALL_OUTPUTS, "speaker", 0.25);
+	DAC_1BIT(config, m_dac).add_route(ALL_OUTPUTS, "speaker", 0.25);
 	VOLTAGE_REGULATOR(config, "vref").add_route(0, "dac", 1.0, DAC_VREF_POS_INPUT);
 }
 
@@ -554,12 +554,12 @@ void csc_state::rsc(machine_config &config)
 	m_pia[0]->ca2_handler().set(FUNC(csc_state::pia0_ca2_w));
 	m_pia[0]->cb2_handler().set(FUNC(csc_state::pia0_cb2_w));
 
-	TIMER(config, "display_decay").configure_periodic(FUNC(fidelbase_state::display_decay_tick), attotime::from_msec(1));
+	TIMER(config, "display_decay").configure_periodic(FUNC(csc_state::display_decay_tick), attotime::from_msec(1));
 	config.set_default_layout(layout_fidel_rsc_v2);
 
 	/* sound hardware */
 	SPEAKER(config, "speaker").front_center();
-	DAC_1BIT(config, m_dac, 0).add_route(ALL_OUTPUTS, "speaker", 0.25);
+	DAC_1BIT(config, m_dac).add_route(ALL_OUTPUTS, "speaker", 0.25);
 	VOLTAGE_REGULATOR(config, "vref").add_route(0, "dac", 1.0, DAC_VREF_POS_INPUT);
 }
 

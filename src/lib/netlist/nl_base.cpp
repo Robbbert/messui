@@ -236,7 +236,7 @@ detail::terminal_type detail::core_terminal_t::type() const
 // netlist_t
 // ----------------------------------------------------------------------------------------
 
-netlist_t::netlist_t(const pstring &aname, std::unique_ptr<callbacks_t> callbacks)
+netlist_t::netlist_t(const pstring &aname, plib::unique_ptr<callbacks_t> callbacks)
 	: m_state(plib::make_unique<netlist_state_t>(aname,
 		std::move(callbacks),
 		plib::make_unique<setup_t>(*this))) // FIXME, ugly but needed to have netlist_state_t constructed first
@@ -256,8 +256,8 @@ netlist_t::netlist_t(const pstring &aname, std::unique_ptr<callbacks_t> callback
 // ----------------------------------------------------------------------------------------
 
 netlist_state_t::netlist_state_t(const pstring &aname,
-	std::unique_ptr<callbacks_t> &&callbacks,
-	std::unique_ptr<setup_t> &&setup)
+	plib::unique_ptr<callbacks_t> &&callbacks,
+	plib::unique_ptr<setup_t> &&setup)
 : m_name(aname)
 , m_state()
 , m_callbacks(std::move(callbacks)) // Order is important here
@@ -361,7 +361,7 @@ void netlist_state_t::reset()
 			std::vector<nldelegate *> t;
 			log().verbose("Using default startup strategy");
 			for (auto &n : m_nets)
-				for (auto & term : n->m_core_terms)
+				for (auto & term : n->core_terms())
 					if (term->m_delegate.has_object())
 					{
 						if (!plib::container::contains(t, &term->m_delegate))
@@ -1035,7 +1035,7 @@ nl_double param_model_t::model_value(const pstring &entity)
 }
 
 
-std::unique_ptr<plib::pistream> param_data_t::stream()
+plib::unique_ptr<plib::pistream> param_data_t::stream()
 {
 	return device().setup().get_data_stream(Value());
 }
