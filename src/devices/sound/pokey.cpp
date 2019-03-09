@@ -538,11 +538,8 @@ void pokey_device::step_keyboard()
 
 void pokey_device::step_pot()
 {
-	if ((m_SKCTL & SK_RESET) == 0)
-		return;
-
-	uint8_t upd = 0;
 	m_pot_counter++;
+	uint8_t upd = 0;
 	for (int pot = 0; pot < 8; pot++)
 	{
 		if ((m_POTx[pot]<m_pot_counter) || (m_pot_counter == 228))
@@ -551,7 +548,9 @@ void pokey_device::step_pot()
 			/* latching is emulated in read */
 		}
 	}
-	synchronize(SYNC_POT, upd);
+	// some pots latched?
+	if (upd != 0)
+		synchronize(SYNC_POT, upd);
 }
 
 /*
@@ -1032,6 +1031,7 @@ void pokey_device::write_internal(offs_t offset, uint8_t data)
 			m_clock_cnt[0] = 0;
 			m_clock_cnt[1] = 0;
 			m_clock_cnt[2] = 0;
+			m_old_raw_inval = true;
 			/* FIXME: Serial port reset ! */
 		}
 		break;

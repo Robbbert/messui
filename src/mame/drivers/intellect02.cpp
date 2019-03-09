@@ -68,11 +68,11 @@ public:
 		m_keypad(*this, "IN.%u", 0),
 		m_dac(*this, "dac"),
 		m_cart(*this, "cartslot"),
-		m_digit(*this, "digit%u", 0U),
-		m_led(*this, "led%u", 0U)
+		m_out_digit(*this, "digit%u", 0U),
+		m_out_led(*this, "led%u", 0U)
 	{ }
 
-	// machine drivers
+	// machine configs
 	void intel02(machine_config &config);
 
 	// assume that reset button is tied to RESET pin
@@ -89,8 +89,8 @@ private:
 	required_ioport_array<2> m_keypad;
 	required_device<dac_bit_interface> m_dac;
 	required_device<generic_slot_device> m_cart;
-	output_finder<4> m_digit;
-	output_finder<2> m_led;
+	output_finder<4> m_out_digit;
+	output_finder<2> m_out_led;
 
 	DECLARE_DEVICE_IMAGE_LOAD_MEMBER(cartridge);
 
@@ -115,8 +115,8 @@ private:
 void intel02_state::machine_start()
 {
 	// resolve handlers
-	m_led.resolve();
-	m_digit.resolve();
+	m_out_led.resolve();
+	m_out_digit.resolve();
 
 	// zerofill
 	m_7seg_data = 0;
@@ -154,14 +154,14 @@ void intel02_state::update_display()
 	for (int i = 0; i < 4; i++)
 	{
 		if (BIT(m_led_select, i))
-			m_digit[i] = m_7seg_data;
+			m_out_digit[i] = m_7seg_data;
 		else if (!BIT(m_led_active, i))
-			m_digit[i] = 0;
+			m_out_digit[i] = 0;
 	}
 
 	// led select d4: lose led, d5: win led
-	m_led[0] = BIT(m_led_active, 4);
-	m_led[1] = BIT(m_led_active, 5);
+	m_out_led[0] = BIT(m_led_active, 4);
+	m_out_led[1] = BIT(m_led_active, 5);
 }
 
 TIMER_DEVICE_CALLBACK_MEMBER(intel02_state::led_delay_off)
@@ -196,7 +196,7 @@ WRITE8_MEMBER(intel02_state::control_w)
 		if (BIT(data, i))
 			m_led_active |= 1 << i;
 
-		// on falling edge, delay it going off to prevent flicker
+		// they're strobed, so on falling edge, delay them going off to prevent flicker
 		else if (BIT(m_led_select, i))
 			m_led_delay[i]->adjust(attotime::from_msec(10), i);
 	}
@@ -261,7 +261,7 @@ INPUT_PORTS_END
 
 
 /******************************************************************************
-    Machine Drivers
+    Machine Configs
 ******************************************************************************/
 
 void intel02_state::intel02(machine_config &config)
@@ -278,7 +278,7 @@ void intel02_state::intel02(machine_config &config)
 	m_ppi8255->tri_pb_callback().set_constant(0);
 	m_ppi8255->out_pc_callback().set(FUNC(intel02_state::control_w));
 
-	/* display hardware */
+	/* video hardware */
 	for (int i = 0; i < 6; i++)
 		TIMER(config, m_led_delay[i]).configure_generic(FUNC(intel02_state::led_delay_off));
 
