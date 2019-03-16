@@ -875,6 +875,9 @@ sp_zigzgm                       //
 @source:aci_boris.cpp
 boris                           //
 
+@source:aci_borisdpl.cpp
+borisdpl                        //
+
 @source:acommand.cpp
 acommand                        // (c) 1990
 
@@ -9758,7 +9761,6 @@ chessmsta                       //
 chessmstdm                      //
 
 @source:chesstrv.cpp
-borisdpl                        //
 chesstrv                        //
 
 @source:chexx.cpp
@@ -21714,6 +21716,7 @@ mjsister                        // (c) 1986 Toaplan
 
 @source:mk1.cpp
 ccmk1                           // Chess Champion MK I
+cmpchess
 
 @source:mk14.cpp
 mk14                            //
@@ -34114,11 +34117,9 @@ sbrkoutct                       // 034555-034559 proto ???? [6502]
 sbugger                         // (c) 1981 Game-A-Tron
 sbuggera                        // (c) 1981 Game-A-Tron
 
-@source:sc1.cpp
-sc1                             //
-
 @source:sc2.cpp
 sc2                             //
+sc2a                            //
 
 @source:scm_500.cpp
 scm_500                         //
@@ -35550,6 +35551,9 @@ slapshot                        // D71 (c) 1994 Taito Corporation (Japan)
 
 @source:slc1.cpp
 slc1                            //
+
+@source:slc1a.cpp
+slc1a
 
 @source:sleic.cpp
 bikerace                        //
