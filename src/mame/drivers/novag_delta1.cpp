@@ -188,4 +188,4 @@ ROM_END
 ******************************************************************************/
 
 //    YEAR  NAME      PARENT CMP MACHINE  INPUT   CLASS         INIT        COMPANY, FULLNAME, FLAGS
-CONS( 1979, ccdelta1, 0,      0, delta1,  delta1, delta1_state, empty_init, "Novag", "Chess Champion: Delta-1", MACHINE_MECHANICAL | MACHINE_SUPPORTS_SAVE | MACHINE_NO_SOUND_HW | MACHINE_NOT_WORKING )
+CONS( 1979, ccdelta1, 0,      0, delta1,  delta1, delta1_state, empty_init, "Novag", "Chess Champion: Delta-1", MACHINE_SUPPORTS_SAVE | MACHINE_NO_SOUND_HW | MACHINE_NOT_WORKING )
