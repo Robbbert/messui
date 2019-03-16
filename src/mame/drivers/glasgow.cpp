@@ -745,10 +745,10 @@ ROM_END
 
 /*     YEAR, NAME,     PARENT,   COMPAT, MACHINE,     INPUT,          CLASS,         INIT, COMPANY,                      FULLNAME,                 FLAGS */
 CONS(  1984, glasgow,  0,        0,      glasgow,     old_keyboard,   glasgow_state, empty_init,    "Hegener & Glaser Muenchen",  "Mephisto III S Glasgow", 0)
-CONS(  1985, amsterd,  0,        0,      amsterd,     new_keyboard,   amsterd_state, empty_init,    "Hegener & Glaser Muenchen",  "Mephisto Amsterdam",     MACHINE_NOT_WORKING)
-CONS(  1986, dallas,   glasgow,  0,      glasgow,     old_keyboard,   glasgow_state, empty_init,    "Hegener & Glaser Muenchen",  "Mephisto Dallas",        MACHINE_NOT_WORKING)
-CONS(  1986, dallas16, amsterd,  0,      amsterd,     new_keyboard,   amsterd_state, empty_init,    "Hegener & Glaser Muenchen",  "Mephisto Dallas 16 Bit", MACHINE_NOT_WORKING)
-CONS(  1986, dallas32, amsterd,  0,      dallas32,    new_keyboard,   amsterd_state, empty_init,    "Hegener & Glaser Muenchen",  "Mephisto Dallas 32 Bit", MACHINE_NOT_WORKING)
-CONS(  1987, roma,     amsterd,  0,      amsterd,     new_keyboard,   amsterd_state, empty_init,    "Hegener & Glaser Muenchen",  "Mephisto Roma",          MACHINE_NOT_WORKING)
-CONS(  1987, roma32,   amsterd,  0,      dallas32,    new_keyboard,   amsterd_state, empty_init,    "Hegener & Glaser Muenchen",  "Mephisto Roma 32 Bit",   MACHINE_NOT_WORKING)
+CONS(  1985, amsterd,  0,        0,      amsterd,     new_keyboard,   amsterd_state, empty_init,    "Hegener & Glaser Muenchen",  "Mephisto Amsterdam",     MACHINE_MECHANICAL | MACHINE_NOT_WORKING)
+CONS(  1986, dallas,   glasgow,  0,      glasgow,     old_keyboard,   glasgow_state, empty_init,    "Hegener & Glaser Muenchen",  "Mephisto Dallas",        MACHINE_MECHANICAL | MACHINE_NOT_WORKING)
+CONS(  1986, dallas16, amsterd,  0,      amsterd,     new_keyboard,   amsterd_state, empty_init,    "Hegener & Glaser Muenchen",  "Mephisto Dallas 16 Bit", MACHINE_MECHANICAL | MACHINE_NOT_WORKING)
+CONS(  1986, dallas32, amsterd,  0,      dallas32,    new_keyboard,   amsterd_state, empty_init,    "Hegener & Glaser Muenchen",  "Mephisto Dallas 32 Bit", MACHINE_MECHANICAL | MACHINE_NOT_WORKING)
+CONS(  1987, roma,     amsterd,  0,      amsterd,     new_keyboard,   amsterd_state, empty_init,    "Hegener & Glaser Muenchen",  "Mephisto Roma",          MACHINE_MECHANICAL | MACHINE_NOT_WORKING)
+CONS(  1987, roma32,   amsterd,  0,      dallas32,    new_keyboard,   amsterd_state, empty_init,    "Hegener & Glaser Muenchen",  "Mephisto Roma 32 Bit",   MACHINE_MECHANICAL | MACHINE_NOT_WORKING)
 

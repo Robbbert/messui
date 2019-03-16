@@ -255,4 +255,4 @@ ROM_END
 ******************************************************************************/
 
 //    YEAR  NAME   PARENT CMP MACHINE  INPUT  CLASS        INIT        COMPANY, FULLNAME, FLAGS
-COMP( 1978, boris, 0,      0, boris,   boris, boris_state, empty_init, "Applied Concepts", "Boris", MACHINE_SUPPORTS_SAVE | MACHINE_NO_SOUND_HW )
+COMP( 1978, boris, 0,      0, boris,   boris, boris_state, empty_init, "Applied Concepts", "Boris", MACHINE_MECHANICAL | MACHINE_SUPPORTS_SAVE | MACHINE_NO_SOUND_HW )

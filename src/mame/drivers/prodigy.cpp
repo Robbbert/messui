@@ -722,4 +722,4 @@ ROM_START(prodigy)
 ROM_END
 
 //    YEAR  NAME     PARENT  COMPAT  MACHINE  INPUT    STATE          INIT        COMPANY                 FULLNAME               FLAGS
-CONS( 1981, prodigy, 0,      0,      prodigy, prodigy, prodigy_state, empty_init, "Applied Concepts Inc", "ACI Destiny Prodigy", MACHINE_NO_SOUND )
+CONS( 1981, prodigy, 0,      0,      prodigy, prodigy, prodigy_state, empty_init, "Applied Concepts Inc", "ACI Destiny Prodigy", MACHINE_MECHANICAL | MACHINE_NO_SOUND )

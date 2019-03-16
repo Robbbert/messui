@@ -189,4 +189,4 @@ ROM_END
 ******************************************************************************/
 
 //    YEAR  NAME   PARENT  CMP MACHINE  INPUT  STATE       INIT        COMPANY, FULLNAME, FLAGS
-CONS( 1985, feleg, 0,       0, as12,    as12,  as12_state, empty_init, "Fidelity Electronics", "Elegance Chess Challenger", MACHINE_SUPPORTS_SAVE | MACHINE_CLICKABLE_ARTWORK | MACHINE_IMPERFECT_CONTROLS | MACHINE_IMPERFECT_TIMING )
+CONS( 1985, feleg, 0,       0, as12,    as12,  as12_state, empty_init, "Fidelity Electronics", "Elegance Chess Challenger", MACHINE_MECHANICAL | MACHINE_SUPPORTS_SAVE | MACHINE_CLICKABLE_ARTWORK | MACHINE_IMPERFECT_CONTROLS | MACHINE_IMPERFECT_TIMING )
