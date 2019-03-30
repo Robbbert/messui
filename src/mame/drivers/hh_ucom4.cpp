@@ -194,9 +194,10 @@ void hh_ucom4_state::display_matrix(int maxx, int maxy, u32 setx, u32 sety, bool
 	set_display_size(maxx, maxy);
 
 	// update current state
-	u32 mask = (1 << maxx) - 1;
+	u32 mask = 1 << maxx;
+	u32 maskb = (setx & (mask-1)) | mask;
 	for (int y = 0; y < maxy; y++)
-		m_display_state[y] = (sety >> y & 1) ? ((setx & mask) | (1 << maxx)) : 0;
+		m_display_state[y] = BIT(sety, y) ? maskb : 0;
 
 	if (update)
 		display_update();
