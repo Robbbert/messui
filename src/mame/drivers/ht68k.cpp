@@ -148,6 +148,7 @@ void ht68k_state::ht68k(machine_config &config)
 	rs232.rxd_handler().set(m_duart, FUNC(mc68681_device::rx_a_w));
 
 	WD1770(config, m_fdc, 8_MHz_XTAL);
+	m_fdc->intrq_wr_callback().set_inputline("maincpu", M68K_IRQ_4);
 
 	FLOPPY_CONNECTOR(config, "wd1770:0", ht68k_floppies, "525dd", floppy_image_device::default_floppy_formats);
 	FLOPPY_CONNECTOR(config, "wd1770:1", ht68k_floppies, "525dd", floppy_image_device::default_floppy_formats);

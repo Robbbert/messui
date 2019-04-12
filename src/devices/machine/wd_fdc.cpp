@@ -143,7 +143,7 @@ void wd_fdc_device_base::device_reset()
 
 void wd_fdc_device_base::soft_reset()
 {
-	command = 0x00;
+	command = 0x08;   // MESSUI
 	main_state = IDLE;
 	sub_state = IDLE;
 	cur_live.state = IDLE;
