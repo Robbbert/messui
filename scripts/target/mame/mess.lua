@@ -3541,6 +3541,7 @@ files {
 	MAME_DIR .. "src/mame/drivers/tvgame.cpp",
 	MAME_DIR .. "src/mame/drivers/spg110.cpp",
 	MAME_DIR .. "src/mame/drivers/vii.cpp",
+	MAME_DIR .. "src/mame/drivers/sunplus_gcm394.cpp",
 	MAME_DIR .. "src/mame/drivers/xavix.cpp",
 	MAME_DIR .. "src/mame/video/xavix.cpp",
 	MAME_DIR .. "src/mame/machine/xavix.cpp",
@@ -3749,6 +3750,7 @@ files {
 
 createMESSProjects(_target, _subtarget, "yamaha")
 files {
+	MAME_DIR .. "src/mame/machine/mulcd.cpp",
 	MAME_DIR .. "src/mame/drivers/ymmu100.cpp",
 	MAME_DIR .. "src/mame/drivers/fb01.cpp",
 	MAME_DIR .. "src/mame/drivers/tg100.cpp",
