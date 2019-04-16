@@ -1613,6 +1613,7 @@ files {
 	MAME_DIR .. "src/mame/machine/cuda.cpp",
 	MAME_DIR .. "src/mame/machine/cuda.h",
 	MAME_DIR .. "src/mame/drivers/iphone2g.cpp",
+	MAME_DIR .. "src/mame/drivers/superga2.cpp",
 }
 
 createMESSProjects(_target, _subtarget, "applied")
@@ -2169,6 +2170,10 @@ files {
 	MAME_DIR .. "src/mame/drivers/cmi.cpp",
 	MAME_DIR .. "src/mame/audio/cmi01a.cpp",
 	MAME_DIR .. "src/mame/audio/cmi01a.h",
+	MAME_DIR .. "src/mame/machine/cmi_ankbd.cpp",
+	MAME_DIR .. "src/mame/machine/cmi_ankbd.h",
+	MAME_DIR .. "src/mame/machine/cmi_mkbd.cpp",
+	MAME_DIR .. "src/mame/machine/cmi_mkbd.h",
 }
 
 createMESSProjects(_target, _subtarget, "force")
@@ -3751,7 +3756,10 @@ files {
 createMESSProjects(_target, _subtarget, "yamaha")
 files {
 	MAME_DIR .. "src/mame/machine/mulcd.cpp",
+	MAME_DIR .. "src/mame/drivers/ymmu50.cpp",
+	MAME_DIR .. "src/mame/drivers/ymmu80.cpp",
 	MAME_DIR .. "src/mame/drivers/ymmu100.cpp",
+	MAME_DIR .. "src/mame/drivers/ymvl70.cpp",
 	MAME_DIR .. "src/mame/drivers/fb01.cpp",
 	MAME_DIR .. "src/mame/drivers/tg100.cpp",
 }
@@ -3782,6 +3790,7 @@ files {
 	MAME_DIR .. "src/mame/drivers/aceex.cpp",
 	MAME_DIR .. "src/mame/drivers/aci_boris.cpp",
 	MAME_DIR .. "src/mame/drivers/aci_borisdpl.cpp",
+	MAME_DIR .. "src/mame/drivers/aci_ggm.cpp",
 	MAME_DIR .. "src/mame/drivers/adm23.cpp",
 	MAME_DIR .. "src/mame/drivers/adm31.cpp",
 	MAME_DIR .. "src/mame/drivers/adm36.cpp",
