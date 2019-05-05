@@ -498,6 +498,7 @@ multi16.cpp
 multi8.cpp
 mupid2.cpp
 mvme147.cpp
+mvme162.cpp
 mx2178.cpp
 myb3k.cpp
 mycom.cpp
@@ -773,6 +774,7 @@ tek405x.cpp
 tek410x.cpp
 tek440x.cpp
 tekxp33x.cpp
+telex274.cpp
 terak.cpp
 terco.cpp
 terminal.cpp

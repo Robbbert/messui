@@ -2625,6 +2625,7 @@ files {
 	MAME_DIR .. "src/mame/drivers/m68705prg.cpp",
 	MAME_DIR .. "src/mame/drivers/mekd2.cpp",
 	MAME_DIR .. "src/mame/drivers/mvme147.cpp",
+	MAME_DIR .. "src/mame/drivers/mvme162.cpp",
 }
 
 createMESSProjects(_target, _subtarget, "multitch")
@@ -4002,6 +4003,7 @@ files {
 	MAME_DIR .. "src/mame/drivers/talkingfb.cpp",
 	MAME_DIR .. "src/mame/drivers/tavernie.cpp",
 	MAME_DIR .. "src/mame/drivers/tecnbras.cpp",
+	MAME_DIR .. "src/mame/drivers/telex274.cpp",
 	MAME_DIR .. "src/mame/drivers/terak.cpp",
 	MAME_DIR .. "src/mame/drivers/terco.cpp",
 	MAME_DIR .. "src/mame/drivers/terminal.cpp",

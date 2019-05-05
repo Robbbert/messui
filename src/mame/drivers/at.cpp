@@ -73,6 +73,18 @@ Form factor: Desktop PC
 CPU: Intel 286, 8MHz
 RAM: 640KB
 Mass storage: Floppy: 5.25" 1.2Mb, HDD: 40Mb
+
+Nixdorf 8810 M55
+================
+Links: https://www.computerwoche.de/a/auch-nixdorf-nun-in-der-at-clone-riege,1166613
+Info: Rebadged NCR PC-8, an AT-clone in a huge desktop case
+Form factor: Desktop PC
+CPU: Intel 286; CPU card has a 20Mhz, a 12 MHz and a 14.31818 crystal
+RAM: 512K on CPU card, 128K on a piggyback card and a memory expansion board
+Bus: Passive backplane, ISA
+Video: Paradise EGA on another piggyback board
+Mass storage: Floppy: 5.25" 1.2MB, MFM HDD
+
 ***************************************************************************/
 
 #include "emu.h"
@@ -131,6 +143,8 @@ public:
 	void pc40iii(machine_config &config);
 	void atvga(machine_config &config);
 	void at386(machine_config &config);
+	void ncrpc8(machine_config &config);
+	void n8810m55(machine_config &config);
 	void ews286(machine_config &config);
 
 	void init_at();
@@ -832,6 +846,14 @@ void at_state::comportii(machine_config &config)
 	subdevice<isa16_slot_device>("isa2")->set_option_machine_config("fdc", cfg_single_360K);
 	subdevice<isa16_slot_device>("isa4")->set_default_option("hdc");
 	m_ram->set_default_size("640K").set_extra_options("1152K,1664K,2176K,2688K,4224K");
+}
+
+// Nixdorf 8810 M55
+void at_state::n8810m55(machine_config &config)
+{
+	ibm5170(config);
+	m_maincpu->set_clock(6000000); 
+	subdevice<isa16_slot_device>("isa1")->set_default_option("ega"); 
 }
 
 //**************************************************************************
@@ -1640,11 +1662,29 @@ ROM_START( dsys200 )
 ROM_END
 
 // Ericsson WS286
-ROM_START(ews286 ) // Computer is brown/yellow-ish with Ericsson logo
-	ROM_REGION(0x20000,"bios", 0)
+ROM_START( ews286 ) // Computer is brown/yellow-ish with Ericsson logo
+	ROM_REGION(0x20000, "bios", 0)
 	ROM_LOAD16_BYTE( "rys_103_1002_r8a_3c00_ic-pos_71.bin", 0x18000, 0x4000, CRC(af179e56) SHA1(58b1df46d6e68eef472a0529cb9317abaf17880f)) // Last ROM set and has Nokia
 	ROM_LOAD16_BYTE( "rys_103_1003_r8a_8600_ic-pos_69.bin", 0x18001, 0x4000, CRC(555502cb) SHA1(1977fe54b69c5e52731bf3eb8bdabe777aac014b)) // copyright patched in both roms
 ROM_END
+
+//  NCR, probably PC-8 - should get a "NGA" extended CGA graphics card once it's emulated
+ROM_START( ncrpc8 )
+	ROM_REGION(0x20000, "bios", 0)
+	ROM_LOAD16_BYTE( "ncr_35116_u113_vers.4-2.bin", 0x10001, 0x8000, CRC(b1b6a2e2) SHA1(5b2c0a2be59e064076ed757d84f61bf955ceca08))
+	ROM_LOAD16_BYTE( "ncr_35117_u127_vers.4-2.bin", 0x10000, 0x8000, CRC(f4338669) SHA1(c1d6e714591c8d7ab966acfdbc3b463e06fbd073))
+	
+	ROM_REGION( 0x0800, "keyboard", 0 ) 
+	ROM_LOAD ("ncr_keyboard_mcu_35091.bin", 0x0000, 0x800, CRC(632556cc) SHA1(b35f30bd0664fc1c2775a594f248d1e30237900a))
+ROM_END
+
+// Nixdorf 8810 M55
+ROM_START( n8810m55 )
+    ROM_REGION(0x20000, "bios", 0 )
+	ROM_LOAD16_BYTE( "150-3872_u113_27_4.5.1.bin", 0x10001, 0x8000, CRC(35ff4fba) SHA1(557f0f98c27af76f6fa6990592e7150f5fc1fc02))
+	ROM_LOAD16_BYTE( "150-3873_u127_30_4.5.1.bin", 0x10000, 0x8000, CRC(5a7e6643) SHA1(f3890919a772eead7232bd227b2c8677377f6e24))
+ROM_END
+	
 
 // Nokia Data WS286
 //ROM_START(nws286 ) // Computer is grey with Nokia logo.
@@ -1710,4 +1750,6 @@ COMP( 1987, comportii ,ibm5170, 0,       comportii, 0,     at_state,     init_at
 COMP( 1987, comportiii,ibm5170, 0,       comportiii,0,     at_state,     init_at,        "Compaq",      "Portable III", MACHINE_NOT_WORKING )
 COMP( 1988, comslt286, ibm5170, 0,       atvga,     0,     at_state,     init_at,        "Compaq",      "SLT/286", MACHINE_NOT_WORKING )
 COMP( 1986, ews286,    ibm5170, 0,       ews286,    0,     at_state,     init_at,        "Ericsson",    "Ericsson WS286", MACHINE_NOT_WORKING )
+COMP( 1986, ncrpc8,    ibm5170, 0,       atvga,     0,     at_state,     init_at,        "NCR",         "PC-8", MACHINE_NOT_WORKING )
+COMP( 1986, n8810m55,  ibm5170, 0,       n8810m55,  0,     at_state,     init_at,        "Nixdorf Computer AG", "8810 M55", MACHINE_NOT_WORKING )
 //COMP( 1988, nws286,    ibm5170,  0,      ews286,    0,     at_state,     at,        "Nokia Data",  "Nokia Data WS286", MACHINE_NOT_WORKING )
