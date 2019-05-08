@@ -341,6 +341,7 @@ VIDEOS["SCN2674"] = true
 --VIDEOS["SED1520"] = true
 VIDEOS["SNES_PPU"] = true
 VIDEOS["STVVDP"] = true
+--VIDEOS["T6963C"] = true
 --VIDEOS["T6A04"] = true
 VIDEOS["TLC34076"] = true
 VIDEOS["TMS34061"] = true
@@ -660,6 +661,7 @@ MACHINES["PS2INTC"] = true
 --MACHINES["IOPINTC"] = true
 --MACHINES["IOPSIO2"] = true
 --MACHINES["IOPTIMER"] = true
+MACHINES["AIC565"] = true
 MACHINES["AIC6250"] = true
 
 --------------------------------------------------
