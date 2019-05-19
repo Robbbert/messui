@@ -37,7 +37,7 @@
 
 // System clock definitions, from the MB-6890 servce manual, p.48:
 
-#define MASTER_CLOCK ( 32256000 )   // Master clock crystal (X1) frequency, 32.256 MHz.  "fx" in the manual.
+#define MASTER_CLOCK ( 32.256_MHz_XTAL )   // Master clock crystal (X1) frequency, 32.256 MHz.  "fx" in the manual.
 
 #define D80_CLOCK ( MASTER_CLOCK / 2 )  // Graphics dot clock in 80-column mode. ~16 MHz.
 #define D40_CLOCK ( D80_CLOCK / 2 )     // Graphics dot clock in 40-column mode.  ~8 MHz.
@@ -194,7 +194,8 @@ WRITE8_MEMBER( bml3_state::mc6845_w )
 READ8_MEMBER( bml3_state::keyboard_r )
 {
 	u8 ret = m_keyb_scancode;
-	m_keyb_scancode &= 0x7f;
+	if (!machine().side_effects_disabled())
+		m_keyb_scancode &= 0x7f;
 	return ret;
 }
 
@@ -210,14 +211,14 @@ WRITE8_MEMBER( bml3_state::keyboard_w )
 
 void bml3_state::m6845_change_clock(u8 setting)
 {
-	int m6845_clock = CPU_CLOCK;    // CRTC and MPU are synchronous by default
+	int m6845_clock = CPU_CLOCK.value();    // CRTC and MPU are synchronous by default
 
 	switch(setting & 0x88)
 	{
-		case 0x00: m6845_clock = C40_CLOCK; break; //320 x 200
-		case 0x08: m6845_clock = C40_CLOCK; break; //320 x 200, interlace
-		case 0x80: m6845_clock = C80_CLOCK; break; //640 x 200
-		case 0x88: m6845_clock = C80_CLOCK; break; //640 x 200, interlace
+		case 0x00: m6845_clock = C40_CLOCK.value(); break; //320 x 200
+		case 0x08: m6845_clock = C40_CLOCK.value(); break; //320 x 200, interlace
+		case 0x80: m6845_clock = C80_CLOCK.value(); break; //640 x 200
+		case 0x88: m6845_clock = C80_CLOCK.value(); break; //640 x 200, interlace
 	}
 
 	m_crtc->set_unscaled_clock(m6845_clock);
@@ -932,7 +933,7 @@ void bml3_state::bml3_common(machine_config &config)
 
 	/* Devices */
 	// CRTC clock should be synchronous with the CPU clock.
-	H46505(config, m_crtc, CPU_CLOCK);
+	HD6845S(config, m_crtc, CPU_CLOCK); // HD46505SP
 	m_crtc->set_screen("screen");
 	m_crtc->set_show_border_area(false);
 	m_crtc->set_char_width(8);
