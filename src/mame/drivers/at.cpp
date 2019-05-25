@@ -1079,9 +1079,6 @@ ROM_START( at )
 	// 28: BIOS-String: DH12-1343-061390-K0
 	ROM_SYSTEM_BIOS(28, "headland", "Headland")
 	ROMX_LOAD( "286_headland.bin", 0x10000, 0x10000, CRC(06ea67ae) SHA1(d827f14c4307b76f727bf2a8323330992b74dd89), ROM_BIOS(28) )
-	// 29: BIOS-String: 20-0300-00834-00101111-050591-SARC286 / [80286 Standard System 2V1]
-	ROM_SYSTEM_BIOS(29, "sarcrev12", "SARC Rev. 1.2")
-	ROMX_LOAD( "sarcrev12.bin", 0x10000, 0x10000, CRC(1c5e3f2d) SHA1(1fcc8b1b9d9383467223dd41e420f9352beca654), ROM_BIOS(29) )
 ROM_END
 
 
@@ -1201,17 +1198,14 @@ ROM_START( at386sx )
 	// 1: BIOS-String: 30-0400-428027-00101111-070791-SCMPSX-0 / VLSI SCAMP 386SX 16/20/25MHz
 	ROM_SYSTEM_BIOS(1, "scamp", "VLSI SCAMPSX")
 	ROMX_LOAD( "ami_386sx_vlsi_scamp_070791.bin", 0x10000, 0x10000, CRC(082d071c) SHA1(69af9a951f138146036b3c9ac3761cc6589b6cf5), ROM_BIOS(1))
-	// 2: BIOS-String: 03/25/93-SARC_RC2016A-219v0000 / CX 386SX System
-	ROM_SYSTEM_BIOS(2, "cxsxd", "CX SXD")
-	ROMX_LOAD( "award_cx-sxd_v4.50.srd.bin", 0x10000, 0x10000, CRC(ef1c74d7) SHA1(b40b1cb7143c4e352798bdf3b488d9342a4029a7), ROM_BIOS(2))
-	// 3: NCR 386 CPU card
-	ROM_SYSTEM_BIOS(3, "ncr386sx", "NCR 386sx card") // Upgrade card for e.g. NCR PC-8 - Setup Version 2.7.1
-	ROMX_LOAD( "ncr_386sx_u12-19_7.3.bin", 0x10001, 0x8000, CRC(9e4c9a2a) SHA1(0a45d9f04f03b7ae39734916af7786bc52e5e917), ROM_SKIP(1) | ROM_BIOS(3))
-	ROMX_LOAD( "ncr_386sx_u46-17_7.3.bin", 0x10000, 0x8000, CRC(73ad83a2) SHA1(bf6704fb4a0da37251f192cea3af2bc8cc2e9cdb), ROM_SKIP(1) | ROM_BIOS(3))
+	// 2: NCR 386 CPU card
+	ROM_SYSTEM_BIOS(2, "ncr386sx", "NCR 386sx card") // Upgrade card for e.g. NCR PC-8 - Setup Version 2.7.1
+	ROMX_LOAD( "ncr_386sx_u12-19_7.3.bin", 0x10001, 0x8000, CRC(9e4c9a2a) SHA1(0a45d9f04f03b7ae39734916af7786bc52e5e917), ROM_SKIP(1) | ROM_BIOS(2))
+	ROMX_LOAD( "ncr_386sx_u46-17_7.3.bin", 0x10000, 0x8000, CRC(73ad83a2) SHA1(bf6704fb4a0da37251f192cea3af2bc8cc2e9cdb), ROM_SKIP(1) | ROM_BIOS(2))
 	// ROM_LOAD( "ncr_386sx_card_150-0004508_u1_v1.1.bin", 0x0000, 0x800, CRC(dd591ac1) SHA1(5bc40ca7340fa57aaf5d707be45a288f14085807))
-	// 4: BIOS-String: 30-0501-D81105-00101111-070791-ACER1217-0 - 386SX NPM/33,40-A0(2) 05/12/1993
-	ROM_SYSTEM_BIOS(4, "m919a00", "PC-Chips M919")
-	ROMX_LOAD( "m919a00_npm-40.bin", 0x10000, 0x10000, CRC(4f330d82) SHA1(08224c7bcfb2a859b682bf44ac1ac7fd9f2ade78),ROM_BIOS(4))
+	// 3: BIOS-String: 30-0501-D81105-00101111-070791-ACER1217-0 - 386SX NPM/33,40-A0(2) 05/12/1993
+	ROM_SYSTEM_BIOS(3, "m919a00", "PC-Chips M919")
+	ROMX_LOAD( "m919a00_npm-40.bin", 0x10000, 0x10000, CRC(4f330d82) SHA1(08224c7bcfb2a859b682bf44ac1ac7fd9f2ade78),ROM_BIOS(3))
 ROM_END
 
 ROM_START( ct386sx )
@@ -1222,6 +1216,14 @@ ROM_START( ct386sx )
 	ROMX_LOAD( "012h-u24.bin", 0x10001, 0x8000, CRC(17472521) SHA1(7588c148fe53d9dc4cb2d0ab6e0fd51a39bb5d1a),ROM_SKIP(1) | ROM_BIOS(0))
 	ROM_FILL(0x1e2c9, 1, 0x00) // skip incompatible keyboard controller test
 	ROM_FILL(0x1e2cb, 1, 0xbb) // fix checksum
+ROM_END
+
+// CX Technology, Inc. Model SXD (4x SIMM, 4x 16-bit ISA)
+// SARC RC2016A5; HM6818P; CX109; LT38C41 © Lance Corp. (keyboard controller?)
+ROM_START( cxsxd )
+	ROM_REGION(0x20000,"bios", 0)
+	// BIOS-String: 03/25/93-SARC_RC2016A-219v0000 / CX 386SX System
+	ROM_LOAD( "award_cx-sxd_v4.50.srd.bin", 0x10000, 0x10000, CRC(ef1c74d7) SHA1(b40b1cb7143c4e352798bdf3b488d9342a4029a7))
 ROM_END
 
 ROM_START( at386 )
@@ -1393,12 +1395,6 @@ ROM_START( at486 )
 	// 19: BIOS-String: 40-00AG-001247-00101111-060692-SIS3486-0 / AV4 ISA/VL-BUS SYSTEM BIOS
 	ROM_SYSTEM_BIOS(19, "ava4529j", "AVA4529J") // this is a board with two VLB slots
 	ROMX_LOAD("amibios_486dx_isa_bios_aa4025963.bin", 0x10000, 0x10000, CRC(65558d9e) SHA1(2e2840665d069112a2c7169afec687ad03449295), ROM_BIOS(19))
-	// 20: BIOS-String: 40-0200-001343-00101111-111192-OPT495SX-0 / Version 2.0
-	ROM_SYSTEM_BIOS(20, "hot409", "Shuttle HOT-409") // 486 board with two VLB slots
-	ROMX_LOAD( "ami1992.bin", 0x10000, 0x10000, CRC(a19c3fd4) SHA1(404822c98344061b60883533395a89fe4902c177), ROM_BIOS(20))
-	// 21: BIOS-String: 40-0204-001343-00101111-080893-OPT495SX-0 / OPTi495SX Version 3.0
-	ROM_SYSTEM_BIOS(21, "hot409lba", "Shuttle HOT-409 with LBA")
-	ROMX_LOAD( "409lba.rom", 0x10000, 0x10000, CRC(78c5e47e) SHA1(7f14a88a5548fc67dd00e73fd09745e899b93a89), ROM_BIOS(21))
 ROM_END
 
 
@@ -1543,6 +1539,20 @@ ROM_START( ficvipio2 )
 	ROM_REGION(0x20000, "bios", 0)
 	ROM_LOAD( "1164g701.awd", 0x00000, 0x20000, CRC(7b762683) SHA1(84debce7239c8b1978246688ae538f7c4f519d13))
 ROM_END
+
+
+// Shuttle HOT-409 (6 16-bit ISA incl. 2 VLB, 2 8-bit ISA, 8 SIMM)
+// OPTi 82C495SX + 82C392SX + F82C206; MEGA-KB-1-WP
+ROM_START( hot409 )
+	ROM_REGION(0x20000, "bios", 0)
+	// 0: BIOS-String: 40-0200-001343-00101111-111192-OPT495SX-0 / Version 2.0
+	ROM_SYSTEM_BIOS(0, "hot409", "Shuttle HOT-409")
+	ROMX_LOAD( "ami1992.bin", 0x10000, 0x10000, CRC(a19c3fd4) SHA1(404822c98344061b60883533395a89fe4902c177), ROM_BIOS(0))
+	// 1: BIOS-String: 40-0204-001343-00101111-080893-OPT495SX-0 / OPTi495SX Version 3.0
+	ROM_SYSTEM_BIOS(1, "hot409lba", "Shuttle HOT-409 with LBA")
+	ROMX_LOAD( "409lba.rom", 0x10000, 0x10000, CRC(78c5e47e) SHA1(7f14a88a5548fc67dd00e73fd09745e899b93a89), ROM_BIOS(1))
+ROM_END
+
 
 // Commodore Laptop C286-LT - screen remains blank
 ROM_START( c286lt )
@@ -1927,10 +1937,19 @@ ROM_START( k286i )
 ROM_END
 
 // Sanyo MBC-28
-ROM_START( mbc28 ) // Complains about missing mouse hardware
+ROM_START( mbc28 )
 	ROM_REGION(0x20000,"bios", 0)
 	ROM_LOAD16_BYTE( "mbc-28_sl-dt_ver.1620_low_din_checksum,454f00,27c256-15.bin", 0x10000, 0x8000, CRC(423b4693) SHA1(08e877baa59ebd9a1817dcdd27138c638edcbb84) )
 	ROM_LOAD16_BYTE( "mbc-28_sl-dt_ver.1620_high_din_checksum,45ae00,27c256-15.bin", 0x10001, 0x8000, CRC(557b7346) SHA1(c0dca88627f8451211172441fefb4020839fb87f) )
+ROM_END
+
+// Unknown 80C286 motherboard (4 SIMM, 6 16-bit ISA)
+// SARC RC2015; HM6818P; 82C042 or JETkey Keyboard BIOS; 1MB onboard RAM (8x LH64256AD-80)
+ROM_START( sarcpc )
+	ROM_REGION(0x20000,"bios", 0) // 27C512
+	// BIOS-String: 20-0300-00834-00101111-050591-SARC286 / [80286 Standard System 2V1]
+	//ROM_SYSTEM_BIOS(0, "sarcrev12", "SARC Rev. 1.2")
+	ROM_LOAD( "sarcrev12.bin", 0x10000, 0x10000, CRC(1c5e3f2d) SHA1(1fcc8b1b9d9383467223dd41e420f9352beca654) )
 ROM_END
 
 // Siemens PCD-2
@@ -2012,9 +2031,9 @@ ROM_START( kt216wb5 )
 	ROMX_LOAD( "kt216wb5_odd.bin", 0x10001, 0x8000, CRC(af541ada) SHA1(26d2617dbe8c15f1b0d4782375bcb291a7923703), ROM_SKIP(1) )
 ROM_END
 
-// LS-103S (1 8-bit ISA, 6 16-bit ISA, 4 memory slots)
+// LM-103S (1 8-bit ISA, 6 16-bit ISA, 4 memory slots)
 // Headland Technology G2 chipset: HT101A + 2x HT102; HM6818P RTC; AMI keyboard BIOS
-ROM_START( ls103s )
+ROM_START( lm103s )
 	ROM_REGION(0x20000, "bios", 0)
 	// BIOS-String: D286-1234-121589-K0
 	ROMX_LOAD( "ami_lm103-s_lo.bin", 0x10000, 0x8000, CRC(a24be20b) SHA1(ffc5faf6d773154bf2f037556d2e381e81a28a58), ROM_SKIP(1) )
@@ -2202,6 +2221,7 @@ COMP( 1991, fu340,     ibm5170, 0,       at386,     0,     at_state,     init_at
 COMP( 19??, smih0107,  ibm5170, 0,       at386,     0,     at_state,     init_at,        "Forex Computer Company", "unknown 386 AT clone with Forex chipset", MACHINE_NOT_WORKING )
 COMP( 1988, ct386sx,   ibm5170, 0,       ct386sx,   0,     at_state,     init_at,        "<generic>",   "NEAT 386SX (VGA, MF2 Keyboard)", MACHINE_NOT_WORKING )
 COMP( 1988, at386sx,   ibm5170, 0,       at386sx,   0,     at_state,     init_at,        "<generic>",   "PC/AT 386SX (VGA, MF2 Keyboard)", MACHINE_NOT_WORKING )
+COMP( 1993, cxsxd,     ibm5170, 0,       at386sx,   0,     at_state,     init_at,        "CX Technology", "CX SXD", MACHINE_NOT_WORKING )
 COMP( 1990, at486,     ibm5170, 0,       at486,     0,     at_state,     init_at,        "<generic>",   "PC/AT 486 (VGA, MF2 Keyboard)", MACHINE_NOT_WORKING )
 COMP( 1989, neat,      ibm5170, 0,       neat,      0,     at_state,     init_at,        "<generic>",   "NEAT (VGA, MF2 Keyboard)", MACHINE_NOT_WORKING )
 COMP( 1989, ec1842,    ibm5150, 0,       ec1842,    0,     at_state,     init_at,        "<unknown>",   "EC-1842", MACHINE_NOT_WORKING )
@@ -2256,9 +2276,11 @@ COMP( 1988, dsys200,   ibm5170, 0,       atvga,     0,     at_state,     init_at
 COMP( 1995, ficpio2,   ibm5170, 0,       ficpio2,   0,     at_state,     init_atpci,     "First International Computer", "486-PIO-2", MACHINE_NOT_WORKING )
 COMP( 1994, ficvipio,  ibm5170, 0,       at486,     0,     at_state,     init_at,        "First International Computer", "486-VIP-IO", MACHINE_NOT_WORKING )
 COMP( 199?, ficvipio2, ibm5170, 0,       at486,     0,     at_state,     init_at,        "First International Computer", "486-VIP-IO2", MACHINE_NOT_WORKING )
+COMP( 199?, hot409,    ibm5170, 0,       at486,     0,     at_state,     init_at,        "Shuttle Computer International", "HOT-409", MACHINE_NOT_WORKING )
 COMP( 1985, k286i,     ibm5170, 0,       k286i,     0,     at_state,     init_at,        "Kaypro",      "286i", MACHINE_NOT_WORKING )
 COMP( 1991, t2000sx,   ibm5170, 0,       at386sx,   0,     at_state,     init_at,        "Toshiba",     "T2000SX", MACHINE_NOT_WORKING )
-COMP( 199?, mbc28,     ibm5170, 0,       at386sx,   0,     at_state,     init_at,        "Sanyo",       "MBC-28", MACHINE_NOT_WORKING )
+COMP( 199?, mbc28,     ibm5170, 0,       at386sx,   0,     at_state,     init_at,        "Sanyo",       "MBC-28", MACHINE_NOT_WORKING ) // Complains about missing mouse hardware
+COMP( 199?, sarcpc,    ibm5170, 0,       ibm5162,   0,     at_state,     init_at,        "<unknown>",   "80286 Standard System (SARC RC2015 chipset)", MACHINE_NOT_WORKING )
 COMP( 1986, pcd2,      ibm5170, 0,       ibm5170,   0,     at_state,     init_at,        "Siemens",     "PCD-2", MACHINE_NOT_WORKING )
 COMP( 199?, pcd3nsx,   ibm5170, 0,       at386sx,   0,     at_state,     init_at,        "Siemens-Nixdorf", "PCD-3Nsx", MACHINE_NOT_WORKING )
 COMP( 199?, pcd4x,     ibm5170, 0,       at486,     0,     at_state,     init_at,        "Siemens-Nixdorf", "PCD-4H, PCD-4M", MACHINE_NOT_WORKING )
@@ -2272,7 +2294,7 @@ COMP( 1988, comslt286, ibm5170, 0,       atvga,     0,     at_state,     init_at
 COMP( 1986, ews286,    ibm5170, 0,       ews286,    0,     at_state,     init_at,        "Ericsson",    "Ericsson WS286", MACHINE_NOT_WORKING )
 COMP( 198?, ev1806,    ibm5170, 0,       ibm5162,   0,     at_state,     init_at,        "Everex Systems", "EV-1806", MACHINE_NOT_WORKING ) // continuous beeps (RAM not detected?)
 COMP( 19??, kt216wb5,  ibm5170, 0,       ibm5162,   0,     at_state,     init_at,        "KT Technology", "KT216WB5-HI Rev.2", MACHINE_NOT_WORKING )
-COMP( 198?, ls103s,    ibm5170, 0,       ibm5162,   0,     at_state,     init_at,        "unknown",     "LS-103S", MACHINE_NOT_WORKING )
+COMP( 198?, lm103s,    ibm5170, 0,       ibm5162,   0,     at_state,     init_at,        "unknown",     "LM-103S", MACHINE_NOT_WORKING )
 COMP( 198?, magb233,   ibm5170, 0,       ibm5162,   0,     at_state,     init_at,        "Magitronic Technology", "Magitronic B233", MACHINE_NOT_WORKING )
 COMP( 19??, mat286,    ibm5170, 0,       ibm5162,   0,     at_state,     init_at,        "unknown",     "MAT286 Rev.D", MACHINE_NOT_WORKING )
 COMP( 1986, ncrpc8,    ibm5170, 0,       atvga,     0,     at_state,     init_at,        "NCR",         "PC-8", MACHINE_NOT_WORKING )

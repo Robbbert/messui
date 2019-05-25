@@ -2435,6 +2435,7 @@ pcd4x                           // Siemens-Nixdorf PCD-4H and other 486 desktops
 pcd4nl                          // Siemens-Nixdorf PCD-4NL 486 subnotebook
 pcd4nd                          // Siemens-Nixdorf 486 notebook
 ct386sx                         //
+cxsxd                           //
 ec1842                          //
 ec1849                          //
 ev1806                          // Everex EV-1806
@@ -2443,13 +2444,14 @@ ficpio2                         // 1995 FIC 486-PIO-2
 ficvipio                        // FIC 486-VIP-IO
 ficvipio2                       // FIC 486-VIP-IO2
 ftsserv                         // 1991 Apricot FTs (Scorpion)
+hot409                          // Shuttle HOT-409
 ibm5162                         // 1986 IBM XT 5162 (XT w/80286)
 ibm5170                         // 1984 IBM PC/AT 5170, original 6 MHz model
 ibm5170a                        // 1985 IBM PC/AT 5170, enhanced 8 MHz model
 ibmps1es                        // IBM PS/1 (Spanish)
 k286i                           // 1985 Kaypro 286i
 kt216wb5                        // KT216WB5-HI Rev.2
-ls103s                          //
+lm103s                          //
 m290                            // Olivetti M290
 magb233                         // Magitronic B233
 mat286                          //
@@ -2467,6 +2469,7 @@ n8810m55                        // 1986 Nixdorf 8810 M55
 pc2386                          //
 qi600                           // 1988 Apricot Qi 600 (Neptune Motherboard
 qi900                           // 1990 Apricot Qi 900 (Scorpion Motherboard)
+sarcpc                          //
 t2000sx                         //
 walk386sx                       // Triumph-Adler Walkstation 386 SX
 walk386dx                       // Triumph-Adler Walkstation 386 DX

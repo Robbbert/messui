@@ -39,7 +39,8 @@ public:
 		driver_device(mconfig, type, tag),
 		m_maincpu(*this, "maincpu"),
 		m_screen(*this, "screen"),
-		m_gfxdecode(*this, "gfxdecode")
+		m_gfxdecode(*this, "gfxdecode"),
+		m_mainram(*this, "mainram")
 	{ }
 
 	void trkfldch(machine_config &config);
@@ -55,6 +56,7 @@ private:
 	required_device<cpu_device> m_maincpu;
 	required_device<screen_device> m_screen;
 	required_device<gfxdecode_device> m_gfxdecode;
+	required_shared_ptr<uint8_t> m_mainram;
 
 	uint32_t screen_update_trkfldch(screen_device &screen, bitmap_ind16 &bitmap, const rectangle &cliprect);
 	void trkfldch_map(address_map &map);
@@ -70,6 +72,9 @@ private:
 
 	uint8_t m_unkregs[0x100];
 
+	uint8_t m_unkdata[0x100000];
+	int m_unkdata_addr;
+
 };
 
 void trkfldch_state::video_start()
@@ -78,6 +83,54 @@ void trkfldch_state::video_start()
 
 uint32_t trkfldch_state::screen_update_trkfldch(screen_device &screen, bitmap_ind16 &bitmap, const rectangle &cliprect)
 {
+	bitmap.fill(0, cliprect);
+
+	// at 0x1189 in my1stddr
+	// at 0xe9c (actually 0x0d0c when fully populated) in trkfldch
+	// 7861 / 7860 point here most of the time in both games (so maybe DMA source, or just uses a direct pointer)
+
+	//for (int i = 0x0d0c+0x100*5; i >= 0x0d0c; i -= 5)
+	for (int i = 0x1189+0x100*5; i >= 0x1189; i -= 5)
+	{
+	//	printf("entry %02x %02x %02x %02x %02x\n", m_mainram[i + 0], m_mainram[i + 1], m_mainram[i + 2], m_mainram[i + 3], m_mainram[i + 4]);
+	//	int tilegfxbase = 0x1f80; // select mode 
+	//	int tilegfxbase = 0x2780; // 2nd demo (+0x800 from above)
+	//	int tilegfxbase = 0x3780; // 1st demo and 'letters' minigame (+0x1000 from above)
+		int tilegfxbase = (m_unkregs[0x15] * 0x800) - 0x80;
+
+		int y = m_mainram[i + 1];
+		int x = m_mainram[i + 3];
+		int tile = m_mainram[i + 2];
+
+		int tilehigh = m_mainram[i + 4] & 0x04;
+		int tilehigh2 = m_mainram[i + 0] & 0x04;
+		int tilehigh3 = m_mainram[i + 0] & 0x08;
+
+
+		if (tilehigh)
+			tile += 0x100;
+
+		if (tilehigh2)
+			tile += 0x200;
+
+		if (tilehigh3)
+			tile += 0x400;
+
+
+		int xhigh = m_mainram[i + 4] & 0x01;
+		int yhigh = m_mainram[i + 0] & 0x01; // or enable bit?
+
+		x = x | (xhigh << 8);
+		y = y | (yhigh << 8);
+
+		y -= 0x100;
+		y -= 16;
+		x -= 16;
+
+		gfx_element *gfx = m_gfxdecode->gfx(1);
+		gfx->transpen(bitmap,cliprect,tile+tilegfxbase,0,0,0,x,y,0);
+	}
+
 	return 0;
 }
 
@@ -86,7 +139,7 @@ uint32_t trkfldch_state::screen_update_trkfldch(screen_device &screen, bitmap_in
 
 void trkfldch_state::trkfldch_map(address_map &map)
 {
-	map(0x000000, 0x003fff).ram();
+	map(0x000000, 0x003fff).ram().share("mainram");
 
 	map(0x006800, 0x006cff).ram();
 
@@ -172,6 +225,45 @@ TIMER_DEVICE_CALLBACK_MEMBER(trkfldch_state::scanline)
 
 
 static INPUT_PORTS_START( trkfldch )
+	PORT_START("IN0")
+	PORT_DIPNAME( 0x01, 0x01, "IN0" )
+	PORT_DIPSETTING(    0x01, DEF_STR( Off ) )
+	PORT_DIPSETTING(    0x00, DEF_STR( On ) )
+	PORT_BIT( 0x02, IP_ACTIVE_LOW, IPT_BUTTON1 ) PORT_NAME("O") // selects / forward
+	PORT_BIT( 0x04, IP_ACTIVE_LOW, IPT_JOYSTICK_RIGHT ) PORT_16WAY // directions correct based on 'letters' minigame
+	PORT_BIT( 0x08, IP_ACTIVE_LOW, IPT_JOYSTICK_UP ) PORT_16WAY
+	PORT_BIT( 0x10, IP_ACTIVE_LOW, IPT_JOYSTICK_DOWN ) PORT_16WAY
+	PORT_BIT( 0x20, IP_ACTIVE_LOW, IPT_JOYSTICK_LEFT ) PORT_16WAY
+	PORT_BIT( 0x40, IP_ACTIVE_LOW, IPT_BUTTON2 ) PORT_NAME("X") // goes back
+	PORT_DIPNAME( 0x80, 0x80, DEF_STR( Unknown ) )
+	PORT_DIPSETTING(    0x80, DEF_STR( Off ) )
+	PORT_DIPSETTING(    0x00, DEF_STR( On ) )
+
+	PORT_START("IN1")
+	PORT_DIPNAME( 0x01, 0x01, "IN1" )
+	PORT_DIPSETTING(    0x01, DEF_STR( Off ) )
+	PORT_DIPSETTING(    0x00, DEF_STR( On ) )
+	PORT_DIPNAME( 0x02, 0x02, DEF_STR( Unknown ) )
+	PORT_DIPSETTING(    0x02, DEF_STR( Off ) )
+	PORT_DIPSETTING(    0x00, DEF_STR( On ) )
+	PORT_DIPNAME( 0x04, 0x04, DEF_STR( Unknown ) )
+	PORT_DIPSETTING(    0x04, DEF_STR( Off ) )
+	PORT_DIPSETTING(    0x00, DEF_STR( On ) )
+	PORT_DIPNAME( 0x08, 0x08, DEF_STR( Unknown ) )
+	PORT_DIPSETTING(    0x08, DEF_STR( Off ) )
+	PORT_DIPSETTING(    0x00, DEF_STR( On ) )
+	PORT_DIPNAME( 0x10, 0x10, DEF_STR( Unknown ) )
+	PORT_DIPSETTING(    0x10, DEF_STR( Off ) )
+	PORT_DIPSETTING(    0x00, DEF_STR( On ) )
+	PORT_DIPNAME( 0x20, 0x20, DEF_STR( Unknown ) )
+	PORT_DIPSETTING(    0x20, DEF_STR( Off ) )
+	PORT_DIPSETTING(    0x00, DEF_STR( On ) )
+	PORT_DIPNAME( 0x40, 0x40, DEF_STR( Unknown ) )
+	PORT_DIPSETTING(    0x40, DEF_STR( Off ) )
+	PORT_DIPSETTING(    0x00, DEF_STR( On ) )
+	PORT_DIPNAME( 0x80, 0x80, DEF_STR( Unknown ) )
+	PORT_DIPSETTING(    0x80, DEF_STR( Off ) )
+	PORT_DIPSETTING(    0x00, DEF_STR( On ) )
 INPUT_PORTS_END
 
 // dummy, doesn't appear to be tile based
@@ -186,8 +278,20 @@ static const gfx_layout tiles8x8_layout =
 	64*8
 };
 
+static const gfx_layout tiles16x16_layout =
+{
+	16,16,
+	RGN_FRAC(1,1),
+	8,
+	{ 0, 1, 32, 33, 64, 65, 96, 97 },
+	{ 8,10,12,14, 0,2,4,6, 24,26,28,30, 16,18,20,22,},
+	{ STEP16(0,128) },
+	128*16,
+};
+
 static GFXDECODE_START( gfx_trkfldch )
 	GFXDECODE_ENTRY( "maincpu", 0, tiles8x8_layout, 0, 1 )
+	GFXDECODE_ENTRY( "maincpu", 0, tiles16x16_layout, 0, 1 )
 GFXDECODE_END
 
 /*
@@ -230,6 +334,15 @@ READ8_MEMBER(trkfldch_state::unkregs_r)
 		//logerror("%s: unkregs_r (IRQ state?) %04x (returning %02x)\n", machine().describe_context(), offset, ret);
 		break;
 
+	case 0x02: // ends up being read as a side effect of reading a 16-bit word at 0x1, but also directly too?
+		//logerror("%s: unkregs_r %04x (returning %02x)\n", machine().describe_context(), offset, ret);
+		break;
+
+	case 0x03: // ends up being read as a side effect of reading a 16-bit word at 0x2, any other purpose?
+		//logerror("%s: unkregs_r %04x (returning %02x)\n", machine().describe_context(), offset, ret);
+		break;
+
+
 	case 0x04:
 		ret = 0xff;
 		//logerror("%s: unkregs_r %04x (returning %02x)\n", machine().describe_context(), offset, ret);
@@ -240,9 +353,86 @@ READ8_MEMBER(trkfldch_state::unkregs_r)
 		//logerror("%s: unkregs_r %04x (returning %02x)\n", machine().describe_context(), offset, ret);
 		break;
 
+	case 0x06:
+		//logerror("%s: unkregs_r %04x (returning %02x)\n", machine().describe_context(), offset, ret);
+		break;
+
+
+	case 0x42:
+		//logerror("%s: unkregs_r %04x (returning %02x)\n", machine().describe_context(), offset, ret);
+		break;
+
+	case 0x43:
+		//logerror("%s: unkregs_r %04x (returning %02x)\n", machine().describe_context(), offset, ret);
+		break;
+
+	case 0x44:
+		//logerror("%s: unkregs_r %04x (returning %02x)\n", machine().describe_context(), offset, ret);
+		break;
+
+
+
+	case 0x54:
+		//logerror("%s: unkregs_r %04x (returning %02x)\n", machine().describe_context(), offset, ret);
+		break;
+
+	case 0x55:
+		//logerror("%s: unkregs_r %04x (returning %02x)\n", machine().describe_context(), offset, ret);
+		break;
+
+	case 0x56: // side effect of reading 55
+		//logerror("%s: unkregs_r %04x (returning %02x)\n", machine().describe_context(), offset, ret);
+		break;
+
+
+
+
 	case 0x70: // read in irq (inputs?)
-		ret = machine().rand();
-		//logerror("%s: unkregs_r (IRQ state?) %04x (returning %02x)\n", machine().describe_context(), offset, ret);
+		ret = ioport("IN0")->read();
+		//logerror("%s: unkregs_r %04x (returning %02x)\n", machine().describe_context(), offset, ret);
+		break;
+
+	case 0x71:
+		ret = ioport("IN1")->read();
+		//logerror("%s: unkregs_r %04x (returning %02x)\n", machine().describe_context(), offset, ret);
+		break;
+
+	case 0x73:
+		//logerror("%s: unkregs_r %04x (returning %02x)\n", machine().describe_context(), offset, ret);
+		break;
+
+	case 0x74:
+		//logerror("%s: unkregs_r %04x (returning %02x)\n", machine().describe_context(), offset, ret);
+		break;
+
+	case 0x75:
+		//logerror("%s: unkregs_r %04x (returning %02x)\n", machine().describe_context(), offset, ret);
+		break;
+
+	case 0x76:
+		//logerror("%s: unkregs_r %04x (returning %02x)\n", machine().describe_context(), offset, ret);
+		break;
+
+	case 0x77:
+		//logerror("%s: unkregs_r %04x (returning %02x)\n", machine().describe_context(), offset, ret);
+		break;
+
+	case 0x7f:
+		//logerror("%s: unkregs_r %04x (returning %02x)\n", machine().describe_context(), offset, ret);
+		break;
+
+	case 0x80: // only read as a side-effect of reading 0x7f?
+		//logerror("%s: unkregs_r %04x (returning %02x)\n", machine().describe_context(), offset, ret);
+		break;
+
+
+
+	case 0xb6:
+		//logerror("%s: unkregs_r %04x (returning %02x)\n", machine().describe_context(), offset, ret);
+		break;
+
+	case 0xb7:
+		//logerror("%s: unkregs_r %04x (returning %02x)\n", machine().describe_context(), offset, ret);
 		break;
 
 
@@ -569,8 +759,15 @@ WRITE8_MEMBER(trkfldch_state::unkregs_w)
 		//logerror("%s: unkregs_w %04x %02x\n", machine().describe_context(), offset, data);
 		break;
 
-	case 0xb6: // significant data transfer shortly after boot
+	case 0xb6: // significant data transfer shortly after boot, seems to clock writes with 0073 writing  d0 / c0? (then writes 2 bytes here)
+		       // values are coming from a structure in RAM
+		       // how does it reset?
+
 		//logerror("%s: unkregs_w %04x %02x\n", machine().describe_context(), offset, data);
+		m_unkdata[m_unkdata_addr] = data;
+
+		m_unkdata_addr++;
+		m_unkdata_addr &= 0xfffff;
 		break;
 
 
@@ -590,6 +787,8 @@ WRITE8_MEMBER(trkfldch_state::unkregs_w)
 
 void trkfldch_state::machine_start()
 {
+	save_item(NAME(m_unkdata_addr));
+	save_item(NAME(m_unkdata));
 }
 
 void trkfldch_state::machine_reset()
@@ -598,6 +797,12 @@ void trkfldch_state::machine_reset()
 
 	for (int i = 0; i < 0x100; i++)
 		m_unkregs[i] = 0x00;
+
+	for (int i = 0; i < 0x100000; i++)
+		m_unkdata[i] = 0;
+ 
+	m_unkdata_addr = 0;
+
 }
 
 void trkfldch_state::trkfldch(machine_config &config)
