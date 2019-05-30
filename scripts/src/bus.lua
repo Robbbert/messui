@@ -969,15 +969,15 @@ end
 
 ---------------------------------------------------
 --
---@src/devices/bus/gio/gio.h,BUSES["GIO"] = true
+--@src/devices/bus/gio64/gio64.h,BUSES["GIO64"] = true
 ---------------------------------------------------
 
-if (BUSES["GIO"]~=null) then
+if (BUSES["GIO64"]~=null) then
 	files {
-		MAME_DIR .. "src/devices/bus/gio/gio.cpp",
-		MAME_DIR .. "src/devices/bus/gio/gio.h",
-		MAME_DIR .. "src/devices/bus/gio/newport.cpp",
-		MAME_DIR .. "src/devices/bus/gio/newport.h",
+		MAME_DIR .. "src/devices/bus/gio64/gio64.cpp",
+		MAME_DIR .. "src/devices/bus/gio64/gio64.h",
+		MAME_DIR .. "src/devices/bus/gio64/newport.cpp",
+		MAME_DIR .. "src/devices/bus/gio64/newport.h",
 	}
 end
 
@@ -1231,6 +1231,8 @@ if (BUSES["ISA"]~=null) then
 		MAME_DIR .. "src/devices/bus/isa/wdxt_gen.h",
 		MAME_DIR .. "src/devices/bus/isa/adlib.cpp",
 		MAME_DIR .. "src/devices/bus/isa/adlib.h",
+		MAME_DIR .. "src/devices/bus/isa/chessm.cpp",
+		MAME_DIR .. "src/devices/bus/isa/chessm.h",
 		MAME_DIR .. "src/devices/bus/isa/com.cpp",
 		MAME_DIR .. "src/devices/bus/isa/com.h",
 		MAME_DIR .. "src/devices/bus/isa/fdc.cpp",
@@ -3686,6 +3688,8 @@ if (BUSES["HP9845_IO"]~=null) then
 		MAME_DIR .. "src/devices/bus/hp9845_io/98034.h",
 		MAME_DIR .. "src/devices/bus/hp9845_io/98035.cpp",
 		MAME_DIR .. "src/devices/bus/hp9845_io/98035.h",
+		MAME_DIR .. "src/devices/bus/hp9845_io/98046.cpp",
+		MAME_DIR .. "src/devices/bus/hp9845_io/98046.h",
 		MAME_DIR .. "src/devices/bus/hp9845_io/hp9885.cpp",
 		MAME_DIR .. "src/devices/bus/hp9845_io/hp9885.h",
 	}
