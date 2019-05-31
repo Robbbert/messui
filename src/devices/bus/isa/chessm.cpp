@@ -12,6 +12,12 @@ VLSI VY86C010-12QC (ARM2), seen with 30MHz XTAL, but XTAL label usually scratche
 It looks like Gideon 2.1 only sees up to 512KB RAM, The King up to 2MB RAM.
 Also seen with VY86C061PSTC (ARM6) @ 32MHz, very rare or prototype.
 
+3 models exist: SR, DR, EC. SR and DR are ISA cards, EC is an external module (serial port).
+It was also released for the Amiga.
+
+TODO:
+- add model DR (missing bootstrap ROM dump?)
+
 */
 
 #include "emu.h"
@@ -131,6 +137,7 @@ void isa8_chessm_device::device_add_mconfig(machine_config &config)
 	ARM(config, m_maincpu, 30_MHz_XTAL/2);
 	m_maincpu->set_addrmap(AS_PROGRAM, &isa8_chessm_device::chessm_mem);
 	m_maincpu->set_copro_type(arm_cpu_device::copro_type::VL86C020);
+	m_maincpu->set_nested_irq_hack(false);
 
 	GENERIC_LATCH_8(config, m_mainlatch);
 	GENERIC_LATCH_8(config, m_sublatch);
@@ -177,5 +184,5 @@ WRITE8_MEMBER(isa8_chessm_device::chessm_w)
 
 void isa8_chessm_device::chessm_mem(address_map &map)
 {
-	map(0x00380000, 0x00380000).r(m_sublatch, FUNC(generic_latch_8_device::read)).w(m_mainlatch, FUNC(generic_latch_8_device::write));
+	map(0x00380000, 0x00380000).mirror(0x00000008).r(m_sublatch, FUNC(generic_latch_8_device::read)).w(m_mainlatch, FUNC(generic_latch_8_device::write));
 }

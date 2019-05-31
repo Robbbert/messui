@@ -15840,9 +15840,10 @@ indigo3k                        // IP12: Indigo 1, R3000, 33MHz
 indigo4k                        // IP20: Indigo 1, R4400, 150MHz
 
 @source:indy_indigo2.cpp
-ip224613                        // IP22: Indy, R4600, 133MHz
-ip225015                        // IP22: Indy, R5000, 150MHz
-ip244415                        // IP24: Indigo 2, R4400, 150MHz
+indy_4610                       // IP22: Indy, R4600, 100MHz
+indy_4613                       // IP22: Indy, R4600, 133MHz
+indy_5015                       // IP22: Indy, R5000, 150MHz
+indigo2_4415                    // IP24: Indigo 2, R4400, 150MHz
 
 @source:instantm.cpp
 instantm                        //
@@ -29849,7 +29850,8 @@ monkeyba                        // 2001.05 Monkey Ball
 mslug6                          // 2006.02 Metal Slug 6
 mushi2k4                        // 2004.?? MushiKing The King Of Beetles 2004 Second (Japan)
 mushi2k5                        // 2005.?? MushiKing The King Of Beetles 2005 First (Japan)
-mushike                         // 2004.?? MushiKing The King Of Beetle (World)
+mushike                         // 2004.?? MushiKing The King Of Beetle (2K3 2ND Ver. 1.003-, World)
+mushikeo                        // 2004.?? MushiKing The King Of Beetle (2K3 2ND Ver. 1.002-, World)
 mushikep                        // 2004.?? MushiKing The King Of Beetle (Prototype)
 mushi2eo                        // 2005.?? Mushiking The King Of Beetles II / III / III+ (Ver. 1.001) (World)
 mushik2e                        // 2005.?? Mushiking The King Of Beetles II / III / III+ (Ver. 2.001) (World)
@@ -30542,6 +30544,10 @@ nespal                          // Nintendo Entertainment System PAL
 @source:nes_vt.cpp
 vdogdeme
 vdogdemo
+pinkjelly                       // From V.R. Technology VT SDK
+vtpinball                       // From V.R. Technology VT SDK
+vtsndtest                       // From V.R. Technology VT SDK
+vtboxing                        // From V.R. Technology VT SDK
 mc_dgear
 dgun2500
 dgun2561
