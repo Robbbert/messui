@@ -8,6 +8,7 @@
 
 #include "emu.h"
 #include "bus/rs232/rs232.h"
+#include "machine/input_merger.h"
 #include "machine/ioc2.h"
 
 #define LOG_PI1         (1 << 0)
@@ -41,7 +42,7 @@
 /*static*/ const XTAL ioc2_device::SCC_RXB_CLK = 3.6864_MHz_XTAL; // Needs verification
 /*static*/ const XTAL ioc2_device::SCC_TXB_CLK = XTAL(0);
 
-DEFINE_DEVICE_TYPE(SGI_IOC2_GUINNESS,   ioc2_guinness_device,   "ioc2g", "SGI IOC2 (Guiness)")
+DEFINE_DEVICE_TYPE(SGI_IOC2_GUINNESS,   ioc2_guinness_device,   "ioc2g", "SGI IOC2 (Guinness)")
 DEFINE_DEVICE_TYPE(SGI_IOC2_FULL_HOUSE, ioc2_full_house_device, "ioc2f", "SGI IOC2 (Full House)")
 
 ioc2_guinness_device::ioc2_guinness_device(const machine_config &mconfig, const char *tag, device_t *owner, uint32_t clock)
@@ -91,21 +92,35 @@ void ioc2_device::device_add_mconfig(machine_config &config)
 	PC_LPT(config, m_pi1);
 
 #if IOC2_NEW_KBDC
-	pc_kbdc_device &kbdc(PC_KBDC(config, "pc_kbdc", 0));
-	kbdc.out_clock_cb().set(m_kbdc, FUNC(ps2_keyboard_controller_device::kbd_clk_w));
-	kbdc.out_data_cb().set(m_kbdc, FUNC(ps2_keyboard_controller_device::kbd_data_w));
+	// keyboard connector
+	pc_kbdc_device &kbd_con(PC_KBDC(config, "kbd_con", 0));
+	kbd_con.out_clock_cb().set(m_kbdc, FUNC(ps2_keyboard_controller_device::kbd_clk_w));
+	kbd_con.out_data_cb().set(m_kbdc, FUNC(ps2_keyboard_controller_device::kbd_data_w));
 
 	// keyboard port
-	pc_kbdc_slot_device &kbd(PC_KBDC_SLOT(config, "kbd", 0));
-	pc_at_keyboards(kbd);
-	kbd.set_default_option(STR_KBD_MICROSOFT_NATURAL);
-	kbd.set_pc_kbdc_slot(&kbdc);
+	pc_kbdc_slot_device &kbd(PC_KBDC_SLOT(config, "kbd", pc_at_keyboards, STR_KBD_MICROSOFT_NATURAL));
+	kbd.set_pc_kbdc_slot(&kbd_con);
+
+	// auxiliary connector
+	pc_kbdc_device &aux_con(PC_KBDC(config, "aux_con", 0));
+	aux_con.out_clock_cb().set(m_kbdc, FUNC(ps2_keyboard_controller_device::aux_clk_w));
+	aux_con.out_data_cb().set(m_kbdc, FUNC(ps2_keyboard_controller_device::aux_data_w));
+
+	// auxiliary port
+	pc_kbdc_slot_device &aux(PC_KBDC_SLOT(config, "aux", ps2_mice, STR_HLE_PS2_MOUSE));
+	aux.set_pc_kbdc_slot(&aux_con);
 
 	// keyboard controller
 	PS2_KEYBOARD_CONTROLLER(config, m_kbdc, 12_MHz_XTAL);
-	m_kbdc->kbd_clk().set(kbdc, FUNC(pc_kbdc_device::clock_write_from_mb));
-	m_kbdc->kbd_data().set(kbdc, FUNC(pc_kbdc_device::data_write_from_mb));
-	m_kbdc->kbd_irq().set(FUNC(ioc2_device::kbdc_int_w));
+	m_kbdc->kbd_clk().set(kbd_con, FUNC(pc_kbdc_device::clock_write_from_mb));
+	m_kbdc->kbd_data().set(kbd_con, FUNC(pc_kbdc_device::data_write_from_mb));
+	m_kbdc->aux_clk().set(aux_con, FUNC(pc_kbdc_device::clock_write_from_mb));
+	m_kbdc->aux_data().set(aux_con, FUNC(pc_kbdc_device::data_write_from_mb));
+
+	input_merger_device &kbdc_irq(INPUT_MERGER_ANY_HIGH(config, "kbdc_irq"));
+	kbdc_irq.output_handler().set(FUNC(ioc2_device::kbdc_int_w));
+	m_kbdc->kbd_irq().set(kbdc_irq, FUNC(input_merger_device::in_w<0>));
+	m_kbdc->aux_irq().set(kbdc_irq, FUNC(input_merger_device::in_w<1>));
 #else
 	KBDC8042(config, m_kbdc);
 	m_kbdc->set_keyboard_type(kbdc8042_device::KBDC8042_PS2);
@@ -692,7 +707,7 @@ void ioc2_device::set_timer_int_clear(uint32_t data)
 void ioc2_device::handle_reset_reg_write(uint8_t data)
 {
 	// guinness/fullhouse-specific implementations can handle bit 3 being used for ISDN reset on Indy only and bit 2 for EISA reset on Indigo 2 only, but for now we do nothing with it
-	if (BIT(data, 1))
+	if (!BIT(data, 1))
 	{
 #if !IOC2_NEW_KBDC
 		m_kbdc->reset();
@@ -742,4 +757,44 @@ INPUT_CHANGED_MEMBER( ioc2_device::volume_down )
 
 	if (m_front_panel_reg & FRONT_PANEL_INT_MASK)
 		raise_local_irq(1, INT3_LOCAL1_PANEL);
+}
+
+WRITE_LINE_MEMBER(ioc2_device::gio_int0_w)
+{
+	if (state == ASSERT_LINE)
+		raise_local_irq(0, ioc2_device::INT3_LOCAL0_FIFO);
+	else
+		lower_local_irq(0, ioc2_device::INT3_LOCAL0_FIFO);
+}
+
+WRITE_LINE_MEMBER(ioc2_device::gio_int1_w)
+{
+	if (state == ASSERT_LINE)
+		raise_local_irq(0, ioc2_device::INT3_LOCAL0_GRAPHICS);
+	else
+		lower_local_irq(0, ioc2_device::INT3_LOCAL0_GRAPHICS);
+}
+
+WRITE_LINE_MEMBER(ioc2_device::gio_int2_w)
+{
+	if (state == ASSERT_LINE)
+		raise_local_irq(1, ioc2_device::INT3_LOCAL1_RETRACE);
+	else
+		lower_local_irq(1, ioc2_device::INT3_LOCAL1_RETRACE);
+}
+
+WRITE_LINE_MEMBER(ioc2_device::hpc_dma_done_w)
+{
+	if (state == ASSERT_LINE)
+		raise_local_irq(1, ioc2_device::INT3_LOCAL1_HPC_DMA);
+	else
+		lower_local_irq(1, ioc2_device::INT3_LOCAL1_HPC_DMA);
+}
+
+WRITE_LINE_MEMBER(ioc2_device::mc_dma_done_w)
+{
+	if (state == ASSERT_LINE)
+		raise_local_irq(0, ioc2_device::INT3_LOCAL0_MC_DMA);
+	else
+		lower_local_irq(0, ioc2_device::INT3_LOCAL0_MC_DMA);
 }

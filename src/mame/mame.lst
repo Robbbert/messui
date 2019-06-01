@@ -14300,6 +14300,10 @@ homo                            // bootleg
 gokidetor                       // (c) 1992 Taito
 gokidetor2                      // (c) 1992 Taito
 
+@source:goldart.cpp
+goldart
+goldartp
+
 @source:goldngam.cpp
 moviecrd                        // (c) 1998 Golden Games
 swisspkr                        // (c) 1990 Golden Games
@@ -18030,6 +18034,7 @@ konin                           //
 ddboy
 ddboya
 shuriboy
+fuusenpn
 tsukande
 
 @source:konmedal68k.cpp
@@ -35163,7 +35168,8 @@ sokonuke                        // (c) 1995 Sammy Industries
 stg                             // (c) 1991 Athena / Tecmo
 superbar                        // (c) 1994 Promat (not genuine seta hardware, but based on thunderl code)
 thunderl                        // (c) 1990 Seta + Romstar or Visco license (DSW)
-thunderlbl                      // (c) 1990 Seta + Romstar or Visco license (DSW) - bootleg with Tetris sound
+thunderlbl                      // (c) 1991 Hyogo bootleg with Tetris sound
+thunderlbl2                     // (c) 1990 bootleg with Tetris sound
 tndrcade                        // UA-0 (c) 1987 Taito
 tndrcadej                       // UA-0 (c) 1987 Taito
 triplfun                        // bootleg
@@ -36840,6 +36846,9 @@ sys9002                         //
 
 @source:systec.cpp
 systec                          //
+
+@source:systel1.cpp
+systel100                       //
 
 @source:system1.cpp
 4dwarrio                        // 834-5918 (c) 1985 Coreland / Sega (S1)
