@@ -149,18 +149,6 @@ void wd_fdc_device_base::device_reset()
 
 void wd_fdc_device_base::soft_reset()
 {
-	command = 0x08;   // MESSUI
-	main_state = IDLE;
-	sub_state = IDLE;
-	cur_live.state = IDLE;
-	track = 0x00;
-	sector = 0x01;
-	status = 0x00;
-	data = 0x00;
-	cmd_buffer = track_buffer = sector_buffer = -1;
-	counter = 0;
-	status_type_1 = true;
-	last_dir = 1;
 	if(mr) {
 		mr_w(0);
 		mr_w(1);
@@ -170,7 +158,7 @@ void wd_fdc_device_base::soft_reset()
 WRITE_LINE_MEMBER(wd_fdc_device_base::mr_w)
 {
 	if(mr && !state) {
-		command = 0x00;
+		command = 0x08;  // MESSUI
 		main_state = IDLE;
 		sub_state = IDLE;
 		cur_live.state = IDLE;
