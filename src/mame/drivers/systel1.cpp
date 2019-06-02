@@ -11,6 +11,7 @@
 ***************************************************************************/
 
 #include "emu.h"
+#include "bus/rs232/rs232.h"
 #include "cpu/z80/z80.h"
 #include "imagedev/floppy.h"
 #include "machine/clock.h"
@@ -134,12 +135,14 @@ I8275_DRAW_CHARACTER_MEMBER(systel1_state::draw_character)
 void systel1_state::floppy_control_w(u8 data)
 {
 	if (m_floppy->get_device() != nullptr)
-		m_floppy->get_device()->mon_w(!BIT(data, 0));
+		m_floppy->get_device()->ss_w(!BIT(data, 0));
 }
 
 WRITE_LINE_MEMBER(systel1_state::rts_w)
 {
-	// beep? FDC reset?
+	m_fdc->mr_w(state);
+	if (m_floppy->get_device() != nullptr)
+		m_floppy->get_device()->mon_w(!state);
 }
 
 WRITE_LINE_MEMBER(systel1_state::dtr_w)
@@ -183,9 +186,13 @@ static void systel1_floppies(device_slot_interface &device)
 	device.option_add("525dd", FLOPPY_525_DD);
 }
 
+static DEVICE_INPUT_DEFAULTS_START(keyboard)
+	DEVICE_INPUT_DEFAULTS("RS232_TXBAUD", 0xff, RS232_BAUD_1200)
+DEVICE_INPUT_DEFAULTS_END
+
 void systel1_state::systel1(machine_config &config)
 {
-	Z80(config, m_maincpu, 2_MHz_XTAL); // Z8400A; clock not verified
+	Z80(config, m_maincpu, 10.8864_MHz_XTAL / 4); // Z8400A; clock verified
 	m_maincpu->set_addrmap(AS_PROGRAM, &systel1_state::mem_map);
 	m_maincpu->set_addrmap(AS_OPCODES, &systel1_state::m1_map);
 	m_maincpu->set_addrmap(AS_IO, &systel1_state::io_map);
@@ -193,7 +200,7 @@ void systel1_state::systel1(machine_config &config)
 	input_merger_device &mainint(INPUT_MERGER_ANY_HIGH(config, "mainint"));
 	mainint.output_handler().set_inputline(m_maincpu, INPUT_LINE_IRQ0);
 
-	I8257(config, m_dmac, 2_MHz_XTAL); // P8257-5
+	I8257(config, m_dmac, 10.8864_MHz_XTAL / 4); // P8257-5
 	m_dmac->out_hrq_cb().set(FUNC(systel1_state::hrq_w));
 	m_dmac->in_memr_cb().set(FUNC(systel1_state::memory_r));
 	m_dmac->out_memw_cb().set(FUNC(systel1_state::memory_w));
@@ -201,12 +208,12 @@ void systel1_state::systel1(machine_config &config)
 	m_dmac->out_iow_cb<1>().set(m_fdc, FUNC(fd1797_device::data_w));
 	m_dmac->out_iow_cb<2>().set("crtc", FUNC(i8276_device::dack_w));
 
-	i8251_device &usart(I8251(config, "usart", 2_MHz_XTAL)); // AMD P8251A
+	i8251_device &usart(I8251(config, "usart", 10.8864_MHz_XTAL / 4)); // AMD P8251A
 	usart.rxrdy_handler().set("mainint", FUNC(input_merger_device::in_w<0>));
 	usart.rts_handler().set(FUNC(systel1_state::rts_w));
 	usart.dtr_handler().set(FUNC(systel1_state::dtr_w));
 
-	clock_device &baudclock(CLOCK(config, "baudclock", 2_MHz_XTAL / 13)); // rate not verified, but also probably fixed
+	clock_device &baudclock(CLOCK(config, "baudclock", 2_MHz_XTAL / 104)); // 19.23 kHz verified; rate probably fixed
 	baudclock.signal_handler().set("usart", FUNC(i8251_device::write_rxc));
 	baudclock.signal_handler().append("usart", FUNC(i8251_device::write_txc));
 
@@ -227,6 +234,10 @@ void systel1_state::systel1(machine_config &config)
 	FLOPPY_CONNECTOR(config, m_floppy, systel1_floppies, "525dd", floppy_image_device::default_floppy_formats);
 	m_floppy->set_fixed(true);
 	m_floppy->enable_sound(true);
+
+	rs232_port_device &kb(RS232_PORT(config, "kb", default_rs232_devices, "keyboard"));
+	kb.set_option_device_input_defaults("keyboard", DEVICE_INPUT_DEFAULTS_NAME(keyboard));
+	kb.rxd_handler().set("usart", FUNC(i8251_device::write_rxd));
 }
 
 // RAM: 8x MCM6665AP20
