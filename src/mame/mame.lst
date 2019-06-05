@@ -97,6 +97,7 @@ sgi_ip6                         // IP6: 4D/PI, R2000, 20MHz
 
 @source:4enlinea.cpp
 4enlinea                        // (c) 1991 System Compumatic
+k7_olym                         //
 
 @source:4enraya.cpp
 4enraya                         // (c) 1990 IDSA
@@ -201,7 +202,8 @@ schaserm                        // Model Racing
 searthie                        // bootleg
 searthin                        // bootleg
 searthina                       // bootleg
-sflush                          // (c)1979 Taito
+supinvsion                      // bootleg (Electromar software on hardware from Irecsa)
+sflush                          // (c) 1979 Taito
 shuttlei                        // (c) 1979 Omori (Arcade Tv Game List - P.79, Left, 6 from bottom)
 sicv                            // (c) 1979 Taito
 sicv1                           // (c) 1979 Taito
@@ -8933,6 +8935,10 @@ sbishik                         // GX675 (c) 1998 (Korea)
 sbishika                        // GX675 (c) 1998 (Korea)
 dobouchn                        //
 
+@source:bitel.cpp
+feap90                          //
+t3210                           //
+
 @source:bitgraph.cpp
 bitgrpha                        //
 bitgrphb                        //
@@ -11823,6 +11829,9 @@ dorachan                        // (c) 1980 Craul Denshi
 dotrikun                        // cabinet test board
 dotrikun2                       // cabinet test board
 dotriman
+
+@source:dpb7000.cpp
+dpb7000                         //
 
 @source:dps1.cpp
 dps1                            //
@@ -37620,10 +37629,8 @@ t4490                           // Terco 4490 Mill CNC Control (c) 1986
 @source:terminal.cpp
 7951om                          //
 alcat258                        //
-feap90                          //
 loewe715                        //
 loewed                          //
-t3210                           //
 teleguide                       //
 telex277d                       // Telex 1979
 
@@ -39104,6 +39111,7 @@ policet2                        // (c) 2003 Team Play, Inc.
 jnero                           // (c) 2004 ICE/Play Mechanix
 specfrce                        // (c) 2002 ICE/Play Mechanix
 specfrceo                       // (c) 2002 ICE/Play Mechanix
+rhnation                        // (c) 2003 ICE/Play Mechanix
 zoofari                         // (c) 2006 ICE/Play Mechanix
 
 @source:vp415.cpp
