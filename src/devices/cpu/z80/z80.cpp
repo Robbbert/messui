@@ -3211,23 +3211,12 @@ void z80_device::take_interrupt()
 					/* JP $xxxx cycles */
 					m_icount -= m_cc_op[0xc3];
 					break;
-				case 0xc70000:
-				case 0xcf0000:
-				case 0xd70000:
-				case 0xdf0000:
-				case 0xe70000:
-				case 0xef0000:
-				case 0xf70000:
-				case 0xff0000:
-					/* rst */
+				default:        /* rst (or other opcodes?) */
 					push(m_pc);
 					PCD = irq_vector & 0x0038;
 					/* RST $xx cycles */
 					m_icount -= m_cc_op[0xff];
 					break;
-				default:
-					push(m_pc);
-					EXEC(op,irq_vector);
 			}
 		}
 
