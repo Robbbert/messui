@@ -18243,6 +18243,9 @@ salarymc                        // 2000 - Salary Man Champ (G*A18 VER. JAA)
 stepchmp                        // 1999 - Step Champ (GE930 VER. JA)
 sys573                          //
 
+@source:ktm3.cpp
+ktm3                            // (c) 1980 Synertek Systems Corp.
+
 @source:kungfur.cpp
 kungfur                         // (c) 1987
 
@@ -33392,15 +33395,16 @@ qvt70                           //
 
 @source:qvt102.cpp
 qvt102                          // (c) 1983 Qume Corp.
+qvt102a                         // (c) 1983 Qume Corp.
 
 @source:qvt103.cpp
 qvt103                          // (c) 1983 Qume Corp.
 
+@source:qvt190.cpp
+qvt190                          // Qume Corp.
+
 @source:qvt201.cpp
 qvt201                          // (c) 1986 Qume Corp.
-
-@source:qvt6800.cpp
-qvt190                          //
 
 @source:qx10.cpp
 qx10                            //
@@ -40044,6 +40048,7 @@ corv_21                         //
 corv_la1                        //
 corv_lx1                        //
 corv_lx2                        //
+corv_px3                        //
 corv_px4                        //
 dh_lf2                          //
 dh_lx2                          //
