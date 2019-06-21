@@ -143,6 +143,7 @@ CPUS["NS32000"] = true
 CPUS["HPC"] = true
 CPUS["MEG"] = true
 CPUS["DSPV"] = true
+CPUS["RII"] = true
 
 --------------------------------------------------
 -- specify available sound cores; some of these are
