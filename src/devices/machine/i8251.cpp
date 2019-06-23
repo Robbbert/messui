@@ -678,7 +678,7 @@ uint8_t i8251_device::data_r()
 	{
 		m_status &= ~I8251_STATUS_RX_READY;
 		update_rx_ready();
-	}
+	}//printf("%X ",m_rx_data);
 	return m_rx_data;
 }
 
