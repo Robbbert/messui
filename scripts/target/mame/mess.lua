@@ -1923,7 +1923,6 @@ files {
 	MAME_DIR .. "src/mame/includes/novagbase.h",
 	MAME_DIR .. "src/mame/drivers/novag_cforte.cpp",
 	MAME_DIR .. "src/mame/drivers/novag_diablo.cpp",
-	MAME_DIR .. "src/mame/drivers/novag_presto.cpp",
 	MAME_DIR .. "src/mame/drivers/novag_sexpert.cpp",
 }
 
@@ -2822,6 +2821,7 @@ files {
 	MAME_DIR .. "src/mame/drivers/novag_delta1.cpp",
 	MAME_DIR .. "src/mame/drivers/novag_mk1.cpp",
 	MAME_DIR .. "src/mame/drivers/novag_mk2.cpp",
+	MAME_DIR .. "src/mame/drivers/novag_presto.cpp",
 	MAME_DIR .. "src/mame/drivers/novag_savant.cpp",
 	MAME_DIR .. "src/mame/drivers/novag_scon.cpp",
 	MAME_DIR .. "src/mame/drivers/ssystem3.cpp",
