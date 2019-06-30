@@ -3,8 +3,7 @@
 /*
 
 Generic sensorboard device, meant for tracking pieces, primarily made for
-electronic chessboards. It supports buttons, magnets, and inductive sensors
-(latter is not emulated in any driver yet but the device is ready for it).
+electronic chessboards. It supports buttons, magnets, and inductive sensors.
 
 Concept/idea by Ralph Schaefer, but his code got removed from MAME when he
 couldn't be reached for source relicensing. This device is made from scratch.
@@ -195,6 +194,9 @@ sensorboard_device &sensorboard_device::set_type(sb_type type)
 		set_delay(attotime::never);
 	}
 
+	if (m_inductive)
+		set_mod_enable(false);
+
 	return *this;
 }
 
@@ -221,12 +223,15 @@ u8 sensorboard_device::read_sensor(u8 x, u8 y)
 	}
 	else
 	{
+		// buttons are forced
+		if (m_inp_ui->read() & 1)
+			return live_state;
+
 		// buttons are blocked
-		if (m_inp_ui->read() & 2)
+		else if (m_inp_ui->read() & 2)
 			return 0;
 
-		// buttons are forced
-		if (m_sensordelay == attotime::never || m_inp_ui->read() & 1)
+		else if (m_sensordelay == attotime::never)
 			return live_state;
 
 		return (pos == m_sensorpos) ? 1 : 0;
