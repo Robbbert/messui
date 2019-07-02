@@ -145,6 +145,7 @@ CPUS["MEG"] = true
 CPUS["DSPV"] = true
 CPUS["RII"] = true
 CPUS["BCP"] = true
+CPUS["F2MC16"] = true
 
 --------------------------------------------------
 -- specify available sound cores; some of these are
@@ -3729,6 +3730,7 @@ files {
 	MAME_DIR .. "src/mame/includes/crvision.h",
 	MAME_DIR .. "src/mame/drivers/gamemachine.cpp",
 	MAME_DIR .. "src/mame/drivers/geniusiq.cpp",
+	MAME_DIR .. "src/mame/drivers/geniusjr.cpp",
 	MAME_DIR .. "src/mame/drivers/vtech_unk1.cpp",
 	MAME_DIR .. "src/mame/drivers/vtech_unk2.cpp",
 	MAME_DIR .. "src/mame/drivers/vtech_eu3a12.cpp",
