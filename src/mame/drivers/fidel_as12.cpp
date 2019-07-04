@@ -24,8 +24,10 @@ magnetic chess board sensors. See fidel_sc12.cpp for a more technical descriptio
 #include "machine/timer.h"
 #include "sound/dac.h"
 #include "sound/volt_reg.h"
+#include "video/pwm.h"
 #include "bus/generic/slot.h"
 #include "bus/generic/carts.h"
+
 #include "softlist.h"
 #include "speaker.h"
 
@@ -41,18 +43,25 @@ public:
 	as12_state(const machine_config &mconfig, device_type type, const char *tag) :
 		fidelbase_state(mconfig, type, tag),
 		m_irq_on(*this, "irq_on"),
+		m_display(*this, "display"),
 		m_dac(*this, "dac"),
-		m_cart(*this, "cartslot")
+		m_cart(*this, "cartslot"),
+		m_inputs(*this, "IN.%u", 0)
 	{ }
 
 	// machine drivers
 	void as12(machine_config &config);
 
+protected:
+	virtual void machine_start() override;
+
 private:
 	// devices/pointers
 	required_device<timer_device> m_irq_on;
+	required_device<pwm_display_device> m_display;
 	required_device<dac_bit_interface> m_dac;
 	required_device<generic_slot_device> m_cart;
+	required_ioport_array<9> m_inputs;
 
 	// address maps
 	void main_map(address_map &map);
@@ -68,7 +77,24 @@ private:
 	DECLARE_WRITE8_MEMBER(control_w);
 	DECLARE_WRITE8_MEMBER(led_w);
 	DECLARE_READ8_MEMBER(input_r);
+
+	u16 m_inp_mux;
+	u8 m_led_data;
 };
+
+void as12_state::machine_start()
+{
+	fidelbase_state::machine_start();
+
+	// zerofill
+	m_inp_mux = 0;
+	m_led_data = 0;
+
+	// register for savestates
+	save_item(NAME(m_inp_mux));
+	save_item(NAME(m_led_data));
+}
+
 
 
 /******************************************************************************
@@ -92,7 +118,7 @@ DEVICE_IMAGE_LOAD_MEMBER(as12_state::cart_load)
 void as12_state::update_display()
 {
 	// 8*8(+1) chessboard leds
-	display_matrix(8, 9, m_led_data_xxx, m_inp_mux_xxx);
+	m_display->matrix(m_inp_mux, m_led_data);
 }
 
 WRITE8_MEMBER(as12_state::control_w)
@@ -100,7 +126,7 @@ WRITE8_MEMBER(as12_state::control_w)
 	// d0-d3: 74245 P0-P3
 	// 74245 Q0-Q8: input mux, led select
 	u16 sel = 1 << (data & 0xf) & 0x3ff;
-	m_inp_mux_xxx = bitswap<9>(sel,5,8,7,6,4,3,1,0,2);
+	m_inp_mux = bitswap<9>(sel,5,8,7,6,4,3,1,0,2);
 	update_display();
 
 	// 74245 Q9: speaker out
@@ -113,15 +139,26 @@ WRITE8_MEMBER(as12_state::control_w)
 WRITE8_MEMBER(as12_state::led_w)
 {
 	// a0-a2,d0: led data via NE591N
-	m_led_data_xxx = (data & 1) << offset;
+	m_led_data = (m_led_data & ~(1 << offset)) | ((data & 1) << offset);
 	update_display();
 }
 
 READ8_MEMBER(as12_state::input_r)
 {
+	u8 data = 0;
+
 	// a0-a2,d7: multiplexed inputs (active low)
-	u8 inp = bitswap<8>(read_inputs(9),4,3,2,1,0,5,6,7);
-	return (inp >> offset & 1) ? 0 : 0x80;
+	// read chessboard sensors
+	for (int i = 0; i < 8; i++)
+		if (BIT(m_inp_mux, i))
+			data |= m_inputs[i]->read();
+
+	// read sidepanel buttons
+	if (m_inp_mux & 0x100)
+		data |= m_inputs[8]->read();
+
+	data = bitswap<8>(data,4,3,2,1,0,5,6,7);
+	return (data >> offset & 1) ? 0 : 0x80;
 }
 
 
@@ -263,7 +300,8 @@ void as12_state::as12(machine_config &config)
 	m_irq_on->set_start_delay(irq_period - attotime::from_nsec(15250)); // active for 15.25us
 	TIMER(config, "irq_off").configure_periodic(FUNC(as12_state::irq_off<M6502_IRQ_LINE>), irq_period);
 
-	TIMER(config, "display_decay").configure_periodic(FUNC(as12_state::display_decay_tick), attotime::from_msec(1));
+	/* video hardware */
+	PWM_DISPLAY(config, m_display).set_size(9, 8);
 	config.set_default_layout(layout_fidel_as12);
 
 	/* sound hardware */

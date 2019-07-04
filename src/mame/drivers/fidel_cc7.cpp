@@ -50,6 +50,7 @@ D0-D3: keypad row
 #include "cpu/z80/z80.h"
 #include "sound/dac.h"
 #include "sound/volt_reg.h"
+#include "video/pwm.h"
 #include "speaker.h"
 
 // internal artwork
@@ -64,16 +65,23 @@ class bcc_state : public fidelbase_state
 public:
 	bcc_state(const machine_config &mconfig, device_type type, const char *tag) :
 		fidelbase_state(mconfig, type, tag),
-		m_dac(*this, "dac")
+		m_display(*this, "display"),
+		m_dac(*this, "dac"),
+		m_inputs(*this, "IN.%u", 0)
 	{ }
 
 	// machine drivers
 	void bcc(machine_config &config);
 	void bkc(machine_config &config);
 
+protected:
+	virtual void machine_start() override;
+
 private:
 	// devices/pointers
+	required_device<pwm_display_device> m_display;
 	optional_device<dac_bit_interface> m_dac;
+	required_ioport_array<4> m_inputs;
 
 	// address maps
 	void main_map(address_map &map);
@@ -82,7 +90,23 @@ private:
 	// I/O handlers
 	DECLARE_READ8_MEMBER(input_r);
 	DECLARE_WRITE8_MEMBER(control_w);
+
+	u8 m_inp_mux;
+	u8 m_7seg_data;
 };
+
+void bcc_state::machine_start()
+{
+	fidelbase_state::machine_start();
+
+	// zerofill
+	m_inp_mux = 0;
+	m_7seg_data = 0;
+
+	// register for savestates
+	save_item(NAME(m_inp_mux));
+	save_item(NAME(m_7seg_data));
+}
 
 
 
@@ -96,23 +120,28 @@ WRITE8_MEMBER(bcc_state::control_w)
 {
 	// a0-a2,d7: digit segment data via NE591
 	u8 mask = 1 << (offset & 7);
-	m_7seg_data_xxx = (m_7seg_data_xxx & ~mask) | ((data & 0x80) ? mask : 0);
+	m_7seg_data = (m_7seg_data & ~mask) | ((data & 0x80) ? mask : 0);
 
 	// BCC: NE591 Q7 is speaker out
 	if (m_dac != nullptr)
-		m_dac->write(BIT(m_7seg_data_xxx, 7));
+		m_dac->write(BIT(m_7seg_data, 7));
 
 	// d0-d3: led select, input mux
 	// d4,d5: upper leds(direct)
-	set_display_segmask(0xf, 0x7f);
-	display_matrix(8, 6, m_7seg_data_xxx, data & 0x3f);
-	m_inp_mux_xxx = data & 0xf;
+	m_display->matrix(data & 0x3f, m_7seg_data);
+	m_inp_mux = data & 0xf;
 }
 
 READ8_MEMBER(bcc_state::input_r)
 {
+	u8 data = 0;
+
 	// d0-d3: multiplexed inputs
-	return read_inputs(4);
+	for (int i = 0; i < 4; i++)
+		if (BIT(m_inp_mux, i))
+			data |= m_inputs[i]->read();
+
+	return data;
 }
 
 
@@ -206,7 +235,9 @@ void bcc_state::bkc(machine_config &config)
 	m_maincpu->set_addrmap(AS_PROGRAM, &bcc_state::main_map);
 	m_maincpu->set_addrmap(AS_IO, &bcc_state::main_io);
 
-	TIMER(config, "display_decay").configure_periodic(FUNC(bcc_state::display_decay_tick), attotime::from_msec(1));
+	/* video hardware */
+	PWM_DISPLAY(config, m_display).set_size(6, 8);
+	m_display->set_segmask(0xf, 0x7f);
 	config.set_default_layout(layout_fidel_bkc);
 }
 

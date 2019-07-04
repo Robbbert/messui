@@ -31,6 +31,9 @@ hardware overview:
 advertised as 3.2, 3.6, or 4MHz. Unmodified EAS PCB photos show only a 3MHz XTAL.
 
 A condensator keeps RAM contents alive for a few hours when powered off.
+Note that EAS doesn't have a "new game" button, it is done through game options:
+Press GAME CONTROL, then place/lift a piece on D6 to restart, or D8 to reset
+with default settings, then press CL.
 
 Prestige Challenger (PC) hardware is very similar. They stripped the 8255 PPI,
 and added more RAM(7*TMM2016P). Some were released at 3.6MHz instead of 4MHz,
@@ -56,8 +59,10 @@ It was probably only released in Germany.
 #include "sound/s14001a.h"
 #include "sound/dac.h"
 #include "sound/volt_reg.h"
+#include "video/pwm.h"
 #include "bus/generic/slot.h"
 #include "bus/generic/carts.h"
+
 #include "softlist.h"
 #include "speaker.h"
 
@@ -78,11 +83,13 @@ public:
 		m_irq_on(*this, "irq_on"),
 		m_ppi8255(*this, "ppi8255"),
 		m_rombank(*this, "rombank"),
+		m_display(*this, "display"),
 		m_dac(*this, "dac"),
 		m_speech(*this, "speech"),
 		m_speech_rom(*this, "speech"),
 		m_language(*this, "language"),
-		m_cart(*this, "cartslot")
+		m_cart(*this, "cartslot"),
+		m_inputs(*this, "IN.%u", 0)
 	{ }
 
 	// machine drivers
@@ -102,11 +109,13 @@ private:
 	required_device<timer_device> m_irq_on;
 	optional_device<i8255_device> m_ppi8255;
 	optional_memory_bank m_rombank;
+	required_device<pwm_display_device> m_display;
 	required_device<dac_bit_interface> m_dac;
 	required_device<s14001a_device> m_speech;
 	required_region_ptr<u8> m_speech_rom;
 	required_region_ptr<u8> m_language;
 	required_device<generic_slot_device> m_cart;
+	required_ioport_array<10> m_inputs;
 
 	// address maps
 	void eas_map(address_map &map);
@@ -130,6 +139,9 @@ private:
 	DECLARE_READ8_MEMBER(ppi_portb_r);
 	DECLARE_WRITE8_MEMBER(ppi_portc_w);
 
+	u8 m_led_data;
+	u8 m_7seg_data;
+	u8 m_inp_mux;
 	u8 m_speech_bank;
 };
 
@@ -143,9 +155,15 @@ void elite_state::machine_start()
 	fidelbase_state::machine_start();
 
 	// zerofill
+	m_led_data = 0;
+	m_7seg_data = 0;
+	m_inp_mux = 0;
 	m_speech_bank = 0;
 
 	// register for savestates
+	save_item(NAME(m_led_data));
+	save_item(NAME(m_7seg_data));
+	save_item(NAME(m_inp_mux));
 	save_item(NAME(m_speech_bank));
 }
 
@@ -172,8 +190,8 @@ DEVICE_IMAGE_LOAD_MEMBER(elite_state::cart_load)
 void elite_state::update_display()
 {
 	// 4/8 7seg leds+H, 8*8(+1) chessboard leds
-	set_display_segmask(0x1ef, 0x7f);
-	display_matrix(16, 9, m_led_data_xxx << 8 | m_7seg_data_xxx, m_led_select_xxx);
+	u8 seg_data = bitswap<8>(m_7seg_data,0,1,3,2,7,5,6,4);
+	m_display->matrix(1 << m_inp_mux, m_led_data << 8 | seg_data);
 }
 
 READ8_MEMBER(elite_state::speech_r)
@@ -184,22 +202,32 @@ READ8_MEMBER(elite_state::speech_r)
 WRITE8_MEMBER(elite_state::segment_w)
 {
 	// a0-a2,d7: digit segment
-	m_7seg_data_xxx = (data & 0x80) >> offset;
-	m_7seg_data_xxx = bitswap<8>(m_7seg_data_xxx,7,6,4,5,0,2,1,3);
+	u8 mask = 1 << offset;
+	m_7seg_data = (m_7seg_data & ~mask) | ((data & 0x80) ? mask : 0);
 	update_display();
 }
 
 WRITE8_MEMBER(elite_state::led_w)
 {
 	// a0-a2,d0: led data
-	m_led_data_xxx = (data & 1) << offset;
+	m_led_data = (m_led_data & ~(1 << offset)) | ((data & 1) << offset);
 	update_display();
 }
 
 READ8_MEMBER(elite_state::input_r)
 {
+	u8 data = 0;
+
 	// multiplexed inputs (active low)
-	return read_inputs(9) ^ 0xff;
+	// read chessboard sensors
+	if (m_inp_mux < 8)
+		data = m_inputs[m_inp_mux]->read();
+
+	// read button panel
+	else if (m_inp_mux == 8)
+		data = m_inputs[8]->read();
+
+	return ~data;
 }
 
 
@@ -219,12 +247,11 @@ WRITE8_MEMBER(elite_state::ppi_portc_w)
 {
 	// d0-d3: 7442 a0-a3
 	// 7442 0-8: led select, input mux
-	m_led_select_xxx = 1 << (data & 0xf) & 0x3ff;
-	m_inp_mux_xxx = m_led_select_xxx & 0x1ff;
+	m_inp_mux = data & 0xf;
 	update_display();
 
 	// 7442 9: speaker out
-	m_dac->write(BIT(m_led_select_xxx, 9));
+	m_dac->write(BIT(1 << m_inp_mux, 9));
 
 	// d4: speech ROM A12
 	m_speech->force_update(); // update stream to now
@@ -249,8 +276,8 @@ READ8_MEMBER(elite_state::ppi_portb_r)
 	// d2,d3: language switches(hardwired)
 	data |= *m_language << 2 & 0x0c;
 
-	// d5: multiplexed inputs highest bit
-	data |= (read_inputs(9) & 0x100) ? 0 : 0x20;
+	// d5: 3 more buttons
+	data |= (BIT(m_inputs[9]->read(), m_inp_mux)) ? 0 : 0x20;
 
 	// other: ?
 	return data | 0xd0;
@@ -401,15 +428,6 @@ static INPUT_PORTS_START( eas )
 	PORT_INCLUDE( fidel_cpu_div_4 )
 	PORT_INCLUDE( generic_cb_magnets )
 
-	PORT_MODIFY("IN.0")
-	PORT_BIT(0x100, IP_ACTIVE_HIGH, IPT_KEYPAD) PORT_CODE(KEYCODE_M) PORT_NAME("DM")
-
-	PORT_MODIFY("IN.1")
-	PORT_BIT(0x100, IP_ACTIVE_HIGH, IPT_KEYPAD) PORT_CODE(KEYCODE_DEL) PORT_NAME("CL")
-
-	PORT_MODIFY("IN.2")
-	PORT_BIT(0x100, IP_ACTIVE_HIGH, IPT_KEYPAD) PORT_CODE(KEYCODE_V) PORT_NAME("RV")
-
 	PORT_START("IN.8")
 	PORT_BIT(0x01, IP_ACTIVE_HIGH, IPT_KEYPAD) PORT_CODE(KEYCODE_G) PORT_NAME("Game Control") // labeled RESET on the Prestige, but led display still says - G C -
 	PORT_BIT(0x02, IP_ACTIVE_HIGH, IPT_KEYPAD) PORT_CODE(KEYCODE_SPACE) PORT_NAME("Speaker")
@@ -419,20 +437,16 @@ static INPUT_PORTS_START( eas )
 	PORT_BIT(0x20, IP_ACTIVE_HIGH, IPT_KEYPAD) PORT_CODE(KEYCODE_4) PORT_CODE(KEYCODE_4_PAD) PORT_NAME("ST / Bishop")
 	PORT_BIT(0x40, IP_ACTIVE_HIGH, IPT_KEYPAD) PORT_CODE(KEYCODE_5) PORT_CODE(KEYCODE_5_PAD) PORT_NAME("TB / Knight")
 	PORT_BIT(0x80, IP_ACTIVE_HIGH, IPT_KEYPAD) PORT_CODE(KEYCODE_6) PORT_CODE(KEYCODE_6_PAD) PORT_NAME("LV / Pawn")
+
+	PORT_START("IN.9")
+	PORT_BIT(0x01, IP_ACTIVE_HIGH, IPT_KEYPAD) PORT_CODE(KEYCODE_M) PORT_NAME("DM")
+	PORT_BIT(0x02, IP_ACTIVE_HIGH, IPT_KEYPAD) PORT_CODE(KEYCODE_DEL) PORT_NAME("CL")
+	PORT_BIT(0x04, IP_ACTIVE_HIGH, IPT_KEYPAD) PORT_CODE(KEYCODE_V) PORT_NAME("RV")
 INPUT_PORTS_END
 
 static INPUT_PORTS_START( eag )
 	PORT_INCLUDE( fidel_cpu_div_4 )
 	PORT_INCLUDE( generic_cb_magnets )
-
-	PORT_MODIFY("IN.0")
-	PORT_BIT(0x100, IP_ACTIVE_HIGH, IPT_KEYPAD) PORT_CODE(KEYCODE_DEL) PORT_NAME("CL")
-
-	PORT_MODIFY("IN.1")
-	PORT_BIT(0x100, IP_ACTIVE_HIGH, IPT_KEYPAD) PORT_CODE(KEYCODE_M) PORT_NAME("DM")
-
-	PORT_MODIFY("IN.2")
-	PORT_BIT(0x100, IP_ACTIVE_HIGH, IPT_KEYPAD) PORT_CODE(KEYCODE_R) PORT_CODE(KEYCODE_N) PORT_NAME("New Game")
 
 	PORT_START("IN.8")
 	PORT_BIT(0x01, IP_ACTIVE_HIGH, IPT_KEYPAD) PORT_CODE(KEYCODE_V) PORT_NAME("RV")
@@ -443,6 +457,11 @@ static INPUT_PORTS_START( eag )
 	PORT_BIT(0x20, IP_ACTIVE_HIGH, IPT_KEYPAD) PORT_CODE(KEYCODE_4) PORT_CODE(KEYCODE_4_PAD) PORT_NAME("TM / Rook")
 	PORT_BIT(0x40, IP_ACTIVE_HIGH, IPT_KEYPAD) PORT_CODE(KEYCODE_5) PORT_CODE(KEYCODE_5_PAD) PORT_NAME("PV / Queen")
 	PORT_BIT(0x80, IP_ACTIVE_HIGH, IPT_KEYPAD) PORT_CODE(KEYCODE_6) PORT_CODE(KEYCODE_6_PAD) PORT_NAME("PB / King")
+
+	PORT_START("IN.9")
+	PORT_BIT(0x01, IP_ACTIVE_HIGH, IPT_KEYPAD) PORT_CODE(KEYCODE_DEL) PORT_NAME("CL")
+	PORT_BIT(0x02, IP_ACTIVE_HIGH, IPT_KEYPAD) PORT_CODE(KEYCODE_M) PORT_NAME("DM")
+	PORT_BIT(0x04, IP_ACTIVE_HIGH, IPT_KEYPAD) PORT_CODE(KEYCODE_R) PORT_CODE(KEYCODE_N) PORT_NAME("New Game")
 INPUT_PORTS_END
 
 
@@ -463,7 +482,9 @@ void elite_state::pc(machine_config &config)
 	m_irq_on->set_start_delay(irq_period - attotime::from_hz(38.4_kHz_XTAL*2)); // edge!
 	TIMER(config, "irq_off").configure_periodic(FUNC(elite_state::irq_off<M6502_IRQ_LINE>), irq_period);
 
-	TIMER(config, "display_decay").configure_periodic(FUNC(elite_state::display_decay_tick), attotime::from_msec(1));
+	/* video hardware */
+	PWM_DISPLAY(config, m_display).set_size(9, 16);
+	m_display->set_segmask(0xf, 0x7f);
 	config.set_default_layout(layout_fidel_pc);
 
 	/* sound hardware */
@@ -525,6 +546,8 @@ void elite_state::eag(machine_config &config)
 	NVRAM(config, "nvram.ic8", nvram_device::DEFAULT_ALL_0);
 	NVRAM(config, "nvram.ic6", nvram_device::DEFAULT_ALL_0);
 
+	/* video hardware */
+	m_display->set_segmask(0x1ef, 0x7f);
 	config.set_default_layout(layout_fidel_eag);
 }
 
