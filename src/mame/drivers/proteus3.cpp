@@ -34,7 +34,6 @@
     same company.
 
     To Do:
-    - Cassette (coded but too unreliable to be considered working)
     - Add support for k7 cassette files.
     - Need software
     - Need missing PROM, so that all the CRTC controls can be emulated
@@ -85,7 +84,6 @@ private:
 	DECLARE_WRITE8_MEMBER(video_w);
 	void kbd_put(u8 data);
 	DECLARE_WRITE_LINE_MEMBER(acia1_clock_w);
-	TIMER_DEVICE_CALLBACK_MEMBER(kansas_w);
 	TIMER_DEVICE_CALLBACK_MEMBER(kansas_r);
 	uint32_t screen_update_proteus3(screen_device &screen, bitmap_ind16 &bitmap, const rectangle &cliprect);
 
@@ -141,7 +139,7 @@ void proteus3_state::proteus3_mem(address_map &map)
 	map(0x0000, 0x7fff).ram();
 	map(0x8004, 0x8007).rw(m_pia, FUNC(pia6821_device::read), FUNC(pia6821_device::write));
 	map(0x8008, 0x8009).rw(m_acia1, FUNC(acia6850_device::read), FUNC(acia6850_device::write)); // cassette
-	map(0x8010, 0x8011).rw(m_acia2, FUNC(acia6850_device::read), FUNC(acia6850_device::write)); // serial keyboard (never writes data)
+	map(0x8010, 0x8011).rw(m_acia2, FUNC(acia6850_device::read), FUNC(acia6850_device::write)); // serial keyboard 7E2 (never writes data)
 	map(0xc000, 0xffff).rom();
 }
 
@@ -153,22 +151,22 @@ void proteus3_state::proteus3_mem(address_map &map)
 static INPUT_PORTS_START(proteus3)
 	PORT_START("SERIAL")
 	PORT_CONFNAME(0x0F , 0x00 , "Serial Baud Rate") // F1-F16 pins on MC14411 in X16
-	PORT_CONFSETTING(mc14411_device::TIMER_F1,  "153600")
-	PORT_CONFSETTING(mc14411_device::TIMER_F2,  "115200")
-	PORT_CONFSETTING(mc14411_device::TIMER_F3,  "76800")
-	PORT_CONFSETTING(mc14411_device::TIMER_F4,  "57600")
-	PORT_CONFSETTING(mc14411_device::TIMER_F5,  "38400")
-	PORT_CONFSETTING(mc14411_device::TIMER_F6,  "28800")
-	PORT_CONFSETTING(mc14411_device::TIMER_F7,  "19200")
-	PORT_CONFSETTING(mc14411_device::TIMER_F8,  "9600")
-	PORT_CONFSETTING(mc14411_device::TIMER_F9,  "4800")
-	PORT_CONFSETTING(mc14411_device::TIMER_F10, "3200")
-	PORT_CONFSETTING(mc14411_device::TIMER_F11, "2400")
-	PORT_CONFSETTING(mc14411_device::TIMER_F12, "2153.3")
-	PORT_CONFSETTING(mc14411_device::TIMER_F13, "1758.8")
-	PORT_CONFSETTING(mc14411_device::TIMER_F14, "1200")
-	PORT_CONFSETTING(mc14411_device::TIMER_F15, "921600")
-	PORT_CONFSETTING(mc14411_device::TIMER_F16, "1843200")
+	PORT_CONFSETTING(mc14411_device::TIMER_F1,  "9600")
+	PORT_CONFSETTING(mc14411_device::TIMER_F2,  "7200")
+	PORT_CONFSETTING(mc14411_device::TIMER_F3,  "4800")
+	PORT_CONFSETTING(mc14411_device::TIMER_F4,  "3600")
+	PORT_CONFSETTING(mc14411_device::TIMER_F5,  "2400")
+	PORT_CONFSETTING(mc14411_device::TIMER_F6,  "1800")
+	PORT_CONFSETTING(mc14411_device::TIMER_F7,  "1200")
+	PORT_CONFSETTING(mc14411_device::TIMER_F8,  "600")
+	PORT_CONFSETTING(mc14411_device::TIMER_F9,  "300")
+	PORT_CONFSETTING(mc14411_device::TIMER_F10, "200")
+	PORT_CONFSETTING(mc14411_device::TIMER_F11, "150")
+	PORT_CONFSETTING(mc14411_device::TIMER_F12, "134.5")
+	PORT_CONFSETTING(mc14411_device::TIMER_F13, "110")
+	PORT_CONFSETTING(mc14411_device::TIMER_F14, "75")
+	PORT_CONFSETTING(mc14411_device::TIMER_F15, "57600")
+	PORT_CONFSETTING(mc14411_device::TIMER_F16, "115200")
 INPUT_PORTS_END
 
 void proteus3_state::kbd_put(u8 data)
@@ -199,14 +197,15 @@ void proteus3_state::write_acia_clocks(int id, int state)
 
 TIMER_DEVICE_CALLBACK_MEMBER( proteus3_state::kansas_r )
 {
-	/* cassette - turn 1200/2400Hz to a bit */
+	// no tape - set uart to idle
 	m_cass_data[1]++;
-	if (m_cass_data[1] > 30)
+	if (m_cass_data[1] > 32)
 	{
-		m_cass_data[1] = 30;
+		m_cass_data[1] = 32;
 		m_cassinbit = 1;
 	}
 
+	/* cassette - turn 1200/2400Hz to a bit */
 	uint8_t cass_ws = (m_cass->input() > +0.04) ? 1 : 0;
 
 	if (cass_ws != m_cass_data[0])
@@ -220,27 +219,26 @@ TIMER_DEVICE_CALLBACK_MEMBER( proteus3_state::kansas_r )
 WRITE_LINE_MEMBER( proteus3_state::acia1_clock_w )
 {
 	// Save - 8N2 - /16 - 600baud
-	u8 twobit = m_cass_data[3] & 7;
+	// Load - 8N2 - /1
+	u8 twobit = m_cass_data[3] & 15;
 	// incoming @9600Hz
 	if (state)
 	{
 		if (twobit == 0)
-			m_cassold = m_cassbit;
-
-		if (m_cassold)
-			m_cass->output(BIT(m_cass_data[3], 1) ? -1.0 : +1.0); // 2400Hz
-		else
-			m_cass->output(BIT(m_cass_data[3], 2) ? -1.0 : +1.0); // 1200Hz
-
-		m_cass_data[3]++;
-
-		// Load - 8N2 - /1
-		if (twobit == 0)
 		{
+			m_cassold = m_cassbit;
+			// synchronous rx
 			m_acia1->write_rxc(0);
 			m_acia1->write_rxd(m_cassinbit);
 			m_acia1->write_rxc(1);
 		}
+
+		if (m_cassold)
+			m_cass->output(BIT(m_cass_data[3], 1) ? +1.0 : -1.0); // 2400Hz
+		else
+			m_cass->output(BIT(m_cass_data[3], 2) ? +1.0 : -1.0); // 1200Hz
+
+		m_cass_data[3]++;
 	}
 
 	m_acia1->write_txc(state);
