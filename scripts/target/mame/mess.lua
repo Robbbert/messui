@@ -1066,7 +1066,6 @@ function linkProjects_mame_mess(_target, _subtarget)
 		"be",
 		"bitcorp",
 		"bnpo",
-		"brea",
 		"bondwell",
 		"booth",
 		"camputers",
@@ -1089,6 +1088,7 @@ function linkProjects_mame_mess(_target, _subtarget)
 		"cxg",
 		"cybiko",
 		"dai",
+		"dcs",
 		"ddr",
 		"dec",
 		"dicksmth",
@@ -1777,11 +1777,6 @@ files {
 	MAME_DIR .. "src/mame/video/b2m.cpp",
 }
 
-createMESSProjects(_target, _subtarget, "brea")
-files {
-	MAME_DIR .. "src/mame/drivers/intellect02.cpp",
-}
-
 createMESSProjects(_target, _subtarget, "bondwell")
 files {
 	MAME_DIR .. "src/mame/drivers/bw12.cpp",
@@ -1842,6 +1837,7 @@ files {
 	MAME_DIR .. "src/mame/includes/c65.h",
 	MAME_DIR .. "src/mame/drivers/c900.cpp",
 	MAME_DIR .. "src/mame/drivers/cbm2.cpp",
+	MAME_DIR .. "src/mame/drivers/chessmate.cpp",
 	MAME_DIR .. "src/mame/drivers/clcd.cpp",
 	MAME_DIR .. "src/mame/drivers/pet.cpp",
 	MAME_DIR .. "src/mame/drivers/plus4.cpp",
@@ -1856,6 +1852,7 @@ createMESSProjects(_target, _subtarget, "cccp")
 files {
 	MAME_DIR .. "src/mame/drivers/argo.cpp",
 	MAME_DIR .. "src/mame/drivers/cm1800.cpp",
+	MAME_DIR .. "src/mame/drivers/intellect02.cpp",
 	MAME_DIR .. "src/mame/drivers/lviv.cpp",
 	MAME_DIR .. "src/mame/includes/lviv.h",
 	MAME_DIR .. "src/mame/machine/lviv.cpp",
@@ -1981,6 +1978,11 @@ files {
 	MAME_DIR .. "src/mame/audio/dai_snd.h",
 	MAME_DIR .. "src/mame/machine/dai.cpp",
 	MAME_DIR .. "src/mame/video/dai.cpp",
+}
+
+createMESSProjects(_target, _subtarget, "dcs")
+files {
+	MAME_DIR .. "src/mame/drivers/compuchess.cpp",
 }
 
 createMESSProjects(_target, _subtarget, "ddr")
@@ -2817,17 +2819,11 @@ files {
 createMESSProjects(_target, _subtarget, "novag")
 files {
 	MAME_DIR .. "src/mame/drivers/novag_cforte.cpp",
-	MAME_DIR .. "src/mame/drivers/novag_delta1.cpp",
 	MAME_DIR .. "src/mame/drivers/novag_diablo.cpp",
-	MAME_DIR .. "src/mame/drivers/novag_mk1.cpp",
-	MAME_DIR .. "src/mame/drivers/novag_mk2.cpp",
 	MAME_DIR .. "src/mame/drivers/novag_presto.cpp",
 	MAME_DIR .. "src/mame/drivers/novag_savant.cpp",
 	MAME_DIR .. "src/mame/drivers/novag_scon.cpp",
 	MAME_DIR .. "src/mame/drivers/novag_sexpert.cpp",
-	MAME_DIR .. "src/mame/drivers/ssystem3.cpp",
-	MAME_DIR .. "src/mame/includes/ssystem3.h",
-	MAME_DIR .. "src/mame/video/ssystem3.cpp",
 }
 
 createMESSProjects(_target, _subtarget, "olivetti")
@@ -3072,10 +3068,11 @@ files {
 
 createMESSProjects(_target, _subtarget, "saitek")
 files {
-	MAME_DIR .. "src/mame/drivers/risc2500.cpp",
-	MAME_DIR .. "src/mame/drivers/scisys_chesstrv.cpp",
-	MAME_DIR .. "src/mame/drivers/scisys_cp2000.cpp",
-	MAME_DIR .. "src/mame/drivers/stratos.cpp",
+	MAME_DIR .. "src/mame/drivers/saitek_chesstrv.cpp",
+	MAME_DIR .. "src/mame/drivers/saitek_cp2000.cpp",
+	MAME_DIR .. "src/mame/drivers/saitek_delta1.cpp",
+	MAME_DIR .. "src/mame/drivers/saitek_risc2500.cpp",
+	MAME_DIR .. "src/mame/drivers/saitek_stratos.cpp",
 }
 
 createMESSProjects(_target, _subtarget, "samcoupe")
@@ -4062,6 +4059,9 @@ files {
 	MAME_DIR .. "src/mame/includes/softbox.h",
 	MAME_DIR .. "src/mame/drivers/squale.cpp",
 	MAME_DIR .. "src/mame/drivers/solbourne.cpp",
+	MAME_DIR .. "src/mame/drivers/ssystem3.cpp",
+	MAME_DIR .. "src/mame/includes/ssystem3.h",
+	MAME_DIR .. "src/mame/video/ssystem3.cpp",
 	MAME_DIR .. "src/mame/drivers/swyft.cpp",
 	MAME_DIR .. "src/mame/drivers/symbolics.cpp",
 	MAME_DIR .. "src/mame/drivers/sys2900.cpp",
