@@ -173,12 +173,12 @@ static INPUT_PORTS_START( poly88 )
 	PORT_BIT(0x80, IP_ACTIVE_HIGH, IPT_KEYBOARD) PORT_NAME("LF") PORT_CODE(KEYCODE_RALT)
 INPUT_PORTS_END
 
-static const struct CassetteOptions poly88_cassette_options =
-{
-	1,      /* channels */
-	16,     /* bits per sample */
-	7200    /* sample frequency */
-};
+//static const struct CassetteOptions poly88_cassette_options =
+//{
+//	1,      /* channels */
+//	16,     /* bits per sample */
+//	7200    /* sample frequency */
+//};
 
 /* F4 Character Displayer */
 static const gfx_layout poly88_charlayout =
@@ -225,7 +225,7 @@ void poly88_state::poly88(machine_config &config)
 
 	/* cassette */
 	CASSETTE(config, m_cassette);
-	m_cassette->set_create_opts(&poly88_cassette_options);
+	//m_cassette->set_create_opts(&poly88_cassette_options);
 	m_cassette->set_default_state(CASSETTE_STOPPED | CASSETTE_SPEAKER_ENABLED);
 	m_cassette->add_route(ALL_OUTPUTS, "mono", 0.05);
 

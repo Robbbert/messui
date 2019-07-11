@@ -412,11 +412,36 @@ void i8251_device::command_w(uint8_t data)
 
 void i8251_device::mode_w(uint8_t data)
 {
-	LOG("I8251: Mode byte = %X\n", data);
+	LOG("I8251: Mode byte = %02X\n", data);
 
 	m_mode_byte = data;
 
-	/* Synchronous or Asynchronous? */
+		const int data_bits_count = ((data >> 2) & 0x03) + 5;
+		LOG("Character length: %d\n", data_bits_count);
+
+		parity_t parity;
+		if (BIT(data, 4))
+		{
+			if (BIT(data, 5))
+			{
+				LOG("enable parity checking (even parity)\n");
+				parity = PARITY_EVEN;
+			}
+			else
+			{
+				LOG("enable parity checking (odd parity)\n");
+				parity = PARITY_ODD;
+			}
+		}
+		else
+		{
+			LOG("parity check disabled\n");
+			parity = PARITY_NONE;
+		}
+
+		m_br_factor = 1;
+
+		/* Synchronous or Asynchronous? */
 	if ((data & 0x03) != 0)
 	{
 		/*  Asynchronous
@@ -446,29 +471,6 @@ void i8251_device::mode_w(uint8_t data)
 
 		LOG("I8251: Asynchronous operation\n");
 
-		const int data_bits_count = ((data >> 2) & 0x03) + 5;
-		LOG("Character length: %d\n", data_bits_count);
-
-		parity_t parity;
-		if (BIT(data, 4))
-		{
-			if (BIT(data, 5))
-			{
-				LOG("enable parity checking (even parity)\n");
-				parity = PARITY_EVEN;
-			}
-			else
-			{
-				LOG("enable parity checking (odd parity)\n");
-				parity = PARITY_ODD;
-			}
-		}
-		else
-		{
-			LOG("parity check disabled\n");
-			parity = PARITY_NONE;
-		}
-
 		stop_bits_t stop_bits;
 		switch ((data >> 6) & 0x03)
 		{
@@ -494,16 +496,27 @@ void i8251_device::mode_w(uint8_t data)
 			break;
 		}
 
-
-		set_data_frame(1, data_bits_count, parity, stop_bits);
-		receive_register_reset();
-
 		switch (data & 0x03)
 		{
 		case 1: m_br_factor = 1; break;
 		case 2: m_br_factor = 16; break;
 		case 3: m_br_factor = 64; break;
 		}
+		set_data_frame(1, data_bits_count, parity, stop_bits);
+
+	}
+	else
+	{
+		LOG("I8251: Synchronous operation\n");
+
+		/* setup for sync byte(s) */
+		m_flags |= I8251_EXPECTING_SYNC_BYTE;
+		m_sync_byte_offset = 0;
+		m_sync_byte_count = BIT(data, 7) + 1;
+		set_data_frame(0, data_bits_count, parity, stop_bits_t(0));
+	}
+
+		receive_register_reset();
 
 		m_txc_count = 0;
 
@@ -526,9 +539,7 @@ void i8251_device::mode_w(uint8_t data)
 		/* not expecting mode byte now */
 		m_flags &= ~I8251_EXPECTING_MODE;
 		//              m_status = I8251_STATUS_TX_EMPTY | I8251_STATUS_TX_READY;
-	}
-	else
-	{
+
 		/*  bit 7: Number of sync characters
 		        0 = 1 character
 		        1 = 2 character
@@ -548,21 +559,6 @@ void i8251_device::mode_w(uint8_t data)
 		        3 = 8 bits
 		        bit 1,0 = 0
 		        */
-		LOG("I8251: Synchronous operation\n");
-
-		/* setup for sync byte(s) */
-		m_flags |= I8251_EXPECTING_SYNC_BYTE;
-		m_sync_byte_offset = 0;
-		if (BIT(data, 7))
-		{
-			m_sync_byte_count = 1;
-		}
-		else
-		{
-			m_sync_byte_count = 2;
-		}
-
-	}
 }
 
 void i8251_device::control_w(uint8_t data)
@@ -678,7 +674,7 @@ uint8_t i8251_device::data_r()
 	{
 		m_status &= ~I8251_STATUS_RX_READY;
 		update_rx_ready();
-	}//printf("%X ",m_rx_data);
+	}printf("%X ",m_rx_data);
 	return m_rx_data;
 }
 
