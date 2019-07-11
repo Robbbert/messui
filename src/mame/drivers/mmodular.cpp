@@ -443,8 +443,8 @@ CONS( 1989, port32,  alm32,   0,      alm32,   alm32,   mmodular_state, empty_in
 CONS( 1990, lyon16,  alm16,   0,      alm16,   alm16,   mmodular_state, empty_init, "Hegener & Glaser", "Mephisto Lyon 68000",                  MACHINE_SUPPORTS_SAVE | MACHINE_IMPERFECT_TIMING | MACHINE_CLICKABLE_ARTWORK )
 CONS( 1990, lyon32,  alm32,   0,      alm32,   alm32,   mmodular_state, empty_init, "Hegener & Glaser", "Mephisto Lyon 68020",                  MACHINE_SUPPORTS_SAVE | MACHINE_IMPERFECT_TIMING | MACHINE_CLICKABLE_ARTWORK )
 CONS( 1991, van16,   alm16,   0,      van16,   alm16,   mmodular_state, empty_init, "Hegener & Glaser", "Mephisto Vancouver 68000",             MACHINE_SUPPORTS_SAVE | MACHINE_IMPERFECT_TIMING | MACHINE_CLICKABLE_ARTWORK )
-CONS( 1991, van32,   alm32,   0,      van32,   alm32,   mmodular_state, empty_init, "Hegener & Glaser", "Mephisto Vancouver 68020",             MACHINE_MECHANICAL | MACHINE_SUPPORTS_SAVE | MACHINE_IMPERFECT_TIMING | MACHINE_CLICKABLE_ARTWORK )
-CONS( 1993, gen32,   0,       0,      gen32,   gen32,   mmodular_state, init_gen32, "Hegener & Glaser", "Mephisto Genius 68030",                MACHINE_MECHANICAL | MACHINE_SUPPORTS_SAVE | MACHINE_IMPERFECT_TIMING | MACHINE_CLICKABLE_ARTWORK )
+CONS( 1991, van32,   alm32,   0,      van32,   alm32,   mmodular_state, empty_init, "Hegener & Glaser", "Mephisto Vancouver 68020",             MACHINE_SUPPORTS_SAVE | MACHINE_IMPERFECT_TIMING | MACHINE_CLICKABLE_ARTWORK )
+CONS( 1993, gen32,   0,       0,      gen32,   gen32,   mmodular_state, init_gen32, "Hegener & Glaser", "Mephisto Genius 68030",                MACHINE_SUPPORTS_SAVE | MACHINE_IMPERFECT_TIMING | MACHINE_CLICKABLE_ARTWORK )
 CONS( 1996, lond020, alm32,   0,      van32,   alm32,   mmodular_state, empty_init, "Hegener & Glaser", "Mephisto London 68020",                MACHINE_SUPPORTS_SAVE | MACHINE_IMPERFECT_TIMING | MACHINE_CLICKABLE_ARTWORK )
 CONS( 1996, lond030, gen32,   0,      gen32,   gen32,   mmodular_state, init_gen32, "Hegener & Glaser", "Mephisto Genius 68030 London Upgrade", MACHINE_SUPPORTS_SAVE | MACHINE_IMPERFECT_TIMING | MACHINE_CLICKABLE_ARTWORK )
 
