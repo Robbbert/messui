@@ -688,9 +688,9 @@ ROM_END
 ******************************************************************************/
 
 //    YEAR  NAME      PARENT CMP MACHINE  INPUT  STATE       INIT        COMPANY, FULLNAME, FLAGS
-CONS( 1980, vbrc,     0,      0, vbrc,    brc,   card_state, empty_init, "Fidelity Electronics", "Voice Bridge Challenger", MACHINE_MECHANICAL | MACHINE_SUPPORTS_SAVE | MACHINE_CLICKABLE_ARTWORK | MACHINE_IMPERFECT_CONTROLS )
-CONS( 1980, bridgeca, vbrc,   0, ubc,     brc,   card_state, empty_init, "Fidelity Electronics", "Advanced Bridge Challenger", MACHINE_MECHANICAL | MACHINE_SUPPORTS_SAVE | MACHINE_CLICKABLE_ARTWORK | MACHINE_IMPERFECT_CONTROLS )
+CONS( 1980, vbrc,     0,      0, vbrc,    brc,   card_state, empty_init, "Fidelity Electronics", "Voice Bridge Challenger", MACHINE_SUPPORTS_SAVE | MACHINE_CLICKABLE_ARTWORK | MACHINE_IMPERFECT_CONTROLS )
+CONS( 1980, bridgeca, vbrc,   0, ubc,     brc,   card_state, empty_init, "Fidelity Electronics", "Advanced Bridge Challenger", MACHINE_SUPPORTS_SAVE | MACHINE_CLICKABLE_ARTWORK | MACHINE_IMPERFECT_CONTROLS )
 
-CONS( 1982, bridgec3, 0,      0, bv3,     bv3,   card_state, empty_init, "Fidelity Electronics", "Bridge Challenger III", MACHINE_MECHANICAL | MACHINE_SUPPORTS_SAVE | MACHINE_CLICKABLE_ARTWORK | MACHINE_IMPERFECT_CONTROLS )
+CONS( 1982, bridgec3, 0,      0, bv3,     bv3,   card_state, empty_init, "Fidelity Electronics", "Bridge Challenger III", MACHINE_SUPPORTS_SAVE | MACHINE_CLICKABLE_ARTWORK | MACHINE_IMPERFECT_CONTROLS )
 
-CONS( 1982, gincribc, 0,      0, gin,     gin,   card_state, empty_init, "Fidelity Electronics", "Gin & Cribbage Challenger", MACHINE_MECHANICAL | MACHINE_SUPPORTS_SAVE | MACHINE_CLICKABLE_ARTWORK | MACHINE_IMPERFECT_CONTROLS )
+CONS( 1982, gincribc, 0,      0, gin,     gin,   card_state, empty_init, "Fidelity Electronics", "Gin & Cribbage Challenger", MACHINE_SUPPORTS_SAVE | MACHINE_CLICKABLE_ARTWORK | MACHINE_IMPERFECT_CONTROLS )

@@ -143,4 +143,4 @@ ROM_END
 ******************************************************************************/
 
 //    YEAR  NAME      PARENT CMP MACHINE   INPUT     STATE          INIT           COMPANY, FULLNAME, FLAGS
-CONS( 1988, fphantom, 0,      0, fphantom, fphantom, phantom_state, init_fphantom, "Fidelity Electronics", "Phantom Chess Challenger", MACHINE_MECHANICAL | MACHINE_SUPPORTS_SAVE | MACHINE_CLICKABLE_ARTWORK | MACHINE_IMPERFECT_CONTROLS | MACHINE_MECHANICAL | MACHINE_NOT_WORKING )
+CONS( 1988, fphantom, 0,      0, fphantom, fphantom, phantom_state, init_fphantom, "Fidelity Electronics", "Phantom Chess Challenger", MACHINE_SUPPORTS_SAVE | MACHINE_CLICKABLE_ARTWORK | MACHINE_IMPERFECT_CONTROLS | MACHINE_MECHANICAL | MACHINE_NOT_WORKING )

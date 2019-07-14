@@ -254,5 +254,5 @@ ROM_END
 ******************************************************************************/
 
 //    YEAR  NAME     PARENT   COMPAT  MACHINE  INPUT   CLASS         INIT        COMPANY, FULLNAME, FLAGS
-CONS( 1984, npresto, 0,       0,      presto,  presto, presto_state, empty_init, "Novag", "Presto (Novag)", MACHINE_MECHANICAL | MACHINE_SUPPORTS_SAVE | MACHINE_CLICKABLE_ARTWORK | MACHINE_IMPERFECT_CONTROLS )
-CONS( 1987, nocto,   npresto, 0,      octo,    octo,   octo_state,   empty_init, "Novag", "Octo (Novag)", MACHINE_MECHANICAL | MACHINE_SUPPORTS_SAVE | MACHINE_CLICKABLE_ARTWORK | MACHINE_IMPERFECT_CONTROLS )
+CONS( 1984, npresto, 0,       0,      presto,  presto, presto_state, empty_init, "Novag", "Presto (Novag)", MACHINE_SUPPORTS_SAVE | MACHINE_CLICKABLE_ARTWORK )
+CONS( 1987, nocto,   npresto, 0,      octo,    octo,   octo_state,   empty_init, "Novag", "Octo (Novag)", MACHINE_SUPPORTS_SAVE | MACHINE_CLICKABLE_ARTWORK )
