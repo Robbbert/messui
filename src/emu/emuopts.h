@@ -483,6 +483,7 @@ public:
 	bool find_image_option(const std::string &device_name); // MESSUI
 	const ::image_option *find_image_option_canonical(const std::string &device_name) const;
 	::image_option *find_image_option_canonical(const std::string &device_name);
+	bool has_image_option(const std::string &device_name) const { return m_image_options.find(device_name) != m_image_options.end(); }
 
 protected:
 	virtual void command_argument_processed() override;
