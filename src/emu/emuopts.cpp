@@ -1282,28 +1282,3 @@ core_options::entry::shared_ptr image_option::setup_option_entry(std::vector<std
 	return entry;
 }
 
-// MESSUI
-
-bool emu_options::find_image_option(const std::string &device_name) // MESSUI
-{
-	auto iter = m_image_options.find(device_name);
-	return (iter != m_image_options.end());
-}
-
-
-//-------------------------------------------------
-//  find_image_option_canonical
-//-------------------------------------------------
-
-const image_option *emu_options::find_image_option_canonical(const std::string &device_name) const
-{
-	auto iter = m_image_options_cannonical.find(device_name);
-	return iter != m_image_options_cannonical.end() ? &iter->second : nullptr;
-}
-
-image_option *emu_options::find_image_option_canonical(const std::string &device_name)
-{
-	auto iter = m_image_options_cannonical.find(device_name);
-	return iter != m_image_options_cannonical.end() ? &iter->second : nullptr;
-}
-
