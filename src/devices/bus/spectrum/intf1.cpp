@@ -45,9 +45,9 @@ void spectrum_intf1_device::device_add_mconfig(machine_config &config)
 	RS232_PORT(config, m_rs232, default_rs232_devices, nullptr);
 
 	/* microdrive */
-	MICRODRIVE(config, m_mdv1, 0);
+	MICRODRIVE(config, m_mdv1);
 	m_mdv1->comms_out_wr_callback().set(m_mdv2, FUNC(microdrive_image_device::comms_in_w));
-	MICRODRIVE(config, m_mdv2, 0);
+	MICRODRIVE(config, m_mdv2);
 
 	/* passthru */
 	SPECTRUM_EXPANSION_SLOT(config, m_exp, spectrum_expansion_devices, nullptr);
@@ -106,6 +106,9 @@ READ_LINE_MEMBER(spectrum_intf1_device::romcs)
 	return m_romcs | m_exp->romcs();
 }
 
+// the Interface 1 looks for specific bus conditions to enable / disable the expansion overlay ROM
+
+// the enable must occur BEFORE the opcode is fetched, as the opcode must be fetched from the expansion ROM
 void spectrum_intf1_device::opcode_fetch(offs_t offset)
 {
 	m_exp->opcode_fetch(offset);
@@ -117,12 +120,26 @@ void spectrum_intf1_device::opcode_fetch(offs_t offset)
 		case 0x0008: case 0x1708:
 			m_romcs = 1;
 			break;
+		}
+	}
+}
+
+// the disable must occur AFTER the opcode fetch, or the incorrect opcode is fetched for 0x0700
+void spectrum_intf1_device::opcode_fetch_post(offs_t offset)
+{
+	m_exp->opcode_fetch_post(offset);
+
+	if (!machine().side_effects_disabled())
+	{
+		switch (offset)
+		{
 		case 0x0700:
 			m_romcs = 0;
 			break;
 		}
 	}
 }
+
 
 uint8_t spectrum_intf1_device::mreq_r(offs_t offset)
 {
