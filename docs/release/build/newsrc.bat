@@ -4,7 +4,6 @@ set to=c:\MESS\docs\release
 rd %to%\src /q /s
 
 md %to%\src\emu
-copy /Y %from%\src\emu\image.cpp %to%\src\emu
 copy /Y %from%\src\emu\diimage.cpp %to%\src\emu
 copy /Y %from%\src\emu\emuopts.* %to%\src\emu
 copy /Y %from%\src\emu\softlist.cpp %to%\src\emu
@@ -18,9 +17,6 @@ copy /Y %from%\src\frontend\mame\ui\ui.cpp %to%\src\frontend\mame\ui
 
 md %to%\src\lib\util
 copy /Y %from%\src\lib\util\options.* %to%\src\lib\util
-
-md %to%\src\mame\drivers
-copy /Y %from%\src\mame\drivers\glasgow.cpp %to%\src\mame\drivers
 
 md %to%\src\osd\winui
 xcopy /E /Y %from%\src\osd\winui %to%\src\osd\winui
