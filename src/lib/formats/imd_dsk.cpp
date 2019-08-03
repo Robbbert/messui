@@ -446,19 +446,19 @@ bool imd_format::load(io_generic *io, uint32_t form_factor, floppy_image *image)
 		if(track >= tracks)
 		{
 			osd_printf_error("imd_format: Track %d exceeds maximum of %d\n", track, tracks);
-			return false;
+			//return false;
 		}
 
 		if((head & 0x3f) >= heads)
 		{
 			osd_printf_error("imd_format: Head %d exceeds maximum of %d\n", head & 0x3f, heads);
-			return false;
+			//return false;
 		}
 
 		if(ssize == 0xff)
 		{
 			osd_printf_error("imd_format: Unsupported variable sector size on track %d head %d", track, head & 0x3f);
-			return false;
+			//return false;
 		}
 
 		uint32_t actual_size = ssize < 7 ? 128 << ssize : 8192;

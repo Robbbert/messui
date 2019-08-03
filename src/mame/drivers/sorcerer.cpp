@@ -159,7 +159,7 @@ void sorcerer_state::sorcerer_mem(address_map &map)
 	map.unmap_value_high();
 	map(0x0000, 0x07ff).bankrw("boot");
 	map(0x0800, 0xbfff).ram();
-	//AM_RANGE(0xc000, 0xdfff)      // mapped by the cartslot
+	//map(0xc000, 0xdfff).rom();      // mapped by the cartslot
 	map(0xe000, 0xefff).rom();                     /* rom pac and bios */
 	map(0xf000, 0xf7ff).ram().region("maincpu", 0xf000);        /* screen ram */
 	map(0xf800, 0xfbff).rom();                     /* char rom */
@@ -536,6 +536,7 @@ ROM_END
 
 ROM_START(sorcerer2)
 	ROM_REGION( 0x10000, "maincpu", ROMREGION_ERASEFF )
+	//ROM_LOAD("digi14.bin",   0xd800, 0x0800, CRC(c3037503) SHA1(6e99de3dbc8d18fa310300b7fc9672c3d354eb32) ) // <----- Make into a cart
 	ROM_LOAD("exchr-1.20d",  0xf800, 0x0400, CRC(4a7e1cdd) SHA1(2bf07a59c506b6e0c01ec721fb7b747b20f5dced) ) /* char rom */
 	ROM_SYSTEM_BIOS(0, "standard", "Standard")
 	ROMX_LOAD("exm011-1.1e", 0xe000, 0x0800, CRC(af9394dc) SHA1(d7e0ada64d72d33e0790690be86a36020b41fd0d), ROM_BIOS(0) )
@@ -552,6 +553,18 @@ ROM_START(sorcerer2)
 	ROM_SYSTEM_BIOS(4, "adsmon", "ADSMON") // This requires an unemulated 80-column card. You can type 64 to get 64-columns, but it's mostly off the side.
 	ROMX_LOAD("adsmon.1e",   0xe000, 0x0800, CRC(460f981a) SHA1(bdae1d87b9e8ae2cae11663acd349b9ed2387094), ROM_BIOS(4) )
 	ROMX_LOAD("adsmon.2e",   0xe800, 0x0800, CRC(cb3f1dda) SHA1(3fc14306e83d73b9b9afd9b543566e52ba3e008f), ROM_BIOS(4) )
+	ROM_SYSTEM_BIOS(5, "scuamon80", "SCUAMON80 1.0") // This requires an unemulated 80-column card.
+	ROMX_LOAD("scua1.1e",    0xe000, 0x0800, CRC(0fcf1de9) SHA1(db8371eabf50a9da43ec7f717279a31754351359), ROM_BIOS(5) )
+	ROM_IGNORE(0x800)
+	ROMX_LOAD("scua1.2e",    0xe800, 0x0800, CRC(aa9a6ca6) SHA1(bcaa7457a1b892ed82c1a04ee21a619faa7c1a16), ROM_BIOS(5) )
+	ROM_IGNORE(0x800)
+	ROM_SYSTEM_BIOS(6, "scuamon64", "SCUAMON64")
+	ROMX_LOAD("scua1.1e",    0xe000, 0x0800, CRC(0fcf1de9) SHA1(db8371eabf50a9da43ec7f717279a31754351359), ROM_BIOS(6) )
+	ROM_CONTINUE(0xe000, 0x800)
+	ROMX_LOAD("scua1.2e",    0xe800, 0x0800, CRC(aa9a6ca6) SHA1(bcaa7457a1b892ed82c1a04ee21a619faa7c1a16), ROM_BIOS(6) )
+	ROM_CONTINUE(0xe800, 0x800)
+	ROM_SYSTEM_BIOS(7, "scuamon6434", "SCUAMON64 3.4")
+	ROMX_LOAD("scua34.1e",   0xe000, 0x1000, CRC(7ff21d97) SHA1(b936cda0f2acb655fb4c1a4e7976274558543c7e), ROM_BIOS(7) )
 ROM_END
 
 /*    YEAR  NAME       PARENT    COMPAT  MACHINE    INPUT     STATE           INIT           COMPANY      FULLNAME */
