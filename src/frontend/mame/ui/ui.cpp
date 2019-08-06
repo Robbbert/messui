@@ -359,7 +359,7 @@ void mame_ui_manager::display_startup_screens(bool first_time)
 					[&warning](const std::reference_wrapper<const std::string> &img)	{ warning << "\"" << img.get() << "\""; },
 					[&warning]()														{ warning << ","; });
 
-				ui::menu_file_manager::force_file_manager(*this, machine().render().ui_container(), warning.str().c_str());
+				//ui::menu_file_manager::force_file_manager(*this, machine().render().ui_container(), warning.str().c_str());   // MESSUI
 			}
 			break;
 		}
