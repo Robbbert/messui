@@ -284,6 +284,7 @@ SOUNDS["LC7535"] = true
 
 VIDEOS["SEGA315_5124"] = true
 VIDEOS["SEGA315_5313"] = true
+--VIDEOS["AM8052"] = true
 VIDEOS["BUFSPRITE"] = true
 --VIDEOS["CDP1861"] = true
 --VIDEOS["CDP1862"] = true
@@ -929,6 +930,7 @@ function createMAMEProjects(_target, _subtarget, _name)
 		ext_includedir("flac"),
 		ext_includedir("glm"),
 		ext_includedir("jpeg"),
+		ext_includedir("rapidjson"),
 	}
 
 end
