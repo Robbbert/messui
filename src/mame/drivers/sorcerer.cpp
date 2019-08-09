@@ -125,14 +125,27 @@ of the tape during playback.
 
 ********************************************************************************
 
+Progress with floppy-disk systems:
+
+It appears that a number of companies made floppy-disk controllers for the Sorcerer.
+We will attempt to emulate whatever we have disk images for.
+
 Disk system on sorcererd:
 - Uses a Micropolis controller, disks holding 143KB. Top of RAM is BBFF.
 - To boot CP/M, insert the disk, then type GO BC00 at the monitor prompt.
+
+Disk system on sorcerera:
+- Uses an almost-Microbee clone board called the Dreamdisk. The disks can hold 800kB.
+- To boot, just insert the disk. The bios will wait for it.
 
 Other rumoured disk possibilities (not emulated):
 - Soft-sectored, top of RAM is BDFF
 - Having the option of a S100 box, any random system could be used in theory.
 
+Other disk-enabled bioses:
+- SCUAMON will try using ports 30,32,34 and 38. After starting, type in DI
+  to attempt to boot. Unknown hardware.
+- TVIMON uses ports 30-34. Type in BO to attempt to boot. Unknown hardware.
 
 
 Exidy Sorcerer Video/Disk Unit:
@@ -142,7 +155,7 @@ Exidy Sorcerer Video/Disk Unit:
   FD1793-B01 fdc. Going by the code, it would appear to place the Z-80 into
   WAIT while reading a sector. To try it out: GO BF00 at the monitor prompt.
   Currently the CP/M sign-on message appears, followed by lockup due to a
-  fdc problem.
+  fdc problem. Uses ports 28-2C.
 
 ********************************************************************************/
 
@@ -186,13 +199,22 @@ void sorcerer_state::sorcerer_io(address_map &map)
 	map(0xff, 0xff).w(FUNC(sorcerer_state::port_ff_w));
 }
 
+void sorcerer_state::sorcerera_io(address_map &map)
+{
+	map.global_mask(0xff);
+	map.unmap_value_high();
+	sorcerer_io(map);
+	map(0x44, 0x47).rw(m_fdc4, FUNC(wd2793_device::read), FUNC(wd2793_device::write));
+	map(0x48, 0x4b).rw(FUNC(sorcerer_state::port48_r), FUNC(sorcerer_state::port48_w));
+}
+
 void sorcerer_state::sorcererd_io(address_map &map)
 {
 	map.global_mask(0xff);
 	map.unmap_value_high();
 	sorcerer_io(map);
 	map(0x28, 0x2b).rw(m_fdc2, FUNC(fd1793_device::read), FUNC(fd1793_device::write));
-	map(0x2c, 0x2c).w(FUNC(sorcerer_state::port_2c_w));
+	map(0x2c, 0x2f).w(FUNC(sorcerer_state::port2c_w));
 }
 
 static INPUT_PORTS_START(sorcerer)
@@ -490,15 +512,35 @@ void sorcerer_state::sorcererd(machine_config &config)
 	legacy_floppy_image_device::add_4drives(config, &sorcerer_floppy_interface);
 
 	FD1793(config, m_fdc2, 8_MHz_XTAL / 8);  // confirmed clock
-	m_fdc2->set_force_ready(true); // should be able to get rid of this when fdc issue is fixed
-	m_fdc2->intrq_wr_callback().set(FUNC(sorcerer_state::intrq_w));
-	m_fdc2->drq_wr_callback().set(FUNC(sorcerer_state::drq_w));
+	//m_fdc2->set_force_ready(true); // should be able to get rid of this when fdc issue is fixed
+	m_fdc2->intrq_wr_callback().set(FUNC(sorcerer_state::intrq2_w));
+	m_fdc2->drq_wr_callback().set(FUNC(sorcerer_state::drq2_w));
 	FLOPPY_CONNECTOR(config, "fdc2:0", floppies, "525qd", floppy_image_device::default_floppy_formats).enable_sound(true);
 	FLOPPY_CONNECTOR(config, "fdc2:1", floppies, "525qd", floppy_image_device::default_floppy_formats).enable_sound(true);
 
 	SOFTWARE_LIST(config, "flop_list").set_original("sorcerer_flop");
 }
 
+void sorcerer_state::sorcerera(machine_config &config)
+{
+	sorcerer(config);
+	m_maincpu->set_addrmap(AS_PROGRAM, &sorcerer_state::sorcerer_mem);
+	m_maincpu->set_addrmap(AS_IO, &sorcerer_state::sorcerera_io);
+	m_maincpu->halt_cb().set([this] (bool state) { m_halt = state; }); // 1 = halted
+
+	MCFG_MACHINE_START_OVERRIDE(sorcerer_state, sorcererd )
+
+	WD2793(config, m_fdc4, 4_MHz_XTAL / 2);
+	m_fdc4->intrq_wr_callback().set(FUNC(sorcerer_state::intrq4_w));
+	m_fdc4->drq_wr_callback().set(FUNC(sorcerer_state::intrq4_w));
+	FLOPPY_CONNECTOR(config, "fdc4:0", floppies, "525qd", floppy_image_device::default_floppy_formats).enable_sound(true);
+	FLOPPY_CONNECTOR(config, "fdc4:1", floppies, "525qd", floppy_image_device::default_floppy_formats).enable_sound(true);
+	SOFTWARE_LIST(config, "flop_list").set_original("sorcerer_flop");
+
+	// internal ram
+	config.device_remove(RAM_TAG);
+	RAM(config, RAM_TAG).set_default_size("48K");   // must have 48k to be able to boot floppy
+}
 
 void sorcerer_state::init_sorcerer()
 {
@@ -522,9 +564,10 @@ ROM_START(sorcererd)
 	ROM_REGION( 0x10000, "maincpu", ROMREGION_ERASEFF )
 	ROM_LOAD("diskboot.dat", 0xbc00, 0x0100, CRC(d82a40d6) SHA1(cd1ef5fb0312cd1640e0853d2442d7d858bc3e3b) ) // micropolis floppy boot
 	ROM_LOAD("boot.bin",     0xbf00, 0x0100, CRC(352e36bc) SHA1(99678e3cc4f315a0cf7d52aae511e405dc314190) ) // video/disk unit floppy boot
-	ROM_LOAD("exmo1-1.1e",   0xe000, 0x0800, CRC(ac924f67) SHA1(72fcad6dd1ed5ec0527f967604401284d0e4b6a1) ) /* monitor roms */
-	ROM_LOAD("exmo1-2.2e",   0xe800, 0x0800, CRC(ead1d0f6) SHA1(c68bed7344091bca135e427b4793cc7d49ca01be) )
 	ROM_LOAD("exchr-1.20d",  0xf800, 0x0400, CRC(4a7e1cdd) SHA1(2bf07a59c506b6e0c01ec721fb7b747b20f5dced) ) /* char rom */
+	ROM_SYSTEM_BIOS(0, "standard", "Standard")
+	ROMX_LOAD("exmo1-1.1e",  0xe000, 0x0800, CRC(ac924f67) SHA1(72fcad6dd1ed5ec0527f967604401284d0e4b6a1), ROM_BIOS(0) ) /* monitor roms */
+	ROMX_LOAD("exmo1-2.2e",  0xe800, 0x0800, CRC(ead1d0f6) SHA1(c68bed7344091bca135e427b4793cc7d49ca01be), ROM_BIOS(0) )
 
 	ROM_REGION( 0x0400, "proms", 0 )
 	ROM_LOAD_OPTIONAL("bruce.15b",  0x0000, 0x0020, CRC(fae922cb) SHA1(470a86844cfeab0d9282242e03ff1d8a1b2238d1) ) /* video prom type 6331 */
@@ -563,11 +606,18 @@ ROM_START(sorcerer2)
 	ROM_CONTINUE(0xe000, 0x800)
 	ROMX_LOAD("scua1.2e",    0xe800, 0x0800, CRC(aa9a6ca6) SHA1(bcaa7457a1b892ed82c1a04ee21a619faa7c1a16), ROM_BIOS(6) )
 	ROM_CONTINUE(0xe800, 0x800)
-	ROM_SYSTEM_BIOS(7, "scuamon6434", "SCUAMON64 3.4")
-	ROMX_LOAD("scua34.1e",   0xe000, 0x1000, CRC(7ff21d97) SHA1(b936cda0f2acb655fb4c1a4e7976274558543c7e), ROM_BIOS(7) )
+ROM_END
+
+ROM_START(sorcerera)
+	ROM_REGION( 0x10000, "maincpu", ROMREGION_ERASEFF )
+	//ROM_LOAD("digi14.bin",   0xd800, 0x0800, CRC(c3037503) SHA1(6e99de3dbc8d18fa310300b7fc9672c3d354eb32) ) // <----- Make into a cart
+	ROM_LOAD("exchr-1.20d",  0xf800, 0x0400, CRC(4a7e1cdd) SHA1(2bf07a59c506b6e0c01ec721fb7b747b20f5dced) ) /* char rom */
+	ROM_SYSTEM_BIOS(0, "scuamon6434", "SCUAMON64 3.4")
+	ROMX_LOAD("scua34.1e",   0xe000, 0x1000, CRC(7ff21d97) SHA1(b936cda0f2acb655fb4c1a4e7976274558543c7e), ROM_BIOS(0) )
 ROM_END
 
 /*    YEAR  NAME       PARENT    COMPAT  MACHINE    INPUT     STATE           INIT           COMPANY      FULLNAME */
 COMP( 1979, sorcerer,  0,        0,      sorcerer,  sorcerer, sorcerer_state, init_sorcerer, "Exidy Inc", "Sorcerer",                     0 )
 COMP( 1979, sorcerer2, sorcerer, 0,      sorcerer,  sorcerer, sorcerer_state, init_sorcerer, "Exidy Inc", "Sorcerer 2",                   0 )
-COMP( 1979, sorcererd, sorcerer, 0,      sorcererd, sorcerer, sorcerer_state, init_sorcerer, "Exidy Inc", "Sorcerer (with floppy disks)", 0 )
+COMP( 1979, sorcererd, sorcerer, 0,      sorcererd, sorcerer, sorcerer_state, init_sorcerer, "Exidy Inc", "Sorcerer (with Micropolis fdc)", 0 )
+COMP( 1979, sorcerera, sorcerer, 0,      sorcerera, sorcerer, sorcerer_state, init_sorcerer, "Exidy Inc", "Sorcerer (with Dreamdisk fdc)", 0 )
