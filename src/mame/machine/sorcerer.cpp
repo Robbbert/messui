@@ -248,6 +248,68 @@ WRITE8_MEMBER(sorcerer_state::port48_w)
 	m_fdc4->enmf_w(BIT(data, 6));  // also connected to unsupported 5/8 pin.
 }
 
+// ************ DIGITRIO FDC **************
+READ8_MEMBER(sorcerer_state::port34_r)
+{
+	u8 data = m_port34;
+	data |= m_fdc3->intrq_r() ? 0x80 : 0;
+	//data |= m_floppy->twosid_r() ? 0 : 0x20; // for 20cm disks only, 0=indicates the disk has 2 sides (drive has 2 heads?)
+	return data;
+}
+
+WRITE8_MEMBER(sorcerer_state::port34_w)
+{
+	m_port34 = data & 0x5f;
+	floppy_image_device *floppy = nullptr;
+
+	if (BIT(data, 0)) floppy = m_floppy30->get_device();
+	if (BIT(data, 1)) floppy = m_floppy31->get_device();
+
+	m_fdc3->set_floppy(floppy);
+
+	if (floppy)
+	{
+		floppy->mon_w(0);
+		floppy->ss_w(BIT(data, 5));
+	}
+
+	m_fdc3->dden_w(BIT(data, 6));
+	m_fdc3->set_unscaled_clock (BIT(data, 4) ? 2'000'000 : 1'000'000);
+}
+
+// ************ DIGITRIO DMA **************
+WRITE_LINE_MEMBER( sorcerer_state::busreq_w )
+{
+// since our Z80 has no support for BUSACK, we assume it is granted immediately
+	m_maincpu->set_input_line(Z80_INPUT_LINE_BUSRQ, state);
+	m_maincpu->set_input_line(INPUT_LINE_HALT, state); // do we need this? - yes
+	m_dma->bai_w(state); // tell dma that bus has been granted
+}
+
+READ8_MEMBER(sorcerer_state::memory_read_byte)
+{
+	address_space& prog_space = m_maincpu->space(AS_PROGRAM);
+	return prog_space.read_byte(offset);
+}
+
+WRITE8_MEMBER(sorcerer_state::memory_write_byte)
+{
+	address_space& prog_space = m_maincpu->space(AS_PROGRAM);
+	prog_space.write_byte(offset, data);
+}
+
+READ8_MEMBER(sorcerer_state::io_read_byte)
+{
+	address_space& prog_space = m_maincpu->space(AS_IO);
+	return prog_space.read_byte(offset);
+}
+
+WRITE8_MEMBER(sorcerer_state::io_write_byte)
+{
+	address_space& prog_space = m_maincpu->space(AS_IO);
+	prog_space.write_byte(offset, data);
+}
+
 // ************ INBUILT PORTS **************
 WRITE8_MEMBER(sorcerer_state::port_fd_w)
 {
@@ -400,7 +462,7 @@ void sorcerer_state::machine_start_common(u16 endmem)
 		break;
 	}
 
-	if (m_cart->exists())
+	if (m_cart && m_cart->exists())
 		space.install_read_handler(0xc000, 0xdfff, read8sm_delegate(FUNC(generic_slot_device::read_rom),(generic_slot_device*)m_cart));
 }
 

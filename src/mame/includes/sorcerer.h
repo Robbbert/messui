@@ -23,6 +23,7 @@
 #include "formats/sorc_cas.h"
 #include "machine/micropolis.h"
 #include "machine/wd_fdc.h"
+#include "machine/z80dma.h"
 #include "bus/generic/slot.h"
 #include "bus/generic/carts.h"
 
@@ -57,11 +58,15 @@ public:
 		, m_centronics(*this, "centronics")
 		, m_cart(*this, "cartslot")
 		, m_ram(*this, RAM_TAG)
+		, m_dma(*this, "dma")
 		, m_fdc(*this, "fdc")
 		, m_fdc2(*this, "fdc2")
+		, m_fdc3(*this, "fdc3")
 		, m_fdc4(*this, "fdc4")
 		, m_floppy20(*this, "fdc2:0")
 		, m_floppy21(*this, "fdc2:1")
+		, m_floppy30(*this, "fdc3:0")
+		, m_floppy31(*this, "fdc3:1")
 		, m_floppy40(*this, "fdc4:0")
 		, m_floppy41(*this, "fdc4:1")
 		, m_iop_config(*this, "CONFIG")
@@ -71,6 +76,7 @@ public:
 
 	void sorcerer(machine_config &config);
 	void sorcerera(machine_config &config);
+	void sorcererb(machine_config &config);
 	void sorcererd(machine_config &config);
 
 	void init_sorcerer();
@@ -85,9 +91,11 @@ private:
 
 	DECLARE_READ8_MEMBER(port_fd_r);
 	DECLARE_READ8_MEMBER(port_fe_r);
+	DECLARE_WRITE8_MEMBER(port2c_w);
+	DECLARE_READ8_MEMBER(port34_r);
+	DECLARE_WRITE8_MEMBER(port34_w);
 	DECLARE_READ8_MEMBER(port48_r);
 	DECLARE_WRITE8_MEMBER(port48_w);
-	DECLARE_WRITE8_MEMBER(port2c_w);
 	DECLARE_WRITE8_MEMBER(port_fd_w);
 	DECLARE_WRITE8_MEMBER(port_fe_w);
 	DECLARE_WRITE8_MEMBER(port_ff_w);
@@ -100,14 +108,21 @@ private:
 	TIMER_CALLBACK_MEMBER(sorcerer_reset);
 	DECLARE_SNAPSHOT_LOAD_MEMBER(snapshot_cb);
 	DECLARE_QUICKLOAD_LOAD_MEMBER(quickload_cb);
+	DECLARE_WRITE_LINE_MEMBER(busreq_w);
+	DECLARE_READ8_MEMBER(memory_read_byte);
+	DECLARE_WRITE8_MEMBER(memory_write_byte);
+	DECLARE_READ8_MEMBER(io_read_byte);
+	DECLARE_WRITE8_MEMBER(io_write_byte);
 	void machine_start_common(u16 endmem);
 	uint32_t screen_update(screen_device &screen, bitmap_ind16 &bitmap, const rectangle &cliprect);
 
+	void sorcerer_mem(address_map &map);
+	void sorcererb_mem(address_map &map);
+	void sorcererd_mem(address_map &map);
 	void sorcerer_io(address_map &map);
 	void sorcerera_io(address_map &map);
+	void sorcererb_io(address_map &map);
 	void sorcererd_io(address_map &map);
-	void sorcerer_mem(address_map &map);
-	void sorcererd_mem(address_map &map);
 
 	bool m_wait;
 	bool m_drq_off;
@@ -117,6 +132,7 @@ private:
 	uint8_t m_fe;
 	uint8_t m_keyboard_line;
 	u8 m_port48;
+	u8 m_port34;
 	const uint8_t *m_p_videoram;
 	emu_timer *m_serial_timer;
 	emu_timer *m_cassette_timer;
@@ -132,13 +148,17 @@ private:
 	required_device<clock_device> m_uart_clock;
 	required_device<rs232_port_device> m_rs232;
 	required_device<centronics_device> m_centronics;
-	required_device<generic_slot_device> m_cart;
+	optional_device<generic_slot_device> m_cart;
 	required_device<ram_device> m_ram;
+	optional_device<z80dma_device> m_dma;
 	optional_device<micropolis_device> m_fdc;
 	optional_device<fd1793_device> m_fdc2;
+	optional_device<fd1793_device> m_fdc3;
 	optional_device<wd2793_device> m_fdc4;
 	optional_device<floppy_connector> m_floppy20;
 	optional_device<floppy_connector> m_floppy21;
+	optional_device<floppy_connector> m_floppy30;
+	optional_device<floppy_connector> m_floppy31;
 	optional_device<floppy_connector> m_floppy40;
 	optional_device<floppy_connector> m_floppy41;
 	required_ioport m_iop_config;
