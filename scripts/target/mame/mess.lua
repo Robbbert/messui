@@ -1025,6 +1025,7 @@ FORMATS["TVC_CAS"] = true
 FORMATS["TVC_DSK"] = true
 FORMATS["TZX_CAS"] = true
 FORMATS["UEF_CAS"] = true
+FORMATS["UNIFLEX_DSK"] = true
 FORMATS["UPD765_DSK"] = true
 FORMATS["VDK_DSK"] = true
 FORMATS["VECTOR06_DSK"] = true
@@ -3903,6 +3904,7 @@ files {
 	MAME_DIR .. "src/mame/machine/cit101_kbd.cpp",
 	MAME_DIR .. "src/mame/machine/cit101_kbd.h",
 	MAME_DIR .. "src/mame/drivers/cit220.cpp",
+	MAME_DIR .. "src/mame/drivers/clxvme186.cpp",
 	MAME_DIR .. "src/mame/drivers/codata.cpp",
 	MAME_DIR .. "src/mame/drivers/controlid.cpp",
 	MAME_DIR .. "src/mame/drivers/cortex.cpp",
