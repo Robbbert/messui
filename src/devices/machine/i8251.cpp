@@ -80,10 +80,11 @@ void i8251_device::device_start()
 	m_rxrdy_handler.resolve_safe();
 	m_txrdy_handler.resolve_safe();
 	m_txempty_handler.resolve_safe();
+	m_syndet_handler.resolve_safe();
 	save_item(NAME(m_flags));
-	save_item(NAME(m_sync_byte_offset));
+	//save_item(NAME(m_sync_byte_offset));
 	save_item(NAME(m_sync_byte_count));
-	save_item(NAME(m_sync_bytes));
+	//save_item(NAME(m_sync_bytes));
 	save_item(NAME(m_status));
 	save_item(NAME(m_command));
 	save_item(NAME(m_mode_byte));
@@ -159,7 +160,7 @@ void i8251_device::receive_clock()
 -------------------------------------------------*/
 bool i8251_device::is_tx_enabled() const
 {
-	return BIT(m_command , 0) && !m_cts;
+	return BIT(m_command, 0) && !m_cts;
 }
 
 /*-------------------------------------------------
@@ -196,7 +197,7 @@ void i8251_device::transmit_clock()
 
 	if (is_transmit_register_empty())
 	{
-		if ((m_status & I8251_STATUS_TX_READY) == 0 && (is_tx_enabled() || (m_flags & I8251_DELAYED_TX_EN) != 0))
+		if ((m_status & I8251_STATUS_TX_READY) == 0 && (is_tx_enabled() || m_delayed_tx_en))
 			start_tx();
 		else
 			m_status |= I8251_STATUS_TX_EMPTY;
@@ -215,7 +216,7 @@ void i8251_device::transmit_clock()
 #if 0
 	/* hunt mode? */
 	/* after each bit has been shifted in, it is compared against the current sync byte */
-	if (BIT(m_command, 7))
+	if (m_hunt_on)
 	{
 		/* data matches sync byte? */
 		if (m_data == m_sync_bytes[m_sync_byte_offset])
@@ -227,8 +228,8 @@ void i8251_device::transmit_clock()
 			/* do all sync bytes match? */
 			if (m_sync_byte_offset == m_sync_byte_count)
 			{
-				/* ent hunt mode */
-				m_command &= ~(1<<7);
+				/* end hunt mode */
+				m_hunt_on = false;
 			}
 		}
 		else
@@ -301,11 +302,8 @@ void i8251_device::device_reset()
 
 	transmit_register_reset();
 	receive_register_reset();
-	m_flags = 0;
 	/* expecting mode byte */
-	m_flags |= I8251_EXPECTING_MODE;
-	/* not expecting a sync byte */
-	m_flags &= ~I8251_EXPECTING_SYNC_BYTE;
+	m_flags = I8251_NEXT_MODE;
 
 	/* no character to read by cpu */
 	/* transmitter is ready and is empty */
@@ -401,8 +399,15 @@ void i8251_device::command_w(uint8_t data)
 		// datasheet says "returns to mode format", not
 		// completely resets the chip.  behavior of DEC Rainbow
 		// backs this up.
-		m_flags |= I8251_EXPECTING_MODE;
+		m_flags = I8251_NEXT_MODE;
 	}
+
+	m_hunt_on = false;
+	if (m_sync_byte_count)
+		m_hunt_on = BIT(data, 7);
+
+	if (BIT(data, 3))
+		m_txd_handler(0);
 
 	check_for_tx_start();
 	update_rx_ready();
@@ -412,13 +417,10 @@ void i8251_device::command_w(uint8_t data)
 
 void i8251_device::mode_w(uint8_t data)
 {
-	LOG("I8251: Mode byte = %X\n", data);
+	LOG("I8251: Mode byte = %02X\n", data);
 
 	m_mode_byte = data;
 
-	/* Synchronous or Asynchronous? */
-	if ((data & 0x03) != 0)
-	{
 		/*  Asynchronous
 
 		    bit 7,6: stop bit length
@@ -442,159 +444,159 @@ void i8251_device::mode_w(uint8_t data)
 		    1 = x1
 		    2 = x16
 		    3 = x64
-		    */
+		
+		    Synchronous
 
+		    bit 7: Number of sync characters
+		    0 = 1 character
+		    1 = 2 character
+		    bit 6: Synchronous mode
+		    0 = Internal synchronisation
+		    1 = External synchronisation
+		    bit 5: parity type
+		    0 = parity odd
+		    1 = parity even
+		    bit 4: parity test enable
+		    0 = disable
+		    1 = enable
+		    bit 3,2: character length
+		    0 = 5 bits
+		    1 = 6 bits
+		    2 = 7 bits
+		    3 = 8 bits
+		    bit 1,0 = 0
+		        */
+
+	const int data_bits_count = ((data >> 2) & 0x03) + 5;
+	LOG("Character length: %d\n", data_bits_count);
+
+	parity_t parity = PARITY_NONE;
+	switch (data & 0x30)
+	{
+		case 0x20:
+			LOG("Enable ODD parity checking.\n");
+			parity = PARITY_ODD;
+			break;
+
+		case 0x30:
+			LOG("Enable EVEN parity checking.\n");
+			parity = PARITY_EVEN;
+			break;
+
+		default:
+			LOG("Disable parity check.\n");
+	}
+
+#if 0
+	/* data bits */
+	m_receive_char_length = ((data >> 2) & 0x03) + 5;
+
+	if (BIT(data, 4))
+	{
+		/* parity */
+		m_receive_char_length++;
+	}
+
+	/* stop bits */
+	m_receive_char_length++;
+
+	m_receive_flags &= ~I8251_TRANSFER_RECEIVE_SYNCHRONISED;
+	m_receive_flags |= I8251_TRANSFER_RECEIVE_WAITING_FOR_START_BIT;
+#endif
+
+	stop_bits_t stop_bits = STOP_BITS_0;
+	m_br_factor = 1;
+	m_flags = I8251_NEXT_COMMAND;
+	m_sync_byte_count = 0;
+	m_syndet_pin = false;
+
+	/* Synchronous or Asynchronous? */
+	if (data & 0x03)
+	{
 		LOG("I8251: Asynchronous operation\n");
 
-		const int data_bits_count = ((data >> 2) & 0x03) + 5;
-		LOG("Character length: %d\n", data_bits_count);
-
-		parity_t parity;
-		if (BIT(data, 4))
+		switch (data & 0xc0)
 		{
-			if (BIT(data, 5))
-			{
-				LOG("enable parity checking (even parity)\n");
-				parity = PARITY_EVEN;
-			}
-			else
-			{
-				LOG("enable parity checking (odd parity)\n");
-				parity = PARITY_ODD;
-			}
+			case 0x40:
+				stop_bits = STOP_BITS_1;
+				LOG("stop bit: 1 bit\n");
+				break;
+
+			case 0x80:
+				stop_bits = STOP_BITS_1_5;
+				LOG("stop bit: 1.5 bits\n");
+				break;
+
+			case 0xc0:
+				stop_bits = STOP_BITS_2;
+				LOG("stop bit: 2 bits\n");
+				break;
+
+			default:
+				LOG("stop bit: inhibit\n");
+				break;
 		}
-		else
-		{
-			LOG("parity check disabled\n");
-			parity = PARITY_NONE;
-		}
-
-		stop_bits_t stop_bits;
-		switch ((data >> 6) & 0x03)
-		{
-		case 0:
-		default:
-			stop_bits = STOP_BITS_0;
-			LOG("stop bit: inhibit\n");
-			break;
-
-		case 1:
-			stop_bits = STOP_BITS_1;
-			LOG("stop bit: 1 bit\n");
-			break;
-
-		case 2:
-			stop_bits = STOP_BITS_1_5;
-			LOG("stop bit: 1.5 bits\n");
-			break;
-
-		case 3:
-			stop_bits = STOP_BITS_2;
-			LOG("stop bit: 2 bits\n");
-			break;
-		}
-
 
 		set_data_frame(1, data_bits_count, parity, stop_bits);
-		receive_register_reset();
 
 		switch (data & 0x03)
 		{
-		case 1: m_br_factor = 1; break;
-		case 2: m_br_factor = 16; break;
-		case 3: m_br_factor = 64; break;
+			case 2:
+				m_br_factor = 16;
+				break;
+
+			case 3:
+				m_br_factor = 64;
+				break;
 		}
-
-		m_txc_count = 0;
-
-#if 0
-		/* data bits */
-		m_receive_char_length = (((data >> 2) & 0x03) + 5);
-
-		if (BIT(data, 4))
-		{
-			/* parity */
-			m_receive_char_length++;
-		}
-
-		/* stop bits */
-		m_receive_char_length++;
-
-		m_receive_flags &= ~I8251_TRANSFER_RECEIVE_SYNCHRONISED;
-		m_receive_flags |= I8251_TRANSFER_RECEIVE_WAITING_FOR_START_BIT;
-#endif
-		/* not expecting mode byte now */
-		m_flags &= ~I8251_EXPECTING_MODE;
-		//              m_status = I8251_STATUS_TX_EMPTY | I8251_STATUS_TX_READY;
 	}
 	else
 	{
-		/*  bit 7: Number of sync characters
-		        0 = 1 character
-		        1 = 2 character
-		        bit 6: Synchronous mode
-		        0 = Internal synchronisation
-		        1 = External synchronisation
-		        bit 5: parity type
-		        0 = parity odd
-		        1 = parity even
-		        bit 4: parity test enable
-		        0 = disable
-		        1 = enable
-		        bit 3,2: character length
-		        0 = 5 bits
-		        1 = 6 bits
-		        2 = 7 bits
-		        3 = 8 bits
-		        bit 1,0 = 0
-		        */
 		LOG("I8251: Synchronous operation\n");
 
 		/* setup for sync byte(s) */
-		m_flags |= I8251_EXPECTING_SYNC_BYTE;
-		m_sync_byte_offset = 0;
-		if (BIT(data, 7))
-		{
-			m_sync_byte_count = 1;
-		}
-		else
-		{
-			m_sync_byte_count = 2;
-		}
-
+		m_flags = BIT(data, 7) ? I8251_NEXT_SYNC2 : I8251_NEXT_SYNC1;
+		m_sync_byte_count = BIT(data, 7) ? 1 : 2;
+		set_data_frame(0, data_bits_count, parity, stop_bits);
+		m_syndet_pin = BIT(data, 6);
+		m_sync8 = 0;
+		m_sync16 = 0;
 	}
+
+	receive_register_reset();
+	m_txc_count = 0;
+
+	//              m_status = I8251_STATUS_TX_EMPTY | I8251_STATUS_TX_READY;
+}
+
+void i8251_device::sync1_w(uint8_t data)
+{
+	m_sync16 = (data << 8);
+	m_flags = I8251_NEXT_SYNC2;
+}
+
+void i8251_device::sync2_w(uint8_t data)
+{
+	if (m_sync_byte_count == 2)
+		m_sync16 |= data;
+	else
+		m_sync8 = data;
+
+	m_flags = I8251_NEXT_COMMAND;
 }
 
 void i8251_device::control_w(uint8_t data)
 {
-	if (m_flags & I8251_EXPECTING_MODE)
-	{
-		if (m_flags & I8251_EXPECTING_SYNC_BYTE)
-		{
-			LOG("I8251: Sync byte\n");
-
-			LOG("Sync byte: %02x\n", data);
-			/* store sync byte written */
-			m_sync_bytes[m_sync_byte_offset] = data;
-			m_sync_byte_offset++;
-
-			if (m_sync_byte_offset == m_sync_byte_count)
-			{
-				/* finished transfering sync bytes, now expecting command */
-				m_flags &= ~(I8251_EXPECTING_MODE | I8251_EXPECTING_SYNC_BYTE);
-				m_sync_byte_offset = 0;
-			//  m_status = I8251_STATUS_TX_EMPTY | I8251_STATUS_TX_READY;
-			}
-		}
-		else
-		{
-			mode_w(data);
-		}
-	}
+	if (m_flags == I8251_NEXT_SYNC1)
+		sync1_w(data);
 	else
-	{
+	if (m_flags == I8251_NEXT_SYNC2)
+		sync2_w(data);
+	else
+	if (m_flags == I8251_NEXT_MODE)
+		mode_w(data);
+	else
 		command_w(data);
-	}
 }
 
 
@@ -621,20 +623,15 @@ void i8251_device::data_w(uint8_t data)
 {
 	m_tx_data = data;
 
-		LOG("data_w %02x\n" , data);
+	LOG("data_w %02x\n", data);
 
 	/* writing clears */
 	m_status &=~I8251_STATUS_TX_READY;
 	update_tx_ready();
 
-		// Store state of tx enable when writing to DB buffer
-		if (is_tx_enabled()) {
-				m_flags |= I8251_DELAYED_TX_EN;
-		} else {
-				m_flags &= ~I8251_DELAYED_TX_EN;
-		}
-
-		check_for_tx_start();
+	// Store state of tx enable when writing to DB buffer
+	m_delayed_tx_en = is_tx_enabled();
+	check_for_tx_start();
 
 	/* if transmitter is active, then tx empty will be signalled */
 
@@ -685,7 +682,7 @@ uint8_t i8251_device::data_r()
 
 uint8_t i8251_device::read(offs_t offset)
 {
-	if (BIT(offset, 0))
+	if (offset)
 		return status_r();
 	else
 		return data_r();
@@ -693,7 +690,7 @@ uint8_t i8251_device::read(offs_t offset)
 
 void i8251_device::write(offs_t offset, uint8_t data)
 {
-	if (BIT(offset, 0))
+	if (offset)
 		control_w(data);
 	else
 		data_w(data);
@@ -739,6 +736,15 @@ WRITE_LINE_MEMBER(i8251_device::write_txc)
 
 		if (!m_txc)
 			transmit_clock();
+	}
+}
+
+WRITE_LINE_MEMBER(i8251_device::write_syn)
+{
+	if (m_syndet_pin && state)    // must be set as input
+	{
+		m_hunt_on = false;
+		update_rx_ready();
 	}
 }
 
