@@ -1131,6 +1131,7 @@ function linkProjects_mame_mess(_target, _subtarget)
 		"gi",
 		"gridcomp",
 		"grundy",
+		"h01x",
 		"hartung",
 		"heathkit",
 		"hec2hrp",
@@ -2296,6 +2297,13 @@ files {
 	MAME_DIR .. "src/mame/drivers/newbrain.cpp",
 	MAME_DIR .. "src/mame/includes/newbrain.h",
 	MAME_DIR .. "src/mame/video/newbrain.cpp",
+}
+
+createMESSProjects(_target, _subtarget, "h01x")
+files {
+	MAME_DIR .. "src/mame/include/h01x.h",
+	MAME_DIR .. "src/mame/drivers/h01x.cpp",
+	MAME_DIR .. "src/mame/video/h01x.cpp",
 }
 
 createMESSProjects(_target, _subtarget, "hartung")
