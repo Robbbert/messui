@@ -152,7 +152,6 @@ void mame_options::parse_one_ini(emu_options &options, const char *basename, int
 }
 
 
-
 //-------------------------------------------------
 //  populate_hashpath_from_args_and_inis
 //-------------------------------------------------
