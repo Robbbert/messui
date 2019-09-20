@@ -3219,6 +3219,8 @@ files {
 	MAME_DIR .. "src/mame/video/sgi_ge5.h",
 	MAME_DIR .. "src/mame/video/sgi_re2.cpp",
 	MAME_DIR .. "src/mame/video/sgi_re2.h",
+	MAME_DIR .. "src/mame/video/sgi_xmap2.cpp",
+	MAME_DIR .. "src/mame/video/sgi_xmap2.h",
 }
 
 createMESSProjects(_target, _subtarget, "sharp")
