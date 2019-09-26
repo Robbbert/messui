@@ -457,7 +457,6 @@ void vtech1_state::laser110(machine_config &config)
 	m_memexp->set_io_space(m_maincpu, AS_IO);
 
 	// snapshot
-	//SNAPSHOT(config, "snapshot", "vz", attotime::from_double(1.5)).set_load_callback(FUNC(vtech1_state::snapshot_cb), this).set_interface("vzsnap");
 	snapshot_image_device &snapshot(SNAPSHOT(config, "snapshot", "vz"));
 	snapshot.set_delay(attotime::from_double(2.0));
 	snapshot.set_load_callback(FUNC(vtech1_state::snapshot_cb), this);
