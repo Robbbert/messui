@@ -3392,6 +3392,7 @@ files {
 	MAME_DIR .. "src/mame/drivers/swtpc09.cpp",
 	MAME_DIR .. "src/mame/includes/swtpc09.h",
 	MAME_DIR .. "src/mame/machine/swtpc09.cpp",
+	MAME_DIR .. "src/mame/drivers/swtpc8212.cpp",
 }
 
 createMESSProjects(_target, _subtarget, "synertek")
