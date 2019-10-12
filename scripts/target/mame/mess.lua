@@ -1121,6 +1121,7 @@ function linkProjects_mame_mess(_target, _subtarget)
 		"entex",
 		"epoch",
 		"epson",
+		"ericsson",
 		"exidy",
 		"fairch",
 		"fairlight",
@@ -2183,6 +2184,13 @@ files {
 	MAME_DIR .. "src/mame/drivers/qx10.cpp",
 	MAME_DIR .. "src/mame/machine/qx10kbd.cpp",
 	MAME_DIR .. "src/mame/machine/qx10kbd.h",
+}
+
+createMESSProjects(_target, _subtarget, "ericsson")
+files {
+	MAME_DIR .. "src/mame/drivers/eispc.cpp",
+	MAME_DIR .. "src/mame/machine/eispc_kb.cpp",
+	MAME_DIR .. "src/mame/machine/eispc_kb.h",
 }
 
 createMESSProjects(_target, _subtarget, "exidy")
