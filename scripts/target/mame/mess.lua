@@ -147,6 +147,7 @@ CPUS["RII"] = true
 CPUS["BCP"] = true
 CPUS["F2MC16"] = true
 CPUS["CR16B"] = true
+CPUS["FR"] = true
 
 --------------------------------------------------
 -- specify available sound cores; some of these are
@@ -494,7 +495,7 @@ MACHINES["I8271"] = true
 MACHINES["I8279"] = true
 MACHINES["I8291A"] = true
 MACHINES["I8355"] = true
-MACHINES["IDE"] = true
+MACHINES["IDECTRL"] = true
 MACHINES["IE15"] = true
 MACHINES["IM6402"] = true
 MACHINES["INS8154"] = true
@@ -720,6 +721,7 @@ MACHINES["IOPSIO2"] = true
 MACHINES["IOPTIMER"] = true
 MACHINES["Z8038"] = true
 MACHINES["AIC565"] = true
+MACHINES["AIC580"] = true
 MACHINES["AIC6250"] = true
 MACHINES["DC7085"] = true
 MACHINES["I82357"] = true
@@ -747,6 +749,7 @@ BUSES["APRICOT_KEYBOARD"] = true
 BUSES["AMIGA_KEYBOARD"] = true
 BUSES["ARCADIA"] = true
 BUSES["ASTROCADE"] = true
+BUSES["ATA"] = true
 BUSES["BBC_FDC"] = true
 BUSES["BBC_ANALOGUE"] = true
 BUSES["BBC_EXP"] = true
@@ -806,6 +809,7 @@ BUSES["JAKKS_GAMEKEY"] = true
 BUSES["HP_OPTROM"] = true
 BUSES["HP80_OPTROM"] = true
 BUSES["HP80_IO"] = true
+BUSES["HP9825_OPTROM"] = true
 BUSES["HP9845_IO"] = true
 BUSES["KC"] = true
 BUSES["LPCI"] = true
@@ -4147,6 +4151,7 @@ files {
 	MAME_DIR .. "src/mame/drivers/talkingfb.cpp",
 	MAME_DIR .. "src/mame/drivers/tavernie.cpp",
 	MAME_DIR .. "src/mame/drivers/tecnbras.cpp",
+	MAME_DIR .. "src/mame/drivers/teleray10.cpp",
 	MAME_DIR .. "src/mame/drivers/telex1192.cpp",
 	MAME_DIR .. "src/mame/drivers/telex274.cpp",
 	MAME_DIR .. "src/mame/drivers/telex277d.cpp",
