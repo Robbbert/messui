@@ -1,5 +1,5 @@
 // license:GPL-2.0+
-// copyright-holders:Peter Trauner
+// copyright-holders:Peter Trauner, AJR
 /* TimeTop - GameKing */
 /*
   PeT mess@utanet.at 2015
@@ -101,8 +101,7 @@ void gameking_state::gameking_mem(address_map &map)
 void gameking_state::gameking3_mem(address_map &map)
 {
 	map(0x000000, 0x07ffff).rom().region("maincpu", 0);
-	map(0x800000, 0x802fff).ram();
-	map(0x804800, 0x8048ff).ram();
+	map(0x800000, 0x807fff).ram();
 }
 
 
@@ -116,6 +115,13 @@ static INPUT_PORTS_START( gameking )
 	PORT_BIT( 0x80, IP_ACTIVE_LOW, IPT_JOYSTICK_RIGHT ) //?
 	PORT_BIT( 0x20, IP_ACTIVE_LOW, IPT_JOYSTICK_DOWN )
 	PORT_BIT( 0x10, IP_ACTIVE_LOW, IPT_JOYSTICK_UP)
+INPUT_PORTS_END
+
+static INPUT_PORTS_START( gameking3 )
+	PORT_INCLUDE( gameking )
+	PORT_MODIFY("JOY")
+	PORT_BIT( 0x01, IP_ACTIVE_LOW, IPT_START) PORT_NAME("Start")
+	PORT_BIT( 0x02, IP_ACTIVE_LOW, IPT_SELECT) PORT_NAME("Select") //?
 INPUT_PORTS_END
 
 static constexpr rgb_t gameking_pens[] =
@@ -233,7 +239,7 @@ void gameking_state::init_gameking()
 TIMER_CALLBACK_MEMBER(gameking_state::gameking_timer)
 {
 	m_maincpu->set_state_int(st2xxx_device::ST_IREQ,
-		m_maincpu->state_int(st2xxx_device::ST_IREQ) | (0x016 & m_maincpu->state_int(st2xxx_device::ST_IENA)));
+		m_maincpu->state_int(st2xxx_device::ST_IREQ) | (0x052 & m_maincpu->state_int(st2xxx_device::ST_IENA)));
 	timer1->enable(false);
 	timer2->enable(true);
 	timer2->reset(m_maincpu->cycles_to_attotime(10/*?*/));
@@ -305,6 +311,7 @@ void gameking_state::gameking1(machine_config &config)
 void gameking_state::gameking3(machine_config &config)
 {
 	gameking(config);
+	m_maincpu->set_clock(8000000);
 	m_maincpu->set_addrmap(AS_DATA, &gameking_state::gameking3_mem);
 
 	screen_device &screen(*subdevice<screen_device>("screen"));
@@ -333,6 +340,6 @@ ROM_END
 CONS( 2003, gameking, 0, 0, gameking1, gameking, gameking_state, init_gameking, "TimeTop", "GameKing GM-218", MACHINE_NOT_WORKING | MACHINE_NO_SOUND )
 // the GameKing 2 (GM-219) is probably identical HW
 
-CONS( 2003, gamekin3, 0, 0, gameking3, gameking, gameking_state, init_gameking, "TimeTop", "GameKing 3",      MACHINE_NOT_WORKING | MACHINE_NO_SOUND )
+CONS( 2003, gamekin3, 0, 0, gameking3, gameking3, gameking_state, init_gameking, "TimeTop", "GameKing 3",      MACHINE_NOT_WORKING | MACHINE_NO_SOUND )
 // gameking 3: similiar cartridges, accepts gameking cartridges, gameking3 cartridges not working on gameking (illegal cartridge scroller)
 // my gameking bios backup solution might work on it
