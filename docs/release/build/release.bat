@@ -8,6 +8,7 @@ call clean.bat
 call clean.bat
 call clean.bat
 call clean.bat
+goto 64bit
 
 rem --- 32bit ---
 del messui.exe
@@ -19,6 +20,7 @@ del mess.sym
 call make32 -j4 "OSD=newui" %1 %2 %3
 if not exist mess.exe goto end
 
+:64bit
 rem --- 64bit ---
 del messui64.exe
 del messui64.sym
