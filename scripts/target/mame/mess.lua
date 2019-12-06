@@ -347,6 +347,7 @@ VIDEOS["I8244"] = true
 VIDEOS["I82730"] = true
 VIDEOS["I8275"] = true
 VIDEOS["IMS_CVC"] = true
+VIDEOS["LC7582"] = true
 --VIDEOS["M50458"] = true
 --VIDEOS["MB90082"] = true
 --VIDEOS["MB_VCU"] = true
@@ -2001,6 +2002,7 @@ files {
 createMESSProjects(_target, _subtarget, "cxg")
 files {
 	MAME_DIR .. "src/mame/drivers/cxg_ch2001.cpp",
+	MAME_DIR .. "src/mame/drivers/cxg_dominator.cpp",
 }
 
 createMESSProjects(_target, _subtarget, "cybiko")
@@ -4220,6 +4222,7 @@ files {
 	MAME_DIR .. "src/mame/drivers/tti.cpp",
 	MAME_DIR .. "src/mame/drivers/unistar.cpp",
 	MAME_DIR .. "src/mame/drivers/v6809.cpp",
+	MAME_DIR .. "src/mame/drivers/vanguardmk1.cpp",
 	MAME_DIR .. "src/mame/drivers/vd56sp.cpp",
 	MAME_DIR .. "src/mame/drivers/vector4.cpp",
 	MAME_DIR .. "src/mame/drivers/vectrix.cpp",
