@@ -8,7 +8,6 @@
 --   MESS target makefile
 --
 ---------------------------------------------------------------------------
-dofile("virtual.lua")
 
 --------------------------------------------------
 -- specify available CPU cores
@@ -201,8 +200,8 @@ SOUNDS["ASTROCADE"] = true
 SOUNDS["NAMCO_163"] = true
 SOUNDS["T6W28"] = true
 --SOUNDS["SNKWAVE"] = true
-SOUNDS["C140"] = true -- vgmplay
-SOUNDS["C352"] = true -- vgmplay
+--SOUNDS["C140"] = true
+--SOUNDS["C352"] = true
 --SOUNDS["TMS36XX"] = true
 --SOUNDS["TMS3615"] = true
 SOUNDS["TMS5110"] = true
@@ -222,10 +221,10 @@ SOUNDS["HC55516"] = true
 --SOUNDS["K005289"] = true
 --SOUNDS["K007232"] = true
 SOUNDS["K051649"] = true
-SOUNDS["K053260"] = true -- vgmplay
+--SOUNDS["K053260"] = true
 --SOUNDS["K054539"] = true
 --SOUNDS["K056800"] = true
-SOUNDS["SEGAPCM"] = true -- vgmplay
+--SOUNDS["SEGAPCM"] = true
 SOUNDS["MULTIPCM"] = true
 SOUNDS["SCSP"] = true
 SOUNDS["AICA"] = true
@@ -235,7 +234,7 @@ SOUNDS["RF5C68"] = true
 SOUNDS["QSOUND"] = true
 --SOUNDS["QS1000"] = true
 SOUNDS["SAA1099"] = true
-SOUNDS["IREMGA20"] = true
+--SOUNDS["IREMGA20"] = true
 SOUNDS["ES5503"] = true
 SOUNDS["ES5505"] = true
 SOUNDS["ES5506"] = true
@@ -1076,7 +1075,6 @@ FORMATS["ZX81_P"] = true
 -- the list of drivers
 --------------------------------------------------
 function linkProjects_mame_mess(_target, _subtarget)
-	linkProjects_mame_virtual(_target, _subtarget)
 	links {
 		"access",
 		"aci",
@@ -1357,7 +1355,6 @@ end
 
 function createProjects_mame_mess(_target, _subtarget)
 --------------------------------------------------
-	createProjects_mame_virtual(_target, _subtarget)
 -- the following files are MAME components and
 -- shared across a number of drivers
 --
