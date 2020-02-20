@@ -1390,6 +1390,7 @@ laser2c                         // 1985? Laser //c (Brazil)
 hkc8800a                        // 1984 HKC 8800A
 albert                          // Albert
 am100                           // ASEM AM100
+dodo                            // GTAC Do-Do
 
 @source:apple2e.cpp
 apple2c                         // Apr 1984 Apple //c
@@ -15743,6 +15744,7 @@ gnw_mickdon                     // Nintendo
 gnw_octopus                     // Nintendo
 gnw_opanic                      // Nintendo
 gnw_pchute                      // Nintendo
+gnw_pinball                     // Nintendo
 gnw_popeye                      // Nintendo
 gnw_rshower                     // Nintendo
 gnw_sbuster                     // Nintendo
