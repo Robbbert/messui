@@ -767,7 +767,7 @@ saturn.cpp
 savia84.cpp
 //sb8085.cpp
 //sbc6510.cpp
-//sbrain.cpp
+sbrain.cpp
 sc2.cpp
 //scopus.cpp
 scorpion.cpp
