@@ -138,6 +138,8 @@ CPUS["HPC"] = true
 --CPUS["BCP"] = true
 --CPUS["CR16B"] = true
 CPUS["FR"] = true
+CPUS["UPD78K"] = true
+CPUS["KS0164"] = true
 
 --------------------------------------------------
 -- specify available sound cores
@@ -1670,6 +1672,7 @@ files {
 	MAME_DIR .. "src/mame/drivers/exprraid.cpp",
 	MAME_DIR .. "src/mame/includes/exprraid.h",
 	MAME_DIR .. "src/mame/video/exprraid.cpp",
+	MAME_DIR .. "src/mame/drivers/ffantasy_ms.cpp",
 	MAME_DIR .. "src/mame/drivers/firetrap.cpp",
 	MAME_DIR .. "src/mame/includes/firetrap.h",
 	MAME_DIR .. "src/mame/video/firetrap.cpp",
@@ -2417,6 +2420,7 @@ files {
 	MAME_DIR .. "src/mame/video/jailbrek.cpp",
 	MAME_DIR .. "src/mame/drivers/junofrst.cpp",
 	MAME_DIR .. "src/mame/drivers/konamigq.cpp",
+	MAME_DIR .. "src/mame/drivers/konamigs.cpp",
 	MAME_DIR .. "src/mame/drivers/konamigv.cpp",
 	MAME_DIR .. "src/mame/drivers/konamigx.cpp",
 	MAME_DIR .. "src/mame/includes/konamigx.h",
@@ -2669,6 +2673,7 @@ files {
 	MAME_DIR .. "src/mame/drivers/merit.cpp",
 	MAME_DIR .. "src/mame/drivers/merit3xx.cpp",
 	MAME_DIR .. "src/mame/drivers/meritm.cpp",
+	MAME_DIR .. "src/mame/drivers/merits.cpp",
 	MAME_DIR .. "src/mame/drivers/mtouchxl.cpp",
 	MAME_DIR .. "src/mame/drivers/pubtimed.cpp",
 	MAME_DIR .. "src/mame/machine/at.h",
@@ -2819,6 +2824,8 @@ files {
 	MAME_DIR .. "src/mame/audio/galaxian.cpp",
 	MAME_DIR .. "src/mame/audio/galaxian.h",
 	MAME_DIR .. "src/mame/video/galaxian.cpp",
+	MAME_DIR .. "src/mame/audio/nl_konami.h",
+	MAME_DIR .. "src/mame/audio/nl_konami.cpp",
 	MAME_DIR .. "src/mame/drivers/galaxold.cpp",
 	MAME_DIR .. "src/mame/includes/galaxold.h",
 	MAME_DIR .. "src/mame/machine/galaxold.cpp",
@@ -3386,6 +3393,8 @@ files {
 	MAME_DIR .. "src/mame/drivers/y2.cpp",
 	MAME_DIR .. "src/mame/video/powervr2.cpp",
 	MAME_DIR .. "src/mame/video/powervr2.h",
+	MAME_DIR .. "src/mame/machine/gunsense.cpp",
+	MAME_DIR .. "src/mame/machine/gunsense.h",
 	MAME_DIR .. "src/mame/machine/naomi.cpp",
 	MAME_DIR .. "src/mame/machine/naomig1.cpp",
 	MAME_DIR .. "src/mame/machine/naomig1.h",
@@ -3401,10 +3410,14 @@ files {
 	MAME_DIR .. "src/mame/machine/naomim2.h",
 	MAME_DIR .. "src/mame/machine/naomim4.cpp",
 	MAME_DIR .. "src/mame/machine/naomim4.h",
+	MAME_DIR .. "src/mame/machine/gdrom.cpp",
+	MAME_DIR .. "src/mame/machine/gdrom.h",
 	MAME_DIR .. "src/mame/machine/m3comm.cpp",
 	MAME_DIR .. "src/mame/machine/m3comm.h",
 	MAME_DIR .. "src/mame/machine/315-5881_crypt.cpp",
 	MAME_DIR .. "src/mame/machine/315-5881_crypt.h",
+	MAME_DIR .. "src/mame/machine/315-6154.cpp",
+	MAME_DIR .. "src/mame/machine/315-6154.h",
 	MAME_DIR .. "src/mame/machine/awboard.cpp",
 	MAME_DIR .. "src/mame/machine/awboard.h",
 	MAME_DIR .. "src/mame/machine/mie.cpp",
@@ -3452,6 +3465,8 @@ files {
 	MAME_DIR .. "src/mame/drivers/segas16b.cpp",
 	MAME_DIR .. "src/mame/includes/segas16b.h",
 	MAME_DIR .. "src/mame/video/segas16b.cpp",
+	MAME_DIR .. "src/mame/audio/nl_segas16b.cpp",
+	MAME_DIR .. "src/mame/audio/nl_segas16b.h",
 	MAME_DIR .. "src/mame/drivers/segas18.cpp",
 	MAME_DIR .. "src/mame/includes/segas18.h",
 	MAME_DIR .. "src/mame/video/segas18.cpp",
@@ -3880,6 +3895,7 @@ files {
 	MAME_DIR .. "src/mame/drivers/darius.cpp",
 	MAME_DIR .. "src/mame/includes/darius.h",
 	MAME_DIR .. "src/mame/video/darius.cpp",
+	MAME_DIR .. "src/mame/drivers/dinoking.cpp",
 	MAME_DIR .. "src/mame/drivers/exzisus.cpp",
 	MAME_DIR .. "src/mame/includes/exzisus.h",
 	MAME_DIR .. "src/mame/video/exzisus.cpp",
@@ -4926,6 +4942,7 @@ files {
 	MAME_DIR .. "src/mame/video/shangkid.cpp",
 	MAME_DIR .. "src/mame/drivers/skeetsht.cpp",
 	MAME_DIR .. "src/mame/drivers/skimaxx.cpp",
+	MAME_DIR .. "src/mame/drivers/skopro.cpp",
 	MAME_DIR .. "src/mame/drivers/skyarmy.cpp",
 	MAME_DIR .. "src/mame/drivers/skylncr.cpp",
 	MAME_DIR .. "src/mame/drivers/sliver.cpp",
@@ -4950,6 +4967,7 @@ files {
 	MAME_DIR .. "src/mame/drivers/taxidriv.cpp",
 	MAME_DIR .. "src/mame/includes/taxidriv.h",
 	MAME_DIR .. "src/mame/video/taxidriv.cpp",
+	MAME_DIR .. "src/mame/drivers/teamjocs.cpp",
 	MAME_DIR .. "src/mame/drivers/thayers.cpp",
 	MAME_DIR .. "src/mame/drivers/thedeep.cpp",
 	MAME_DIR .. "src/mame/includes/thedeep.h",
@@ -4993,8 +5011,6 @@ files {
 	MAME_DIR .. "src/mame/drivers/wms.cpp",
 	MAME_DIR .. "src/mame/drivers/xtom3d.cpp",
 	MAME_DIR .. "src/mame/drivers/xyonix.cpp",
-	MAME_DIR .. "src/mame/includes/xyonix.h",
-	MAME_DIR .. "src/mame/video/xyonix.cpp",
 	MAME_DIR .. "src/mame/drivers/yuvomz80.cpp",
 }
 end

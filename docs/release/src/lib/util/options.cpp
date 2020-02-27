@@ -15,10 +15,10 @@
 #include <locale>
 #include <string>
 
-#include <assert.h>
-#include <ctype.h>
-#include <stdarg.h>
-#include <stdlib.h>
+#include <cassert>
+#include <cctype>
+#include <cstdarg>
+#include <cstdlib>
 
 
 const int core_options::MAX_UNADORNED_OPTIONS;
@@ -424,15 +424,6 @@ const char *core_options::simple_entry::maximum() const noexcept
 //**************************************************************************
 
 //-------------------------------------------------
-//  core_options - constructor
-//-------------------------------------------------
-
-core_options::core_options()
-{
-}
-
-
-//-------------------------------------------------
 //  ~core_options - destructor
 //-------------------------------------------------
 
@@ -521,7 +512,7 @@ void core_options::add_entry(const options_entry &opt, bool override_existing)
 	{
 		for (const std::string &name : names)
 		{
-			existing_entry = get_entry(name.c_str());
+			existing_entry = get_entry(name);
 			if (existing_entry)
 				break;
 		}
@@ -658,7 +649,7 @@ void core_options::parse_command_line(const std::vector<std::string> &args, int 
 		// special case - collect unadorned arguments after commands into a special place
 		if (is_unadorned && !m_command.empty())
 		{
-			m_command_arguments.push_back(std::move(args[arg]));
+			m_command_arguments.push_back(args[arg]);
 			command_argument_processed();
 			continue;
 		}

@@ -1,6 +1,6 @@
-3do.cpp
+//3do.cpp
 4004clk.cpp
-4dpi.cpp
+//4dpi.cpp
 68ksbc.cpp
 a2600.cpp
 a5105.cpp

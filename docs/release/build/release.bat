@@ -22,20 +22,13 @@ if not exist mess.exe goto end
 
 :64bit
 rem --- 64bit ---
-del messui64.exe
-del messui64.sym
-call make64 -j4 "OSD=messui" %1 %2 %3
+call makee.bat
 if not exist messui64.exe goto end
-del mess64.exe
-del mess64.sym
-call make64 -j4  "OSD=newui" %1 %2 %3
+call maker.bat
 if not exist mess64.exe goto end
 
 cls
 echo Compile was successful.
 echo.
-echo 7Z up mess and messui;
-echo 7Z up mess64 and messui64;
-echo each must include license stuff.
 
 :end
