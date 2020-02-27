@@ -36,6 +36,7 @@
 1945kiiin                       // (c) 2000 Oriental
 1945kiiio                       // (c) 1999 Oriental
 flagrall                        // ?
+slspirit                        // (c) 1999 Promat
 
 @source:20pacgal.cpp
 20pacgal                        // (c) 2000 Ver 1.08
@@ -10493,6 +10494,9 @@ ccmk1                           // Chess Champion MK I
 cmpchess
 cncchess
 
+@source:compmahj.cpp
+compmahj			// 1987 Nintendo Computer Mahjong
+
 @source:compucolor.cpp
 compclr2                        //
 
@@ -10504,6 +10508,8 @@ comx35n                         //
 comx35p                         //
 
 @source:conchess.cpp
+concply
+concplyv
 concstd
 
 @source:concept.cpp
@@ -15039,6 +15045,8 @@ nc96f                           // (c) 1996 Amcoe
 nc96g                           // (c) 1996 Amcoe
 nc96h                           // (c) 1996 Amcoe
 nc96i                           // (c) 1996 Amcoe
+nc96j                           // (c) 1996 Amcoe
+nc96k                           // (c) 1996 Amcoe
 nc96txt                         // (c) 2000 Amcoe
 ncb3                            // (c) 199? Dyna Electronics
 nfb96                           // (c) 1996 Amcoe
@@ -15463,8 +15471,9 @@ dblpointd                       // (c) 1995 Dong Bang Electron
 gumbo                           // (c) 1994 Min Corp.
 msbingo                         // (C) 1994 Min Corp.
 mspuzzle                        // (c) 1994 Min Corp.
+mspuzzlea                       // (c) 1994 Min Corp.
+mspuzzleb                       // (c) 1994 Min Corp.
 mspuzzleg                       // (c) 1994 Min Corp.
-mspuzzlen                       // (c) 1994 Min Corp.
 
 @source:gunbustr.cpp
 gunbustr                        // D27 (c) 1992 Taito Corporation Japan (World)
@@ -18667,6 +18676,13 @@ kontest                         // GX800 (c) 198? (Japan)
 
 @source:kopunch.cpp
 kopunch                         // 834-0103 (c) 1981 Sega
+
+@source:korgm1.cpp
+korgm1                          //
+korgm1ex                        //
+korgm1p1                        //
+korgm1r                         //
+korgm1rex                       //
 
 @source:kramermc.cpp
 kramermc                        // 1987 Kramer MC
@@ -29925,6 +29941,7 @@ mvme162                         // (c) 1993 Motorola
 280zzzap                        // 610 [1976]
 blueshrk                        // 742 [1978]
 blueshrkmr                      // Model Racing bootleg
+blueshrkmr2                     // Model Racing bootleg
 boothill                        // 612 [1977]
 bowler                          // 730 [1978] Midway
 checkmat                        // 615 [1977]
@@ -34504,6 +34521,11 @@ d110                            //
 cm32l                           //
 mt32                            //
 
+@source:roland_r8.cpp
+r8                              //
+r8m                             //
+r8mk2                           //
+
 @source:roland_sc55.cpp
 sc55                            // 1991 Sound Canvas SC-55
 
@@ -37111,6 +37133,7 @@ tvtchspd
 lexizeus                        // Lexibook
 lexiseal                        //
 discpal
+vgcaplet
 
 @source:spg2xx_mysprtch.cpp
 mysprtch
