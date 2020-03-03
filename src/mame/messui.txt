@@ -49,7 +49,7 @@ altair.cpp
 //altos2.cpp
 altos5.cpp
 //altos486.cpp
-altos8600.cpp
+//altos8600.cpp
 //am1000.cpp
 amico2k.cpp
 amiga.cpp
