@@ -49,5 +49,11 @@ Information about the MAME content can be found at https://github.com/mamedev/ma
 
 Information about the MAME license particulars and disclaimers can be found at https://github.com/mamedev/mame/blob/master/LICENSE.md
 
+<<<<<<< HEAD
 Information about the WINUI portion can be found at https://github.com/Robbbert/mameui/blob/master/docs/winui_license.txt
 
+=======
+    You should have received a copy of the GNU General Public License along
+    with this program; if not, write to the Free Software Foundation, Inc.,
+    51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
+>>>>>>> upstream/master
