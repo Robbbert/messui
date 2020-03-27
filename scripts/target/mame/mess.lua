@@ -2939,6 +2939,8 @@ files {
 createMESSProjects(_target, _subtarget, "news_r3k")
 files {
 	MAME_DIR .. "src/mame/drivers/news_r3k.cpp",
+	MAME_DIR .. "src/mame/machine/dmac_0448.cpp",
+	MAME_DIR .. "src/mame/machine/dmac_0448.h",
 	MAME_DIR .. "src/mame/machine/news_kbd.cpp",
 	MAME_DIR .. "src/mame/machine/news_kbd.h",
 }
@@ -3887,6 +3889,7 @@ files {
 	MAME_DIR .. "src/mame/drivers/spg2xx_digimake.cpp",
 	MAME_DIR .. "src/mame/drivers/spg2xx_jakks.cpp",
 	MAME_DIR .. "src/mame/drivers/spg2xx_jakks_gkr.cpp",
+	MAME_DIR .. "src/mame/drivers/spg2xx_jakks_sharp.cpp",
 	MAME_DIR .. "src/mame/drivers/spg2xx_jakks_tvtouch.cpp",
 	MAME_DIR .. "src/mame/drivers/spg2xx_zone.cpp",
 	MAME_DIR .. "src/mame/drivers/spg2xx_zone_32bit.cpp",
@@ -4128,6 +4131,7 @@ files {
 	MAME_DIR .. "src/mame/drivers/ymmu50.cpp",
 	MAME_DIR .. "src/mame/drivers/ymmu80.cpp",
 	MAME_DIR .. "src/mame/drivers/ymmu100.cpp",
+	MAME_DIR .. "src/mame/drivers/ymtx81z.cpp",
 	MAME_DIR .. "src/mame/drivers/ymvl70.cpp",
 	MAME_DIR .. "src/mame/drivers/fb01.cpp",
 	MAME_DIR .. "src/mame/drivers/tg100.cpp",

@@ -811,10 +811,10 @@ WRITE32_MEMBER(archimedes_state::archimedes_ioc_w)
 							case 0x18: // latch B
 								/*
 								---- x--- floppy controller reset
+								---x ---- printer strobe
 								*/
 								m_fdc->dden_w(BIT(data, 1));
-								if (!(data & 8))
-									m_fdc->soft_reset();
+								m_fdc->mr_w(BIT(data, 3));
 								if(data & ~0xa)
 									printf("%02x Latch B\n",data);
 								return;
