@@ -672,6 +672,7 @@ MACHINES["TUBE"] = true
 MACHINES["UPD1990A"] = true
 --MACHINES["UPD4992"] = true
 MACHINES["UPD4701"] = true
+MACHINES["UPD7001"] = true
 MACHINES["UPD7002"] = true
 --MACHINES["UPD7004"] = true
 MACHINES["UPD71071"] = true
@@ -3316,8 +3317,9 @@ files {
 	MAME_DIR .. "src/mame/drivers/saitek_mark5.cpp",
 	MAME_DIR .. "src/mame/drivers/saitek_prschess.cpp",
 	MAME_DIR .. "src/mame/drivers/saitek_risc2500.cpp",
-	MAME_DIR .. "src/mame/includes/saitek_stratos.h",
+	MAME_DIR .. "src/mame/drivers/saitek_schess.cpp",
 	MAME_DIR .. "src/mame/drivers/saitek_ssystem3.cpp",
+	MAME_DIR .. "src/mame/includes/saitek_stratos.h",
 	MAME_DIR .. "src/mame/drivers/saitek_stratos.cpp",
 	MAME_DIR .. "src/mame/drivers/saitek_corona.cpp", -- subdriver of saitek_stratos
 	MAME_DIR .. "src/mame/drivers/saitek_superstar.cpp",
