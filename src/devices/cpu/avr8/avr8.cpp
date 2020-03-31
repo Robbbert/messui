@@ -1164,15 +1164,15 @@ void avr8_device::timer0_tick()
 		break;
 
 		case WGM02_FAST_PWM:
-//		printf("WGM02_FAST_PWM: Unimplemented timer#0 waveform generation mode\n");
+		printf("WGM02_FAST_PWM: Unimplemented timer#0 waveform generation mode\n");
 		break;
 
 		case WGM02_PWM_PC_CMP:
-//		printf("WGM02_PWM_PC_CMP: Unimplemented timer#0 waveform generation mode\n");
+		printf("WGM02_PWM_PC_CMP: Unimplemented timer#0 waveform generation mode\n");
 		break;
 
 		case WGM02_FAST_PWM_CMP:
-//		printf("WGM02_FAST_PWM_CMP: Unimplemented timer#0 waveform generation mode\n");
+		printf("WGM02_FAST_PWM_CMP: Unimplemented timer#0 waveform generation mode\n");
 		break;
 
 		default:
@@ -1672,22 +1672,22 @@ void avr8_device::timer4_tick()
 		case 2: /* Non-inverting mode */
 			if (count == m_timer_top[4]){
 			//Clear OC0B
-//			printf("[2] Clear OC0B\n");
+			printf("[2] Clear OC0B\n");
 			m_io->write_byte(AVR8_IO_PORTG, m_io->read_byte(AVR8_IO_PORTG) & ~(1 << 5));
 			} else if (count == 0){
 			//Set OC0B
-//			printf("[2] Set OC0B\n");
+			printf("[2] Set OC0B\n");
 			m_io->write_byte(AVR8_IO_PORTG, m_io->read_byte(AVR8_IO_PORTG) | (1 << 5));
 			}
 			break;
 		case 3: /* Inverting mode */
 			if (count == m_timer_top[4]){
 			//Set OC0B
-//			printf("[3] Set OC0B\n");
+			printf("[3] Set OC0B\n");
 			m_io->write_byte(AVR8_IO_PORTG, m_io->read_byte(AVR8_IO_PORTG) | (1 << 5));
 			} else if (count == 0){
 			//Clear OC0B
-//			printf("[3] Clear OC0B\n");
+			printf("[3] Clear OC0B\n");
 			m_io->write_byte(AVR8_IO_PORTG, m_io->read_byte(AVR8_IO_PORTG) & ~(1 << 5));
 			}
 			break;
@@ -1735,7 +1735,7 @@ void avr8_device::update_timer_clock_source(uint8_t t, uint8_t clock_select)
 	if (VERBOSE_LEVEL) printf("update_timer_clock_source: t=%d cs=%d\n", t, clock_select);
 
 	if (m_timer_prescale[t] == 0xFFFF){
-//	printf("[Timer #%d]: update_timer_clock_source: External trigger mode not implemented yet\n", t);
+	printf("[Timer #%d]: update_timer_clock_source: External trigger mode not implemented yet\n", t);
 	m_timer_prescale[t] = 0;
 	}
 
@@ -1751,7 +1751,7 @@ void avr8_device::changed_tccr3a(uint8_t data)
 
 void avr8_device::changed_tccr3b(uint8_t data)
 {
-//	printf("IMPLEMENT-ME: changed_tccr4b: data=0x%02X\n", data);
+	printf("IMPLEMENT-ME: changed_tccr4b: data=0x%02X\n", data);
 }
 
 void avr8_device::changed_tccr3c(uint8_t data)
@@ -1759,7 +1759,7 @@ void avr8_device::changed_tccr3c(uint8_t data)
 //  uint8_t oldtccr = AVR8_TCCR3C;
 //  uint8_t newtccr = data;
 //  uint8_t changed = newtccr ^ oldtccr;
-//	printf("IMPLEMENT-ME: changed_tccr3c: data=0x%02X\n", data);
+	printf("IMPLEMENT-ME: changed_tccr3c: data=0x%02X\n", data);
 
 //  AVR8_TCCR3C = data;
 
@@ -1782,7 +1782,7 @@ void avr8_device::changed_tccr4a(uint8_t data)
 
 void avr8_device::changed_tccr4b(uint8_t data)
 {
-//	printf("changed_tccr4b: data=0x%02X\n", data);
+	printf("changed_tccr4b: data=0x%02X\n", data);
 
 	uint8_t oldtccr = AVR8_TCCR4B;
 	uint8_t newtccr = data;
@@ -1899,7 +1899,7 @@ void avr8_device::timer5_tick()
 		break;
 
 		default:
-//			printf("Timer #5: Unknown waveform generation mode: %02x\n", AVR8_WGM5);
+			printf("Timer #5: Unknown waveform generation mode: %02x\n", AVR8_WGM5);
 			break;
 	}
 
@@ -1924,7 +1924,7 @@ void avr8_device::changed_tccr5a(uint8_t data)
 
 void avr8_device::changed_tccr5b(uint8_t data)
 {
-//	printf("changed_tccr5b: data=0x%02X\n", data);
+	printf("changed_tccr5b: data=0x%02X\n", data);
 
 	uint8_t oldtccr = AVR8_TCCR5B;
 	uint8_t newtccr = data;
@@ -2859,7 +2859,7 @@ READ8_MEMBER( avr8_device::regs_r )
 			return m_r[offset];
 
 		default:
-//			printf("[%08X] AVR8: Unknown Register Read: 0x%03X\n", m_shifted_pc, offset);
+			printf("[%08X] AVR8: Unknown Register Read: 0x%03X\n", m_shifted_pc, offset);
 //          machine().debug_break();
 			return 0;
 	}
