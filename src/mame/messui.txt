@@ -204,7 +204,7 @@ dai.cpp
 //daruma.cpp
 datum.cpp
 dbox.cpp
-dccons.cpp
+//dccons.cpp
 //dcebridge.cpp
 //dct11em.cpp
 debut.cpp
