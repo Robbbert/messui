@@ -17,9 +17,9 @@ accomm.cpp
 //acd.cpp
 //aceex.cpp
 aci_boris.cpp
-aci_borisdpl.cpp
+//aci_borisdpl.cpp
 aci_ggm.cpp
-aci_prodigy.cpp
+//aci_prodigy.cpp
 acrnsys1.cpp
 acrnsys.cpp
 //actions_atj2279b.cpp
@@ -36,7 +36,7 @@ aim65.cpp
 //aim65_40.cpp
 //akaiax80.cpp
 //alcat7100.cpp
-alesis.cpp
+//alesis.cpp
 //alesis_qs.cpp
 //alfaskop41xx.cpp
 //alphajuno.cpp
@@ -166,7 +166,7 @@ clcd.cpp
 clickstart.cpp
 //clxvme186.cpp
 cm1800.cpp
-cmi.cpp
+//cmi.cpp
 cms.cpp
 coco12.cpp
 coco3.cpp
@@ -175,7 +175,7 @@ coleco.cpp
 compc.cpp
 compis.cpp
 //compmahj.cpp
-compuchess.cpp
+//compuchess.cpp
 compucolor.cpp
 //comquest.cpp
 comx35.cpp
@@ -255,10 +255,10 @@ emma2.cpp
 ep64.cpp
 //epic14e.cpp
 //esprit.cpp
-esq1.cpp
-esq5505.cpp
+//esq1.cpp
+//esq5505.cpp
 //esqasr.cpp
-esqkt.cpp
+//esqkt.cpp
 //esqmr.cpp
 et3400.cpp
 eti660.cpp
@@ -286,7 +286,7 @@ fidel_cc10.cpp
 fidel_cc7.cpp
 fidel_chesster.cpp
 fidel_csc.cpp
-fidel_dames.cpp
+//fidel_dames.cpp
 fidel_desdis.cpp
 fidel_eag68k.cpp
 fidel_elite.cpp
@@ -400,7 +400,7 @@ imsai.cpp
 instruct.cpp
 //inteladv.cpp
 intellec4.cpp
-intellect02.cpp
+//intellect02.cpp
 interact.cpp
 interpro.cpp
 intv.cpp
@@ -489,7 +489,7 @@ mac.cpp
 mac128.cpp
 //macpci.cpp
 magnum.cpp
-mattelchess.cpp
+//mattelchess.cpp
 mbc200.cpp
 mbc55x.cpp
 mbee.cpp
@@ -773,10 +773,10 @@ rx78.cpp
 rzone.cpp
 sacstate.cpp
 //sage2.cpp
-saitek_chesstrv.cpp
+//saitek_chesstrv.cpp
 saitek_corona.cpp
-saitek_cp2000.cpp
-saitek_delta1.cpp
+//saitek_cp2000.cpp
+//saitek_delta1.cpp
 saitek_mark5.cpp
 saitek_prschess.cpp
 saitek_risc2500.cpp
