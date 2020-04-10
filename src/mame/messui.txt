@@ -944,9 +944,9 @@ tmc1800.cpp
 tmc600.cpp
 tosh1000.cpp
 //tomy_princ.cpp
-tr175.cpp
-tranz330.cpp
-tricep.cpp
+//tr175.cpp
+//tranz330.cpp
+//tricep.cpp
 trkfldch.cpp
 trs80.cpp
 //trs80dt1.cpp
