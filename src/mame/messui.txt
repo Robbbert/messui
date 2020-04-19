@@ -420,7 +420,7 @@ isbc8010.cpp
 iskr103x.cpp
 //itc4.cpp
 //itt1700.cpp
-//itt3030.cpp
+itt3030.cpp
 //itt9216.cpp
 //jade.cpp
 jazz.cpp

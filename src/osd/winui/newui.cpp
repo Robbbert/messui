@@ -3428,12 +3428,13 @@ static bool invoke_command(HWND wnd, UINT command)
 				opt.specify(slot_map[command].optname.c_str());
 				window->machine().schedule_hard_reset();
 			}
+			else
 			if ((command >= ID_SWPART) && (command < ID_SWPART + 100))
 			{
 				int mapindex = command - ID_SWPART;
 				img = part_map[mapindex].img;
 				std::string instance = std::string(img->software_list_name()) + ":" + std::string(img->basename()) + ":" + part_map[mapindex].part_name;
-				printf("Loading index %X : %s *******\n",mapindex,instance.c_str());
+				//printf("Loading index %X : %s *******\n",mapindex,instance.c_str());
 				img->load_software(instance);
 			}
 			else
