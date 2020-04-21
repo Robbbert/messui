@@ -278,6 +278,14 @@ static char *ui_utf8_from_wstring(const WCHAR *wstring)
 	return result;
 }
 
+// This function truncates a long string, replacing the end with ...
+static std::string longdots(std::string incoming, int howmany)
+{
+	std::string outgoing = incoming;
+	if (incoming.length() > howmany)
+		outgoing = incoming.substr(0, howmany) + "...";
+	return outgoing;
+}
 
 
 //============================================================
@@ -2834,7 +2842,7 @@ static void prepare_menus(HWND wnd)
 								// if not, we simply display "part_name"; if yes we display "part_name (part_id)"
 								std::string menu_part_name(swpart.name());
 								if (swpart.feature("part_id"))
-									menu_part_name.append(": ").append(swpart.feature("part_id"));
+									menu_part_name.append(": ").append(longdots(swpart.feature("part_id"),50));
 								win_append_menu_utf8(sub_menu, MF_STRING, new_switem + ID_SWPART, menu_part_name.c_str());
 								part_map[new_switem] = part_data{ swpart.name(), &img };
 								new_switem++;
@@ -2896,7 +2904,7 @@ static void prepare_menus(HWND wnd)
 					filename.append(" (").append(tmp->name());
 					// also check if this part has a specific part_id (e.g. "Map Disc", "Bonus Disc", etc.), and in case display it
 					if (img.get_feature("part_id"))
-						filename.append(": ").append(img.get_feature("part_id"));
+						filename.append(": ").append(longdots(img.get_feature("part_id"),50));
 					filename.append(")");
 				}
 			}
@@ -2905,7 +2913,7 @@ static void prepare_menus(HWND wnd)
 			filename.assign("---");
 
 		// Get instance names instead, like Media View, and mame's File Manager
-		std::string instance = img.instance_name() + std::string(" (") + img.brief_instance_name() + std::string("): ") + filename;
+		std::string instance = img.instance_name() + std::string(" (") + img.brief_instance_name() + std::string("): ") + longdots(filename,127);
 		std::transform(instance.begin(), instance.begin()+1, instance.begin(), ::toupper); // turn first char to uppercase
 		win_append_menu_utf8(device_menu, MF_POPUP, (UINT_PTR)sub_menu, instance.c_str());
 
