@@ -281,7 +281,14 @@ static char *ui_utf8_from_wstring(const WCHAR *wstring)
 // This function truncates a long string, replacing the end with ...
 static std::string longdots(std::string incoming, uint16_t howmany)
 {
+	// Firstly, find out if it's multi-line text
+	size_t i = incoming.find_first_of("\n");
+	// If so, truncate at first newline
+	if (i != std::string::npos)
+		incoming = incoming.substr(0, i);
+	// Now assume all is ok
 	std::string outgoing = incoming;
+	// But if it's too long, replace the excess with dots
 	if ((howmany > 5) && (incoming.length() > howmany))
 		outgoing = incoming.substr(0, howmany) + "...";
 	return outgoing;
@@ -2839,7 +2846,7 @@ static void prepare_menus(HWND wnd)
 						{
 							if (flist.name() == "usage" && !usage_shown)
 							{
-								std::string usage = "Usage: " + longdots(flist.value(),255);
+								std::string usage = "Usage: " + longdots(flist.value(),200);
 								win_append_menu_utf8(sub_menu, MF_STRING, 0, usage.c_str());
 								win_append_menu_utf8(sub_menu, MF_SEPARATOR, 0, NULL);
 								usage_shown = true;
