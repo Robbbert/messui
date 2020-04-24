@@ -315,7 +315,7 @@ gamate.cpp
 gamecom.cpp
 //gamecube.cpp
 gameking.cpp
-//gamemachine.cpp
+gamemachine.cpp
 gamepock.cpp
 gb.cpp
 gba.cpp
@@ -401,7 +401,7 @@ imsai.cpp
 instruct.cpp
 //inteladv.cpp
 intellec4.cpp
-//intellect02.cpp
+intellect02.cpp
 interact.cpp
 interpro.cpp
 intv.cpp
@@ -491,7 +491,7 @@ mac128.cpp
 //macpci.cpp
 //magiceyes_pollux_vr3520f.cpp
 magnum.cpp
-//mattelchess.cpp
+mattelchess.cpp
 mbc200.cpp
 mbc55x.cpp
 mbee.cpp
@@ -905,9 +905,9 @@ sym1.cpp
 //sys9002.cpp
 //systec.cpp
 //systel1.cpp
-//talkingbb.cpp
-//talkingfb.cpp
-//tamag1.cpp
+talkingbb.cpp
+talkingfb.cpp
+tamag1.cpp
 tandy1t.cpp
 tandy2k.cpp
 tasc.cpp
