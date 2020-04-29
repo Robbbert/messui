@@ -70,14 +70,12 @@ namespace analog
 
 	NETLIB_OBJECT(twoterm)
 	{
+		// FIXME locate use case of owned = true and eliminate them if possible
 		NETLIB_CONSTRUCTOR_EX(twoterm, bool terminals_owned = false)
 		, m_P(bselect(terminals_owned, owner, *this), (terminals_owned ? name + "." : "") + "1", &m_N)
 		, m_N(bselect(terminals_owned, owner, *this), (terminals_owned ? name + "." : "") + "2", &m_P)
 		{
 		}
-
-		terminal_t m_P;
-		terminal_t m_N;
 
 		//NETLIB_UPDATE_TERMINALSI() { }
 		//NETLIB_RESETI() { }
@@ -91,7 +89,7 @@ namespace analog
 		void solve_now() const;
 
 		template <typename F>
-		void change_state(F f, netlist_time delay = netlist_time::quantum())
+		void change_state(F f, netlist_time delay = netlist_time::quantum()) const
 		{
 			auto *solv(solver());
 			if (solv)
@@ -128,7 +126,42 @@ namespace analog
 			m_N.set_go_gt_I(a21, a22, rhs2);
 		}
 
+		/// \brief Get a const reference to the m_P terminal
+		///
+		/// This is typically called during initialization to connect
+		/// terminals.
+		///
+		/// \returns Reference to m_P terminal.
+		const terminal_t &P() const noexcept { return m_P; }
+
+		/// \brief Get a const reference to the m_N terminal
+		///
+		/// This is typically called during initialization to connect
+		/// terminals.
+		///
+		/// \returns Reference to m_N terminal.
+		const terminal_t &N() const noexcept { return m_N; }
+
+		/// \brief Get a reference to the m_P terminal
+		///
+		/// This call is only allowed from the core. Device code should never
+		/// need to call this.
+		///
+		/// \returns Reference to m_P terminal.
+		terminal_t &setup_P() noexcept { return m_P; }
+
+		/// \brief Get a reference to the m_N terminal
+		///
+		/// This call is only allowed from the core. Device code should never
+		/// need to call this.
+		///
+		/// \returns Reference to m_P terminal.
+		terminal_t &setup_N() noexcept { return m_N; }
+
 	private:
+		terminal_t m_P;
+		terminal_t m_N;
+
 	};
 
 
@@ -169,7 +202,6 @@ namespace analog
 		//NETLIB_UPDATEI() { }
 		NETLIB_RESETI()
 		{
-			NETLIB_NAME(twoterm)::reset();
 			set_R(std::max(m_R(), exec().gmin()));
 		}
 
@@ -202,11 +234,11 @@ namespace analog
 		, m_DialIsLog(*this, "DIALLOG", false)
 		, m_Reverse(*this, "REVERSE", false)
 		{
-			register_subalias("1", m_R1.m_P);
-			register_subalias("2", m_R1.m_N);
-			register_subalias("3", m_R2.m_N);
+			register_subalias("1", m_R1.P());
+			register_subalias("2", m_R1.N());
+			register_subalias("3", m_R2.N());
 
-			connect(m_R2.m_P, m_R1.m_N);
+			connect(m_R2.P(), m_R1.N());
 
 		}
 
@@ -233,8 +265,8 @@ namespace analog
 		, m_DialIsLog(*this, "DIALLOG", false)
 		, m_Reverse(*this, "REVERSE", false)
 		{
-			register_subalias("1", m_R1.m_P);
-			register_subalias("2", m_R1.m_N);
+			register_subalias("1", m_R1.P());
+			register_subalias("2", m_R1.N());
 
 		}
 
@@ -280,13 +312,26 @@ namespace analog
 			m_cap.setparams(exec().gmin());
 		}
 
-		param_fp_t m_C;
+		/// \brief Set capacitance
+		///
+		/// This call will set the capacitance. The typical use case are
+		/// are components like BJTs which use this component to model
+		/// internal capacitances. Typically called during initialization.
+		///
+		/// \param val Capacitance value
+		///
+		void set_cap_embedded(nl_fptype val)
+		{
+			m_C.set(val);
+		}
+
 	protected:
 		//NETLIB_UPDATEI();
 		//FIXME: should be able to change
 		NETLIB_UPDATE_PARAMI() { }
 
 	private:
+		param_fp_t m_C;
 		generic_capacitor_const m_cap;
 	};
 
@@ -420,8 +465,8 @@ namespace analog
 		, m_model(*this, "MODEL", model)
 		, m_D(*this, "m_D")
 		{
-			register_subalias("A", m_P);
-			register_subalias("K", m_N);
+			register_subalias("A", P());
+			register_subalias("K", N());
 		}
 
 		NETLIB_IS_DYNAMIC(true)
@@ -454,8 +499,8 @@ namespace analog
 		, m_compiled(this->name() + ".FUNCC", this, this->state().run_state_manager())
 		, m_funcparam({nlconst::zero()})
 		{
-			register_subalias("P", m_P);
-			register_subalias("N", m_N);
+			register_subalias("P", P());
+			register_subalias("N", N());
 			if (m_func() != "")
 				m_compiled.compile(m_func(), std::vector<pstring>({{pstring("T")}}));
 		}
@@ -502,8 +547,8 @@ namespace analog
 		, m_compiled(this->name() + ".FUNCC", this, this->state().run_state_manager())
 		, m_funcparam({nlconst::zero()})
 		{
-			register_subalias("P", m_P);
-			register_subalias("N", m_N);
+			register_subalias("P", P());
+			register_subalias("N", N());
 			if (m_func() != "")
 				m_compiled.compile(m_func(), std::vector<pstring>({{pstring("T")}}));
 		}
