@@ -277,7 +277,7 @@ exp85.cpp
 //falcots.cpp
 //fanucs15.cpp
 //fanucspmg.cpp
-fb01.cpp
+//fb01.cpp
 fc100.cpp
 fccpu20.cpp
 //fccpu30.cpp
