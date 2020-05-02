@@ -1146,7 +1146,7 @@ nl_fptype models_t::value(const pstring &model, const pstring &entity)
 		case 'a': factor = nlconst::magic(1e-18); break; // NOLINT
 		default:
 			if (*p < '0' || *p > '9')
-				throw nl_exception(MF_UNKNOWN_NUMBER_FACTOR_IN_1(entity));
+				throw nl_exception(MF_UNKNOWN_NUMBER_FACTOR_IN_2(model, entity));
 	}
 	if (factor != nlconst::one())
 		tmp = plib::left(tmp, tmp.size() - 1);
@@ -1276,6 +1276,7 @@ void setup_t::prepare_to_run()
 		}
 	}
 
+	int errcnt(0);
 	log().debug("Looking for unknown parameters ...\n");
 	for (auto &p : m_param_values)
 	{
@@ -1287,10 +1288,16 @@ void setup_t::prepare_to_run()
 				// FIXME: get device name, check for device
 				auto *dev = m_nlstate.find_device(plib::replace_all(p.first, sHINT_NO_DEACTIVATE, ""));
 				if (dev == nullptr)
-					log().warning(MW_DEVICE_NOT_FOUND_FOR_HINT(p.first));
+				{
+					log().error(ME_DEVICE_NOT_FOUND_FOR_HINT(p.first));
+					errcnt++;
+				}
 			}
 			else
-				log().warning(MW_UNKNOWN_PARAMETER(p.first));
+			{
+				log().error(ME_UNKNOWN_PARAMETER(p.first));
+				errcnt++;
+			}
 		}
 	}
 
@@ -1308,15 +1315,24 @@ void setup_t::prepare_to_run()
 				auto v = plib::pstonum_ne<nl_fptype>(p->second, err);
 				if (err || plib::abs(v - plib::floor(v)) > nlconst::magic(1e-6) )
 				{
-					log().fatal(MF_HND_VAL_NOT_SUPPORTED(p->second));
-					throw nl_exception(MF_HND_VAL_NOT_SUPPORTED(p->second));
+					log().error(ME_HND_VAL_NOT_SUPPORTED(p->second));
+					errcnt++;
 				}
-				// FIXME comparison with zero
-				d.second->set_hint_deactivate(v == nlconst::zero());
+				else
+				{
+					// FIXME comparison with zero
+					d.second->set_hint_deactivate(v == nlconst::zero());
+				}
 			}
 		}
 		else
 			d.second->set_hint_deactivate(false);
+	}
+
+	if (errcnt)
+	{
+		log().fatal(MF_ERRORS_FOUND(errcnt));
+		throw nl_exception(MF_ERRORS_FOUND(errcnt));
 	}
 
 	// resolve inputs
