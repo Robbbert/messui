@@ -565,6 +565,7 @@ static const char avr8_reg_name[4] = { 'A', 'B', 'C', 'D' };
 //**************************************************************************
 
 DEFINE_DEVICE_TYPE(ATMEGA88,   atmega88_device,   "atmega88",   "Atmel ATmega88")
+DEFINE_DEVICE_TYPE(ATMEGA328,  atmega328_device,  "atmega328",  "Atmel ATmega328")
 DEFINE_DEVICE_TYPE(ATMEGA644,  atmega644_device,  "atmega644",  "Atmel ATmega644")
 DEFINE_DEVICE_TYPE(ATMEGA1280, atmega1280_device, "atmega1280", "Atmel ATmega1280")
 DEFINE_DEVICE_TYPE(ATMEGA2560, atmega2560_device, "atmega2560", "Atmel ATmega2560")
@@ -576,6 +577,11 @@ DEFINE_DEVICE_TYPE(ATMEGA2560, atmega2560_device, "atmega2560", "Atmel ATmega256
 void atmega88_device::atmega88_internal_map(address_map &map)
 {
 	map(0x0000, 0x00ff).rw(FUNC(atmega88_device::regs_r), FUNC(atmega88_device::regs_w));
+}
+
+void atmega328_device::atmega328_internal_map(address_map &map)
+{
+	map(0x0000, 0x00ff).rw(FUNC(atmega328_device::regs_r), FUNC(atmega328_device::regs_w));
 }
 
 void atmega644_device::atmega644_internal_map(address_map &map)
@@ -599,6 +605,15 @@ void atmega2560_device::atmega2560_internal_map(address_map &map)
 
 atmega88_device::atmega88_device(const machine_config &mconfig, const char *tag, device_t *owner, uint32_t clock)
 	: avr8_device(mconfig, tag, owner, clock, ATMEGA88, 0x0fff, address_map_constructor(FUNC(atmega88_device::atmega88_internal_map), this), CPU_TYPE_ATMEGA88)
+{
+}
+
+//-------------------------------------------------
+//  atmega328_device - constructor
+//-------------------------------------------------
+
+atmega328_device::atmega328_device(const machine_config &mconfig, const char *tag, device_t *owner, uint32_t clock)
+	: avr8_device(mconfig, tag, owner, clock, ATMEGA328, 0x7fff, address_map_constructor(FUNC(atmega328_device::atmega328_internal_map), this), 3)
 {
 }
 
@@ -818,20 +833,39 @@ void avr8_device::device_reset()
 	logerror("AVR extended fuse bits: 0x%02X\n", m_efuses);
 	logerror("AVR lock bits: 0x%02X\n", m_lock_bits);
 
-	switch ((m_hfuses & (BOOTSZ1|BOOTSZ0)) >> 1){
-	case 0: m_boot_size = 4096; break;
-	case 1: m_boot_size = 2048; break;
-	case 2: m_boot_size = 1024; break;
-	case 3: m_boot_size = 512; break;
-	default: break;
+	switch ((m_hfuses & (BOOTSZ1 | BOOTSZ0)) >> 1)
+	{
+	case 0:
+		if (m_addr_mask <= 0x0fff) { m_boot_size = 1024; }
+		else if (m_addr_mask <= 0x7fff) { m_boot_size = 2048; }
+		else { m_boot_size = 4096; }
+		break;
+	case 1:
+		if (m_addr_mask <= 0x0fff) { m_boot_size = 512; }
+		else if (m_addr_mask <= 0x7fff) { m_boot_size = 1024; }
+		else { m_boot_size = 2048; }
+		break;
+	case 2:
+		if (m_addr_mask <= 0x0fff) { m_boot_size = 256; }
+		else if (m_addr_mask <= 0x7fff) { m_boot_size = 512; }
+		else { m_boot_size = 1024; }
+		break;
+	case 3:
+		if (m_addr_mask <= 0x0fff) { m_boot_size = 128; }
+		else if (m_addr_mask <= 0x7fff) { m_boot_size = 256; }
+		else { m_boot_size = 512; }
+		break;
+	default:
+		break;
 	}
 
 	if (m_hfuses & BOOTRST){
 	m_shifted_pc = 0x0000;
 	logerror("Booting AVR core from address 0x0000\n");
 	} else {
-	m_shifted_pc = (m_addr_mask + 1) - 2*m_boot_size;
-	logerror("AVR Boot loader section size: %d words\n", m_boot_size);
+		m_shifted_pc = (m_addr_mask + 1) - 2*m_boot_size;
+		m_pc = m_shifted_pc >> 1;
+		//LOGMASKED(LOG_BOOT, "AVR Boot loader section size: %d words\n", m_boot_size);
 	}
 
 	for (auto & elem : m_r)
@@ -987,6 +1021,21 @@ void avr8_device::update_interrupt(int source)
 	}
 }
 
+void atmega328_device::update_interrupt(int source)
+{
+	const CInterruptCondition &condition = s_int_conditions[source];
+
+	int intstate = 0;
+	if (m_r[condition.m_intreg] & condition.m_intmask)
+		intstate = (m_r[condition.m_regindex] & condition.m_regmask) ? 1 : 0;
+
+	set_irq_line(condition.m_intindex << 1, intstate);
+
+	if (intstate)
+	{
+		m_r[condition.m_regindex] &= ~condition.m_regmask;
+	}
+}
 
 static const CInterruptCondition s_mega644_int_conditions[AVR8_INTIDX_COUNT] =
 {
