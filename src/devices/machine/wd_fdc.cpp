@@ -165,7 +165,7 @@ void wd_fdc_device_base::soft_reset()
 WRITE_LINE_MEMBER(wd_fdc_device_base::mr_w)
 {
 	if(mr && !state) {
-		command = 0x08;  // MESSUI
+		command = 0x00;
 		main_state = IDLE;
 		sub_state = IDLE;
 		cur_live.state = IDLE;
