@@ -113,7 +113,7 @@ private:
 	DECLARE_WRITE_LINE_MEMBER( tc_w );
 	DECLARE_READ8_MEMBER( mc146818_r );
 	DECLARE_WRITE8_MEMBER( mc146818_w );
-	DECLARE_READ8_MEMBER( get_slave_ack );
+	DECLARE_READ32_MEMBER( get_slave_ack );
 	DECLARE_READ8_MEMBER( vram_bank_r );
 	DECLARE_WRITE8_MEMBER( vram_bank_w );
 	DECLARE_READ16_MEMBER( vram_r );
@@ -504,7 +504,7 @@ WRITE_LINE_MEMBER(qx10_state::keyboard_clk)
     IR7     Slave cascade
 */
 
-READ8_MEMBER( qx10_state::get_slave_ack )
+READ32_MEMBER( qx10_state::get_slave_ack )
 {
 	if (offset==7) { // IRQ = 7
 		return m_pic_s->acknowledge();
@@ -846,7 +846,8 @@ ROM_START( qx10 )
 
 	ROM_REGION( 0x1000, "chargen", 0 )
 //  ROM_LOAD( "qge.2e",   0x0000, 0x0800, BAD_DUMP CRC(ed93cb81) SHA1(579e68bde3f4184ded7d89b72c6936824f48d10b))  //this one contains special characters only
-	ROM_LOAD( "qge.2e",   0x0000, 0x1000, BAD_DUMP CRC(eb31a2d5) SHA1(6dc581bf2854a07ae93b23b6dfc9c7abd3c0569e))
+//  ROM_LOAD( "qge.2e",   0x0000, 0x1000, BAD_DUMP CRC(eb31a2d5) SHA1(6dc581bf2854a07ae93b23b6dfc9c7abd3c0569e))
+	ROM_LOAD( "qga.2e",   0x0000, 0x1000, CRC(4120b128) SHA1(9b96f6d78cfd402f8aec7c063ffb70a21b78eff0))
 ROM_END
 
 /* Driver */
