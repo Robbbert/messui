@@ -10282,6 +10282,7 @@ wotwc                           // (c) 1981
 
 @source:circus.cpp
 circus                          // no copyright notice [1977?]
+circusb                         // bootleg
 crash                           // Exidy [1979?]
 crasha                          // no copyright notice [1979?]
 ripcord                         // Exidy [1977?]
@@ -40434,6 +40435,7 @@ video21                         // Videogames GmbH 1980
 @source:videopin.cpp
 solarwar                        // 036154-036169    1979    [6502]
 videopin                        // 034253-034267    1979/02 [6502]
+videopina                       //
 
 @source:videopkr.cpp
 babydad                         // (c) 1987 Recreativos Franco
