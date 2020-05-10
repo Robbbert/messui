@@ -987,7 +987,7 @@ tutor.cpp
 //tv955.cpp
 //tv965.cpp
 //tv990.cpp
-//tvboy.cpp
+tvboy.cpp
 tvc.cpp
 tvgame.cpp
 //tx0.cpp
