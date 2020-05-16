@@ -13533,6 +13533,9 @@ fexcelpb                        //
 fexcelv                         //
 granits                         // RCS
 
+@source:fidel_msc.cpp
+miniscco
+
 @source:fidel_phantom.cpp
 fphantom                        //
 
@@ -13542,6 +13545,7 @@ fscc12b                         //
 
 @source:fidel_sc6.cpp
 fscc6                           //
+miniscc
 
 @source:fidel_sc8.cpp
 fscc8                           //
@@ -31957,7 +31961,7 @@ supercon
 diablo68                        //
 scorpio68                       //
 
-@source:novag_presto.cpp
+@source:novag_micro2.cpp
 nocto                           //
 npresto                         //
 
