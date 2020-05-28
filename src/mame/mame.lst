@@ -14098,6 +14098,7 @@ gteikoku                        // (c) Irem
 gteikokub                       // bootleg
 gteikokub2                      // bootleg
 gteikokub3                      // bootleg (Honly Enterprises)
+highroll                        //
 jumpbug                         // (c) 1981 Rock-ola
 jumpbugb                        // (c) 1981 Sega
 jungsub                         // bootleg
@@ -19570,6 +19571,7 @@ m6805evs                        //
 
 @source:m72.cpp
 airduel                         // (c) 1990 (World)
+airduelu
 airduelm72                      // (c) 1990 (Japan)
 bchopper                        // (c) 1987
 cosmccop                        // (c) 1991 (World)
@@ -21865,6 +21867,8 @@ alice                           // Matra & Hachette Ordinateur Alice
 alice32                         // Matra & Hachette Alice 32
 alice90                         // Matra & Hachette Alice 90
 mc10                            // MC-10
+mcx128                          // MCX-128
+alice128                        // Alice with a MCX-128
 
 @source:mc1000.cpp
 mc1000                          //
@@ -33667,6 +33671,7 @@ starfirp                        //
 starfirpa                       //
 terrlake                        //
 theraid                         //
+theraida                        // (c) 1984 Playmatic / EFOSA
 trailer                         //
 ufo_x                           //
 
@@ -34841,6 +34846,9 @@ tr606                           // Roland
 @source:roland_tr707.cpp
 tr707                           //
 tr727                           //
+
+@source:roland_tr909.cpp
+tr909                           //
 
 @source:roland_u20.cpp
 u20                             //
