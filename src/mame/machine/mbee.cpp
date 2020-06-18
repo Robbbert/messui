@@ -163,25 +163,25 @@ TIMER_CALLBACK_MEMBER( mbee_state::timer_newkb )
 	for (i = 0; i < 15; i++)
 	{
 		pressed = m_io_newkb[i]->read();
-		if (pressed != m_mbee256_was_pressed[i])
+		if (pressed != m_newkb_was_pressed[i])
 		{
 			// get scankey value
 			for (j = 0; j < 8; j++)
 			{
-				if (BIT(pressed^m_mbee256_was_pressed[i], j))
+				if (BIT(pressed^m_newkb_was_pressed[i], j))
 				{
 					// put it in the queue
 					uint8_t code = (i << 3) | j | (BIT(pressed, j) ? 0x80 : 0);
-					m_mbee256_q[m_mbee256_q_pos] = code;
-					if (m_mbee256_q_pos < 19) m_mbee256_q_pos++;
+					m_newkb_q[m_newkb_q_pos] = code;
+					if (m_newkb_q_pos < 19) m_newkb_q_pos++;
 				}
 			}
-			m_mbee256_was_pressed[i] = pressed;
+			m_newkb_was_pressed[i] = pressed;
 		}
 	}
 
 	// if anything queued, cause an interrupt
-	if (m_mbee256_q_pos)
+	if (m_newkb_q_pos)
 		m_b2 = 1; // set irq
 
 	if (m_b2)
@@ -192,12 +192,12 @@ TIMER_CALLBACK_MEMBER( mbee_state::timer_newkb )
 
 uint8_t mbee_state::port18_r()
 {
-	uint8_t i, data = m_mbee256_q[0]; // get oldest key
+	uint8_t i, data = m_newkb_q[0]; // get oldest key
 
-	if (m_mbee256_q_pos)
+	if (m_newkb_q_pos)
 	{
-		m_mbee256_q_pos--;
-		for (i = 0; i < m_mbee256_q_pos; i++) m_mbee256_q[i] = m_mbee256_q[i+1]; // ripple queue
+		m_newkb_q_pos--;
+		for (i = 0; i < m_newkb_q_pos; i++) m_newkb_q[i] = m_newkb_q[i+1]; // ripple queue
 	}
 
 	m_b2 = 0; // clear irq
@@ -249,7 +249,7 @@ uint8_t mbee_state::port07_r()   // read
 // See it work: Run mbeett, choose RTC in the config switches, run the F3 test, press Esc.
 WRITE_LINE_MEMBER( mbee_state::rtc_irq_w )
 {
-	m_b7_rtc = (state) ? 0 : 1; // inverted by IC15 (pins 8,9,10)
+	m_b7_rtc = state; // inverted by IC15 (pins 8,9,10) then again by mame
 
 	if ((m_io_config->read() & 0xc0) == 0x40) // RTC selected in config menu
 		m_pio->port_b_write(pio_port_b_r());
@@ -282,7 +282,6 @@ void mbee_state::setup_banks(uint8_t data, bool first_time, uint8_t b_mask)
 	uint8_t b_data = bitswap<8>(data, 7,5,3,2,4,6,1,0) & 0x3b; // arrange data bits to S0,S1,-,S4,S2,S3
 	uint8_t b_bank, b_byte, b_byte_t, b_addr, p_bank = 1;
 	uint16_t b_vid;
-	char banktag[10];
 
 	if (first_time || (b_data != m_bank_array[0])) // if same data as last time, leave now
 	{
@@ -314,13 +313,12 @@ void mbee_state::setup_banks(uint8_t data, bool first_time, uint8_t b_mask)
 				}
 				else
 				{
-					sprintf(banktag, "bankr%d", b_bank);
-					mem.install_read_bank( b_vid, b_vid+0xfff, banktag );
+					mem.install_read_bank( b_vid, b_vid+0xfff, m_bankr[b_bank] );
 
 					if (!BIT(b_byte, 3))
-						membank(banktag)->set_entry(64 + (b_bank & 3)); // read from rom
+						m_bankr[b_bank]->set_entry(64 + (b_bank & 3)); // read from rom
 					else
-						membank(banktag)->set_entry((b_bank & 7) | ((b_byte & b_mask) << 3)); // ram
+						m_bankr[b_bank]->set_entry((b_bank & 7) | ((b_byte & b_mask) << 3)); // ram
 				}
 			}
 			p_bank++;
@@ -346,13 +344,12 @@ void mbee_state::setup_banks(uint8_t data, bool first_time, uint8_t b_mask)
 				}
 				else
 				{
-					sprintf(banktag, "bankw%d", b_bank);
-					mem.install_write_bank( b_vid, b_vid+0xfff, banktag );
+					mem.install_write_bank( b_vid, b_vid+0xfff, m_bankw[b_bank] );
 
 					if (!BIT(b_byte, 3))
-						membank(banktag)->set_entry(64); // write to rom dummy area
+						m_bankw[b_bank]->set_entry(64); // write to rom dummy area
 					else
-						membank(banktag)->set_entry((b_bank & 7) | ((b_byte & b_mask) << 3)); // ram
+						m_bankw[b_bank]->set_entry((b_bank & 7) | ((b_byte & b_mask) << 3)); // ram
 				}
 			}
 			p_bank++;
@@ -437,8 +434,119 @@ uint8_t mbee_state::telcom_high_r()
   It gets set back to normal on the first attempt to write to memory. (/WR line goes active).
 */
 
+void mbee_state::machine_start()
+{
+	// must init these vars here, or weird random crashes can occur when scroll lock pressed
+	m_fdc_rq = 0;
+	m_08 = 0;
+	m_0a = 0;
+	m_0b = 0;
+	m_1c = 0;
 
-void mbee_state::machine_reset_common()
+	save_item(NAME(m_features));
+	save_item(NAME(m_size));
+	save_item(NAME(m_b7_rtc));
+	save_item(NAME(m_b7_vs));
+	save_item(NAME(m_b2));
+	save_item(NAME(m_framecnt)); // not important
+	save_item(NAME(m_08));
+	save_item(NAME(m_0a));
+	save_item(NAME(m_0b));
+	save_item(NAME(m_1c));
+	save_item(NAME(m_newkb_was_pressed));
+	save_item(NAME(m_newkb_q));
+	save_item(NAME(m_newkb_q_pos));
+	save_item(NAME(m_sy6545_reg));
+	save_item(NAME(m_sy6545_ind));
+	save_item(NAME(m_fdc_rq));
+	save_item(NAME(m_bank_array));
+
+	// banking of the BASIC roms
+	if (m_basic)
+	{
+		u8 *b = memregion("basicrom")->base();
+		m_basic->configure_entries(0, 2, b, 0x2000);
+	}
+
+	// banking of the TELCOM rom
+	if (m_telcom)
+	{
+		u8 *t = memregion("telcomrom")->base();
+		m_telcom->configure_entries(0, 2, t, 0x1000);
+	}
+
+	// PAKs fitted
+	if (m_pak)
+	{
+		u8 *p = memregion("pakrom")->base();
+		m_pak->configure_entries(0, 16, p, 0x2000);
+	}
+
+	// videoram
+	m_vram = make_unique_clear<u8[]>(0x0800);
+	save_pointer(NAME(m_vram), 0x0800);
+
+	// colour
+	if (BIT(m_features, 0))
+	{
+		m_cram = make_unique_clear<u8[]>(0x0800);
+		save_pointer(NAME(m_cram), 0x0800);
+	}
+
+	// minimal main ram
+	if (BIT(m_features, 1))
+		m_size = 0xE000;
+	else
+		m_size = 0x8000;
+
+	// new keyboard
+	if (BIT(m_features, 2))
+		timer_set(attotime::from_hz(1), TIMER_MBEE_NEWKB);   /* kick-start timer for kbd */
+
+	// premium
+	if (BIT(m_features, 3))
+	{
+		m_aram = make_unique_clear<u8[]>(0x0800);
+		save_pointer(NAME(m_aram), 0x0800);
+		m_pram = make_unique_clear<u8[]>(0x8800);
+		save_pointer(NAME(m_pram), 0x8800);
+	}
+	else
+	{
+		m_pram = make_unique_clear<u8[]>(0x0800);
+		save_pointer(NAME(m_pram), 0x0800);
+	}
+
+	// Banked systems
+	u8 b = BIT(m_features, 4, 2);
+	if (b)
+	{
+		u32 ramsize = 0x40000;  // 128k
+		if (b == 2)
+			ramsize = 0x40000;  // 256k
+		else
+		if (b == 3)
+			ramsize = 0x100000;  // 1MB for PP
+
+		m_ram = make_unique_clear<u8[]>(ramsize);
+		save_pointer(NAME(m_ram), ramsize);
+		m_dummy = std::make_unique<u8[]>(0x1000);  // don't save this
+
+		u8 *r = m_ram.get();
+		u8 *d = m_dummy.get();
+		u8 *m = memregion("maincpu")->base();
+
+		for (u8 b_bank = 0; b_bank < 16; b_bank++)
+		{
+			m_bankr[b_bank]->configure_entries(0, 64, r, 0x1000); // RAM banks
+			m_bankr[b_bank]->configure_entries(64, 4, m, 0x1000); // rom
+			m_bankw[b_bank]->configure_entries(0, 64, r, 0x1000); // RAM banks
+			m_bankw[b_bank]->configure_entry(64, d); // dummy rom
+		}
+	}
+}
+
+void mbee_state::machine_reset()
 {
 	m_fdc_rq = 0;
 	m_08 = 0;
@@ -446,172 +554,43 @@ void mbee_state::machine_reset_common()
 	m_0b = 0;
 	m_1c = 0;
 
+	// set default chars
+	memcpy(m_pram.get(), memregion("chargen")->base(), 0x800);
+
 	if (m_basic)
 		m_basic->set_entry(0);
 
 	if (m_telcom)
 		m_telcom->set_entry(0);
+
+	if (m_pak)
+		m_pak->set_entry(5);
+
+	m_maincpu->set_pc(m_size);
+
+	// init new kbd
+	if (BIT(m_features, 2))
+		m_newkb_q_pos = 0;
+
+	// set banks to default
+	if (BIT(m_features, 4, 2) == 1)
+		setup_banks(0, 1, 3);
+	else
+	if (BIT(m_features, 4, 2) == 2)
+		setup_banks(0, 1, 7);
+	else
+	if (BIT(m_features, 4, 2) == 3)
+		setup_banks(0, 1, 31);
 }
 
-MACHINE_RESET_MEMBER( mbee_state, mbee )
-{
-	machine_reset_common();
-	m_maincpu->set_pc(0x8000);
-}
 
-MACHINE_RESET_MEMBER( mbee_state, mbee56 )
-{
-	machine_reset_common();
-	m_maincpu->set_pc(0xE000);
-}
-
-MACHINE_RESET_MEMBER( mbee_state, mbee128 )
-{
-	machine_reset_common();
-	setup_banks(0, 1, 3); // set banks to default
-	m_maincpu->set_pc(0x8000);
-}
-
-MACHINE_RESET_MEMBER( mbee_state, mbee256 )
-{
-	m_mbee256_q_pos = 0;
-	machine_reset_common();
-	setup_banks(0, 1, 7); // set banks to default
-	m_maincpu->set_pc(0x8000);
-}
-
-MACHINE_RESET_MEMBER( mbee_state, mbeett )
-{
-	m_mbee256_q_pos = 0;
-	machine_reset_common();
-	m_maincpu->set_pc(0x8000);
-}
-
-void mbee_state::init_mbee()
-{
-	m_size = 0x8000;
-	m_has_oldkb = 1;
-}
-
-void mbee_state::init_mbeeic()
-{
-	uint8_t *RAM = memregion("pakrom")->base();
-	m_pak->configure_entries(0, 16, &RAM[0x0000], 0x2000);
-	m_pak->set_entry(0);
-
-	m_size = 0x8000;
-	m_has_oldkb = 1;
-}
-
-void mbee_state::init_mbeepc()
-{
-	uint8_t *RAM = memregion("telcomrom")->base();
-	m_telcom->configure_entries(0, 2, &RAM[0x0000], 0x1000);
-
-	RAM = memregion("pakrom")->base();
-	m_pak->configure_entries(0, 16, &RAM[0x0000], 0x2000);
-	m_pak->set_entry(0);
-
-	m_size = 0x8000;
-	m_has_oldkb = 1;
-}
-
-void mbee_state::init_mbeepc85()
-{
-	uint8_t *RAM = memregion("telcomrom")->base();
-	m_telcom->configure_entries(0, 2, &RAM[0x0000], 0x1000);
-
-	RAM = memregion("pakrom")->base();
-	m_pak->configure_entries(0, 16, &RAM[0x0000], 0x2000);
-	m_pak->set_entry(5);
-
-	m_size = 0x8000;
-	m_has_oldkb = 1;
-}
-
-void mbee_state::init_mbeeppc()
-{
-	uint8_t *RAM = memregion("basicrom")->base();
-	m_basic->configure_entries(0, 2, &RAM[0x0000], 0x2000);
-
-	RAM = memregion("telcomrom")->base();
-	m_telcom->configure_entries(0, 2, &RAM[0x0000], 0x1000);
-
-	RAM = memregion("pakrom")->base();
-	m_pak->configure_entries(0, 16, &RAM[0x0000], 0x2000);
-	m_pak->set_entry(5);
-
-	m_size = 0x8000;
-	m_has_oldkb = 1;
-}
-
-void mbee_state::init_mbee56()
-{
-	m_size = 0xe000;
-	m_has_oldkb = 1;
-}
-
-// 128k uses 32 RAM banks.
-// PP has 1024k which is 256 banks, but having 64 banks stops it crashing during the self-test. Need a schematic before we can fix it.
-void mbee_state::init_mbee128()
-{
-	uint8_t *RAM = memregion("rams")->base();
-	uint8_t *ROM = memregion("roms")->base();
-	char banktag[10];
-
-	for (uint8_t b_bank = 0; b_bank < 16; b_bank++)
-	{
-		sprintf(banktag, "bankr%d", b_bank);
-		membank(banktag)->configure_entries(0, 64, &RAM[0x0000], 0x1000); // RAM banks
-		membank(banktag)->configure_entries(64, 4, &ROM[0x0000], 0x1000); // rom
-
-		sprintf(banktag, "bankw%d", b_bank);
-		membank(banktag)->configure_entries(0, 64, &RAM[0x0000], 0x1000); // RAM banks
-		membank(banktag)->configure_entries(64, 1, &ROM[0x4000], 0x1000); // dummy rom
-	}
-
-	m_size = 0x8000;
-	m_has_oldkb = 1;
-}
-
-void mbee_state::init_mbee256()
-{
-	uint8_t *RAM = memregion("rams")->base();
-	uint8_t *ROM = memregion("roms")->base();
-	char banktag[10];
-
-	for (uint8_t b_bank = 0; b_bank < 16; b_bank++)
-	{
-		sprintf(banktag, "bankr%d", b_bank);
-		membank(banktag)->configure_entries(0, 64, &RAM[0x0000], 0x1000); // RAM banks
-		membank(banktag)->configure_entries(64, 4, &ROM[0x0000], 0x1000); // rom
-
-		sprintf(banktag, "bankw%d", b_bank);
-		membank(banktag)->configure_entries(0, 64, &RAM[0x0000], 0x1000); // RAM banks
-		membank(banktag)->configure_entries(64, 1, &ROM[0x4000], 0x1000); // dummy rom
-	}
-
-	timer_set(attotime::from_hz(1), TIMER_MBEE_NEWKB);   /* kick-start timer for kbd */
-
-	m_size = 0x8000;
-	m_has_oldkb = 0;
-}
-
-void mbee_state::init_mbeett()
-{
-	uint8_t *RAM = memregion("telcomrom")->base();
-	m_telcom->configure_entries(0, 2, &RAM[0x0000], 0x1000);
-
-	RAM = memregion("pakrom")->base();
-	m_pak->configure_entries(0, 16, &RAM[0x0000], 0x2000);
-	m_pak->set_entry(5);
-
-	timer_set(attotime::from_hz(1), TIMER_MBEE_NEWKB);   /* kick-start timer for kbd */
-
-	m_size = 0x8000;
-	m_has_oldkb = 0;
-}
-
+/* m_features:
+bit 0 : (colour fitted) 1 = yes
+bit 1 : (initial pc value / size of main ram) 1=0xE000, 0=0x8000
+bit 2 : (keyboard type) 1 = new keyboard
+bit 3 : (core type) 1 = premium
+bit 4,5 : (banking main ram) 0x10 = 128k; 0x20 = 256k
+*/
 
 /***********************************************************
 
