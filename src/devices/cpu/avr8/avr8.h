@@ -69,8 +69,8 @@ public:
 	uint64_t get_elapsed_cycles() const { return m_elapsed_cycles; }
 
 	// register handling
-	DECLARE_WRITE8_MEMBER(regs_w);
-	DECLARE_READ8_MEMBER(regs_r);
+	void regs_w(offs_t offset, uint8_t data);
+	uint8_t regs_r(offs_t offset);
 	uint32_t m_shifted_pc;
 
 protected:
