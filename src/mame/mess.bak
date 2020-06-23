@@ -125,6 +125,7 @@ boss_se70.cpp
 boss_sx700.cpp
 bpmmicro.cpp
 br8641.cpp
+braiplus.cpp
 bullet.cpp
 busicom.cpp
 bw12.cpp
@@ -148,7 +149,6 @@ cbm2.cpp
 cbnt2039.cpp
 cc40.cpp
 ccs2810.cpp
-ccs300.cpp
 cd100.cpp
 cd2650.cpp
 cdc721.cpp
@@ -491,7 +491,8 @@ lft.cpp
 lg-dvd.cpp
 lilith.cpp
 lisa.cpp
-llc.cpp
+llc1.cpp
+llc2.cpp
 lms46.cpp
 lola8a.cpp
 lviv.cpp
