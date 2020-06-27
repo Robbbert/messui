@@ -6,7 +6,7 @@ if exist messui64.exe goto start
 copy /Y src\mame\mess.flt src\mame\mess.bak
 copy /Y src\mame\messui.txt src\mame\mess.flt
 touch src\mame\mess.flt
-call make64 -j4 "OSD=messui" %1 %2 %3
+call make64 -j6 "OSD=messui" %1 %2 %3
 copy /Y src\mame\mess.bak src\mame\mess.flt
 if not exist messui64.exe goto end
 copy /Y messui64.exe messui.exe
