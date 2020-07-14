@@ -1127,6 +1127,7 @@ shuuz.cpp
 sidearms.cpp
 sidepckt.cpp
 sigma21.cpp
+sigmab31.cpp
 sigmab52.cpp
 sigmab98.cpp
 silkroad.cpp
@@ -1179,6 +1180,7 @@ spiders.cpp
 spinb.cpp
 spirit76.cpp
 splash.cpp
+splash_ms.cpp
 splus.cpp
 spoker.cpp
 spool99.cpp
