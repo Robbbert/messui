@@ -4096,10 +4096,26 @@ if (BUSES["HP9845_IO"]~=null) then
 		MAME_DIR .. "src/devices/bus/hp9845_io/98034.h",
 		MAME_DIR .. "src/devices/bus/hp9845_io/98035.cpp",
 		MAME_DIR .. "src/devices/bus/hp9845_io/98035.h",
+		MAME_DIR .. "src/devices/bus/hp9845_io/98036.cpp",
+		MAME_DIR .. "src/devices/bus/hp9845_io/98036.h",
 		MAME_DIR .. "src/devices/bus/hp9845_io/98046.cpp",
 		MAME_DIR .. "src/devices/bus/hp9845_io/98046.h",
 		MAME_DIR .. "src/devices/bus/hp9845_io/hp9885.cpp",
 		MAME_DIR .. "src/devices/bus/hp9845_io/hp9885.h",
+	}
+end
+
+---------------------------------------------------
+--
+--@src/devices/bus/hp_ipc_io/hp_ipc_io.h,BUSES["HP_IPC_IO"] = true
+---------------------------------------------------
+
+if (BUSES["HP_IPC_IO"]~=null) then
+	files {
+		MAME_DIR .. "src/devices/bus/hp_ipc_io/hp_ipc_io.cpp",
+		MAME_DIR .. "src/devices/bus/hp_ipc_io/hp_ipc_io.h",
+		MAME_DIR .. "src/devices/bus/hp_ipc_io/82919.cpp",
+		MAME_DIR .. "src/devices/bus/hp_ipc_io/829919.h",
 	}
 end
 

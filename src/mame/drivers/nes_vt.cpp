@@ -274,6 +274,8 @@ public:
 		m_latch1_bit(0)
 	{ }
 
+	void init_lxcmcypp();
+
 protected:
 	virtual uint8_t in0_r() override;
 	virtual uint8_t in1_r() override;
@@ -392,23 +394,6 @@ private:
 	int m_plunger_state_count;
 
 	required_ioport m_plunger;
-};
-
-class nes_vt_sudoku_state : public nes_vt_state
-{
-public:
-	nes_vt_sudoku_state(const machine_config& mconfig, device_type type, const char* tag) :
-		nes_vt_state(mconfig, type, tag)
-	{ }
-
-	void init_sudoku();
-
-	void nes_vt_sudoku_512kb(machine_config& config);
-
-private:
-	virtual uint8_t in0_r() override;
-	virtual uint8_t in1_r() override;
-	virtual void in0_w(uint8_t data) override;
 };
 
 class nes_vt_vg_1mb_majgnc_state : public nes_vt_state
@@ -722,20 +707,6 @@ void nes_vt_ablpinb_state::in0_w(uint8_t data)
 
 	m_ablpinb_in0_val = data;
 	logerror("in0_w %02x\n", data);
-}
-
-uint8_t nes_vt_sudoku_state::in0_r()
-{
-	return machine().rand();
-}
-
-uint8_t nes_vt_sudoku_state::in1_r()
-{
-	return machine().rand();
-}
-
-void nes_vt_sudoku_state::in0_w(uint8_t data)
-{
 }
 
 
@@ -1614,6 +1585,17 @@ ROM_START( lxcmcysp )
 	ROM_LOAD( "lexibookspiderman.bin", 0x00000, 0x4000000, CRC(ef6e8847) SHA1(0012df193c52fd48595d85886fd431619c5d5e3e) )
 ROM_END
 
+ROM_START( lxcmcycr )
+	ROM_REGION( 0x4000000, "mainrom", 0 )
+	ROM_LOAD( "lexibook cars.bin", 0x00000, 0x4000000, CRC(198fe11b) SHA1(5e35caa3fc319ec69812c187a3ec89f01749f749) )
+ROM_END
+
+ROM_START( lxcmcypp )
+	ROM_REGION( 0x4000000, "mainrom", 0 )
+	// marked 512mbit, possible A22 / A23 are swapped as they were marked on the board in a different way.
+	ROM_LOAD( "pawpatrol_compact.bin", 0x00000, 0x4000000, CRC(bf536762) SHA1(80dde8426a636bae33a82d779e564fa743eb3776) )	
+ROM_END
+
 ROM_START( lxcmc250 )
 	ROM_REGION( 0x4000000, "mainrom", 0 )
 	// sub-board was marked for 2GB capacity (A0-A26 address lines), but only address lines A0-A24 are connected to the chip
@@ -1676,6 +1658,11 @@ ROM_END
 ROM_START( duetpp )
 	ROM_REGION( 0x400000, "mainrom", 0 )
 	ROM_LOAD( "gamesporzduetpingpong.bin", 0x00000, 0x400000, CRC(96af199b) SHA1(c14ff15683545c1edf03376cebcee7ac408da733) )
+ROM_END
+
+ROM_START( sporzbx )
+	ROM_REGION( 0x400000, "mainrom", 0 )
+	ROM_LOAD( "sporzboxing.bin", 0x00000, 0x400000, CRC(8b832c0b) SHA1(8193955a81e894a01308a80d5153f2ecfe134da6) )
 ROM_END
 
 ROM_START( lpgm240 )
@@ -1969,8 +1956,21 @@ ROM_START( otrail )
 	ROM_LOAD( "t24c04a.bin", 0x000, 0x200, CRC(ce1fad6f) SHA1(82878996765739edba42042b6336460d5c8f8096) )
 ROM_END
 
+ROM_START( zonefusn )
+	ROM_REGION( 0x1000000, "mainrom", 0 )
+	ROM_LOAD( "fusion.bin", 0x00000, 0x1000000, CRC(240bf970) SHA1(1b82d95a252c08e52fb8da6320276574a30b60db) )
+ROM_END
 
+void nes_vt_cy_lexibook_state::init_lxcmcypp()
+{
+	int size = memregion("mainrom")->bytes()/2;
+	uint16_t* ROM = (uint16_t*)memregion("mainrom")->base();
 
+	for (int i = 0; i < size; i++)
+	{
+		ROM[i] = bitswap<16>(ROM[i], 4, 5, 6, 7, 0, 1, 2, 3, 12, 13, 14, 15, 8, 9, 10, 11);
+	}
+}
 
 // earlier version of vdogdemo
 CONS( 200?, vdogdeme,  0,  0,  nes_vt_1mb,    nes_vt, nes_vt_state, empty_init, "VRT", "V-Dog (prototype, earlier)", MACHINE_NOT_WORKING )
@@ -1994,10 +1994,10 @@ CONS( 200?, vtboxing,     0,  0,  nes_vt_512kb, nes_vt, nes_vt_state, empty_init
 // 050329 (29th March 2005) date on PCB
 CONS( 2005, ablpinb, 0,  0,  nes_vt_pal_2mb,    ablpinb, nes_vt_ablpinb_state, empty_init, "Advance Bright Ltd", "Pinball (P8002, ABL TV Game)", MACHINE_IMPERFECT_GRAPHICS | MACHINE_IMPERFECT_SOUND )
 
-// need to map 2 player controls for Ping Pong, 'Eat-Bean' (the PacMan hack) gets stuck during intermission?
-CONS( 200?, duetpp,    0,  0,  nes_vt_waixing_alt_4mb_duetpp,        duetpp, nes_vt_waixing_alt_duetpp_state, empty_init, "Macro Winners", "Game Sporz Wireless Duet Play Ping-Pong", MACHINE_NOT_WORKING )
+// need to map 2 player controls for Ping Pong, 'Eat-Bean' (the PacMan hack) gets stuck during intermission? (same happens on hardware?)
+CONS( 2004, duetpp,    0,  0,  nes_vt_waixing_alt_4mb_duetpp,        duetpp, nes_vt_waixing_alt_duetpp_state, empty_init, "Macro Winners", "Game Sporz Wireless Duet Play Ping-Pong", MACHINE_IMPERFECT_GRAPHICS | MACHINE_IMPERFECT_SOUND )
 
-
+CONS( 2004, sporzbx,   0,  0,  nes_vt_waixing_alt_4mb_duetpp,        duetpp, nes_vt_waixing_alt_duetpp_state, empty_init, "Macro Winners", "Game Sporz Wireless Boxing", MACHINE_IMPERFECT_GRAPHICS | MACHINE_IMPERFECT_SOUND )
 
 // should be VT03 based
 // for testing 'Shark', 'Octopus', 'Harbor', and 'Earth Fighter' use the extended colour modes, other games just seem to use standard NES modes
@@ -2042,30 +2042,33 @@ CONS( 200?, vgpmini,   0,  0,  nes_vt_vg_4mb, nes_vt, nes_vt_hh_state, empty_ini
 CONS( 200?, dgun2500,  0,  0,  nes_vt_dg_baddma_16mb, nes_vt, nes_vt_dg_state, empty_init, "dreamGEAR", "dreamGEAR Wireless Motion Control with 130 games (DGUN-2500)", MACHINE_IMPERFECT_GRAPHICS | MACHINE_IMPERFECT_SOUND)
 
 // don't even get to menu. very enhanced chipset, VT368/9?
-CONS( 2012, dgun2561,  0,  0,  nes_vt_cy_bigger, nes_vt, nes_vt_cy_lexibook_state, empty_init, "dreamGEAR", "My Arcade Portable Gaming System (DGUN-2561)", MACHINE_NOT_WORKING ) // 64Mbyte ROM, must be externally banked, or different addressing scheme
+CONS( 2012, dgun2561,  0,  0,  nes_vt_cy_bigger, nes_vt, nes_vt_cy_lexibook_state, empty_init, "dreamGEAR", "My Arcade Portable Gaming System with 140 Games (DGUN-2561)", MACHINE_NOT_WORKING ) // 64Mbyte ROM, must be externally banked, or different addressing scheme
 CONS( 2016, dgun2593,  0,  0,  nes_vt_cy_bigger, nes_vt, nes_vt_cy_lexibook_state, empty_init, "dreamGEAR", "My Arcade Retro Arcade Machine - 300 Handheld Video Games (DGUN-2593)", MACHINE_NOT_WORKING ) // 128Mbyte ROM, must be externally banked or different addressing scheme
 
-CONS( 200?, lxcmcy,    0,  0,  nes_vt_cy_bigger, nes_vt, nes_vt_cy_lexibook_state, empty_init, "Lexibook", "Lexibook Compact Cyber Arcade", MACHINE_NOT_WORKING ) // 64Mbyte ROM, must be externally banked, or different addressing scheme
-CONS( 200?, lxcmc250,  0,  0,  nes_vt_cy_bigger, nes_vt, nes_vt_cy_lexibook_state, empty_init, "Lexibook", "Lexibook Compact Cyber Arcade - 250-in-1 (JL2375)", MACHINE_NOT_WORKING ) // 64Mbyte ROM, must be externally banked, or different addressing scheme
-CONS( 200?, lxcmcysw,  0,  0,  nes_vt_cy_bigger, nes_vt, nes_vt_cy_lexibook_state, empty_init, "Lexibook", "Lexibook Compact Cyber Arcade - Star Wars Rebels", MACHINE_NOT_WORKING ) // 64Mbyte ROM, must be externally banked, or different addressing scheme
-CONS( 200?, lxcmcyfz,  0,  0,  nes_vt_cy_bigger, nes_vt, nes_vt_cy_lexibook_state, empty_init, "Lexibook", "Lexibook Compact Cyber Arcade - Frozen", MACHINE_NOT_WORKING ) // 64Mbyte ROM, must be externally banked, or different addressing scheme
-CONS( 200?, lxcmcydp,  0,  0,  nes_vt_cy_bigger, nes_vt, nes_vt_cy_lexibook_state, empty_init, "Lexibook", "Lexibook Compact Cyber Arcade - Disney Princess", MACHINE_NOT_WORKING ) // 64Mbyte ROM, must be externally banked, or different addressing scheme
-CONS( 200?, lxcmcysp,  0,  0,  nes_vt_cy_bigger, nes_vt, nes_vt_cy_lexibook_state, empty_init, "Lexibook", "Lexibook Compact Cyber Arcade - Marvel Ultimate Spider-Man", MACHINE_NOT_WORKING ) // 64Mbyte ROM, must be externally banked, or different addressing scheme
+CONS( 200?, lxcmcy,    0,  0,  nes_vt_cy_bigger, nes_vt, nes_vt_cy_lexibook_state, empty_init,    "Lexibook", "Lexibook Compact Cyber Arcade", MACHINE_NOT_WORKING ) // 64Mbyte ROM, must be externally banked, or different addressing scheme
+CONS( 200?, lxcmc250,  0,  0,  nes_vt_cy_bigger, nes_vt, nes_vt_cy_lexibook_state, empty_init,    "Lexibook", "Lexibook Compact Cyber Arcade - 250-in-1 (JL2375)", MACHINE_NOT_WORKING ) // 64Mbyte ROM, must be externally banked, or different addressing scheme
+CONS( 200?, lxcmcysw,  0,  0,  nes_vt_cy_bigger, nes_vt, nes_vt_cy_lexibook_state, empty_init,    "Lexibook", "Lexibook Compact Cyber Arcade - Star Wars Rebels", MACHINE_NOT_WORKING ) // 64Mbyte ROM, must be externally banked, or different addressing scheme
+CONS( 200?, lxcmcyfz,  0,  0,  nes_vt_cy_bigger, nes_vt, nes_vt_cy_lexibook_state, empty_init,    "Lexibook", "Lexibook Compact Cyber Arcade - Frozen", MACHINE_NOT_WORKING ) // 64Mbyte ROM, must be externally banked, or different addressing scheme
+CONS( 200?, lxcmcydp,  0,  0,  nes_vt_cy_bigger, nes_vt, nes_vt_cy_lexibook_state, empty_init,    "Lexibook", "Lexibook Compact Cyber Arcade - Disney Princess", MACHINE_NOT_WORKING ) // 64Mbyte ROM, must be externally banked, or different addressing scheme
+CONS( 200?, lxcmcysp,  0,  0,  nes_vt_cy_bigger, nes_vt, nes_vt_cy_lexibook_state, empty_init,    "Lexibook", "Lexibook Compact Cyber Arcade - Marvel Ultimate Spider-Man", MACHINE_NOT_WORKING ) // 64Mbyte ROM, must be externally banked, or different addressing scheme
+CONS( 200?, lxcmcycr,  0,  0,  nes_vt_cy_bigger, nes_vt, nes_vt_cy_lexibook_state, empty_init,    "Lexibook", "Lexibook Compact Cyber Arcade - Cars", MACHINE_NOT_WORKING ) // 64Mbyte ROM, must be externally banked, or different addressing scheme
+// the data order is swapped for this one, maybe other internal differences?
+CONS( 200?, lxcmcypp,  0,  0,  nes_vt_cy_bigger, nes_vt, nes_vt_cy_lexibook_state, init_lxcmcypp, "Lexibook", "Lexibook Compact Cyber Arcade - Paw Patrol", MACHINE_NOT_WORKING ) // 64Mbyte ROM, must be externally banked, or different addressing scheme
 
-CONS( 200?, lxccminn,  0,  0,  nes_vt_cy_bigger, nes_vt, nes_vt_cy_lexibook_state, empty_init, "Lexibook", "Lexibook Console Colour - Minnie Mouse", MACHINE_NOT_WORKING ) // 64Mbyte (used) ROM, must be externally banked, or different addressing scheme
-CONS( 200?, lxccplan,  0,  0,  nes_vt_cy_bigger, nes_vt, nes_vt_cy_lexibook_state, empty_init, "Lexibook", "Lexibook Console Colour - Disney's Planes", MACHINE_NOT_WORKING ) // 64Mbyte (used) ROM, must be externally banked, or different addressing scheme
+
+CONS( 200?, lxccminn,  0,  0,  nes_vt_cy_bigger, nes_vt, nes_vt_cy_lexibook_state, empty_init,    "Lexibook", "Lexibook Console Colour - Minnie Mouse", MACHINE_NOT_WORKING ) // 64Mbyte (used) ROM, must be externally banked, or different addressing scheme
+CONS( 200?, lxccplan,  0,  0,  nes_vt_cy_bigger, nes_vt, nes_vt_cy_lexibook_state, empty_init,    "Lexibook", "Lexibook Console Colour - Disney's Planes", MACHINE_NOT_WORKING ) // 64Mbyte (used) ROM, must be externally banked, or different addressing scheme
 
 
 // GB-NO13-Main-VT389-2 on PCBs
-CONS( 2016, rtvgc300,  0,  0,  nes_vt_cy_bigger, nes_vt, nes_vt_cy_lexibook_state, empty_init, "Lexibook", "Lexibook Retro TV Game Console - 300 Games", MACHINE_NOT_WORKING )  // 64Mbyte ROM, must be externally banked, or different addressing scheme
-CONS( 2017, rtvgc300fz,0,  0,  nes_vt_cy_bigger, nes_vt, nes_vt_cy_lexibook_state, empty_init, "Lexibook", "Lexibook Retro TV Game Console - Frozen - 300 Games", MACHINE_NOT_WORKING )  // 64Mbyte ROM, must be externally banked, or different addressing scheme
+CONS( 2016, rtvgc300,  0,  0,  nes_vt_cy_bigger, nes_vt, nes_vt_cy_lexibook_state, empty_init,    "Lexibook", "Lexibook Retro TV Game Console - 300 Games", MACHINE_NOT_WORKING )  // 64Mbyte ROM, must be externally banked, or different addressing scheme
+CONS( 2017, rtvgc300fz,0,  0,  nes_vt_cy_bigger, nes_vt, nes_vt_cy_lexibook_state, empty_init,    "Lexibook", "Lexibook Retro TV Game Console - Frozen - 300 Games", MACHINE_NOT_WORKING )  // 64Mbyte ROM, must be externally banked, or different addressing scheme
 
 
 /* The following are also confirmed to be NES/VT derived units, most having a standard set of games with a handful of lazy graphic mods thrown in to fit the unit theme
 
     (handhekd units, use standard AAA batteries)
     Lexibook Compact Cyber Arcade - Cars
-    Lexibook Compact Cyber Arcade - Paw Patrol
     Lexibook Compact Cyber Arcade - Barbie
     Lexibook Compact Cyber Arcade - Finding Dory
     Lexibook Compact Cyber Arcade - PJ Masks
@@ -2213,3 +2216,4 @@ CONS( 2015, rminitv,   0,  0,  nes_vt_fp_pal_32mb, nes_vt, nes_vt_hh_state, empt
 // Use DIP switch to select console or cartridge, as cartridge is fake and just toggles a GPIO
 CONS( 2016, fcpocket,  0,  0,  nes_vt_fp_4x16mb,   nes_vt_fp, nes_vt_hh_state, empty_init, "<unknown>",   "FC Pocket 600 in 1", MACHINE_IMPERFECT_GRAPHICS | MACHINE_IMPERFECT_SOUND )  // has external banking (2x 32mbyte banks)
 
+CONS( 200?, zonefusn,  0,         0,  nes_vt_fp_16mb,     nes_vt, nes_vt_hh_state, empty_init, "Ultimate Products / Jungle's Soft", "Zone Fusion",  MACHINE_NOT_WORKING )

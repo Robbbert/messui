@@ -53,7 +53,7 @@ TIDY_SOURCES = $(SOURCES)
 
 #TIDY_SOURCES = $(SRC)/devices/nld_7442.cpp $(SRC)/devices/nld_7492.cpp
 
-#TIDY_FLAGS = -p $(OBJ) -checks=llvm-include-order,llvm-namespace-comment,modernize-use-override,modernize-use-using -fix
+TIDY_FLAGS = -p $(OBJ) -checks=llvm-include-order,llvm-namespace-comment,modernize-use-override,modernize-use-using -fix
 #TIDY_FLAGS = -checks=llvm-include-order -fix
 #TIDY_FLAGS = -checks=llvm-namespace-comment -fix
 #TIDY_FLAGS = -checks=modernize-use-override -fix
@@ -154,10 +154,11 @@ NLOBJS := \
 	$(NLOBJ)/devices/nld_tms4800.o \
 	$(NLOBJ)/devices/nld_4006.o \
 	$(NLOBJ)/devices/nld_4013.o \
+	$(NLOBJ)/devices/nld_4017.o \
 	$(NLOBJ)/devices/nld_4020.o \
+	$(NLOBJ)/devices/nld_4053.o \
 	$(NLOBJ)/devices/nld_4066.o \
 	$(NLOBJ)/devices/nld_4316.o \
-	$(NLOBJ)/devices/nld_7442.o \
 	$(NLOBJ)/devices/nld_7448.o \
 	$(NLOBJ)/devices/nld_7450.o \
 	$(NLOBJ)/devices/nld_7473.o \
