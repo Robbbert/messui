@@ -97,7 +97,7 @@ MACHINES["CXD1095"] = true
 --MACHINES["TTL74153"] = true
 --MACHINES["TTL7474"] = true
 --MACHINES["RIOT6532"] = true
---MACHINES["PIT8253"] = true
+MACHINES["PIT8253"] = true
 --MACHINES["Z80CTC"] = true
 --MACHINES["68681"] = true
 --MACHINES["BANKDEV"] = true
@@ -157,6 +157,10 @@ files{
 	MAME_DIR .. "src/mame/machine/nl_gtrak10.cpp",
 	MAME_DIR .. "src/mame/machine/nl_gtrak10.h",
 
+	MAME_DIR .. "src/mame/audio/nl_flyball.cpp",
+	MAME_DIR .. "src/mame/audio/nl_flyball.h",
+	MAME_DIR .. "src/mame/drivers/flyball.cpp",
+	
 	MAME_DIR .. "src/mame/drivers/hazeltin.cpp",
 
 	MAME_DIR .. "src/mame/drivers/1942.cpp",
@@ -296,6 +300,12 @@ files{
 	MAME_DIR .. "src/mame/machine/nl_tp1985.cpp",
 	MAME_DIR .. "src/mame/machine/nl_tp1985.h",
 	
+	MAME_DIR .. "src/mame/audio/nl_starcrus.h",
+	MAME_DIR .. "src/mame/audio/nl_starcrus.cpp",
+	MAME_DIR .. "src/mame/drivers/starcrus.cpp",
+	MAME_DIR .. "src/mame/includes/starcrus.h",
+	MAME_DIR .. "src/mame/video/starcrus.cpp",
+
 	MAME_DIR .. "src/mame/audio/nl_carpolo.h",
 	MAME_DIR .. "src/mame/audio/nl_carpolo.cpp",
 	MAME_DIR .. "src/mame/drivers/carpolo.cpp",
@@ -305,9 +315,17 @@ files{
 
 	MAME_DIR .. "src/mame/audio/nl_fireone.h",
 	MAME_DIR .. "src/mame/audio/nl_fireone.cpp",
+	MAME_DIR .. "src/mame/audio/nl_starfire.h",
+	MAME_DIR .. "src/mame/audio/nl_starfire.cpp",
 	MAME_DIR .. "src/mame/drivers/starfire.cpp",
 	MAME_DIR .. "src/mame/includes/starfire.h",
 	MAME_DIR .. "src/mame/video/starfire.cpp",
+
+	MAME_DIR .. "src/mame/audio/nl_starcrus.cpp",
+	MAME_DIR .. "src/mame/audio/nl_starcrus.h",
+	MAME_DIR .. "src/mame/drivers/starcrus.cpp",
+	MAME_DIR .. "src/mame/includes/starcrus.h",
+	MAME_DIR .. "src/mame/video/starcrus.cpp",
 
 	-- Skeletons ...
 	MAME_DIR .. "src/mame/drivers/a1supply.cpp",
