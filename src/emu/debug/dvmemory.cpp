@@ -297,7 +297,7 @@ void debug_view_memory::generate_row(debug_view_char *destmin, debug_view_char *
 			for (int i = 0; i < m_bytes_per_chunk; i++)
 			{
 				u8 chval = chunkdata >> (8 * (m_bytes_per_chunk - i - 1));
-				chunkascii += char((ismapped && isprint(chval)) ? chval : '.');
+				chunkascii += char((ismapped && isprint(chval&127)) ? chval&127 : '.');  // MESSUI
 			}
 		}
 	}
@@ -350,7 +350,7 @@ void debug_view_memory::generate_row(debug_view_char *destmin, debug_view_char *
 			for (int i = 0; i < m_bytes_per_chunk; i++)
 			{
 				u8 chval = chunkdata >> (8 * (m_bytes_per_chunk - i - 1));
-				chunkascii += char((ismapped && isprint(chval)) ? chval : '.');
+				chunkascii += char((ismapped && isprint(chval&127)) ? chval&127 : '.');  // MESSUI
 			}
 		}
 	}
