@@ -41,6 +41,7 @@ namespace netlist
 
 		NETLIB_HANDLERI(in)
 		{
+			m_enable = m_E() ? 0 : 1;
 			m_o = (m_A[1]() << 1) | m_A[0]();
 			for (std::size_t i=0; i<4; i++)
 				m_D[i].push((i == m_o && m_enable) ? 0 : 1, NLTIME_FROM_NS(21));
@@ -48,14 +49,15 @@ namespace netlist
 
 		NETLIB_HANDLERI(e)
 		{
-			m_enable = m_E();
+			m_enable = m_E() ? 0 : 1;
+			m_o = (m_A[1]() << 1) | m_A[0]();
 			for (std::size_t i=0; i<4; i++)
 				m_D[i].push((i == m_o && m_enable) ? 0 : 1, NLTIME_FROM_NS(18));
 		}
 
 	public:
 		state_var<bool> m_enable;
-		state_var<uint8_t> m_o;
+		state_var<uint32_t> m_o;
 		object_array_t<logic_input_t, 2> m_A;
 		object_array_t<logic_output_t, 4> m_D;
 		logic_input_t m_E;
