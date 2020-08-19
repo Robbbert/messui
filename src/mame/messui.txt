@@ -107,10 +107,9 @@ basic52.cpp
 //basssta.cpp
 bbc.cpp
 bbcbc.cpp
-//bbl380.cpp
 bcs3.cpp
 //bebox.cpp
-//bert.cpp
+bert.cpp
 //besta.cpp
 beta.cpp
 bigbord2.cpp
@@ -161,7 +160,8 @@ channelf.cpp
 chaos.cpp
 chessmate.cpp
 chessmst.cpp
-cit101.cpp
+//cit101.cpp
+//cit101xl.cpp        // terminal
 //cit220.cpp
 //cit1500.cpp
 cking_master.cpp
@@ -329,7 +329,7 @@ gamepock.cpp
 gb.cpp
 gba.cpp
 fidel_msc.cpp
-//generalplus_gpl16250.cpp
+//generalplus_gpl_unknown.cpp     // skeleton
 //generalplus_gpl16250_mobigo.cpp
 //generalplus_gpl16250_nand.cpp
 //generalplus_gpl16250_rom.cpp
@@ -423,7 +423,6 @@ instruct.cpp
 //inteladv.cpp
 intellec4.cpp
 intellect02.cpp
-interact.cpp
 interpro.cpp
 intv.cpp
 ipc.cpp
@@ -493,6 +492,7 @@ lcmate2.cpp
 //leapster.cpp
 //learnwin.cpp
 //lee1214.cpp
+//lee1220.cpp         // terminal
 lft.cpp
 //lft_chiptune.cpp     //wbdnu (works but does nothing useful)
 //lft_craft.cpp        //wbdnu
@@ -506,7 +506,6 @@ llc2.cpp
 lola8a.cpp
 lviv.cpp
 //lwriter.cpp
-lx_jg7425.cpp
 lynx.cpp
 m20.cpp
 m24.cpp
@@ -672,7 +671,7 @@ ondra.cpp
 //onyx.cpp
 orao.cpp
 oric.cpp
-//orion.cpp
+orion.cpp
 osbexec.cpp
 osborne1.cpp
 osi.cpp
@@ -685,7 +684,7 @@ p8k.cpp
 partner.cpp
 //paso1600.cpp
 pasogo.cpp
-pasopia.cpp
+//pasopia.cpp         // enter key not working
 pasopia7.cpp
 //patinho_feio.cpp
 pb1000.cpp
@@ -782,8 +781,6 @@ ql.cpp
 //qvt201.cpp
 qx10.cpp
 //r9751.cpp
-rad_eu3a05.cpp
-rad_eu3a14.cpp
 radio86.cpp
 rainbow.cpp
 //rambo.cpp
@@ -1036,7 +1033,7 @@ unior.cpp
 //unistar.cpp
 //univac.cpp
 //unixpc.cpp
-//unkmandd.cpp
+//unk6502_st2xxx.cpp    // skeleton
 ut88.cpp
 uzebox.cpp
 //v100.cpp
@@ -1055,12 +1052,11 @@ vector06.cpp
 vector4.cpp
 vectrex.cpp
 //vectrix.cpp
-//vg5k.cpp
+vg5k.cpp
 vic10.cpp
 vic20.cpp
 victor9k.cpp
 //vidbrain.cpp
-//vii.cpp
 vip.cpp
 //vis.cpp
 vixen.cpp
@@ -1101,7 +1097,9 @@ x1.cpp
 x1twin.cpp
 x68k.cpp
 xavix.cpp
+xavix_2000.cpp
 //xavix2.cpp
+//xavix_2002.cpp          // unplayable
 //xbase09.cpp
 //xbox.cpp
 xerox820.cpp
