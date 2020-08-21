@@ -107,6 +107,7 @@ b) Exit the dialog.
 #include "screen.h"
 #include "mui_audit.h"
 #include "mui_opts.h"
+#include "emu_opts.h"
 #include "resource.h"
 #include "dijoystick.h"     /* For DIJoystick availability. */
 #include "mui_util.h"
@@ -1333,19 +1334,17 @@ static void PropToOptions(HWND hWnd, windows_options &o)
 	hCtrl3 = GetDlgItem(hWnd, IDC_ASPECT);
 	if (hCtrl && hCtrl2 && hCtrl3)
 	{
-		char aspect_option[32];
-		snprintf(aspect_option, ARRAY_LENGTH(aspect_option), "aspect%d", GetSelectedScreen(hWnd));
+		string aspect_option = string("aspect") + std::to_string(GetSelectedScreen(hWnd));
 
 		if (Button_GetCheck(hCtrl3))
 		{
-			o.set_value(aspect_option, "auto", OPTION_PRIORITY_CMDLINE);
+			emu_set_value(o, aspect_option, "auto");
 		}
 		else
 		{
 			int n = 0;
 			int d = 0;
 			TCHAR buffer[200];
-			char buffer2[200];
 
 			Edit_GetText(hCtrl, buffer, ARRAY_LENGTH(buffer));
 			_stscanf(buffer,TEXT("%d"),&n);
@@ -1359,11 +1358,11 @@ static void PropToOptions(HWND hWnd, windows_options &o)
 				d = 3;
 			}
 
-			snprintf(buffer2, sizeof(buffer2), "%d:%d", n, d);
-			o.set_value(aspect_option, buffer2, OPTION_PRIORITY_CMDLINE);
+			string buffer2 = std::to_string(n) + ":" + std::to_string(d);
+			emu_set_value(o, aspect_option, buffer2);
 		}
 	}
-	/* aspect ratio */
+	/* snapshot size */
 	hCtrl  = GetDlgItem(hWnd, IDC_SNAPSIZEWIDTH);
 	hCtrl2 = GetDlgItem(hWnd, IDC_SNAPSIZEHEIGHT);
 	hCtrl3 = GetDlgItem(hWnd, IDC_SNAPSIZE);
@@ -1371,14 +1370,13 @@ static void PropToOptions(HWND hWnd, windows_options &o)
 	{
 		if (Button_GetCheck(hCtrl3))
 		{
-			o.set_value(OPTION_SNAPSIZE, "auto", OPTION_PRIORITY_CMDLINE);
+			emu_set_value(o, OPTION_SNAPSIZE, "auto");
 		}
 		else
 		{
 			int width = 0;
 			int height = 0;
 			TCHAR buffer[200];
-			char buffer2[200];
 
 			Edit_GetText(hCtrl, buffer, ARRAY_LENGTH(buffer));
 			_stscanf(buffer, TEXT("%d"), &width);
@@ -1392,8 +1390,8 @@ static void PropToOptions(HWND hWnd, windows_options &o)
 				height = 480;
 			}
 
-			snprintf(buffer2, sizeof(buffer2), "%dx%d", width, height);
-			o.set_value(OPTION_SNAPSIZE, buffer2, OPTION_PRIORITY_CMDLINE);
+			string buffer2 = std::to_string(width) + "x" + std::to_string(height);
+			emu_set_value(o, OPTION_SNAPSIZE, buffer2);
 		}
 	}
 }

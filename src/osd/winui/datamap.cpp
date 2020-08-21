@@ -20,6 +20,7 @@
 #include "mui_opts.h"
 #include "datamap.h"
 #include "winutf8.h"
+#include "emu_opts.h"
 
 
 #ifdef _MSC_VER
@@ -88,7 +89,7 @@ static control_type get_control_type(HWND control);
 static int control_operation(datamap *map, HWND dialog, windows_options *opts, datamap_entry *entry, datamap_callback_type callback_type);
 static void read_control(datamap *map, HWND control, windows_options *opts, datamap_entry *entry, const char *option_name);
 static void populate_control(datamap *map, HWND control, windows_options *opts, datamap_entry *entry, const char *option_name);
-static char *tztrim(float float_value);
+//static char *tztrim(float float_value);
 
 
 //============================================================
@@ -507,7 +508,7 @@ static void read_control(datamap *map, HWND control, windows_options *opts, data
 		case CT_BUTTON:
 			//assert(entry->type == DM_BOOL);
 			bool_value = Button_GetCheck(control);
-			opts->set_value(option_name, bool_value, OPTION_PRIORITY_CMDLINE);
+			emu_set_value(opts, option_name, bool_value);
 			break;
 
 		case CT_COMBOBOX:
@@ -518,13 +519,16 @@ static void read_control(datamap *map, HWND control, windows_options *opts, data
 				{
 					case DM_INT:
 						int_value = (int) ComboBox_GetItemData(control, selected_index);
-						opts->set_value(option_name, int_value, OPTION_PRIORITY_CMDLINE);
+						emu_set_value(opts, option_name, int_value);
 						break;
 
 					case DM_STRING:
+					{
 						string_value = (const char *) ComboBox_GetItemData(control, selected_index);
-						opts->set_value(option_name, string_value ? string_value : "", OPTION_PRIORITY_CMDLINE);
+						string svalue = string_value ? string(string_value) : "";
+						emu_set_value(opts, option_name, svalue);
 						break;
+					}
 
 					default:
 						break;
@@ -539,16 +543,11 @@ static void read_control(datamap *map, HWND control, windows_options *opts, data
 			{
 				case DM_INT:
 					int_value = (int) float_value;
-					if (int_value != opts->int_value(option_name)) {
-						opts->set_value(option_name, int_value, OPTION_PRIORITY_CMDLINE);
-					}
+					emu_set_value(opts, option_name, int_value);
 					break;
 
 				case DM_FLOAT:
-					// Use tztrim(float_value) or we get trailing zero's that break options_equal().
-					if (float_value != opts->float_value(option_name)) {
-						opts->set_value(option_name, tztrim(float_value), OPTION_PRIORITY_CMDLINE);
-					}
+					emu_set_value(opts, option_name, float_value);
 					break;
 
 				default:
@@ -733,6 +732,7 @@ static void populate_control(datamap *map, HWND control, windows_options *opts, 
 	}
 }
 
+#if 0
 // Return a string from a float value with trailing zeros removed.
 static char *tztrim(float float_value)
 {
@@ -762,4 +762,5 @@ static char *tztrim(float float_value)
 	tz_string[i] = '\0';
 	return tz_string;
 }
+#endif
 
