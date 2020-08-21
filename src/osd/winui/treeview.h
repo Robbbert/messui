@@ -1,8 +1,8 @@
 // For licensing and usage information, read docs/winui_license.txt
 //****************************************************************************
 // NOTE: ifdef MESS doesn't work here
-#ifndef TREEVIEW_H
-#define TREEVIEW_H
+#ifndef WINUI_TREEVIEW_H
+#define WINUI_TREEVIEW_H
 
 /* corrections for commctrl.h */
 
@@ -26,8 +26,7 @@
 #define TreeView_Select(w,i,c) (BOOL)(int)SendMessage((w),TVM_SELECTITEM,c,(LPARAM)(HTREEITEM)(i))
 
 #undef TreeView_EditLabel
-#define TreeView_EditLabel(w, i) \
-    SNDMSG(w,TVM_EDITLABEL,0,(LPARAM)(i))
+#define TreeView_EditLabel(w, i) SNDMSG(w,TVM_EDITLABEL,0,(LPARAM)(i))
 
 #endif /* defined(__GNUC__) */
 #include "bitmask.h"
@@ -210,3 +209,4 @@ void ResetTreeViewFolders(void);
 void SelectTreeViewFolder(int folder_id);
 
 #endif /* TREEVIEW_H */
+

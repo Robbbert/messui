@@ -23,3 +23,4 @@ BOOL SoftwareList_Idle(HWND hwndPicker);
 
 BOOL SetupSoftwareList(HWND hwndPicker, const struct PickerOptions *pOptions);
 int SoftwareList_GetNumberOfItems();
+

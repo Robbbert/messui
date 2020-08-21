@@ -56,3 +56,4 @@ void software_config_free(software_config *config)
 
 	free(config);
 }
+

@@ -4,8 +4,8 @@
 
 /* Written by Mike Haaland <mhaaland@hypertech.com> */
 
-#ifndef SPLITTER_H
-#define SPLITTER_H
+#ifndef WINUI_SPLITTER_H
+#define WINUI_SPLITTER_H
 
 #if !defined(MAX)
 #define MIN(a, b) ((a) < (b) ? (a) : (b))
@@ -78,3 +78,4 @@ const SPLITTERINFO g_splitterInfo[] =
 
 
 #endif /* SPLITTER_H */
+

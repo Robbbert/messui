@@ -2,8 +2,8 @@
 // MASTER
 //****************************************************************************
 
-#ifndef MUI_OPTS_H
-#define MUI_OPTS_H
+#ifndef WINUI_MUI_OPTS_H
+#define WINUI_MUI_OPTS_H
 
 #include "winmain.h"
 #include "winui.h"

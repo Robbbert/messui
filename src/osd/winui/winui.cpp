@@ -64,7 +64,6 @@
 #include "dijoystick.h"     /* For DIJoystick availability. */
 #include "softwarelist.h"
 #include "messui.h"
-#include "winui.h"
 #include "drivenum.h"
 #include <fstream>
 
@@ -4263,7 +4262,6 @@ static BOOL MameCommand(HWND hwnd,int id, HWND hwndCtl, UINT codeNotify)
 		{
 			InitPropertyPageToPage(hInst, hwnd, GetSelectedPickItemIcon(), OPTIONS_GAME, -1, current_game, PROPERTIES_PAGE);
 			{
-				extern BOOL g_bModifiedSoftwarePaths;
 				if (g_bModifiedSoftwarePaths)
 				{
 					g_bModifiedSoftwarePaths = false;
@@ -6762,3 +6760,48 @@ BOOL MouseHasBeenMoved(void)
 }
 
 /* End of source file */
+
+string longdots(string incoming, uint16_t howmany)
+{
+	// change all newlines to spaces
+	for (uint16_t i = 0; i < incoming.size(); i++)
+		if (incoming[i] == '\n')
+			incoming[i] = ' ';
+	// Now assume all is ok
+	string outgoing = incoming;
+	// But if it's too long, replace the excess with dots
+	if ((howmany > 5) && (incoming.length() > howmany))
+		outgoing = incoming.substr(0, howmany) + "...";
+	return outgoing;
+}
+
+ //  wstring_from_utf8
+ //============================================================
+ 
+WCHAR *ui_wstring_from_utf8(const char *utf8string)
+{
+	int char_count;
+	WCHAR *result;
+
+	// convert MAME string (UTF-8) to UTF-16
+	char_count = MultiByteToWideChar(CP_UTF8, 0, utf8string, -1, nullptr, 0);
+	result = (WCHAR *)malloc(char_count * sizeof(*result));
+	if (result != nullptr)
+		MultiByteToWideChar(CP_UTF8, 0, utf8string, -1, result, char_count);
+ 
+	return result;
+}
+
+char *ui_utf8_from_wstring(const WCHAR *wstring)
+{
+	int char_count;
+	char *result;
+
+	// convert UTF-16 to MAME string (UTF-8)
+	char_count = WideCharToMultiByte(CP_UTF8, 0, wstring, -1, nullptr, 0, nullptr, nullptr);
+	result = (char *)malloc(char_count * sizeof(*result));
+	if (result != nullptr)
+		WideCharToMultiByte(CP_UTF8, 0, wstring, -1, result, char_count, nullptr, nullptr);
+	return result;
+}
+

@@ -2,8 +2,8 @@
 // MASTER
 //****************************************************************************
 
-#ifndef DIRECTORIES_H
-#define DIRECTORIES_H
+#ifndef WINUI_DIRECTORIES_H
+#define WINUI_DIRECTORIES_H
 
 /* Dialog return codes - do these do anything??? */
 #define DIRDLG_ROMS         0x0010  // this one does

@@ -1,8 +1,8 @@
 // For licensing and usage information, read docs/winui_license.txt
 //****************************************************************************
 
-#ifndef PROPERTIES_H
-#define PROPERTIES_H
+#ifndef WINUI_PROPERTIES_H
+#define WINUI_PROPERTIES_H
 
 /* Get title string to display in the top of the property page,
  * Called also in ui_audit.cpp

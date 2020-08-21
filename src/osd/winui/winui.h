@@ -1,8 +1,8 @@
 // For licensing and usage information, read docs/winui_license.txt
 //****************************************************************************
 
-#ifndef WINUI_H
-#define WINUI_H
+#ifndef WINUI_WINUI_H
+#define WINUI_WINUI_H
 
 #include <commctrl.h>
 #include <commdlg.h>
@@ -116,19 +116,8 @@ BOOL MouseHasBeenMoved(void);
 
 const char * GetSearchText(void);
 
-// This function truncates a long string, replacing the end with ...
-string longdots(string incoming, uint16_t howmany)
-{
-	// Firstly, find out if it's multi-line text
-	size_t i = incoming.find_first_of("\n");
-	// If so, truncate at first newline
-	if (i != string::npos)
-		incoming = incoming.substr(0, i);
-	// Now assume all is ok
-	string outgoing = incoming;
-	// But if it's too long, replace the excess with dots
-	if ((howmany > 5) && (incoming.length() > howmany))
-		outgoing = incoming.substr(0, howmany) + "...";
-	return outgoing;
-}
+string longdots(string, uint16_t);
+WCHAR *ui_wstring_from_utf8(const char*);
+char *ui_utf8_from_wstring(const WCHAR*);
 #endif
+
