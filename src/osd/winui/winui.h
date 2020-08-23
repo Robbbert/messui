@@ -20,10 +20,10 @@
 
 #ifdef BUILD_MESS
 #define MAMENAME "MESS"
-#define UI_INI_FILENAME "MESSUI.ini"
+#define MUI_INI_FILENAME "MESSUI.ini"
 #else
 #define MAMENAME "MAMEMESS"
-#define UI_INI_FILENAME "MAMEUI.ini"
+#define MUI_INI_FILENAME "MAMEUI.ini"
 #endif
 
 #ifdef PTR64

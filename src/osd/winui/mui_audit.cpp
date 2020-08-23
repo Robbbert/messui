@@ -22,6 +22,7 @@
 #include "winutf8.h"
 #include "audit.h"
 #include "resource.h"
+#include "emu_opts.h"
 #include "mui_opts.h"
 #include "mui_util.h"
 #include "properties.h"

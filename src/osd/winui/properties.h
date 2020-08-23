@@ -4,6 +4,7 @@
 #ifndef WINUI_PROPERTIES_H
 #define WINUI_PROPERTIES_H
 
+#include "emu_opts.h"
 /* Get title string to display in the top of the property page,
  * Called also in ui_audit.cpp
  */

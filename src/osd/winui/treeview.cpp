@@ -28,6 +28,7 @@
 #include "treeview.h"
 #include "resource.h"
 #include "mui_opts.h"
+#include "emu_opts.h"
 #include "dialogs.h"
 #include "winutf8.h"
 #include "screen.h"
@@ -1994,7 +1995,7 @@ static int InitExtraFolders(void)
 	char *          ext;
 	char            buf[2048];
 	char            curdir[MAX_PATH];
-	const std::string    t = GetFolderDir();
+	const std::string    t = dir_get_value(24);
 	const char *dir = t.c_str();
 	memset(ExtraFolderData, 0, (MAX_EXTRA_FOLDERS * MAX_EXTRA_SUBFOLDERS)* sizeof(LPEXFOLDERDATA));
 
@@ -2154,7 +2155,7 @@ BOOL TryAddExtraFolderAndChildren(int parent_index)
 
 	/* "folder\title.ini" */
 
-	const std::string t = GetFolderDir();
+	const std::string t = dir_get_value(24);
 	sprintf( fname, "%s\\%s.ini", t.c_str(), ExtraFolderData[id]->m_szTitle);
 
 	fp = fopen(fname, "r");
@@ -2259,26 +2260,28 @@ static BOOL TryRenameCustomFolderIni(LPTREEFOLDER lpFolder, const char *old_name
 	char filename[MAX_PATH];
 	char new_filename[MAX_PATH];
 	LPTREEFOLDER lpParent = NULL;
+	string ini_dir = GetIniDir();
+	const char* inidir = ini_dir.c_str();
 	if (lpFolder->m_nParent >= 0)
 	{
 		//it is a custom SubFolder
 		lpParent = GetFolder( lpFolder->m_nParent );
 		if( lpParent )
 		{
-			snprintf(filename,ARRAY_LENGTH(filename),"%s\\%s\\%s.ini",GetIniDir(),lpParent->m_lpTitle, old_name );
-			snprintf(new_filename,ARRAY_LENGTH(new_filename),"%s\\%s\\%s.ini",GetIniDir(),lpParent->m_lpTitle, new_name );
+			snprintf(filename,ARRAY_LENGTH(filename),"%s\\%s\\%s.ini",inidir,lpParent->m_lpTitle, old_name );
+			snprintf(new_filename,ARRAY_LENGTH(new_filename),"%s\\%s\\%s.ini",inidir,lpParent->m_lpTitle, new_name );
 			win_move_file_utf8(filename,new_filename);
 		}
 	}
 	else
 	{
 		//Rename the File, if it exists
-		snprintf(filename,ARRAY_LENGTH(filename),"%s\\%s.ini",GetIniDir(),old_name );
-		snprintf(new_filename,ARRAY_LENGTH(new_filename),"%s\\%s.ini",GetIniDir(), new_name );
+		snprintf(filename,ARRAY_LENGTH(filename),"%s\\%s.ini",inidir,old_name );
+		snprintf(new_filename,ARRAY_LENGTH(new_filename),"%s\\%s.ini",inidir, new_name );
 		win_move_file_utf8(filename,new_filename);
 		//Rename the Directory, if it exists
-		snprintf(filename,ARRAY_LENGTH(filename),"%s\\%s",GetIniDir(),old_name );
-		snprintf(new_filename,ARRAY_LENGTH(new_filename),"%s\\%s",GetIniDir(), new_name );
+		snprintf(filename,ARRAY_LENGTH(filename),"%s\\%s",inidir,old_name );
+		snprintf(new_filename,ARRAY_LENGTH(new_filename),"%s\\%s",inidir, new_name );
 		win_move_file_utf8(filename,new_filename);
 	}
 	return true;
@@ -2316,7 +2319,7 @@ BOOL TryRenameCustomFolder(LPTREEFOLDER lpFolder, const char *new_name)
 
 	// a parent extra folder was renamed, so rename the file
 
-	const std::string t = GetFolderDir();
+	const std::string t = dir_get_value(24);
 	snprintf(new_filename,ARRAY_LENGTH(new_filename),"%s\\%s.ini", t.c_str(), new_name);
 	snprintf(filename,ARRAY_LENGTH(filename),"%s\\%s.ini", t.c_str(), lpFolder->m_lpTitle);
 
@@ -2405,7 +2408,7 @@ BOOL TrySaveExtraFolder(LPTREEFOLDER lpFolder)
 	}
 	/* "folder\title.ini" */
 
-	const std::string t = GetFolderDir();
+	const std::string t = dir_get_value(24);
 	snprintf( fname, sizeof(fname), "%s\\%s.ini", t.c_str(), extra_folder->m_szTitle);
 
 	fp = fopen(fname, "wt");
@@ -2491,7 +2494,7 @@ int GetTreeViewIconIndex(int icon_id)
 
 static void SaveExternalFolders(int parent_index, const char *fname)
 {
-	string val = GetFolderDir();
+	string val = dir_get_value(24);
 	char s[val.size()+1];
 	strcpy(s, val.c_str());
 	char *fdir = strtok(s, ";"); // get first dir

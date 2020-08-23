@@ -31,6 +31,7 @@
 #include "treeview.h"
 #include "resource.h"
 #include "mui_opts.h"
+#include "emu_opts.h"
 #include "help.h"
 #include "properties.h"  // For GetHelpIDs
 
@@ -167,11 +168,15 @@ INT_PTR CALLBACK ResetDialogProc(HWND hDlg, UINT Msg, WPARAM wParam, LPARAM lPar
 						ResetGUI();
 						EndDialog(hDlg, 1);
 						return true;
-					} else {
+					}
+					else
+					{
 						EndDialog(hDlg, 0);
 						return true;
 					}
-				} else {
+				}
+				else
+				{
 					// Give the user a chance to change what they want to reset.
 					break;
 				}
@@ -350,11 +355,11 @@ INT_PTR CALLBACK InterfaceDialogProc(HWND hDlg, UINT Msg, WPARAM wParam, LPARAM 
 				PostMessage(GetMainWindow(),WM_COMMAND, MAKEWPARAM(ID_VIEW_LINEUPICONS, false),(LPARAM)NULL);
 			}
 			nCurSelection = ComboBox_GetCurSel(GetDlgItem(hDlg,IDC_SNAPNAME));
-			if (nCurSelection != CB_ERR) {
+			if (nCurSelection != CB_ERR)
+			{
 				const char* snapname_selection = (const char*)ComboBox_GetItemData(GetDlgItem(hDlg,IDC_SNAPNAME), nCurSelection);
-				if (snapname_selection) {
+				if (snapname_selection)
 					SetSnapName(snapname_selection);
-				}
 			}
 			EndDialog(hDlg, 0);
 

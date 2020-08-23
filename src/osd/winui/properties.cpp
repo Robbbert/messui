@@ -1594,7 +1594,7 @@ static void OptionsToProp(HWND hWnd, windows_options& o)
 
 	if (hCtrl)
 	{
-		string t1 = GetPlugins();
+		string t1 = dir_get_value(11);
 		const char* plugin = t1.c_str();
 
 		if (strlen(plugin) == 0)
@@ -2029,7 +2029,7 @@ static BOOL DefaultInputPopulateControl(datamap *map, HWND dialog, HWND control,
 	(void)ComboBox_InsertString(control, index, TEXT("Default"));
 	(void)ComboBox_SetItemData(control, index, "");
 	index++;
-	snprintf(path, WINUI_ARRAY_LENGTH(path), "%s\\*.*", GetCtrlrDir().c_str());
+	snprintf(path, WINUI_ARRAY_LENGTH(path), "%s\\*.*", dir_get_value(6).c_str());
 	HANDLE hFind = winui_find_first_file_utf8(path, &FindFileData);
 
 	if (hFind != INVALID_HANDLE_VALUE)
@@ -2842,7 +2842,7 @@ static void InitializeLanguageUI(HWND hWnd)
 	if (hCtrl)
 	{
 		int count = 0;
-		string t1 = GetLangDir();
+		string t1 = dir_get_value(12);
 		const char* t2 = t1.c_str();
 		osd::directory::ptr directory = osd::directory::open(t2);
 
@@ -2878,7 +2878,7 @@ static void InitializePluginsUI(HWND hWnd)
 
 	if (hCtrl)
 	{
-		string t1 = GetPluginsDir();
+		string t1 = dir_get_value(11);
 		const char* t2 = t1.c_str();
 		osd::directory::ptr directory = osd::directory::open(t2);
 
@@ -3075,7 +3075,7 @@ static bool SelectPlugins(HWND hWnd)
 		return changed;
 
 	const char *new_value = plugin_names[index].c_str();
-	string t1 = GetPlugins();
+	string t1 = dir_get_value(11);
 	const char* value = t1.c_str();
 
 	char *token = NULL;
