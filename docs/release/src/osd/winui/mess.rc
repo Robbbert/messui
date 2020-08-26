@@ -19,3 +19,4 @@ LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_US
 
 #define RCMESS
 #include "mameui.rc"
+

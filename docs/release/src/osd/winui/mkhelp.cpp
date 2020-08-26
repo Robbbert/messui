@@ -94,8 +94,8 @@ int main(int argc, char *argv[])
 
 static int compare( const void *arg1, const void *arg2 )
 {
-   /* Compare all of both strings: */
-   return _stricmp( * ( char** ) arg1, * ( char** ) arg2 );
+	/* Compare all of both strings: */
+	return _stricmp( * ( char** ) arg1, * ( char** ) arg2 );
 }
 
 #pragma GCC diagnostic ignored "-Wsizeof-pointer-memaccess"
@@ -135,7 +135,7 @@ static void extract_help_ids(const char *buffer, FILE *fp)
 	for (i = 0; i < num_help_id; i++) {
 		if (i > 0) {
 			if (strcmp(ptr, help_ids[i]) == 0) {
-                continue;
+				continue;
 			}
 		}
 		fprintf(fp, "\t%-30s,H%s,\n", help_ids[i], help_ids[i]);

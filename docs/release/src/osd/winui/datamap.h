@@ -7,8 +7,8 @@
 //
 //============================================================
 
-#ifndef _DATAMAP_H_
-#define _DATAMAP_H_
+#ifndef WINUI_DATAMAP_H
+#define WINUI_DATAMAP_H
 
 //============================================================
 //  TYPE DEFINITIONS
@@ -66,4 +66,5 @@ void datamap_populate_all_controls(datamap *map, HWND dialog, windows_options &o
 void datamap_update_control(datamap *map, HWND dialog, windows_options &opts, int dlgitem);
 void datamap_update_all_controls(datamap *map, HWND dialog, windows_options *opts);
 
-#endif // _DATAMAP_H_
+#endif // DATAMAP_H
+

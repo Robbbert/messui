@@ -46,6 +46,7 @@
 #include "mui_audit.h"
 #include "directories.h"
 #include "mui_opts.h"
+#include "emu_opts.h"
 #include "properties.h"
 #include "columnedit.h"
 #include "picker.h"
@@ -64,7 +65,6 @@
 #include "dijoystick.h"     /* For DIJoystick availability. */
 #include "softwarelist.h"
 #include "messui.h"
-#include "winui.h"
 #include "drivenum.h"
 #include <fstream>
 
@@ -1188,7 +1188,7 @@ HICON LoadIconFromFile(const char *iconname)
 	PBYTE bufferPtr = 0;
 	util::archive_file::ptr zip;
 
-	const string t = GetIconsDir();
+	const string t = dir_get_value(40);
 	sprintf(tmpStr, "%s/%s.ico", t.c_str(), iconname);
 	if (stat(tmpStr, &file_stat) != 0 || (hIcon = win_extract_icon_utf8(hInst, tmpStr, 0)) == 0)
 	{
@@ -1663,8 +1663,8 @@ static BOOL Win32UI_init(HINSTANCE hInstance, LPWSTR lpCmdLine, int nCmdShow)
 	m_resized = false;
 
 	printf("Win32UI_init: About to init options\n");fflush(stdout);
-	if (!OptionsInit())
-		return false;
+	OptionsInit();
+	emu_opts_init(0);
 	printf("Win32UI_init: Options loaded\n");fflush(stdout);
 	//win_message_box_utf8(hMain, "test", emulator_info::get_appname(), MB_OK);
 
@@ -1721,8 +1721,8 @@ static BOOL Win32UI_init(HINSTANCE hInstance, LPWSTR lpCmdLine, int nCmdShow)
 	s_pWatcher = DirWatcher_Init(hMain, WM_MAME32_FILECHANGED);
 	if (s_pWatcher)
 	{
-		DirWatcher_Watch(s_pWatcher, 0, GetRomDirs(), true);
-		DirWatcher_Watch(s_pWatcher, 1, GetSampleDirs(), true);
+		DirWatcher_Watch(s_pWatcher, 0, dir_get_value(2), true);  // roms
+		DirWatcher_Watch(s_pWatcher, 1, dir_get_value(4), true);  // samples
 	}
 
 	SetMainTitle();
@@ -2024,6 +2024,7 @@ static void Win32UI_exit()
 	SetSavedFolderID(GetCurrentFolderID());
 	SaveGameListOptions();
 	SaveOptions();
+	ui_save_ini();
 
 	FreeFolders();
 
@@ -2609,7 +2610,7 @@ static void OnSize(HWND hWnd, UINT nState, int nWidth, int nHeight)
 		ResizePickerControls(hMain);
 	firstTime = false;
 	UpdateScreenShot();
-	printf("OnSize: Finished\n");
+	printf("OnSize: Finished\n");fflush(stdout);
 }
 
 
@@ -3768,7 +3769,8 @@ static void UpdateCache()
 	int current_id = GetCurrentFolderID(); // remember selected folder
 	SetWindowRedraw(hwndList, false);   // stop screen updating
 	ForceRebuild();          // tell system that cache needs redoing
-	(void)OptionsInit();      // reload options and fix game cache
+	OptionsInit();      // reload options and fix game cache
+	emu_opts_init(1);
 	//extern const FOLDERDATA g_folderData[];
 	//extern const FILTER_ITEM g_filterList[];
 	//InitTree(g_folderData, g_filterList);         // redo folders... This crashes, leave out for now
@@ -4263,7 +4265,6 @@ static BOOL MameCommand(HWND hwnd,int id, HWND hwndCtl, UINT codeNotify)
 		{
 			InitPropertyPageToPage(hInst, hwnd, GetSelectedPickItemIcon(), OPTIONS_GAME, -1, current_game, PROPERTIES_PAGE);
 			{
-				extern BOOL g_bModifiedSoftwarePaths;
 				if (g_bModifiedSoftwarePaths)
 				{
 					g_bModifiedSoftwarePaths = false;
@@ -4371,9 +4372,9 @@ static BOOL MameCommand(HWND hwnd,int id, HWND hwndCtl, UINT codeNotify)
 			if (s_pWatcher)
 			{
 				if (bUpdateRoms)
-					DirWatcher_Watch(s_pWatcher, 0, GetRomDirs(), true);
+					DirWatcher_Watch(s_pWatcher, 0, dir_get_value(2), true);
 				if (bUpdateSamples)
-					DirWatcher_Watch(s_pWatcher, 1, GetSampleDirs(), true);
+					DirWatcher_Watch(s_pWatcher, 1, dir_get_value(4), true);
 			}
 
 			/* update game list */
@@ -4390,6 +4391,7 @@ static BOOL MameCommand(HWND hwnd,int id, HWND hwndCtl, UINT codeNotify)
 			// these may have been changed
 			SaveDefaultOptions();
 			SaveOptions();
+			ui_save_ini();
 			DestroyWindow(hwnd);
 			PostQuitMessage(0);
 		}
@@ -5285,42 +5287,42 @@ BOOL CommonFileDialog(common_file_dialog_proc cfd, char *filename, int filetype)
 	case FILETYPE_INPUT_FILES :
 		ofn.lpstrFilter   = TEXT("input files (*.inp,*.zip,*.7z)\0*.inp;*.zip;*.7z\0All files (*.*)\0*.*\0");
 		ofn.lpstrDefExt   = TEXT("inp");
-		dirname = GetInpDir();
+		dirname = dir_get_value(16);
 		break;
 	case FILETYPE_SAVESTATE_FILES :
 		ofn.lpstrFilter   = TEXT("savestate files (*.sta)\0*.sta;\0All files (*.*)\0*.*\0");
 		ofn.lpstrDefExt   = TEXT("sta");
-		dirname = GetStateDir();
+		dirname = dir_get_value(17);
 		break;
 	case FILETYPE_WAVE_FILES :
 		ofn.lpstrFilter   = TEXT("sounds (*.wav)\0*.wav;\0All files (*.*)\0*.*\0");
 		ofn.lpstrDefExt   = TEXT("wav");
-		dirname = GetImgDir();
+		dirname = dir_get_value(18);
 		break;
 	case FILETYPE_MNG_FILES :
 		ofn.lpstrFilter   = TEXT("videos (*.mng)\0*.mng;\0All files (*.*)\0*.*\0");
 		ofn.lpstrDefExt   = TEXT("mng");
-		dirname = GetImgDir();
+		dirname = dir_get_value(18);
 		break;
 	case FILETYPE_AVI_FILES :
 		ofn.lpstrFilter   = TEXT("videos (*.avi)\0*.avi;\0All files (*.*)\0*.*\0");
 		ofn.lpstrDefExt   = TEXT("avi");
-		dirname = GetImgDir();
+		dirname = dir_get_value(18);
 		break;
 	case FILETYPE_EFFECT_FILES :
 		ofn.lpstrFilter   = TEXT("effects (*.png)\0*.png;\0All files (*.*)\0*.*\0");
 		ofn.lpstrDefExt   = TEXT("png");
-		dirname = GetArtDir();
+		dirname = dir_get_value(5);
 		break;
 	case FILETYPE_JOYMAP_FILES :
 		ofn.lpstrFilter   = TEXT("maps (*.map,*.txt)\0*.map;*.txt;\0All files (*.*)\0*.*\0");
 		ofn.lpstrDefExt   = TEXT("map");
-		dirname = GetCtrlrDir();
+		dirname = dir_get_value(6);
 		break;
 	case FILETYPE_DEBUGSCRIPT_FILES :
 		ofn.lpstrFilter   = TEXT("scripts (*.txt,*.dat)\0*.txt;*.dat;\0All files (*.*)\0*.*\0");
 		ofn.lpstrDefExt   = TEXT("txt");
-		dirname = GetInpDir();
+		dirname = dir_get_value(16);
 		break;
 	default:
 		return false;
@@ -6762,3 +6764,48 @@ BOOL MouseHasBeenMoved(void)
 }
 
 /* End of source file */
+
+string longdots(string incoming, uint16_t howmany)
+{
+	// change all newlines to spaces
+	for (uint16_t i = 0; i < incoming.size(); i++)
+		if (incoming[i] == '\n')
+			incoming[i] = ' ';
+	// Now assume all is ok
+	string outgoing = incoming;
+	// But if it's too long, replace the excess with dots
+	if ((howmany > 5) && (incoming.length() > howmany))
+		outgoing = incoming.substr(0, howmany) + "...";
+	return outgoing;
+}
+
+ //  wstring_from_utf8
+ //============================================================
+ 
+WCHAR *ui_wstring_from_utf8(const char *utf8string)
+{
+	int char_count;
+	WCHAR *result;
+
+	// convert MAME string (UTF-8) to UTF-16
+	char_count = MultiByteToWideChar(CP_UTF8, 0, utf8string, -1, nullptr, 0);
+	result = (WCHAR *)malloc(char_count * sizeof(*result));
+	if (result != nullptr)
+		MultiByteToWideChar(CP_UTF8, 0, utf8string, -1, result, char_count);
+ 
+	return result;
+}
+
+char *ui_utf8_from_wstring(const WCHAR *wstring)
+{
+	int char_count;
+	char *result;
+
+	// convert UTF-16 to MAME string (UTF-8)
+	char_count = WideCharToMultiByte(CP_UTF8, 0, wstring, -1, nullptr, 0, nullptr, nullptr);
+	result = (char *)malloc(char_count * sizeof(*result));
+	if (result != nullptr)
+		WideCharToMultiByte(CP_UTF8, 0, wstring, -1, result, char_count, nullptr, nullptr);
+	return result;
+}
+

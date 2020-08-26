@@ -107,6 +107,7 @@ b) Exit the dialog.
 #include "screen.h"
 #include "mui_audit.h"
 #include "mui_opts.h"
+#include "emu_opts.h"
 #include "resource.h"
 #include "dijoystick.h"     /* For DIJoystick availability. */
 #include "mui_util.h"
@@ -198,7 +199,6 @@ static BOOL DirListReadControl(datamap *map, HWND dialog, HWND control, windows_
 static BOOL DirListPopulateControl(datamap *map, HWND dialog, HWND control, windows_options *opts, const char *option_name);
 static BOOL RamPopulateControl(datamap *map, HWND dialog, HWND control, windows_options *opts, const char *option_name);
 extern BOOL BrowseForDirectory(HWND hwnd, LPCTSTR pStartDir, TCHAR* pResult);
-//static BOOL g_bModifiedSoftwarePaths = false;
 #endif
 
 /**************************************************************
@@ -1334,19 +1334,17 @@ static void PropToOptions(HWND hWnd, windows_options &o)
 	hCtrl3 = GetDlgItem(hWnd, IDC_ASPECT);
 	if (hCtrl && hCtrl2 && hCtrl3)
 	{
-		char aspect_option[32];
-		snprintf(aspect_option, ARRAY_LENGTH(aspect_option), "aspect%d", GetSelectedScreen(hWnd));
+		string aspect_option = string("aspect") + std::to_string(GetSelectedScreen(hWnd));
 
 		if (Button_GetCheck(hCtrl3))
 		{
-			o.set_value(aspect_option, "auto", OPTION_PRIORITY_CMDLINE);
+			emu_set_value(o, aspect_option, "auto");
 		}
 		else
 		{
 			int n = 0;
 			int d = 0;
 			TCHAR buffer[200];
-			char buffer2[200];
 
 			Edit_GetText(hCtrl, buffer, ARRAY_LENGTH(buffer));
 			_stscanf(buffer,TEXT("%d"),&n);
@@ -1360,11 +1358,11 @@ static void PropToOptions(HWND hWnd, windows_options &o)
 				d = 3;
 			}
 
-			snprintf(buffer2, sizeof(buffer2), "%d:%d", n, d);
-			o.set_value(aspect_option, buffer2, OPTION_PRIORITY_CMDLINE);
+			string buffer2 = std::to_string(n) + ":" + std::to_string(d);
+			emu_set_value(o, aspect_option, buffer2);
 		}
 	}
-	/* aspect ratio */
+	/* snapshot size */
 	hCtrl  = GetDlgItem(hWnd, IDC_SNAPSIZEWIDTH);
 	hCtrl2 = GetDlgItem(hWnd, IDC_SNAPSIZEHEIGHT);
 	hCtrl3 = GetDlgItem(hWnd, IDC_SNAPSIZE);
@@ -1372,14 +1370,13 @@ static void PropToOptions(HWND hWnd, windows_options &o)
 	{
 		if (Button_GetCheck(hCtrl3))
 		{
-			o.set_value(OPTION_SNAPSIZE, "auto", OPTION_PRIORITY_CMDLINE);
+			emu_set_value(o, OPTION_SNAPSIZE, "auto");
 		}
 		else
 		{
 			int width = 0;
 			int height = 0;
 			TCHAR buffer[200];
-			char buffer2[200];
 
 			Edit_GetText(hCtrl, buffer, ARRAY_LENGTH(buffer));
 			_stscanf(buffer, TEXT("%d"), &width);
@@ -1393,8 +1390,8 @@ static void PropToOptions(HWND hWnd, windows_options &o)
 				height = 480;
 			}
 
-			snprintf(buffer2, sizeof(buffer2), "%dx%d", width, height);
-			o.set_value(OPTION_SNAPSIZE, buffer2, OPTION_PRIORITY_CMDLINE);
+			string buffer2 = std::to_string(width) + "x" + std::to_string(height);
+			emu_set_value(o, OPTION_SNAPSIZE, buffer2);
 		}
 	}
 }
@@ -1597,7 +1594,7 @@ static void OptionsToProp(HWND hWnd, windows_options& o)
 
 	if (hCtrl)
 	{
-		string t1 = GetPlugins();
+		string t1 = dir_get_value(11);
 		const char* plugin = t1.c_str();
 
 		if (strlen(plugin) == 0)
@@ -2032,7 +2029,7 @@ static BOOL DefaultInputPopulateControl(datamap *map, HWND dialog, HWND control,
 	(void)ComboBox_InsertString(control, index, TEXT("Default"));
 	(void)ComboBox_SetItemData(control, index, "");
 	index++;
-	snprintf(path, WINUI_ARRAY_LENGTH(path), "%s\\*.*", GetCtrlrDir().c_str());
+	snprintf(path, WINUI_ARRAY_LENGTH(path), "%s\\*.*", dir_get_value(6).c_str());
 	HANDLE hFind = winui_find_first_file_utf8(path, &FindFileData);
 
 	if (hFind != INVALID_HANDLE_VALUE)
@@ -2845,7 +2842,7 @@ static void InitializeLanguageUI(HWND hWnd)
 	if (hCtrl)
 	{
 		int count = 0;
-		string t1 = GetLangDir();
+		string t1 = dir_get_value(12);
 		const char* t2 = t1.c_str();
 		osd::directory::ptr directory = osd::directory::open(t2);
 
@@ -2881,7 +2878,7 @@ static void InitializePluginsUI(HWND hWnd)
 
 	if (hCtrl)
 	{
-		string t1 = GetPluginsDir();
+		string t1 = dir_get_value(11);
 		const char* t2 = t1.c_str();
 		osd::directory::ptr directory = osd::directory::open(t2);
 
@@ -3078,7 +3075,7 @@ static bool SelectPlugins(HWND hWnd)
 		return changed;
 
 	const char *new_value = plugin_names[index].c_str();
-	string t1 = GetPlugins();
+	string t1 = dir_get_value(11);
 	const char* value = t1.c_str();
 
 	char *token = NULL;
