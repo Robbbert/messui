@@ -16,10 +16,8 @@
 #include "plib/putil.h"
 
 #include "nl_config.h"
-#include "nltypes.h"
 #include "nl_parser.h"
-// FIXME: avoid including factory
-//#include "nl_factory.h"
+#include "nltypes.h"
 
 #include <initializer_list>
 #include <memory>
@@ -86,7 +84,6 @@ void NETLIST_NAME(name)(netlist::nlparse_t &setup)                             \
 #define EXTERNAL_SOURCE(name)                                                  \
 		setup.register_source_proc(# name, &NETLIST_NAME(name));
 
-// FIXME: Need to pass in parameter definition
 #define LOCAL_LIB_ENTRY_1(name)                                                \
 		LOCAL_SOURCE(name)                                                     \
 		setup.register_lib_entry(# name, "", PSOURCELOC());
@@ -113,7 +110,7 @@ void NETLIST_NAME(name)(netlist::nlparse_t &setup)                             \
 // -----------------------------------------------------------------------------
 
 #define TRUTHTABLE_START(cname, in, out, pdef_params)                          \
-	{ \
+	NETLIST_START(cname) \
 		netlist::tt_desc desc;                                                 \
 		desc.name = #cname ;                                                   \
 		desc.ni = in;                                                          \
@@ -133,7 +130,11 @@ void NETLIST_NAME(name)(netlist::nlparse_t &setup)                             \
 
 #define TRUTHTABLE_END() \
 		setup.truthtable_create(desc, def_params, std::move(sloc)); \
-	}
+	NETLIST_END()
+
+#define TRUTHTABLE_ENTRY(name)                                                 \
+	LOCAL_SOURCE(name)                                                         \
+	INCLUDE(name)
 
 namespace netlist
 {

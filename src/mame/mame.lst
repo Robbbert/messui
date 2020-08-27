@@ -3138,7 +3138,8 @@ bagmans                         // (c) 1982 + Stern license
 bagmans2                        // (c) 1982 + Stern license
 bagnard                         // (c) 1982
 bagnarda                        // (c) 1982
-bagnardi                        // (c) 1982 + Itisa license
+bagnardi                        // (c) 1983 + Itisa license
+bagnardio                       // (c) 1982 + Itisa license
 botanic                         // (c) 1983
 botanic2                        // (c) 1983
 botanicf                        // (c) 1984
@@ -13014,6 +13015,7 @@ sudelan3
 sudelan
 carlecfg
 pvmilfin
+pvwwcas
 
 @source:electra.cpp
 avenger                         // (c) 1975 Electra
@@ -14228,6 +14230,7 @@ orbitron                        // (c) 1982 Signatron USA (Arcade Tv Game List -
 pacmanbl                        // bootleg
 pacmanbla                       // bootleg
 pacmanblb                       // bootleg
+pacmanblc                       // bootleg (Calfesa)
 pacmanblv                       // bootleg (Video Dens)
 pajaroes                        // bootleg
 phoenxp2                        // bootleg
@@ -22160,6 +22163,7 @@ sonic2mb                        // MegaDrive-based hack
 srmdb                           // MegaDrive-based hack
 ssf2mdb                         // MegaDrive-based hack
 topshoot                        // (c) 1995 Sun Mixing
+sbubsm                          // (c) 1996 Sun Mixing
 twinktmb                        // MegaDrive-based hack
 
 @source:megadriv_rad.cpp
@@ -32106,6 +32110,8 @@ pinkjelly                       // From V.R. Technology VT SDK
 vtpinball                       // From V.R. Technology VT SDK
 vtsndtest                       // From V.R. Technology VT SDK
 vtboxing                        // From V.R. Technology VT SDK
+msiwwe
+msidd
 ablpinb
 mc_dgear
 dgun2500
@@ -32589,12 +32595,12 @@ octopus                         //
 odyssey                         // (c) Silicon Gaming.
 
 @source:odyssey2.cpp
-g7400                           // 1983 Videopac Plus G7400
 jopac                           // 1983 Jopac JO7400
 odyssey2                        // Magnavox Odyssey 2 - 1978-1983
 odyssey3                        // Magnavox Odyssey 3 / Command Center (prototype)
 videopac                        // 1979 Videopac G7000
 videopacf                       // 1979 Videopac C52
+videopacp                       // 1983 Videopac Plus G7400
 
 @source:offtwall.cpp
 offtwall                        // 136090           (c) 1991
@@ -34084,6 +34090,7 @@ brod                            //
 kok                             //
 
 @source:photoply.cpp
+photoply98sp                    // (c) 1998 Funworld
 photoply99sp                    // (c) 1999 Funworld
 photoply                        //
 photoply2k4                     //
@@ -35431,6 +35438,7 @@ route16b                        // (c) 1981 Tehkan/Sun + Centuri license
 route16bl                       // bootleg
 route16c                        // (c) 1981 Tehkan/Sun + Centuri license
 routex                          // bootleg
+routexa                         // bootleg
 spacecho                        // bootleg
 spacecho2                       // bootleg
 speakhlp                        // bootleg
@@ -38026,6 +38034,7 @@ rad_skatp                       //
 rad_crik                        //
 rad_fb2                         //
 mattelcs                        //
+hotwhl2p
 comil                           //
 abltenni                        //
 totspies
@@ -39699,7 +39708,8 @@ tkdenshoa                       // (c) 1996 Tecmo
 tecnbras                        //
 
 @source:tecnodar.cpp
-tecnodar                        //
+tecnodar                        // (c) 1991 Automatics Pasqual
+tecnodargr                      // (c) 1991 Automatics Pasqual / Recreativos G.R.
 
 @source:tehkanwc.cpp
 gridiron                        // (c) 1985 Tehkan
@@ -40277,6 +40287,7 @@ bgareggabla                     // hack
 bgareggacn                      // (c) 1996 Raizing/8ing
 bgareggahk                      // (c) 1996 Raizing/8ing
 bgaregganv                      // (c) 1996 Raizing/8ing
+bgareggat                       // (c) 1996 Raizing/8ing
 bgareggat2                      // (c) 1996 Raizing/8ing
 bgareggatw                      // (c) 1996 Raizing/8ing
 dogyuun                         // TP-022 (c) 1992 Toaplan

@@ -5,8 +5,8 @@
  *
  */
 
-#include "netlist/nl_base.h"
-#include "netlist/nl_factory.h"
+#include "nl_base.h"
+#include "nl_factory.h"
 
 template <typename N, typename T>
 constexpr bool TOR(N n, T &a)
@@ -195,7 +195,7 @@ namespace netlist
 			// FIXME: tristate outputs, add 82S23 (open collector)
 			using address_width =      desc_const<5>;
 			using data_width =         desc_const<8>;
-			using data_name_offset =   desc_const<1>; // O1, O2, ..
+			using data_name_offset =   desc_const<0>; // O0, O1, ..
 			using chip_enable_inputs = desc_const<1>;
 			// MATCH_MASK : all 0 ==> all bits inverted
 			using chip_enable_mask =   desc_const<0x00>;
