@@ -9518,6 +9518,9 @@ busicom                         //
 @source:buster.cpp
 buster                          // (c) 1987 Marian Electronics Ltd.
 
+@source:bvm.cpp
+bvm20f1e                        //
+
 @source:bw12.cpp
 bw12                            //
 bw14                            //
@@ -11234,12 +11237,14 @@ cps3booto2                      // bootleg
 cps3bs32                        //
 cps3bs32a                       //
 jojo                            // 28/01/1999 (c) 1998 (Euro)
-jojoba                          // 27/09/1999 (c) 1999 (Japan)
+jojoba                          // 27/09/1999 (c) 1999 (Euro)
+jojobaj                         // 27/09/1999 (c) 1999 (Japan)
+jojobajr1                       // 13/09/1999 (c) 1999 (Japan)
 jojoban                         // 27/09/1999 (c) 1999 (Japan)
 jojobane                        // 27/09/1999 (c) 1999 (Euro)
 jojobaner1                      // 13/09/1999 (c) 1999 (Euro)
 jojobanr1                       // 13/09/1999 (c) 1999 (Japan)
-jojobar1                        // 13/09/1999 (c) 1999 (Japan)
+jojobar1                        // 13/09/1999 (c) 1999 (Euro)
 jojoj                           // 28/01/1999 (c) 1998 (Japan)
 jojojr1                         // 08/01/1999 (c) 1998 (Japan)
 jojojr2                         // 02/12/1998 (c) 1998 (Japan)
@@ -14018,7 +14023,8 @@ wrally2a                        // (c) 1995 - Ref 950510
 footbpow                        // (c) 1999 - Ref 000208
 radikalb                        // (c) 1998 - Ref ???
 radikalba                       // (c) 1998 - Ref ???
-speedup                         // (c) 1996 - Ref ???
+speedup                         // (c) 1996 - Ref 961022 (main) + 961029 (ROMs)
+speedup12                       // (c) 1996 - Ref ???
 speedup10                       // (c) 1996 - Ref ???
 surfplnt                        // (c) 1997 - Ref 971223
 surfplnt40                      // (c) 1997 - Ref 970514
@@ -32103,6 +32109,7 @@ npssr2                          //
 npusagif                        //
 
 @source:neptunp2.cpp
+mexlindo                        //
 neptunp2                        //
 rockroll                        //
 
