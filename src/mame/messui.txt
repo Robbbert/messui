@@ -128,6 +128,7 @@ bob85.cpp
 //braiplus.cpp
 bullet.cpp
 busicom.cpp
+//bvm.cpp                         // monitor, skel
 bw12.cpp
 bw2.cpp
 //c10.cpp
@@ -253,7 +254,6 @@ elekscmp.cpp
 //elektronmono.cpp
 elf.cpp
 elwro800.cpp
-//emate.cpp
 emma2.cpp
 //emu2.cpp
 //emu3.cpp
@@ -329,6 +329,7 @@ gamepock.cpp
 gb.cpp
 gba.cpp
 fidel_msc.cpp
+//gem_rp.cpp                      // synth, skel
 //generalplus_gpl_unknown.cpp     // skeleton
 //generalplus_gpl16250_mobigo.cpp
 //generalplus_gpl16250_nand.cpp
@@ -419,6 +420,9 @@ imsai.cpp
 //indiana.cpp
 //indigo.cpp
 //indy_indigo2.cpp
+//informer_207_100.cpp            // terminal
+//informer_207_376.cpp            // terminal
+//informer_213ae.cpp              // terminal
 instruct.cpp
 //inteladv.cpp
 intellec4.cpp
@@ -643,12 +647,14 @@ newbrain.cpp
 news_38xx.cpp          //unix ws
 //news_68k.cpp
 news_r3k.cpp
+//newton.cpp                      // skel
 next.cpp
 //nforcepc.cpp
 //ngen.cpp
 ngp.cpp
 //nokia_3310.cpp
 //notetaker.cpp
+novag_cexpert.cpp                 // chess
 novag_cforte.cpp
 novag_const.cpp
 novag_diablo.cpp
@@ -809,6 +815,7 @@ rmnimbus.cpp
 //roland_sc55.cpp
 //roland_sc88.cpp
 //roland_tb303.cpp
+//roland_tr505.cpp                // synth
 //roland_tr606.cpp
 //roland_tr707.cpp
 //roland_tr909.cpp
@@ -1061,6 +1068,7 @@ vip.cpp
 //vis.cpp
 vixen.cpp
 //vk100.cpp
+//votrhv.cpp                      // skel
 //votrpss.cpp
 //votrtnt.cpp
 //vp415.cpp
@@ -1080,6 +1088,7 @@ vsmileb.cpp
 vtech1.cpp
 vtech2.cpp
 //vtech_eu3a12.cpp
+//vt_unknown.cpp                  // skel
 wangpc.cpp
 //wicat.cpp
 //wrinkles.cpp
@@ -1120,6 +1129,7 @@ z88.cpp
 //z9001.cpp
 zapcomputer.cpp
 //zaurus.cpp
+//zeebo_qualcomm_adreno130.cpp    // skel
 //zexall.cpp
 //zms8085.cpp
 zorba.cpp
