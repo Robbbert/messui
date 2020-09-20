@@ -252,7 +252,7 @@ elan_eu3a05.cpp
 electron.cpp
 elekscmp.cpp
 //elektronmono.cpp
-elf.cpp
+//elf.cpp               // trainer, not working
 elwro800.cpp
 emma2.cpp
 //emu2.cpp
