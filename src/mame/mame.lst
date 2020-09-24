@@ -2403,6 +2403,7 @@ acombat3                        // bootleg
 acombat4                        // bootleg
 acombato                        // bootleg
 afire                           // Rene Pierre
+asterion                        // Olympia
 astrof                          // (c) [1980?]
 astrof2                         // (c) [1980?]
 astrof3                         // (c) [1980?]
@@ -11963,6 +11964,7 @@ cobraa                          //
 rblaster                        // (c) 1985
 
 @source:deco_mlc.cpp
+acchi                           // ??? (c) 1996 Data East Corporation (Japan)
 avengrgs                        // MCG (c) 1995 Data East Corporation (World)
 avengrgsj                       // MCG (c) 1995 Data East Corporation (Japan)
 ddream95                        // MCE (c) 1996 Data East Corporation
@@ -19016,8 +19018,8 @@ pwrchanc
 ymcapsul
 
 @source:quickpick5.cpp
-goemedal
 quickp5
+waijockey
 
 @source:kontest.cpp
 kontest                         // GX800 (c) 198? (Japan)
@@ -37771,6 +37773,7 @@ snes4sln
 denseib                         // bootleg
 denseib2                        // bootleg
 endless                         // bootleg
+endlessa                        // bootleg
 ffight2b                        // bootleg
 iron                            // bootleg
 legendsb                        // bootleg
@@ -40398,6 +40401,7 @@ kbash2                          // bootleg
 kbashk                          // TP-023 (c) 1993 Toaplan
 kingdmgp                        // (c) 1994 Raizing/8ing
 mahoudai                        // (c) 1993 Raizing + Able license
+nprobowl                        // (c) 1996 Zuck + Able license
 othldrby                        // (c) 1995 Sunwise
 pipibibs                        // TP-025
 pipibibsa                       // TP-025

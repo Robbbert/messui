@@ -2,13 +2,16 @@
 // copyright-holders:Nigel Barnes
 /**********************************************************************
 
-    Watford Electronics User Port Splitter
+    Hybrid Music 4000 Keyboard
+
+    https://www.retro-kit.co.uk/page.cfm/content/Hybrid-Music-4000-Keyboard/
+    http://chrisacorns.computinghistory.org.uk/8bit_Upgrades/Hybrid_Music4000.html
 
 **********************************************************************/
 
 
-#ifndef MAME_BUS_BBC_USERPORT_USERSPLIT_H
-#define MAME_BUS_BBC_USERPORT_USERSPLIT_H
+#ifndef MAME_BUS_BBC_USERPORT_M4000_H
+#define MAME_BUS_BBC_USERPORT_M4000_H
 
 #pragma once
 
@@ -18,44 +21,38 @@
 //  TYPE DEFINITIONS
 //**************************************************************************
 
-// ======================> bbc_usersplit_device
+// ======================> bbc_m4000_device
 
-class bbc_usersplit_device :
+class bbc_m4000_device :
 	public device_t,
 	public device_bbc_userport_interface
 {
 public:
 	// construction/destruction
-	bbc_usersplit_device(const machine_config &mconfig, const char *tag, device_t *owner, uint32_t clock);
-
-	DECLARE_INPUT_CHANGED_MEMBER(userport_changed) { m_selected = newval; }
+	bbc_m4000_device(const machine_config &mconfig, const char *tag, device_t *owner, uint32_t clock);
 
 protected:
 	// device-level overrides
 	virtual void device_start() override;
 
 	// optional information overrides
-	virtual void device_add_mconfig(machine_config &config) override;
 	virtual ioport_constructor device_input_ports() const override;
 
 	virtual uint8_t pb_r() override;
-	virtual void pb_w(uint8_t data) override;
 	virtual void write_cb1(int state) override;
 	virtual void write_cb2(int state) override;
 
 private:
-	DECLARE_WRITE_LINE_MEMBER(cb1a_w);
-	DECLARE_WRITE_LINE_MEMBER(cb2a_w);
-	DECLARE_WRITE_LINE_MEMBER(cb1b_w);
-	DECLARE_WRITE_LINE_MEMBER(cb2b_w);
+	required_ioport_array<8> m_kbd;
 
-	required_device_array<bbc_userport_slot_device, 2> m_userport;
-	uint8_t m_selected;
+	int m_clk;
+	int m_dsb;
+	uint8_t m_out;
 };
 
 
 // device type definition
-DECLARE_DEVICE_TYPE(BBC_USERSPLIT, bbc_usersplit_device)
+DECLARE_DEVICE_TYPE(BBC_M4000, bbc_m4000_device)
 
 
-#endif // MAME_BUS_BBC_USERPORT_USERSPLIT_H
+#endif // MAME_BUS_BBC_USERPORT_M4000_H
