@@ -24,6 +24,7 @@ acrnsys1.cpp
 acrnsys.cpp
 //actions_atj2279b.cpp
 //acvirus.cpp
+//adacp150.cpp          // printer
 adam.cpp
 //adm11.cpp
 //adm23.cpp
@@ -422,7 +423,7 @@ imsai.cpp
 //indy_indigo2.cpp
 //informer_207_100.cpp            // terminal
 //informer_207_376.cpp            // terminal
-//informer_213ae.cpp              // terminal
+//informer_213.cpp                // terminal
 instruct.cpp
 //inteladv.cpp
 intellec4.cpp
@@ -803,6 +804,7 @@ rmnimbus.cpp
 //roland_cm32p.cpp
 //roland_d10.cpp
 //roland_d50.cpp
+//roland_jd800.cpp               // synth
 //roland_jv80.cpp
 //roland_jx3p.cpp
 //roland_jx8p.cpp
