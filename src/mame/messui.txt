@@ -691,7 +691,7 @@ p8k.cpp
 partner.cpp
 //paso1600.cpp
 pasogo.cpp
-//pasopia.cpp         // enter key not working
+//pasopia.cpp         // enter key not working, broken by AJR
 pasopia7.cpp
 //patinho_feio.cpp
 pb1000.cpp
@@ -716,7 +716,7 @@ pcm.cpp
 pcw.cpp
 //pcw16.cpp
 //pda600.cpp
-pdp1.cpp
+//pdp1.cpp         // broken MT 07762 by AJR
 //pdp11.cpp
 //pdt3100.cpp
 pecom.cpp
