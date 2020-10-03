@@ -716,7 +716,7 @@ pcm.cpp
 pcw.cpp
 //pcw16.cpp
 //pda600.cpp
-//pdp1.cpp         // broken MT 07762 by AJR
+pdp1.cpp
 //pdp11.cpp
 //pdt3100.cpp
 pecom.cpp
