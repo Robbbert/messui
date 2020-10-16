@@ -155,6 +155,7 @@ ccs2810.cpp
 cd2650.cpp
 //cdc721.cpp
 //cdsys5.cpp
+//ceres.cpp                            // not working
 cfx9850.cpp
 //cgc7900.cpp
 cgenie.cpp
@@ -330,14 +331,15 @@ gamepock.cpp
 gb.cpp
 gba.cpp
 fidel_msc.cpp
-//gem_rp.cpp                      // synth, skel
-//generalplus_gpl_unknown.cpp     // skeleton
-//generalplus_gpl16250_mobigo.cpp
-//generalplus_gpl16250_nand.cpp
-//generalplus_gpl16250_rom.cpp
-//generalplus_gpl16250_romram.cpp
-//generalplus_gpl16250_spi.cpp
-//generalplus_gpl32612.cpp
+//gem_rp.cpp                          // synth, skel
+//generalplus_gpl_unknown.cpp         // skeleton
+generalplus_gpl162xx_lcdtype.cpp
+//generalplus_gpl16250_mobigo.cpp     // no games in this file
+//generalplus_gpl16250_nand.cpp       // not working
+//generalplus_gpl16250_rom.cpp        // not working
+//generalplus_gpl16250_romram.cpp     // not working
+//generalplus_gpl16250_spi.cpp        // not working
+//generalplus_gpl32612.cpp            // not working
 geneve.cpp
 geniusiq.cpp
 //geniusjr.cpp
@@ -522,6 +524,7 @@ m68705prg.cpp
 mac.cpp
 mac128.cpp
 //macpci.cpp
+//macquadra700.cpp                     // not working
 //magiceyes_pollux_vr3520f.cpp
 magnum.cpp
 mattelchess.cpp
