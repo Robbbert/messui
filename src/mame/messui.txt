@@ -347,7 +347,7 @@ geneve.cpp
 geniusiq.cpp
 //geniusjr.cpp
 genpc.cpp
-gigatron.cpp
+//gigatron.cpp                        // crash at start
 gimix.cpp
 //gkidabc.cpp
 //gizmondo.cpp

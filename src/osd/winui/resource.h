@@ -312,7 +312,6 @@
 #define IDC_DEBUGSCRIPT                 1243
 #define IDC_SELECT_DEBUGSCRIPT          1244
 #define IDC_RESET_DEBUGSCRIPT           1245
-#define IDC_SELECT_JOYSTICKMAP          1246
 #define IDC_RESET_JOYSTICKMAP           1247
 #define IDC_JOYSTICKMAP                 1248
 #define IDC_SNAPSIZE                    1249

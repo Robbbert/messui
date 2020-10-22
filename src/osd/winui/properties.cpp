@@ -183,7 +183,7 @@ static bool ResetPlugins(HWND hWnd);
 //static bool ResetBGFXChains(HWND hWnd);
 static BOOL SelectEffect(HWND hWnd);
 static BOOL ResetEffect(HWND hWnd);
-static BOOL SelectJoystickMap(HWND hWnd);
+static BOOL ChangeJoystickMap(HWND hWnd);
 static BOOL ResetJoystickMap(HWND hWnd);
 static BOOL SelectDebugscript(HWND hWnd);
 static BOOL ResetDebugscript(HWND hWnd);
@@ -273,11 +273,11 @@ const DUALCOMBOSTR g_ComboBoxVideo[] =
 
 const DUALCOMBOSTR g_ComboBoxSound[] =
 {
-	{ TEXT("None"),             "none"    },
-	{ TEXT("Auto"),             "auto"    },
-	{ TEXT("DirectSound"),      "dsound"  },
-	{ TEXT("PortAudio"),        "portaudio" },
-//	{ TEXT("XAudio2"),          "xaudio2" },     // invalid option
+	{ TEXT("None"),                  "none"    },
+	{ TEXT("Auto"),                  "auto"    },
+	{ TEXT("DirectSound"),           "dsound"  },
+	{ TEXT("PortAudio"),             "portaudio" },
+	{ TEXT("XAudio2 (Win10 only)"),  "xaudio2" },     // win10 only
 };
 #define NUMSOUND (sizeof(g_ComboBoxSound) / sizeof(g_ComboBoxSound[0]))
 #ifdef D3DVERSION
@@ -308,8 +308,6 @@ const DUALCOMBOSTR g_ComboBoxView[] =
 };
 #define NUMVIEW (sizeof(g_ComboBoxView) / sizeof(g_ComboBoxView[0]))
 
-
-
 const DUALCOMBOSTR g_ComboBoxDevice[] =
 {
 	{ TEXT("None"),             "none"      },
@@ -318,7 +316,6 @@ const DUALCOMBOSTR g_ComboBoxDevice[] =
 	{ TEXT("Joystick"),         "joystick"  },
 	{ TEXT("Lightgun"),         "lightgun"  },
 };
-
 #define NUMDEVICES (sizeof(g_ComboBoxDevice) / sizeof(g_ComboBoxDevice[0]))
 
 const DUALCOMBOSTR g_ComboBoxSnapView[] =
@@ -330,6 +327,19 @@ const DUALCOMBOSTR g_ComboBoxSnapView[] =
 	{ TEXT("Cocktail"),         "cocktail"    },
 };
 #define NUMSNAPVIEW (sizeof(g_ComboBoxSnapView) / sizeof(g_ComboBoxSnapView[0]))
+
+const DUALCOMBOSTR g_ComboBoxBackend[] =
+{
+	{ TEXT("Auto"),                   "auto" },
+	{ TEXT("DirectX9"),               "dx9"  },
+	{ TEXT("DirectX11"),              "dx11" },
+	{ TEXT("DirectX12 (Win10 only)"), "dx12" },
+	{ TEXT("GLES"),                   "gles" },
+	{ TEXT("GLSL"),                   "glsl" },
+	{ TEXT("Metal (Win10 only)"),     "metal" },
+	{ TEXT("Vulkan (Win10 only)"),    "vulkan" },
+};
+#define NUMBACKEND (sizeof(g_ComboBoxBackend) / sizeof(g_ComboBoxBackend[0]))
 
 
 /***************************************************************
@@ -1086,8 +1096,8 @@ INT_PTR CALLBACK GameOptionsProc(HWND hDlg, UINT Msg, WPARAM wParam, LPARAM lPar
 				changed = ResetEffect(hDlg);
 				break;
 
-			case IDC_SELECT_JOYSTICKMAP:
-				changed = SelectJoystickMap(hDlg);
+				case IDC_JOYSTICKMAP:
+				changed = ChangeJoystickMap(hDlg);
 				break;
 
 			case IDC_RESET_JOYSTICKMAP:
@@ -1507,19 +1517,21 @@ static void OptionsToProp(HWND hWnd, windows_options& o)
 	}
 
 	hCtrl = GetDlgItem(hWnd, IDC_EFFECT);
-	if (hCtrl) {
-		const char* effect = o.value(OPTION_EFFECT);
-		if (effect == NULL) {
+	if (hCtrl)
+	{
+		string effect = emu_get_value(o, OPTION_EFFECT);
+		if (effect.empty())
+		{
 			effect = "none";
-			o.set_value(OPTION_EFFECT, effect, OPTION_PRIORITY_CMDLINE);
+			emu_set_value(o, OPTION_EFFECT, effect);
 		}
-		win_set_window_text_utf8(hCtrl, effect);
+		win_set_window_text_utf8(hCtrl, effect.c_str());
 	}
 
 	hCtrl = GetDlgItem(hWnd, IDC_SNAPSIZE);
 	if (hCtrl)
 	{
-		if( strcmp(o.value(OPTION_SNAPSIZE), "auto") == 0)
+		if( emu_get_value(o, OPTION_SNAPSIZE) == "auto")
 		{
 			Button_SetCheck(hCtrl, true);
 			g_bAutoSnapSize = true;
@@ -1541,7 +1553,8 @@ static void OptionsToProp(HWND hWnd, windows_options& o)
 
 	if (hCtrl)
 	{
-		const char* cheatfile = opts.value(OPTION_CHEATPATH);
+		string c = emu_get_value(o, OPTION_CHEATPATH);
+		const char* cheatfile = c.c_str();
 
 		if (strcmp(cheatfile, "cheat") == 0)
 			winui_set_window_text_utf8(hCtrl, "Default");
@@ -1551,6 +1564,7 @@ static void OptionsToProp(HWND hWnd, windows_options& o)
 
 			if (cheatname != NULL)
 			{
+				char buffer[cheatfile.length()+1];
 				strcpy(buffer, cheatname + 1);
 				winui_set_window_text_utf8(hCtrl, buffer);
 			}
@@ -1563,7 +1577,8 @@ static void OptionsToProp(HWND hWnd, windows_options& o)
 
 	if (hCtrl)
 	{
-		const char* joymap = o.value(OPTION_JOYSTICK_MAP);
+		string c = emu_get_value(o, OPTION_JOYSTICK_MAP);
+		const char* joymap = c.c_str();
 
 		win_set_window_text_utf8(hCtrl, joymap);
 	}
@@ -1572,12 +1587,13 @@ static void OptionsToProp(HWND hWnd, windows_options& o)
 
 	if (hCtrl)
 	{
-		const char* script = o.value(OPTION_AUTOBOOT_SCRIPT);
+		string c = emu_get_value(o, OPTION_AUTOBOOT_SCRIPT);
 
-		if (strcmp(script, "") == 0)
+		if (c.empty())
 			win_set_window_text_utf8(hCtrl, "None");
 		else
 		{
+			const char* script = c.c_str();
 			char buffer[260];
 			wchar_t *t_filename = ui_wstring_from_utf8(script);
 			wchar_t *tempname = PathFindFileName(t_filename);
@@ -1807,32 +1823,32 @@ static void SetPropEnabledControls(HWND hWnd)
 //  CONTROL HELPER FUNCTIONS FOR DATA EXCHANGE
 //============================================================
 
-static BOOL RotateReadControl(datamap *map, HWND dialog, HWND control, windows_options *opts, const char *option_name)
+static BOOL RotateReadControl(datamap *map, HWND dialog, HWND control, windows_options *o, const char *option_name)
 {
 	int selected_index = ComboBox_GetCurSel(control);
 	int original_selection = 0;
 
 	// Figure out what the original selection value is
-	if (opts->bool_value(OPTION_ROR) && !opts->bool_value(OPTION_ROL))
+	if (o->bool_value(OPTION_ROR) && !o->bool_value(OPTION_ROL))
 		original_selection = 1;
-	else if (!opts->bool_value(OPTION_ROR) && opts->bool_value(OPTION_ROL))
+	else if (!o->bool_value(OPTION_ROR) && o->bool_value(OPTION_ROL))
 		original_selection = 2;
-	else if (!opts->bool_value(OPTION_ROTATE))
+	else if (!o->bool_value(OPTION_ROTATE))
 		original_selection = 3;
-	else if (opts->bool_value(OPTION_AUTOROR))
+	else if (o->bool_value(OPTION_AUTOROR))
 		original_selection = 4;
-	else if (opts->bool_value(OPTION_AUTOROL))
+	else if (o->bool_value(OPTION_AUTOROL))
 		original_selection = 5;
 
 	// Any work to do?  If so, make the changes and return true.
 	if (selected_index != original_selection)
 	{
 		// Set the options based on the new selection.
-		opts->set_value(OPTION_ROR, selected_index == 1, OPTION_PRIORITY_CMDLINE);
-		opts->set_value(OPTION_ROL, selected_index == 2, OPTION_PRIORITY_CMDLINE);
-		opts->set_value(OPTION_ROTATE, selected_index != 3, OPTION_PRIORITY_CMDLINE);
-		opts->set_value(OPTION_AUTOROR, selected_index == 4, OPTION_PRIORITY_CMDLINE);
-		opts->set_value(OPTION_AUTOROL, selected_index == 5, OPTION_PRIORITY_CMDLINE);
+		emu_set_value(o, OPTION_ROR, selected_index == 1);
+		emu_set_value(o, OPTION_ROL, selected_index == 2);
+		emu_set_value(o, OPTION_ROTATE, selected_index != 3);
+		emu_set_value(o, OPTION_AUTOROR, selected_index == 4);
+		emu_set_value(o, OPTION_AUTOROL, selected_index == 5);
 		return true;
 	}
 
@@ -1863,7 +1879,7 @@ static BOOL RotatePopulateControl(datamap *map, HWND dialog, HWND control, windo
 
 
 
-static BOOL ScreenReadControl(datamap *map, HWND dialog, HWND control, windows_options *opts, const char *option_name)
+static BOOL ScreenReadControl(datamap *map, HWND dialog, HWND control, windows_options *o, const char *option_name)
 {
 	char screen_option_name[32];
 	int selected_screen = GetSelectedScreen(dialog);
@@ -1871,7 +1887,7 @@ static BOOL ScreenReadControl(datamap *map, HWND dialog, HWND control, windows_o
 	TCHAR *screen_option_value = (TCHAR*) ComboBox_GetItemData(control, screen_option_index);
 	snprintf(screen_option_name, ARRAY_LENGTH(screen_option_name), "screen%d", selected_screen);
 	char *op_val = ui_utf8_from_wstring(screen_option_value);
-	opts->set_value(screen_option_name, op_val, OPTION_PRIORITY_CMDLINE);
+	emu_set_value(o, screen_option_name, op_val);
 	free(op_val);
 	return false;
 }
@@ -1970,11 +1986,11 @@ static BOOL SnapViewPopulateControl(datamap *map, HWND dialog, HWND control, win
 	return false;
 }
 
-static BOOL DefaultInputReadControl(datamap *map, HWND dialog, HWND control, windows_options *opts, const char *option_name)
+static BOOL DefaultInputReadControl(datamap *map, HWND dialog, HWND control, windows_options *o, const char *option_name)
 {
 	int input_option_index = ComboBox_GetCurSel(control);
 	const char *input_option_value = (const char*)ComboBox_GetItemData(control, input_option_index);
-	opts->set_value(OPTION_CTRLR, input_option_index ? input_option_value : "", OPTION_PRIORITY_CMDLINE);
+	emu_set_value(o, OPTION_CTRLR, input_option_index ? input_option_value : "");
 	return false;
 }
 
@@ -2080,7 +2096,7 @@ static void ResolutionSetOptionName(datamap *map, HWND dialog, HWND control, cha
 }
 
 
-static BOOL ResolutionReadControl(datamap *map, HWND dialog, HWND control, windows_options *opts, const char *option_name)
+static BOOL ResolutionReadControl(datamap *map, HWND dialog, HWND control, windows_options *o, const char *option_name)
 {
 	HWND refresh_control = GetDlgItem(dialog, IDC_REFRESH);
 	HWND sizes_control = GetDlgItem(dialog, IDC_SIZES);
@@ -2100,7 +2116,7 @@ static BOOL ResolutionReadControl(datamap *map, HWND dialog, HWND control, windo
 		else
 			snprintf(option_value, ARRAY_LENGTH(option_value), "auto");
 
-		opts->set_value(option_name, option_value, OPTION_PRIORITY_CMDLINE);
+		emu_set_value(o, option_name, option_value);
 	}
 	res++;
 	return false;
@@ -2216,7 +2232,7 @@ static void ResetDataMap(HWND hWnd)
 		|| (core_stricmp(pCurrentOpts.value(screen_option), "") == 0 )
 		|| (core_stricmp(pCurrentOpts.value(screen_option), "auto") == 0 ) )
 	{
-		pCurrentOpts.set_value(screen_option, "auto", OPTION_PRIORITY_CMDLINE);
+		emu_set_value(pCurrentOpts, screen_option, "auto");
 	}
 }
 
@@ -2955,7 +2971,7 @@ static BOOL SelectEffect(HWND hWnd)
 		if (strcmp(buff, pCurrentOpts.value(OPTION_EFFECT))!=0)
 		{
 			HWND control = GetDlgItem(hWnd, IDC_EFFECT);
-			pCurrentOpts.set_value(OPTION_EFFECT, buff, OPTION_PRIORITY_CMDLINE);
+			emu_set_value(pCurrentOpts, OPTION_EFFECT, buff);
 			win_set_window_text_utf8(control, buff);
 			// datamap_populate_control(properties_datamap, hWnd, pCurrentOpts, IDC_EFFECT);
 			changed = true;
@@ -2972,7 +2988,7 @@ static BOOL ResetEffect(HWND hWnd)
 	if (strcmp(new_value, pCurrentOpts.value(OPTION_EFFECT))!=0)
 	{
 		HWND control = GetDlgItem(hWnd, IDC_EFFECT);
-		pCurrentOpts.set_value(OPTION_EFFECT, new_value, OPTION_PRIORITY_CMDLINE);
+		emu_set_value(pCurrentOpts, OPTION_EFFECT, new_value);
 		win_set_window_text_utf8(control, new_value);
 		// datamap_populate_control(properties_datamap, hWnd, pCurrentOpts, IDC_EFFECT);
 		changed = true;
@@ -2980,22 +2996,41 @@ static BOOL ResetEffect(HWND hWnd)
 	return changed;
 }
 
-static BOOL SelectJoystickMap(HWND hWnd)
-{
-	char filename[MAX_PATH];
-	BOOL changed = false;
+//============================================================
+//  winui_get_window_text_utf8
+//============================================================
 
-	*filename = 0;
-	if (CommonFileDialog(GetOpenFileName, filename, FILETYPE_JOYMAP_FILES))
+int winui_get_window_text_utf8(HWND hWnd, char *buffer, size_t buffer_size)
+{
+	int result = 0;
+	wchar_t t_buffer[256];
+
+	t_buffer[0] = '\0';
+	// invoke the core Win32 API
+	GetWindowText(hWnd, t_buffer, ARRAY_LENGTH(t_buffer));
+	char *utf8_buffer = win_utf8_from_wstring(t_buffer);
+
+	if (!utf8_buffer)
+		return result;
+
+	result = snprintf(buffer, buffer_size, "%s", utf8_buffer);
+	free(utf8_buffer);
+	return result;
+}
+
+static BOOL ChangeJoystickMap(HWND hWnd)
+{
+	BOOL changed = false;
+	char joymap[90];
+
+	winui_get_window_text_utf8(GetDlgItem(hWnd, IDC_JOYSTICKMAP), joymap, WINUI_ARRAY_LENGTH(joymap));
+
+	if (strcmp(joymap, pCurrentOpts.value(OPTION_JOYSTICK_MAP)))
 	{
-		if (strcmp(filename, pCurrentOpts.value(OPTION_JOYSTICK_MAP))!=0)
-		{
-			HWND control = GetDlgItem(hWnd, IDC_JOYSTICKMAP);
-			pCurrentOpts.set_value(OPTION_JOYSTICK_MAP, filename, OPTION_PRIORITY_CMDLINE);
-			win_set_window_text_utf8(control, filename);
-			changed = true;
-		}
+		emu_set_value(pCurrentOpts, OPTION_JOYSTICK_MAP, joymap);
+		changed = true;
 	}
+
 	return changed;
 }
 
@@ -3007,7 +3042,7 @@ static BOOL ResetJoystickMap(HWND hWnd)
 	if (strcmp(new_value, pCurrentOpts.value(OPTION_JOYSTICK_MAP))!=0)
 	{
 		HWND control = GetDlgItem(hWnd, IDC_JOYSTICKMAP);
-		pCurrentOpts.set_value(OPTION_JOYSTICK_MAP, new_value, OPTION_PRIORITY_CMDLINE);
+		emu_set_value(pCurrentOpts, OPTION_JOYSTICK_MAP, new_value);
 		win_set_window_text_utf8(control, new_value);
 		changed = true;
 	}
@@ -3038,7 +3073,7 @@ static bool SelectLUAScript(HWND hWnd)
 
 		if (strcmp(script, pCurrentOpts.value(OPTION_AUTOBOOT_SCRIPT)))
 		{
-			pCurrentOpts.set_value(OPTION_AUTOBOOT_SCRIPT, script, OPTION_PRIORITY_CMDLINE);
+			emu_set_value(pCurrentOpts, OPTION_AUTOBOOT_SCRIPT, script);
 			win_set_window_text_utf8(GetDlgItem(hWnd, IDC_LUASCRIPT), option);
 			changed = true;
 		}
@@ -3054,7 +3089,7 @@ static bool ResetLUAScript(HWND hWnd)
 
 	if (strcmp(new_value, pCurrentOpts.value(OPTION_AUTOBOOT_SCRIPT)))
 	{
-		pCurrentOpts.set_value(OPTION_AUTOBOOT_SCRIPT, new_value, OPTION_PRIORITY_CMDLINE);
+		emu_set_value(pCurrentOpts, OPTION_AUTOBOOT_SCRIPT, new_value);
 		win_set_window_text_utf8(GetDlgItem(hWnd, IDC_LUASCRIPT), "None");
 		changed = true;
 	}
@@ -3102,14 +3137,14 @@ static bool SelectPlugins(HWND hWnd)
 
 	if (strcmp(value, "") == 0)
 	{
-		pCurrentOpts.set_value(OPTION_PLUGIN, new_value, OPTION_PRIORITY_CMDLINE);
+		emu_set_value(pCurrentOpts, OPTION_PLUGIN, new_value);
 		win_set_window_text_utf8(GetDlgItem(hWnd, IDC_PLUGIN), new_value);
 		changed = true;
 		(void)ComboBox_SetCurSel(GetDlgItem(hWnd, IDC_SELECT_PLUGIN), -1);
 		return changed;	
 	}
 
-	for (int i = 0; i < num_plugins; i++)
+	for (u8 i = 0; i < num_plugins; i++)
 	{
 		if (strcmp(new_value, plugins[i]) == 0)
 		{
@@ -3122,7 +3157,7 @@ static bool SelectPlugins(HWND hWnd)
 	{
 		char new_option[256];
 		snprintf(new_option, WINUI_ARRAY_LENGTH(new_option), "%s,%s", value, new_value);
-		pCurrentOpts.set_value(OPTION_PLUGIN, new_option, OPTION_PRIORITY_CMDLINE);
+		emu_set_value(pCurrentOpts, OPTION_PLUGIN, new_option);
 		win_set_window_text_utf8(GetDlgItem(hWnd, IDC_PLUGIN), new_option);
 		changed = true;
 	}
@@ -3134,7 +3169,7 @@ static bool SelectPlugins(HWND hWnd)
 static bool ResetPlugins(HWND hWnd)
 {
 	bool changed = false;
-	pCurrentOpts.set_value(OPTION_PLUGIN, "", OPTION_PRIORITY_CMDLINE);
+	emu_set_value(pCurrentOpts, OPTION_PLUGIN, "");
 	win_set_window_text_utf8(GetDlgItem(hWnd, IDC_PLUGIN), "None");
 	changed = true;
 	(void)ComboBox_SetCurSel(GetDlgItem(hWnd, IDC_SELECT_PLUGIN), -1);
@@ -3152,7 +3187,7 @@ static BOOL SelectDebugscript(HWND hWnd)
 		if (strcmp(filename, pCurrentOpts.value(OPTION_DEBUGSCRIPT))!=0)
 		{
 			HWND control = GetDlgItem(hWnd, IDC_DEBUGSCRIPT);
-			pCurrentOpts.set_value(OPTION_DEBUGSCRIPT, filename, OPTION_PRIORITY_CMDLINE);
+			emu_set_value(pCurrentOpts, OPTION_DEBUGSCRIPT, filename);
 			win_set_window_text_utf8(control, filename);
 			changed = true;
 		}
@@ -3168,7 +3203,7 @@ static BOOL ResetDebugscript(HWND hWnd)
 	if (strcmp(new_value, pCurrentOpts.value(OPTION_DEBUGSCRIPT))!=0)
 	{
 		HWND control = GetDlgItem(hWnd, IDC_DEBUGSCRIPT);
-		pCurrentOpts.set_value(OPTION_DEBUGSCRIPT, new_value, OPTION_PRIORITY_CMDLINE);
+		emu_set_value(pCurrentOpts, OPTION_DEBUGSCRIPT, new_value);
 		win_set_window_text_utf8(control, new_value);
 		changed = true;
 	}
@@ -3270,7 +3305,7 @@ static BOOL DirListReadControl(datamap *map, HWND dialog, HWND control, windows_
 
 	char* paths = ui_utf8_from_wstring(buffer);
 	if ((buffer[1] == 0x3A) || (buffer[0] == 0)) // must be a folder or null
-		pCurrentOpts.set_value(OPTION_SWPATH, paths, OPTION_PRIORITY_CMDLINE);
+		emu_set_value(pCurrentOpts, OPTION_SWPATH, paths);
 
 	free (paths);
 	res++;
