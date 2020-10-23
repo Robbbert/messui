@@ -33,6 +33,7 @@ typedef enum {
 
 #define GLOBAL_OPTIONS  -1
 
+std::string emu_get_value(windows_options *o, std::string name);
 std::string emu_get_value(windows_options &o, std::string name);
 void emu_set_value(windows_options *o, const char* name, float value);
 void emu_set_value(windows_options *o, const char* name, int value);

@@ -123,6 +123,15 @@ void ui_set_value(ui_options &o, string name, string value)
 	o.set_value(name, value, OPTION_PRIORITY_CMDLINE);
 }
 
+string emu_get_value(windows_options *o, string name)
+{
+	const char* t = o->value(name.c_str());
+	if (t)
+		return string(o->value(name.c_str()));
+	else
+		return "";
+}
+
 string emu_get_value(windows_options &o, string name)
 {
 	const char* t = o.value(name.c_str());
