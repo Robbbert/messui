@@ -424,7 +424,7 @@ INT_PTR CALLBACK FilterDialogProc(HWND hDlg, UINT Msg, WPARAM wParam, LPARAM lPa
 				if( lpParent )
 				{
 					/* Check the Parent Filters and inherit them on child,
-                     * No need to promote all games to parent folder, works as is */
+					 * No need to promote all games to parent folder, works as is */
 					dwpFilters = lpParent->m_dwFlags & F_MASK;
 					/*Check all possible Filters if inherited solely from parent, e.g. not being set explicitly on our folder*/
 					if( (dwpFilters & F_CLONES) && !(dwFilters & F_CLONES) )

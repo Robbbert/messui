@@ -2023,7 +2023,7 @@ static void Win32UI_exit()
 
 	SetSavedFolderID(GetCurrentFolderID());
 	SaveGameListOptions();
-	SaveOptions();
+	mui_save_ini();
 	ui_save_ini();
 
 	FreeFolders();
@@ -4359,8 +4359,8 @@ static BOOL MameCommand(HWND hwnd,int id, HWND hwndCtl, UINT codeNotify)
 		{
 			int nResult = DialogBox(GetModuleHandle(NULL), MAKEINTRESOURCE(IDD_DIRECTORIES), hMain, DirectoriesDialogProc);
 
-			SaveDefaultOptions();
-			SaveOptions();
+			global_save_ini();
+			mui_save_ini();
 
 			BOOL bUpdateRoms    = ((nResult & DIRDLG_ROMS) == DIRDLG_ROMS) ? true : false;
 			BOOL bUpdateSamples = ((nResult & DIRDLG_SAMPLES) == DIRDLG_SAMPLES) ? true : false;
@@ -4389,8 +4389,8 @@ static BOOL MameCommand(HWND hwnd,int id, HWND hwndCtl, UINT codeNotify)
 		if (DialogBox(GetModuleHandle(NULL), MAKEINTRESOURCE(IDD_RESET), hMain, ResetDialogProc) == true)
 		{
 			// these may have been changed
-			SaveDefaultOptions();
-			SaveOptions();
+			global_save_ini();
+			mui_save_ini();
 			ui_save_ini();
 			DestroyWindow(hwnd);
 			PostQuitMessage(0);
@@ -4404,7 +4404,7 @@ static BOOL MameCommand(HWND hwnd,int id, HWND hwndCtl, UINT codeNotify)
 
 	case ID_OPTIONS_INTERFACE:
 		DialogBox(GetModuleHandle(NULL), MAKEINTRESOURCE(IDD_INTERFACE_OPTIONS), hMain, InterfaceDialogProc);
-		SaveOptions();
+		mui_save_ini();
 
 		KillTimer(hMain, SCREENSHOT_TIMER);
 		if( GetCycleScreenshot() > 0)

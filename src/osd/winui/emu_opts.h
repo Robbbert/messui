@@ -59,7 +59,7 @@ const std::string GetLanguageUI();
 bool GetEnablePlugins();
 const std::string GetPlugins();
 void SetSelectedSoftware(int driver_index, std::string opt_name, const char *software);
-void SaveDefaultOptions(void);
+void global_save_ini(void);
 bool DriverHasSoftware(uint32_t drvindex);
 void ResetGameDefaults(void);
 void ResetAllGameOptions(void);
