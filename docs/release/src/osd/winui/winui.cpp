@@ -981,7 +981,7 @@ static DWORD RunMAME(int nGameIndex, const play_options *playopts)
 	osd_printf_info("********** FINISHED %s **********\n", name);
 	// turn off message redirect
 	osd_output::pop(&winerror);
-	global_free(manager);
+	delete manager;
 	// save game time played
 	time(&end);
 	double elapsedtime = end - start;
@@ -1682,7 +1682,7 @@ static BOOL Win32UI_init(HINSTANCE hInstance, LPWSTR lpCmdLine, int nCmdShow)
 	wndclass.cbClsExtra    = 0;
 	wndclass.cbWndExtra    = DLGWINDOWEXTRA;
 	wndclass.hInstance     = hInstance;
-	wndclass.hIcon         = LoadIcon(hInstance, MAKEINTRESOURCE(IDI_MAMEUI_ICON));
+	wndclass.hIcon         = LoadIcon(hInstance, MAKEINTRESOURCE(IDI_AAA_ICON));
 	wndclass.hCursor       = NULL;
 	wndclass.hbrBackground = (HBRUSH)(COLOR_3DFACE + 1);
 	wndclass.lpszMenuName  = MAKEINTRESOURCE(IDR_UI_MENU);
@@ -2023,7 +2023,7 @@ static void Win32UI_exit()
 
 	SetSavedFolderID(GetCurrentFolderID());
 	SaveGameListOptions();
-	SaveOptions();
+	mui_save_ini();
 	ui_save_ini();
 
 	FreeFolders();
@@ -4359,8 +4359,8 @@ static BOOL MameCommand(HWND hwnd,int id, HWND hwndCtl, UINT codeNotify)
 		{
 			int nResult = DialogBox(GetModuleHandle(NULL), MAKEINTRESOURCE(IDD_DIRECTORIES), hMain, DirectoriesDialogProc);
 
-			SaveDefaultOptions();
-			SaveOptions();
+			global_save_ini();
+			mui_save_ini();
 
 			BOOL bUpdateRoms    = ((nResult & DIRDLG_ROMS) == DIRDLG_ROMS) ? true : false;
 			BOOL bUpdateSamples = ((nResult & DIRDLG_SAMPLES) == DIRDLG_SAMPLES) ? true : false;
@@ -4389,8 +4389,8 @@ static BOOL MameCommand(HWND hwnd,int id, HWND hwndCtl, UINT codeNotify)
 		if (DialogBox(GetModuleHandle(NULL), MAKEINTRESOURCE(IDD_RESET), hMain, ResetDialogProc) == true)
 		{
 			// these may have been changed
-			SaveDefaultOptions();
-			SaveOptions();
+			global_save_ini();
+			mui_save_ini();
 			ui_save_ini();
 			DestroyWindow(hwnd);
 			PostQuitMessage(0);
@@ -4404,7 +4404,7 @@ static BOOL MameCommand(HWND hwnd,int id, HWND hwndCtl, UINT codeNotify)
 
 	case ID_OPTIONS_INTERFACE:
 		DialogBox(GetModuleHandle(NULL), MAKEINTRESOURCE(IDD_INTERFACE_OPTIONS), hMain, InterfaceDialogProc);
-		SaveOptions();
+		mui_save_ini();
 
 		KillTimer(hMain, SCREENSHOT_TIMER);
 		if( GetCycleScreenshot() > 0)
@@ -5314,15 +5314,11 @@ BOOL CommonFileDialog(common_file_dialog_proc cfd, char *filename, int filetype)
 		ofn.lpstrDefExt   = TEXT("png");
 		dirname = dir_get_value(5);
 		break;
-	case FILETYPE_JOYMAP_FILES :
-		ofn.lpstrFilter   = TEXT("maps (*.map,*.txt)\0*.map;*.txt;\0All files (*.*)\0*.*\0");
-		ofn.lpstrDefExt   = TEXT("map");
-		dirname = dir_get_value(6);
-		break;
-	case FILETYPE_DEBUGSCRIPT_FILES :
-		ofn.lpstrFilter   = TEXT("scripts (*.txt,*.dat)\0*.txt;*.dat;\0All files (*.*)\0*.*\0");
-		ofn.lpstrDefExt   = TEXT("txt");
-		dirname = dir_get_value(16);
+	case FILETYPE_SHADER_FILES :
+		ofn.lpstrFilter = TEXT("shaders (*.vsh)\0*.vsh;\0");
+		ofn.lpstrDefExt = TEXT("vsh");
+		dirname = dir_get_value(22) + PATH_SEPARATOR + "glsl";
+//		ofn.lpstrTitle  = TEXT("Select a GLSL shader file");
 		break;
 	default:
 		return false;

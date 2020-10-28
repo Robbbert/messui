@@ -114,13 +114,22 @@ void emu_set_value(windows_options &o, string name, int value)
 }
 
 void emu_set_value(windows_options &o, string name, string value)
-{printf("D=%s=%s\n",name.c_str(),value.c_str());
+{
 	o.set_value(name, value, OPTION_PRIORITY_CMDLINE);
 }
 
 void ui_set_value(ui_options &o, string name, string value)
-{printf("C=%s=%s\n",name.c_str(),value.c_str());
+{
 	o.set_value(name, value, OPTION_PRIORITY_CMDLINE);
+}
+
+string emu_get_value(windows_options *o, string name)
+{
+	const char* t = o->value(name.c_str());
+	if (t)
+		return string(o->value(name.c_str()));
+	else
+		return "";
 }
 
 string emu_get_value(windows_options &o, string name)
@@ -350,9 +359,9 @@ void emu_opts_init(bool b)
 void dir_set_value(int dir_index, string value)
 {
 	if (dir_index)
-	{printf("A=%d=%s\n",dir_index,value.c_str());
+	{
 		if (dir_map.count(dir_index) > 0)
-		{printf("B\n");
+		{
 			string sname = dir_map[dir_index].dir_path;
 			int which = dir_map[dir_index].which;
 			if (which)
@@ -418,6 +427,7 @@ void SetDirectories(windows_options &o)
 	emu_set_value(o, OPTION_FONTPATH, dir_get_value(8));
 	emu_set_value(o, OPTION_DIFF_DIRECTORY, dir_get_value(19));
 	emu_set_value(o, OPTION_SNAPNAME, emu_get_value(emu_global, OPTION_SNAPNAME));
+	emu_set_value(o, OPTION_DEBUG, "0");
 }
 
 // For dialogs.cpp
@@ -430,6 +440,7 @@ void SetSnapName(const char* value)
 {
 	string nvalue = value ? string(value) : "";
 	emu_set_value(emu_global, OPTION_SNAPNAME, nvalue);
+	global_save_ini();
 }
 
 // For winui.cpp
@@ -493,7 +504,7 @@ bool DriverHasSoftware(uint32_t drvindex)
 	return 0;
 }
 
-void SaveDefaultOptions(void)
+void global_save_ini(void)
 {
 	string fname = GetIniDir() + PATH_SEPARATOR + string(emulator_info::get_configname()).append(".ini");
 	SaveSettingsFile(emu_global, fname.c_str());

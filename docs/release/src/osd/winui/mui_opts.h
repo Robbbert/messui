@@ -191,7 +191,7 @@ void SetVideoDir(const char *path);
 
 // End interface to directories.h
 
-void SaveOptions(void);
+void mui_save_ini(void);
 void SaveGameListOptions(void);
 
 void ResetGUI(void);

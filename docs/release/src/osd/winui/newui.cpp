@@ -2,7 +2,7 @@
 //************************************************************************************************
 // MASTER
 //
-//  newui.c - This is the NEWUI Windows dropdown menu system
+//  newui.cpp - This is the NEWUI Windows dropdown menu system
 //
 //  known bugs:
 //  -  Unable to modify keyboard or joystick. Last known to be working in 0.158 .
@@ -59,12 +59,6 @@ struct dialog_layout
 typedef void (*dialog_itemstoreval)(void *param, int val);
 typedef void (*dialog_itemchangedproc)(dialog_box *dialog, HWND dlgitem, void *changed_param);
 typedef void (*dialog_notification)(dialog_box *dialog, HWND dlgwnd, NMHDR *notification, void *param);
-
-#ifdef UNICODE
-#define win_dialog_tcsdup win_dialog_wcsdup
-#else
-#define win_dialog_tcsdup win_dialog_strdup
-#endif
 
 #define SEQWM_SETFOCUS  (WM_APP + 0)
 #define SEQWM_KILLFOCUS (WM_APP + 1)
@@ -1067,21 +1061,6 @@ static LRESULT dialog_combo_changed(dialog_box *dialog, HWND dlgitem, UINT messa
 
 
 //============================================================
-//  win_dialog_wcsdup
-//    called from win_dialog_add_adjuster (via define)
-//============================================================
-
-static WCHAR *win_dialog_wcsdup(dialog_box *dialog, const WCHAR *s)
-{
-	WCHAR *result = global_alloc_array(WCHAR, wcslen(s) + 1);
-	if (result)
-		wcscpy(result, s);
-	return result;
-}
-
-
-
-//============================================================
 //  win_dialog_add_active_combobox
 //    called from win_dialog_add_combobox
 //       dialog = handle of dialog box?
@@ -1250,7 +1229,7 @@ static LRESULT adjuster_sb_setup(dialog_box *dialog, HWND sbwnd, UINT message, W
 	struct adjuster_sb_stuff *stuff;
 	LONG_PTR l;
 
-	stuff = global_alloc(adjuster_sb_stuff);
+	stuff = new adjuster_sb_stuff;
 	if (!stuff)
 		return 1;
 	stuff->min_value = (WORD) (lparam >> 0);
@@ -1277,7 +1256,7 @@ static int win_dialog_add_adjuster(dialog_box *dialog, const char *item_label, i
 	short x;
 	short y;
 	TCHAR buf[32];
-	TCHAR *s;
+	TCHAR *s = new TCHAR[33];
 
 	dialog_new_control(dialog, &x, &y);
 
@@ -1293,7 +1272,7 @@ static int win_dialog_add_adjuster(dialog_box *dialog, const char *item_label, i
 	x += dialog->layout->combo_width - DIM_ADJUSTER_SCR_WIDTH;
 
 	_sntprintf(buf, ARRAY_LENGTH(buf), is_percentage ? TEXT("%d%%") : TEXT("%d"), default_value);
-	s = win_dialog_tcsdup(dialog, buf);
+	_tcscpy(s, buf);
 
 	if (!s)
 		return 1;

@@ -1551,7 +1551,7 @@ static void AddFolderFlags()
 }
 
 // Save MAMEUI.ini
-void SaveOptions(void)
+void mui_save_ini(void)
 {
 	// Add the folder flag to settings.
 	AddFolderFlags();

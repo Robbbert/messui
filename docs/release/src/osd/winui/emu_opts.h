@@ -33,6 +33,8 @@ typedef enum {
 
 #define GLOBAL_OPTIONS  -1
 
+std::string emu_get_value(windows_options *o, std::string name);
+std::string emu_get_value(windows_options &o, std::string name);
 void emu_set_value(windows_options *o, const char* name, float value);
 void emu_set_value(windows_options *o, const char* name, int value);
 void emu_set_value(windows_options *o, const char* name, std::string value);
@@ -57,7 +59,7 @@ const std::string GetLanguageUI();
 bool GetEnablePlugins();
 const std::string GetPlugins();
 void SetSelectedSoftware(int driver_index, std::string opt_name, const char *software);
-void SaveDefaultOptions(void);
+void global_save_ini(void);
 bool DriverHasSoftware(uint32_t drvindex);
 void ResetGameDefaults(void);
 void ResetAllGameOptions(void);

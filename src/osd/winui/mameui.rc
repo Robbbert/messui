@@ -373,9 +373,9 @@ END
 // Icon with lowest ID value placed first to ensure application icon
 // remains consistent on all systems.
 #ifdef RCMESS
-IDI_MAMEUI_ICON         ICON                    "res\\messui.ico"
+IDI_AAA_ICON            ICON                    "res\\messui.ico"
 #else
-IDI_MAMEUI_ICON         ICON                    "res\\mameui.ico"
+IDI_AAA_ICON            ICON                    "res\\mameui.ico"
 #endif
 IDI_WIN_ROMS            ICON                    "res\\win_roms.ico"
 IDI_WIN_NOROMS          ICON                    "res\\win_noro.ico"
@@ -398,12 +398,55 @@ IDI_NONWORKING          ICON                    "res\\nonwork.ico"
 IDI_YEAR                ICON                    "res\\year.ico"
 IDI_KEYBOARD            ICON                    "res\\keyboard.ico"
 IDI_JOYSTICK            ICON                    "res\\joystick.ico"
-IDI_CPU                 ICON                    "res\\cpu.ico"
-IDI_SOUND               ICON                    "res\\samples.ico"
-IDI_SOUNDTAB            ICON                    "res\\sound.ico"
+IDI_CHIP                ICON                    "res\\chip.ico"
+IDI_BIOS                ICON                    "res\\bios.ico"
+IDI_SOUND               ICON                    "res\\sound.ico"
 IDI_SOURCE              ICON                    "res\\source.ico"
 IDI_HARDDISK            ICON                    "res\\harddisk.ico"
 IDI_DISPLAY             ICON                    "res\\display.ico"
+IDI_AUDIT_PASS          ICON                    "res\\audit_pass.ico"
+IDI_MISC                ICON                    "res\\misc.ico"
+IDI_VECTOR              ICON                    "res\\vector.ico"
+IDI_SCREEN              ICON                    "res\\screen.ico"
+IDI_ADVANCED            ICON                    "res\\advanced.ico"
+IDI_AUDIT_FAIL          ICON                    "res\\audit_fail.ico"
+IDI_FOLDER_IMPERFECT    ICON                    "res\\foldimp.ico"
+IDI_FOLDER_CPU          ICON                    "res\\foldcsb.ico"
+IDI_FOLDER_SOUND        ICON                    "res\\foldcsb.ico"
+IDI_FOLDER_BIOS         ICON                    "res\\foldbios.ico"
+IDI_FOLDER_DUMP         ICON                    "res\\foldcsb.ico"
+IDI_SYSTRAY             ICON                    "res\\mameui.ico"
+IDI_DEBUG               ICON                    "res\\debug.ico"
+IDI_MONITOR             ICON                    "res\\monitor.ico"
+IDI_MECHANICAL          ICON                    "res\\mechanical.ico"
+IDI_FOLDER_ALLGAMES     ICON                    "res\\allgames.ico"
+IDI_FOLDER_CLONES       ICON                    "res\\foldclone.ico"
+IDI_FOLDER_ORIGINALS    ICON                    "res\\foldorig.ico"
+IDI_FOLDER_RASTER       ICON                    "res\\foldrast.ico"
+IDI_FOLDER_VECTOR       ICON                    "res\\foldvec.ico"
+IDI_FOLDER_SAMPLES      ICON                    "res\\foldsamp.ico"
+IDI_FOLDER_MONITOR      ICON                    "res\\multimon.ico"
+IDI_FOLDER_FPS          ICON                    "res\\foldfps.ico"
+IDI_FOLDER_RESOL        ICON                    "res\\foldres.ico"
+IDI_FOLDER_LIGHTGUN     ICON                    "res\\foldgun.ico"
+IDI_FOLDER_TRACKBALL    ICON                    "res\\foldball.ico"
+IDI_FOLDER_SAVESTATE    ICON                    "res\\savestate.ico"
+IDI_OPENGL              ICON                    "res\\opengl.ico"
+IDI_SHADER              ICON                    "res\\shader.ico"
+IDI_SNAPSHOT            ICON                    "res\\snapshot.ico"
+IDI_DISPLAYSHEET        ICON                    "res\\display.ico"
+IDI_ADVANCEDSHEET       ICON                    "res\\advanced.ico"
+IDI_SCREENSHEET         ICON                    "res\\screen.ico"
+IDI_OPENGLSHEET         ICON                    "res\\opengl.ico"
+IDI_SHADERSHEET         ICON                    "res\\shader.ico"
+IDI_VECTORSHEET         ICON                    "res\\vector.ico"
+IDI_SOUNDSHEET          ICON                    "res\\sound.ico"
+IDI_INPUTSHEET          ICON                    "res\\keyboard.ico"
+IDI_CONTROLSHEET        ICON                    "res\\joystick.ico"
+IDI_MISCSHEET           ICON                    "res\\misc.ico"
+IDI_MISC2SHEET          ICON                    "res\\debug.ico"
+IDI_SNAPSHEET           ICON                    "res\\snapshot.ico"
+IDI_CPU                 ICON                    "res\\cpu.ico"
 IDI_CHECKMARK           ICON                    "res\\checkmark.ico"
 IDI_HEADER_UP           ICON                    "res\\header_up.ico"
 IDI_HEADER_DOWN         ICON                    "res\\header_down.ico"
@@ -647,7 +690,7 @@ STYLE WS_CHILD | WS_CAPTION
 CAPTION "General"
 FONT 8, "Tahoma"
 BEGIN
-    ICON            IDI_MAMEUI_ICON,IDC_GAME_ICON,20,10,21,20
+    ICON            IDI_AAA_ICON,IDC_GAME_ICON,20,10,21,20
     LTEXT           "Title\nDirectory\nExtra",IDC_PROP_TITLE,52,9,161,25,SS_NOPREFIX
     CONTROL         "",IDC_STATIC,"Static",SS_ETCHEDHORZ,20,38,178,1
     LTEXT           "Manufactured:",IDC_STATIC,18,45,47,8
@@ -758,7 +801,7 @@ STYLE WS_CHILD | WS_CAPTION
 CAPTION "Sound"
 FONT 8, "Tahoma", 0, 0, 0x1
 BEGIN
-    ICON            IDI_SOUNDTAB,IDC_STATIC,20,10,20,20
+    ICON            IDI_SOUND,IDC_STATIC,20,10,20,20
     LTEXT           "Title\nDirectory\nExtra",IDC_PROP_TITLE,52,9,161,25,SS_NOPREFIX
 
     GROUPBOX        "",IDC_STATIC,4,40,211,155
@@ -828,6 +871,73 @@ BEGIN
 
 //    PUSHBUTTON      "Reset",IDC_PROP_RESET,4,238,97,14,0,0,HIDC_PROP_RESET
     PUSHBUTTON      "Restore Default Settings",IDC_USE_DEFAULT,120,238,97,14,0,0,HIDC_USE_DEFAULT
+END
+
+IDD_PROP_OPENGL DIALOGEX 0, 0, 220, 280
+STYLE WS_CHILD | WS_DISABLED | WS_CAPTION | DS_SETFONT
+CAPTION "OpenGL/BGFX"
+FONT 8, "Tahoma"
+BEGIN
+    ICON            IDI_OPENGL,IDC_STATIC,10,12,32,32
+    LTEXT           WC_STATIC,IDC_PROP_TITLE,42,10,168,30,SS_NOPREFIX
+    GROUPBOX        "OpenGL settings",IDC_STATIC,4,40,212,118
+    GROUPBOX        "GLSL Filter",IDC_STATIC,10,50,90,28,WS_GROUP
+    COMBOBOX        IDC_GLSLFILTER,16,60,78,62,CBS_DROPDOWNLIST | WS_VSCROLL | WS_TABSTOP,0
+    CONTROL         "Enable GLSL",IDC_GLSL,WC_BUTTON,BS_AUTOCHECKBOX | WS_TABSTOP,10,84,144,10,0
+    CONTROL         "Force power of two textures",IDC_GLSLPOW,WC_BUTTON,BS_AUTOCHECKBOX | WS_TABSTOP,10,96,144,10,0
+    CONTROL         "Don't use GL_ARB_texture_rectangle",IDC_GLSLTEXTURE,WC_BUTTON,BS_AUTOCHECKBOX | WS_TABSTOP,10,108,160,10,0
+    CONTROL         "Enable VBO",IDC_GLSLVBO,WC_BUTTON,BS_AUTOCHECKBOX | WS_TABSTOP,10,120,144,10,0
+    CONTROL         "Enable PBO",IDC_GLSLPBO,WC_BUTTON,BS_AUTOCHECKBOX | WS_TABSTOP,10,132,144,10,0
+//    CONTROL         "Force synchrony between CPU and GPU (at your own risk)",IDC_GLSLSYNC,WC_BUTTON,BS_AUTOCHECKBOX | WS_TABSTOP,10,144,204,10,0
+    GROUPBOX        "BGFX screen chains",IDC_STATIC,4,162,212,48
+    EDITTEXT         IDC_BGFX_CHAINS,10,172,200,14,ES_LEFT | WS_BORDER
+    PUSHBUTTON      "Select chain",IDC_SELECT_BGFX,10,190,60,14,0,0
+    PUSHBUTTON      "Reset chain",IDC_RESET_BGFX,150,190,60,14,0,0
+//  PUSHBUTTON      "Reset",IDC_PROP_RESET,4,282,98,14,0,0
+    PUSHBUTTON      "Restore default options",IDC_USE_DEFAULT,118,282,98,14,0,0
+END
+
+IDD_PROP_SHADER DIALOGEX 0, 0, 220, 280
+STYLE WS_CHILD | WS_DISABLED | WS_CAPTION | DS_SETFONT
+CAPTION "OpenGL shaders"
+FONT 8, "Tahoma"
+BEGIN
+    ICON            IDI_SHADER,IDC_STATIC,10,12,32,32
+    LTEXT           WC_STATIC,IDC_PROP_TITLE,42,10,168,30,SS_NOPREFIX
+    GROUPBOX        "MAME shader 0",IDC_STATIC,4,40,102,48
+    EDITTEXT        IDC_MAME_SHADER0,10,50,90,14,ES_LEFT | WS_BORDER
+    PUSHBUTTON      "Select",IDC_SELECT_SHADER0,10,68,40,14,0,0
+    PUSHBUTTON      "Reset",IDC_RESET_SHADER0,60,68,40,14,0,0
+    GROUPBOX        "Screen shader 0",IDC_STATIC,114,40,102,48
+    EDITTEXT        IDC_SCREEN_SHADER0,120,50,90,14,ES_LEFT | WS_BORDER
+    PUSHBUTTON      "Select",IDC_SELECT_SCR_SHADER0,120,68,40,14,0,0
+    PUSHBUTTON      "Reset",IDC_RESET_SCR_SHADER0,170,68,40,14,0,0
+    GROUPBOX        "MAME shader 1",IDC_STATIC,4,92,102,48
+    EDITTEXT        IDC_MAME_SHADER1,10,102,90,14,ES_LEFT | WS_BORDER
+    PUSHBUTTON      "Select",IDC_SELECT_SHADER1,10,120,40,14,0,0
+    PUSHBUTTON      "Reset",IDC_RESET_SHADER1,60,120,40,14,0,0
+    GROUPBOX        "Screen shader 1",IDC_STATIC,114,92,102,48
+    EDITTEXT        IDC_SCREEN_SHADER1,120,102,90,14,ES_LEFT | WS_BORDER
+    PUSHBUTTON      "Select",IDC_SELECT_SCR_SHADER1,120,120,40,14,0,0
+    PUSHBUTTON      "Reset",IDC_RESET_SCR_SHADER1,170,120,40,14,0,0
+    GROUPBOX        "MAME shader 2",IDC_STATIC,4,144,102,48
+    EDITTEXT        IDC_MAME_SHADER2,10,154,90,14,ES_LEFT | WS_BORDER
+    PUSHBUTTON      "Select",IDC_SELECT_SHADER2,10,172,40,14,0,0
+    PUSHBUTTON      "Reset",IDC_RESET_SHADER2,60,172,40,14,0,0
+    GROUPBOX        "Screen shader 2",IDC_STATIC,114,144,102,48
+    EDITTEXT        IDC_SCREEN_SHADER2,120,154,90,14,ES_LEFT | WS_BORDER
+    PUSHBUTTON      "Select",IDC_SELECT_SCR_SHADER2,120,172,40,14,0,0
+    PUSHBUTTON      "Reset",IDC_RESET_SCR_SHADER2,170,172,40,14,0,0
+    GROUPBOX        "MAME shader 3",IDC_STATIC,4,196,102,48
+    EDITTEXT        IDC_MAME_SHADER3,10,206,90,14,ES_LEFT | WS_BORDER
+    PUSHBUTTON      "Select",IDC_SELECT_SHADER3,10,224,40,14,0,0
+    PUSHBUTTON      "Reset",IDC_RESET_SHADER3,60,224,40,14,0,0
+    GROUPBOX        "Screen shader 3",IDC_STATIC,114,196,102,48
+    EDITTEXT        IDC_SCREEN_SHADER3,120,206,90,14,ES_LEFT | WS_BORDER
+    PUSHBUTTON      "Select",IDC_SELECT_SCR_SHADER3,120,224,40,14,0,0
+    PUSHBUTTON      "Reset",IDC_RESET_SCR_SHADER3,170,224,40,14,0,0
+//    PUSHBUTTON      "Reset",IDC_PROP_RESET,4,282,98,14,0,0
+    PUSHBUTTON      "Restore default options",IDC_USE_DEFAULT,118,282,98,14,0,0
 END
 
 IDD_PROP_DEBUG DIALOGEX 0, 0, 220, 255
@@ -911,7 +1021,7 @@ STYLE DS_FIXEDSYS | WS_CHILD | WS_CAPTION
 CAPTION "Miscellaneous"
 FONT 8, "Tahoma", 0, 0, 0x1
 BEGIN
-    ICON            IDI_MAMEUI_ICON,IDC_STATIC,20,10,20,20
+    ICON            IDI_MISC,IDC_STATIC,20,10,20,20
     LTEXT           "Title\nDirectory\nExtra",IDC_PROP_TITLE,52,9,161,25,SS_NOPREFIX
     CONTROL         "Sleep when possible",IDC_SLEEP,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,40,86,10,0,HIDC_SLEEP
     CONTROL         "Skip system info",IDC_SKIP_GAME_INFO,"Button",BS_AUTOCHECKBOX | WS_TABSTOP,10,52,96,10,0,HIDC_SKIP_GAME_INFO
@@ -952,7 +1062,7 @@ STYLE WS_CHILD | WS_DISABLED | WS_CAPTION | DS_SETFONT
 CAPTION "Miscellaneous II"
 FONT 8, "Tahoma"
 BEGIN
-    ICON            IDI_MAMEUI_ICON,IDC_STATIC,10,12,32,32
+    ICON            IDI_MISC,IDC_STATIC,10,12,32,32
     LTEXT           WC_STATIC,IDC_PROP_TITLE,42,10,168,30,SS_NOPREFIX
     GROUPBOX        "Autoboot delay",IDC_STATIC,4,40,102,28
     CONTROL         "",IDC_BOOTDELAY,TRACKBAR_CLASS,TBS_AUTOTICKS | WS_TABSTOP,10,52,72,10,0
@@ -979,7 +1089,7 @@ STYLE WS_CHILD | WS_CAPTION
 CAPTION "Vector"
 FONT 8, "Tahoma", 0, 0, 0x1
 BEGIN
-    ICON            IDI_MAMEUI_ICON,IDC_STATIC,20,10,20,20
+    ICON            IDI_VECTOR,IDC_STATIC,20,10,20,20
     LTEXT           "Title\nDirectory\nExtra",IDC_PROP_TITLE,52,9,161,25,SS_NOPREFIX
 
     GROUPBOX        "Beam min width",IDC_BEAMTEXT,60,53,100,28
@@ -1191,7 +1301,7 @@ STYLE WS_CHILD | WS_CAPTION
 CAPTION "Configuration"
 FONT 8, "Tahoma"
 BEGIN
-    ICON            IDI_MAMEUI_ICON,IDC_STATIC,20,10,20,20
+    ICON            IDI_AAA_ICON,IDC_STATIC,20,10,20,20
     LTEXT           "Title\nDirectory\nExtra",IDC_PROP_TITLE,52,9,161,25,
                     SS_NOPREFIX
     CONTROL         "",IDC_STATIC,"Static",SS_ETCHEDHORZ,20,38,178,1

@@ -1,5 +1,6 @@
 @echo off
 del messui64.sym
+del build\generated\resource\messvers.rc
 :start
 del messui64.exe
 if exist messui64.exe goto start

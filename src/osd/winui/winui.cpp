@@ -1682,7 +1682,7 @@ static BOOL Win32UI_init(HINSTANCE hInstance, LPWSTR lpCmdLine, int nCmdShow)
 	wndclass.cbClsExtra    = 0;
 	wndclass.cbWndExtra    = DLGWINDOWEXTRA;
 	wndclass.hInstance     = hInstance;
-	wndclass.hIcon         = LoadIcon(hInstance, MAKEINTRESOURCE(IDI_MAMEUI_ICON));
+	wndclass.hIcon         = LoadIcon(hInstance, MAKEINTRESOURCE(IDI_AAA_ICON));
 	wndclass.hCursor       = NULL;
 	wndclass.hbrBackground = (HBRUSH)(COLOR_3DFACE + 1);
 	wndclass.lpszMenuName  = MAKEINTRESOURCE(IDR_UI_MENU);
@@ -5314,15 +5314,11 @@ BOOL CommonFileDialog(common_file_dialog_proc cfd, char *filename, int filetype)
 		ofn.lpstrDefExt   = TEXT("png");
 		dirname = dir_get_value(5);
 		break;
-	case FILETYPE_JOYMAP_FILES :
-		ofn.lpstrFilter   = TEXT("maps (*.map,*.txt)\0*.map;*.txt;\0All files (*.*)\0*.*\0");
-		ofn.lpstrDefExt   = TEXT("map");
-		dirname = dir_get_value(6);
-		break;
-	case FILETYPE_DEBUGSCRIPT_FILES :
-		ofn.lpstrFilter   = TEXT("scripts (*.txt,*.dat)\0*.txt;*.dat;\0All files (*.*)\0*.*\0");
-		ofn.lpstrDefExt   = TEXT("txt");
-		dirname = dir_get_value(16);
+	case FILETYPE_SHADER_FILES :
+		ofn.lpstrFilter = TEXT("shaders (*.vsh)\0*.vsh;\0");
+		ofn.lpstrDefExt = TEXT("vsh");
+		dirname = dir_get_value(22) + PATH_SEPARATOR + "glsl";
+//		ofn.lpstrTitle  = TEXT("Select a GLSL shader file");
 		break;
 	default:
 		return false;
