@@ -4334,6 +4334,7 @@ static BOOL MameCommand(HWND hwnd,int id, HWND hwndCtl, UINT codeNotify)
 
 			global_save_ini();
 			mui_save_ini();
+			ui_save_ini();
 
 			BOOL bUpdateRoms    = ((nResult & DIRDLG_ROMS) == DIRDLG_ROMS) ? true : false;
 			BOOL bUpdateSamples = ((nResult & DIRDLG_SAMPLES) == DIRDLG_SAMPLES) ? true : false;
@@ -4377,7 +4378,9 @@ static BOOL MameCommand(HWND hwnd,int id, HWND hwndCtl, UINT codeNotify)
 
 	case ID_OPTIONS_INTERFACE:
 		DialogBox(GetModuleHandle(NULL), MAKEINTRESOURCE(IDD_INTERFACE_OPTIONS), hMain, InterfaceDialogProc);
+		global_save_ini();
 		mui_save_ini();
+		ui_save_ini();
 
 		KillTimer(hMain, SCREENSHOT_TIMER);
 		if( GetCycleScreenshot() > 0)
@@ -4555,6 +4558,7 @@ static BOOL MameCommand(HWND hwnd,int id, HWND hwndCtl, UINT codeNotify)
 	case ID_UI_END:
 		Picker_SetSelectedPick(hwndList,  ListView_GetItemCount(hwndList)-1 );
 		break;
+
 	case ID_UI_LEFT:
 		SendMessage(hwndList,WM_HSCROLL, SB_LINELEFT, 0);
 		break;
@@ -4562,6 +4566,7 @@ static BOOL MameCommand(HWND hwnd,int id, HWND hwndCtl, UINT codeNotify)
 	case ID_UI_RIGHT:
 		SendMessage(hwndList,WM_HSCROLL, SB_LINERIGHT, 0);
 		break;
+
 	case ID_UI_HISTORY_UP:
 		{
 			HWND hHistory = GetDlgItem(hMain, IDC_HISTORY);

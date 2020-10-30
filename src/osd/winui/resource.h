@@ -356,7 +356,8 @@
 #define IDC_HIDE_MOUSE                  1185
 #define IDC_AUDIO_LATENCY               1186
 #define IDC_D3D_VERSION                 1187
-#define IDC_AUDIT_DETAILS_PROP          1188
+#define IDC_AUDIT_DETAILS_PROP0         1188
+#define IDC_AUDIT_DETAILS_PROP1         1189
 #define IDC_CYCLETIMESEC                1190
 #define IDC_AUDIO_LATENCY_TEXT          1191
 #define IDC_STRETCH_SCREENSHOT_LARGER   1192
