@@ -474,7 +474,7 @@ void InitDefaultPropertyPage(HINSTANCE hInst, HWND hWnd)
 	pshead.hInstance    = hInst;
 	pshead.pszCaption   = TEXT("Default Game");
 	pshead.nStartPage   = 0;
-	pshead.pszIcon      = MAKEINTRESOURCE(IDI_AAA_ICON);
+	pshead.pszIcon      = MAKEINTRESOURCE(IDI_MAMEUI);
 	pshead.ppsp         = pspage;
 
 	/* Create the Property sheet and display it */
@@ -559,6 +559,24 @@ void InitPropertyPageToPage(HINSTANCE hInst, HWND hWnd, HICON hIcon, OPTIONS_TYP
 	case OPTIONS_GLOBAL:
 		t_description = ui_wstring_from_utf8("Default Settings");
 		break;
+	case OPTIONS_COMPUTER:
+		t_description = ui_wstring_from_utf8("Default properties for computers");
+		break;
+	case OPTIONS_CONSOLE:
+		t_description = ui_wstring_from_utf8("Default properties for consoles");
+		break;
+	case OPTIONS_HORIZONTAL:
+		t_description = ui_wstring_from_utf8("Default properties for horizontal screens");
+		break;
+	case OPTIONS_RASTER:
+		t_description = ui_wstring_from_utf8("Default properties for raster machines");
+		break;
+	case OPTIONS_VECTOR:
+		t_description = ui_wstring_from_utf8("Default properties for vector machines");
+		break;
+	case OPTIONS_VERTICAL:
+		t_description = ui_wstring_from_utf8("Default properties for vertical screens");
+		break;
 	default:
 		return;
 	}
@@ -573,7 +591,7 @@ void InitPropertyPageToPage(HINSTANCE hInst, HWND hWnd, HICON hIcon, OPTIONS_TYP
 	pshead.dwFlags    = PSH_PROPSHEETPAGE | PSH_USEICONID | PSH_PROPTITLE;
 	pshead.hInstance  = hInst;
 	pshead.nStartPage = start_page;
-	pshead.pszIcon    = MAKEINTRESOURCE(IDI_AAA_ICON);
+	pshead.pszIcon    = MAKEINTRESOURCE(IDI_MAMEUI);
 	pshead.ppsp       = pspage;
 
 	/* Create the Property sheet and display it */
@@ -936,17 +954,37 @@ char *GameInfoTitle(OPTIONS_TYPE opt_type, UINT nIndex)
 {
 	static char buf[1024];
 
-	if (OPTIONS_GLOBAL == opt_type)
+	switch (opt_type)
+	{
+	case OPTIONS_GLOBAL:
 		strcpy(buf, "Global game options\nDefault options used by all games");
-	else
-	if (OPTIONS_SOURCE == opt_type)
-		strcpy(buf, "Options used by all games in the source");
-	else
-	if (OPTIONS_VECTOR == opt_type)
-		strcpy(buf, "Global vector options");
-	else
-	if (OPTIONS_GAME == opt_type)
+		break;
+	case OPTIONS_SOURCE:
+		sprintf(buf, "Properties for machines in %s", GetDriverFilename(nIndex));
+		break;
+	case OPTIONS_COMPUTER:
+		sprintf(buf, "Default properties for computers");
+		break;
+	case OPTIONS_CONSOLE:
+		sprintf(buf, "Default properties for consoles");
+		break;
+	case OPTIONS_HORIZONTAL:
+		sprintf(buf, "Default properties for horizontal screens");
+		break;
+	case OPTIONS_RASTER:
+		sprintf(buf, "Default properties for raster machines");
+		break;
+	case OPTIONS_VECTOR:
+		sprintf(buf, "Default properties for vector machines");
+		break;
+	case OPTIONS_VERTICAL:
+		sprintf(buf, "Default properties for vertical screens");
+		break;
+	case OPTIONS_GAME:
 		sprintf(buf, "%s\n\"%s\"", ModifyThe(driver_list::driver(nIndex).type.fullname()), driver_list::driver(nIndex).name);
+	default:
+		break;
+	}
 	return buf;
 }
 

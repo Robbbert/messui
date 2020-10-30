@@ -220,7 +220,7 @@ debut.cpp
 decstation.cpp
 dectalk.cpp
 //decwritr.cpp
-//dfs500.cpp                 // crash at start
+//dfs500.cpp                 // wbdnu
 dg680.cpp
 dgn_beta.cpp
 //diablo1300.cpp

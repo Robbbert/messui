@@ -1,0 +1,391 @@
+// Microsoft Visual C++ generated resource script.
+//
+#include "newuires.h"
+#include "resource.h"
+
+// Generated Help ID header file
+#define APSTUDIO_HIDDEN_SYMBOLS
+#include "resource.hm"
+#undef APSTUDIO_HIDDEN_SYMBOLS
+
+#define APSTUDIO_READONLY_SYMBOLS
+/////////////////////////////////////////////////////////////////////////////
+//
+// Generated from the TEXTINCLUDE 2 resource.
+//
+#include "windows.h"
+#include "commctrl.h"
+
+/////////////////////////////////////////////////////////////////////////////
+#undef APSTUDIO_READONLY_SYMBOLS
+
+/////////////////////////////////////////////////////////////////////////////
+// Englisch (USA) resources
+
+#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_ENU)
+#ifdef _WIN32
+LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_US
+#pragma code_page(1252)
+#endif //_WIN32
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Menu
+//
+
+IDR_MAIN_MENU MENU DISCARDABLE
+BEGIN
+    POPUP "&File"
+    BEGIN
+        MENUITEM "&Exit",                       ID_FILE_EXIT
+    END
+    POPUP "&Help"
+    BEGIN
+        MENUITEM "&About MESS",                 ID_ABOUT
+    END
+END
+
+IDR_UI_MENU MENU DISCARDABLE
+BEGIN
+    POPUP "&File"
+    BEGIN
+        MENUITEM "&Play",                       ID_FILE_PLAY
+        MENUITEM SEPARATOR
+        MENUITEM "Play and Record &Input...",   ID_FILE_PLAY_RECORD
+        MENUITEM "P&layback Input...",          ID_FILE_PLAY_BACK
+        MENUITEM "Play and Record &Wave Output...", ID_FILE_PLAY_RECORD_WAVE
+        MENUITEM "Play and Record &MNG Output...", ID_FILE_PLAY_RECORD_MNG
+        MENUITEM "Play and Record &uncompressed AVI Output...", ID_FILE_PLAY_RECORD_AVI
+        MENUITEM SEPARATOR
+        MENUITEM "Loa&d Savestate...",          ID_FILE_LOADSTATE, GRAYED
+        MENUITEM SEPARATOR
+        MENUITEM "Op&en Other Software...",     ID_MESS_OPEN_SOFTWARE
+        MENUITEM SEPARATOR
+        MENUITEM "Pr&operties",                 ID_GAME_PROPERTIES
+        MENUITEM SEPARATOR
+        MENUITEM "Audi&t existing sets",        ID_FILE_AUDIT_X
+        MENUITEM "&Audit all sets",             ID_FILE_AUDIT
+        MENUITEM SEPARATOR
+        MENUITEM "&Refresh Roms\tF5",           ID_UPDATE_GAMELIST
+        MENUITEM "Refresh Cache",               ID_UPDATE_CACHE
+        MENUITEM SEPARATOR
+        MENUITEM "E&xit",                       ID_FILE_EXIT
+    END
+    POPUP "&View"
+    BEGIN
+        MENUITEM "&Toolbar\tAlt+T",             ID_VIEW_TOOLBARS
+        MENUITEM "&Status bar\tAlt+S",          ID_VIEW_STATUS
+        MENUITEM "Fold&er List\tAlt+D",         ID_VIEW_FOLDERS
+        MENUITEM "&Picture Area\tAlt+P",        ID_VIEW_PICTURE_AREA
+        MENUITEM "Software Area",               ID_VIEW_SOFTWARE_AREA
+        MENUITEM "Screenshot Ta&bs\tAlt+B",     ID_VIEW_PAGETAB
+        MENUITEM SEPARATOR
+        MENUITEM "&Fullscreen\tF11",            ID_VIEW_FULLSCREEN
+        MENUITEM SEPARATOR
+        POPUP "S&how Pictures"
+        BEGIN
+            MENUITEM "Artwork",                     ID_TOGGLE_TAB_ARTWORK
+            MENUITEM "Boss",                        ID_TOGGLE_TAB_BOSSES
+            MENUITEM "Cabinet",                     ID_TOGGLE_TAB_CABINET
+            MENUITEM "Control Panel",               ID_TOGGLE_TAB_CONTROL_PANEL
+            MENUITEM "Cover",                       ID_TOGGLE_TAB_COVER
+            MENUITEM "End",                         ID_TOGGLE_TAB_ENDS
+            MENUITEM "Flyer",                       ID_TOGGLE_TAB_FLYER
+            MENUITEM "Game Over",                   ID_TOGGLE_TAB_GAMEOVER
+            MENUITEM "History",                     ID_TOGGLE_TAB_HISTORY
+            MENUITEM "How To",                      ID_TOGGLE_TAB_HOWTO
+            MENUITEM "Logo",                        ID_TOGGLE_TAB_LOGO
+            MENUITEM "Marquee",                     ID_TOGGLE_TAB_MARQUEE
+            MENUITEM "PCB",                         ID_TOGGLE_TAB_PCB
+            MENUITEM "Scores",                      ID_TOGGLE_TAB_SCORES
+            MENUITEM "Select",                      ID_TOGGLE_TAB_SELECT
+            MENUITEM "Snapshot",                    ID_TOGGLE_TAB_SCREENSHOT
+            MENUITEM "Title",                       ID_TOGGLE_TAB_TITLE
+            MENUITEM "Versus",                      ID_TOGGLE_TAB_VERSUS
+        END
+        MENUITEM SEPARATOR
+        MENUITEM "L&arge Icons",                ID_VIEW_LARGE_ICON
+        MENUITEM "S&mall Icons",                ID_VIEW_SMALL_ICON
+        MENUITEM "&List",                       ID_VIEW_LIST_MENU
+        MENUITEM "&Details",                    ID_VIEW_DETAIL
+        MENUITEM "&Grouped",                    ID_VIEW_GROUPED
+        MENUITEM SEPARATOR
+        POPUP "Arrange &Icons"
+        BEGIN
+            MENUITEM "by &Name",                    ID_VIEW_BYGAME
+            MENUITEM "by D&irectory",               ID_VIEW_BYDIRECTORY
+            MENUITEM "by &Manufacturer",            ID_VIEW_BYMANUFACTURER
+            MENUITEM "by Times &Played",            ID_VIEW_BYTIMESPLAYED
+            MENUITEM "by &Type",                    ID_VIEW_BYTYPE
+            MENUITEM "by &Date",                    ID_VIEW_BYYEAR
+        END
+        MENUITEM "Line &Up Icons",              ID_VIEW_LINEUPICONS
+        MENUITEM SEPARATOR
+        MENUITEM "&Custom Filters...\tCtrl+F",  ID_CONTEXT_FILTERS
+        MENUITEM "Cust&omise Fields...",        ID_CUSTOMIZE_FIELDS
+    END
+    POPUP "&Options"
+    BEGIN
+        MENUITEM "System List &Font...",        ID_OPTIONS_FONT
+        MENUITEM "System List &Clone Color...", ID_OPTIONS_CLONE_COLOR
+        MENUITEM "&Directories...",             ID_OPTIONS_DIR
+        MENUITEM "Default System &Options...",  ID_OPTIONS_DEFAULTS
+        MENUITEM "&Reset to Default...",        ID_OPTIONS_RESET_DEFAULTS
+        MENUITEM "&Interface Options...",       ID_OPTIONS_INTERFACE
+        MENUITEM "&Background Image...",        ID_OPTIONS_BG
+    END
+    POPUP "&Help"
+    BEGIN
+//        MENUITEM "&Mess Release Notes",         ID_HELP_RELEASE
+        MENUITEM "What's New in MAME",          ID_HELP_WHATS_NEW
+        MENUITEM "&Contents\tF1",               ID_HELP_CONTENTS
+//        MENUITEM "&Troubleshooting",            ID_HELP_TROUBLE
+        MENUITEM "&About",                      ID_HELP_ABOUT
+    END
+END
+
+IDR_CONTEXT_MENU MENU
+BEGIN
+    POPUP "Context Menu"
+    BEGIN
+        MENUITEM "&Play",                       ID_FILE_PLAY
+        MENUITEM SEPARATOR
+        MENUITEM "Play and Record &Input...",   ID_FILE_PLAY_RECORD
+        MENUITEM "Play ProgettoSnaps MP4 movie",ID_VIDEO_SNAP
+        MENUITEM "Read the PDF Manual",         ID_MANUAL
+        MENUITEM "Open history in Notepad",     ID_NOTEPAD
+        MENUITEM SEPARATOR
+        MENUITEM "&Add to Custom Folder...",    ID_CONTEXT_ADD_CUSTOM
+        MENUITEM "R&emove From This Folder",    ID_CONTEXT_REMOVE_CUSTOM
+        MENUITEM "&Custom Filters...",          ID_CONTEXT_FILTERS
+        MENUITEM SEPARATOR
+        MENUITEM "Rese&t Play Stats",           ID_CONTEXT_RESET_PLAYSTATS
+        MENUITEM SEPARATOR
+        MENUITEM "A&udit",                      ID_GAME_AUDIT
+        MENUITEM SEPARATOR
+        MENUITEM "Pr&operties",                 ID_GAME_PROPERTIES
+        MENUITEM "Properties for driver",       ID_FOLDER_SOURCEPROPERTIES
+    END
+END
+
+IDR_CONTEXT_HEADER MENU
+BEGIN
+    POPUP "Header Context Menu"
+    BEGIN
+        MENUITEM "Sort &Ascending",             ID_SORT_ASCENDING
+        MENUITEM "Sort &Descending",            ID_SORT_DESCENDING
+        MENUITEM SEPARATOR
+        MENUITEM "Cust&omise Fields...",        ID_CUSTOMIZE_FIELDS
+    END
+END
+
+IDR_CONTEXT_TREE MENU
+BEGIN
+    POPUP "Context Menu Tree"
+    BEGIN
+        MENUITEM "&Rename",                     ID_CONTEXT_RENAME_CUSTOM
+        MENUITEM "&Custom Filters...",          ID_CONTEXT_FILTERS
+        MENUITEM SEPARATOR
+        POPUP "&Show Folders"
+        BEGIN
+            MENUITEM "overridden by code",          ID_CONTEXT_SHOW_FOLDER_START
+
+        END
+        MENUITEM SEPARATOR
+        MENUITEM "&Audit",                      ID_FOLDER_AUDIT
+        MENUITEM SEPARATOR
+        MENUITEM "&Properties",                 ID_FOLDER_PROPERTIES
+    END
+END
+
+IDR_CONTEXT_SCREENSHOT MENU
+BEGIN
+    POPUP "Context Screen Shot"
+    BEGIN
+        MENUITEM "Show Tab &Control",           ID_VIEW_PAGETAB
+        MENUITEM SEPARATOR
+        POPUP "S&how Pictures"
+        BEGIN
+            MENUITEM "Artwork",                     ID_TOGGLE_TAB_ARTWORK
+            MENUITEM "Boss",                        ID_TOGGLE_TAB_BOSSES
+            MENUITEM "Cabinet",                     ID_TOGGLE_TAB_CABINET
+            MENUITEM "Control Panel",               ID_TOGGLE_TAB_CONTROL_PANEL
+            MENUITEM "Cover",                       ID_TOGGLE_TAB_COVER
+            MENUITEM "End",                         ID_TOGGLE_TAB_ENDS
+            MENUITEM "Flyer",                       ID_TOGGLE_TAB_FLYER
+            MENUITEM "Game Over",                   ID_TOGGLE_TAB_GAMEOVER
+            MENUITEM "History",                     ID_TOGGLE_TAB_HISTORY
+            MENUITEM "How To",                      ID_TOGGLE_TAB_HOWTO
+            MENUITEM "Logo",                        ID_TOGGLE_TAB_LOGO
+            MENUITEM "Marquee",                     ID_TOGGLE_TAB_MARQUEE
+            MENUITEM "PCB",                         ID_TOGGLE_TAB_PCB
+            MENUITEM "Scores",                      ID_TOGGLE_TAB_SCORES
+            MENUITEM "Select",                      ID_TOGGLE_TAB_SELECT
+            MENUITEM "Snapshot",                    ID_TOGGLE_TAB_SCREENSHOT
+            MENUITEM "Title",                       ID_TOGGLE_TAB_TITLE
+            MENUITEM "Versus",                      ID_TOGGLE_TAB_VERSUS
+        END
+        MENUITEM SEPARATOR
+            MENUITEM "Artwork",                     ID_VIEW_TAB_ARTWORK
+            MENUITEM "Boss",                        ID_VIEW_TAB_BOSSES
+            MENUITEM "Cabinet",                     ID_VIEW_TAB_CABINET
+            MENUITEM "Control Panel",               ID_VIEW_TAB_CONTROL_PANEL
+            MENUITEM "Cover",                       ID_VIEW_TAB_COVER
+            MENUITEM "End",                         ID_VIEW_TAB_ENDS
+            MENUITEM "Flyer",                       ID_VIEW_TAB_FLYER
+            MENUITEM "Game Over",                   ID_VIEW_TAB_GAMEOVER
+            MENUITEM "History",                     ID_VIEW_TAB_HISTORY
+            MENUITEM "How To",                      ID_VIEW_TAB_HOWTO
+            MENUITEM "Logo",                        ID_VIEW_TAB_LOGO
+            MENUITEM "Marquee",                     ID_VIEW_TAB_MARQUEE
+            MENUITEM "PCB",                         ID_VIEW_TAB_PCB
+            MENUITEM "Scores",                      ID_VIEW_TAB_SCORES
+            MENUITEM "Select",                      ID_VIEW_TAB_SELECT
+            MENUITEM "Snapshot",                    ID_VIEW_TAB_SCREENSHOT
+            MENUITEM "Title",                       ID_VIEW_TAB_TITLE
+            MENUITEM "Versus",                      ID_VIEW_TAB_VERSUS
+    END
+END
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Menu
+//
+
+IDR_RUNTIME_MENU MENU
+BEGIN
+    POPUP "&File"
+    BEGIN
+        MENUITEM "&Load State...",              ID_FILE_LOADSTATE_NEWUI, GRAYED
+        MENUITEM "&Save State",                 ID_FILE_SAVESTATE, GRAYED
+        MENUITEM "S&ave State As...",           ID_FILE_SAVESTATE_AS, GRAYED
+        MENUITEM SEPARATOR
+        MENUITEM "Save Sc&reenshot",            ID_FILE_SAVESCREENSHOT
+        MENUITEM SEPARATOR
+        MENUITEM "&Hide Menubar",               ID_FILE_TOGGLEMENUBAR
+        MENUITEM "&Full Screen\tAlt+Enter",     ID_FILE_FULLSCREEN
+        MENUITEM "Partial Keyboard Emulation",  ID_FILE_UIACTIVE
+        MENUITEM "Show Tab Menu",               ID_FILE_OLDUI
+        MENUITEM SEPARATOR
+        MENUITEM "&Exit",                       ID_FILE_EXIT_NEWUI
+    END
+    POPUP "&Edit"
+    BEGIN
+        MENUITEM "Paste",                       ID_EDIT_PASTE
+    END
+    POPUP "&Options"
+    BEGIN
+        MENUITEM "&Pause",                      ID_OPTIONS_PAUSE, GRAYED
+        MENUITEM "Soft &Reset",                 ID_OPTIONS_SOFTRESET
+        MENUITEM "Ha&rd Reset",                 ID_OPTIONS_HARDRESET
+        MENUITEM SEPARATOR
+        POPUP "&Video"
+        BEGIN
+            MENUITEM SEPARATOR
+            MENUITEM "Rotate 0 degrees",        ID_VIDEO_ROTATE_0
+            MENUITEM "Rotate 90 degrees",       ID_VIDEO_ROTATE_90
+            MENUITEM "Rotate 180 degrees",      ID_VIDEO_ROTATE_180
+            MENUITEM "Rotate 270 degrees",      ID_VIDEO_ROTATE_270
+        END
+        POPUP "&Keyboard"
+        BEGIN
+            MENUITEM "Emulated",                    ID_KEYBOARD_EMULATED
+            MENUITEM "Natural",                     ID_KEYBOARD_NATURAL
+            MENUITEM SEPARATOR
+            MENUITEM "Customise Emulated Keyboard...",     ID_KEYBOARD_CUSTOMIZE
+        END
+        MENUITEM "&Joysticks",                  ID_OPTIONS_JOYSTICKS, GRAYED
+        MENUITEM "&Miscellaneous Inputs...",    ID_OPTIONS_MISCINPUT
+        MENUITEM "&Analog Controls...",         ID_OPTIONS_ANALOGCONTROLS
+        MENUITEM "&DIP Switches...",            ID_OPTIONS_DIPSWITCHES
+        MENUITEM "&Configuration...",           ID_OPTIONS_CONFIGURATION
+        MENUITEM SEPARATOR
+        POPUP "&Frameskip"
+        BEGIN
+            MENUITEM "Auto",                        ID_FRAMESKIP_AUTO
+        END
+        POPUP "Maximum &Speed"
+        BEGIN
+            MENUITEM "50%",                         ID_THROTTLE_50
+            MENUITEM "100%",                        ID_THROTTLE_100
+            MENUITEM "200%",                        ID_THROTTLE_200
+            MENUITEM "500%",                        ID_THROTTLE_500
+            MENUITEM "1000%",                       ID_THROTTLE_1000
+            MENUITEM "Unlimited",                   ID_THROTTLE_UNTHROTTLED
+        END
+        MENUITEM "Show F&PS",                   ID_OPTIONS_TOGGLEFPS
+    END
+    POPUP "&Media"
+    BEGIN
+        MENUITEM SEPARATOR
+    END
+    POPUP "&Slots"
+    BEGIN
+        MENUITEM SEPARATOR
+    END
+    POPUP "&Help"
+    BEGIN
+        MENUITEM "About This System...",        ID_HELP_ABOUTSYSTEM
+#ifdef RCMESS
+        MENUITEM "&About MESS...",              ID_HELP_ABOUT_NEWUI
+#else
+        MENUITEM "&About MAME...",              ID_HELP_ABOUT_NEWUI
+#endif
+    END
+END
+
+
+#ifdef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// TEXTINCLUDE
+//
+
+1 TEXTINCLUDE MOVEABLE PURE
+BEGIN
+    "resource.h\\r\n"
+    "newuires.h\0"
+END
+
+2 TEXTINCLUDE MOVEABLE PURE
+BEGIN
+    "#define NOWINRES\r\n"
+    "#include ""windows.h""\r\n"
+    "#include ""commctrl.h""\r\n"
+    "\0"
+END
+
+3 TEXTINCLUDE MOVEABLE PURE
+BEGIN
+    "#include ""messvers.rc"" // Version block\r\n"
+    "\r\n"
+    "\0"
+END
+
+#endif    // APSTUDIO_INVOKED
+
+
+/////////////////////////////////////////////////////////////////////////////
+#endif    // English (USA) resources
+
+
+
+#ifndef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// Generated from the TEXTINCLUDE 3 resource.
+//
+#ifdef RCMESS
+#include "messvers.rc" // Version block
+#else
+#ifdef RCARC
+#include "arcadevers.rc" // Version block
+#else
+#include "mamevers.rc" // Version block
+#endif
+#endif
+
+
+/////////////////////////////////////////////////////////////////////////////
+#endif    // not APSTUDIO_INVOKED
+

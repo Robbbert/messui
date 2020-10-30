@@ -669,7 +669,6 @@ static HWND hStatusBar = 0;
 static HWND s_hToolBar   = 0;
 
 /* Column Order as Displayed */
-static BOOL oldControl = false;
 static BOOL xpControl = false;
 
 /* Used to recalculate the main window layout */
@@ -1090,14 +1089,10 @@ void GetRealColumnOrder(int order[])
 	int nColumnMax = Picker_GetNumColumns(hwndList);
 
 	/* Get the Column Order and save it */
-	if (!oldControl)
-	{
-		BOOL res = ListView_GetColumnOrderArray(hwndList, nColumnMax, tmpOrder);
-		res++;
+	ListView_GetColumnOrderArray(hwndList, nColumnMax, tmpOrder);
 
-		for (int i = 0; i < nColumnMax; i++)
-			order[i] = Picker_GetRealColumnFromViewColumn(hwndList, tmpOrder[i]);
-	}
+	for (int i = 0; i < nColumnMax; i++)
+		order[i] = Picker_GetRealColumnFromViewColumn(hwndList, tmpOrder[i]);
 }
 
 
@@ -1576,12 +1571,6 @@ MYBITMAPINFO * GetBackgroundInfo(void)
 }
 
 
-BOOL GetUseOldControl(void)
-{
-	return oldControl;
-}
-
-
 BOOL GetUseXPControl(void)
 {
 	return xpControl;
@@ -1682,7 +1671,7 @@ static BOOL Win32UI_init(HINSTANCE hInstance, LPWSTR lpCmdLine, int nCmdShow)
 	wndclass.cbClsExtra    = 0;
 	wndclass.cbWndExtra    = DLGWINDOWEXTRA;
 	wndclass.hInstance     = hInstance;
-	wndclass.hIcon         = LoadIcon(hInstance, MAKEINTRESOURCE(IDI_AAA_ICON));
+	wndclass.hIcon         = LoadIcon(hInstance, MAKEINTRESOURCE(IDI_MAMEUI));
 	wndclass.hCursor       = NULL;
 	wndclass.hbrBackground = (HBRUSH)(COLOR_3DFACE + 1);
 	wndclass.lpszMenuName  = MAKEINTRESOURCE(IDR_UI_MENU);
@@ -1698,12 +1687,11 @@ static BOOL Win32UI_init(HINSTANCE hInstance, LPWSTR lpCmdLine, int nCmdShow)
 	LONG common_control_version = GetCommonControlVersion();
 	printf("Win32UI_init: Common controlversion %ld %ld\n", common_control_version >> 16, common_control_version & 0xffff);fflush(stdout);
 
-	oldControl = (common_control_version < PACKVERSION(4,71));
 	xpControl = (common_control_version >= PACKVERSION(6,0));
-	if (oldControl)
+	if (common_control_version < PACKVERSION(4,71))
 	{
 		char buf[] = MAMEUINAME " has detected an old version of comctl32.dll.\n\n"
-					"Various features are not available without an updated DLL.\n\n";
+					"Unable to proceed.\n\n";
 
 		win_message_box_utf8(0, buf, MAMEUINAME " Outdated comctl32.dll Error", MB_OK | MB_ICONWARNING);
 		return false;
@@ -1833,13 +1821,6 @@ static BOOL Win32UI_init(HINSTANCE hInstance, LPWSTR lpCmdLine, int nCmdShow)
 	CheckMenuItem(GetMenu(hMain), ID_VIEW_STATUS, (bShowStatusBar) ? MF_CHECKED : MF_UNCHECKED);
 	ShowWindow(hStatusBar, (bShowStatusBar) ? SW_SHOW : SW_HIDE);
 	CheckMenuItem(GetMenu(hMain), ID_VIEW_PAGETAB, (bShowTabCtrl) ? MF_CHECKED : MF_UNCHECKED);
-
-	if (oldControl)
-	{
-		EnableMenuItem(GetMenu(hMain), ID_CUSTOMIZE_FIELDS, MF_GRAYED);
-		EnableMenuItem(GetMenu(hMain), ID_GAME_PROPERTIES, MF_GRAYED);
-		EnableMenuItem(GetMenu(hMain), ID_OPTIONS_DEFAULTS, MF_GRAYED);
-	}
 
 #ifdef UI_DIRECTDRAW
 	/* Init DirectDraw */
@@ -2133,9 +2114,8 @@ static LRESULT CALLBACK MameWindowProc(HWND hWnd, UINT message, WPARAM wParam, L
 			GetWindowPlacement(hMain, &wndpl);
 			UINT state = wndpl.showCmd;
 
-			/* Restore the window before we attempt to save parameters,
-             * This fixed the lost window on startup problem, among other problems
-             */
+			// Restore the window before we attempt to save parameters,
+			// This fixed the lost window on startup problem, among other problems
 			if (state == SW_MINIMIZE || state == SW_SHOWMINIMIZED || state == SW_MAXIMIZE)
 			{
 				if( wndpl.flags & WPF_RESTORETOMAXIMIZED || state == SW_MAXIMIZE)
@@ -2192,11 +2172,10 @@ static LRESULT CALLBACK MameWindowProc(HWND hWnd, UINT message, WPARAM wParam, L
 
           POSSIBLE BUGS:
           I've included this check in the subclassed windows, but a
-          mose move in either the title bar, the menu, or the
+          mouse move in either the title bar, the menu, or the
           toolbar will not generate a WM_MOUSEOVER message. At least
           not one that I know how to pick up. A solution could maybe
-          be to subclass those too, but that's too much work :)
-        */
+          be to subclass those too, but that's too much work :) */
 
 	case WM_MOUSEMOVE:
 	{
@@ -3139,8 +3118,7 @@ static void EnableSelection(int nGame)
 	else
 		EnableMenuItem(hMenu, ID_MESS_OPEN_SOFTWARE, MF_GRAYED);
 
-	if (!oldControl)
-		EnableMenuItem(hMenu, ID_GAME_PROPERTIES, MF_ENABLED);
+	EnableMenuItem(hMenu, ID_GAME_PROPERTIES, MF_ENABLED);
 
 	printf("EnableSelection: G\n");fflush(stdout);
 	if (bProgressShown && bListReady == true)
@@ -4250,7 +4228,7 @@ static BOOL MameCommand(HWND hwnd,int id, HWND hwndCtl, UINT codeNotify)
 		else
 		{
 			/*it was sent after a refresh (F5) was done, we only reset the View if "available" is the selected folder
-              as it doesn't affect the others. */
+			 as it doesn't affect the others. */
 			folder = GetSelectedFolder();
 			if( folder )
 			{
@@ -4261,7 +4239,7 @@ static BOOL MameCommand(HWND hwnd,int id, HWND hwndCtl, UINT codeNotify)
 		break;
 
 	case ID_GAME_PROPERTIES:
-		if (!oldControl && (current_game >= 0))
+		if (current_game >= 0)
 		{
 			InitPropertyPageToPage(hInst, hwnd, GetSelectedPickItemIcon(), OPTIONS_GAME, -1, current_game, PROPERTIES_PAGE);
 			{
@@ -4275,19 +4253,17 @@ static BOOL MameCommand(HWND hwnd,int id, HWND hwndCtl, UINT codeNotify)
 		UpdateStatusBar();
 		break;
 
-	// NOT WORKING
 	case ID_FOLDER_PROPERTIES:
-		if (!oldControl && (current_game >= 0))
 		{
-			OPTIONS_TYPE curOptType = OPTIONS_SOURCE;
 			folder = GetSelectedFolder();
 			if (folder)
-			{
-				if(folder->m_nFolderId == FOLDER_VECTOR)
-					curOptType = OPTIONS_VECTOR;
-
-				InitPropertyPage(hInst, hwnd, GetSelectedFolderIcon(), curOptType, folder->m_nFolderId, current_game);
-			}
+				if (folder->m_dwFlags & F_INIEDIT)
+				{
+					LPCFOLDERDATA data = FindFilter(folder->m_nFolderId);
+					if (data)
+						if (data->m_opttype < OPTIONS_MAX)
+							InitPropertyPage(hInst, hwnd, GetSelectedFolderIcon(), data->m_opttype, folder->m_nFolderId, -1);
+				}
 		}
 		UpdateStatusBar();
 		break;
@@ -4307,7 +4283,7 @@ static BOOL MameCommand(HWND hwnd,int id, HWND hwndCtl, UINT codeNotify)
 	}
 
 	case ID_FOLDER_VECTORPROPERTIES:
-		if (!oldControl && (current_game >= 0))
+		if (current_game >= 0)
 		{
 			folder = GetFolderByID( FOLDER_VECTOR );
 			InitPropertyPage(hInst, hwnd, GetSelectedFolderIcon(), OPTIONS_VECTOR, folder->m_nFolderId, current_game);
@@ -4348,10 +4324,7 @@ static BOOL MameCommand(HWND hwnd,int id, HWND hwndCtl, UINT codeNotify)
 
 	case ID_OPTIONS_DEFAULTS:
 		/* Check the return value to see if changes were applied */
-		if (!oldControl)
-		{
-			InitDefaultPropertyPage(hInst, hwnd);
-		}
+		InitDefaultPropertyPage(hInst, hwnd);
 		SetFocus(hwndList);
 		return true;
 
@@ -5976,13 +5949,6 @@ static void UpdateMenu(HMENU hMenu)
 		EnableMenuItem(hMenu, ID_CONTEXT_SELECT_RANDOM, MF_GRAYED);
 	}
 
-	if (oldControl)
-	{
-		EnableMenuItem(hMenu, ID_CUSTOMIZE_FIELDS, MF_GRAYED);
-		EnableMenuItem(hMenu, ID_GAME_PROPERTIES,  MF_GRAYED);
-		EnableMenuItem(hMenu, ID_OPTIONS_DEFAULTS, MF_GRAYED);
-	}
-
 	if (lpFolder->m_dwFlags & F_CUSTOM)
 	{
 		EnableMenuItem(hMenu,ID_CONTEXT_REMOVE_CUSTOM,MF_ENABLED);
@@ -6516,7 +6482,7 @@ static LPTREEFOLDER GetSelectedFolder(void)
 		TVITEM tvi;
 		tvi.hItem = htree;
 		tvi.mask = TVIF_PARAM;
-		(void)TreeView_GetItem(hTreeView,&tvi);
+		TreeView_GetItem(hTreeView,&tvi);
 		return (LPTREEFOLDER)tvi.lParam;
 	}
 	return NULL;

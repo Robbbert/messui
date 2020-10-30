@@ -31,6 +31,7 @@
 #endif /* defined(__GNUC__) */
 #include "bitmask.h"
 #include <stdint.h>
+#include "emu_opts.h"
 
 /***************************************************************************
     Folder And Filter Definitions
@@ -48,6 +49,7 @@ typedef struct
 	void        (*m_pfnCreateFolders)(int parent_index); // Constructor for special folders
 	BOOL        (*m_pfnQuery)(uint32_t nDriver);              // Query function
 	BOOL        m_bExpectedResult;                       // Expected query result
+	OPTIONS_TYPE m_opttype = OPTIONS_MAX;                                // Has an ini file (vector.ini, etc)
 } FOLDERDATA, *LPFOLDERDATA;
 
 typedef const FOLDERDATA *LPCFOLDERDATA;
