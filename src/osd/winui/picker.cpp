@@ -872,7 +872,7 @@ void Picker_Sort(HWND hwndPicker)
 	// populate the CompareProcParams structure
 	Picker_PopulateCompareProcParams(hwndPicker, &params);
 
-	BOOL res = ListView_SortItems(hwndPicker, Picker_CompareProc, (LPARAM) &params);
+	ListView_SortItems(hwndPicker, Picker_CompareProc, (LPARAM) &params);
 
 	Picker_ResetHeaderSortIcon(hwndPicker);
 
@@ -882,8 +882,7 @@ void Picker_Sort(HWND hwndPicker)
 	lvfi.lParam = Picker_GetSelectedItem(hwndPicker);
 	int nItem = ListView_FindItem(hwndPicker, -1, &lvfi);
 
-	res = ListView_EnsureVisible(hwndPicker, nItem, false);
-	res++;
+	ListView_EnsureVisible(hwndPicker, nItem, false);
 }
 
 
@@ -895,8 +894,6 @@ int Picker_InsertItemSorted(HWND hwndPicker, int nParam)
 	struct CompareProcParams params;
 	int nCompareResult = 0;
 	LVITEM lvi;
-	BOOL res = 0;
-
 	//pPickerInfo = GetPickerInfo(hwndPicker);
 
 	int nHigh = ListView_GetItemCount(hwndPicker);
@@ -911,7 +908,7 @@ int Picker_InsertItemSorted(HWND hwndPicker, int nParam)
 		memset(&lvi, 0, sizeof(lvi));
 		lvi.mask = LVIF_PARAM;
 		lvi.iItem = nMid;
-		res = ListView_GetItem(hwndPicker, &lvi);
+		ListView_GetItem(hwndPicker, &lvi);
 		nCompareResult = Picker_CompareProc(nParam, lvi.lParam, (LPARAM) &params);
 
 		if (nCompareResult > 0)
@@ -925,7 +922,6 @@ int Picker_InsertItemSorted(HWND hwndPicker, int nParam)
 		}
 	}
 
-	res++;
 	memset(&lvi, 0, sizeof(lvi));
 	lvi.mask     = LVIF_IMAGE | LVIF_TEXT | LVIF_PARAM;
 	lvi.iItem    = nLow;

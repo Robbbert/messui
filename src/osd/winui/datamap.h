@@ -38,8 +38,8 @@ typedef enum _datamap_callback_type datamap_callback_type;
 
 typedef struct _datamap datamap;
 // MSH - Callback can now return TRUE, signifying that changes have been made, but should NOT be broadcast.
-typedef BOOL (*datamap_callback)(datamap *map, HWND dialog, HWND control, windows_options *opts, const char *option_name);
-typedef void (*get_option_name_callback)(datamap *map, HWND dialog, HWND control, char *buffer, size_t buffer_size);
+typedef BOOL (*datamap_callback)(datamap *map, HWND dialog, HWND hwnd, windows_options *opts, const char *option_name);
+typedef void (*get_option_name_callback)(datamap *map, HWND dialog, HWND hwnd, char *buffer, size_t buffer_size);
 
 
 //============================================================

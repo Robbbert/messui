@@ -5111,39 +5111,6 @@ static int GamePicker_Compare(HWND hwndPicker, int index1, int index2, int sort_
 		value = nTemp1 - nTemp2;
 		break;
 
-	case COLUMN_SAMPLES:
-		nTemp1 = -1;
-		if (DriverUsesSamples(index1))
-		{
-			int audit_result = GetSampleAuditResults(index1);
-			if (IsAuditResultKnown(audit_result))
-			{
-				if (IsAuditResultYes(audit_result))
-					nTemp1 = 1;
-				else
-					nTemp1 = 0;
-			}
-			else
-				nTemp1 = 2;
-		}
-
-		nTemp2 = -1;
-		if (DriverUsesSamples(index2))
-		{
-			int audit_result = GetSampleAuditResults(index1);
-			if (IsAuditResultKnown(audit_result))
-			{
-				if (IsAuditResultYes(audit_result))
-					nTemp2 = 1;
-				else
-					nTemp2 = 0;
-			}
-			else
-				nTemp2 = 2;
-		}
-		value = nTemp2 - nTemp1;
-		break;
-
 	case COLUMN_DIRECTORY:
 		value = core_stricmp(driver_list::driver(index1).name, driver_list::driver(index2).name);
 		break;
@@ -5158,11 +5125,18 @@ static int GamePicker_Compare(HWND hwndPicker, int index1, int index2, int sort_
 		value = GetPlayTime(index1) - GetPlayTime(index2);
 		break;
 
+	case COLUMN_ROMS:
+		value = GetRomAuditResults(index1) - GetRomAuditResults(index2);
+		break;
+
+	case COLUMN_SAMPLES:
+		value = GetSampleAuditResults(index1) - GetSampleAuditResults(index2);
+		break;
+
 	case COLUMN_TYPE:
 		{
 			machine_config config1(driver_list::driver(index1),MameUIGlobal());
 			machine_config config2(driver_list::driver(index2),MameUIGlobal());
-
 			value = isDriverVector(&config1) - isDriverVector(&config2);
 		}
 		break;
@@ -5205,9 +5179,7 @@ static int GamePicker_Compare(HWND hwndPicker, int index1, int index2, int sort_
 
 	// Handle same comparisons here
 	if (0 == value && COLUMN_GAMES != sort_subitem)
-	{
 		value = GamePicker_Compare(hwndPicker, index1, index2, COLUMN_GAMES);
-	}
 
 	return value;
 }
@@ -5227,8 +5199,7 @@ static HICON GetSelectedPickItemIcon()
 	lvi.iItem = GetSelectedPick();
 	lvi.iSubItem = 0;
 	lvi.mask = LVIF_IMAGE;
-	BOOL res = ListView_GetItem(hwndList, &lvi);
-	res++;
+	ListView_GetItem(hwndList, &lvi);
 	return ImageList_GetIcon(hLarge, lvi.iImage, ILD_TRANSPARENT);
 }
 
@@ -5293,10 +5264,20 @@ BOOL CommonFileDialog(common_file_dialog_proc cfd, char *filename, int filetype)
 		dirname = dir_get_value(5);
 		break;
 	case FILETYPE_SHADER_FILES :
-		ofn.lpstrFilter = TEXT("shaders (*.vsh)\0*.vsh;\0");
-		ofn.lpstrDefExt = TEXT("vsh");
+		ofn.lpstrFilter   = TEXT("shaders (*.vsh)\0*.vsh;\0");
+		ofn.lpstrDefExt   = TEXT("vsh");
 		dirname = dir_get_value(22) + PATH_SEPARATOR + "glsl";
 //		ofn.lpstrTitle  = TEXT("Select a GLSL shader file");
+		break;
+	case FILETYPE_BGFX_FILES :
+		ofn.lpstrFilter   = TEXT("bgfx (*.json)\0*.json;\0All files (*.*)\0*.*\0");
+		ofn.lpstrDefExt   = TEXT("json");
+		dirname = dir_get_value(21) + PATH_SEPARATOR + "chains";
+		break;
+	case FILETYPE_LUASCRIPT_FILES :
+		ofn.lpstrFilter   = TEXT("scripts (*.lua)\0*.lua;\0All files (*.*)\0*.*\0");
+		ofn.lpstrDefExt   = TEXT("lua");
+		dirname = ".";
 		break;
 	default:
 		return false;

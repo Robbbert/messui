@@ -167,7 +167,7 @@ static void InitializeD3DVersionUI(HWND hwnd);
 static void InitializeVideoUI(HWND hwnd);
 static void InitializeBIOSUI(HWND hwnd);
 static void InitializeControllerMappingUI(HWND hwnd);
-static void InitializeLanguageUI(HWND hWnd);
+//static void InitializeLanguageUI(HWND hWnd);
 static void InitializePluginsUI(HWND hWnd);
 static void InitializeGLSLFilterUI(HWND hWnd);
 static void UpdateOptions(HWND hDlg, datamap *map, windows_options &o);
@@ -177,10 +177,14 @@ static void OptionsToProp(HWND hWnd, windows_options &o);
 static void SetPropEnabledControls(HWND hWnd);
 static bool SelectLUAScript(HWND hWnd);
 static bool ResetLUAScript(HWND hWnd);
+static bool SelectMameShader(HWND, int);
+static bool ResetMameShader(HWND, int);
+static bool SelectScreenShader(HWND, int);
+static bool ResetScreenShader(HWND, int);
 static bool SelectPlugins(HWND hWnd);
 static bool ResetPlugins(HWND hWnd);
-//static bool SelectBGFXChains(HWND hWnd);
-//static bool ResetBGFXChains(HWND hWnd);
+static bool SelectBGFXChains(HWND hWnd);
+static bool ResetBGFXChains(HWND hWnd);
 static BOOL SelectEffect(HWND hWnd);
 static BOOL ResetEffect(HWND hWnd);
 static BOOL ChangeJoystickMap(HWND hWnd);
@@ -1054,7 +1058,7 @@ HWND hWnd;
 /* Handle all options property pages */
 INT_PTR CALLBACK GameOptionsProc(HWND hDlg, UINT Msg, WPARAM wParam, LPARAM lParam)
 {
-	BOOL g_bUseDefaults = false, g_bReset = false;
+	BOOL g_bUseDefaults = false; //, g_bReset = false;
 
 	switch (Msg)
 	{
@@ -1067,7 +1071,7 @@ INT_PTR CALLBACK GameOptionsProc(HWND hDlg, UINT Msg, WPARAM wParam, LPARAM lPar
 		UpdateProperties(hDlg, properties_datamap, m_CurrentOpts);
 
 		g_bUseDefaults = AreOptionsEqual(m_CurrentOpts, m_DefaultOpts) ? false : true;
-		g_bReset = AreOptionsEqual(m_CurrentOpts, m_OrigOpts) ? false : true;
+//		g_bReset = AreOptionsEqual(m_CurrentOpts, m_OrigOpts) ? false : true;
 
 		// Default button doesn't exist on Default settings
 		if (g_nGame == GLOBAL_OPTIONS)
@@ -1142,6 +1146,46 @@ INT_PTR CALLBACK GameOptionsProc(HWND hDlg, UINT Msg, WPARAM wParam, LPARAM lPar
 				changed = ResetEffect(hDlg);
 				break;
 
+				case IDC_SELECT_SHADER0:
+				case IDC_SELECT_SHADER1:
+				case IDC_SELECT_SHADER2:
+				case IDC_SELECT_SHADER3:
+				case IDC_SELECT_SHADER4:
+					changed = SelectMameShader(hDlg, (wID - IDC_SELECT_SHADER0));
+					break;
+
+				case IDC_RESET_SHADER0:
+				case IDC_RESET_SHADER1:
+				case IDC_RESET_SHADER2:
+				case IDC_RESET_SHADER3:
+				case IDC_RESET_SHADER4:
+					changed = ResetMameShader(hDlg, (wID - IDC_RESET_SHADER0));
+					break;
+
+				case IDC_SELECT_SCR_SHADER0:
+				case IDC_SELECT_SCR_SHADER1:
+				case IDC_SELECT_SCR_SHADER2:
+				case IDC_SELECT_SCR_SHADER3:
+				case IDC_SELECT_SCR_SHADER4:
+					changed = SelectScreenShader(hDlg, (wID - IDC_SELECT_SCR_SHADER0));
+					break;
+
+				case IDC_RESET_SCR_SHADER0:
+				case IDC_RESET_SCR_SHADER1:
+				case IDC_RESET_SCR_SHADER2:
+				case IDC_RESET_SCR_SHADER3:
+				case IDC_RESET_SCR_SHADER4:
+					changed = ResetScreenShader(hDlg, (wID - IDC_RESET_SCR_SHADER0));
+					break;
+
+				case IDC_SELECT_BGFX:
+					changed = SelectBGFXChains(hDlg);
+					break;
+
+				case IDC_RESET_BGFX:
+					changed = ResetBGFXChains(hDlg);
+					break;
+
 				case IDC_JOYSTICKMAP:
 				changed = ChangeJoystickMap(hDlg);
 				break;
@@ -1203,18 +1247,18 @@ INT_PTR CALLBACK GameOptionsProc(HWND hDlg, UINT Msg, WPARAM wParam, LPARAM lPar
 				UpdateOptions(hDlg, properties_datamap, m_CurrentOpts);
 
 				g_bUseDefaults = AreOptionsEqual(m_CurrentOpts, m_DefaultOpts) ? false : true;
-				g_bReset = AreOptionsEqual(m_CurrentOpts, m_OrigOpts) ? false : true;
+//				g_bReset = AreOptionsEqual(m_CurrentOpts, m_OrigOpts) ? false : true;
 				// Enable/Disable the Reset to Defaults button
 				EnableWindow(GetDlgItem(hDlg, IDC_USE_DEFAULT), g_bUseDefaults);
 //				EnableWindow(GetDlgItem(hDlg, IDC_PROP_RESET), g_bReset);
 				// Tell the dialog to enable/disable the apply button.
-				if (g_nGame != GLOBAL_OPTIONS)
-				{
-					if (g_bReset)
+//				if (g_nGame != GLOBAL_OPTIONS)
+//				{
+//					if (g_bReset)
 						PropSheet_Changed(GetParent(hDlg), hDlg);
-					else
-						PropSheet_UnChanged(GetParent(hDlg), hDlg);
-				}
+//					else
+//						PropSheet_UnChanged(GetParent(hDlg), hDlg);
+//				}
 				break;
 
 				// MSH 20070813 - Update all related controls
@@ -1276,7 +1320,7 @@ INT_PTR CALLBACK GameOptionsProc(HWND hDlg, UINT Msg, WPARAM wParam, LPARAM lPar
 				// enable the apply button
 				PropSheet_Changed(GetParent(hDlg), hDlg);
 				g_bUseDefaults = AreOptionsEqual(m_CurrentOpts, m_DefaultOpts) ? false : true;
-				g_bReset = AreOptionsEqual(m_CurrentOpts, m_OrigOpts) ? false : true;
+//				g_bReset = AreOptionsEqual(m_CurrentOpts, m_OrigOpts) ? false : true;
 				EnableWindow(GetDlgItem(hDlg, IDC_USE_DEFAULT), g_bUseDefaults);
 //				EnableWindow(GetDlgItem(hDlg, IDC_PROP_RESET), g_bReset);
 			}
@@ -1296,7 +1340,7 @@ INT_PTR CALLBACK GameOptionsProc(HWND hDlg, UINT Msg, WPARAM wParam, LPARAM lPar
 				/* Initialize the controls. */
 				UpdateProperties(hDlg, properties_datamap, m_CurrentOpts);
 				g_bUseDefaults = AreOptionsEqual(m_CurrentOpts, m_DefaultOpts) ? false : true;
-				g_bReset = AreOptionsEqual(m_CurrentOpts, m_OrigOpts) ? false : true;
+//				g_bReset = AreOptionsEqual(m_CurrentOpts, m_OrigOpts) ? false : true;
 				EnableWindow(GetDlgItem(hDlg, IDC_USE_DEFAULT), g_bUseDefaults);
 //				EnableWindow(GetDlgItem(hDlg, IDC_PROP_RESET), g_bReset);
 				break;
@@ -1320,7 +1364,7 @@ INT_PTR CALLBACK GameOptionsProc(HWND hDlg, UINT Msg, WPARAM wParam, LPARAM lPar
 				UpdateProperties(hDlg, properties_datamap, m_CurrentOpts);
 
 				g_bUseDefaults = AreOptionsEqual(m_CurrentOpts, m_DefaultOpts) ? false : true;
-				g_bReset = AreOptionsEqual(m_CurrentOpts, m_OrigOpts) ? false : true;
+//				g_bReset = AreOptionsEqual(m_CurrentOpts, m_OrigOpts) ? false : true;
 				EnableWindow(GetDlgItem(hDlg, IDC_USE_DEFAULT), g_bUseDefaults);
 //				EnableWindow(GetDlgItem(hDlg, IDC_PROP_RESET), g_bReset);
 
@@ -1338,7 +1382,7 @@ INT_PTR CALLBACK GameOptionsProc(HWND hDlg, UINT Msg, WPARAM wParam, LPARAM lPar
 				UpdateOptions(hDlg, properties_datamap, m_CurrentOpts);
 				// Determine button states.
 				g_bUseDefaults = AreOptionsEqual(m_CurrentOpts, m_DefaultOpts) ? false : true;
-				g_bReset = AreOptionsEqual(m_CurrentOpts, m_OrigOpts) ? false : true;
+//				g_bReset = AreOptionsEqual(m_CurrentOpts, m_OrigOpts) ? false : true;
 				EnableWindow(GetDlgItem(hDlg, IDC_USE_DEFAULT), g_bUseDefaults);
 //				EnableWindow(GetDlgItem(hDlg, IDC_PROP_RESET), g_bReset);
 
@@ -1468,7 +1512,7 @@ static void UpdateProperties(HWND hDlg, datamap *map, windows_options &o)
 	OptionsToProp(hDlg, o);
 	SetPropEnabledControls(hDlg);
 }
-#if 0
+
 static bool SelectMameShader(HWND hWnd, int slot)
 {
 	char filename[MAX_PATH];
@@ -1570,7 +1614,7 @@ static bool ResetScreenShader(HWND hWnd, int slot)
 
 	return changed;
 }
-#endif
+
 static void UpdateMameShader(HWND hWnd, int slot, windows_options &opts)
 {
 	HWND hCtrl = GetDlgItem(hWnd, IDC_MAME_SHADER0 + slot);
@@ -2224,8 +2268,8 @@ static BOOL DefaultInputPopulateControl(datamap *map, HWND dialog, HWND control,
 
 					// add it as an option
 					wchar_t *t_root = win_wstring_from_utf8(root);
-					(void)ComboBox_InsertString(control, index, t_root);
-					(void)ComboBox_SetItemData(control, index, root);
+					ComboBox_InsertString(control, index, t_root);
+					ComboBox_SetItemData(control, index, root);
 					free(t_root);
 					root = NULL;
 					index++;
@@ -2493,7 +2537,7 @@ static void BuildDataMap(void)
 	datamap_add(properties_datamap, IDC_CHEAT,					DM_BOOL,	OPTION_CHEAT);
 	datamap_add(properties_datamap, IDC_SKIP_GAME_INFO,			DM_BOOL,	OPTION_SKIP_GAMEINFO);
 
-	datamap_add(properties_datamap, IDC_LANGUAGE,				DM_STRING,	OPTION_LANGUAGE);
+	//datamap_add(properties_datamap, IDC_LANGUAGE,				DM_STRING,	OPTION_LANGUAGE);   broken
 	datamap_add(properties_datamap, IDC_LUASCRIPT,				DM_STRING,	OPTION_AUTOBOOT_SCRIPT);
 	datamap_add(properties_datamap, IDC_BOOTDELAY,				DM_INT,		OPTION_AUTOBOOT_DELAY);
 	datamap_add(properties_datamap, IDC_BOOTDELAYDISP,			DM_INT,		OPTION_AUTOBOOT_DELAY);
@@ -2686,7 +2730,7 @@ static void InitializeOptions(HWND hDlg)
 	InitializeVideoUI(hDlg);
 //	InitializeSnapViewUI(hDlg);
 //	InitializeSnapNameUI(hDlg);
-	InitializeLanguageUI(hDlg);
+//	InitializeLanguageUI(hDlg);
 	InitializePluginsUI(hDlg);
 	InitializeGLSLFilterUI(hDlg);
 #ifdef D3DVERSION
@@ -3008,6 +3052,7 @@ static void InitializeBIOSUI(HWND hwnd)
 	}
 }
 
+#if 0
 static void InitializeLanguageUI(HWND hWnd)
 {
 	HWND hCtrl = GetDlgItem(hWnd, IDC_LANGUAGE);
@@ -3036,23 +3081,23 @@ static void InitializeLanguageUI(HWND hWnd)
 
 				if (!(name == "." || name == ".."))
 				{
-					wchar_t *text = ui_wstring_from_utf8(entry->name);
-					ComboBox_InsertString(hCtrl, count, win_tstring_strdup(text));
+					TCHAR *t_s = ui_wstring_from_utf8(entry->name);
+					ComboBox_InsertString(hCtrl, count, win_tstring_strdup(t_s));
 					ComboBox_SetItemData(hCtrl, count, entry->name);
 					if (!c.empty() && name == c)
 						match = count;
 					if (name == "English")
 						english = count;
-					printf("%d=%s\n",count,entry->name);
+					//printf("%d=%s\n",count,entry->name);
 					count++;
-					free(text);
+					free(t_s);
 				}
 			}
 		}
 
 		directory.reset();
 
-		printf("curr=%d; Eng=%d\n",match,english);
+		//printf("curr=%d; Eng=%d\n",match,english);
 		if (match >= 0)
 			ComboBox_SetCurSel(hCtrl, match);
 		else
@@ -3062,6 +3107,7 @@ static void InitializeLanguageUI(HWND hWnd)
 			ComboBox_SetCurSel(hCtrl, -1);
 	}
 }
+#endif
 
 static void InitializePluginsUI(HWND hWnd)
 {
@@ -3350,6 +3396,51 @@ static bool ResetPlugins(HWND hWnd)
 	ComboBox_SetCurSel(GetDlgItem(hWnd, IDC_SELECT_PLUGIN), -1);
 	return changed;
 }
+
+static bool SelectBGFXChains(HWND hWnd)
+{
+	char filename[MAX_PATH];
+	bool changed = false;
+
+	*filename = 0;
+
+	if (CommonFileDialog(GetOpenFileName, filename, FILETYPE_BGFX_FILES))
+	{
+		char option[MAX_PATH];
+		wchar_t *t_filename = win_wstring_from_utf8(filename);
+		wchar_t *tempname = PathFindFileName(t_filename);
+		PathRemoveExtension(tempname);
+		char *optname = win_utf8_from_wstring(tempname);
+		strcpy(option, optname);
+		free(t_filename);
+		free(optname);
+
+		if (strcmp(option, m_CurrentOpts.value(OSDOPTION_BGFX_SCREEN_CHAINS)))
+		{
+			emu_set_value(m_CurrentOpts, OSDOPTION_BGFX_SCREEN_CHAINS, option);
+			win_set_window_text_utf8(GetDlgItem(hWnd, IDC_BGFX_CHAINS), option);
+			changed = true;
+		}
+	}
+
+	return changed;
+}
+
+static bool ResetBGFXChains(HWND hWnd)
+{
+	bool changed = false;
+	const char *new_value = "default";
+
+	if (strcmp(new_value, m_CurrentOpts.value(OSDOPTION_BGFX_SCREEN_CHAINS)))
+	{
+		emu_set_value(m_CurrentOpts, OSDOPTION_BGFX_SCREEN_CHAINS, new_value);
+		win_set_window_text_utf8(GetDlgItem(hWnd, IDC_BGFX_CHAINS), "Default");
+		changed = true;
+	}
+
+	return changed;
+}
+
 #if 0
 static BOOL SelectDebugscript(HWND hWnd)
 {
