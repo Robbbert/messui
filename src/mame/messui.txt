@@ -723,7 +723,7 @@ pc8801.cpp
 pc9801.cpp
 pcd.cpp
 pce.cpp
-//pce220.cpp
+pce220.cpp
 //pcfx.cpp
 pcipc.cpp
 pcm.cpp
