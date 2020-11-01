@@ -203,10 +203,8 @@
 #define IDC_CHEAT                       1015
 #define IDC_LOG                         1016
 #define IDC_ARTWORK_CROP                1017
-#define IDC_OVERLAYS                    1018
-#define IDC_BEZELS                      1019
-#define IDC_CPANELS                     1020
-#define IDC_MARQUEES                    1021
+#define IDC_ARTWORK_FALLBACK            1018
+#define IDC_ARTWORK_OVERRIDE            1019
 #define IDC_SLEEP                       1022
 #define IDC_GAMMA                       1023
 #define IDC_BRIGHTCORRECT               1024
@@ -217,7 +215,6 @@
 #define IDC_FLICKER                     1031
 #define IDC_FLIPX                       1032
 #define IDC_FLIPY                       1033
-#define IDC_BACKDROPS                   1034
 #define IDC_DIRECTX_HELP                1035
 #define IDC_FLICKERDISP                 1036
 #define IDB_WEB_PAGE                    1037
@@ -241,11 +238,9 @@
 #define IDC_DIR_BROWSE                  1055
 #define IDC_DIR_INSERT                  1056
 #define IDC_DIR_DELETE                  1057
-#define IDC_FLICKERTEXT                 1058
 #define IDC_SSFRAME                     1059
 #define IDC_PRESCALE                    1060
 #define IDC_SSPICTURE                   1062
-#define IDC_BEAMTEXT                    1063
 #define IDC_MULTIKEYBOARD               1065
 #define IDC_RATETEXT                    1069
 #define IDC_LISTAVAILABLECOLUMNS        1070
@@ -420,7 +415,7 @@
 #define IDC_SNAPSIZEX                   1253
 #define IDC_FILTER_MECHANICAL           1254
 #define IDC_LOWLATENCY                  1257
-#define IDC_BURNIN                      1280
+#define IDC_SNAPBURNIN                  1280
 #define IDC_GLSLPOW                     1300
 #define IDC_GLSLTEXTURE                 1301
 #define IDC_GLSLVBO                     1302
@@ -471,6 +466,9 @@
 #define IDC_BEAM_MINDISP                1370
 #define IDC_BEAM_MAXDISP                1371
 #define IDC_BEAM_INTENDISP              1372
+#define IDC_BEAM_DOT                    1373
+#define IDC_BEAM_DOTDISP                1374
+#define IDC_EXIT_PLAYBACK               1379
 #define IDC_LANGUAGE                    1380
 #define IDC_BOOTDELAY                   1383
 #define IDC_BOOTDELAYDISP               1384
@@ -495,6 +493,8 @@
 #define IDC_LUASCRIPT                   1404
 #define IDC_SELECT_LUASCRIPT            1405
 #define IDC_RESET_LUASCRIPT             1406
+#define IDC_BGFX_BACKEND                1407
+#define IDC_NATURAL                     1408
 #define IDC_SPLITTER3                   2000
 #define IDC_SWTAB                       2001
 #define IDC_SWLIST                      2002

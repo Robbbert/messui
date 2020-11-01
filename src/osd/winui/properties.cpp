@@ -150,7 +150,7 @@ b) Exit the dialog.
  * Local function prototypes
  **************************************************************/
 
-static void SetSamplesEnabled(HWND hWnd, int nIndex, BOOL bSoundEnabled);
+//static void SetSamplesEnabled(HWND hWnd, int nIndex, BOOL bSoundEnabled);
 static void InitializeOptions(HWND hDlg);
 static void InitializeMisc(HWND hDlg);
 static void OptOnHScroll(HWND hWnd, HWND hwndCtl, UINT code, int pos);
@@ -170,6 +170,7 @@ static void InitializeControllerMappingUI(HWND hwnd);
 //static void InitializeLanguageUI(HWND hWnd);
 static void InitializePluginsUI(HWND hWnd);
 static void InitializeGLSLFilterUI(HWND hWnd);
+static void InitializeBGFXBackendUI(HWND);
 static void UpdateOptions(HWND hDlg, datamap *map, windows_options &o);
 static void UpdateProperties(HWND hDlg, datamap *map, windows_options &o);
 static void PropToOptions(HWND hWnd, windows_options &o);
@@ -187,6 +188,8 @@ static bool SelectBGFXChains(HWND hWnd);
 static bool ResetBGFXChains(HWND hWnd);
 static BOOL SelectEffect(HWND hWnd);
 static BOOL ResetEffect(HWND hWnd);
+static BOOL ChangeFallback(HWND hWnd);
+static BOOL ChangeOverride(HWND hWnd);
 static BOOL ChangeJoystickMap(HWND hWnd);
 static BOOL ResetJoystickMap(HWND hWnd);
 //static BOOL SelectDebugscript(HWND hWnd);
@@ -340,7 +343,7 @@ const DUALCOMBOSTR g_ComboBoxGLSLFilter[] =
 };
 #define NUMGLSLFILTER (sizeof(g_ComboBoxGLSLFilter) / sizeof(g_ComboBoxGLSLFilter[0]))
 
-const DUALCOMBOSTR g_ComboBoxBackend[] =
+const DUALCOMBOSTR g_ComboBoxBGFXBackend[] =
 {
 	{ TEXT("Auto"),                "auto" },
 	{ TEXT("DirectX9"),            "dx9"  },
@@ -351,7 +354,7 @@ const DUALCOMBOSTR g_ComboBoxBackend[] =
 	{ TEXT("Metal (Win10)"),       "metal" },
 	{ TEXT("Vulkan (Win10)"),      "vulkan" },
 };
-#define NUMBACKEND (sizeof(g_ComboBoxBackend) / sizeof(g_ComboBoxBackend[0]))
+#define NUMBGFXBACKEND (sizeof(g_ComboBoxBGFXBackend) / sizeof(g_ComboBoxBGFXBackend[0]))
 
 
 /***************************************************************
@@ -1082,6 +1085,7 @@ INT_PTR CALLBACK GameOptionsProc(HWND hDlg, UINT Msg, WPARAM wParam, LPARAM lPar
 		// Setup Reset button
 //		EnableWindow(GetDlgItem(hDlg, IDC_PROP_RESET), g_bReset);
 		ShowWindow(hDlg, SW_SHOW);
+		PropSheet_Changed(GetParent(hDlg), hDlg);
 		return 1;
 
 	case WM_HSCROLL:
@@ -1146,47 +1150,47 @@ INT_PTR CALLBACK GameOptionsProc(HWND hDlg, UINT Msg, WPARAM wParam, LPARAM lPar
 				changed = ResetEffect(hDlg);
 				break;
 
-				case IDC_SELECT_SHADER0:
-				case IDC_SELECT_SHADER1:
-				case IDC_SELECT_SHADER2:
-				case IDC_SELECT_SHADER3:
-				case IDC_SELECT_SHADER4:
-					changed = SelectMameShader(hDlg, (wID - IDC_SELECT_SHADER0));
-					break;
+			case IDC_SELECT_SHADER0:
+			case IDC_SELECT_SHADER1:
+			case IDC_SELECT_SHADER2:
+			case IDC_SELECT_SHADER3:
+			case IDC_SELECT_SHADER4:
+				changed = SelectMameShader(hDlg, (wID - IDC_SELECT_SHADER0));
+				break;
 
-				case IDC_RESET_SHADER0:
-				case IDC_RESET_SHADER1:
-				case IDC_RESET_SHADER2:
-				case IDC_RESET_SHADER3:
-				case IDC_RESET_SHADER4:
-					changed = ResetMameShader(hDlg, (wID - IDC_RESET_SHADER0));
-					break;
+			case IDC_RESET_SHADER0:
+			case IDC_RESET_SHADER1:
+			case IDC_RESET_SHADER2:
+			case IDC_RESET_SHADER3:
+			case IDC_RESET_SHADER4:
+				changed = ResetMameShader(hDlg, (wID - IDC_RESET_SHADER0));
+				break;
 
-				case IDC_SELECT_SCR_SHADER0:
-				case IDC_SELECT_SCR_SHADER1:
-				case IDC_SELECT_SCR_SHADER2:
-				case IDC_SELECT_SCR_SHADER3:
-				case IDC_SELECT_SCR_SHADER4:
-					changed = SelectScreenShader(hDlg, (wID - IDC_SELECT_SCR_SHADER0));
-					break;
+			case IDC_SELECT_SCR_SHADER0:
+			case IDC_SELECT_SCR_SHADER1:
+			case IDC_SELECT_SCR_SHADER2:
+			case IDC_SELECT_SCR_SHADER3:
+			case IDC_SELECT_SCR_SHADER4:
+				changed = SelectScreenShader(hDlg, (wID - IDC_SELECT_SCR_SHADER0));
+				break;
 
-				case IDC_RESET_SCR_SHADER0:
-				case IDC_RESET_SCR_SHADER1:
-				case IDC_RESET_SCR_SHADER2:
-				case IDC_RESET_SCR_SHADER3:
-				case IDC_RESET_SCR_SHADER4:
-					changed = ResetScreenShader(hDlg, (wID - IDC_RESET_SCR_SHADER0));
-					break;
+			case IDC_RESET_SCR_SHADER0:
+			case IDC_RESET_SCR_SHADER1:
+			case IDC_RESET_SCR_SHADER2:
+			case IDC_RESET_SCR_SHADER3:
+			case IDC_RESET_SCR_SHADER4:
+				changed = ResetScreenShader(hDlg, (wID - IDC_RESET_SCR_SHADER0));
+				break;
 
-				case IDC_SELECT_BGFX:
-					changed = SelectBGFXChains(hDlg);
-					break;
+			case IDC_SELECT_BGFX:
+				changed = SelectBGFXChains(hDlg);
+				break;
 
-				case IDC_RESET_BGFX:
-					changed = ResetBGFXChains(hDlg);
-					break;
+			case IDC_RESET_BGFX:
+				changed = ResetBGFXChains(hDlg);
+				break;
 
-				case IDC_JOYSTICKMAP:
+			case IDC_JOYSTICKMAP:
 				changed = ChangeJoystickMap(hDlg);
 				break;
 
@@ -1194,13 +1198,13 @@ INT_PTR CALLBACK GameOptionsProc(HWND hDlg, UINT Msg, WPARAM wParam, LPARAM lPar
 				changed = ResetJoystickMap(hDlg);
 				break;
 
-//			case IDC_SELECT_DEBUGSCRIPT:
-//				changed = SelectDebugscript(hDlg);
-//				break;
+			case IDC_ARTWORK_FALLBACK:
+				changed = ChangeFallback(hDlg);
+				break;
 
-//			case IDC_RESET_DEBUGSCRIPT:
-//				changed = ResetDebugscript(hDlg);
-//				break;
+			case IDC_ARTWORK_OVERRIDE:
+				changed = ChangeOverride(hDlg);
+				break;
 
 			case IDC_SELECT_LUASCRIPT:
 				changed = SelectLUAScript(hDlg);
@@ -1867,6 +1871,7 @@ static void OptionsToProp(HWND hWnd, windows_options& o)
 /* Adjust controls - tune them to the currently selected game */
 static void SetPropEnabledControls(HWND hWnd)
 {
+#if 0
 	bool useart = true;
 	BOOL joystick_attached = false;
 	bool in_window = false;
@@ -2017,7 +2022,7 @@ static void SetPropEnabledControls(HWND hWnd)
 		EnableWindow(GetDlgItem(hWnd,IDC_BIOS),true);
 	else
 		EnableWindow(GetDlgItem(hWnd,IDC_BIOS),false);
-
+#endif
 }
 
 //============================================================
@@ -2463,11 +2468,8 @@ static void BuildDataMap(void)
 
 	// core artwork options
 	datamap_add(properties_datamap, IDC_ARTWORK_CROP,			DM_BOOL,	OPTION_ARTWORK_CROP);
-//	datamap_add(properties_datamap, IDC_BACKDROPS,				DM_BOOL,	OPTION_USE_BACKDROPS);
-//	datamap_add(properties_datamap, IDC_OVERLAYS,				DM_BOOL,	OPTION_USE_OVERLAYS);
-//	datamap_add(properties_datamap, IDC_BEZELS,					DM_BOOL,	OPTION_USE_BEZELS);
-//	datamap_add(properties_datamap, IDC_CPANELS,				DM_BOOL,	OPTION_USE_CPANELS);
-//	datamap_add(properties_datamap, IDC_MARQUEES,				DM_BOOL,	OPTION_USE_MARQUEES);
+	datamap_add(properties_datamap, IDC_ARTWORK_FALLBACK,		DM_STRING,	OPTION_FALLBACK_ARTWORK);
+	datamap_add(properties_datamap, IDC_ARTWORK_OVERRIDE,		DM_STRING,	OPTION_OVERRIDE_ARTWORK);
 
 	// core screen options
 	datamap_add(properties_datamap, IDC_BRIGHTCORRECT,			DM_FLOAT,	OPTION_BRIGHTNESS);
@@ -2478,8 +2480,9 @@ static void BuildDataMap(void)
 	datamap_add(properties_datamap, IDC_GAMMADISP,				DM_FLOAT,	OPTION_GAMMA);
 	datamap_add(properties_datamap, IDC_PAUSEBRIGHT,			DM_FLOAT,	OPTION_PAUSE_BRIGHTNESS);
 	datamap_add(properties_datamap, IDC_PAUSEBRIGHTDISP,		DM_FLOAT,	OPTION_PAUSE_BRIGHTNESS);
-	datamap_add(properties_datamap, IDC_BURNIN,					DM_BOOL,	OPTION_BURNIN);
+	datamap_add(properties_datamap, IDC_SNAPBURNIN,				DM_BOOL,	OPTION_BURNIN);
 	datamap_add(properties_datamap, IDC_SNAPBILINEAR,			DM_BOOL,	OPTION_SNAPBILINEAR);
+	datamap_add(properties_datamap, IDC_EXIT_PLAYBACK,			DM_BOOL,	OPTION_EXIT_AFTER_PLAYBACK);
 
 	// core vector options
 	datamap_add(properties_datamap, IDC_BEAM_MIN,				DM_FLOAT,	OPTION_BEAM_WIDTH_MIN);
@@ -2488,6 +2491,8 @@ static void BuildDataMap(void)
 	datamap_add(properties_datamap, IDC_BEAM_MAXDISP,			DM_FLOAT,	OPTION_BEAM_WIDTH_MAX);
 	datamap_add(properties_datamap, IDC_BEAM_INTEN,				DM_FLOAT,	OPTION_BEAM_INTENSITY_WEIGHT);
 	datamap_add(properties_datamap, IDC_BEAM_INTENDISP,			DM_FLOAT,	OPTION_BEAM_INTENSITY_WEIGHT);
+	datamap_add(properties_datamap, IDC_BEAM_DOT,				DM_INT,		OPTION_BEAM_DOT_SIZE);
+	datamap_add(properties_datamap, IDC_BEAM_DOTDISP,			DM_INT,		OPTION_BEAM_DOT_SIZE);
 	datamap_add(properties_datamap, IDC_FLICKER,				DM_FLOAT,	OPTION_FLICKER);
 	datamap_add(properties_datamap, IDC_FLICKERDISP,			DM_FLOAT,	OPTION_FLICKER);
 
@@ -2545,6 +2550,7 @@ static void BuildDataMap(void)
 	datamap_add(properties_datamap, IDC_PLUGIN,					DM_STRING,	OPTION_PLUGIN);
 	datamap_add(properties_datamap, IDC_NVRAM_SAVE,				DM_BOOL,	OPTION_NVRAM_SAVE);
 	datamap_add(properties_datamap, IDC_REWIND,					DM_BOOL,	OPTION_REWIND);
+	datamap_add(properties_datamap, IDC_NATURAL,				DM_BOOL,	OPTION_NATURAL_KEYBOARD);
 
 	// core opengl - bgfx options
 	datamap_add(properties_datamap, IDC_GLSLPOW,				DM_BOOL,	OSDOPTION_GL_FORCEPOW2TEXTURE);
@@ -2555,6 +2561,9 @@ static void BuildDataMap(void)
 	datamap_add(properties_datamap, IDC_GLSLFILTER,				DM_STRING,	OSDOPTION_GLSL_FILTER);
 	//datamap_add(properties_datamap, IDC_GLSLSYNC,				DM_BOOL,	OSDOPTION_GLSL_SYNC);
 	datamap_add(properties_datamap, IDC_BGFX_CHAINS,			DM_STRING,	OSDOPTION_BGFX_SCREEN_CHAINS);
+	datamap_add(properties_datamap, IDC_BGFX_BACKEND,			DM_STRING,	OSDOPTION_BGFX_BACKEND);
+
+	// opengl shaders
 	datamap_add(properties_datamap, IDC_MAME_SHADER0,			DM_STRING,	OSDOPTION_SHADER_MAME "0");
 	datamap_add(properties_datamap, IDC_MAME_SHADER1,			DM_STRING,	OSDOPTION_SHADER_MAME "1");
 	datamap_add(properties_datamap, IDC_MAME_SHADER2,			DM_STRING,	OSDOPTION_SHADER_MAME "2");
@@ -2642,44 +2651,45 @@ static void BuildDataMap(void)
 
 
 	// formats
-	datamap_set_int_format(properties_datamap, IDC_VOLUMEDISP,		"%ddB");
+	datamap_set_int_format(properties_datamap, IDC_VOLUMEDISP,			"%ddB");
 	datamap_set_int_format(properties_datamap, IDC_AUDIO_LATENCY_DISP,	"%d/5");
 	datamap_set_float_format(properties_datamap, IDC_BEAM_MINDISP,		"%3.2f");
 	datamap_set_float_format(properties_datamap, IDC_BEAM_MAXDISP,		"%3.2f");
 	datamap_set_float_format(properties_datamap, IDC_BEAM_INTENDISP,	"%3.2f");
 	datamap_set_float_format(properties_datamap, IDC_FLICKERDISP,		"%3.2f");
-	datamap_set_float_format(properties_datamap, IDC_GAMMADISP,		"%03.2f");
-	datamap_set_float_format(properties_datamap, IDC_BRIGHTCORRECTDISP,	"%03.2f");
-	datamap_set_float_format(properties_datamap, IDC_CONTRASTDISP,		"%03.2f");
-	datamap_set_float_format(properties_datamap, IDC_PAUSEBRIGHTDISP,	"%03.2f");
-	datamap_set_float_format(properties_datamap, IDC_FSGAMMADISP,		"%03.2f");
-	datamap_set_float_format(properties_datamap, IDC_FSBRIGHTNESSDISP,	"%03.2f");
-	datamap_set_float_format(properties_datamap, IDC_FSCONTRASTDISP,	"%03.2f");
-	datamap_set_float_format(properties_datamap, IDC_JDZDISP,		"%03.2f");
-	datamap_set_float_format(properties_datamap, IDC_JSATDISP,		"%03.2f");
-	datamap_set_float_format(properties_datamap, IDC_SPEEDDISP,		"%03.2f");
+	datamap_set_float_format(properties_datamap, IDC_GAMMADISP,			"%3.2f");
+	datamap_set_float_format(properties_datamap, IDC_BRIGHTCORRECTDISP,	"%3.2f");
+	datamap_set_float_format(properties_datamap, IDC_CONTRASTDISP,		"%3.2f");
+	datamap_set_float_format(properties_datamap, IDC_PAUSEBRIGHTDISP,	"%3.2f");
+	datamap_set_float_format(properties_datamap, IDC_FSGAMMADISP,		"%3.1f");
+	datamap_set_float_format(properties_datamap, IDC_FSBRIGHTNESSDISP,	"%3.1f");
+	datamap_set_float_format(properties_datamap, IDC_FSCONTRASTDISP,	"%3.1f");
+	datamap_set_float_format(properties_datamap, IDC_JDZDISP,			"%3.2f");
+	datamap_set_float_format(properties_datamap, IDC_JSATDISP,			"%3.2f");
+	datamap_set_float_format(properties_datamap, IDC_SPEEDDISP,			"%3.2f");
 
 	// trackbar ranges - slider-name,start,end,step
-	datamap_set_trackbar_range(properties_datamap, IDC_JDZ,         0.00, 1.00,  (float)0.05);
-	datamap_set_trackbar_range(properties_datamap, IDC_JSAT,        0.00, 1.00,  (float)0.05);
-	datamap_set_trackbar_range(properties_datamap, IDC_SPEED,       0.00, 3.00,  (float)0.01);
-	datamap_set_trackbar_range(properties_datamap, IDC_BEAM_MIN,        0.00, 1.00, (float)0.01);
-	datamap_set_trackbar_range(properties_datamap, IDC_BEAM_MAX,        1.00, 10.00, (float)0.01);
-	datamap_set_trackbar_range(properties_datamap, IDC_BEAM_INTEN,      -10.00, 10.00, (float)0.01);
-	datamap_set_trackbar_range(properties_datamap, IDC_FLICKER,          0.00, 1.00, (float)0.01);
-	datamap_set_trackbar_range(properties_datamap, IDC_AUDIO_LATENCY, 1,  5, 1);
-	datamap_set_trackbar_range(properties_datamap, IDC_VOLUME,      -32,  0, 1);
-	datamap_set_trackbar_range(properties_datamap, IDC_SECONDSTORUN, 0,  60, 1);
-	datamap_set_trackbar_range(properties_datamap, IDC_NUMSCREENS, 1,  4, 1);
-	datamap_set_trackbar_range(properties_datamap, IDC_PRESCALE, 1, 8, 1);
-	datamap_set_trackbar_range(properties_datamap, IDC_FSGAMMA, 0.0, 3.0, (float)0.1);
-	datamap_set_trackbar_range(properties_datamap, IDC_FSBRIGHTNESS, 0.00,  2.0, (float)0.1);
-	datamap_set_trackbar_range(properties_datamap, IDC_FSCONTRAST, 0.0,  2.0, (float)0.1);
-	datamap_set_trackbar_range(properties_datamap, IDC_GAMMA, 0.0, 3.0, (float)0.1);
-	datamap_set_trackbar_range(properties_datamap, IDC_BRIGHTCORRECT, 0.00,  2.0, (float)0.1);
-	datamap_set_trackbar_range(properties_datamap, IDC_CONTRAST, 0.0,  2.0, (float)0.1);
-	datamap_set_trackbar_range(properties_datamap, IDC_PAUSEBRIGHT, 0.00,  1.00, (float)0.05);
-	datamap_set_trackbar_range(properties_datamap, IDC_BOOTDELAY, 0, 5, 1);
+	datamap_set_trackbar_range(properties_datamap, IDC_JDZ,           0.00, 1.00,  (float)0.05);
+	datamap_set_trackbar_range(properties_datamap, IDC_JSAT,          0.00, 1.00,  (float)0.05);
+	datamap_set_trackbar_range(properties_datamap, IDC_SPEED,         0.00, 3.00,  (float)0.01);
+	datamap_set_trackbar_range(properties_datamap, IDC_BEAM_MIN,      0.00, 1.00, (float)0.01);
+	datamap_set_trackbar_range(properties_datamap, IDC_BEAM_MAX,      1.00, 10.00, (float)0.01);
+	datamap_set_trackbar_range(properties_datamap, IDC_BEAM_INTEN,    -10.00, 10.00, (float)0.01);
+	datamap_set_trackbar_range(properties_datamap, IDC_BEAM_DOT,      1, 4, 1);
+	datamap_set_trackbar_range(properties_datamap, IDC_FLICKER,       0.00, 1.00, (float)0.01);
+	datamap_set_trackbar_range(properties_datamap, IDC_AUDIO_LATENCY, 1, 5, 1);
+	datamap_set_trackbar_range(properties_datamap, IDC_VOLUME,        -32, 0, 1);
+	datamap_set_trackbar_range(properties_datamap, IDC_SECONDSTORUN,  0, 60, 1);
+	datamap_set_trackbar_range(properties_datamap, IDC_NUMSCREENS,    1, 4, 1);
+	datamap_set_trackbar_range(properties_datamap, IDC_PRESCALE,      1, 8, 1);
+	datamap_set_trackbar_range(properties_datamap, IDC_FSGAMMA,       0.0, 3.0, (float)0.1);
+	datamap_set_trackbar_range(properties_datamap, IDC_FSBRIGHTNESS,  0.0, 2.0, (float)0.1);
+	datamap_set_trackbar_range(properties_datamap, IDC_FSCONTRAST,    0.0, 2.0, (float)0.1);
+	datamap_set_trackbar_range(properties_datamap, IDC_GAMMA,         0.0, 3.0, (float)0.1);
+	datamap_set_trackbar_range(properties_datamap, IDC_BRIGHTCORRECT, 0.0, 2.0, (float)0.1);
+	datamap_set_trackbar_range(properties_datamap, IDC_CONTRAST,      0.0, 2.0, (float)0.1);
+	datamap_set_trackbar_range(properties_datamap, IDC_PAUSEBRIGHT,   0.0, 1.0, (float)0.05);
+	datamap_set_trackbar_range(properties_datamap, IDC_BOOTDELAY,     0, 5, 1);
 
 #ifdef MESS
 	// MESS specific stuff
@@ -2693,7 +2703,7 @@ static void BuildDataMap(void)
 #endif
 }
 
-
+#if 0
 static void SetSamplesEnabled(HWND hWnd, int nIndex, BOOL bSoundEnabled)
 {
 	BOOL enabled = false;
@@ -2714,7 +2724,7 @@ static void SetSamplesEnabled(HWND hWnd, int nIndex, BOOL bSoundEnabled)
 		EnableWindow(hCtrl, enabled);
 	}
 }
-
+#endif
 /* Moved here cause it's called in a few places */
 static void InitializeOptions(HWND hDlg)
 {
@@ -2733,6 +2743,7 @@ static void InitializeOptions(HWND hDlg)
 //	InitializeLanguageUI(hDlg);
 	InitializePluginsUI(hDlg);
 	InitializeGLSLFilterUI(hDlg);
+	InitializeBGFXBackendUI(hDlg);
 #ifdef D3DVERSION
 	InitializeD3DVersionUI(hDlg);
 #endif
@@ -3160,8 +3171,22 @@ static void InitializeGLSLFilterUI(HWND hWnd)
 	{
 		for (int i = 0; i < NUMGLSLFILTER; i++)
 		{
-			(void)ComboBox_InsertString(hCtrl, i, g_ComboBoxGLSLFilter[i].m_pText);
-			(void)ComboBox_SetItemData(hCtrl, i, g_ComboBoxGLSLFilter[i].m_pData);
+			ComboBox_InsertString(hCtrl, i, g_ComboBoxGLSLFilter[i].m_pText);
+			ComboBox_SetItemData(hCtrl, i, g_ComboBoxGLSLFilter[i].m_pData);
+		}
+	}
+}
+
+static void InitializeBGFXBackendUI(HWND hWnd)
+{
+	HWND hCtrl = GetDlgItem(hWnd, IDC_BGFX_BACKEND);
+
+	if (hCtrl)
+	{
+		for (int i = 0; i < NUMBGFXBACKEND; i++)
+		{
+			ComboBox_InsertString(hCtrl, i, g_ComboBoxBGFXBackend[i].m_pText);
+			ComboBox_SetItemData(hCtrl, i, g_ComboBoxBGFXBackend[i].m_pData);
 		}
 	}
 }
@@ -3237,6 +3262,38 @@ int winui_get_window_text_utf8(HWND hWnd, char *buffer, size_t buffer_size)
 	result = snprintf(buffer, buffer_size, "%s", utf8_buffer);
 	free(utf8_buffer);
 	return result;
+}
+
+static BOOL ChangeFallback(HWND hWnd)
+{
+	BOOL changed = false;
+	char data[90];
+
+	winui_get_window_text_utf8(GetDlgItem(hWnd, IDC_ARTWORK_FALLBACK), data, WINUI_ARRAY_LENGTH(data));
+
+	if (strcmp(data, m_CurrentOpts.value(OPTION_FALLBACK_ARTWORK)))
+	{
+		emu_set_value(m_CurrentOpts, OPTION_FALLBACK_ARTWORK, data);
+		changed = true;
+	}
+
+	return changed;
+}
+
+static BOOL ChangeOverride(HWND hWnd)
+{
+	BOOL changed = false;
+	char data[90];
+
+	winui_get_window_text_utf8(GetDlgItem(hWnd, IDC_ARTWORK_OVERRIDE), data, WINUI_ARRAY_LENGTH(data));
+
+	if (strcmp(data, m_CurrentOpts.value(OPTION_OVERRIDE_ARTWORK)))
+	{
+		emu_set_value(m_CurrentOpts, OPTION_OVERRIDE_ARTWORK, data);
+		changed = true;
+	}
+
+	return changed;
 }
 
 static BOOL ChangeJoystickMap(HWND hWnd)
