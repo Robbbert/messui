@@ -14898,6 +14898,7 @@ jak_dchp
 jak_ddhp
 jak_prhp
 zippity
+zippityuk
 
 @source:geneve.cpp
 geneve                          // 1987 Myarc Geneve 9640
@@ -22281,6 +22282,7 @@ rad_ssoc                        // (c)2004 Radica
 rad_sonic
 rad_sonicp
 rad_orun
+msi_sf2
 
 @source:megadriv_sunplus_hybrid.cpp
 reactmd
@@ -38335,6 +38337,7 @@ sentx6pd
 
 @source:spg2xx_shredmjr.cpp
 taikeegr                        //
+rockstar
 shredmjr                        //
 guitarst
 guitarstp
@@ -42676,6 +42679,9 @@ yiear2                          // GX407 (c) 1985
 
 @source:ymdx11.cpp
 dx11                            //
+
+@source:ymmu5.cpp
+mu5                             // 1994 MU-5
 
 @source:ymmu50.cpp
 mu50                            // 1995 MU-50
