@@ -761,14 +761,14 @@ static ResizeItem main_resize_items[] =
 	{ RA_ID,   { IDC_TREE },     true,  RA_LEFT  | RA_BOTTOM | RA_TOP,     NULL },
 	{ RA_ID,   { IDC_LIST },     true,  RA_ALL,                            NULL },
 	{ RA_ID,   { IDC_SPLITTER }, false, RA_LEFT  | RA_BOTTOM | RA_TOP,     NULL },
-	{ RA_ID,   { IDC_SPLITTER2 },false, RA_RIGHT | RA_BOTTOM | RA_TOP,     NULL },
-	{ RA_ID,   { IDC_SSFRAME },  false, RA_RIGHT | RA_BOTTOM | RA_TOP,     NULL },
-	{ RA_ID,   { IDC_SSPICTURE },false, RA_RIGHT | RA_BOTTOM | RA_TOP,     NULL },
-	{ RA_ID,   { IDC_HISTORY },  true,  RA_RIGHT | RA_BOTTOM | RA_TOP,     NULL },
-	{ RA_ID,   { IDC_SSTAB },    false, RA_RIGHT | RA_TOP,                 NULL },
-	{ RA_ID,   { IDC_SWLIST },    true, RA_RIGHT | RA_BOTTOM | RA_TOP,     NULL },
-	{ RA_ID,   { IDC_SOFTLIST },  true, RA_RIGHT | RA_BOTTOM | RA_TOP,     NULL },
-	{ RA_ID,   { IDC_SPLITTER3 },false, RA_RIGHT | RA_BOTTOM | RA_TOP,     NULL },
+	{ RA_ID,   { IDC_SPLITTER2 },false, RA_LEFT  | RA_BOTTOM | RA_TOP,     NULL },
+	{ RA_ID,   { IDC_SSFRAME },  false, RA_LEFT  | RA_BOTTOM | RA_TOP,     NULL },
+	{ RA_ID,   { IDC_SSPICTURE },false, RA_LEFT  | RA_BOTTOM | RA_TOP,     NULL },
+	{ RA_ID,   { IDC_HISTORY },  true,  RA_LEFT  | RA_BOTTOM | RA_TOP,     NULL },
+	{ RA_ID,   { IDC_SSTAB },    false, RA_LEFT  | RA_TOP,                 NULL },
+	{ RA_ID,   { IDC_SWLIST },    true, RA_LEFT  | RA_BOTTOM | RA_TOP,     NULL },
+	{ RA_ID,   { IDC_SOFTLIST },  true, RA_LEFT  | RA_BOTTOM | RA_TOP,     NULL },
+	{ RA_ID,   { IDC_SPLITTER3 },false, RA_LEFT  | RA_BOTTOM | RA_TOP,     NULL },
 	{ RA_END,  { 0 },            false, 0,                                 NULL }
 };
 
@@ -1293,9 +1293,9 @@ static void ResizeTreeAndListViews(BOOL bResizeHidden)
 			if ((nLastWidth + nLeftWindowWidth) > fullwidth)
 				nLeftWindowWidth = MIN_VIEW_WIDTH;
 			//printf("ResizeTreeAndListViews: Window %d, Left %d, Right %d\n",i,nLastWidth, nLeftWindowWidth + nLastWidth);
-			MoveWindow(GetDlgItem(hMain, g_splitterInfo[i].nLeftWindow), nLastWidth, rect.top + 2, nLeftWindowWidth, rect.bottom - rect.top - 4, true);
+			MoveWindow(GetDlgItem(hMain, g_splitterInfo[i].nLeftWindow), nLastWidth, rect.top + 2, nLeftWindowWidth, rect.bottom - rect.top - 4, true); // window
 
-			MoveWindow(GetDlgItem(hMain, g_splitterInfo[i].nSplitterWindow), nSplitterOffset[i], rect.top + 2, SPLITTER_WIDTH, rect.bottom - rect.top - 4, true);
+			MoveWindow(GetDlgItem(hMain, g_splitterInfo[i].nSplitterWindow), nSplitterOffset[i], rect.top + 2, SPLITTER_WIDTH, rect.bottom - rect.top - 4, true); // splitter
 		}
 
 		if (bVisible)
@@ -1435,7 +1435,7 @@ void UpdateScreenShot(void)
 void ResizePickerControls(HWND hWnd)
 {
 	RECT rect, sRect;
-	static BOOL firstTime = true;
+	static BOOL afirstTime = true;
 	BOOL doSSControls = true;
 	int nSplitterCount = GetSplitterCount();
 
@@ -1443,7 +1443,7 @@ void ResizePickerControls(HWND hWnd)
 	GetClientRect(hWnd, &rect);
 
 	/* Calc the display sizes based on g_splitterInfo */
-	if (firstTime)
+	if (afirstTime)
 	{
 		for (int i = 0; i < nSplitterCount; i++)
 //			nSplitterOffset[i] = rect.right * g_splitterInfo[i].dPosition;
@@ -1456,7 +1456,7 @@ void ResizePickerControls(HWND hWnd)
 		topMargin = rWindow.bottom - rWindow.top;
 		/*buttonMargin = (sRect.bottom + 4); */
 
-		firstTime = false;
+		afirstTime = false;
 	}
 	else
 	{
@@ -4613,7 +4613,7 @@ static BOOL MameCommand(HWND hwnd,int id, HWND hwndCtl, UINT codeNotify)
 		{
 			if (g_helpInfo[i].nMenuItem == id)
 			{
-				printf("%X: %ls\n",g_helpInfo[i].bIsHtmlHelp, g_helpInfo[i].lpFile);fflush(stdout);
+				//printf("%X: %ls\n",g_helpInfo[i].bIsHtmlHelp, g_helpInfo[i].lpFile);fflush(stdout);
 				if (i == 1) // get current whatsnew.txt from mamedev.org
 				{
 					string version = string(GetVersionString()); // turn version string into std

@@ -139,9 +139,6 @@ b) Exit the dialog.
 #define PropSheet_GetTabControl(d) (HWND)(LRESULT)(int)SendMessage((d),PSM_GETTABCONTROL,0,0)
 #endif /* defined(__GNUC__) */
 
-/* Enable this if MAME supports multiple versions of D3D */
-//#define D3DVERSION
-
 /***************************************************************
  * Imported function prototypes
  ***************************************************************/
@@ -160,10 +157,6 @@ static void InitializeSoundUI(HWND hwnd);
 static void InitializeSkippingUI(HWND hwnd);
 static void InitializeRotateUI(HWND hwnd);
 static void UpdateSelectScreenUI(HWND hwnd);
-static void InitializeSelectScreenUI(HWND hwnd);
-#ifdef D3DVERSION
-static void InitializeD3DVersionUI(HWND hwnd);
-#endif
 static void InitializeVideoUI(HWND hwnd);
 static void InitializeBIOSUI(HWND hwnd);
 static void InitializeControllerMappingUI(HWND hwnd);
@@ -224,8 +217,9 @@ static datamap *properties_datamap;
 static int  g_nGame            = 0;
 static int  g_nFolder          = 0;
 static int  g_nFolderGame      = 0;
+static int m_currScreen = -1;
 static OPTIONS_TYPE g_nPropertyMode = OPTIONS_GAME;
-static BOOL  g_bAutoAspect[MAX_SCREENS] = {false, false, false, false};
+static BOOL  g_bAutoAspect[MAX_SCREENS+1] = {false, false, false, false, false}; // state of tick on keep-aspect checkbox on "Screen" pane, per screen
 static BOOL  g_bAutoSnapSize = false;
 static HICON g_hIcon = NULL;
 std::vector<string> plugin_names(32);
@@ -287,18 +281,10 @@ const DUALCOMBOSTR g_ComboBoxSound[] =
 	{ TEXT("XAudio2 (Win10 only)"),  "xaudio2" },     // win10 only
 };
 #define NUMSOUND (sizeof(g_ComboBoxSound) / sizeof(g_ComboBoxSound[0]))
-#ifdef D3DVERSION
-const DUALCOMBOINT g_ComboBoxD3DVersion[] =
-{
-	{ TEXT("Version 9"),        9   },
-//	{ TEXT("Version 8"),        8   },
-};
 
-#define NUMD3DVERSIONS (sizeof(g_ComboBoxD3DVersion) / sizeof(g_ComboBoxD3DVersion[0]))
-#define WINOPTION_D3DVERSION "9"
-#endif
 const DUALCOMBOINT g_ComboBoxSelectScreen[] =
 {
+	{ TEXT("Default"),         -1 },
 	{ TEXT("Screen 0"),         0 },
 	{ TEXT("Screen 1"),         1 },
 	{ TEXT("Screen 2"),         2 },
@@ -370,18 +356,6 @@ int PropertiesCurrentGame(HWND hDlg)
 DWORD_PTR GetHelpIDs(void)
 {
 	return (DWORD_PTR)dwHelpIDs;
-}
-
-static int GetSelectedScreen(HWND hWnd)
-{
-	int nSelectedScreen = 0;
-	HWND hCtrl = GetDlgItem(hWnd, IDC_SCREENSELECT);
-	if (hCtrl)
-		nSelectedScreen = ComboBox_GetCurSel(hCtrl);
-	if ((nSelectedScreen < 0) || (nSelectedScreen >= NUMSELECTSCREEN))
-		nSelectedScreen = 0;
-	return nSelectedScreen;
-
 }
 
 static PROPSHEETPAGE *CreatePropSheetPages(HINSTANCE hInst, BOOL bOnlyDefault,
@@ -1085,7 +1059,7 @@ INT_PTR CALLBACK GameOptionsProc(HWND hDlg, UINT Msg, WPARAM wParam, LPARAM lPar
 		// Setup Reset button
 //		EnableWindow(GetDlgItem(hDlg, IDC_PROP_RESET), g_bReset);
 		ShowWindow(hDlg, SW_SHOW);
-		PropSheet_Changed(GetParent(hDlg), hDlg);
+//		PropSheet_Changed(GetParent(hDlg), hDlg);
 		return 1;
 
 	case WM_HSCROLL:
@@ -1126,10 +1100,10 @@ INT_PTR CALLBACK GameOptionsProc(HWND hDlg, UINT Msg, WPARAM wParam, LPARAM lPar
 
 			case IDC_ASPECT:
 				nCurSelection = Button_GetCheck( GetDlgItem(hDlg, IDC_ASPECT));
-				if( g_bAutoAspect[GetSelectedScreen(hDlg)] != nCurSelection )
+				if( g_bAutoAspect[m_currScreen+1] != nCurSelection )
 				{
 					changed = true;
-					g_bAutoAspect[GetSelectedScreen(hDlg)] = nCurSelection;
+					g_bAutoAspect[m_currScreen+1] = nCurSelection;
 				}
 				break;
 
@@ -1267,6 +1241,12 @@ INT_PTR CALLBACK GameOptionsProc(HWND hDlg, UINT Msg, WPARAM wParam, LPARAM lPar
 
 				// MSH 20070813 - Update all related controls
 			case IDC_SCREENSELECT:
+			{
+				HWND hCtrl = GetDlgItem(hDlg, wID);
+				if (hCtrl)
+					m_currScreen = ComboBox_GetCurSel(hCtrl)-1;
+			}
+
 			case IDC_SCREEN:
 				// NPW 3-Apr-2007:  Ugh I'm only perpetuating the vile hacks in this code
 				if ((wNotifyCode == CBN_SELCHANGE) || (wNotifyCode == CBN_SELENDOK))
@@ -1438,7 +1418,9 @@ static void PropToOptions(HWND hWnd, windows_options &o)
 	hCtrl3 = GetDlgItem(hWnd, IDC_ASPECT);
 	if (hCtrl && hCtrl2 && hCtrl3)
 	{
-		string aspect_option = string("aspect") + std::to_string(GetSelectedScreen(hWnd));
+		string aspect_option = string("aspect");
+		if (m_currScreen >= 0)
+			aspect_option += std::to_string(m_currScreen);
 
 		if (Button_GetCheck(hCtrl3))
 		{
@@ -1446,8 +1428,7 @@ static void PropToOptions(HWND hWnd, windows_options &o)
 		}
 		else
 		{
-			int n = 0;
-			int d = 0;
+			int n = 0, d = 0;
 			TCHAR buffer[200];
 
 			Edit_GetText(hCtrl, buffer, ARRAY_LENGTH(buffer));
@@ -1478,8 +1459,7 @@ static void PropToOptions(HWND hWnd, windows_options &o)
 		}
 		else
 		{
-			int width = 0;
-			int height = 0;
+			int width = 0, height = 0;
 			TCHAR buffer[200];
 
 			Edit_GetText(hCtrl, buffer, ARRAY_LENGTH(buffer));
@@ -1673,7 +1653,7 @@ static void OptionsToProp(HWND hWnd, windows_options& o)
 
 	HWND hCtrl = GetDlgItem(hWnd, IDC_ASPECT);
 	if (hCtrl)
-		Button_SetCheck(hCtrl, g_bAutoAspect[GetSelectedScreen(hWnd)] );
+		Button_SetCheck(hCtrl, g_bAutoAspect[m_currScreen+1] );
 
 	hCtrl = GetDlgItem(hWnd, IDC_SNAPSIZE);
 	if (hCtrl)
@@ -1696,21 +1676,22 @@ static void OptionsToProp(HWND hWnd, windows_options& o)
 		}
 	}
 
-
 	hCtrl = GetDlgItem(hWnd, IDC_ASPECT);
 	if (hCtrl)
 	{
-		char aspect_option[32];
-		snprintf(aspect_option, ARRAY_LENGTH(aspect_option), "aspect%d", GetSelectedScreen(hWnd));
-		if( strcmp(o.value(aspect_option), "auto") == 0)
+		string aspect_option = "aspect";
+		if (m_currScreen >= 0)
+			aspect_option += std::to_string(m_currScreen);
+		string aspect = emu_get_value(o, aspect_option);
+		if( aspect == "auto")
 		{
 			Button_SetCheck(hCtrl, true);
-			g_bAutoAspect[GetSelectedScreen(hWnd)] = true;
+			g_bAutoAspect[m_currScreen+1] = true;
 		}
 		else
 		{
 			Button_SetCheck(hCtrl, false);
-			g_bAutoAspect[GetSelectedScreen(hWnd)] = false;
+			g_bAutoAspect[m_currScreen+1] = false;
 		}
 	}
 
@@ -1719,14 +1700,16 @@ static void OptionsToProp(HWND hWnd, windows_options& o)
 	hCtrl2 = GetDlgItem(hWnd, IDC_ASPECTRATIOD);
 	if (hCtrl && hCtrl2)
 	{
-		char aspect_option[32];
-		snprintf(aspect_option, ARRAY_LENGTH(aspect_option), "aspect%d", GetSelectedScreen(hWnd));
+		string aspect_option = "aspect";
+		if (m_currScreen >= 0)
+			aspect_option += std::to_string(m_currScreen);
+		string aspect = emu_get_value(o, aspect_option);
 
 		n = 0;
 		d = 0;
-		if (o.value(aspect_option))
+		if (!aspect.empty())
 		{
-			if (sscanf(o.value(aspect_option), "%d:%d", &n, &d) == 2 && n != 0 && d != 0)
+			if (sscanf(aspect.c_str(), "%d:%d", &n, &d) == 2 && n != 0 && d != 0)
 			{
 				_stprintf(buf, TEXT("%d"), n);
 				Edit_SetText(hCtrl, buf);
@@ -1887,7 +1870,7 @@ static void SetPropEnabledControls(HWND hWnd)
 #endif
 
 	in_window = m_CurrentOpts.bool_value(OSDOPTION_WINDOW);
-	Button_SetCheck(GetDlgItem(hWnd, IDC_ASPECT), g_bAutoAspect[GetSelectedScreen(hWnd)] );
+	Button_SetCheck(GetDlgItem(hWnd, IDC_ASPECT), g_bAutoAspect[m_currScreen+1] );
 
 	EnableWindow(GetDlgItem(hWnd, IDC_WAITVSYNC), d3d|ddraw);
 	EnableWindow(GetDlgItem(hWnd, IDC_TRIPLE_BUFFER), d3d|ddraw);
@@ -1913,9 +1896,9 @@ static void SetPropEnabledControls(HWND hWnd)
 	EnableWindow(GetDlgItem(hWnd, IDC_FSCONTRASTTEXT), !in_window);
 	EnableWindow(GetDlgItem(hWnd, IDC_FSCONTRASTDISP), !in_window);
 
-	EnableWindow(GetDlgItem(hWnd, IDC_ASPECTRATIOTEXT), !g_bAutoAspect[GetSelectedScreen(hWnd)]);
-	EnableWindow(GetDlgItem(hWnd, IDC_ASPECTRATION), !g_bAutoAspect[GetSelectedScreen(hWnd)]);
-	EnableWindow(GetDlgItem(hWnd, IDC_ASPECTRATIOD), !g_bAutoAspect[GetSelectedScreen(hWnd)]);
+	EnableWindow(GetDlgItem(hWnd, IDC_ASPECTRATIOTEXT), !g_bAutoAspect[m_currScreen+1]);
+	EnableWindow(GetDlgItem(hWnd, IDC_ASPECTRATION), !g_bAutoAspect[m_currScreen+1]);
+	EnableWindow(GetDlgItem(hWnd, IDC_ASPECTRATIOD), !g_bAutoAspect[m_currScreen+1]);
 
 	EnableWindow(GetDlgItem(hWnd, IDC_SNAPSIZETEXT), !g_bAutoSnapSize);
 	EnableWindow(GetDlgItem(hWnd, IDC_SNAPSIZEHEIGHT), !g_bAutoSnapSize);
@@ -1923,9 +1906,6 @@ static void SetPropEnabledControls(HWND hWnd)
 	EnableWindow(GetDlgItem(hWnd, IDC_SNAPSIZEX), !g_bAutoSnapSize);
 
 	EnableWindow(GetDlgItem(hWnd, IDC_D3D_FILTER),d3d);
-#ifdef D3DVERSION
-	EnableWindow(GetDlgItem(hWnd, IDC_D3D_VERSION),(NUMD3DVERSIONS>1) & d3d);
-#endif
 
 	//Switchres and D3D or ddraw enable the per screen parameters
 	EnableWindow(GetDlgItem(hWnd, IDC_NUMSCREENS), ddraw | d3d);
@@ -2086,11 +2066,11 @@ static BOOL RotatePopulateControl(datamap *map, HWND dialog, HWND control, windo
 
 static BOOL ScreenReadControl(datamap *map, HWND dialog, HWND control, windows_options *o, const char *option_name)
 {
-	char screen_option_name[32];
-	int selected_screen = GetSelectedScreen(dialog);
+	string screen_option_name = "screen";
+	if (m_currScreen >= 0)
+		screen_option_name += std::to_string(m_currScreen);
 	int screen_option_index = ComboBox_GetCurSel(control);
 	TCHAR *screen_option_value = (TCHAR*) ComboBox_GetItemData(control, screen_option_index);
-	snprintf(screen_option_name, ARRAY_LENGTH(screen_option_name), "screen%d", selected_screen);
 	char *op_val = ui_utf8_from_wstring(screen_option_value);
 	emu_set_value(o, screen_option_name, op_val);
 	free(op_val);
@@ -2120,14 +2100,15 @@ static BOOL ScreenPopulateControl(datamap *map, HWND dialog, HWND control, windo
 	{
 		if( !(dd.StateFlags & DISPLAY_DEVICE_MIRRORING_DRIVER) )
 		{
-			char screen_option[32];
-
 			//we have to add 1 to account for the "auto" entry
 			ComboBox_InsertString(control, i+1, win_tstring_strdup(dd.DeviceName));
 			ComboBox_SetItemData(control, i+1, (void*)win_tstring_strdup(dd.DeviceName));
 
-			snprintf(screen_option, ARRAY_LENGTH(screen_option), "screen%d", GetSelectedScreen(dialog));
-			t_option = ui_wstring_from_utf8(o->value(screen_option));
+			string screen_option = "screen";
+			if (m_currScreen >= 0)
+				screen_option += std::to_string(m_currScreen);
+			string screen = emu_get_value(o, screen_option);
+			t_option = ui_wstring_from_utf8(screen.c_str());
 			if( !t_option )
 				return false;
 			if (_tcscmp(t_option, dd.DeviceName) == 0)
@@ -2143,17 +2124,21 @@ static BOOL ScreenPopulateControl(datamap *map, HWND dialog, HWND control, windo
 
 static void ViewSetOptionName(datamap *map, HWND dialog, HWND control, char *buffer, size_t buffer_size)
 {
-	snprintf(buffer, buffer_size, "view%d", GetSelectedScreen(dialog));
+	if (m_currScreen >= 0)
+		snprintf(buffer, buffer_size, "view%d", m_currScreen);
+	else
+		snprintf(buffer, buffer_size, "view");
 }
 
 static BOOL ViewPopulateControl(datamap *map, HWND dialog, HWND control, windows_options *o, const char *option_name)
 {
 	int selected_index = 0;
-	char view_option[32];
 
 	// determine the view option value
-	snprintf(view_option, ARRAY_LENGTH(view_option), "view%d", GetSelectedScreen(dialog));
-	const char *view = o->value(view_option);
+	string view_option = "view";
+	if (m_currScreen >= 0)
+		view_option += std::to_string(m_currScreen);
+	string view = emu_get_value(o, view_option);
 
 	ComboBox_ResetContent(control);
 	for (int i = 0; i < NUMVIEW; i++)
@@ -2161,7 +2146,7 @@ static BOOL ViewPopulateControl(datamap *map, HWND dialog, HWND control, windows
 		ComboBox_InsertString(control, i, g_ComboBoxView[i].m_pText);
 		ComboBox_SetItemData(control, i, g_ComboBoxView[i].m_pData);
 
-		if (strcmp(view, g_ComboBoxView[i].m_pData)==0)
+		if (strcmp(view.c_str(), g_ComboBoxView[i].m_pData)==0)
 			selected_index = i;
 	}
 	ComboBox_SetCurSel(control, selected_index);
@@ -2294,7 +2279,10 @@ static BOOL DefaultInputPopulateControl(datamap *map, HWND dialog, HWND control,
 
 static void ResolutionSetOptionName(datamap *map, HWND dialog, HWND control, char *buffer, size_t buffer_size)
 {
-	snprintf(buffer, buffer_size, "resolution%d", GetSelectedScreen(dialog));
+	if (m_currScreen >= 0)
+		snprintf(buffer, buffer_size, "resolution%d", m_currScreen);
+	else
+		snprintf(buffer, buffer_size, "resolution");
 }
 
 
@@ -2302,13 +2290,13 @@ static BOOL ResolutionReadControl(datamap *map, HWND dialog, HWND control, windo
 {
 	HWND refresh_control = GetDlgItem(dialog, IDC_REFRESH);
 	HWND sizes_control = GetDlgItem(dialog, IDC_SIZES);
-	int res = 0, width = 0, height = 0;
+	int width = 0, height = 0;
 	char option_value[256];
 
 	if (refresh_control && sizes_control)
 	{
 		TCHAR buffer[256];
-		res = ComboBox_GetText(sizes_control, buffer, ARRAY_LENGTH(buffer) - 1);
+		ComboBox_GetText(sizes_control, buffer, ARRAY_LENGTH(buffer) - 1);
 		if (_stscanf(buffer, TEXT("%d x %d"), &width, &height) == 2)
 		{
 			int refresh_index = ComboBox_GetCurSel(refresh_control);
@@ -2320,7 +2308,6 @@ static BOOL ResolutionReadControl(datamap *map, HWND dialog, HWND control, windo
 
 		emu_set_value(o, option_name, option_value);
 	}
-	res++;
 	return false;
 }
 
@@ -2336,8 +2323,7 @@ static BOOL ResolutionPopulateControl(datamap *map, HWND dialog, HWND control_, 
 	int refresh_index = 0;
 	int sizes_selection = 0;
 	int refresh_selection = 0;
-	char screen_option[32];
-	const char *screen;
+	string screen_option;
 	LPTSTR t_screen;
 	TCHAR buf[16];
 	int i;
@@ -2367,9 +2353,17 @@ static BOOL ResolutionPopulateControl(datamap *map, HWND dialog, HWND control_, 
 		refresh_index++;
 
 		// determine which screen we're using
-		snprintf(screen_option, ARRAY_LENGTH(screen_option), "screen%d", GetSelectedScreen(dialog));
-		screen = o->value(screen_option);
-		t_screen = ui_wstring_from_utf8(screen);
+		string screen_option = "screen";
+		if (m_currScreen >= 0)
+			screen_option += std::to_string(m_currScreen);
+
+		if (screen_option == "screen")
+			t_screen = NULL;
+		else
+		{
+			string screen = emu_get_value(o, screen_option);
+			t_screen = ui_wstring_from_utf8(screen.c_str());
+		}
 
 		// retrieve screen information
 		devmode.dmSize = sizeof(devmode);
@@ -2408,7 +2402,8 @@ static BOOL ResolutionPopulateControl(datamap *map, HWND dialog, HWND control_, 
 				}
 			}
 		}
-		free(t_screen);
+		if (t_screen)
+			free(t_screen);
 
 		ComboBox_SetCurSel(sizes_control, sizes_selection);
 		ComboBox_SetCurSel(refresh_control, refresh_selection);
@@ -2424,16 +2419,14 @@ static BOOL ResolutionPopulateControl(datamap *map, HWND dialog, HWND control_, 
 /* Initialize local helper variables */
 static void ResetDataMap(HWND hWnd)
 {
-	char screen_option[32];
+	string screen_option = "screen";
+	if (m_currScreen >= 0)
+		screen_option += std::to_string(m_currScreen);
 
-	snprintf(screen_option, ARRAY_LENGTH(screen_option), "screen%d", GetSelectedScreen(hWnd));
+	string screen = emu_get_value(m_CurrentOpts, screen_option);
 
-	if (m_CurrentOpts.value(screen_option) == NULL
-		|| (core_stricmp(m_CurrentOpts.value(screen_option), "") == 0 )
-		|| (core_stricmp(m_CurrentOpts.value(screen_option), "auto") == 0 ) )
-	{
+	if (screen.empty() || (screen == "auto"))
 		emu_set_value(m_CurrentOpts, screen_option, "auto");
-	}
 }
 
 
@@ -2594,11 +2587,18 @@ static void BuildDataMap(void)
 	datamap_add(properties_datamap, IDC_EFFECT,					DM_STRING,	OPTION_EFFECT);
 	datamap_add(properties_datamap, IDC_WAITVSYNC,				DM_BOOL,	OSDOPTION_WAITVSYNC);
 	datamap_add(properties_datamap, IDC_SYNCREFRESH,			DM_BOOL,	OSDOPTION_SYNCREFRESH);
+//	datamap_add(properties_datamap, IDC_WIDESTRETCH,			DM_BOOL,	OPTION_WIDESTRETCH);
+	datamap_add(properties_datamap, IDC_UNEVENSTRETCH,			DM_BOOL,	OPTION_UNEVENSTRETCH);
+	datamap_add(properties_datamap, IDC_UNEVENSTRETCHX,			DM_BOOL,	OPTION_UNEVENSTRETCHX);
+	datamap_add(properties_datamap, IDC_UNEVENSTRETCHY,			DM_BOOL,	OPTION_UNEVENSTRETCHY);
+	datamap_add(properties_datamap, IDC_AUTOSTRETCHXY,			DM_BOOL,	OPTION_AUTOSTRETCHXY);
+	datamap_add(properties_datamap, IDC_INTOVERSCAN,			DM_BOOL,	OPTION_INTOVERSCAN);
+	datamap_add(properties_datamap, IDC_INTSCALEX,				DM_INT,		OPTION_INTSCALEX);
+	datamap_add(properties_datamap, IDC_INTSCALEX_TXT,			DM_INT,		OPTION_INTSCALEX);
+	datamap_add(properties_datamap, IDC_INTSCALEY,				DM_INT,		OPTION_INTSCALEY);
+	datamap_add(properties_datamap, IDC_INTSCALEY_TXT,			DM_INT,		OPTION_INTSCALEY);
 
 	// Direct3D specific options
-#ifdef D3DVERSION
-	datamap_add(properties_datamap, IDC_D3D_VERSION,			DM_INT,		WINOPTION_D3DVERSION);
-#endif
 	datamap_add(properties_datamap, IDC_D3D_FILTER,				DM_BOOL,	OSDOPTION_FILTER);
 
 	// per window video options
@@ -2682,14 +2682,16 @@ static void BuildDataMap(void)
 	datamap_set_trackbar_range(properties_datamap, IDC_SECONDSTORUN,  0, 60, 1);
 	datamap_set_trackbar_range(properties_datamap, IDC_NUMSCREENS,    1, 4, 1);
 	datamap_set_trackbar_range(properties_datamap, IDC_PRESCALE,      1, 8, 1);
-	datamap_set_trackbar_range(properties_datamap, IDC_FSGAMMA,       0.0, 3.0, (float)0.1);
-	datamap_set_trackbar_range(properties_datamap, IDC_FSBRIGHTNESS,  0.0, 2.0, (float)0.1);
-	datamap_set_trackbar_range(properties_datamap, IDC_FSCONTRAST,    0.0, 2.0, (float)0.1);
+	datamap_set_trackbar_range(properties_datamap, IDC_FSGAMMA,       0.0, 8.0, (float)0.5);
+	datamap_set_trackbar_range(properties_datamap, IDC_FSBRIGHTNESS,  0.1, 2.0, (float)0.1);
+	datamap_set_trackbar_range(properties_datamap, IDC_FSCONTRAST,    0.1, 4.0, (float)0.1);
 	datamap_set_trackbar_range(properties_datamap, IDC_GAMMA,         0.0, 3.0, (float)0.1);
 	datamap_set_trackbar_range(properties_datamap, IDC_BRIGHTCORRECT, 0.0, 2.0, (float)0.1);
 	datamap_set_trackbar_range(properties_datamap, IDC_CONTRAST,      0.0, 2.0, (float)0.1);
 	datamap_set_trackbar_range(properties_datamap, IDC_PAUSEBRIGHT,   0.0, 1.0, (float)0.05);
 	datamap_set_trackbar_range(properties_datamap, IDC_BOOTDELAY,     0, 5, 1);
+	datamap_set_trackbar_range(properties_datamap, IDC_INTSCALEX,     0, 4, 1);
+	datamap_set_trackbar_range(properties_datamap, IDC_INTSCALEY,     0, 4, 1);
 
 #ifdef MESS
 	// MESS specific stuff
@@ -2734,7 +2736,6 @@ static void InitializeOptions(HWND hDlg)
 //	InitializeSoundModeUI(hDlg);
 	InitializeSkippingUI(hDlg);
 	InitializeRotateUI(hDlg);
-	InitializeSelectScreenUI(hDlg);
 	InitializeBIOSUI(hDlg);
 	InitializeControllerMappingUI(hDlg);
 	InitializeVideoUI(hDlg);
@@ -2744,9 +2745,6 @@ static void InitializeOptions(HWND hDlg)
 	InitializePluginsUI(hDlg);
 	InitializeGLSLFilterUI(hDlg);
 	InitializeBGFXBackendUI(hDlg);
-#ifdef D3DVERSION
-	InitializeD3DVersionUI(hDlg);
-#endif
 }
 
 /* Moved here because it is called in several places */
@@ -2875,47 +2873,33 @@ static void InitializeVideoUI(HWND hwnd)
 	}
 }
 
-#ifdef D3DVERSION
-/* Populate the D3D Version drop down */
-static void InitializeD3DVersionUI(HWND hwnd)
-{
-	HWND hCtrl = GetDlgItem(hwnd, IDC_D3D_VERSION);
-	if (hCtrl)
-	{
-		for (int i = 0; i < NUMD3DVERSIONS; i++)
-		{
-			ComboBox_InsertString(hCtrl, i, g_ComboBoxD3DVersion[i].m_pText);
-			ComboBox_SetItemData( hCtrl, i, g_ComboBoxD3DVersion[i].m_pData);
-		}
-	}
-}
-#endif
 static void UpdateSelectScreenUI(HWND hwnd)
 {
 	HWND hCtrl = GetDlgItem(hwnd, IDC_SCREENSELECT);
 	if (hCtrl)
 	{
-		int i,curSel = ComboBox_GetCurSel(hCtrl);
-		if ((curSel < 0) || (curSel >= NUMSELECTSCREEN))
-			curSel = 0;
+		int i;
+		int numscreens = m_CurrentOpts.int_value(OSDOPTION_NUMSCREENS);
+		if (numscreens < 1)
+			numscreens = 1;
+		else
+		if (numscreens > MAX_SCREENS)
+			numscreens = MAX_SCREENS;
+		numscreens += 1;  // account for default screen
+
 		ComboBox_ResetContent(hCtrl);
-		for (i = 0; i < NUMSELECTSCREEN && i < m_CurrentOpts.int_value(OSDOPTION_NUMSCREENS) ; i++)
+		for (i = 0; i < NUMSELECTSCREEN && i < numscreens ; i++)
 		{
 			ComboBox_InsertString(hCtrl, i, g_ComboBoxSelectScreen[i].m_pText);
 			ComboBox_SetItemData( hCtrl, i, g_ComboBoxSelectScreen[i].m_pData);
 		}
+
 		// Smaller Amount of screens was selected, so use 0
-		if( i < curSel )
+		if( i <= m_currScreen )
 			ComboBox_SetCurSel(hCtrl, 0);
 		else
-			ComboBox_SetCurSel(hCtrl, curSel);
+			ComboBox_SetCurSel(hCtrl, m_currScreen+1);
 	}
-}
-
-/* Populate the Select Screen drop down */
-static void InitializeSelectScreenUI(HWND hwnd)
-{
-	UpdateSelectScreenUI(hwnd);
 }
 
 static void InitializeControllerMappingUI(HWND hwnd)

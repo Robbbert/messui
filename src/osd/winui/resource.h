@@ -350,7 +350,6 @@
 #define IDC_D3D_FILTER                  1184
 #define IDC_HIDE_MOUSE                  1185
 #define IDC_AUDIO_LATENCY               1186
-#define IDC_D3D_VERSION                 1187
 #define IDC_AUDIT_DETAILS_PROP0         1188
 #define IDC_AUDIT_DETAILS_PROP1         1189
 #define IDC_CYCLETIMESEC                1190
@@ -470,6 +469,7 @@
 #define IDC_BEAM_DOTDISP                1374
 #define IDC_EXIT_PLAYBACK               1379
 #define IDC_LANGUAGE                    1380
+#define IDC_UNEVENSTRETCH               1382
 #define IDC_BOOTDELAY                   1383
 #define IDC_BOOTDELAYDISP               1384
 #define IDC_PLUGINS                     1386
