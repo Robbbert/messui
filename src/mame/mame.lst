@@ -13900,6 +13900,7 @@ chinatow                        // 1998 unknown
 crystal                         // (c) 1998 J.C.D. srl
 cuoreuno                        // (c) 1996 C.M.C.
 cuoreunoa                       // (c) 1996 C.M.C.
+cuoreunob                       // (c) 1996 C.M.C.
 elephfam                        // (c) 1997 C.M.C.
 elephfmb                        // (c) 1996 C.M.C.
 funquiz                         // (c) 198? Fun World
@@ -16776,6 +16777,9 @@ in207376                        // Informer 207/376
 @source:informer_213.cpp
 in213                           // Informer 213
 in213ae                         // Informer 213 AE
+
+@source:innotv_innotabmax.cpp
+innotv
 
 @source:instantm.cpp
 instantm                        //
