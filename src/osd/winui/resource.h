@@ -414,7 +414,10 @@
 #define IDC_SNAPSIZEX                   1253
 #define IDC_FILTER_MECHANICAL           1254
 #define IDC_LOWLATENCY                  1257
+#define IDC_HLSL_ON                     1279
 #define IDC_SNAPBURNIN                  1280
+#define IDC_PORTAUDIO_LATENCY           1281
+#define IDC_PORTAUDIO_LATENCY_DISP      1282
 #define IDC_GLSLPOW                     1300
 #define IDC_GLSLTEXTURE                 1301
 #define IDC_GLSLVBO                     1302
@@ -495,6 +498,16 @@
 #define IDC_RESET_LUASCRIPT             1406
 #define IDC_BGFX_BACKEND                1407
 #define IDC_NATURAL                     1408
+#define IDC_SAVE_INI                    1409
+#define IDC_JOY_CONTRA                  1410
+#define IDC_UI_SKIP_WARNINGS            1411
+#define IDC_PROV_UIFONT                 1420
+#define IDC_PROV_KEYBOARD               1421
+#define IDC_PROV_MOUSE                  1422
+#define IDC_PROV_LIGHTGUN               1423
+#define IDC_PROV_JOYSTICK               1424
+#define IDC_PROV_MONITOR                1425
+#define IDC_PROV_OUTPUT                 1426
 #define IDC_SPLITTER3                   2000
 #define IDC_SWTAB                       2001
 #define IDC_SWLIST                      2002

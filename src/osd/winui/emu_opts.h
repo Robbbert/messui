@@ -57,6 +57,8 @@ const char* GetSnapName();
 void SetSnapName(const char*);
 const std::string GetLanguageUI();
 bool GetEnablePlugins();
+bool GetSkipWarnings();
+void SetSkipWarnings(BOOL);
 const std::string GetPlugins();
 void SetSelectedSoftware(int driver_index, std::string opt_name, const char *software);
 void global_save_ini(void);

@@ -508,6 +508,17 @@ const string GetPlugins(void)
 	return emu_global.value(OPTION_PLUGIN);
 }
 
+bool GetSkipWarnings(void)
+{
+	return emu_ui.bool_value(OPTION_SKIP_WARNINGS);
+}
+
+void SetSkipWarnings(BOOL val)
+{
+	string c = val ? "1" : "0";
+	ui_set_value(emu_ui, OPTION_SKIP_WARNINGS, c);
+}
+
 void SetSelectedSoftware(int driver_index, string opt_name, const char *software)
 {
 	if (opt_name.empty())

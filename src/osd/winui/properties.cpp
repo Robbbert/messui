@@ -160,6 +160,7 @@ static void UpdateSelectScreenUI(HWND hwnd);
 static void InitializeVideoUI(HWND hwnd);
 static void InitializeBIOSUI(HWND hwnd);
 static void InitializeControllerMappingUI(HWND hwnd);
+static void InitializeProviderMappingUI(HWND hwnd);
 //static void InitializeLanguageUI(HWND hWnd);
 static void InitializePluginsUI(HWND hWnd);
 static void InitializeGLSLFilterUI(HWND hWnd);
@@ -259,7 +260,7 @@ typedef struct
 }
 DUALCOMBOINT;
 
-const DUALCOMBOSTR g_ComboBoxVideo[] =
+const DUALCOMBOSTR m_cb_Video[] =
 {
 	{ TEXT("Auto"),             "auto"    },
 	{ TEXT("GDI"),              "gdi"     },
@@ -270,9 +271,9 @@ const DUALCOMBOSTR g_ComboBoxVideo[] =
 	{ TEXT("BGFX"),             "bgfx"    },
 	{ TEXT("OpenGL"),           "opengl"  },
 };
-#define NUMVIDEO (sizeof(g_ComboBoxVideo) / sizeof(g_ComboBoxVideo[0]))
+#define NUMVIDEO (sizeof(m_cb_Video) / sizeof(m_cb_Video[0]))
 
-const DUALCOMBOSTR g_ComboBoxSound[] =
+const DUALCOMBOSTR m_cb_Sound[] =
 {
 	{ TEXT("None"),                  "none"    },
 	{ TEXT("Auto"),                  "auto"    },
@@ -280,9 +281,9 @@ const DUALCOMBOSTR g_ComboBoxSound[] =
 	{ TEXT("PortAudio"),             "portaudio" },
 	{ TEXT("XAudio2 (Win10 only)"),  "xaudio2" },     // win10 only
 };
-#define NUMSOUND (sizeof(g_ComboBoxSound) / sizeof(g_ComboBoxSound[0]))
+#define NUMSOUND (sizeof(m_cb_Sound) / sizeof(m_cb_Sound[0]))
 
-const DUALCOMBOINT g_ComboBoxSelectScreen[] =
+const DUALCOMBOINT m_cb_SelectScreen[] =
 {
 	{ TEXT("Default"),         -1 },
 	{ TEXT("Screen 0"),         0 },
@@ -290,18 +291,18 @@ const DUALCOMBOINT g_ComboBoxSelectScreen[] =
 	{ TEXT("Screen 2"),         2 },
 	{ TEXT("Screen 3"),         3 },
 };
-#define NUMSELECTSCREEN (sizeof(g_ComboBoxSelectScreen) / sizeof(g_ComboBoxSelectScreen[0]))
+#define NUMSELECTSCREEN (sizeof(m_cb_SelectScreen) / sizeof(m_cb_SelectScreen[0]))
 
-const DUALCOMBOSTR g_ComboBoxView[] =
+const DUALCOMBOSTR m_cb_View[] =
 {
 	{ TEXT("Auto"),             "auto"        },
 	{ TEXT("Standard"),         "standard"    },
 	{ TEXT("Pixel Aspect"),     "pixel"       },
 	{ TEXT("Cocktail"),         "cocktail"    },
 };
-#define NUMVIEW (sizeof(g_ComboBoxView) / sizeof(g_ComboBoxView[0]))
+#define NUMVIEW (sizeof(m_cb_View) / sizeof(m_cb_View[0]))
 
-const DUALCOMBOSTR g_ComboBoxDevice[] =
+const DUALCOMBOSTR m_cb_Device[] =
 {
 	{ TEXT("None"),             "none"      },
 	{ TEXT("Keyboard"),         "keyboard"  },
@@ -309,38 +310,104 @@ const DUALCOMBOSTR g_ComboBoxDevice[] =
 	{ TEXT("Joystick"),         "joystick"  },
 	{ TEXT("Lightgun"),         "lightgun"  },
 };
-#define NUMDEVICES (sizeof(g_ComboBoxDevice) / sizeof(g_ComboBoxDevice[0]))
+#define NUMDEVICES (sizeof(m_cb_Device) / sizeof(m_cb_Device[0]))
 
-const DUALCOMBOSTR g_ComboBoxSnapView[] =
+const DUALCOMBOSTR m_cb_ProvUifont[] =
 {
-	{ TEXT("Internal"),         "internal"    },
-	{ TEXT("Auto"),             "auto"        },
-	{ TEXT("Standard"),         "standard"    },
-	{ TEXT("Pixel Aspect"),     "pixel"       },
-	{ TEXT("Cocktail"),         "cocktail"    },
+	{ TEXT("Auto"),             "auto"      },
+	{ TEXT("Windows"),          "win"       },
+	{ TEXT("Direct Write"),     "dwrite"    },
+	{ TEXT("None"),             "none"      },
 };
-#define NUMSNAPVIEW (sizeof(g_ComboBoxSnapView) / sizeof(g_ComboBoxSnapView[0]))
+#define NUMPROVUIFONT (sizeof(m_cb_ProvUifont) / sizeof(m_cb_ProvUifont[0]))
 
-const DUALCOMBOSTR g_ComboBoxGLSLFilter[] =
+const DUALCOMBOSTR m_cb_ProvKeyboard[] =
+{
+	{ TEXT("Auto"),             "auto"      },
+	{ TEXT("Windows"),          "win32"     },
+	{ TEXT("RAW"),              "rawinput"  },
+	{ TEXT("Direct Input"),     "dinput"    },
+	{ TEXT("None"),             "none"      },
+};
+#define NUMPROVKEYBOARD (sizeof(m_cb_ProvKeyboard) / sizeof(m_cb_ProvKeyboard[0]))
+
+const DUALCOMBOSTR m_cb_ProvMouse[] =
+{
+	{ TEXT("Auto"),             "auto"      },
+	{ TEXT("Windows"),          "win32"     },
+	{ TEXT("RAW"),              "rawinput"  },
+	{ TEXT("Direct Input"),     "dinput"    },
+	{ TEXT("None"),             "none"      },
+};
+#define NUMPROVMOUSE (sizeof(m_cb_ProvMouse) / sizeof(m_cb_ProvMouse[0]))
+
+const DUALCOMBOSTR m_cb_ProvJoystick[] =
+{
+	{ TEXT("Auto"),             "auto"      },
+	{ TEXT("WinHybrid"),        "winhybrid" },
+	{ TEXT("Xinput"),           "xinput"  },
+	{ TEXT("Direct Input"),     "dinput"    },
+	{ TEXT("None"),             "none"      },
+};
+#define NUMPROVJOYSTICK (sizeof(m_cb_ProvJoystick) / sizeof(m_cb_ProvJoystick[0]))
+
+const DUALCOMBOSTR m_cb_ProvLightgun[] =
+{
+	{ TEXT("Auto"),             "auto"      },
+	{ TEXT("Windows"),          "win32"     },
+	{ TEXT("RAW"),              "rawinput"  },
+	{ TEXT("None"),             "none"      },
+};
+#define NUMPROVLIGHTGUN (sizeof(m_cb_ProvLightgun) / sizeof(m_cb_ProvLightgun[0]))
+
+const DUALCOMBOSTR m_cb_ProvMonitor[] =
+{
+	{ TEXT("Auto"),             "auto"      },
+	{ TEXT("Windows"),          "win32"     },
+	{ TEXT("DXGI"),             "dxgi"      },
+};
+#define NUMPROVMONITOR (sizeof(m_cb_ProvMonitor) / sizeof(m_cb_ProvMonitor[0]))
+
+const DUALCOMBOSTR m_cb_ProvOutput[] =
+{
+	{ TEXT("Auto"),             "auto"      },
+	{ TEXT("Console"),          "console"   },
+	{ TEXT("Network"),          "network"   },
+	{ TEXT("Windows"),          "win32"     },
+	{ TEXT("None"),             "none"      },
+};
+#define NUMPROVOUTPUT (sizeof(m_cb_ProvOutput) / sizeof(m_cb_ProvOutput[0]))
+
+const DUALCOMBOSTR m_cb_SnapView[] =
+{
+	{ TEXT("Internal"),         "internal"  },
+	{ TEXT("Auto"),             "auto"      },
+	{ TEXT("Standard"),         "standard"  },
+	{ TEXT("Pixel Aspect"),     "pixel"     },
+	{ TEXT("Cocktail"),         "cocktail"  },
+};
+#define NUMSNAPVIEW (sizeof(m_cb_SnapView) / sizeof(m_cb_SnapView[0]))
+
+const DUALCOMBOSTR m_cb_GLSLFilter[] =
 {
 	{ TEXT("Plain"),    "0" },
 	{ TEXT("Bilinear"), "1" },
 	{ TEXT("Bicubic"),  "2" }
 };
-#define NUMGLSLFILTER (sizeof(g_ComboBoxGLSLFilter) / sizeof(g_ComboBoxGLSLFilter[0]))
+#define NUMGLSLFILTER (sizeof(m_cb_GLSLFilter) / sizeof(m_cb_GLSLFilter[0]))
 
-const DUALCOMBOSTR g_ComboBoxBGFXBackend[] =
+const DUALCOMBOSTR m_cb_BGFXBackend[] =
 {
-	{ TEXT("Auto"),                "auto" },
-	{ TEXT("DirectX9"),            "dx9"  },
-	{ TEXT("DirectX11"),           "dx11" },
-	{ TEXT("DirectX12 (Win10)"),   "dx12" },
-	{ TEXT("GLES"),                "gles" },
-	{ TEXT("GLSL"),                "glsl" },
-	{ TEXT("Metal (Win10)"),       "metal" },
+	{ TEXT("Auto"),                "auto"   },
+	{ TEXT("DirectX9"),            "dx9"    },
+	{ TEXT("DirectX11"),           "dx11"   },
+	{ TEXT("DirectX12 (Win10)"),   "dx12"   },
+	{ TEXT("GLES"),                "gles"   },
+	{ TEXT("GLSL"),                "glsl"   },
+	{ TEXT("Metal (Win10)"),       "metal"  },
 	{ TEXT("Vulkan (Win10)"),      "vulkan" },
 };
-#define NUMBGFXBACKEND (sizeof(g_ComboBoxBGFXBackend) / sizeof(g_ComboBoxBGFXBackend[0]))
+#define NUMBGFXBACKEND (sizeof(m_cb_BGFXBackend) / sizeof(m_cb_BGFXBackend[0]))
 
 
 /***************************************************************
@@ -2143,10 +2210,10 @@ static BOOL ViewPopulateControl(datamap *map, HWND dialog, HWND control, windows
 	ComboBox_ResetContent(control);
 	for (int i = 0; i < NUMVIEW; i++)
 	{
-		ComboBox_InsertString(control, i, g_ComboBoxView[i].m_pText);
-		ComboBox_SetItemData(control, i, g_ComboBoxView[i].m_pData);
+		ComboBox_InsertString(control, i, m_cb_View[i].m_pText);
+		ComboBox_SetItemData(control, i, m_cb_View[i].m_pData);
 
-		if (strcmp(view.c_str(), g_ComboBoxView[i].m_pData)==0)
+		if (strcmp(view.c_str(), m_cb_View[i].m_pData)==0)
 			selected_index = i;
 	}
 	ComboBox_SetCurSel(control, selected_index);
@@ -2163,10 +2230,10 @@ static BOOL SnapViewPopulateControl(datamap *map, HWND dialog, HWND control, win
 	ComboBox_ResetContent(control);
 	for (int i = 0; i < NUMSNAPVIEW; i++)
 	{
-		ComboBox_InsertString(control, i, g_ComboBoxSnapView[i].m_pText);
-		ComboBox_SetItemData(control, i, g_ComboBoxSnapView[i].m_pData);
+		ComboBox_InsertString(control, i, m_cb_SnapView[i].m_pText);
+		ComboBox_SetItemData(control, i, m_cb_SnapView[i].m_pData);
 
-		if (strcmp(snapview, g_ComboBoxSnapView[i].m_pData)==0)
+		if (strcmp(snapview, m_cb_SnapView[i].m_pData)==0)
 			selected_index = i;
 	}
 	ComboBox_SetCurSel(control, selected_index);
@@ -2522,6 +2589,13 @@ static void BuildDataMap(void)
 	datamap_add(properties_datamap, IDC_LIGHTGUNDEVICE,			DM_STRING,	OPTION_LIGHTGUN_DEVICE);
 	datamap_add(properties_datamap, IDC_POSITIONAL,				DM_STRING,	OPTION_POSITIONAL_DEVICE);
 	datamap_add(properties_datamap, IDC_MOUSE,					DM_STRING,	OPTION_MOUSE_DEVICE);
+	datamap_add(properties_datamap, IDC_PROV_UIFONT,			DM_STRING,	OSD_FONT_PROVIDER);
+	datamap_add(properties_datamap, IDC_PROV_KEYBOARD,			DM_STRING,	OSD_KEYBOARDINPUT_PROVIDER);
+	datamap_add(properties_datamap, IDC_PROV_MOUSE,				DM_STRING,	OSD_MOUSEINPUT_PROVIDER);
+	datamap_add(properties_datamap, IDC_PROV_JOYSTICK,			DM_STRING,	OSD_JOYSTICKINPUT_PROVIDER);
+	datamap_add(properties_datamap, IDC_PROV_LIGHTGUN,			DM_STRING,	OSD_LIGHTGUNINPUT_PROVIDER);
+	datamap_add(properties_datamap, IDC_PROV_MONITOR,			DM_STRING,	OSD_MONITOR_PROVIDER);
+	datamap_add(properties_datamap, IDC_PROV_OUTPUT,			DM_STRING,	OSD_OUTPUT_PROVIDER);
 
 	// core debugging options
 	datamap_add(properties_datamap, IDC_LOG,					DM_BOOL,	OPTION_LOG);
@@ -2544,6 +2618,9 @@ static void BuildDataMap(void)
 	datamap_add(properties_datamap, IDC_NVRAM_SAVE,				DM_BOOL,	OPTION_NVRAM_SAVE);
 	datamap_add(properties_datamap, IDC_REWIND,					DM_BOOL,	OPTION_REWIND);
 	datamap_add(properties_datamap, IDC_NATURAL,				DM_BOOL,	OPTION_NATURAL_KEYBOARD);
+	datamap_add(properties_datamap, IDC_HLSL_ON,				DM_BOOL,	WINOPTION_HLSL_ENABLE);
+	datamap_add(properties_datamap, IDC_SAVE_INI,				DM_BOOL,	OPTION_WRITECONFIG);
+	datamap_add(properties_datamap, IDC_JOY_CONTRA,				DM_BOOL,	OPTION_JOYSTICK_CONTRADICTORY);
 
 	// core opengl - bgfx options
 	datamap_add(properties_datamap, IDC_GLSLPOW,				DM_BOOL,	OSDOPTION_GL_FORCEPOW2TEXTURE);
@@ -2623,6 +2700,8 @@ static void BuildDataMap(void)
 	// windows sound options
 	datamap_add(properties_datamap, IDC_AUDIO_LATENCY,			DM_INT,		OSDOPTION_AUDIO_LATENCY);
 	datamap_add(properties_datamap, IDC_AUDIO_LATENCY_DISP,		DM_INT,		OSDOPTION_AUDIO_LATENCY);
+	datamap_add(properties_datamap, IDC_PORTAUDIO_LATENCY,		DM_FLOAT,	OSDOPTION_PA_LATENCY);
+	datamap_add(properties_datamap, IDC_PORTAUDIO_LATENCY_DISP,	DM_FLOAT,	OSDOPTION_PA_LATENCY);
 
 	// input device options
 	datamap_add(properties_datamap, IDC_DUAL_LIGHTGUN,			DM_BOOL,	WINOPTION_DUAL_LIGHTGUN);
@@ -2667,6 +2746,7 @@ static void BuildDataMap(void)
 	datamap_set_float_format(properties_datamap, IDC_JDZDISP,			"%3.2f");
 	datamap_set_float_format(properties_datamap, IDC_JSATDISP,			"%3.2f");
 	datamap_set_float_format(properties_datamap, IDC_SPEEDDISP,			"%3.2f");
+	datamap_set_float_format(properties_datamap, IDC_PORTAUDIO_LATENCY,	"%3.2f");
 
 	// trackbar ranges - slider-name,start,end,step
 	datamap_set_trackbar_range(properties_datamap, IDC_JDZ,           0.00, 1.00,  (float)0.05);
@@ -2678,6 +2758,7 @@ static void BuildDataMap(void)
 	datamap_set_trackbar_range(properties_datamap, IDC_BEAM_DOT,      1, 4, 1);
 	datamap_set_trackbar_range(properties_datamap, IDC_FLICKER,       0.00, 1.00, (float)0.01);
 	datamap_set_trackbar_range(properties_datamap, IDC_AUDIO_LATENCY, 1, 5, 1);
+	datamap_set_trackbar_range(properties_datamap, IDC_PORTAUDIO_LATENCY, 0.00, 1.00, (float)0.01);
 	datamap_set_trackbar_range(properties_datamap, IDC_VOLUME,        -32, 0, 1);
 	datamap_set_trackbar_range(properties_datamap, IDC_SECONDSTORUN,  0, 60, 1);
 	datamap_set_trackbar_range(properties_datamap, IDC_NUMSCREENS,    1, 4, 1);
@@ -2738,9 +2819,9 @@ static void InitializeOptions(HWND hDlg)
 	InitializeRotateUI(hDlg);
 	InitializeBIOSUI(hDlg);
 	InitializeControllerMappingUI(hDlg);
+	InitializeProviderMappingUI(hDlg);
 	InitializeVideoUI(hDlg);
 //	InitializeSnapViewUI(hDlg);
-//	InitializeSnapNameUI(hDlg);
 //	InitializeLanguageUI(hDlg);
 	InitializePluginsUI(hDlg);
 	InitializeGLSLFilterUI(hDlg);
@@ -2788,8 +2869,8 @@ static void InitializeSoundUI(HWND hwnd)
 	{
 		for (i = 0; i < NUMSOUND; i++)
 		{
-			ComboBox_InsertString(hCtrl, i, g_ComboBoxSound[i].m_pText);
-			ComboBox_SetItemData( hCtrl, i, g_ComboBoxSound[i].m_pData);
+			ComboBox_InsertString(hCtrl, i, m_cb_Sound[i].m_pText);
+			ComboBox_SetItemData( hCtrl, i, m_cb_Sound[i].m_pData);
 		}
 	}
 
@@ -2867,8 +2948,8 @@ static void InitializeVideoUI(HWND hwnd)
 	{
 		for (int i = 0; i < NUMVIDEO; i++)
 		{
-			ComboBox_InsertString(hCtrl, i, g_ComboBoxVideo[i].m_pText);
-			ComboBox_SetItemData( hCtrl, i, g_ComboBoxVideo[i].m_pData);
+			ComboBox_InsertString(hCtrl, i, m_cb_Video[i].m_pText);
+			ComboBox_SetItemData( hCtrl, i, m_cb_Video[i].m_pData);
 		}
 	}
 }
@@ -2890,8 +2971,8 @@ static void UpdateSelectScreenUI(HWND hwnd)
 		ComboBox_ResetContent(hCtrl);
 		for (i = 0; i < NUMSELECTSCREEN && i < numscreens ; i++)
 		{
-			ComboBox_InsertString(hCtrl, i, g_ComboBoxSelectScreen[i].m_pText);
-			ComboBox_SetItemData( hCtrl, i, g_ComboBoxSelectScreen[i].m_pData);
+			ComboBox_InsertString(hCtrl, i, m_cb_SelectScreen[i].m_pText);
+			ComboBox_SetItemData( hCtrl, i, m_cb_SelectScreen[i].m_pData);
 		}
 
 		// Smaller Amount of screens was selected, so use 0
@@ -2917,52 +2998,113 @@ static void InitializeControllerMappingUI(HWND hwnd)
 	{
 		if (hCtrl)
 		{
-			ComboBox_InsertString(hCtrl, i, g_ComboBoxDevice[i].m_pText);
-			ComboBox_SetItemData( hCtrl, i, g_ComboBoxDevice[i].m_pData);
+			ComboBox_InsertString(hCtrl, i, m_cb_Device[i].m_pText);
+			ComboBox_SetItemData( hCtrl, i, m_cb_Device[i].m_pData);
 		}
 
 		if (hCtrl1)
 		{
-			ComboBox_InsertString(hCtrl1, i, g_ComboBoxDevice[i].m_pText);
-			ComboBox_SetItemData( hCtrl1, i, g_ComboBoxDevice[i].m_pData);
+			ComboBox_InsertString(hCtrl1, i, m_cb_Device[i].m_pText);
+			ComboBox_SetItemData( hCtrl1, i, m_cb_Device[i].m_pData);
 		}
 
 		if (hCtrl2)
 		{
-			ComboBox_InsertString(hCtrl2, i, g_ComboBoxDevice[i].m_pText);
-			ComboBox_SetItemData( hCtrl2, i, g_ComboBoxDevice[i].m_pData);
+			ComboBox_InsertString(hCtrl2, i, m_cb_Device[i].m_pText);
+			ComboBox_SetItemData( hCtrl2, i, m_cb_Device[i].m_pData);
 		}
 
 		if (hCtrl3)
 		{
-			ComboBox_InsertString(hCtrl3, i, g_ComboBoxDevice[i].m_pText);
-			ComboBox_SetItemData( hCtrl3, i, g_ComboBoxDevice[i].m_pData);
+			ComboBox_InsertString(hCtrl3, i, m_cb_Device[i].m_pText);
+			ComboBox_SetItemData( hCtrl3, i, m_cb_Device[i].m_pData);
 		}
 
 		if (hCtrl4)
 		{
-			ComboBox_InsertString(hCtrl4, i, g_ComboBoxDevice[i].m_pText);
-			ComboBox_SetItemData( hCtrl4, i, g_ComboBoxDevice[i].m_pData);
+			ComboBox_InsertString(hCtrl4, i, m_cb_Device[i].m_pText);
+			ComboBox_SetItemData( hCtrl4, i, m_cb_Device[i].m_pData);
 		}
 
 		if (hCtrl5)
 		{
-			ComboBox_InsertString(hCtrl5, i, g_ComboBoxDevice[i].m_pText);
-			ComboBox_SetItemData( hCtrl5, i, g_ComboBoxDevice[i].m_pData);
+			ComboBox_InsertString(hCtrl5, i, m_cb_Device[i].m_pText);
+			ComboBox_SetItemData( hCtrl5, i, m_cb_Device[i].m_pData);
 		}
 
 		if (hCtrl6)
 		{
-			ComboBox_InsertString(hCtrl6, i, g_ComboBoxDevice[i].m_pText);
-			ComboBox_SetItemData( hCtrl6, i, g_ComboBoxDevice[i].m_pData);
+			ComboBox_InsertString(hCtrl6, i, m_cb_Device[i].m_pText);
+			ComboBox_SetItemData( hCtrl6, i, m_cb_Device[i].m_pData);
 		}
 
 		if (hCtrl7)
 		{
-			ComboBox_InsertString(hCtrl7, i, g_ComboBoxDevice[i].m_pText);
-			ComboBox_SetItemData( hCtrl7, i, g_ComboBoxDevice[i].m_pData);
+			ComboBox_InsertString(hCtrl7, i, m_cb_Device[i].m_pText);
+			ComboBox_SetItemData( hCtrl7, i, m_cb_Device[i].m_pData);
 		}
 	}
+}
+
+static void InitializeProviderMappingUI(HWND hwnd)
+{
+	int i;
+	HWND hCtrl   = GetDlgItem(hwnd,IDC_PROV_UIFONT);
+	HWND hCtrl1  = GetDlgItem(hwnd,IDC_PROV_KEYBOARD);
+	HWND hCtrl2  = GetDlgItem(hwnd,IDC_PROV_MOUSE);
+	HWND hCtrl3  = GetDlgItem(hwnd,IDC_PROV_JOYSTICK);
+	HWND hCtrl4  = GetDlgItem(hwnd,IDC_PROV_LIGHTGUN);
+	HWND hCtrl5  = GetDlgItem(hwnd,IDC_PROV_MONITOR);
+	HWND hCtrl6  = GetDlgItem(hwnd,IDC_PROV_OUTPUT);
+
+	if (hCtrl)
+		for (i = 0; i < NUMPROVUIFONT; i++)
+		{
+			ComboBox_InsertString(hCtrl, i, m_cb_ProvUifont[i].m_pText);
+			ComboBox_SetItemData( hCtrl, i, m_cb_ProvUifont[i].m_pData);
+		}
+
+	if (hCtrl1)
+		for (i = 0; i < NUMPROVKEYBOARD; i++)
+		{
+			ComboBox_InsertString(hCtrl1, i, m_cb_ProvKeyboard[i].m_pText);
+			ComboBox_SetItemData( hCtrl1, i, m_cb_ProvKeyboard[i].m_pData);
+		}
+
+	if (hCtrl2)
+		for (i = 0; i < NUMPROVMOUSE; i++)
+		{
+			ComboBox_InsertString(hCtrl2, i, m_cb_ProvMouse[i].m_pText);
+			ComboBox_SetItemData( hCtrl2, i, m_cb_ProvMouse[i].m_pData);
+		}
+
+	if (hCtrl3)
+		for (i = 0; i < NUMPROVJOYSTICK; i++)
+		{
+			ComboBox_InsertString(hCtrl3, i, m_cb_ProvJoystick[i].m_pText);
+			ComboBox_SetItemData( hCtrl3, i, m_cb_ProvJoystick[i].m_pData);
+		}
+
+	if (hCtrl4)
+		for (i = 0; i < NUMPROVLIGHTGUN; i++)
+		{
+			ComboBox_InsertString(hCtrl4, i, m_cb_ProvLightgun[i].m_pText);
+			ComboBox_SetItemData( hCtrl4, i, m_cb_ProvLightgun[i].m_pData);
+		}
+
+	if (hCtrl5)
+		for (i = 0; i < NUMPROVMONITOR; i++)
+		{
+			ComboBox_InsertString(hCtrl5, i, m_cb_ProvMonitor[i].m_pText);
+			ComboBox_SetItemData( hCtrl5, i, m_cb_ProvMonitor[i].m_pData);
+		}
+
+	if (hCtrl6)
+		for (i = 0; i < NUMPROVOUTPUT; i++)
+		{
+			ComboBox_InsertString(hCtrl6, i, m_cb_ProvOutput[i].m_pText);
+			ComboBox_SetItemData( hCtrl6, i, m_cb_ProvOutput[i].m_pData);
+		}
 }
 
 
@@ -3155,8 +3297,8 @@ static void InitializeGLSLFilterUI(HWND hWnd)
 	{
 		for (int i = 0; i < NUMGLSLFILTER; i++)
 		{
-			ComboBox_InsertString(hCtrl, i, g_ComboBoxGLSLFilter[i].m_pText);
-			ComboBox_SetItemData(hCtrl, i, g_ComboBoxGLSLFilter[i].m_pData);
+			ComboBox_InsertString(hCtrl, i, m_cb_GLSLFilter[i].m_pText);
+			ComboBox_SetItemData(hCtrl, i, m_cb_GLSLFilter[i].m_pData);
 		}
 	}
 }
@@ -3169,8 +3311,8 @@ static void InitializeBGFXBackendUI(HWND hWnd)
 	{
 		for (int i = 0; i < NUMBGFXBACKEND; i++)
 		{
-			ComboBox_InsertString(hCtrl, i, g_ComboBoxBGFXBackend[i].m_pText);
-			ComboBox_SetItemData(hCtrl, i, g_ComboBoxBGFXBackend[i].m_pData);
+			ComboBox_InsertString(hCtrl, i, m_cb_BGFXBackend[i].m_pText);
+			ComboBox_SetItemData(hCtrl, i, m_cb_BGFXBackend[i].m_pData);
 		}
 	}
 }
