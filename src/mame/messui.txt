@@ -196,7 +196,7 @@ cortex.cpp
 cosmicos.cpp
 //cp1.cpp
 //crimson.cpp
-crvision.cpp
+//crvision.cpp                        // broken by OG
 ct486.cpp
 cvicny.cpp
 cxg_ch2001.cpp
@@ -521,7 +521,7 @@ lynx.cpp
 m20.cpp
 m24.cpp
 //m3.cpp
-m5.cpp
+//m5.cpp                      // broken by OG
 //m6805evs.cpp
 m68705prg.cpp
 //m79152pc.cpp
@@ -702,11 +702,11 @@ p8k.cpp
 //palm.cpp
 //palmz22.cpp
 //palestra.cpp
-partner.cpp
+//partner.cpp               // broken by OG
 //paso1600.cpp
 pasogo.cpp
 //pasopia.cpp         // enter key not working, broken by AJR
-pasopia7.cpp
+//pasopia7.cpp              // broken by OG
 //patinho_feio.cpp
 pb1000.cpp
 pc.cpp
@@ -736,6 +736,7 @@ pdp1.cpp
 pecom.cpp
 pegasus.cpp
 pencil2.cpp
+//pensebem.cpp            // mnw
 pentagon.cpp
 //peoplepc.cpp
 //perq.cpp
@@ -758,7 +759,7 @@ pmi80.cpp
 pocketc.cpp
 pockstat.cpp
 //pofo.cpp
-poisk1.cpp
+poisk1.cpp                     // runs but bad gfx, broken by OG
 pokemini.cpp
 poly.cpp
 poly88.cpp
@@ -792,7 +793,7 @@ pv2000.cpp
 //pwrview.cpp
 px4.cpp
 //px8.cpp
-pyl601.cpp
+//pyl601.cpp                    // broken by OG
 ql.cpp
 //qtsbc.cpp
 //qvt70.cpp
@@ -910,7 +911,7 @@ spc1500.cpp
 spec128.cpp
 special.cpp
 specpls3.cpp
-spectrum.cpp
+//spectrum.cpp                         // broken by OG
 spg110.cpp
 //spg29x.cpp
 //spg29x_lexibook_jg7425.cpp
@@ -1077,7 +1078,7 @@ vector4.cpp
 vectrex.cpp
 //vectrix.cpp
 vg5k.cpp
-vic10.cpp
+//vic10.cpp                       // broken by OG
 vic20.cpp
 victor9k.cpp
 //vidbrain.cpp
@@ -1102,7 +1103,7 @@ vsmileb.cpp
 //vt520.cpp
 //vt1682.cpp
 //vta2000.cpp
-vtech1.cpp
+//vtech1.cpp                       // broken by OG
 vtech2.cpp
 //vtech_eu3a12.cpp
 //vt_unknown.cpp                  // skel
@@ -1131,6 +1132,7 @@ xavix_2000.cpp
 xerox820.cpp
 xor100.cpp
 //ymdx11.cpp
+//ymmu5.cpp               // synth
 //ymmu50.cpp
 //ymmu80.cpp
 //ymmu100.cpp
