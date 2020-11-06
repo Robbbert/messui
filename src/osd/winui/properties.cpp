@@ -2746,7 +2746,7 @@ static void BuildDataMap(void)
 	datamap_set_float_format(properties_datamap, IDC_JDZDISP,			"%3.2f");
 	datamap_set_float_format(properties_datamap, IDC_JSATDISP,			"%3.2f");
 	datamap_set_float_format(properties_datamap, IDC_SPEEDDISP,			"%3.2f");
-	datamap_set_float_format(properties_datamap, IDC_PORTAUDIO_LATENCY,	"%3.2f");
+	datamap_set_float_format(properties_datamap, IDC_PORTAUDIO_LATENCY_DISP, "%3.2f");
 
 	// trackbar ranges - slider-name,start,end,step
 	datamap_set_trackbar_range(properties_datamap, IDC_JDZ,           0.00, 1.00,  (float)0.05);
