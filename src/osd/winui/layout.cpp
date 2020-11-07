@@ -182,7 +182,7 @@ extern const PROPERTYSHEETINFO g_propSheets[] =
 	{ TRUE,  NULL,                   IDD_PROP_INPUT,         GameOptionsProc },
 	{ TRUE,  NULL,                   IDD_PROP_CONTROLLER,    GameOptionsProc },
 	{ TRUE,  NULL,                   IDD_PROP_MISC,          GameOptionsProc },
-	{ TRUE,  NULL,                   IDD_PROP_MISC2,         GameOptionsProc },
+	{ TRUE,  NULL,                   IDD_PROP_LUA,           GameOptionsProc },
 	{ TRUE,  NULL,                   IDD_PROP_OPENGL,        GameOptionsProc },
 	{ TRUE,  NULL,                   IDD_PROP_SHADER,        GameOptionsProc },
 	{ TRUE,  NULL,                   IDD_PROP_SNAP,          GameOptionsProc },
