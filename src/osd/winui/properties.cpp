@@ -3518,12 +3518,10 @@ static bool SelectPlugins(HWND hWnd)
 
 static bool ResetPlugins(HWND hWnd)
 {
-	bool changed = false;
 	emu_set_value(m_CurrentOpts, OPTION_PLUGIN, "");
 	win_set_window_text_utf8(GetDlgItem(hWnd, IDC_PLUGIN), "None");
-	changed = true;
 	ComboBox_SetCurSel(GetDlgItem(hWnd, IDC_SELECT_PLUGIN), -1);
-	return changed;
+	return true;
 }
 
 static bool SelectBGFXChains(HWND hWnd)
@@ -3570,44 +3568,6 @@ static bool ResetBGFXChains(HWND hWnd)
 	return changed;
 }
 
-#if 0
-static BOOL SelectDebugscript(HWND hWnd)
-{
-	BOOL changed = false;
-
-	char filename[MAX_PATH];
-	*filename = 0;
-	if (CommonFileDialog(GetOpenFileName, filename, FILETYPE_DEBUGSCRIPT_FILES))
-	{
-		if (strcmp(filename, m_CurrentOpts.value(OPTION_DEBUGSCRIPT))!=0)
-		{
-			HWND control = GetDlgItem(hWnd, IDC_DEBUGSCRIPT);
-			emu_set_value(m_CurrentOpts, OPTION_DEBUGSCRIPT, filename);
-			win_set_window_text_utf8(control, filename);
-			changed = true;
-		}
-	}
-
-	return changed;
-}
-
-static BOOL ResetDebugscript(HWND hWnd)
-{
-	BOOL changed = false;
-
-	const char *new_value = "";
-
-	if (strcmp(new_value, m_CurrentOpts.value(OPTION_DEBUGSCRIPT))!=0)
-	{
-		HWND control = GetDlgItem(hWnd, IDC_DEBUGSCRIPT);
-		emu_set_value(m_CurrentOpts, OPTION_DEBUGSCRIPT, new_value);
-		win_set_window_text_utf8(control, new_value);
-		changed = true;
-	}
-
-	return changed;
-}
-#endif
 void UpdateBackgroundBrush(HWND hwndTab)
 {
 	// Destroy old brush
