@@ -196,7 +196,7 @@ cortex.cpp
 cosmicos.cpp
 //cp1.cpp
 //crimson.cpp
-//crvision.cpp                        // broken by OG
+crvision.cpp
 ct486.cpp
 cvicny.cpp
 cxg_ch2001.cpp
@@ -347,7 +347,7 @@ geneve.cpp
 geniusiq.cpp
 //geniusjr.cpp
 genpc.cpp
-//gigatron.cpp                        // crash at start
+gigatron.cpp
 gimix.cpp
 //gkidabc.cpp
 //gizmondo.cpp
