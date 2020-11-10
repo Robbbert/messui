@@ -41221,7 +41221,7 @@ gauntleg                        // (c) 1998 Atari Games
 gauntleg12                      // (c) 1998 Atari Games
 nbagold                         // (c) 2000 Midway Games
 nbanfl                          // (c) 1999 Midway Games
-nbashowt                        // (c) 1998 Midway Games
+nbashowt                        // (c) 1999 Midway Games
 roadburn                        // (c) 1999 Atari Games
 roadburn1                       // (c) 1999 Atari Games
 sf2049                          // (c) 1999 Atari Games
@@ -42157,6 +42157,9 @@ stinger2                        // (c) 1983 Seibu Denshi
 wiz                             // (c) 1985 Seibu Kaihatsu
 wizt                            // (c) 1985 Taito Corporation
 wizta                           // (c) 1985 Taito Corporation
+
+@source:wizard.cpp
+iq7000                          //
 
 @source:wmg.cpp
 wmg                             // Williams 6in1 Multigame, Clay Cowgill
