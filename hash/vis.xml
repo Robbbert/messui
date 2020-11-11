@@ -1,0 +1,828 @@
+<?xml version="1.0"?>
+<!DOCTYPE softwarelist SYSTEM "softwarelist.dtd">
+<!--
+    Video Information System MD-2500
+    
+-->
+<softwarelist name="vis" description="Video Information System MD-2500 cdroms">
+
+
+<!-- Original ISO SHA-1 Hash:  1f5e4aa0a5c5391260efffc9b00ad65dcdfc276e -->
+	<software name="asurveyofwestern">
+		<description>A Survey of Western Art - The Electronic Library of Art (1992)(Ebook)(US)</description>
+		<year>1992</year>
+		<publisher>Unknown</publisher>
+		<part name="cdrom" interface="vis_cdrom">
+			<diskarea name="cdrom">
+				<disk name="asurveyofwestern" sha1="34f3591cc03290440408320663de5dab742e805c"/>
+			</diskarea>
+		</part>
+	</software>
+
+
+<!-- Original ISO SHA-1 Hash:  04f036089bbcb4fefec6ba4b7c96dc2619853cd4 -->
+	<software name="americanheritage">
+		<description>American Heritage - Illustrated Encyclopedic Dictionary (1992)(Xiphias)(US)</description>
+		<year>1992</year>
+		<publisher>Unknown</publisher>
+		<part name="cdrom" interface="vis_cdrom">
+			<diskarea name="cdrom">
+				<disk name="americanheritage" sha1="4ee322a014c01a568f49ce57e233fc9069c14284"/>
+			</diskarea>
+		</part>
+	</software>
+
+
+<!-- Original ISO SHA-1 Hash:  1f74dddcc84df3737d7a58e073e3df5d36307379 -->
+	<software name="americanvistathe">
+		<description>American Vista - The Multimedia U.S. Atlas (1992)(Applied Optical Media Corporation)(US)</description>
+		<year>1992</year>
+		<publisher>Unknown</publisher>
+		<part name="cdrom" interface="vis_cdrom">
+			<diskarea name="cdrom">
+				<disk name="americanvistathe" sha1="690103455f5ec6fa4c895daf2ea79808703347f9"/>
+			</diskarea>
+		</part>
+	</software>
+
+
+<!-- Original ISO SHA-1 Hash:  3ceaa220ddd55187077e807808ddc7a6c4d75670 -->
+	<software name="americansinspace">
+		<description>Americans in Space (1992)(Multicom Publishing)(US)</description>
+		<year>1992</year>
+		<publisher>Unknown</publisher>
+		<part name="cdrom" interface="vis_cdrom">
+			<diskarea name="cdrom">
+				<disk name="americansinspace" sha1="1fd191f7f1dd0bd8a36ef0ff5341467939cddb9e"/>
+			</diskarea>
+		</part>
+	</software>
+
+
+<!-- Original ISO SHA-1 Hash:  f914a26cfbcdc3b67b9e3ced79166cc1db00d18a -->
+	<software name="americasnational">
+		<description>Americas National Parks (1992)(Multicom Publishing)(US)</description>
+		<year>1992</year>
+		<publisher>Unknown</publisher>
+		<part name="cdrom" interface="vis_cdrom">
+			<diskarea name="cdrom">
+				<disk name="americasnational" sha1="fd3e9a0eba6524530ba75f44739c5e4730cffe9c"/>
+			</diskarea>
+		</part>
+	</software>
+
+
+<!-- Original ISO SHA-1 Hash:  5a5efb8e4122c2cd4a89347fbd16854af8e28711 -->
+	<software name="astrologysource">
+		<description>Astrology Source (1992)(Multicom Publishing)(US)</description>
+		<year>1992</year>
+		<publisher>Unknown</publisher>
+		<part name="cdrom" interface="vis_cdrom">
+			<diskarea name="cdrom">
+				<disk name="astrologysource" sha1="ef7e9f638885891bf06c8edc327d998ffcee45bb"/>
+			</diskarea>
+		</part>
+	</software>
+
+
+<!-- Original ISO SHA-1 Hash:  1e1bd2447e817762ae055ceb5b65b527f4ef32be -->
+	<software name="atlasofuspreside">
+		<description>Atlas of U.S. Presidents (1992)(Applied Optical Media Corporation)(US)</description>
+		<year>1992</year>
+		<publisher>Unknown</publisher>
+		<part name="cdrom" interface="vis_cdrom">
+			<diskarea name="cdrom">
+				<disk name="atlasofuspreside" sha1="2f51289698a469e968dc211cbda9f28ffec94c5e"/>
+			</diskarea>
+		</part>
+	</software>
+
+
+<!-- Original ISO SHA-1 Hash:  66af8c803715b0126655674b434cca7a57fda7d8 -->
+	<software name="awesomeadventure">
+		<description>Awesome Adventures of Victor Vector &amp; Yondo, The - Adventure No. 1 - The Vampires Coffin (1992)(Sanctuary Woods)(US)</description>
+		<year>1992</year>
+		<publisher>Unknown</publisher>
+		<part name="cdrom" interface="vis_cdrom">
+			<diskarea name="cdrom">
+				<disk name="awesomeadventure" sha1="f7d568dc141ac2485dabf90995fb7697d068fda6"/>
+			</diskarea>
+		</part>
+	</software>
+
+
+<!-- Original ISO SHA-1 Hash:  4c127c7244137fc4cfd1c9e869a887a8c9c82a1d -->
+	<software name="betterhomesandga">
+		<description>Better Homes and Gardens - Healthy Cooking - CD Cookbook (1992)(Multicom Publishing)(US)</description>
+		<year>1992</year>
+		<publisher>Unknown</publisher>
+		<part name="cdrom" interface="vis_cdrom">
+			<diskarea name="cdrom">
+				<disk name="betterhomesandga" sha1="dc5b72dc9f975e02972db8a15d58f83b9ce45b75"/>
+			</diskarea>
+		</part>
+	</software>
+
+
+<!-- Original ISO SHA-1 Hash:  093d39f6bcb384e32c14085334514307033d4684 -->
+	<software name="betternotgetwetj">
+		<description>Better Not Get Wet, Jesse Bear (1992)(Macmillan New Media)(US)</description>
+		<year>1992</year>
+		<publisher>Unknown</publisher>
+		<part name="cdrom" interface="vis_cdrom">
+			<diskarea name="cdrom">
+				<disk name="betternotgetwetj" sha1="4cfd3bcaead489283e1e6e78a26e9058dd89e76e"/>
+			</diskarea>
+		</part>
+	</software>
+
+
+<!-- Original ISO SHA-1 Hash:  633dc4d4f5b22ee435cbb30fdf33cc9764242128 -->
+	<software name="biblelandsbibles">
+		<description>Bible Lands, Bible Stories (1992)(Context Systems)(US)</description>
+		<year>1992</year>
+		<publisher>Unknown</publisher>
+		<part name="cdrom" interface="vis_cdrom">
+			<diskarea name="cdrom">
+				<disk name="biblelandsbibles" sha1="af87c61149728a906ce57cd6b07be746da538254"/>
+			</diskarea>
+		</part>
+	</software>
+
+
+<!-- Original ISO SHA-1 Hash:  2a4d01fbf11972923da86a3ae072b9fc527eb0ef -->
+	<software name="comptonsmultimed">
+		<description>Comptons Multimedia Encyclopedia VIS Edition - 1992 Edition v1.10VIS (1992)(Comptons NewMedia)(US)</description>
+		<year>1992</year>
+		<publisher>Unknown</publisher>
+		<part name="cdrom" interface="vis_cdrom">
+			<diskarea name="cdrom">
+				<disk name="comptonsmultimed" sha1="456cf18aaba08f66b928b3676bc59a3a745b6af8"/>
+			</diskarea>
+		</part>
+	</software>
+
+
+<!-- Original ISO SHA-1 Hash:  202bbdbdd0e9b377613870ccf62feb98f0191f00 -->
+	<software name="december24th">
+		<description>December 24th (1992)(Macmillan New Media)(US)</description>
+		<year>1992</year>
+		<publisher>Unknown</publisher>
+		<part name="cdrom" interface="vis_cdrom">
+			<diskarea name="cdrom">
+				<disk name="december24th" sha1="af87c61149728a906ce57cd6b07be746da538254"/>
+			</diskarea>
+		</part>
+	</software>
+
+
+<!-- Original ISO SHA-1 Hash:  4e185c21aec9d45e19ebea0596618712d78243ce -->
+	<software name="dbm_thecaskofamo">
+		<description>Discis Books Multimedia - The Cask of Amontillado (1992)(Discis)(US)(en-es)</description>
+		<year>1992</year>
+		<publisher>Unknown</publisher>
+		<part name="cdrom" interface="vis_cdrom">
+			<diskarea name="cdrom">
+				<disk name="dbm_thecaskofamo" sha1="a03c7b2f0bca8407cc173d9f8577bbff77d7c202"/>
+			</diskarea>
+		</part>
+	</software>
+
+
+<!-- Original ISO SHA-1 Hash:  e93e8b216266928edc7efadb8c0b0da5c04ef98c -->
+	<software name="dbm_thenecklace">
+		<description>Discis Books Multimedia - The Necklace (1992)(Discis)(US)(en-es)</description>
+		<year>1992</year>
+		<publisher>Unknown</publisher>
+		<part name="cdrom" interface="vis_cdrom">
+			<diskarea name="cdrom">
+				<disk name="dbm_thenecklace" sha1="a77574dd53c70df1cda7ba4c8be9d478caca4421"/>
+			</diskarea>
+		</part>
+	</software>
+
+
+<!-- Original ISO SHA-1 Hash:  f7364da6f8d5608fbfac32ac82023917088218cb -->
+	<software name="dbm_thetelltaleh">
+		<description>Discis Books Multimedia - The Tell-Tale Heart (1992)(Discis)(US)(en-es)</description>
+		<year>1992</year>
+		<publisher>Unknown</publisher>
+		<part name="cdrom" interface="vis_cdrom">
+			<diskarea name="cdrom">
+				<disk name="dbm_thetelltaleh" sha1="6d5f5e5fba584c0377a973bbb79eec393ddd80ca"/>
+			</diskarea>
+		</part>
+	</software>
+
+
+<!-- Original ISO SHA-1 Hash:  1cc8ae931c4e99e54259fe63e685845bec010579 -->
+	<software name="fitnesspartnerfo">
+		<description>Fitness Partner - For Men and Women v1.0 (1993)(Computer Directions)(US)[PC-VIS]</description>
+		<year>1992</year>
+		<publisher>Unknown</publisher>
+		<part name="cdrom" interface="vis_cdrom">
+			<diskarea name="cdrom">
+				<disk name="fitnesspartnerfo" sha1="9163990590e8077536425b6a871fa09121654de9"/>
+			</diskarea>
+		</part>
+	</software>
+
+
+<!-- Original ISO SHA-1 Hash:  2c65a0b6ae09923df1a9caf5d83d96a588344d43 -->
+	<software name="greatlivesseries">
+		<description>Great Lives Series - Interactive Biographies of American Heroes Vol. 1 (1992)(JLR Group)(US)</description>
+		<year>1992</year>
+		<publisher>Unknown</publisher>
+		<part name="cdrom" interface="vis_cdrom">
+			<diskarea name="cdrom">
+				<disk name="greatlivesseries" sha1="2614d5841dfd7e742cab9754966fb7906f73d380"/>
+			</diskarea>
+		</part>
+	</software>
+
+
+<!-- Original ISO SHA-1 Hash:  a261fefabea8fad4e09652ae26dbc037f41c85dc -->
+	<software name="ham_inthesparkle">
+		<description>Henry and Mudge - In The Sparkle Days (1992)(Macmillan New Media)(US)</description>
+		<year>1992</year>
+		<publisher>Unknown</publisher>
+		<part name="cdrom" interface="vis_cdrom">
+			<diskarea name="cdrom">
+				<disk name="ham_inthesparkle" sha1="bb930b58450288a46cabec8b0761542f1f7f6270"/>
+			</diskarea>
+		</part>
+	</software>
+
+
+<!-- Original ISO SHA-1 Hash:  755005506fdec7df402ee3d6b34ab3d66718d51a -->
+	<software name="ham_thefirstbook">
+		<description>Henry and Mudge - The First Book (1992)(Macmillan New Media)(US)</description>
+		<year>1992</year>
+		<publisher>Unknown</publisher>
+		<part name="cdrom" interface="vis_cdrom">
+			<diskarea name="cdrom">
+				<disk name="ham_thefirstbook" sha1="befdd1581af2c736e83e5ca6e7a39fd6be5ecd12"/>
+			</diskarea>
+		</part>
+	</software>
+
+
+<!-- Original ISO SHA-1 Hash:  be5137c1e507405134a295182b6403a7d33d5a28 -->
+	<software name="jessebearwhatwil">
+		<description>Jesse Bear, What Will You Wear v1.0 (1992)(Macmillan New Media)(US)</description>
+		<year>1992</year>
+		<publisher>Unknown</publisher>
+		<part name="cdrom" interface="vis_cdrom">
+			<diskarea name="cdrom">
+				<disk name="jessebearwhatwil" sha1="63ac140bc4cb3925f95f64f86f049c072e009bc6"/>
+			</diskarea>
+		</part>
+	</software>
+
+
+<!-- Original ISO SHA-1 Hash:  c653e0c6eeb0f50f53fd98d116bfabeaf38678b5 -->
+	<software name="kidfun">
+		<description>Kid-Fun (1992)(Radio Shack)(US)</description>
+		<year>1992</year>
+		<publisher>Unknown</publisher>
+		<part name="cdrom" interface="vis_cdrom">
+			<diskarea name="cdrom">
+				<disk name="kidfun" sha1="7743a576253867b3e0abfbc44838627b5424ef0a"/>
+			</diskarea>
+		</part>
+	</software>
+
+
+<!-- Original ISO SHA-1 Hash:  9f76547cd7cbf5b71edd3feae2b1dae58c75f4c8 -->
+	<software name="kcrdb_alonghardd">
+		<description>Kids Can Read Discis Books! - A Long Hard Day on the Ranch (1992)(Discis)(US)(en-es)</description>
+		<year>1992</year>
+		<publisher>Unknown</publisher>
+		<part name="cdrom" interface="vis_cdrom">
+			<diskarea name="cdrom">
+				<disk name="kcrdb_alonghardd" sha1="81bba0c3f5fd6e1dcc5e40dfa54f660b3a285c2f"/>
+			</diskarea>
+		</part>
+	</software>
+
+
+<!-- Original ISO SHA-1 Hash:  a1d2c8e546e3a6393a1583b87a6d1ddc6116720e -->
+	<software name="kcrdb_aesopsfabl">
+		<description>Kids Can Read Discis Books! - Aesops Fables (1992)(Discis)(US)(en-es)</description>
+		<year>1992</year>
+		<publisher>Unknown</publisher>
+		<part name="cdrom" interface="vis_cdrom">
+			<diskarea name="cdrom">
+				<disk name="kcrdb_aesopsfabl" sha1="7970284134e2c48c99a12e913de13b34fa42331d"/>
+			</diskarea>
+		</part>
+	</software>
+
+
+<!-- Original ISO SHA-1 Hash:  030f3c67c5996626f1ec3a31929fa0c08b5ae868 -->
+	<software name="kcrdb_cinderella">
+		<description>Kids Can Read Discis Books! - Cinderella - The Original Fairy Tale (1992)(Discis)(US)(en-es)</description>
+		<year>1992</year>
+		<publisher>Unknown</publisher>
+		<part name="cdrom" interface="vis_cdrom">
+			<diskarea name="cdrom">
+				<disk name="kcrdb_cinderella" sha1="1514ff3fe44d3dd9d31f41040fc9f5c207f328c9"/>
+			</diskarea>
+		</part>
+	</software>
+
+
+<!-- Original ISO SHA-1 Hash:  a9b4102ba46b1e918eee6d089ef8e4933b2b4f4d -->
+	<software name="kcrdb_heatherhit">
+		<description>Kids Can Read Discis Books! - Heather Hits her First Home Run (1992)(Discis)(US)(en-es)</description>
+		<year>1992</year>
+		<publisher>Unknown</publisher>
+		<part name="cdrom" interface="vis_cdrom">
+			<diskarea name="cdrom">
+				<disk name="kcrdb_heatherhit" sha1="130ff57b41775b4f3223e61945ff46ef9c984e0c"/>
+			</diskarea>
+		</part>
+	</software>
+
+
+<!-- Original ISO SHA-1 Hash:  f298a848cb04f779a95af8570373f3fa6cb09482 -->
+	<software name="kcrdb_movinggive">
+		<description>Kids Can Read Discis Books! - Moving Gives Me A Stomach Ache (1992)(Discis)(US)(en-es)</description>
+		<year>1992</year>
+		<publisher>Unknown</publisher>
+		<part name="cdrom" interface="vis_cdrom">
+			<diskarea name="cdrom">
+				<disk name="kcrdb_movinggive" sha1="c86a91f1e738ded6158c3936ff051dbf6aac3575"/>
+			</diskarea>
+		</part>
+	</software>
+
+
+<!-- Original ISO SHA-1 Hash:  5d6542cf26f13850f7fda50560189b4f349c329f -->
+	<software name="kcrdb_mudpuddle">
+		<description>Kids Can Read Discis Books! - Mud Puddle (1992)(Discis)(US)(en-es)</description>
+		<year>1992</year>
+		<publisher>Unknown</publisher>
+		<part name="cdrom" interface="vis_cdrom">
+			<diskarea name="cdrom">
+				<disk name="kcrdb_mudpuddle" sha1="2383d54688024a058e731a7769bd5572069f16a1"/>
+			</diskarea>
+		</part>
+	</software>
+
+
+<!-- Original ISO SHA-1 Hash:  1a35c765a97c9f4796d13c38c75dbbb71f931c07 -->
+	<software name="kcrdb_scarypoems">
+		<description>Kids Can Read Discis Books! - Scary Poems for Rotten Kids (1992)(Discis)(US)(en-es)</description>
+		<year>1992</year>
+		<publisher>Unknown</publisher>
+		<part name="cdrom" interface="vis_cdrom">
+			<diskarea name="cdrom">
+				<disk name="kcrdb_scarypoems" sha1="7d208a189d15987aec5e2aa30c44f4a909d77ad7"/>
+			</diskarea>
+		</part>
+	</software>
+
+
+<!-- Original ISO SHA-1 Hash:  9996d4f7209369127ee69f1bf46cfe9b47bf7378 -->
+	<software name="kcrdb_thenightbe">
+		<description>Kids Can Read Discis Books! - The Night Before Christmas (1992)(Discis)(US)(en-es)</description>
+		<year>1992</year>
+		<publisher>Unknown</publisher>
+		<part name="cdrom" interface="vis_cdrom">
+			<diskarea name="cdrom">
+				<disk name="kcrdb_thenightbe" sha1="ff6ce6451ac6882ea37f12e5ced00abb5f05ea22"/>
+			</diskarea>
+		</part>
+	</software>
+
+
+<!-- Original ISO SHA-1 Hash:  4c7af8c7bb6f774b5d61bfb18bb7b7946fae5188 -->
+	<software name="kcrdb_thepaperba">
+		<description>Kids Can Read Discis Books! - The Paper Bag Princess (1992)(Discis)(US)(en-es)</description>
+		<year>1992</year>
+		<publisher>Unknown</publisher>
+		<part name="cdrom" interface="vis_cdrom">
+			<diskarea name="cdrom">
+				<disk name="kcrdb_thepaperba" sha1="5391658932072624e44ea1eccd6111b04bfdfd26"/>
+			</diskarea>
+		</part>
+	</software>
+
+
+<!-- Original ISO SHA-1 Hash:  230a27d604462f1831ba1fcdf3322588743ce6d6 -->
+	<software name="kcrdb_ttobenjami">
+		<description>Kids Can Read Discis Books! - The Tale of Benjamin Bunny (1992)(Discis)(US)(en-es)</description>
+		<year>1992</year>
+		<publisher>Unknown</publisher>
+		<part name="cdrom" interface="vis_cdrom">
+			<diskarea name="cdrom">
+				<disk name="kcrdb_ttobenjami" sha1="ce82752a72e6ecbe7796554132594fd9d4333cef"/>
+			</diskarea>
+		</part>
+	</software>
+
+
+<!-- Original ISO SHA-1 Hash:  340b2f8067dfec010e713b1d9835aca8763c6545 -->
+	<software name="kcrdb_ttopeterra">
+		<description>Kids Can Read Discis Books! - The Tale of Peter Rabbit (1992)(Discis)(US)(en-es)</description>
+		<year>1992</year>
+		<publisher>Unknown</publisher>
+		<part name="cdrom" interface="vis_cdrom">
+			<diskarea name="cdrom">
+				<disk name="kcrdb_ttopeterra" sha1="fd581e7e068fe280bb0612e77459909043ba75ef"/>
+			</diskarea>
+		</part>
+	</software>
+
+
+<!-- Original ISO SHA-1 Hash:  6a4beb0e011da283e49add55a13684bd15fa9cf6 -->
+	<software name="kcrdb_thomassnow">
+		<description>Kids Can Read Discis Books! - Thomas Snowsuit (1992)(Discis)(US)(en-es)</description>
+		<year>1992</year>
+		<publisher>Unknown</publisher>
+		<part name="cdrom" interface="vis_cdrom">
+			<diskarea name="cdrom">
+				<disk name="kcrdb_thomassnow" sha1="0c83307bac72b116f44f81a6f3bf24b4b4f1b9a2"/>
+			</diskarea>
+		</part>
+	</software>
+
+
+<!-- Original ISO SHA-1 Hash:  9e17ab9c39573e332089888bd0b2227515f2da32 -->
+	<software name="linksthechalleng">
+		<description>Links - The Challenge of Golf (1992)(Access Software)(US)</description>
+		<year>1992</year>
+		<publisher>Unknown</publisher>
+		<part name="cdrom" interface="vis_cdrom">
+			<diskarea name="cdrom">
+				<disk name="linksthechalleng" sha1="7b8f8142b6f98c4451d5a35a48faa24ab95a3a0e"/>
+			</diskarea>
+		</part>
+	</software>
+
+
+<!-- Original ISO SHA-1 Hash:  cd9efaf325bc0eb2800a5d537d893dc7766cb21e -->
+	<software name="meetingofmindsse">
+		<description>Meeting of Minds Series, The - Interactive Games of History, Art, Music, and Ideas with Steve Allen (1992)(JLR Group)(US)</description>
+		<year>1992</year>
+		<publisher>Unknown</publisher>
+		<part name="cdrom" interface="vis_cdrom">
+			<diskarea name="cdrom">
+				<disk name="meetingofmindsse" sha1="73ebe54b0cdf1e50207d1e163776a00db27e51ea"/>
+			</diskarea>
+		</part>
+	</software>
+
+
+<!-- Original ISO SHA-1 Hash:  fce9edcbafb0ebb41ff4f9fcb9e1dc359a5bca8c -->
+	<software name="mosaicmagic">
+		<description>Mosaic Magic (1993)(Kinder Magic Software)(US)</description>
+		<year>1992</year>
+		<publisher>Unknown</publisher>
+		<part name="cdrom" interface="vis_cdrom">
+			<diskarea name="cdrom">
+				<disk name="mosaicmagic" sha1="6dc7aae94a2cac0007f3acb7bf6fa24d397def9a"/>
+			</diskarea>
+		</part>
+	</software>
+
+
+<!-- Original ISO SHA-1 Hash:  0f91a43d16044d1b425bb2749f2967b85c92bed3 -->
+	<software name="mutanoidmathchal">
+		<description>Mutanoid Math Challenge (1992)(Legacy Software)(US)</description>
+		<year>1992</year>
+		<publisher>Unknown</publisher>
+		<part name="cdrom" interface="vis_cdrom">
+			<diskarea name="cdrom">
+				<disk name="mutanoidmathchal" sha1="17dc8226941ddae2e6a21135541c8eb12e7bfb3e"/>
+			</diskarea>
+		</part>
+	</software>
+
+
+<!-- Original ISO SHA-1 Hash:  7c20b1673adcb399f2a2b27f3b74fd5020b77c5e -->
+	<software name="mypaint">
+		<description>My Paint (1992)(Saddleback Graphics)(US)</description>
+		<year>1992</year>
+		<publisher>Unknown</publisher>
+		<part name="cdrom" interface="vis_cdrom">
+			<diskarea name="cdrom">
+				<disk name="mypaint" sha1="19a001c4d5c23e067449144602722c80f90d3cf0"/>
+			</diskarea>
+		</part>
+	</software>
+
+
+<!-- Original ISO SHA-1 Hash:  88ee4d7940b797c01436bb4cbcd2108307868854 -->
+	<software name="newbasicselectro">
+		<description>New Basics Electronic Cookbook, The - With Recipes from the Acclaimed Silver Palate Series (1992)(Xiphias)(US)</description>
+		<year>1992</year>
+		<publisher>Unknown</publisher>
+		<part name="cdrom" interface="vis_cdrom">
+			<diskarea name="cdrom">
+				<disk name="newbasicselectro" sha1="cbb834b7f332fd9f23f2fa62b5d99b764be40d3a"/>
+			</diskarea>
+		</part>
+	</software>
+
+
+<!-- Original ISO SHA-1 Hash:  e642a9113b9055057e0b4e224e6871b64401f359 -->
+	<software name="ourhousefeaturin">
+		<description>Our House - featuring The Family Circus (1992)(Context Systems)(US)</description>
+		<year>1992</year>
+		<publisher>Unknown</publisher>
+		<part name="cdrom" interface="vis_cdrom">
+			<diskarea name="cdrom">
+				<disk name="ourhousefeaturin" sha1="d20fda6796eda86ebd8c412988ebc51becb92cd3"/>
+			</diskarea>
+		</part>
+	</software>
+
+
+<!-- Original ISO SHA-1 Hash:  b5b67db3ccec9e38b51a4476d8dff1fb90d7d2f2 -->
+	<software name="pwl_gamesinengli">
+		<description>Playing With Language - Games In English (1992)(Syracuse Language Systems)(US)</description>
+		<year>1992</year>
+		<publisher>Unknown</publisher>
+		<part name="cdrom" interface="vis_cdrom">
+			<diskarea name="cdrom">
+				<disk name="pwl_gamesinengli" sha1="79d88313c671e534e82f61acb92d8f446bf91266"/>
+			</diskarea>
+		</part>
+	</software>
+
+
+<!-- Original ISO SHA-1 Hash:  c19d86ba85f1090d6b8129884565a4a0aee2b20e -->
+	<software name="pwl_gamesinfrenc">
+		<description>Playing With Language - Games In French (1992)(Syracuse Language Systems)(US)</description>
+		<year>1992</year>
+		<publisher>Unknown</publisher>
+		<part name="cdrom" interface="vis_cdrom">
+			<diskarea name="cdrom">
+				<disk name="pwl_gamesinfrenc" sha1="a6109f762ae5b7aa8e9c2b3ed6dad24c1cd5fbea"/>
+			</diskarea>
+		</part>
+	</software>
+
+
+<!-- Original ISO SHA-1 Hash:  c3fa34ebc3bfbaf1608a07a9d243d143c2fb31a9 -->
+	<software name="pwl_gamesingerma">
+		<description>Playing With Language - Games In German (1992)(Syracuse Language Systems)(US)</description>
+		<year>1992</year>
+		<publisher>Unknown</publisher>
+		<part name="cdrom" interface="vis_cdrom">
+			<diskarea name="cdrom">
+				<disk name="pwl_gamesingerma" sha1="c2c79109cd876412522d7eaf4d4910d5ad16a1ad"/>
+			</diskarea>
+		</part>
+	</software>
+
+
+<!-- Original ISO SHA-1 Hash:  4e33c80f1cf27614b6f5cd47417f7b922c2ac9a5 -->
+	<software name="pwl_gamesinjapan">
+		<description>Playing With Language - Games In Japanese (1992)(Syracuse Language Systems)(US)</description>
+		<year>1992</year>
+		<publisher>Unknown</publisher>
+		<part name="cdrom" interface="vis_cdrom">
+			<diskarea name="cdrom">
+				<disk name="pwl_gamesinjapan" sha1="e72f4e3819befbe4ea05f881345c4be657d9f8e4"/>
+			</diskarea>
+		</part>
+	</software>
+
+
+<!-- Original ISO SHA-1 Hash:  a4325d8bd7664f4c7f4d39d257ab078a2e87dc13 -->
+	<software name="pwl_gamesinspani">
+		<description>Playing With Language - Games In Spanish (1992)(Syracuse Language Systems)(US)</description>
+		<year>1992</year>
+		<publisher>Unknown</publisher>
+		<part name="cdrom" interface="vis_cdrom">
+			<diskarea name="cdrom">
+				<disk name="pwl_gamesinspani" sha1="9546f75122d69c6f687243e943203b3eee136830"/>
+			</diskarea>
+		</part>
+	</software>
+
+
+<!-- Original ISO SHA-1 Hash:  40de9d20f3dc21a2648f7691c08fb3c6d73a8a48 -->
+	<software name="racetheclock">
+		<description>Race the Clock (1992)(Mindplay, Methods &amp; Solutions)(US)(en-es)</description>
+		<year>1992</year>
+		<publisher>Unknown</publisher>
+		<part name="cdrom" interface="vis_cdrom">
+			<diskarea name="cdrom">
+				<disk name="racetheclock" sha1="44051697d87c37c17347a4d8861e19f4218f42b5"/>
+			</diskarea>
+		</part>
+	</software>
+
+
+<!-- Original ISO SHA-1 Hash:  9959564028d7e07132055847c57ff6c28149ca40 -->
+	<software name="rainbow_snowflak">
+		<description>Rainbow &amp; Snowflakes Search for the Sea (1992)(Multicom Publishing)(US)</description>
+		<year>1992</year>
+		<publisher>Unknown</publisher>
+		<part name="cdrom" interface="vis_cdrom">
+			<diskarea name="cdrom">
+				<disk name="rainbow_snowflak" sha1="4538b24e30236d432fe7835f8faf578383bb3f13"/>
+			</diskarea>
+		</part>
+	</software>
+
+
+<!-- Original ISO SHA-1 Hash:  0218f97776bf2ec0e30fd8be4514e1c064c3e9d8 -->
+	<software name="rickribbitadvent">
+		<description>Rick Ribbit - Adventures in Early Learning (1992)(Tadpole Productions)(US)</description>
+		<year>1992</year>
+		<publisher>Unknown</publisher>
+		<part name="cdrom" interface="vis_cdrom">
+			<diskarea name="cdrom">
+				<disk name="rickribbitadvent" sha1="8d6ede63f8ea3762a05f3d01f18d9123145c32b2"/>
+			</diskarea>
+		</part>
+	</software>
+
+
+<!-- Original ISO SHA-1 Hash:  1a2d4117d652acc65c56580e42422347afa0743f -->
+	<software name="rodneysfunscreen">
+		<description>Rodneys Funscreen (1992)(Activision)(US)</description>
+		<year>1992</year>
+		<publisher>Unknown</publisher>
+		<part name="cdrom" interface="vis_cdrom">
+			<diskarea name="cdrom">
+				<disk name="rodneysfunscreen" sha1="d07d447c3a61bca7d4ca52917a3dd5a0d1041cef"/>
+			</diskarea>
+		</part>
+	</software>
+
+
+<!-- Original ISO SHA-1 Hash:  53c84cb8d36da83b2e8b2a2cfb3e3d2b7404943e -->
+	<software name="sailwithcolumbus">
+		<description>Sail With Columbus (1992)(Parallax Publishing)(US)</description>
+		<year>1992</year>
+		<publisher>Unknown</publisher>
+		<part name="cdrom" interface="vis_cdrom">
+			<diskarea name="cdrom">
+				<disk name="sailwithcolumbus" sha1="5432b2d0646aa4719e1b11c0b9317a1633c8862d"/>
+			</diskarea>
+		</part>
+	</software>
+
+
+<!-- Original ISO SHA-1 Hash:  905f8882882affb960e1fbe86e15ddee0c4252c2 -->
+	<software name="secretsofhoseafr">
+		<description>Secrets of Hosea Freeman, The - An Environmental Mystery (1992)(Top Ten Software)(US)</description>
+		<year>1992</year>
+		<publisher>Unknown</publisher>
+		<part name="cdrom" interface="vis_cdrom">
+			<diskarea name="cdrom">
+				<disk name="secretsofhoseafr" sha1="2ff92dd940e09510fa6c0c23326c096c78e45ae4"/>
+			</diskarea>
+		</part>
+	</software>
+
+
+<!-- Original ISO SHA-1 Hash:  cb757e79a5cdfa2be74ee18f7de1c9f728ea71a8 -->
+	<software name="shcd_volumei">
+		<description>Sherlock Holmes - Consulting Detective - Volume I (1992)(ICOM)(US)</description>
+		<year>1992</year>
+		<publisher>Unknown</publisher>
+		<part name="cdrom" interface="vis_cdrom">
+			<diskarea name="cdrom">
+				<disk name="shcd_volumei" sha1="1da7886824a03dfe636685c196e348db2a9761ce"/>
+			</diskarea>
+		</part>
+	</software>
+
+
+<!-- Original ISO SHA-1 Hash:  729848e2aa03ef45605695445f4ccea7cb740321 -->
+	<software name="shcd_volumeii">
+		<description>Sherlock Holmes - Consulting Detective - Volume II (1992)(ICOM)(US)</description>
+		<year>1992</year>
+		<publisher>Unknown</publisher>
+		<part name="cdrom" interface="vis_cdrom">
+			<diskarea name="cdrom">
+				<disk name="shcd_volumeii" sha1="30c0385b30fed8d4c93ad04da1140f8c8d846100"/>
+			</diskarea>
+		</part>
+	</software>
+
+
+<!-- Original ISO SHA-1 Hash:  5462c192b7a31fceb00f4906d6f65849c05cf3b9 -->
+	<software name="smartkidschallen">
+		<description>SmartKids Challenge ONE (1992)(ARKEO)(US)</description>
+		<year>1992</year>
+		<publisher>Unknown</publisher>
+		<part name="cdrom" interface="vis_cdrom">
+			<diskarea name="cdrom">
+				<disk name="smartkidschallen" sha1="78d1261236bb7c75047bf5f4ae292f64aba72c17"/>
+			</diskarea>
+		</part>
+	</software>
+
+
+<!-- Original ISO SHA-1 Hash:  d15ea280014318be8c5c6fe01280b5a6a150cbb8 -->
+	<software name="steppingstonesta">
+		<description>Stepping Stones - Talking Bonus Pack (1992)(Compu-Teach)(US)</description>
+		<year>1992</year>
+		<publisher>Unknown</publisher>
+		<part name="cdrom" interface="vis_cdrom">
+			<diskarea name="cdrom">
+				<disk name="steppingstonesta" sha1="ea8a8e1bedef6882554019738fb9451a5b6566f9"/>
+			</diskarea>
+		</part>
+	</software>
+
+
+<!-- Original ISO SHA-1 Hash:  c338a3ca6da6a361c3b705842b3ec27dc2d112f3 -->
+	<software name="ttoh_artsandente">
+		<description>Time Table of History - Arts and Entertainment - 1993 Edition (1992)(Xiphias)(US)</description>
+		<year>1992</year>
+		<publisher>Unknown</publisher>
+		<part name="cdrom" interface="vis_cdrom">
+			<diskarea name="cdrom">
+				<disk name="ttoh_artsandente" sha1="da620ec305912cd301160de9e959448f02bfe80e"/>
+			</diskarea>
+		</part>
+	</software>
+
+
+<!-- Original ISO SHA-1 Hash:  934e7ecf6a0a0c94ede0783184f3683cb530bddf -->
+	<software name="ttoh_businesspol">
+		<description>Time Table of History - Business, Politics &amp; Media - 1993 Edition (1992)(Xiphias)(US)</description>
+		<year>1992</year>
+		<publisher>Unknown</publisher>
+		<part name="cdrom" interface="vis_cdrom">
+			<diskarea name="cdrom">
+				<disk name="ttoh_businesspol" sha1="b5f07040aa8717938a0468b1c50c8d5132694b14"/>
+			</diskarea>
+		</part>
+	</software>
+
+
+<!-- Original ISO SHA-1 Hash:  ddf5a94f8f1a74187d671720b58457383e6ea4ee -->
+	<software name="ttoh_scienceandi">
+		<description>Time Table of History - Science and Innovation - 1993 Edition (1992)(Xiphias)(US)</description>
+		<year>1992</year>
+		<publisher>Unknown</publisher>
+		<part name="cdrom" interface="vis_cdrom">
+			<diskarea name="cdrom">
+				<disk name="ttoh_scienceandi" sha1="4f299c90e306ab6c3babd9493c1206d44e7ce950"/>
+			</diskarea>
+		</part>
+	</software>
+
+
+<!-- Original ISO SHA-1 Hash:  3ca4d8862374c0555ceb6f0763b564659afff985 -->
+	<software name="titlesampler">
+		<description>Title Sampler (1992)(Tandy)(US)</description>
+		<year>1992</year>
+		<publisher>Unknown</publisher>
+		<part name="cdrom" interface="vis_cdrom">
+			<diskarea name="cdrom">
+				<disk name="titlesampler" sha1="a0a80ba0374406d033e84bce035cddc3a842ac5c"/>
+			</diskarea>
+		</part>
+	</software>
+
+
+<!-- Original ISO SHA-1 Hash:  bc21133273d006b17f24454fa031186d3924a34f -->
+	<software name="visionmultimedia">
+		<description>Vision Multimedia Bible - For the Entire Family (1992)(Candlelight Publishing)(US)</description>
+		<year>1992</year>
+		<publisher>Unknown</publisher>
+		<part name="cdrom" interface="vis_cdrom">
+			<diskarea name="cdrom">
+				<disk name="visionmultimedia" sha1="a857ee1a5b21f309550653c598c219ca5add762d"/>
+			</diskarea>
+		</part>
+	</software>
+
+
+<!-- Original ISO SHA-1 Hash:  55d03f2f5c0b33b6ba4317e9c1ad9c774c4d2870 -->
+	<software name="wildanimals">
+		<description>WILD animals! (1992)(GTE ImagiTrek)(US)</description>
+		<year>1992</year>
+		<publisher>Unknown</publisher>
+		<part name="cdrom" interface="vis_cdrom">
+			<diskarea name="cdrom">
+				<disk name="wildanimals" sha1="6fec28c6dbc20c44d7815dac0e912e63067ecff5"/>
+			</diskarea>
+		</part>
+	</software>
+
+
+<!-- Original ISO SHA-1 Hash:  34125381a53b768e8673003363e1dcd0b88ff947 -->
+	<software name="worldvista">
+		<description>World Vista (1992)(Applied Optical Media Corporation)(US)</description>
+		<year>1992</year>
+		<publisher>Unknown</publisher>
+		<part name="cdrom" interface="vis_cdrom">
+			<diskarea name="cdrom">
+				<disk name="worldvista" sha1="76400ff55cca97dc2a312c6bca8b8e3863eb33eb"/>
+			</diskarea>
+		</part>
+	</software>
+
+</softwarelist>
