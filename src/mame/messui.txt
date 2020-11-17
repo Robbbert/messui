@@ -42,6 +42,7 @@ aim65.cpp
 //alfaskop41xx.cpp
 //alphajuno.cpp
 alphasma.cpp
+//alphatan.cpp                // mnw, dialup terminal
 alphatpx.cpp
 //alphatpc16.cpp
 alphatro.cpp
@@ -429,6 +430,7 @@ imsai.cpp
 //informer_207_100.cpp            // terminal
 //informer_207_376.cpp            // terminal
 //informer_213.cpp                // terminal
+//innotv_innotabmax.cpp       // skel
 instruct.cpp
 //inteladv.cpp
 intellec4.cpp
@@ -1109,6 +1111,7 @@ vtech2.cpp
 //vt_unknown.cpp                  // skel
 wangpc.cpp
 //wicat.cpp
+//wizard.cpp                  // skel
 //wrinkles.cpp
 wswan.cpp
 //wxstar4000.cpp
