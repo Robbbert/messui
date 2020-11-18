@@ -963,7 +963,7 @@ svision.cpp
 //swtpc09.cpp
 //swtpc8212.cpp
 //swyft.cpp
-sym1.cpp
+//sym1.cpp                                        // Broken by OG
 //symbolics.cpp
 //synthex.cpp
 //sys2900.cpp
