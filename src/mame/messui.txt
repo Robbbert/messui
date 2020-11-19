@@ -701,7 +701,7 @@ osborne1.cpp
 osi.cpp
 //p112.cpp
 p2000t.cpp
-p8k.cpp
+p8k.cpp                       // p8000_16 broken by OG
 //palm.cpp
 //palmz22.cpp
 //palestra.cpp
@@ -914,7 +914,7 @@ spc1500.cpp
 spec128.cpp
 special.cpp
 specpls3.cpp
-//spectrum.cpp                         // broken by OG
+spectrum.cpp
 spg110.cpp
 //spg29x.cpp
 //spg29x_lexibook_jg7425.cpp
