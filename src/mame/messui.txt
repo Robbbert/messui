@@ -796,7 +796,7 @@ pv2000.cpp
 //pwrview.cpp
 px4.cpp
 //px8.cpp
-//pyl601.cpp                    // broken by OG
+pyl601.cpp
 ql.cpp
 //qtsbc.cpp
 //qvt70.cpp
@@ -964,7 +964,7 @@ svision.cpp
 //swtpc09.cpp
 //swtpc8212.cpp
 //swyft.cpp
-//sym1.cpp                                        // Broken by OG
+sym1.cpp
 //symbolics.cpp
 //synthex.cpp
 //sys2900.cpp
