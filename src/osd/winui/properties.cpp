@@ -4068,17 +4068,21 @@ static BOOL RamPopulateControl(datamap *map, HWND dialog, HWND control, windows_
 			for (ram_device::extra_option const &option : ramdev->extra_options())
 			{
 				// identify this option
-				t_ramstring = ui_wstring_from_utf8(option.first.c_str());
-				if( t_ramstring )
+				string ramtext2 = option.first;
+				if (ramtext2 != ramtext)
 				{
-					i++;
-					// add this option to the combo box
-					ComboBox_InsertString(control, i, win_tstring_strdup(t_ramstring));
-					ComboBox_SetItemData(control, i, option.second);
+					t_ramstring = ui_wstring_from_utf8(ramtext2.c_str());
+					if( t_ramstring )
+					{
+						i++;
+						// add this option to the combo box
+						ComboBox_InsertString(control, i, win_tstring_strdup(t_ramstring));
+						ComboBox_SetItemData(control, i, option.second);
 
-					// is this the current option?  record the index if so
-					if (option.second == current_ram)
-						current_index = i;
+						// is this the current option?  record the index if so
+						if (option.second == current_ram)
+							current_index = i;
+					}
 				}
 			}
 		}
