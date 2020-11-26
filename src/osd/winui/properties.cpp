@@ -3961,25 +3961,24 @@ BOOL MessPropertiesCommand(HWND hWnd, WORD wNotifyCode, WORD wID, BOOL *changed)
 //  Functions to handle the RAM control
 //============================================================
 
-static const char *messram_string(char *buffer, UINT32 ram)
+static string messram_string(UINT32 ram) // FIXME - limit of 4GB
 {
-	const char *suffix;
+	 string suffix = "", messram;
 
 	if ((ram % (1024*1024)) == 0)
 	{
 		ram /= 1024*1024;
-		suffix = "MB";
-	}
-	else if ((ram % 1024) == 0)
-	{
-		ram /= 1024;
-		suffix = "KB";
+		suffix = "M";
 	}
 	else
-		suffix = "";
+	if ((ram % 1024) == 0)
+	{
+		ram /= 1024;
+		suffix = "K";
+	}
 
-	sprintf(buffer, "%u%s", ram, suffix);
-	return buffer;
+	messram = std::to_string(ram).append(suffix);
+	return messram;
 }
 
 //-------------------------------------------------
@@ -4001,7 +4000,13 @@ static uint32_t parse_string(const char *s)
 		{ "kib",    1024 },
 		{ "m",      1024 * 1024 },
 		{ "mb",     1024 * 1024 },
-		{ "mib",    1024 * 1024 }
+		{ "mib",    1024 * 1024 },
+		{ "K",      1024 },
+		{ "KB",     1024 },
+		{ "KiB",    1024 },
+		{ "M",      1024 * 1024 },
+		{ "MB",     1024 * 1024 },
+		{ "MiB",    1024 * 1024 }
 	};
 
 	// parse the string
@@ -4038,13 +4043,10 @@ static BOOL RamPopulateControl(datamap *map, HWND dialog, HWND control, windows_
 	ram_device_enumerator iter(cfg.root_device());
 	ram_device *device = iter.first();
 
-	EnableWindow(control, (device != NULL));
-
 	// we can only do something meaningful if there is more than one option
 	if (device)
 	{
 		const ram_device *ramdev = dynamic_cast<const ram_device *>(device);
-
 		// identify the current amount of RAM
 		const char *this_ram_string = o->value(OPTION_RAMSIZE);
 		uint32_t current_ram = (this_ram_string) ? parse_string(this_ram_string) : 0;
@@ -4052,9 +4054,8 @@ static BOOL RamPopulateControl(datamap *map, HWND dialog, HWND control, windows_
 		if (current_ram == 0)
 			current_ram = ram;
 
-		char ramtext[20];
-		messram_string(ramtext, ram);
-		TCHAR *t_ramstring = ui_wstring_from_utf8(ramtext);
+		string ramtext = messram_string(ram);
+		TCHAR *t_ramstring = ui_wstring_from_utf8(ramtext.c_str());
 		if( !t_ramstring )
 			return false;
 
@@ -4083,9 +4084,13 @@ static BOOL RamPopulateControl(datamap *map, HWND dialog, HWND control, windows_
 		}
 		if (t_ramstring)
 			free (t_ramstring);
+
 		// set the combo box
 		ComboBox_SetCurSel(control, current_index);
 	}
+
+	EnableWindow(control, i ? 1 : 0);
+
 	return true;
 }
 
