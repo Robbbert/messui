@@ -121,6 +121,7 @@ binbug.cpp
 //bitel.cpp
 //bitgraph.cpp
 bk.cpp
+//blit.cpp                    // MNW, terminal
 blw700i.cpp
 bmjr.cpp
 bml3.cpp
@@ -224,7 +225,8 @@ dectalk.cpp
 //decwritr.cpp
 //dfs500.cpp                 // wbdnu
 dg680.cpp
-dgn_beta.cpp
+//dgn_beta.cpp                 // MNW
+//design.cpp                  // MNW, vending machine
 //diablo1300.cpp
 didact.cpp
 //digel804.cpp
@@ -701,15 +703,15 @@ osborne1.cpp
 osi.cpp
 //p112.cpp
 p2000t.cpp
-p8k.cpp                       // p8000_16 broken by OG
+p8k.cpp
 //palm.cpp
 //palmz22.cpp
 //palestra.cpp
-//partner.cpp               // broken by OG
+partner.cpp
 //paso1600.cpp
 pasogo.cpp
 //pasopia.cpp         // enter key not working, broken by AJR
-//pasopia7.cpp              // broken by OG
+pasopia7.cpp
 //patinho_feio.cpp
 pb1000.cpp
 pc.cpp
@@ -932,6 +934,7 @@ spg2xx_pdc.cpp
 spg2xx_playvision.cpp
 spg2xx_senario.cpp
 spg2xx_senario_poker.cpp
+spg2xx_senca.cpp
 spg2xx_shredmjr.cpp
 //spg2xx_skannerztv.cpp
 //spg2xx_smarttv.cpp
@@ -940,7 +943,6 @@ spg2xx_shredmjr.cpp
 spg2xx_vii.cpp
 //spg2xx_wiwi.cpp
 spg2xx_zone.cpp
-//spg2xx_zone_32bit.cpp
 //squale.cpp
 ssem.cpp
 //st17xx.cpp
@@ -1106,7 +1108,7 @@ vsmileb.cpp
 //vt520.cpp
 //vt1682.cpp
 //vta2000.cpp
-//vtech1.cpp                       // broken by OG
+vtech1.cpp
 vtech2.cpp
 //vtech_eu3a12.cpp
 //vt_unknown.cpp                  // skel
@@ -1140,6 +1142,7 @@ xor100.cpp
 //ymmu50.cpp
 //ymmu80.cpp
 //ymmu100.cpp
+//ympsr340.cpp                // MNW, synth
 //ymtx81z.cpp
 //ymvl70.cpp
 //z100.cpp
