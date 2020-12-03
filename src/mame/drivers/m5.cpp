@@ -699,13 +699,15 @@ void m5_state::mem64KRX_w(offs_t offset, uint8_t data) //out 0x7f
 void m5_state::m5_mem(address_map &map)
 {
 	map.unmap_value_high();
-	map(0x0000, 0x1fff).bankr("bank1r").bankw("bank1w"); //monitor rom(bios)
-	map(0x2000, 0x3fff).bankr("bank2r").bankw("bank2w");
-	map(0x4000, 0x5fff).bankr("bank3r").bankw("bank3w");
-	map(0x6000, 0x6fff).bankr("bank4r").bankw("bank4w");
+	//map(0x0000, 0x1fff).bankr("bank1r").bankw("bank1w"); //monitor rom(bios)
+	//map(0x2000, 0x3fff).bankr("bank2r").bankw("bank2w");
+	//map(0x4000, 0x5fff).bankr("bank3r").bankw("bank3w");
+	//map(0x6000, 0x6fff).bankr("bank4r").bankw("bank4w");
+	map(0x0000, 0x1fff).rom();
 	map(0x7000, 0x7fff).ram();                                         //4kb internal RAM
-	map(0x8000, 0xbfff).bankr("bank5r").bankw("bank5w");
-	map(0xc000, 0xffff).bankr("bank6r").bankw("bank6w");
+	map(0x8000, 0xffff).ram();
+	//map(0x8000, 0xbfff).bankr("bank5r").bankw("bank5w");
+	//map(0xc000, 0xffff).bankr("bank6r").bankw("bank6w");
 }
 
 
@@ -1013,22 +1015,23 @@ static const z80_daisy_config m5_daisy_chain[] =
 void brno_state::m5_mem_brno(address_map &map)
 {
 	map.unmap_value_high();
-	map(0x0000, 0x0fff).bankrw("bank1");
-	map(0x1000, 0x1fff).bankrw("bank2");
-	map(0x2000, 0x2fff).bankrw("bank3");
-	map(0x3000, 0x3fff).bankrw("bank4");
-	map(0x4000, 0x4fff).bankrw("bank5");
-	map(0x5000, 0x5fff).bankrw("bank6");
-	map(0x6000, 0x6fff).bankrw("bank7");
-	map(0x7000, 0x7fff).bankrw("bank8");
-	map(0x8000, 0x8fff).bankrw("bank9");
-	map(0x9000, 0x9fff).bankrw("bank10");
-	map(0xa000, 0xafff).bankrw("bank11");
-	map(0xb000, 0xbfff).bankrw("bank12");
-	map(0xc000, 0xcfff).bankrw("bank13");
-	map(0xd000, 0xdfff).bankrw("bank14");
-	map(0xe000, 0xefff).bankrw("bank15");
-	map(0xf000, 0xffff).bankrw("bank16");
+	map(0x0000, 0x0fff).rom(); //bankrw("bank1");
+	map(0x1000, 0x1fff).rom(); //bankrw("bank2");
+	//map(0x2000, 0x2fff).bankrw("bank3");
+	//map(0x3000, 0x3fff).bankrw("bank4");
+	//map(0x4000, 0x4fff).bankrw("bank5");
+	//map(0x5000, 0x5fff).bankrw("bank6");
+	//map(0x6000, 0x6fff).bankrw("bank7");
+	map(0x7000, 0x7fff).ram();//bankrw("bank8");
+	map(0x8000, 0xffff).ram();
+	//map(0x8000, 0x8fff).bankrw("bank9");
+	//map(0x9000, 0x9fff).bankrw("bank10");
+	//map(0xa000, 0xafff).bankrw("bank11");
+	//map(0xb000, 0xbfff).bankrw("bank12");
+	//map(0xc000, 0xcfff).bankrw("bank13");
+	//map(0xd000, 0xdfff).bankrw("bank14");
+	//map(0xe000, 0xefff).bankrw("bank15");
+	//map(0xf000, 0xffff).bankrw("bank16");
 }
 
 //-------------------------------------------------
@@ -1052,7 +1055,7 @@ void brno_state::brno_io(address_map &map)
 	map(0x40, 0x40).mirror(0x0f).w("cent_data_out", FUNC(output_latch_device::write));
 	map(0x50, 0x50).mirror(0x0f).rw(FUNC(brno_state::sts_r), FUNC(brno_state::com_w));
 //  map(0x60, 0x63)                                                                            //  SIO
-	map(0x64, 0x67).rw(FUNC(brno_state::mmu_r), FUNC(brno_state::mmu_w));                           //  MMU - page select (ramdisk memory paging)
+	//map(0x64, 0x67).rw(FUNC(brno_state::mmu_r), FUNC(brno_state::mmu_w));                           //  MMU - page select (ramdisk memory paging)
 	map(0x68, 0x6b).rw(FUNC(brno_state::ramsel_r), FUNC(brno_state::ramsel_w));                     //  CASEN 0=access to ramdisk enabled, 0xff=ramdisk access disabled(data protection), &80=ROM2+48k RAM, &81=ROM2+4k RAM
 	map(0x6c, 0x6f).rw(FUNC(brno_state::romsel_r), FUNC(brno_state::romsel_w));                     //  RAMEN 0=rom enable; 0xff=rom+sord ram disabled (ramdisk visible)
 //  map(0x70, 0x73).mirror(0x04).rw(I8255A_TAG, FUNC(i8255_device::read), FUNC(i8255_device::write)); //  PIO
@@ -1261,7 +1264,7 @@ void m5_state::machine_reset()
 	// no cart inserted - there is nothing to do - not allowed in original Sord m5
 	if (m_cart_ram == nullptr && m_cart == nullptr)
 	{
-		membank("bank1r")->set_base(memregion(Z80_TAG)->base());
+		//membank("bank1r")->set_base(memregion(Z80_TAG)->base());
 		program.unmap_write(0x0000, 0x1fff);
 	//  program.unmap_readwrite(0x2000, 0x6fff); //if you uncomment this line Sord starts cassette loading but it is not correct on real hw
 		program.unmap_readwrite(0x8000, 0xffff);
