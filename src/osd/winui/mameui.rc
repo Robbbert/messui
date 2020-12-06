@@ -20,7 +20,7 @@
 #undef APSTUDIO_READONLY_SYMBOLS
 
 /////////////////////////////////////////////////////////////////////////////
-// Englisch (USA) resources
+// English (USA) resources
 
 #if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_ENU)
 #ifdef _WIN32
@@ -29,6 +29,21 @@ LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_US
 #endif //_WIN32
 
 /////////////////////////////////////////////////////////////////////////////
+//
+// Menu
+//
+
+IDR_MAIN_MENU MENU DISCARDABLE
+BEGIN
+    POPUP "&File"
+    BEGIN
+        MENUITEM "&Exit",                       ID_FILE_EXIT
+    END
+    POPUP "&Help"
+    BEGIN
+        MENUITEM "&About MESS",                 ID_ABOUT
+    END
+END
 //
 // NewUI Menu
 //
@@ -115,35 +130,10 @@ BEGIN
     END
 END
 
-
-#ifdef APSTUDIO_INVOKED
-/////////////////////////////////////////////////////////////////////////////
-//
-// TEXTINCLUDE
+// RT_MANIFEST same on all derivatives
 //
 
-1 TEXTINCLUDE MOVEABLE PURE
-BEGIN
-    "resource.h\\r\n"
-    "newuires.h\0"
-END
-
-2 TEXTINCLUDE MOVEABLE PURE
-BEGIN
-    "#define NOWINRES\r\n"
-    "#include ""windows.h""\r\n"
-    "#include ""commctrl.h""\r\n"
-    "\0"
-END
-
-3 TEXTINCLUDE MOVEABLE PURE
-BEGIN
-    "#include ""messvers.rc"" // Version block\r\n"
-    "\r\n"
-    "\0"
-END
-
-#endif    // APSTUDIO_INVOKED
+1                       RT_MANIFEST             "res\\mameui.manifest"
 
 
 /////////////////////////////////////////////////////////////////////////////
