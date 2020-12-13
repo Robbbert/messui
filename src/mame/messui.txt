@@ -712,7 +712,7 @@ p8k.cpp
 partner.cpp
 //paso1600.cpp
 pasogo.cpp
-//pasopia.cpp         // enter key not working, broken by AJR
+pasopia.cpp
 pasopia7.cpp
 //patinho_feio.cpp
 pb1000.cpp
