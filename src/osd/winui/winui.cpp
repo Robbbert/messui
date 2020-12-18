@@ -1675,7 +1675,7 @@ static intptr_t CALLBACK StartupProc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM
 			hProgress = CreateWindowEx(0, PROGRESS_CLASS, NULL, WS_CHILD | WS_VISIBLE, 0, 136, 526, 18, hDlg, NULL, hInst, NULL);
 			SetWindowTheme(hProgress, L" ", L" ");
 			SendMessage(hProgress, PBM_SETBKCOLOR, 0, GetSysColor(COLOR_3DFACE));
-			SendMessage(hProgress, PBM_SETRANGE, 0, MAKELPARAM(0, 100));
+			//SendMessage(hProgress, PBM_SETRANGE, 0, MAKELPARAM(0, 100));
 			SendMessage(hProgress, PBM_SETPOS, 0, 0);
 			return true;
 		}
@@ -1846,7 +1846,6 @@ static BOOL Win32UI_init(HINSTANCE hInstance, LPWSTR lpCmdLine, int nCmdShow)
 	if (!InitSplitters())
 		return false;
 
-	SendMessage(hProgress, PBM_SETPOS, 85, 0);
 	int nSplitterCount = GetSplitterCount();
 	for (int i = 0; i < nSplitterCount; i++)
 	{
@@ -1881,6 +1880,7 @@ static BOOL Win32UI_init(HINSTANCE hInstance, LPWSTR lpCmdLine, int nCmdShow)
 
 	LoadBackgroundBitmap();
 
+	SendMessage(hProgress, PBM_SETPOS, 85, 0);
 	printf("Win32UI_init: About to init tree\n");fflush(stdout);
 	InitTree(g_folderData, g_filterList);
 	printf("Win32UI_init: Did init tree\n");fflush(stdout);
