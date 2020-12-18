@@ -12,6 +12,11 @@
 //************************************************************************************************
 
 // Set minimum windows version to XP
+#ifdef WINVER
+#undef WINVER
+#endif
+#define WINVER 0x501
+
 #ifdef _WIN32_WINNT
 #undef _WIN32_WINNT
 #endif
