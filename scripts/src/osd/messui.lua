@@ -65,7 +65,7 @@ function maintargetosdoptions(_target,_subtarget)
 	}
 
 -- Local file gives correct icon in mess instance inside of messui
--- Local file must #include messui.rc
+-- Local file must #include mameui.rc
 	override_resources = true;
 	rctarget = _subtarget;
 	local rcfile = MAME_DIR .. "src/osd/winui/" .. _subtarget .. ".rc"
