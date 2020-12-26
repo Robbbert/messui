@@ -174,6 +174,9 @@ machine.ioport (read-only)
 machine.input (read-only)
     The :ref:`input manager <luareference-input-inputman>` for the current
     emulation session.
+machine.natkeyboard (read-only)
+    Gets the :ref:`natural keyboard manager <luareference-input-natkbd>`, used
+    for controlling keyboard and keypad input to the emulated system.
 machine.uiinput (read-only)
     The :ref:`UI input manager <luareference-input-uiinput>` for the current
     emulation session.
@@ -1557,17 +1560,37 @@ Methods
 
 ioport:count_players()
     Returns the number of player controllers in the system.
+ioport:type_pressed(type, [player])
+    Returns a Boolean indicating whether the specified input is currently
+    pressed.  The input port type is an enumerated value.  The player number is
+    a zero-based index.  If the player number is not supplied, it is assumed to
+    be zero.
+ioport:type_name(type, [player])
+    Returns the display name for the specified input type and player number.
+    The input type is an enumerated value.  The player number is a zero-based
+    index.  If the player number is not supplied, it is assumed to be zero.
 ioport:type_group(type, player)
-    Returns the I/O port group for the specified I/O port type and player
-    number.  The I/O port type is an enumerated value.  The player number is a
-    zero-based index.  Returns an integer giving the grouping for the input.
+    Returns the input group for the specified input type and player number.  The
+    input type is an enumerated value.  The player number is a zero-based index.
+    Returns an integer giving the grouping for the input.  If the player number
+    is not supplied, it is assumed to be zero.
 
     This should be called with values obtained from I/O port fields to provide
     canonical grouping in an input configuration UI.
-ioport:type_seq(type, player, seqtype)
-    Get the configured input sequence for the specified input type, player and
-    sequence type.  The sequence type must be ``"standard"``, ``"increment"``
-    or ``"decrement"``.  This provides access to general input configuration.
+ioport:type_seq(type, [player], [seqtype])
+    Get the configured input sequence for the specified input type, player
+    number and sequence type.  The input type is an enumerated value.  The
+    player number is a zero-based index.  If the player number is not supplied,
+    it is assumed to be zero.  If the sequence type is supplied, it must be
+    ``"standard"``, ``"increment"`` or ``"decrement"``; if it is not supplied,
+    it is assumed to be ``"standard"``.
+
+    This provides access to general input configuration.
+ioport:token_to_input_type(string)
+    Returns the input type and player number for the specified input type token.
+ioport:input_type_to_token(type, [player])
+    Returns the token string for the specified input type and player number.  If
+    the player number is not supplied, it assumed to be zero.
 
 Properties
 ^^^^^^^^^^
@@ -1576,9 +1599,6 @@ ioport.ports[]
     Gets the emulated :ref:`I/O ports <luareference-input-ioport>` in the
     system.  Keys are absolute tags.  The ``at`` and ``index_of`` methods have
     O(n) complexity; all other supported operations have O(1) complexity.
-ioport.natkeyboard
-    Gets the :ref:`natural keyboard manager <luareference-input-natkbd>`, used
-    for controlling keyboard and keypad input to the emulated system.
 
 .. _luareference-input-natkbd:
 
@@ -1591,7 +1611,7 @@ keypad inputs.
 Instantiation
 ^^^^^^^^^^^^^
 
-manager.machine.ioport.natkeyboard
+manager.machine.natkeyboard
     Gets the global natural keyboard manager instance for the emulated machine.
 
 Methods
@@ -1655,7 +1675,7 @@ Represents a keyboard or keypad input device managed by the
 Instantiation
 ^^^^^^^^^^^^^
 
-manager.machine.ioport.natkeyboard.keyboards[tag]
+manager.machine.natkeyboard.keyboards[tag]
     Gets the keyboard input device with the specified tag, or ``nil`` if the tag
     does not correspond to a keyboard input device.
 
