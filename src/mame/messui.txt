@@ -927,7 +927,7 @@ spectrum.cpp
 spg110.cpp
 //spg29x.cpp
 //spg29x_lexibook_jg7425.cpp
-//spg2xx.cpp
+spg2xx.cpp
 //spg2xx_digimake.cpp
 spg2xx_dreamlife.cpp
 spg2xx_ican.cpp
