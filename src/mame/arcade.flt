@@ -553,6 +553,7 @@ hyperspt.cpp
 hyprduel.cpp
 icecold.cpp
 ice_bozopail.cpp
+ice_hhhippos.cpp
 ice_tbd.cpp
 ichiban.cpp
 idsa.cpp
@@ -1025,7 +1026,6 @@ re900.cpp
 realbrk.cpp
 redalert.cpp
 redclash.cpp
-regama.cpp
 relief.cpp
 renegade.cpp
 retofinv.cpp
