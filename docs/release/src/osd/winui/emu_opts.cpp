@@ -234,6 +234,31 @@ void load_options(windows_options &opts, OPTIONS_TYPE opt_type, int game_num, bo
 		return;
 	}
 
+	fname.clear();
+	if (opt_type == OPTIONS_COMPUTER)
+		fname = GetIniDir() + PATH_SEPARATOR + "computer.ini";
+	else
+	if (opt_type == OPTIONS_CONSOLE)
+		fname = GetIniDir() + PATH_SEPARATOR + "console.ini";
+	else
+	if (opt_type == OPTIONS_HORIZONTAL)
+		fname = GetIniDir() + PATH_SEPARATOR + "horizontal.ini";
+	else
+	if (opt_type == OPTIONS_RASTER)
+		fname = GetIniDir() + PATH_SEPARATOR + "raster.ini";
+	else
+	if (opt_type == OPTIONS_VECTOR)
+		fname = GetIniDir() + PATH_SEPARATOR + "vector.ini";
+	else
+	if (opt_type == OPTIONS_VERTICAL)
+		fname = GetIniDir() + PATH_SEPARATOR + "vertical.ini";
+
+	if (!fname.empty())
+	{
+		LoadSettingsFile(opts, fname.c_str());
+		return;
+	}
+
 	if (game_num > -2)
 	{
 		// Now try global ini
@@ -260,24 +285,48 @@ void load_options(windows_options &opts, OPTIONS_TYPE opt_type, int game_num, bo
 void save_options(windows_options &opts, OPTIONS_TYPE opt_type, int game_num)
 {
 	const game_driver *driver = NULL;
-	string filename, filepath;
+	string fname, filepath;
+
+	if (opt_type == OPTIONS_COMPUTER)
+		fname = GetIniDir() + PATH_SEPARATOR + "computer.ini";
+	else
+	if (opt_type == OPTIONS_CONSOLE)
+		fname = GetIniDir() + PATH_SEPARATOR + "console.ini";
+	else
+	if (opt_type == OPTIONS_HORIZONTAL)
+		fname = GetIniDir() + PATH_SEPARATOR + "horizontal.ini";
+	else
+	if (opt_type == OPTIONS_RASTER)
+		fname = GetIniDir() + PATH_SEPARATOR + "raster.ini";
+	else
+	if (opt_type == OPTIONS_VECTOR)
+		fname = GetIniDir() + PATH_SEPARATOR + "vector.ini";
+	else
+	if (opt_type == OPTIONS_VERTICAL)
+		fname = GetIniDir() + PATH_SEPARATOR + "vertical.ini";
+
+	if (!fname.empty())
+	{
+		SaveSettingsFile(opts, fname.c_str());
+		return;
+	}
 
 	if (game_num >= 0)
 	{
 		driver = &driver_list::driver(game_num);
 		if (driver)
 		{
-			filename.assign(driver->name);
+			fname.assign(driver->name);
 			if (opt_type == OPTIONS_SOURCE)
 				filepath = GetIniDir() + PATH_SEPARATOR + "source" + PATH_SEPARATOR + core_filename_extract_base(driver->type.source(), true) + ".ini";
 		}
 	}
 	else
 	if (game_num == -1)
-		filename = string(emulator_info::get_configname());
+		fname = string(emulator_info::get_configname());
 
-	if (!filename.empty() && filepath.empty())
-		filepath = GetIniDir().append(PATH_SEPARATOR).append(filename.c_str()).append(".ini");
+	if (!fname.empty() && filepath.empty())
+		filepath = GetIniDir().append(PATH_SEPARATOR).append(fname.c_str()).append(".ini");
 
 	if (game_num == -2)
 		filepath = string(emulator_info::get_configname()).append(".ini");
@@ -428,6 +477,8 @@ void SetDirectories(windows_options &o)
 	emu_set_value(o, OPTION_DIFF_DIRECTORY, dir_get_value(19));
 	emu_set_value(o, OPTION_SNAPNAME, emu_get_value(emu_global, OPTION_SNAPNAME));
 	emu_set_value(o, OPTION_DEBUG, "0");
+	emu_set_value(o, OPTION_SPEAKER_REPORT, "0");
+	emu_set_value(o, OPTION_VERBOSE, "0");
 }
 
 // For dialogs.cpp
@@ -457,6 +508,17 @@ bool GetEnablePlugins(void)
 const string GetPlugins(void)
 {
 	return emu_global.value(OPTION_PLUGIN);
+}
+
+bool GetSkipWarnings(void)
+{
+	return emu_ui.bool_value(OPTION_SKIP_WARNINGS);
+}
+
+void SetSkipWarnings(BOOL val)
+{
+	string c = val ? "1" : "0";
+	ui_set_value(emu_ui, OPTION_SKIP_WARNINGS, c);
 }
 
 void SetSelectedSoftware(int driver_index, string opt_name, const char *software)
@@ -496,7 +558,7 @@ bool DriverHasSoftware(uint32_t drvindex)
 		load_options(o, OPTIONS_GAME, drvindex, 1);
 		machine_config config(driver_list::driver(drvindex), o);
 
-		for (device_image_interface &img : image_interface_iterator(config.root_device()))
+		for (device_image_interface &img : image_interface_enumerator(config.root_device()))
 			if (img.user_loadable())
 				return 1;
 	}

@@ -12,7 +12,7 @@
 #include "drivenum.h"
 #include "romload.h"
 
-// Make sure all MESS features are included
+// Make sure all MESS features are included, and include software panes
 #define MESS
 
 /////////////////////// Next line must be commented out manually as there is no compile define
@@ -22,7 +22,7 @@
 #define MAMENAME "MESS"
 #define MUI_INI_FILENAME "MESSUI.ini"
 #else
-#define MAMENAME "MAMEMESS"
+#define MAMENAME "MAME"
 #define MUI_INI_FILENAME "MAMEUI.ini"
 #endif
 
@@ -95,7 +95,6 @@ char * ConvertAmpersandString(const char *s);
 HBITMAP GetBackgroundBitmap(void);
 HPALETTE GetBackgroundPalette(void);
 MYBITMAPINFO* GetBackgroundInfo(void);
-BOOL GetUseOldControl(void);
 BOOL GetUseXPControl(void);
 
 int GetMinimumScreenShotWindowWidth(void);

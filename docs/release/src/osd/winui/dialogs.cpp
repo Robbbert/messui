@@ -181,6 +181,7 @@ INT_PTR CALLBACK ResetDialogProc(HWND hDlg, UINT Msg, WPARAM wParam, LPARAM lPar
 					break;
 				}
 			}
+			[[fallthrough]];
 		// Nothing was selected but OK, just fall through
 		case IDCANCEL :
 			EndDialog(hDlg, 0);
@@ -209,6 +210,7 @@ INT_PTR CALLBACK InterfaceDialogProc(HWND hDlg, UINT Msg, WPARAM wParam, LPARAM 
 		Button_SetCheck(GetDlgItem(hDlg,IDC_START_GAME_CHECK),GetGameCheck());
 		Button_SetCheck(GetDlgItem(hDlg,IDC_JOY_GUI),GetJoyGUI());
 		Button_SetCheck(GetDlgItem(hDlg,IDC_KEY_GUI),GetKeyGUI());
+		Button_SetCheck(GetDlgItem(hDlg,IDC_UI_SKIP_WARNINGS),GetSkipWarnings());
 		Button_SetCheck(GetDlgItem(hDlg,IDC_OVERRIDE_REDX),GetOverrideRedX());
 		Button_SetCheck(GetDlgItem(hDlg,IDC_HIDE_MOUSE),GetHideMouseOnStartup());
 
@@ -313,6 +315,7 @@ INT_PTR CALLBACK InterfaceDialogProc(HWND hDlg, UINT Msg, WPARAM wParam, LPARAM 
 			SetGameCheck(Button_GetCheck(GetDlgItem(hDlg, IDC_START_GAME_CHECK)));
 			SetJoyGUI(Button_GetCheck(GetDlgItem(hDlg, IDC_JOY_GUI)));
 			SetKeyGUI(Button_GetCheck(GetDlgItem(hDlg, IDC_KEY_GUI)));
+			SetSkipWarnings(Button_GetCheck(GetDlgItem(hDlg, IDC_UI_SKIP_WARNINGS)));
 			SetOverrideRedX(Button_GetCheck(GetDlgItem(hDlg, IDC_OVERRIDE_REDX)));
 			SetHideMouseOnStartup(Button_GetCheck(GetDlgItem(hDlg,IDC_HIDE_MOUSE)));
 

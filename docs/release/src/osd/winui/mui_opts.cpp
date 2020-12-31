@@ -25,7 +25,6 @@
 #include <fstream>      // for *_opts.h (below)
 #include "game_opts.h"
 #include "ui_opts.h"
-//#include "ini_opts.h"   // not ready yet
 #include "mui_util.h"
 #include "treeview.h"
 #include "splitters.h"
@@ -64,8 +63,6 @@ static void ColumnDecodeStringWithCount(string ss, int *value, int count);
  ***************************************************************************/
 
 #define GAMEINFO_INI_FILENAME                    MAMENAME "_g.ini"
-#define MEWUI_FILENAME                           "ini\\ui.ini"
-
 
 
 /***************************************************************************

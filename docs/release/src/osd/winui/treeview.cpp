@@ -67,12 +67,12 @@ static TREEICON treeIconNames[] =
 	{ IDI_FOLDER_HORIZONTAL,   "horz" },
 	{ IDI_FOLDER_VERTICAL,     "vert" },
 	{ IDI_MANUFACTURER,        "manufact" },
-	{ IDI_WORKING,             "working" },
-	{ IDI_NONWORKING,          "nonwork" },
+	{ IDI_FOLDER_WORKING,      "working" },
+	{ IDI_FOLDER_NONWORKING,   "nonwork" },
 	{ IDI_YEAR,                "year" },
 	{ IDI_SOUND,               "sound" },
 	{ IDI_CPU,                 "cpu" },
-	{ IDI_HARDDISK,            "harddisk" },
+	{ IDI_FOLDER_HARDDISK,     "harddisk" },
 	{ IDI_SOURCE,              "source" }
 };
 
@@ -481,12 +481,12 @@ void CreateScreenFolders(int parent_index)
 		if (i == start_folder-1)
 		{
 			// nope, it's a screen file we haven't seen before, make it.
-			LPTREEFOLDER lpTemp = NewFolder(s, next_folder_id, parent_index, IDI_FOLDER, GetFolderFlags(numFolders));
+			LPTREEFOLDER lpTemp = NewFolder(s, next_folder_id, parent_index, IDI_SCREEN, GetFolderFlags(numFolders));
 			ExtraFolderData[next_folder_id] = (EXFOLDERDATA*)malloc(sizeof(EXFOLDERDATA));
 			memset(ExtraFolderData[next_folder_id], 0, sizeof(EXFOLDERDATA));
 
 			ExtraFolderData[next_folder_id]->m_nFolderId = next_folder_id;
-			ExtraFolderData[next_folder_id]->m_nIconId = IDI_SOURCE;
+			ExtraFolderData[next_folder_id]->m_nIconId = IDI_SCREEN;
 			ExtraFolderData[next_folder_id]->m_nParent = lpFolder->m_nFolderId;
 			ExtraFolderData[next_folder_id]->m_nSubIconId = -1;
 			strcpy( ExtraFolderData[next_folder_id]->m_szTitle, s );
@@ -936,7 +936,7 @@ void CreateCPUFolders(int parent_index)
 		machine_config config(driver_list::driver(i),MameUIGlobal());
 
 		// enumerate through all devices
-		for (device_execute_interface &device : execute_interface_iterator(config.root_device()))
+		for (device_execute_interface &device : execute_interface_enumerator(config.root_device()))
 		{
 			// get the name
 			std::string dev_name = device.device().name();
@@ -992,7 +992,7 @@ void CreateSoundFolders(int parent_index)
 
 		// enumerate through all devices
 
-		for (device_sound_interface &device : sound_interface_iterator(config.root_device()))
+		for (device_sound_interface &device : sound_interface_enumerator(config.root_device()))
 		{
 			// get the name
 			std::string dev_name = device.device().name();
@@ -1180,23 +1180,23 @@ void CreateDumpingFolders(int parent_index)
 
 	// create our two subfolders
 	LPTREEFOLDER lpBad, lpNo;
-	lpBad = NewFolder("Bad Dump", next_folder_id, parent_index, IDI_FOLDER, GetFolderFlags(numFolders));
+	lpBad = NewFolder("Bad Dump", next_folder_id, parent_index, IDI_FOLDER_DUMP, GetFolderFlags(numFolders));
 	ExtraFolderData[next_folder_id] = (EXFOLDERDATA*)malloc(sizeof(EXFOLDERDATA));
 	memset(ExtraFolderData[next_folder_id], 0, sizeof(EXFOLDERDATA));
 
 	ExtraFolderData[next_folder_id]->m_nFolderId = next_folder_id;
-	ExtraFolderData[next_folder_id]->m_nIconId = IDI_FOLDER;
+	ExtraFolderData[next_folder_id]->m_nIconId = IDI_FOLDER_DUMP;
 	ExtraFolderData[next_folder_id]->m_nParent = lpFolder->m_nFolderId;
 	ExtraFolderData[next_folder_id]->m_nSubIconId = -1;
 	strcpy( ExtraFolderData[next_folder_id]->m_szTitle, "Bad Dump" );
 	ExtraFolderData[next_folder_id++]->m_dwFlags = 0;
 	AddFolder(lpBad);
-	lpNo = NewFolder("No Dump", next_folder_id, parent_index, IDI_FOLDER, GetFolderFlags(numFolders));
+	lpNo = NewFolder("No Dump", next_folder_id, parent_index, IDI_FOLDER_DUMP, GetFolderFlags(numFolders));
 	ExtraFolderData[next_folder_id] = (EXFOLDERDATA*)malloc(sizeof(EXFOLDERDATA));
 	memset(ExtraFolderData[next_folder_id], 0, sizeof(EXFOLDERDATA));
 
 	ExtraFolderData[next_folder_id]->m_nFolderId = next_folder_id;
-	ExtraFolderData[next_folder_id]->m_nIconId = IDI_FOLDER;
+	ExtraFolderData[next_folder_id]->m_nIconId = IDI_FOLDER_DUMP;
 	ExtraFolderData[next_folder_id]->m_nParent = lpFolder->m_nFolderId;
 	ExtraFolderData[next_folder_id]->m_nSubIconId = -1;
 	strcpy( ExtraFolderData[next_folder_id]->m_szTitle, "No Dump" );
@@ -1217,7 +1217,7 @@ void CreateDumpingFolders(int parent_index)
 		/* Allocate machine config */
 		machine_config config(*gamedrv,MameUIGlobal());
 
-		for (device_t &device : device_iterator(config.root_device()))
+		for (device_t &device : device_enumerator(config.root_device()))
 		{
 			for (const rom_entry *region = rom_first_region(device); region; region = rom_next_region(region))
 			{
@@ -1321,13 +1321,13 @@ void CreateResolutionFolders(int parent_index)
 			sprintf(Screen, "Vector");
 		else
 		{
-			screen_device_iterator iter(config.root_device());
+			screen_device_enumerator iter(config.root_device());
 			const screen_device *screen = iter.first();
 			if (screen == NULL)
 				strcpy(Screen, "Screenless Game");
 			else
 			{
-				for (screen_device &screen : screen_device_iterator(config.root_device()))
+				for (screen_device &screen : screen_device_enumerator(config.root_device()))
 				{
 					const rectangle &visarea = screen.visible_area();
 
@@ -1347,12 +1347,12 @@ void CreateResolutionFolders(int parent_index)
 					if (i == start_folder-1)
 					{
 						// nope, it's a screen we haven't seen before, make it.
-						LPTREEFOLDER lpTemp = NewFolder(Screen, next_folder_id++, parent_index, IDI_FOLDER, GetFolderFlags(numFolders));
+						LPTREEFOLDER lpTemp = NewFolder(Screen, next_folder_id++, parent_index, IDI_SCREEN, GetFolderFlags(numFolders));
 						ExtraFolderData[next_folder_id] = (EXFOLDERDATA*)malloc(sizeof(EXFOLDERDATA));
 						memset(ExtraFolderData[next_folder_id], 0, sizeof(EXFOLDERDATA));
 
 						ExtraFolderData[next_folder_id]->m_nFolderId = next_folder_id;
-						ExtraFolderData[next_folder_id]->m_nIconId = IDI_FOLDER;
+						ExtraFolderData[next_folder_id]->m_nIconId = IDI_SCREEN;
 						ExtraFolderData[next_folder_id]->m_nParent = lpFolder->m_nFolderId;
 						ExtraFolderData[next_folder_id]->m_nSubIconId = -1;
 						strcpy( ExtraFolderData[next_folder_id]->m_szTitle, Screen );
@@ -1390,13 +1390,13 @@ void CreateFPSFolders(int parent_index)
 			sprintf(Screen, "Vector");
 		else
 		{
-			screen_device_iterator iter(config.root_device());
+			screen_device_enumerator iter(config.root_device());
 			const screen_device *screen = iter.first();
 			if (screen == NULL)
 				strcpy(Screen, "Screenless Game");
 			else
 			{
-				for (screen_device &screen : screen_device_iterator(config.root_device()))
+				for (screen_device &screen : screen_device_enumerator(config.root_device()))
 				{
 					sprintf(Screen,"%f Hz", ATTOSECONDS_TO_HZ(screen.refresh_attoseconds()));
 
@@ -1413,12 +1413,12 @@ void CreateFPSFolders(int parent_index)
 					if (i == start_folder-1)
 					{
 						// nope, it's a screen we haven't seen before, make it.
-						LPTREEFOLDER lpTemp = NewFolder(Screen, next_folder_id++, parent_index, IDI_FOLDER, GetFolderFlags(numFolders));
+						LPTREEFOLDER lpTemp = NewFolder(Screen, next_folder_id++, parent_index, IDI_SCREEN, GetFolderFlags(numFolders));
 						ExtraFolderData[next_folder_id] = (EXFOLDERDATA*)malloc(sizeof(EXFOLDERDATA));
 						memset(ExtraFolderData[next_folder_id], 0, sizeof(EXFOLDERDATA));
 
 						ExtraFolderData[next_folder_id]->m_nFolderId = next_folder_id;
-						ExtraFolderData[next_folder_id]->m_nIconId = IDI_FOLDER;
+						ExtraFolderData[next_folder_id]->m_nIconId = IDI_SCREEN;
 						ExtraFolderData[next_folder_id]->m_nParent = lpFolder->m_nFolderId;
 						ExtraFolderData[next_folder_id]->m_nSubIconId = -1;
 						strcpy( ExtraFolderData[next_folder_id]->m_szTitle, Screen );
@@ -1577,8 +1577,10 @@ void SelectTreeViewFolder(int folder_id)
  */
 static BOOL FolderHasIni(LPTREEFOLDER lpFolder)
 {
-	if (FOLDER_VECTOR == lpFolder->m_nFolderId || FOLDER_VERTICAL == lpFolder->m_nFolderId || FOLDER_HORIZONTAL == lpFolder->m_nFolderId)
-		return true;
+	LPCFOLDERDATA data = FindFilter(lpFolder->m_nFolderId);
+	if (data)
+		if (data->m_opttype < OPTIONS_MAX)
+			return true;
 
 	if (lpFolder->m_nParent != -1 && FOLDER_SOURCE == treeFolders[lpFolder->m_nParent]->m_nFolderId)
 		return true;

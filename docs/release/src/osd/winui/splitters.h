@@ -61,7 +61,7 @@ typedef struct
 const SPLITTERINFO g_splitterInfo[] =
 {
 	{ 0.15,  IDC_SPLITTER,  IDC_TREE,  IDC_LIST,    AdjustSplitter1Rect },
-	{ 0.8,  IDC_SPLITTER2, IDC_LIST,  IDC_SWTAB,   AdjustSplitter1Rect },
+	{ 0.5,  IDC_SPLITTER2, IDC_LIST,  IDC_SWTAB,   AdjustSplitter1Rect },
 	{ 0.9, IDC_SPLITTER3, IDC_SWTAB, IDC_SSFRAME, AdjustSplitter2Rect },
 	{ -1 }
 };
