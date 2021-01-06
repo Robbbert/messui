@@ -2698,7 +2698,7 @@ static void prepare_menus(HWND wnd)
 
 	int frameskip = window->machine().video().frameskip();
 
-	int orientation = window->m_target->orientation();
+	int orientation = window->target()->orientation();
 
 	int speed = window->machine().video().throttled() ? window->machine().video().speed_factor() : 0;
 
@@ -2778,8 +2778,8 @@ static void prepare_menus(HWND wnd)
 
 	i = 0;
 	const char *view_name;
-	int view_index = window->m_target->view();
-	while((view_name = window->m_target->view_name(i)))
+	int view_index = window->target()->view();
+	while((view_name = window->target()->view_name(i)))
 	{
 		TCHAR *t_view_name = newui_wstring_from_utf8(view_name);
 		InsertMenu(video_menu, i, MF_BYPOSITION | (i == view_index ? MF_CHECKED : 0), ID_VIDEO_VIEW_0 + i, t_view_name);
@@ -3222,8 +3222,8 @@ static device_image_interface *decode_deviceoption(running_machine &machine, int
 
 static void set_window_orientation(win_window_info *window, int orientation)
 {
-	window->m_target->set_orientation(orientation);
-	if (window->m_target->is_ui_target())
+	window->target()->set_orientation(orientation);
+	if (window->target()->is_ui_target())
 	{
 		render_container::user_settings settings = window->machine().render().ui_container().get_user_settings();
 		settings.m_orientation = orientation;
@@ -3434,7 +3434,7 @@ static bool invoke_command(HWND wnd, UINT command)
 			if ((command >= ID_VIDEO_VIEW_0) && (command < ID_VIDEO_VIEW_0 + 1000))
 			{
 				// render views
-				window->m_target->set_view(command - ID_VIDEO_VIEW_0);
+				window->target()->set_view(command - ID_VIDEO_VIEW_0);
 				window->update(); // actually change window size
 			}
 			else
