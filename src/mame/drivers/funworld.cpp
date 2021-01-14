@@ -1319,6 +1319,65 @@ static INPUT_PORTS_START( jolycdic )
 INPUT_PORTS_END
 
 
+static INPUT_PORTS_START( jolycdcy )
+	PORT_START("IN0")
+	PORT_BIT( 0x01, IP_ACTIVE_LOW, IPT_GAMBLE_KEYIN )   PORT_NAME("Running / Credits")			// НАВЪРТАНЕ
+	PORT_BIT( 0x02, IP_ACTIVE_LOW, IPT_POKER_HOLD1 )    PORT_NAME("Stop 1")						// СТОП 1
+	PORT_BIT( 0x04, IP_ACTIVE_LOW, IPT_POKER_CANCEL )   PORT_NAME("Cancel / Autostop / Take")	// ИЗЧИСТВАНЕ / АВТОСТОП / КАЧВАНЕ
+	PORT_BIT( 0x08, IP_ACTIVE_LOW, IPT_START1 )         PORT_NAME("Start / Double")				// СТАРТ / ДУБЛИРАНЕ
+	PORT_BIT( 0x10, IP_ACTIVE_LOW, IPT_POKER_HOLD5 )    PORT_NAME("Stop 5 / Half Gamble")		// СТОП 5 / ПОЛОВИН ХАЗАРТ
+	PORT_BIT( 0x20, IP_ACTIVE_LOW, IPT_SERVICE1 )		PORT_NAME("Turnover (Oborot)")			// ОБОРОТ (turnover)
+	PORT_BIT( 0x40, IP_ACTIVE_LOW, IPT_SERVICE2 )		PORT_NAME("Setup (Nastroica)")			// НАСТРОИКА (setup)
+	PORT_BIT( 0x80, IP_ACTIVE_LOW, IPT_POKER_HOLD4 )    PORT_NAME("Stop 4 / Big")				// СТОП 4 / ГОЛЯМА
+
+	PORT_START("IN1")
+	PORT_BIT( 0x01, IP_ACTIVE_LOW, IPT_POKER_HOLD2 )    PORT_NAME("Stop 2 / Small")				// СТОП 2 / МАЛКА
+	PORT_BIT( 0x02, IP_ACTIVE_LOW, IPT_POKER_HOLD3 )    PORT_NAME("Stop 3")						// СТОП 3
+	PORT_BIT( 0x04, IP_ACTIVE_LOW, IPT_UNKNOWN )
+	PORT_BIT( 0x08, IP_ACTIVE_LOW, IPT_UNKNOWN )
+	PORT_BIT( 0x10, IP_ACTIVE_LOW, IPT_SERVICE )        PORT_NAME("test 1") PORT_CODE(KEYCODE_A)	// present on the test mode, but erased
+	PORT_BIT( 0x20, IP_ACTIVE_LOW, IPT_SERVICE )        PORT_NAME("test 2") PORT_CODE(KEYCODE_S)	// normally coin2. present on the test mode, but erased.
+	PORT_BIT( 0x40, IP_ACTIVE_LOW, IPT_UNKNOWN )
+	PORT_BIT( 0x80, IP_ACTIVE_LOW, IPT_SERVICE )        PORT_NAME("test 3") PORT_CODE(KEYCODE_D)	// normally keyout. present on the test mode as "K'bo?".  
+
+	PORT_START("IN2")
+	PORT_BIT( 0x01, IP_ACTIVE_LOW, IPT_SERVICE )        PORT_NAME("test 4") PORT_CODE(KEYCODE_F)	// normally coin1. present on the test mode, but erased.
+	PORT_BIT( 0x02, IP_ACTIVE_LOW, IPT_UNKNOWN )
+	PORT_BIT( 0x04, IP_ACTIVE_LOW, IPT_UNKNOWN )
+	PORT_BIT( 0x08, IP_ACTIVE_LOW, IPT_UNKNOWN )
+	PORT_BIT( 0x10, IP_ACTIVE_LOW, IPT_UNKNOWN )
+	PORT_BIT( 0x20, IP_ACTIVE_LOW, IPT_UNKNOWN )
+	PORT_BIT( 0x40, IP_ACTIVE_LOW, IPT_UNKNOWN )
+	PORT_BIT( 0x80, IP_ACTIVE_LOW, IPT_UNKNOWN )
+
+	PORT_START("DSW")
+	PORT_DIPNAME( 0x01, 0x01, "State" )             PORT_DIPLOCATION("SW1:8")	// only works with credits inserted
+	PORT_DIPSETTING(    0x01, "Normal Play" )
+	PORT_DIPSETTING(    0x00, "Test Mode" )
+	PORT_DIPNAME( 0x02, 0x02, DEF_STR( Unknown ) )  PORT_DIPLOCATION("SW1:7")
+	PORT_DIPSETTING(    0x02, DEF_STR( Off ) )
+	PORT_DIPSETTING(    0x00, DEF_STR( On ) )
+	PORT_DIPNAME( 0x04, 0x04, DEF_STR( Unknown ) )  PORT_DIPLOCATION("SW1:6")
+	PORT_DIPSETTING(    0x04, DEF_STR( Off ) )
+	PORT_DIPSETTING(    0x00, DEF_STR( On ) )
+	PORT_DIPNAME( 0x08, 0x08, DEF_STR( Unknown ) )  PORT_DIPLOCATION("SW1:5")
+	PORT_DIPSETTING(    0x08, DEF_STR( Off ) )
+	PORT_DIPSETTING(    0x00, DEF_STR( On ) )
+	PORT_DIPNAME( 0x10, 0x10, DEF_STR( Unknown ) )  PORT_DIPLOCATION("SW1:4")
+	PORT_DIPSETTING(    0x10, DEF_STR( Off ) )
+	PORT_DIPSETTING(    0x00, DEF_STR( On ) )
+	PORT_DIPNAME( 0x20, 0x20, "Joker" )             PORT_DIPLOCATION("SW1:3")
+	PORT_DIPSETTING(    0x20, "Without Joker" )
+	PORT_DIPSETTING(    0x00, "With Joker" )
+	PORT_DIPNAME( 0x40, 0x40, "Auto Hold" )         PORT_DIPLOCATION("SW1:2")
+	PORT_DIPSETTING(    0x40, DEF_STR( Off ) )
+	PORT_DIPSETTING(    0x00, DEF_STR( On ) )       // when is ON, allows the player to activate/deactivate the autohold through CANCEL button
+	PORT_DIPNAME( 0x80, 0x80, "Credits In" )            PORT_DIPLOCATION("SW1:1")
+	PORT_DIPSETTING(    0x80, "Allow Credits" )
+	PORT_DIPSETTING(    0x00, "Demo Mode" )
+INPUT_PORTS_END
+
+
 static INPUT_PORTS_START( jolyc980 )
 	PORT_START("IN0")
 	PORT_BIT( 0x01, IP_ACTIVE_LOW, IPT_GAMBLE_KEYIN )   PORT_NAME("Navijanje (Remote)")
@@ -4404,6 +4463,40 @@ ROM_START( jolycdih )
 	ROM_REGION( 0x0800, "nvram", 0 )    // default NVRAM
 	ROM_LOAD( "jolycdih_nvram.bin", 0x0000, 0x0800, CRC(02b3b335) SHA1(207a1289e4298d942e4806adf8ffb87e0b9b4e58) )
 ROM_END
+
+/*
+  ZABAVNI KARTI (ЗАБАВНИ КАРТИ)
+  Bulgarian Jolly Card clone in cyrillic.
+
+  ЗАБАВНИ КАРТИ means "Fun cards" / "Cards for fun".
+  
+  Encrypted GFX. Same style as blue TAB board.
+
+  This is a timed game. You coin for an amount of playing time.
+  Once the time counter ends, all earned credits/bonus dissapear.
+
+  It seems an amusement version.
+
+*/
+ROM_START( jolycdcy )
+	ROM_REGION( 0x10000, "maincpu", 0 )
+	ROM_LOAD( "256.bin", 0x8000, 0x8000, CRC(b7600b68) SHA1(04a532d3d1daa0ab43a2b7345ea0e86b8701f649) )
+
+	ROM_REGION( 0x10000, "gfx1", 0 )
+	ROM_LOAD( "2.bin", 0x0000, 0x8000, CRC(df434aa7) SHA1(e154868304f37a982d030de0989716ab9e27298d) )
+	ROM_LOAD( "1.bin", 0x8000, 0x8000, CRC(140546c5) SHA1(4dce119cd1a149eda6f546c0656de8fb8baef83b) )
+
+	ROM_REGION( 0x0800, "nvram", 0 )    // Default NVRAM
+	ROM_LOAD( "jolycdcy_nvram.bin", 0x0000, 0x0800, CRC(4c96ea57) SHA1(f7115866e9df8d031f23971b900119902406c020) )
+
+	ROM_REGION( 0x0800, "proms", 0 )
+	ROM_LOAD( "n82s147a.bin", 0x0000, 0x0200, CRC(5ebc5659) SHA1(8d59011a181399682ab6e8ed14f83101e9bfa0c6) )
+
+	ROM_REGION( 0x0200, "plds", 0 )
+	ROM_LOAD( "peel18cv8.bin", 0x0000, 0x0155, CRC(fc51ef45) SHA1(a06916ccb65d7d3b9fd03f5de042c848d13478bb) )
+ROM_END
+
+
 
 ROM_START( sjcd2kx3 )   // Super Joly 2000 3x
 	ROM_REGION( 0x10000, "maincpu", 0 )
@@ -8412,6 +8505,7 @@ GAMEL( 199?, jolycdit,   jollycrd, cuoreuno, jolycdit,  funworld_state, init_tab
 GAMEL( 1990, jolycdib,   jollycrd, cuoreuno, jolycdib,  funworld_state, init_tabblue,  ROT0, "bootleg",           "Jolly Card (Italian, encrypted bootleg, set 1)",  0,                       layout_jollycrd ) // not a real TAB blue PCB
 GAMEL( 1993, jolycdic,   jollycrd, cuoreuno, jolycdic,  funworld_state, init_tabblue,  ROT0, "bootleg",           "Jolly Card (Italian, encrypted bootleg, set 2)",  0,                       layout_jollycrd ) // not a real TAB blue PCB
 GAMEL( 1993, jolycdii,   jollycrd, cuoreuno, jolycdib,  funworld_state, init_tabblue,  ROT0, "bootleg (Cleco)",   "Jolly Card (Italian, encrypted bootleg, set 3)",  0,                       layout_jollycrd ) // Cleco bootleg PCB
+GAMEL( 1993, jolycdcy,   jollycrd, cuoreuno, jolycdcy,  funworld_state, init_tabblue,  ROT0, "bootleg (Cleco)",   "Zabavni Karti (cyrillic, Bulgarian, encrypted)",  0,                       layout_jollycrd )
 
 // Dino 4 encrypted hardware...
 GAMEL( 1997, pool10e,    pool10,   cuoreuno, cuoreuno,  funworld_state, init_dino4,    ROT0, "C.M.C.",            "Pool 10 (Italian, Dino 4 hardware, encrypted)",   0,                       layout_jollycrd )
