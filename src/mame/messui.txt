@@ -43,6 +43,7 @@ aim65.cpp
 //alfaskop41xx.cpp
 //alphajuno.cpp
 alphasma.cpp
+//alphasma3k.cpp                // skeleton
 //alphatan.cpp                // mnw, dialup terminal
 alphatpx.cpp
 //alphatpc16.cpp
@@ -850,6 +851,7 @@ rmnimbus.cpp
 //roland_tr909.cpp
 //roland_u20.cpp
 //rt1715.cpp
+//rtpc.cpp                      // not working
 //rvoice.cpp
 rx78.cpp
 //rz1.cpp
