@@ -1366,6 +1366,7 @@ function linkProjects_mame_mess(_target, _subtarget)
 		"swtpc",
 		"synertek",
 		"ta",
+		"tab",
 		"tandberg",
 		"tangerin",
 		"tasc",
@@ -3021,6 +3022,7 @@ files {
 createMESSProjects(_target, _subtarget, "nec")
 files {
 	MAME_DIR .. "src/mame/drivers/apc.cpp",
+	MAME_DIR .. "src/mame/drivers/ews4800.cpp",
 	MAME_DIR .. "src/mame/drivers/hh_ucom4.cpp",
 	MAME_DIR .. "src/mame/drivers/pce.cpp",
 	MAME_DIR .. "src/mame/includes/pce.h",
@@ -3796,6 +3798,13 @@ files {
 	MAME_DIR .. "src/mame/drivers/alphatpx.cpp",
 	MAME_DIR .. "src/mame/drivers/alphatpc16.cpp",
 	MAME_DIR .. "src/mame/drivers/alphatro.cpp",
+}
+
+createMESSProjects(_target, _subtarget, "tab")
+files {
+	MAME_DIR .. "src/mame/drivers/tabe22.cpp",
+	MAME_DIR .. "src/mame/machine/e22_kbd.cpp",
+	MAME_DIR .. "src/mame/machine/e22_kbd.h",
 }
 
 createMESSProjects(_target, _subtarget, "tandberg")
