@@ -284,11 +284,6 @@ static std::string newui_longdots(std::string incoming, uint16_t howmany)
 	for (int i = 0; i < incoming.size(); i++)
 		if (incoming[i] == '\n')
 			incoming[i] = ' ';
-	// Firstly, find out if it's multi-line text
-//	size_t i = incoming.find_first_of("\n");
-	// If so, truncate at first newline
-//	if (i != std::string::npos)
-//		incoming = incoming.substr(0, i);
 	// Now assume all is ok
 	std::string outgoing = incoming;
 	// But if it's too long, replace the excess with dots
@@ -2336,7 +2331,8 @@ static bool get_softlist_info(HWND wnd, device_image_interface *img)
 	win_window_info *window = (win_window_info *)ptr;
 
 	/* Get the media_path */
-	char rompath[2048];
+	char rompath[strlen(window->machine().options().emu_options::media_path())+2];
+	memset(rompath, '\0', sizeof(rompath));
 	strcpy(rompath, window->machine().options().emu_options::media_path());
 
 	// Get the path to suitable software
@@ -2397,7 +2393,8 @@ static void change_device(HWND wnd, device_image_interface *image, bool is_save)
 {
 	// Get the path for loose software from <gamename>.ini
 	// if this is invalid, then windows chooses whatever directory it used last.
-	char buf[2048];
+	char buf[strlen(image->device().machine().options().emu_options::sw_path())+2];
+	memset(buf, '\0', sizeof(buf));
 	strcpy(buf, image->device().machine().options().emu_options::sw_path());
 	// This pulls out the first path from a multipath field
 	const char* t1 = strtok(buf, ";");
@@ -2418,11 +2415,14 @@ static void change_device(HWND wnd, device_image_interface *image, bool is_save)
 		initial_dir.erase(initial_dir.length()-1);
 
 	// file name
-	char filename[512];
+	uint16_t filesz = 0;
 	if (image->exists())
+		filesz = strlen(image->basename());
+
+	char filename[16384];
+	memset(filename, '\0', sizeof(filename));
+	if (filesz)
 		strcpy(filename, image->basename());
-	else
-		filename[0] = '\0';
 
 	// build a normal filter
 	std::string filter;
@@ -2463,7 +2463,7 @@ static void load_item(HWND wnd, device_image_interface *img, bool is_save)
 	build_generic_filter(NULL, is_save, filter);
 
 	// display the dialog
-	char filename[512] = "";
+	char filename[16384] = "";
 	bool result = win_file_dialog(img->device().machine(), wnd, WIN_FILE_DIALOG_OPEN, filter.c_str(), as.c_str(), filename);
 
 	if (result)
