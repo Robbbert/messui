@@ -98,16 +98,28 @@ end
 		configuration "**/*"
 			flags { "DeploymentContent" }
 
-	configuration { "Release" }
+	configuration { "x64", "Release" }
 		targetsuffix ""
 		if _OPTIONS["PROFILE"] then
 			targetsuffix "p"
 		end
 
-	configuration { "Debug" }
+	configuration { "x64", "Debug" }
 		targetsuffix "d"
 		if _OPTIONS["PROFILE"] then
 			targetsuffix "dp"
+		end
+
+	configuration { "x32", "Release" }
+		targetsuffix "32"
+		if _OPTIONS["PROFILE"] then
+			targetsuffix "32p"
+		end
+
+	configuration { "x32", "Debug" }
+		targetsuffix "32d"
+		if _OPTIONS["PROFILE"] then
+			targetsuffix "32dp"
 		end
 
 	configuration { "mingw*" or "vs20*" }
