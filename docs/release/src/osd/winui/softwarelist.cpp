@@ -12,6 +12,7 @@
 
 #include "picker.h"
 #include "softwarelist.h"
+#include "corestr.h"
 
 
 
