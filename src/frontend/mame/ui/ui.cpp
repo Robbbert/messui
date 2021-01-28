@@ -1504,7 +1504,7 @@ std::vector<ui::menu_item> mame_ui_manager::slider_init(running_machine &machine
 	}
 
 	// add CPU overclocking (cheat only)
-	if (machine.options().cheat())
+	//if (machine.options().cheat())
 	{
 		for (device_execute_interface &exec : execute_interface_enumerator(machine.root_device()))
 		{
