@@ -14377,6 +14377,7 @@ mshuttlej2                      // (c) 1981 Nichibutsu
 namenayo                        // (c) 1982 Cat's
 ncentury                        // bootleg (Petaco S.A.)
 offensiv                        // bootleg (Video Dens)
+olibug                          // bootleg
 olmandingo                      // bootleg
 olmandingc                      // bootleg (Calfesa)
 omegab                          // bootleg
@@ -16070,6 +16071,7 @@ ctstein                         // Castle Toy
 einvaderc                       // Entex
 funjacks                        // Mattel
 funrlgl                         // Mattel
+funtag                          // Mattel
 h2hbaskbc                       // Coleco
 h2hhockeyc                      // Coleco
 h2hsoccerc                      // Coleco
@@ -32020,6 +32022,7 @@ ncd19                           // 1990 Network Computing Devices
 
 @source:ncd88k.cpp
 ncd19c                          //
+ncdmcx
 
 @source:ncdmips.cpp
 hmxpro                          // 1994 Network Computing Devices
