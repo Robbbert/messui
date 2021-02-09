@@ -429,6 +429,7 @@ ibmpcjr.cpp
 //icatel.cpp
 //icebox.cpp
 //ie15.cpp
+//iez80.cpp                      // doesn't boot a floppy yet
 //if800.cpp
 //ikt5a.cpp
 imds2.cpp
@@ -532,7 +533,7 @@ lviv.cpp
 lynx.cpp
 m20.cpp
 m24.cpp
-//m3.cpp
+m3.cpp                       // monitor ok, no software
 m5.cpp
 //m6805evs.cpp
 m68705prg.cpp
