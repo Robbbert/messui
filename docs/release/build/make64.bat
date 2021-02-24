@@ -8,7 +8,7 @@ echo.|time
 echo.|time
 set Path=%oldpath%
 set oldpath=
-if exist mess64.exe %minpath%\strip -s mess64.exe
-if exist messui64.exe %minpath%\strip -s messui64.exe
+if exist mess.exe %minpath%\strip -s mess.exe
+if exist messui.exe %minpath%\strip -s messui.exe
 set minpath=
 

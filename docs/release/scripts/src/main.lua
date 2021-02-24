@@ -99,39 +99,27 @@ end
 			flags { "DeploymentContent" }
 
 	configuration { "x64", "Release" }
-		targetsuffix "64"
+		targetsuffix ""
 		if _OPTIONS["PROFILE"] then
-			targetsuffix "64p"
+			targetsuffix "p"
 		end
 
 	configuration { "x64", "Debug" }
-		targetsuffix "64d"
+		targetsuffix "d"
 		if _OPTIONS["PROFILE"] then
-			targetsuffix "64dp"
+			targetsuffix "dp"
 		end
 
 	configuration { "x32", "Release" }
-		targetsuffix ""
+		targetsuffix "32"
 		if _OPTIONS["PROFILE"] then
-			targetsuffix "p"
+			targetsuffix "32p"
 		end
 
 	configuration { "x32", "Debug" }
-		targetsuffix "d"
+		targetsuffix "32d"
 		if _OPTIONS["PROFILE"] then
-			targetsuffix "dp"
-		end
-
-	configuration { "Native", "Release" }
-		targetsuffix ""
-		if _OPTIONS["PROFILE"] then
-			targetsuffix "p"
-		end
-
-	configuration { "Native", "Debug" }
-		targetsuffix "d"
-		if _OPTIONS["PROFILE"] then
-			targetsuffix "dp"
+			targetsuffix "32dp"
 		end
 
 	configuration { "mingw*" or "vs20*" }
