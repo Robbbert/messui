@@ -119,6 +119,7 @@ public:
 	void macii(machine_config &config, bool cpu = true, asc_device::asc_type asc_type = asc_device::asc_type::ASC,
 		   bool nubus = true, bool nubus_bank1 = true, bool nubus_bank2 = true, int woz_version = 0);
 	void maciihmu(machine_config &config);
+	void maciihd(machine_config &config);
 
 	void init_maclc2();
 	void init_maciifdhd();
@@ -307,6 +308,7 @@ private:
 	void rbv_recalc_irqs();
 	void update_volume();
 
+	void mac_via_sync();
 	uint16_t mac_via_r(offs_t offset);
 	void mac_via_w(offs_t offset, uint16_t data, uint16_t mem_mask = ~0);
 	uint16_t mac_via2_r(offs_t offset);
@@ -376,9 +378,6 @@ private:
 	void pwrmac_map(address_map &map);
 
 	inline bool has_adb() { return m_model >= MODEL_MAC_SE; }
-
-	// wait states for accessing the VIA
-	int m_via_cycles;
 
 	uint8_t m_oss_regs[0x400];
 
