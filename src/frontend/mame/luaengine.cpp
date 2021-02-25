@@ -460,7 +460,7 @@ sol::object lua_engine::call_plugin(const std::string &name, sol::object in)
 		if(!res.valid())
 		{
 			sol::error err = res;
-			osd_printf_error("[LUA ERROR] in call_plugin: %s\n", err.what());
+			osd_printf_warning("[LUA ERROR] in call_plugin: %s\n", err.what());
 		}
 		else
 			return res.get<sol::object>();
@@ -478,7 +478,7 @@ void lua_engine::menu_populate(const std::string &menu, std::vector<std::tuple<s
 		if(!res.valid())
 		{
 			sol::error err = res;
-			osd_printf_error("[LUA ERROR] in menu_populate: %s\n", err.what());
+			osd_printf_warning("[LUA ERROR] in menu_populate: %s\n", err.what());
 		}
 		else
 		{
@@ -506,7 +506,7 @@ bool lua_engine::menu_callback(const std::string &menu, int index, const std::st
 		if(!res.valid())
 		{
 			sol::error err = res;
-			osd_printf_error("[LUA ERROR] in menu_callback: %s\n", err.what());
+			osd_printf_warning("[LUA ERROR] in menu_callback: %s\n", err.what());
 		}
 		else
 			ret = res;
@@ -548,7 +548,7 @@ bool lua_engine::execute_function(const char *id)
 		if(!ret.valid())
 		{
 			sol::error err = ret;
-			osd_printf_error("[LUA ERROR] in execute_function: %s\n", err.what());
+			osd_printf_warning("[LUA ERROR] in execute_function: %s\n", err.what());
 		}
 		return true;
 	});
@@ -624,7 +624,7 @@ bool lua_engine::on_missing_mandatory_image(const std::string &instance_name)
 		if(!ret.valid())
 		{
 			sol::error err = ret;
-			osd_printf_error("[LUA ERROR] in on_missing_mandatory_image: %s\n", err.what());
+			osd_printf_warning("[LUA ERROR] in on_missing_mandatory_image: %s\n", err.what());
 		}
 		else if (ret.get<bool>())
 		{
@@ -1887,7 +1887,7 @@ void lua_engine::resume(void *ptr, int nparam)
 	int stat = lua_resume(L, nullptr, 0);
 	if((stat != LUA_OK) && (stat != LUA_YIELD))
 	{
-		osd_printf_error("[LUA ERROR] in resume: %s\n", lua_tostring(L, -1));
+		osd_printf_warning("[LUA ERROR] in resume: %s\n", lua_tostring(L, -1));
 		lua_pop(L, 1);
 	}
 	luaL_unref(m_lua_state, LUA_REGISTRYINDEX, nparam);
@@ -1901,11 +1901,11 @@ void lua_engine::run(sol::load_result res)
 		if(!ret.valid())
 		{
 			sol::error err = ret;
-			osd_printf_error("[LUA ERROR] in run: %s\n", err.what());
+			osd_printf_warning("[LUA ERROR] in run: %s\n", err.what());
 		}
 	}
 	else
-		osd_printf_error("[LUA ERROR] %d loading Lua script\n", (int)res.status());
+		osd_printf_warning("[LUA ERROR] %d loading Lua script\n", (int)res.status());
 }
 
 //-------------------------------------------------
