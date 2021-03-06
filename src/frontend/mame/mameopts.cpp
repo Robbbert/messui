@@ -31,12 +31,12 @@ void mame_options::parse_standard_inis(emu_options &options, std::ostream &error
 {
 	// parse the INI file defined by the platform (e.g., "mame.ini")
 	// we do this twice so that the first file can change the INI path
-	parse_one_ini(options, emulator_info::get_configname(), OPTION_PRIORITY_MAME_INI);
-	parse_one_ini(options, emulator_info::get_configname(), OPTION_PRIORITY_MAME_INI, &error_stream);
+	parse_parent_ini(options, emulator_info::get_configname(), OPTION_PRIORITY_MAME_INI);
+	parse_parent_ini(options, emulator_info::get_configname(), OPTION_PRIORITY_MAME_INI, &error_stream);
 
 	// debug mode: parse "debug.ini" as well
 	if (options.debug())
-		parse_one_ini(options, "debug", OPTION_PRIORITY_DEBUG_INI, &error_stream);
+		parse_parent_ini(options, "debug", OPTION_PRIORITY_DEBUG_INI, &error_stream);
 
 	// if we have a valid system driver, parse system-specific INI files
 	game_driver const *const cursystem = !driver ? system(options) : driver;
@@ -45,23 +45,23 @@ void mame_options::parse_standard_inis(emu_options &options, std::ostream &error
 
 	// parse "vertical.ini" or "horizont.ini"
 	if (cursystem->flags & ORIENTATION_SWAP_XY)
-		parse_one_ini(options, "vertical", OPTION_PRIORITY_ORIENTATION_INI, &error_stream);
+		parse_parent_ini(options, "vertical", OPTION_PRIORITY_ORIENTATION_INI, &error_stream);
 	else
-		parse_one_ini(options, "horizont", OPTION_PRIORITY_ORIENTATION_INI, &error_stream);
+		parse_parent_ini(options, "horizont", OPTION_PRIORITY_ORIENTATION_INI, &error_stream);
 
 	switch (cursystem->flags & machine_flags::MASK_TYPE)
 	{
 	case machine_flags::TYPE_ARCADE:
-		parse_one_ini(options, "arcade", OPTION_PRIORITY_SYSTYPE_INI, &error_stream);
+		parse_parent_ini(options, "arcade", OPTION_PRIORITY_SYSTYPE_INI, &error_stream);
 		break;
 	case machine_flags::TYPE_CONSOLE:
-		parse_one_ini(options ,"console", OPTION_PRIORITY_SYSTYPE_INI, &error_stream);
+		parse_parent_ini(options ,"console", OPTION_PRIORITY_SYSTYPE_INI, &error_stream);
 		break;
 	case machine_flags::TYPE_COMPUTER:
-		parse_one_ini(options, "computer", OPTION_PRIORITY_SYSTYPE_INI, &error_stream);
+		parse_parent_ini(options, "computer", OPTION_PRIORITY_SYSTYPE_INI, &error_stream);
 		break;
 	case machine_flags::TYPE_OTHER:
-		parse_one_ini(options, "othersys", OPTION_PRIORITY_SYSTYPE_INI, &error_stream);
+		parse_parent_ini(options, "othersys", OPTION_PRIORITY_SYSTYPE_INI, &error_stream);
 		break;
 	default:
 		break;
@@ -73,33 +73,33 @@ void mame_options::parse_standard_inis(emu_options &options, std::ostream &error
 		// parse "raster.ini" for raster games
 		if (device.screen_type() == SCREEN_TYPE_RASTER)
 		{
-			parse_one_ini(options, "raster", OPTION_PRIORITY_SCREEN_INI, &error_stream);
+			parse_parent_ini(options, "raster", OPTION_PRIORITY_SCREEN_INI, &error_stream);
 			break;
 		}
 		// parse "vector.ini" for vector games
 		if (device.screen_type() == SCREEN_TYPE_VECTOR)
 		{
-			parse_one_ini(options, "vector", OPTION_PRIORITY_SCREEN_INI, &error_stream);
+			parse_parent_ini(options, "vector", OPTION_PRIORITY_SCREEN_INI, &error_stream);
 			break;
 		}
 		// parse "lcd.ini" for lcd games
 		if (device.screen_type() == SCREEN_TYPE_LCD)
 		{
-			parse_one_ini(options, "lcd", OPTION_PRIORITY_SCREEN_INI, &error_stream);
+			parse_parent_ini(options, "lcd", OPTION_PRIORITY_SCREEN_INI, &error_stream);
 			break;
 		}
 	}
 
 	// next parse "source/<sourcefile>.ini"
 	std::string sourcename = std::string(core_filename_extract_base(cursystem->type.source(), true)).insert(0, "source" PATH_SEPARATOR);
-	parse_one_ini(options, sourcename.c_str(), OPTION_PRIORITY_SOURCE_INI, &error_stream);
+	parse_parent_ini(options, sourcename.c_str(), OPTION_PRIORITY_SOURCE_INI, &error_stream);
 
 	// then parse the grandparent, parent, and system-specific INIs
 	int parent = driver_list::clone(*cursystem);
 	int gparent = (parent != -1) ? driver_list::clone(parent) : -1;
 	// MESSUI: ignore slots and images unless it is the gamename INI
 	if (gparent != -1)
-		parse_one_ini(options, driver_list::driver(gparent).name, OPTION_PRIORITY_GPARENT_INI, &error_stream);
+		parse_parent_ini(options, driver_list::driver(gparent).name, OPTION_PRIORITY_GPARENT_INI, &error_stream);
 	if (parent != -1)
 		parse_parent_ini(options,driver_list::driver(parent).name, OPTION_PRIORITY_PARENT_INI, &error_stream);
 
@@ -232,7 +232,7 @@ void mame_options::parse_parent_ini(emu_options &options, const char *basename, 
 		return;
 
 	// parse the file
-	osd_printf_verbose("Parsing %s.ini\n", basename);
+	osd_printf_verbose("Parsing_parent %s.ini\n", basename);
 	try
 	{
 		options.parse_parent_file((util::core_file&)file, priority, priority < OPTION_PRIORITY_DRIVER_INI, false);
