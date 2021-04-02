@@ -530,6 +530,7 @@ lft.cpp
 llc1.cpp
 llc2.cpp
 //lms46.cpp
+lnw80.cpp
 lola8a.cpp
 lviv.cpp
 //lwriter.cpp
