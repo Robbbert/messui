@@ -108,7 +108,7 @@ avrmax.cpp             //chess
 babbage.cpp
 //banctec.cpp
 //bandai_design_master.cpp
-//basf7100.cpp                    // needs a swlist
+basf7100.cpp                    // ok
 basic52.cpp
 //basssta.cpp
 bbc.cpp
