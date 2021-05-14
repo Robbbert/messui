@@ -170,6 +170,7 @@ channelf.cpp
 chaos.cpp
 chessmate.cpp
 chessmst.cpp
+chessmstdm.cpp                 // chess
 //cit101.cpp
 //cit101xl.cpp        // terminal
 //cit220.cpp
@@ -224,6 +225,7 @@ datum.cpp
 //dcebridge.cpp
 dct11em.cpp
 debut.cpp
+//decmate2.cpp                   // skel
 decstation.cpp
 dectalk.cpp
 //decwritr.cpp
@@ -929,7 +931,6 @@ shine.cpp
 //sk1.cpp
 //sk101bl.cpp
 slc1.cpp
-slc1a.cpp
 slicer.cpp
 //slsstars.cpp
 //sm1800.cpp
@@ -1019,6 +1020,7 @@ tec1.cpp
 //tek405x.cpp
 //tek410x.cpp
 //tek440x.cpp
+//tekigw.cpp                     // gets stuck during boot
 //tekxp33x.cpp
 //teleray10.cpp
 //telex1192.cpp
@@ -1174,6 +1176,7 @@ xor100.cpp
 //ymmu50.cpp
 //ymmu80.cpp
 //ymmu100.cpp
+//ympsr60.cpp                    // synth skel
 //ympsr340.cpp                // MNW, synth
 //ymtx81z.cpp
 //ymvl70.cpp
