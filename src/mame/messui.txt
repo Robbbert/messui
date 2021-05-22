@@ -781,6 +781,7 @@ pentagon.cpp
 pet.cpp
 //pg685.cpp
 phc25.cpp
+//philipsbo.cpp            // skel
 phunsy.cpp
 pimps.cpp
 pipbug.cpp
