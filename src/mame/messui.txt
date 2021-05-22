@@ -202,6 +202,7 @@ conic_cchess2.cpp
 cortex.cpp
 cosmicos.cpp
 //cp1.cpp
+crei680.cpp                    // trainer
 //crimson.cpp
 crvision.cpp
 ct486.cpp
