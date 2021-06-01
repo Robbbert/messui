@@ -16159,6 +16159,7 @@ unkeinv                         // Gordon Barlow Design
 vidchal                         // Select Merchandise
 
 @source:hh_cops1.cpp
+cambrp                          // Sinclair
 mbaskb                          // Mattel
 mhockey                         // Mattel
 msoccer                         // Mattel
@@ -33514,6 +33515,7 @@ partner                         //
 
 @source:pasha2.cpp
 pasha2                          // (c) 1998 Dong Sung
+zdrum                           // (c) 2000 PARA Enterprises
 
 @source:paso1600.cpp
 paso1600                        //
