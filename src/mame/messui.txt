@@ -676,7 +676,7 @@ mz2500.cpp
 //mz3500.cpp
 //mz6500.cpp
 mz700.cpp
-//mz80.cpp
+mz80.cpp
 mzr8105.cpp
 n64.cpp
 nakajies.cpp
