@@ -153,6 +153,8 @@ private:
 	// internal state
 	bool                        m_parsed;
 	emu_file                    m_file;
+	std::string                 m_filename;
+	std::string                 m_shortname;
 	std::string                 m_description;
 	std::string                 m_errors;
 	std::list<software_info>    m_infolist;

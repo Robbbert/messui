@@ -291,7 +291,7 @@ void software_list_device::parse()
 	{
 		// parse if no error
 		std::ostringstream errs;
-		softlist_parser parser(m_file, m_file.filename(), m_description, m_infolist, errs);
+		parse_software_list(m_file, m_file.filename(), m_shortname, m_description, m_infolist, errs);
 		m_file.close();
 		m_errors = errs.str();
 	}

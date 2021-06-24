@@ -385,7 +385,7 @@ void rom_load_manager::determine_bios_rom(device_t &device, const char *specbios
 		}
 
 		// if we got neither an empty string nor 'default' then warn the user
-		if (!found)
+		if (!found && (specbios[0]!='0'))   // MESSUI (only applies to command-line, i.e. MESS)
 		{
 			m_errorstring.append(util::string_format("%s: invalid BIOS \"%s\", reverting to default\n", device.tag(), specbios));
 			m_warnings++;
@@ -1222,13 +1222,12 @@ void rom_load_manager::load_software_part_region(device_t &device, software_list
 	{
 		// dispay a warning for unsupported software
 		// TODO: list supported clones like we do for machines?
-		const u32 supported(swinfo->supported());
-		if (supported == SOFTWARE_SUPPORTED_PARTIAL)
+		if (swinfo->supported() == software_support::PARTIALLY_SUPPORTED)
 		{
 			m_errorstring.append(string_format("WARNING: support for software %s (in list %s) is only partial\n", swname, swlist.list_name()));
 			m_softwarningstring.append(string_format("Support for software %s (in list %s) is only partial\n", swname, swlist.list_name()));
 		}
-		if (supported == SOFTWARE_SUPPORTED_NO)
+		else if (swinfo->supported() == software_support::UNSUPPORTED)
 		{
 			m_errorstring.append(string_format("WARNING: support for software %s (in list %s) is only preliminary\n", swname, swlist.list_name()));
 			m_softwarningstring.append(string_format("Support for software %s (in list %s) is only preliminary\n", swname, swlist.list_name()));

@@ -127,15 +127,15 @@ bool software_part::matches_interface(const char *interface_list) const noexcept
 //-------------------------------------------------
 
 software_info::software_info(std::string &&name, std::string &&parent, const std::string &supported) :
-	m_supported(SOFTWARE_SUPPORTED_YES),
+	m_supported(software_support::SUPPORTED),
 	m_shortname(std::move(name)),
 	m_parentname(std::move(parent))
 {
 	// handle the supported flag if provided
 	if (supported == "partial")
-		m_supported = SOFTWARE_SUPPORTED_PARTIAL;
+		m_supported = software_support::PARTIALLY_SUPPORTED;
 	else if (supported == "no")
-		m_supported = SOFTWARE_SUPPORTED_NO;
+		m_supported = software_support::UNSUPPORTED;
 }
 
 
@@ -183,6 +183,79 @@ bool software_info::has_multiple_parts(const char *interface) const
 	return false;
 }
 
+namespace detail {
+
+//**************************************************************************
+//  SOFTWARE LIST PARSER
+//**************************************************************************
+
+class softlist_parser
+{
+public:
+	// construction (== execution)
+	softlist_parser(
+			util::core_file &file,
+			std::string filename,
+			std::string &listname,
+			std::string &description,
+			std::list<software_info> &infolist,
+			std::ostream &errors);
+
+private:
+	enum parse_position
+	{
+		POS_ROOT,
+		POS_MAIN,
+		POS_SOFT,
+		POS_PART,
+		POS_DATA
+	};
+
+	// internal parsing helpers
+	const char *infoname() const { return m_current_info ? m_current_info->shortname().c_str() : "???"; }
+	int line() const { return XML_GetCurrentLineNumber(m_parser); }
+	int column() const { return XML_GetCurrentColumnNumber(m_parser); }
+	const char *parser_error() const { return XML_ErrorString(XML_GetErrorCode(m_parser)); }
+
+	// internal error helpers
+	template <typename Format, typename... Params> void parse_error(Format &&fmt, Params &&... args);
+	void unknown_tag(const char *tagname) { parse_error("Unknown tag: %s", tagname); }
+	void unknown_attribute(const char *attrname) { parse_error("Unknown attribute: %s", attrname); }
+
+	// internal helpers
+	template <typename T> std::vector<std::string> parse_attributes(const char **attributes, const T &attrlist);
+	bool parse_name_and_value(const char **attributes, std::string &name, std::string &value);
+	void add_rom_entry(std::string &&name, std::string &&hashdata, u32 offset, u32 length, u32 flags);
+
+	// expat callbacks
+	static void start_handler(void *data, const char *tagname, const char **attributes);
+	static void data_handler(void *data, const char *s, int len);
+	static void end_handler(void *data, const char *name);
+
+	// internal parsing
+	void parse_root_start(const char *tagname, const char **attributes);
+	void parse_main_start(const char *tagname, const char **attributes);
+	void parse_soft_start(const char *tagname, const char **attributes);
+	void parse_part_start(const char *tagname, const char **attributes);
+	void parse_data_start(const char *tagname, const char **attributes);
+	void parse_soft_end(const char *name);
+
+	// internal parsing state
+	util::core_file &           m_file;
+	const std::string_view      m_filename;
+	std::list<software_info> &  m_infolist;
+	std::ostream &              m_errors;
+	struct XML_ParserStruct *   m_parser;
+	bool                        m_done;
+	std::string &               m_listname;
+	std::string &               m_description;
+	bool                        m_data_accum_expected;
+	std::string                 m_data_accum;
+	software_info *             m_current_info;
+	software_part *             m_current_part;
+	parse_position              m_pos;
+};
+
 
 //**************************************************************************
 //  SOFTWARE LIST PARSER
@@ -192,12 +265,13 @@ bool software_info::has_multiple_parts(const char *interface) const
 //  softlist_parser - constructor
 //-------------------------------------------------
 
-softlist_parser::softlist_parser(util::core_file &file, const std::string &filename, std::string &description, std::list<software_info> &infolist, std::ostringstream &errors) :
+softlist_parser::softlist_parser(util::core_file &file, std::string filename, std::string &listname, std::string &description, std::list<software_info> &infolist, std::ostream &errors) :
 	m_file(file),
 	m_filename(filename),
 	m_infolist(infolist),
 	m_errors(errors),
 	m_done(false),
+	m_listname(listname),
 	m_description(description),
 	m_data_accum_expected(false),
 	m_current_info(nullptr),
@@ -232,35 +306,6 @@ softlist_parser::softlist_parser(util::core_file &file, const std::string &filen
 	XML_ParserFree(m_parser);
 }
 
-
-//-------------------------------------------------
-//  line
-//-------------------------------------------------
-
-int softlist_parser::line() const
-{
-	return XML_GetCurrentLineNumber(m_parser);
-}
-
-
-//-------------------------------------------------
-//  column
-//-------------------------------------------------
-
-int softlist_parser::column() const
-{
-	return XML_GetCurrentColumnNumber(m_parser);
-}
-
-
-//-------------------------------------------------
-//  parser_error
-//-------------------------------------------------
-
-const char *softlist_parser::parser_error() const
-{
-	return XML_ErrorString(XML_GetErrorCode(m_parser));
-}
 
 
 //-------------------------------------------------
@@ -485,6 +530,9 @@ void softlist_parser::parse_root_start(const char *tagname, const char **attribu
 	{
 		static char const *const attrnames[] = { "name", "description" };
 		const auto attrvalues = parse_attributes(attributes, attrnames);
+
+		if (!attrvalues[0].empty())
+			m_listname = attrvalues[0];
 
 		if (!attrvalues[1].empty())
 			m_description = attrvalues[1];
@@ -831,6 +879,13 @@ void softlist_parser::parse_soft_end(const char *tagname)
 	}
 }
 
+}; // namespace detail
+
+
+void parse_software_list(util::core_file &file, std::string filename, std::string &listname, std::string &description, std::list<software_info> &infolist, std::ostream &errors)
+{
+	detail::softlist_parser(file, filename, listname, description, infolist, errors);
+}
 
 //-------------------------------------------------
 //  software_name_parse - helper that splits a
