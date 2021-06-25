@@ -401,6 +401,7 @@ hh_tms1k.cpp
 hh_ucom4.cpp
 //hhtiger.cpp
 //hk68v10.cpp
+//hohnadam.cpp               // skel, synth
 homelab.cpp
 //homez80.cpp
 //horizon.cpp
@@ -536,6 +537,7 @@ lft.cpp
 //lg-dvd.cpp
 //lilith.cpp
 //lisa.cpp
+lk3000.cpp
 llc1.cpp
 llc2.cpp
 //lms46.cpp
@@ -1178,13 +1180,16 @@ xavix_2000.cpp
 xerox820.cpp
 xor100.cpp
 //yes.cpp                                 // black screen
+//yman1x.cpp                 // skel, synth
 //ymdx11.cpp
+//ymdx100.cpp                // skel, synth
 //ymmu5.cpp               // synth
 //ymmu50.cpp
 //ymmu80.cpp
 //ymmu100.cpp
 //ympsr60.cpp                    // synth skel
 //ympsr340.cpp                // MNW, synth
+//ymsy35.cpp                 // skel, synth
 //ymtx81z.cpp
 //ymvl70.cpp
 //z100.cpp
