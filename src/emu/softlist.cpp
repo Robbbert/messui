@@ -36,7 +36,6 @@ static std::regex s_potential_softlist_regex("\\w+(\\:\\w+)*");
 //-------------------------------------------------
 
 feature_list_item::feature_list_item(const std::string &name, const std::string &value) :
-	m_next(nullptr),
 	m_name(name),
 	m_value(value)
 {
@@ -48,7 +47,6 @@ feature_list_item::feature_list_item(const std::string &name, const std::string 
 //-------------------------------------------------
 
 feature_list_item::feature_list_item(std::string &&name, std::string &&value) :
-	m_next(nullptr),
 	m_name(std::move(name)),
 	m_value(std::move(value))
 {
@@ -64,7 +62,6 @@ feature_list_item::feature_list_item(std::string &&name, std::string &&value) :
 //-------------------------------------------------
 
 software_part::software_part(software_info &info, std::string &&name, std::string &&interface) :
-	m_next(nullptr),
 	m_info(info),
 	m_name(std::move(name)),
 	m_interface(std::move(interface))
@@ -183,6 +180,7 @@ bool software_info::has_multiple_parts(const char *interface) const
 	return false;
 }
 
+
 namespace detail {
 
 //**************************************************************************
@@ -257,15 +255,17 @@ private:
 };
 
 
-//**************************************************************************
-//  SOFTWARE LIST PARSER
-//**************************************************************************
-
 //-------------------------------------------------
 //  softlist_parser - constructor
 //-------------------------------------------------
 
-softlist_parser::softlist_parser(util::core_file &file, std::string filename, std::string &listname, std::string &description, std::list<software_info> &infolist, std::ostream &errors) :
+softlist_parser::softlist_parser(
+		util::core_file &file,
+		std::string filename,
+		std::string &listname,
+		std::string &description,
+		std::list<software_info> &infolist,
+		std::ostream &errors) :
 	m_file(file),
 	m_filename(filename),
 	m_infolist(infolist),
@@ -305,7 +305,6 @@ softlist_parser::softlist_parser(util::core_file &file, std::string filename, st
 	// free the parser
 	XML_ParserFree(m_parser);
 }
-
 
 
 //-------------------------------------------------
@@ -504,18 +503,21 @@ void softlist_parser::data_handler(void *data, const char *s, int len)
 {
 	softlist_parser *state = reinterpret_cast<softlist_parser *>(data);
 
-	// if we have an std::string to accumulate data in, do it
 	if (state->m_data_accum_expected)
+	{
+		// if we have an std::string to accumulate data in, do it
 		state->m_data_accum.append(s, len);
-
-	// otherwise, report an error if the data is non-blank
+	}
 	else
+	{
+		// otherwise, report an error if the data is non-blank
 		for (int i = 0; i < len; i++)
 			if (!isspace(s[i]))
 			{
 				state->parse_error("Unexpected content");
 				break;
 			}
+	}
 }
 
 
@@ -879,13 +881,20 @@ void softlist_parser::parse_soft_end(const char *tagname)
 	}
 }
 
-}; // namespace detail
+} // namespace detail
 
 
-void parse_software_list(util::core_file &file, std::string filename, std::string &listname, std::string &description, std::list<software_info> &infolist, std::ostream &errors)
+void parse_software_list(
+		util::core_file &file,
+		std::string filename,
+		std::string &listname,
+		std::string &description,
+		std::list<software_info> &infolist,
+		std::ostream &errors)
 {
 	detail::softlist_parser(file, filename, listname, description, infolist, errors);
 }
+
 
 //-------------------------------------------------
 //  software_name_parse - helper that splits a

@@ -22,13 +22,16 @@
 
 
 //**************************************************************************
-//  CONSTANTS
+//  FORWARD DECLARATIONS
 //**************************************************************************
+
 namespace detail { class softlist_parser; }
 
-//#define SOFTWARE_SUPPORTED_YES      0
-//#define SOFTWARE_SUPPORTED_PARTIAL  1
-//#define SOFTWARE_SUPPORTED_NO       2
+
+//**************************************************************************
+//  CONSTANTS
+//**************************************************************************
+
 enum class software_support
 {
 	SUPPORTED,
@@ -36,11 +39,10 @@ enum class software_support
 	UNSUPPORTED
 };
 
+
 //**************************************************************************
 //  TYPE DEFINITIONS
 //**************************************************************************
-
-// ======================> feature_list_item
 
 // an item in a list of name/value pairs
 class feature_list_item
@@ -55,19 +57,15 @@ public:
 	feature_list_item& operator=(feature_list_item &&) = delete;
 
 	// getters
-	feature_list_item *next() const noexcept { return m_next; }
 	const std::string &name() const noexcept { return m_name; }
 	const std::string &value() const noexcept { return m_value; }
 
 private:
 	// internal state
-	feature_list_item * m_next;
 	std::string         m_name;
 	std::string         m_value;
 };
 
-
-// ======================> software_part
 
 // a single part of a software item
 class software_part
@@ -83,7 +81,6 @@ public:
 	software_part& operator=(software_part &&) = delete;
 
 	// getters
-	software_part *next() const noexcept { return m_next; }
 	software_info &info() const noexcept { return m_info; }
 	const std::string &name() const noexcept { return m_name; }
 	const std::string &interface() const noexcept { return m_interface; }
@@ -96,7 +93,6 @@ public:
 
 private:
 	// internal state
-	software_part *                 m_next;
 	software_info &                 m_info;
 	std::string                     m_name;
 	std::string                     m_interface;
@@ -104,8 +100,6 @@ private:
 	std::vector<rom_entry>          m_romdata;
 };
 
-
-// ======================> software_info
 
 // a single software item
 class software_info
@@ -152,7 +146,15 @@ private:
 
 // ----- Helpers -----
 
-void parse_software_list(util::core_file &file, std::string filename, std::string &listname, std::string &description, std::list<software_info> &infolist, std::ostream &errors);
+// parses a software list
+void parse_software_list(
+		util::core_file &file,
+		std::string filename,
+		std::string &listname,
+		std::string &description,
+		std::list<software_info> &infolist,
+		std::ostream &errors);
+
 // parses a software identifier (e.g. - 'apple2e:agentusa:flop1') into its constituent parts (returns false if cannot parse)
 bool software_name_parse(std::string_view identifier, std::string *list_name = nullptr, std::string *software_name = nullptr, std::string *part_name = nullptr);
 
