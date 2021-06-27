@@ -5,6 +5,7 @@
     softlist.cpp
 
     Software list construction helpers.
+    NOTE: Many changes to keep MESSUI/MAMEUI working. Leave them alone.
 
 ***************************************************************************/
 
