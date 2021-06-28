@@ -1051,8 +1051,8 @@ ti99_2.cpp
 //ti99_4p.cpp
 ti99_4x.cpp
 ti99_8.cpp
-ti990_10.cpp
-ti990_4.cpp
+//ti990_10.cpp                    // black screen
+//ti990_4.cpp                     // white screen
 tiki100.cpp
 //tim011.cpp
 //tim100.cpp
