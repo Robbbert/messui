@@ -14,7 +14,9 @@ md %to%\src\emu\debug
 copy /Y %from%\src\emu\diimage.cpp                  %to%\src\emu
 copy /Y %from%\src\emu\emuopts.*                    %to%\src\emu
 copy /Y %from%\src\emu\mconfig.cpp                  %to%\src\emu
-copy /Y %from%\src\emu\softlist.cpp                 %to%\src\emu
+copy /Y %from%\src\emu\romload.cpp                  %to%\src\emu
+copy /Y %from%\src\emu\softlist.*                   %to%\src\emu
+copy /Y %from%\src\emu\softlist_dev.*               %to%\src\emu
 copy /Y %from%\src\emu\video.*                      %to%\src\emu
 copy /Y %from%\src\emu\debug\dvmemory.cpp           %to%\src\emu\debug
 copy /Y %from%\src\version.cpp                      %to%\src

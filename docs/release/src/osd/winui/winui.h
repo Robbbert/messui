@@ -7,7 +7,6 @@
 #include <commctrl.h>
 #include <commdlg.h>
 #include "emu.h"
-#include "pool.h"
 #include "screenshot.h"
 #include "drivenum.h"
 #include "romload.h"
@@ -81,7 +80,6 @@ void MamePlayGame(void);
 int FindIconIndex(int nIconResource);
 int FindIconIndexByName(const char *icon_name);
 int GetSelectedPick(void);
-object_pool *GetMameUIMemoryPool(void);
 
 void UpdateListView(void);
 
