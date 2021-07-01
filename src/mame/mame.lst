@@ -3241,6 +3241,10 @@ bdesignm
 bankp                           // (c) 1984 Sega,  made by Sanritsu
 combh                           // (c) 1987 Sega,  made by Sanritsu
 
+@source:banprestoms.cpp
+marioun                         //
+tvdenwad                        //
+
 @source:baraduke.cpp
 aliensec                        // (c) 1985
 baraduke                        // (c) 1985
@@ -11638,6 +11642,7 @@ dai                             // DAI
 
 @source:dai3wksi.cpp
 dai3wksi                        // 1979.09 Dai San Wakusei (The Third Planet)
+runaways                        // 1978.?? Run Away
 warp1                           // 1979.12 Warp-1
 warp1t                          // 1979.12 Warp-1 (Taito license)
 warp1bl                         // bootleg
@@ -40553,6 +40558,8 @@ whousetc                        //
 @source:tetrisp2.cpp
 nndmseal                        // (c) 1997 I'Max/Jaleco
 nndmseala                       // (c) 1997 I'Max/Jaleco
+nndmsealb                       // (c) 1997 I'Max/Jaleco
+nndmsealc                       // (c) 1997 I'Max/Jaleco
 rockn                           // (c) 1999 Jaleco
 rockn2                          // (c) 1999 Jaleco
 rockn3                          // (c) 1999 Jaleco
@@ -41480,6 +41487,7 @@ hishouzab                       // bootleg
 ktiger                          // B30 / TP-011 (c) 1987 Taito Corporation (Japan)
 skyshark                        // B02 / TP-007 (c) 1987 Taito America Corporation + Romstar license (US)
 skysharka                       // B02 / TP-007 (c) 1987 Taito America Corporation + Romstar license (US)
+skysharkb                       // bootleg
 twincobr                        // B30 / TP-011 (c) 1987 Taito Corporation (World)
 twincobru                       // B30 / TP-011 (c) 1987 Taito America Corporation + Romstar license (US)
 

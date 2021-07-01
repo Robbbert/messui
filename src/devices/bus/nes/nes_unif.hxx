@@ -388,7 +388,7 @@ void nes_cart_slot_device::call_load_unif()
 				else
 				{
 					small_prg = true;
-					logerror("This chunk is smaller than 16K: the emulation might have issues. Please report this file to the MESS forums.\n");
+					logerror("This chunk is smaller than 16K: the emulation might have issues. Please report this file to the MAME forums.\n");
 				}
 
 				/* Read in the program chunks */
@@ -414,7 +414,7 @@ void nes_cart_slot_device::call_load_unif()
 			}
 			else
 			{
-				logerror("Unsupported UNIF chunk or corrupted header. Please report the problem at MESS Board.\n");
+				logerror("Unsupported UNIF chunk or corrupted header. Please report the problem at MAME Board.\n");
 				read_length = size;
 			}
 		}
@@ -427,7 +427,7 @@ void nes_cart_slot_device::call_load_unif()
 
 	if (!prg_start)
 	{
-		fatalerror("No PRG found. Please report the problem at MESS Board.\n");
+		fatalerror("No PRG found. Please report the problem at MAME Board.\n");
 	}
 
 	// SETUP step 2: getting PCB and other settings
@@ -492,7 +492,7 @@ void nes_cart_slot_device::call_load_unif()
 	}
 
 	if (small_prg)  // This is not supported yet, so warn users about this
-		osd_printf_error("Loaded UNIF file with non-16k PRG chunk. This is not supported in MESS yet.");
+		osd_printf_error("Loaded UNIF file with non-16k PRG chunk. This is not supported in MAME yet.");
 
 	if (vrom_size)
 	{
