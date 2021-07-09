@@ -618,7 +618,6 @@ mice.cpp
 //micromon.cpp
 //micronic.cpp
 microtan.cpp
-//microterm.cpp
 //microterm_f8.cpp
 microvsn.cpp
 mikro80.cpp
@@ -661,6 +660,8 @@ mpz80.cpp
 //msbc1.cpp
 //mstation.cpp
 msx.cpp
+//mt420.cpp                   // terminal
+//mt5510.cpp                  // terminal
 //mt735.cpp
 //mtd1256.cpp
 mtx.cpp
