@@ -1,76 +1,76 @@
-//3do.cpp
+//3do.cpp                              // mnw, no swlist
 4004clk.cpp
-//4dpi.cpp
-68ksbc.cpp
+//4dpi.cpp                             // unix workstation, mnw
+//68ksbc.cpp                           // useless, no media
 a2600.cpp
 a5105.cpp
-//a51xx.cpp
-//a7150.cpp
+//a51xx.cpp                            // skel
+//a7150.cpp                            // mnw
 a7800.cpp
 aa310.cpp
-//aaa.cpp
-abc1600.cpp
+//aaa.cpp                              // terminal
+//abc1600.cpp                          // cannot boot floppy
 abc80.cpp
 abc80x.cpp
 ac1.cpp
 accomm.cpp
-//acd.cpp
-//aceex.cpp
+//acd.cpp                              // skel
+//aceex.cpp                            // modem
 aci_boris.cpp
 aci_borisdpl.cpp
 aci_ggm.cpp
 aci_prodigy.cpp
 acrnsys1.cpp
 acrnsys.cpp
-//actions_atj2279b.cpp
-//acvirus.cpp
-//adacp150.cpp          // printer
+//actions_atj2279b.cpp                 // skel
+//acvirus.cpp                          // skel
+//adacp150.cpp                         // printer
 adam.cpp
-//adm11.cpp
-//adm23.cpp
-//adm31.cpp
-//adm36.cpp
+//adm11.cpp                            // terminal
+//adm23.cpp                            // terminal
+//adm31.cpp                            // terminal
+//adm36.cpp                            // terminal
 advision.cpp
 agat.cpp
-//aid80f.cpp
+//aid80f.cpp                           // skel
 aim65.cpp
-//aim65_40.cpp
-//akaiax80.cpp
-//akaivx600.cpp                   // synth
-//alcat7100.cpp
-//alesis.cpp
-//alesis_qs.cpp
-//alfaskop41xx.cpp
-//alphajuno.cpp
+//aim65_40.cpp                         // skel
+//akaiax80.cpp                         // synth
+//akaivx600.cpp                        // synth
+//alcat7100.cpp                        // terminal
+//alesis.cpp                           // synth
+//alesis_qs.cpp                        // synth
+//alfaskop41xx.cpp                     // skel
+//alphajuno.cpp                        // synth
 alphasma.cpp
-//alphasma3k.cpp                // skeleton
-//alphatan.cpp                // mnw, dialup terminal
+//alphasma3k.cpp                       // skeleton
+//alphatan.cpp                         // terminal
 alphatpx.cpp
-//alphatpc16.cpp
+//alphatpc16.cpp                       // no kbd
 alphatro.cpp
-altair.cpp
-//alto1.cpp
-//alto2.cpp
-//altos2.cpp
+//altair.cpp                           // useless, no swlist
+//alto1.cpp                            // skel
+//alto2.cpp                            // mnw
+//altos2.cpp                           // terminal
 altos5.cpp
-//altos486.cpp
-//altos8600.cpp
-//am1000.cpp
+//altos486.cpp                         // mnw
+//altos8600.cpp                        // mnw, crash on exit
+//am1000.cpp                           // skel
 amico2k.cpp
 amiga.cpp
-//ampex.cpp
-//ampex210.cpp
+//ampex.cpp                            // terminal
+//ampex210.cpp                         // terminal
 ampro.cpp
-//ampscarp.cpp
+//ampscarp.cpp                         // phone
 amstr_pc.cpp
 amstrad.cpp
-//amust.cpp                   // not booting from floppy
-//anzterm.cpp
+//amust.cpp                            // not booting from floppy
+//anzterm.cpp                          // useless
 apc.cpp
 apexc.cpp
 apf.cpp
 apogee.cpp
-//apollo.cpp                  // no response
+//apollo.cpp                           // no response
 apple1.cpp
 apple2.cpp
 apple2e.cpp
@@ -78,12 +78,12 @@ apple2gs.cpp
 apple3.cpp
 applix.cpp
 apricot.cpp
-apricotf.cpp
-//apricotp.cpp                // black screen
+//apricotf.cpp                         // fd issues
+//apricotp.cpp                         // black screen
 aquarius.cpp
 arcadia.cpp
-argo.cpp
-//argox.cpp
+//argo.cpp                             // no software
+//argox.cpp                            // printer
 asst128.cpp
 astrohome.cpp
 at.cpp
@@ -92,19 +92,19 @@ atarist.cpp
 atm.cpp
 atom.cpp
 atpci.cpp
-//att3b2.cpp
-//att4425.cpp
-//att610.cpp
-//att630.cpp
+//att3b2.cpp                           // skel
+//att4425.cpp                          // skel
+//att610.cpp                           // skel
+//att630.cpp                           // skel
 attache.cpp
 aussiebyte.cpp
 ave_arb.cpp
 avigo.cpp
-//aviion88k.cpp                    // skeleton
-avrmax.cpp             //chess
-//ax20.cpp                      // no software
-//b16.cpp
-//b2m.cpp
+//aviion88k.cpp                        // skeleton
+avrmax.cpp
+//ax20.cpp                             // no software
+//b16.cpp                              // bad rom, need boot disk, no software
+//b2m.cpp                              // mnw
 babbage.cpp
 //banctec.cpp
 //bandai_design_master.cpp
@@ -379,13 +379,13 @@ gs6502.cpp
 gs6809.cpp
 gscpm.cpp
 gsz80.cpp
-//h19.cpp
+//h19.cpp                              // terminal
 h8.cpp
 h89.cpp
-//harriet.cpp
-//hawk.cpp
-//hazeltin.cpp
-//hazl1420.cpp
+//harriet.cpp                          // mnw
+//hawk.cpp                             // hangs at 68de
+//hazeltin.cpp                         // terminal
+//hazl1420.cpp                         // terminal
 hec2hrp.cpp
 hektor.cpp
 h01x.cpp
@@ -399,81 +399,81 @@ hh_pps41.cpp
 hh_sm510.cpp
 hh_tms1k.cpp
 hh_ucom4.cpp
-//hhtiger.cpp
-//hk68v10.cpp
-//hohnadam.cpp               // skel, synth
+//hhtiger.cpp                          // black screen
+//hk68v10.cpp                          // no swlist
+//hohnadam.cpp                         // skel, synth
 homelab.cpp
-//homez80.cpp
-//horizon.cpp
-//hp_ipc.cpp
-//hp16500.cpp
-//hp2100.cpp
-//hp2620.cpp
-//hp2640.cpp
-//hp3478a.cpp
+homez80.cpp
+//horizon.cpp                          // skel
+hp_ipc.cpp
+//hp16500.cpp                          // mnw
+//hp2100.cpp                           // skel
+//hp2620.cpp                           // terminal
+//hp2640.cpp                           // terminal
+//hp3478a.cpp                          // multimeter
 hp48.cpp
-hp49gp.cpp
-//hp64k.cpp
-//hp700.cpp
-hp95lx.cpp
-//hp9825.cpp
-//hp9845.cpp
-//hp9k.cpp
-//hp9k_3xx.cpp
-//hprot1.cpp
-//hpz80unk.cpp
+//hp49gp.cpp                           // black screen
+//hp64k.cpp                            // not working, no swlist
+//hp700.cpp                            // no screen, terminal
 hp80.cpp
-//ht6000.cpp
+hp95lx.cpp
+//hp9825.cpp                           // does it work? how to use?
+//hp9845.cpp                           // does it work? how to use?
+//hp9k.cpp                             // no kbd
+hp9k_3xx.cpp
+//hprot1.cpp                           // printer
+//hpz80unk.cpp                         // useless
+//ht6000.cpp                           // synth
 ht68k.cpp
 huebler.cpp
 hunter2.cpp
-//hunter16.cpp
+//hunter16.cpp                         // blank screen
 husky.cpp
-//hx20.cpp
-//i7000.cpp
-//ibm3153.cpp
-//ibm6580.cpp
+//hx20.cpp                             // blank screen
+//i7000.cpp                            // mnw
+//ibm3153.cpp                          // terminal
+//ibm6580.cpp                          // skel
 ibmpc.cpp
 ibmpcjr.cpp
-//icatel.cpp
-//icebox.cpp
-//ie15.cpp
-//iez80.cpp                      // doesn't boot a floppy yet
-//if800.cpp
-//ikt5a.cpp
+//icatel.cpp                           // payphone
+//icebox.cpp                           // can't boot floppy
+//ie15.cpp                             // terminal
+//iez80.cpp                            // useless
+//if800.cpp                            // skel
+//ikt5a.cpp                            // terminal
 imds2.cpp
-imsai.cpp
-//indiana.cpp
-//indigo.cpp
-//indy_indigo2.cpp
-//informer_207_100.cpp            // terminal
-//informer_207_376.cpp            // terminal
-//informer_213.cpp                // terminal
-//innotv_innotabmax.cpp       // skel
+//imsai.cpp                            // useless, no media
+//indiana.cpp                          // mnw, seems useless
+//indigo.cpp                           // mnw, black screen
+//indy_indigo2.cpp                     // unix workstation
+//informer_207_100.cpp                 // terminal
+//informer_207_376.cpp                 // terminal
+//informer_213.cpp                     // terminal
+//innotv_innotabmax.cpp                // skel
 instruct.cpp
-//inteladv.cpp
-intellec4.cpp
-//intellec8.cpp                // skel
+//inteladv.cpp                         // skel
+//intellec4.cpp                        // no media available
+//intellec8.cpp                        // skel
 intellect02.cpp
-interpro.cpp
+//interpro.cpp                         // unix workstation, mnw
 intv.cpp
-ipc.cpp
-//ipds.cpp
-//iphone2g.cpp
+//ipc.cpp                              // useless, no media
+//ipds.cpp                             // skel
+//iphone2g.cpp                         // useless
 iq151.cpp
-//iqunlim.cpp
-//iris3130.cpp
+//iqunlim.cpp                          // skel
+//iris3130.cpp                         // unix workstation, skel
 irisha.cpp
-//iris_power.cpp
-//is48x.cpp
-//isbc.cpp
-isbc8010.cpp
-//isbc8030.cpp
-iskr103x.cpp
-//itc4.cpp
-//itt1700.cpp
+//iris_power.cpp                       // unix workstation, skel
+//is48x.cpp                            // skel
+//isbc.cpp                             // fails while booting
+//isbc8010.cpp                         // useless, no media
+//isbc8030.cpp                         // useless, no media
+//iskr103x.cpp                         // needs boot disk, no swlist
+//itc4.cpp                             // temperature controller
+//itt1700.cpp                          // terminal
 itt3030.cpp
-//itt9216.cpp
+//itt9216.cpp                          // terminal
 //jade.cpp
 jazz.cpp
 //jensen.cpp
