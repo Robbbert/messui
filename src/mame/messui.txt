@@ -48,7 +48,7 @@ alphasma.cpp
 alphatpx.cpp
 //alphatpc16.cpp                       // no kbd
 alphatro.cpp
-//altair.cpp                           // useless, no swlist
+//altair.cpp                           // quik->no software
 //alto1.cpp                            // skel
 //alto2.cpp                            // mnw
 //altos2.cpp                           // terminal
@@ -64,7 +64,7 @@ ampro.cpp
 //ampscarp.cpp                         // phone
 amstr_pc.cpp
 amstrad.cpp
-//amust.cpp                            // not booting from floppy
+//amust.cpp                            // cannot boot floppy
 //anzterm.cpp                          // useless
 apc.cpp
 apexc.cpp
@@ -82,7 +82,7 @@ apricot.cpp
 //apricotp.cpp                         // black screen
 aquarius.cpp
 arcadia.cpp
-//argo.cpp                             // no software
+argo.cpp
 //argox.cpp                            // printer
 asst128.cpp
 astrohome.cpp
@@ -102,7 +102,7 @@ ave_arb.cpp
 //avigo.cpp                            // useless
 //aviion88k.cpp                        // skeleton
 avrmax.cpp
-//ax20.cpp                             // no software
+//ax20.cpp                             // fd->no software
 //b16.cpp                              // bad rom, need boot disk, no software
 //b2m.cpp                              // mnw
 //babbage.cpp                          // no media
@@ -117,18 +117,18 @@ bcs3.cpp
 //bebox.cpp                            // mnw
 bert.cpp
 //besta.cpp                            // mnw
-//beta.cpp                             // no swlist
+//beta.cpp                             // cart->no software
 //betacam.cpp                          // skel
-//bigbord2.cpp                         // no software
+//bigbord2.cpp                         // fd->no software
 binbug.cpp
 //bitel.cpp                            // terminal
 //bitgraph.cpp                         // terminal
 bk.cpp
 //blit.cpp                             // terminal
-//blw700i.cpp                          // no software
+//blw700i.cpp                          // mnw, no media
 bmjr.cpp
 bml3.cpp
-//bob85.cpp                            // no software
+bob85.cpp
 //boss_se70.cpp                        // synth
 //boss_sx700.cpp                       // synth
 //bpmmicro.cpp                         // eprom programmer
