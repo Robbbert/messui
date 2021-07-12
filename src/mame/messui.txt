@@ -139,101 +139,101 @@ bullet.cpp
 //bvm.cpp                              // monitor, skel
 bw12.cpp
 bw2.cpp
-//c10.cpp
+//c10.cpp                              // skel
 c128.cpp
-//c2color.cpp
+//c2color.cpp                          // mnw
 c64.cpp
-//c64dtv.cpp
-c65.cpp
-c80.cpp
-c900.cpp
+//c64dtv.cpp                           // black screen, no media
+//c65.cpp                              // regressed, no media
+//c80.cpp                              // cassette nw therefore no media
+//c900.cpp                             // useless, no media
 camplynx.cpp
 candela.cpp
-//canon_s80.cpp
-//cardinal.cpp
-//casio_rompack.cpp
+//canon_s80.cpp                        // useless, no media
+//cardinal.cpp                         // terminal
+//casio_rompack.cpp                    // skel
 //casloopy.cpp                         // bad gfx, no inputs
-cat.cpp
+//cat.cpp                              // useless typewriter
 cbm2.cpp
-//cbnt2039.cpp
+//cbnt2039.cpp                         // printer
 cc40.cpp
-ccs2810.cpp
-//cd100.cpp
-cd2650.cpp
-//cdc721.cpp
-//cdsys5.cpp
-//ceres.cpp                            // not working
-//cfx9850.cpp                          // not really working
-//cgc7900.cpp
+//ccs2810.cpp                          // mnw
+//cd100.cpp                            // jukebox
+//cd2650.cpp                           // useless
+//cdc721.cpp                           // terminal
+//cdsys5.cpp                           // jukebox
+//ceres.cpp                            // workstation? mnw
+//cfx9850.cpp                          // no media, no kbd
+//cgc7900.cpp                          // mnw
 cgenie.cpp
 channelf.cpp
-chaos.cpp
+//chaos.cpp                            // useless, no media
 chessmate.cpp
 chessmst.cpp
-chessmstdm.cpp                 // chess
-//cit101.cpp
-//cit101xl.cpp        // terminal
-//cit220.cpp
-//cit1500.cpp
+chessmstdm.cpp
+//cit101.cpp                           // terminal
+//cit101xl.cpp                         // terminal
+//cit220.cpp                           // terminal
+//cit1500.cpp                          // terminal
 cking_master.cpp
-//ckz80.cpp
-clcd.cpp
+//ckz80.cpp                            // mnw, fd->no software
+//clcd.cpp                             // useless
 clickstart.cpp
-//clxvme186.cpp
-cm1800.cpp
-//cmi.cpp
+//clxvme186.cpp                        // bus-controller, skel
+//cm1800.cpp                           // no media
+//cmi.cpp                              // synth
 cms.cpp
 coco12.cpp
 coco3.cpp
-//codata.cpp
+//codata.cpp                           // workstation? no media
 coleco.cpp
 compc.cpp
 compis.cpp
-//compmahj.cpp
+//compmahj.cpp                         // skel
 compuchess.cpp
 compucolor.cpp
-//comquest.cpp
+//comquest.cpp                         // skel
 comx35.cpp
-//concept.cpp
+//concept.cpp                          // no kbd, no software
 conchess.cpp
 conic_cchess2.cpp
-//consola_emt.cpp
-//controlid.cpp
+//consola_emt.cpp                      // ticket machine
+//controlid.cpp                        // fingerprint reader
 cortex.cpp
-cosmicos.cpp
-//cp1.cpp
-crei680.cpp                    // trainer
-//crimson.cpp
+//cosmicos.cpp                         // mnw
+//cp1.cpp                              // trainer, no software
+//crei680.cpp                          // trainer, works but don't know how to use cassette
+//crimson.cpp                          // workstation, no media
 crvision.cpp
 ct486.cpp
-cvicny.cpp
+//cvicny.cpp                           // trainer, no media
 cxg_ch2001.cpp
 cxg_dominator.cpp
 cxg_scptchess.cpp
 cxg_sphinx40.cpp
-//cxhumax.cpp
-cybiko.cpp
-//cz101.cpp
-//d400.cpp
+//cxhumax.cpp                          // freezes mame
+//cybiko.cpp                           // how to use? no swlist
+//cz101.cpp                            // no media
+//d400.cpp                             // skel
 d6800.cpp
-//d6809.cpp
+//d6809.cpp                            // mnw
 dai.cpp
 //daruma.cpp
-//datacast.cpp           // what is this
-datum.cpp
+//datacast.cpp                         // what is this
+//datum.cpp                            // trainer, no media
 //dbox.cpp
 //dccons.cpp
 //dcebridge.cpp
 dct11em.cpp
 debut.cpp
-//decmate2.cpp                   // skel
+//decmate2.cpp                         // skel
 decstation.cpp
 dectalk.cpp
 //decwritr.cpp
-//dfs500.cpp                 // wbdnu
+//dfs500.cpp                           // wbdnu
 dg680.cpp
-//dgn_beta.cpp                 // MNW
-//design.cpp                  // MNW, vending machine
+//dgn_beta.cpp                         // MNW
+//design.cpp                           // MNW, vending machine
 //diablo1300.cpp
 didact.cpp
 //digel804.cpp
