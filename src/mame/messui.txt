@@ -249,7 +249,7 @@ dolphunk.cpp
 dps1.cpp
 dragon.cpp
 //drumsta.cpp
-dsb46.cpp
+//dsb46.cpp                            // no media
 //dual68.cpp
 //duet16.cpp
 //dvk_kcgd.cpp
@@ -257,7 +257,7 @@ dsb46.cpp
 e100.cpp
 //e9161.cpp
 //eacc.cpp
-//easy_karaoke.cpp                           // skel
+//easy_karaoke.cpp                     // skel
 ec184x.cpp
 ec65.cpp
 //ec7915.cpp
@@ -269,14 +269,14 @@ elan_eu3a05.cpp
 electron.cpp
 elekscmp.cpp
 //elektronmono.cpp
-//elf.cpp               // trainer, not working
+//elf.cpp                              // trainer, not working
 elwro800.cpp
-//elzet80.cpp                  // skel
-//emax.cpp                   // skel
+//elzet80.cpp                          // skel
+//emax.cpp                             // skel
 emma2.cpp
 //emu2.cpp
 //emu3.cpp
-//emu68k.cpp           //synth
+//emu68k.cpp                           //synth
 //enmirage.cpp
 ep64.cpp
 //epic14e.cpp
@@ -294,11 +294,11 @@ eurocom2.cpp
 europc.cpp
 //eva.cpp
 //evmbug.cpp
-//ews4800.cpp                      // skeleton
+//ews4800.cpp                          // skeleton
 excali64.cpp
 //exelv.cpp
-exorciser.cpp          //trainer
-//exorterm.cpp         //terminal
+exorciser.cpp
+//exorterm.cpp                         //terminal
 exp85.cpp
 //facit4440.cpp
 //falco5220.cpp
@@ -319,6 +319,7 @@ fidel_csc.cpp
 fidel_dames.cpp
 fidel_desdis.cpp
 fidel_eag68k.cpp
+fidel_eldorado.cpp
 fidel_elite.cpp
 fidel_excel.cpp
 fidel_phantom.cpp
@@ -349,16 +350,16 @@ gamepock.cpp
 gb.cpp
 gba.cpp
 fidel_msc.cpp
-//gem_rp.cpp                          // synth, skel
-//generalplus_gpl_unknown.cpp         // skeleton
+//gem_rp.cpp                           // synth, skel
+//generalplus_gpl_unknown.cpp          // skeleton
 generalplus_gpl162xx_lcdtype.cpp
-//generalplus_gpl16250_mobigo.cpp     // no games in this file
-//generalplus_gpl16250_nand.cpp       // not working
-//generalplus_gpl16250_rom.cpp        // not working
-//generalplus_gpl16250_romram.cpp     // not working
-//generalplus_gpl16250_spi.cpp        // not working
-//generalplus_gpl16250_spi_direct.cpp        // mnw
-//generalplus_gpl32612.cpp            // not working
+//generalplus_gpl16250_mobigo.cpp      // no games in this file
+//generalplus_gpl16250_nand.cpp        // not working
+//generalplus_gpl16250_rom.cpp         // not working
+//generalplus_gpl16250_romram.cpp      // not working
+//generalplus_gpl16250_spi.cpp         // not working
+//generalplus_gpl16250_spi_direct.cpp  // mnw
+//generalplus_gpl32612.cpp             // not working
 geneve.cpp
 geniusiq.cpp
 //geniusjr.cpp
@@ -478,14 +479,14 @@ itt3030.cpp
 jazz.cpp
 //jensen.cpp
 //jonos.cpp
-//jornada.cpp            // skel
+//jornada.cpp                          // skel
 jr100.cpp
 jr200.cpp
 jtc.cpp
 juicebox.cpp
 juku.cpp
 junior.cpp
-//junior80.cpp           // skel
+//junior80.cpp                         // skel
 //juno106.cpp
 //juno6.cpp
 jupace.cpp
@@ -496,21 +497,21 @@ k28.cpp
 //kawai_k1.cpp
 //kawai_k4.cpp
 //kawai_k5.cpp
-//kawai_ksp10.cpp      //synth
+//kawai_ksp10.cpp                      //synth
 //kawai_r100.cpp
-//kawai_sx240.cpp      //synth
+//kawai_sx240.cpp                      //synth
 kaypro.cpp
 kc.cpp
 kdt6.cpp
 kim1.cpp
-//kminus.cpp                        // computer, not working
+//kminus.cpp                           // computer, not working
 //konin.cpp
 //korgds8.cpp
 //korgdss1.cpp
 //korgdvp1.cpp
 //korgdw8k.cpp
 //korgm1.cpp
-//korgws.cpp           //synth
+//korgws.cpp                           //synth
 //korgz3.cpp
 kramermc.cpp
 krokha.cpp
@@ -523,17 +524,17 @@ laser3k.cpp
 //lbpc.cpp
 lc80.cpp
 lcmate2.cpp
-//leapfrog_iquest.cpp                // skel
+//leapfrog_iquest.cpp                  // skel
 //leapfrog_leappad.cpp
-//leapfrog_leapster_explorer.cpp          // skel, hangs mame
+//leapfrog_leapster_explorer.cpp       // skel, hangs mame
 //leapster.cpp
 //learnwin.cpp
 //lee1214.cpp
-//lee1220.cpp         // terminal
+//lee1220.cpp                          // terminal
 lft.cpp
-//lft_chiptune.cpp     //wbdnu (works but does nothing useful)
-//lft_craft.cpp        //wbdnu
-//lft_phasor.cpp       //wbdnu
+//lft_chiptune.cpp                     //wbdnu (works but does nothing useful)
+//lft_craft.cpp                        //wbdnu
+//lft_phasor.cpp                       //wbdnu
 //lg-dvd.cpp
 //lilith.cpp
 //lisa.cpp
@@ -1007,6 +1008,7 @@ svmu.cpp
 //swtpc09.cpp                        // floppy broke in new fd system
 //swtpc8212.cpp                      // term
 //swyft.cpp                          // white screen, mnw
+//sx1000.cpp                           // skel
 sym1.cpp
 //symbolics.cpp                      // skel
 //synthex.cpp                        // synth
