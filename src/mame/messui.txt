@@ -218,42 +218,42 @@ cxg_sphinx40.cpp
 d6800.cpp
 //d6809.cpp                            // mnw
 dai.cpp
-//daruma.cpp
+//daruma.cpp                           // printer
 //datacast.cpp                         // what is this
 //datum.cpp                            // trainer, no media
-//dbox.cpp
-//dccons.cpp
-//dcebridge.cpp
-dct11em.cpp
+//dbox.cpp                             // tv settop box
+//dccons.cpp                           // hangs soon after start
+//dcebridge.cpp                        // wbdnu
+//dct11em.cpp                          // no media
 debut.cpp
 //decmate2.cpp                         // skel
-decstation.cpp
-dectalk.cpp
-//decwritr.cpp
+//decstation.cpp                       // unix workstation, no swlist
+//dectalk.cpp                          // useless, no media
+//decwritr.cpp                         // printer
 //dfs500.cpp                           // wbdnu
 dg680.cpp
 //dgn_beta.cpp                         // MNW
 //design.cpp                           // MNW, vending machine
-//diablo1300.cpp
+//diablo1300.cpp                       // printer?, skel
 didact.cpp
-//digel804.cpp
-//digijet.cpp
-//dim68k.cpp
-//dm7000.cpp
-//dmax8000.cpp
-//dms5000.cpp
-dms86.cpp
+//digel804.cpp                         // eprom programmer
+//digijet.cpp                          // car mcu
+dim68k.cpp
+//dm7000.cpp                           // mnw, no media
+//dmax8000.cpp                         // cannot boot floppy
+//dms5000.cpp                          // skel
+//dms86.cpp                            // no media
 dmv.cpp
-dolphunk.cpp
-//dpb7000.cpp
+//dolphunk.cpp                         // no media (cassette routines are in missing rom)
+//dpb7000.cpp                          // no kbd
 dps1.cpp
 dragon.cpp
-//drumsta.cpp
+//drumsta.cpp                          // synth
 //dsb46.cpp                            // no media
-//dual68.cpp
-//duet16.cpp
-//dvk_kcgd.cpp
-//dvk_ksm.cpp
+//dual68.cpp                           // no media
+//duet16.cpp                           // no software
+//dvk_kcgd.cpp                         // no media
+//dvk_ksm.cpp                          // terminal
 e100.cpp
 //e9161.cpp
 //eacc.cpp
@@ -336,7 +336,7 @@ fmtowns.cpp
 force68k.cpp
 //fp1100.cpp
 fp200.cpp
-//fp6000.cpp
+fp6000.cpp
 //fs3216.cpp
 ft68m.cpp
 galaxy.cpp
