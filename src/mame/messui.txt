@@ -259,7 +259,7 @@ e100.cpp
 //eacc.cpp
 //easy_karaoke.cpp                     // skel
 ec184x.cpp
-ec65.cpp
+//ec65.cpp                             // no media
 //ec7915.cpp
 einstein.cpp
 //eispc.cpp
@@ -720,6 +720,7 @@ novag_micro2.cpp
 novag_savant.cpp
 novag_sexpert.cpp
 //novag_snova.cpp          // chess? not working
+//ns32kdb.cpp                          // no media
 //ns5652.cpp
 //o2.cpp
 //ob68k1a.cpp
