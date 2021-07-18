@@ -387,9 +387,9 @@ h89.cpp
 //hawk.cpp                             // hangs at 68de
 //hazeltin.cpp                         // terminal
 //hazl1420.cpp                         // terminal
+h01x.cpp
 hec2hrp.cpp
 hektor.cpp
-h01x.cpp
 hh_amis2k.cpp
 hh_cop400.cpp
 hh_cops1.cpp
@@ -402,22 +402,22 @@ hh_tms1k.cpp
 hh_ucom4.cpp
 //hhtiger.cpp                          // black screen
 //hk68v10.cpp                          // no swlist
-//hohnadam.cpp                         // skel, synth
+//hohnadam.cpp                         // synth
 homelab.cpp
-homez80.cpp
+//homez80.cpp                          // bugfest, no media
 //horizon.cpp                          // skel
-hp_ipc.cpp
+hp_ipc.cpp                           // useless
 //hp16500.cpp                          // mnw
 //hp2100.cpp                           // skel
 //hp2620.cpp                           // terminal
 //hp2640.cpp                           // terminal
 //hp3478a.cpp                          // multimeter
-hp48.cpp
+//hp48.cpp                             // useless
 //hp49gp.cpp                           // black screen
 //hp64k.cpp                            // not working, no swlist
-//hp700.cpp                            // no screen, terminal
+//hp700.cpp                            // terminal
 hp80.cpp
-hp95lx.cpp
+//hp95lx.cpp                           // useless
 //hp9825.cpp                           // does it work? how to use?
 //hp9845.cpp                           // does it work? how to use?
 //hp9k.cpp                             // no kbd
@@ -442,7 +442,7 @@ ibmpcjr.cpp
 //iez80.cpp                            // useless
 //if800.cpp                            // skel
 //ikt5a.cpp                            // terminal
-imds2.cpp
+//imds2.cpp                            // no software, no swlist
 //imsai.cpp                            // useless, no media
 //indiana.cpp                          // mnw, seems useless
 //indigo.cpp                           // mnw, black screen
@@ -464,7 +464,7 @@ intv.cpp
 iq151.cpp
 //iqunlim.cpp                          // skel
 //iris3130.cpp                         // unix workstation, skel
-irisha.cpp
+//irisha.cpp                           // no media
 //iris_power.cpp                       // unix workstation, skel
 //is48x.cpp                            // skel
 //isbc.cpp                             // fails while booting
@@ -473,25 +473,25 @@ irisha.cpp
 //iskr103x.cpp                         // needs boot disk, no swlist
 //itc4.cpp                             // temperature controller
 //itt1700.cpp                          // terminal
-itt3030.cpp
+//itt3030.cpp                          // works but impossible to use
 //itt9216.cpp                          // terminal
 //jade.cpp
-jazz.cpp
-//jensen.cpp
-//jonos.cpp
+//jazz.cpp                             // unix workstation, how to use?
+//jensen.cpp                           // unix workstation? skel
+//jonos.cpp                            // terminal
 //jornada.cpp                          // skel
 jr100.cpp
 jr200.cpp
 jtc.cpp
 juicebox.cpp
 juku.cpp
-junior.cpp
+//junior.cpp                           // no media
 //junior80.cpp                         // skel
-//juno106.cpp
-//juno6.cpp
+//juno106.cpp                          // synth
+//juno6.cpp                            // synth
 jupace.cpp
-//jupiter.cpp
-//k1003.cpp
+//jupiter.cpp                          // skel
+//k1003.cpp                            // kbd issues
 k28.cpp
 //k8915.cpp
 //kawai_k1.cpp
