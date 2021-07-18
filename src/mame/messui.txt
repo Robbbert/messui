@@ -322,6 +322,7 @@ fidel_eag68k.cpp
 fidel_eldorado.cpp
 fidel_elite.cpp
 fidel_excel.cpp
+fidel_msc.cpp
 //fidel_phantom.cpp                    // not working?
 fidel_sc12.cpp
 fidel_sc6.cpp
@@ -343,15 +344,14 @@ galaxy.cpp
 galeb.cpp
 gamate.cpp
 gamecom.cpp
-//gamecube.cpp
+//gamecube.cpp                         // skel
 gameking.cpp
-gamemachine.cpp
+//gamemachine.cpp                      // are you serious?
 gamepock.cpp
 gb.cpp
 gba.cpp
-fidel_msc.cpp
-//gem_rp.cpp                           // synth, skel
-//generalplus_gpl_unknown.cpp          // skeleton
+//gem_rp.cpp                           // synth
+//generalplus_gpl_unknown.cpp          // skel
 generalplus_gpl162xx_lcdtype.cpp
 //generalplus_gpl16250_mobigo.cpp      // no games in this file
 //generalplus_gpl16250_nand.cpp        // not working
@@ -360,22 +360,22 @@ generalplus_gpl162xx_lcdtype.cpp
 //generalplus_gpl16250_spi.cpp         // not working
 //generalplus_gpl16250_spi_direct.cpp  // mnw
 //generalplus_gpl32612.cpp             // not working
-geneve.cpp
-geniusiq.cpp
-//geniusjr.cpp
+//geneve.cpp                           // no software, no swlist. Only disk I have crashes 2nd time around.
+//geniusiq.cpp                         // no software, no swlist
+//geniusjr.cpp                         // crash at start
 genpc.cpp
 gigatron.cpp
-gimix.cpp
-//gkidabc.cpp
-//gizmondo.cpp
-//glcx.cpp
+//gimix.cpp                            // regressed, cannot boot disk
+//gkidabc.cpp                          // skel
+//gizmondo.cpp                         // skel
+//glcx.cpp                             // skel
 gmaster.cpp
-//gnat10.cpp
-goupil.cpp
-//gp2x.cpp
+//gnat10.cpp                           // cp/m, skel
+//goupil.cpp                           // no software, no swlist
+//gp2x.cpp                             // mnw
 gp32.cpp
-//grfd2301.cpp
-//gridcomp.cpp
+//grfd2301.cpp                         // network device
+//gridcomp.cpp                         // crash at start
 gs6502.cpp
 gs6809.cpp
 gscpm.cpp
