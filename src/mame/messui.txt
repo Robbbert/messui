@@ -255,50 +255,50 @@ dragon.cpp
 //dvk_kcgd.cpp                         // no media
 //dvk_ksm.cpp                          // terminal
 e100.cpp
-//e9161.cpp
-//eacc.cpp
+//e9161.cpp                            // terminal
+//eacc.cpp                             // wbdnu
 //easy_karaoke.cpp                     // skel
 ec184x.cpp
 //ec65.cpp                             // no media
-//ec7915.cpp
+//ec7915.cpp                           // terminal
 einstein.cpp
-//eispc.cpp
+//eispc.cpp                            // no software
 elan_ep3a19a.cpp
 elan_eu3a05.cpp
-//elan_eu3a14.cpp
+//elan_eu3a14.cpp                      // starts but can't play
 electron.cpp
 elekscmp.cpp
-//elektronmono.cpp
+//elektronmono.cpp                     // synth
 //elf.cpp                              // trainer, not working
 elwro800.cpp
 //elzet80.cpp                          // skel
 //emax.cpp                             // skel
 emma2.cpp
-//emu2.cpp
-//emu3.cpp
-//emu68k.cpp                           //synth
-//enmirage.cpp
+//emu2.cpp                             // synth
+//emu3.cpp                             // synth
+//emu68k.cpp                           // synth
+//enmirage.cpp                         // synth
 ep64.cpp
-//epic14e.cpp
-//ergo201.cpp
-//esprit.cpp
-//esq1.cpp
-//esq5505.cpp
-//esqasr.cpp
-//esqkt.cpp
-//esqmr.cpp
+//epic14e.cpp                          // terminal
+//ergo201.cpp                          // terminal
+//esprit.cpp                           // terminal
+//esq1.cpp                             // synth
+//esq5505.cpp                          // synth
+//esqasr.cpp                           // synth
+//esqkt.cpp                            // synth
+//esqmr.cpp                            // synth
 et3400.cpp
 eti660.cpp
-//eurit.cpp
-eurocom2.cpp
+//eurit.cpp                            // payphone
+//eurocom2.cpp                         // useless?
 europc.cpp
-//eva.cpp
-//evmbug.cpp
+//eva.cpp                              // voice alert?
+//evmbug.cpp                           // mnw
 //ews4800.cpp                          // skeleton
 excali64.cpp
-//exelv.cpp
-exorciser.cpp
-//exorterm.cpp                         //terminal
+//exelv.cpp                            // mnw, no kbd
+//exorciser.cpp                        // useless? no swlist
+//exorterm.cpp                         // terminal
 exp85.cpp
 //facit4440.cpp
 //falco5220.cpp
