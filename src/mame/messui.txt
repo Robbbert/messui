@@ -300,15 +300,15 @@ excali64.cpp
 //exorciser.cpp                        // useless? no swlist
 //exorterm.cpp                         // terminal
 exp85.cpp
-//facit4440.cpp
-//falco5220.cpp
-//falcots.cpp
-//fanucs15.cpp
-//fanucspmg.cpp
-//fb01.cpp
+//facit4440.cpp                        // terminal
+//falco5220.cpp                        // terminal
+//falcots.cpp                          // terminal
+//fanucs15.cpp                         // skel
+//fanucspmg.cpp                        // mnw, no software
+//fb01.cpp                             // synth
 fc100.cpp
-fccpu20.cpp
-//fccpu30.cpp
+//fccpu20.cpp                          // no media
+//fccpu30.cpp                          // mnw, no software
 fidel_as12.cpp
 fidel_card.cpp
 fidel_cc1.cpp
@@ -316,29 +316,29 @@ fidel_cc10.cpp
 fidel_cc7.cpp
 fidel_chesster.cpp
 fidel_csc.cpp
-fidel_dames.cpp
+//fidel_dames.cpp                      // doesn't remove taken pieces, gets confused after a while
 fidel_desdis.cpp
 fidel_eag68k.cpp
 fidel_eldorado.cpp
 fidel_elite.cpp
 fidel_excel.cpp
-fidel_phantom.cpp
+//fidel_phantom.cpp                    // not working?
 fidel_sc12.cpp
 fidel_sc6.cpp
 fidel_sc8.cpp
 fidel_sc9.cpp
 fidel_vcc.cpp
 fidel_vsc.cpp
-//fk1.cpp
+//fk1.cpp                              // mnw, cp/m, no media
 fm7.cpp
 fmtowns.cpp
-//fontwriter.cpp
-force68k.cpp
-//fp1100.cpp
+//fontwriter.cpp                       // printer
+//force68k.cpp                         // no software
+//fp1100.cpp                           // mnw
 fp200.cpp
 fp6000.cpp
-//fs3216.cpp
-ft68m.cpp
+//fs3216.cpp                           // no kbd, no software
+//ft68m.cpp                            // no media
 galaxy.cpp
 galeb.cpp
 gamate.cpp
