@@ -10,6 +10,9 @@ copy /Y %from\src\devices\bus\nes\nes_unif.hxx      %to%\src\devices\bus\nes
 md %to%\src\devices\bus\snes
 copy /Y %from\src\devices\bus\snes\snes_slot.cpp    %to%\src\devices\bus\snes
 
+md %to%\src\devices\bus\saitek_osa
+copy /Y %from%\src\devices\bus\saitek_osa\maestro.cpp %to%\src\devices\bus\saitek_osa
+
 md %to%\src\emu\debug
 copy /Y %from%\src\emu\diimage.cpp                  %to%\src\emu
 copy /Y %from%\src\emu\emuopts.*                    %to%\src\emu
