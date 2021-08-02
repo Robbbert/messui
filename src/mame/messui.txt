@@ -80,6 +80,7 @@ applix.cpp
 apricot.cpp
 //apricotf.cpp                         // fd issues
 //apricotp.cpp                         // black screen
+//apxen.cpp                            // skel
 aquarius.cpp
 arcadia.cpp
 argo.cpp
@@ -247,6 +248,7 @@ dmv.cpp
 //dolphunk.cpp                         // no media (cassette routines are in missing rom)
 //dpb7000.cpp                          // no kbd
 dps1.cpp
+//dpsv55.cpp                           // synth
 dragon.cpp
 //drumsta.cpp                          // synth
 //dsb46.cpp                            // no media
@@ -406,7 +408,7 @@ hh_ucom4.cpp
 homelab.cpp
 //homez80.cpp                          // bugfest, no media
 //horizon.cpp                          // skel
-hp_ipc.cpp                           // useless
+hp_ipc.cpp
 //hp16500.cpp                          // mnw
 //hp2100.cpp                           // skel
 //hp2620.cpp                           // terminal
