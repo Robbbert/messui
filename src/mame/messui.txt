@@ -371,6 +371,7 @@ gigatron.cpp
 //gkidabc.cpp                          // skel
 //gizmondo.cpp                         // skel
 //glcx.cpp                             // skel
+//gm1000.cpp                           // synth
 gmaster.cpp
 //gnat10.cpp                           // cp/m, skel
 //goupil.cpp                           // no software, no swlist
@@ -1194,6 +1195,8 @@ xor100.cpp
 //ymmu50.cpp
 //ymmu80.cpp
 //ymmu100.cpp
+//ympsr16.cpp                          // synth
+//ympsr40.cpp                          // synth
 //ympsr60.cpp                    // synth skel
 //ympsr340.cpp                // MNW, synth
 //ymsy35.cpp                 // skel, synth
