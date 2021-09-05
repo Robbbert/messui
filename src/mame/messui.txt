@@ -761,12 +761,15 @@ pc.cpp
 pc1512.cpp
 //pc2000.cpp
 pc4.cpp
+//pc98ha.cpp                           // mnw
 pc6001.cpp
 pc8001.cpp
 //pc8401a.cpp
 pc8801.cpp
 //pc88va.cpp
 pc9801.cpp
+//pc9801_epson.cpp                     // mnw
+pc9821.cpp
 pcd.cpp
 pce.cpp
 pce220.cpp
