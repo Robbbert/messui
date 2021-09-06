@@ -24,7 +24,7 @@
 #include <climits>
 #include <algorithm>
 
-#ifdef WIN32
+#ifdef _WIN32
 #include "pa_win_wasapi.h"
 #endif
 
@@ -221,7 +221,7 @@ int sound_pa::init(osd_options const &options)
 	if (stream_params.suggestedLatency > 0.25)
 		stream_params.suggestedLatency = 0.25;
 
-#ifdef WIN32
+#ifdef _WIN32
 	PaWasapiStreamInfo wasapi_stream_info;
 
 	// if requested latency is less than 20 ms, we need to use exclusive mode
