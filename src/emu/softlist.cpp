@@ -189,7 +189,7 @@ public:
 	// construction (== execution)
 	softlist_parser(
 			util::read_stream &file,
-			std::string filename,
+			std::string_view filename,
 			std::string &listname,
 			std::string &description,
 			std::list<software_info> &infolist,
@@ -257,7 +257,7 @@ private:
 
 softlist_parser::softlist_parser(
 		util::read_stream &file,
-		std::string filename,
+		std::string_view filename,
 		std::string &listname,
 		std::string &description,
 		std::list<software_info> &infolist,
@@ -561,7 +561,7 @@ void softlist_parser::parse_main_start(const char *tagname, const char **attribu
 
 		if (!attrvalues[0].empty())
 		{
-			m_infolist.emplace_back(std::string(attrvalues[0]), std::string(attrvalues[1]), attrvalues[2]);
+			m_infolist.emplace_back(std::string(attrvalues[0]), std::string(attrvalues[1]), std::string(attrvalues[2]));
 			m_current_info = &m_infolist.back();
 		}
 		else
@@ -911,7 +911,7 @@ void softlist_parser::parse_soft_end(const char *tagname)
 
 void parse_software_list(
 		util::read_stream &file,
-		std::string filename,
+		std::string_view filename,
 		std::string &listname,
 		std::string &description,
 		std::list<software_info> &infolist,

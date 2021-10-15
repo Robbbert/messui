@@ -162,7 +162,7 @@ private:
 // parses a software list
 void parse_software_list(
 		util::read_stream &file,
-		std::string filename,
+		std::string_view filename,
 		std::string &listname,
 		std::string &description,
 		std::list<software_info> &infolist,
