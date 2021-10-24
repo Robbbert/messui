@@ -207,6 +207,7 @@ cortex.cpp
 //crimson.cpp                          // workstation, no media
 crvision.cpp
 ct486.cpp
+//ctk551.cpp                           // synth
 //cvicny.cpp                           // trainer, no media
 cxg_ch2001.cpp
 cxg_dominator.cpp
