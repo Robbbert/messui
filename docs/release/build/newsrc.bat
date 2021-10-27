@@ -28,8 +28,10 @@ md %to%\src\frontend\mame\ui
 copy /Y %from%\src\frontend\mame\mameopts.*         %to%\src\frontend\mame
 copy /Y %from%\src\frontend\mame\audit.*            %to%\src\frontend\mame
 copy /Y %from%\src\frontend\mame\language.cpp       %to%\src\frontend\mame
+copy /Y %from%\src\frontend\mame\ui\about.cpp       %to%\src\frontend\mame\ui
 copy /Y %from%\src\frontend\mame\ui\inifile.cpp     %to%\src\frontend\mame\ui
 copy /Y %from%\src\frontend\mame\ui\ui.cpp          %to%\src\frontend\mame\ui
+copy /Y %from%\src\frontend\mame\ui\ui.h            %to%\src\frontend\mame\ui
 
 md %to%\src\lib\util
 copy /Y %from%\src\lib\util\options.*               %to%\src\lib\util
