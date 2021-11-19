@@ -208,6 +208,7 @@ cortex.cpp
 crvision.cpp
 ct486.cpp
 //ctk551.cpp                           // synth
+//ctk2000.cpp                          // mnw, no media
 //cvicny.cpp                           // trainer, no media
 cxg_ch2001.cpp
 cxg_dominator.cpp
@@ -303,6 +304,7 @@ excali64.cpp
 //exorciser.cpp                        // useless? no swlist
 //exorterm.cpp                         // terminal
 exp85.cpp
+//f387x.cpp                            // seems useless, no media
 //facit4440.cpp                        // terminal
 //falco5220.cpp                        // terminal
 //falcots.cpp                          // terminal
@@ -1023,6 +1025,7 @@ svmu.cpp
 sym1.cpp
 //symbolics.cpp                      // skel
 //synthex.cpp                        // synth
+//sys1121.cpp                          // useless, no media
 //sys2900.cpp                        // skel
 //sys9002.cpp                        // term
 //systec.cpp                         // needs boot disk but no swlist
