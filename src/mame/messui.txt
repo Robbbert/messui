@@ -1012,7 +1012,6 @@ studio2.cpp
 //sun4.cpp                           // mnw
 //super6.cpp                         // floppy broke in new fd system
 super80.cpp
-superga2.cpp
 superslave.cpp
 supracan.cpp
 sv8000.cpp
