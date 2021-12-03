@@ -449,6 +449,7 @@ ibmpcjr.cpp
 //iez80.cpp                            // useless
 //if800.cpp                            // skel
 //ikt5a.cpp                            // terminal
+im01.cpp                               // russian chess game
 //imds2.cpp                            // no software, no swlist
 //imsai.cpp                            // useless, no media
 //indiana.cpp                          // mnw, seems useless
