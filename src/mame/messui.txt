@@ -117,7 +117,6 @@ bbcbc.cpp
 bcs3.cpp
 //bebox.cpp                            // mnw
 bert.cpp
-//besta.cpp                            // mnw
 //beta.cpp                             // cart->no software
 //betacam.cpp                          // skel
 //bigbord2.cpp                         // fd->no software
@@ -395,6 +394,7 @@ h89.cpp
 //hazeltin.cpp                         // terminal
 //hazl1420.cpp                         // terminal
 h01x.cpp
+//hds200.cpp                           // terminal
 hec2hrp.cpp
 hektor.cpp
 hh_amis2k.cpp
