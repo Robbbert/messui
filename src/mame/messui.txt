@@ -35,6 +35,7 @@ agat.cpp
 //aid80f.cpp                           // skel
 aim65.cpp
 //aim65_40.cpp                         // skel
+//airbase99.cpp                        // synth
 //akaiax80.cpp                         // synth
 //akaivx600.cpp                        // synth
 //alcat7100.cpp                        // terminal
@@ -502,6 +503,7 @@ jupace.cpp
 //k1003.cpp                            // kbd issues
 k28.cpp
 //k8915.cpp
+//kawai_acr20.cpp                      // synth
 //kawai_k1.cpp
 //kawai_k4.cpp
 //kawai_k5.cpp
@@ -1101,6 +1103,7 @@ trs80m3.cpp
 //ts803.cpp
 //ts816.cpp
 //ts3000.cpp
+//tsconf.cpp                           // mnw, stuck on bios screen
 //tsispch.cpp
 //tulip1.cpp
 tutor.cpp
@@ -1210,6 +1213,7 @@ xor100.cpp
 //ympsr40.cpp                          // synth
 //ympsr60.cpp                    // synth skel
 //ympsr340.cpp                // MNW, synth
+//ymrx15.cpp                           // synth
 //ymsy35.cpp                 // skel, synth
 //ymtx81z.cpp
 //ymvl70.cpp
@@ -1217,6 +1221,7 @@ xor100.cpp
 z1013.cpp
 //z22.cpp
 //z29.cpp
+//z80clock.cpp                         // useless
 z80dev.cpp
 z80ne.cpp
 z88.cpp
