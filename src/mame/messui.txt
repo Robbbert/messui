@@ -26,6 +26,7 @@ acrnsys.cpp
 //acvirus.cpp                          // skel
 //adacp150.cpp                         // printer
 adam.cpp
+//adds2020.cpp                         // terminal
 //adm11.cpp                            // terminal
 //adm23.cpp                            // terminal
 //adm31.cpp                            // terminal
@@ -308,6 +309,7 @@ exp85.cpp
 //facit4440.cpp                        // terminal
 //falco5220.cpp                        // terminal
 //falcots.cpp                          // terminal
+//falcots28.cpp                        // terminal
 //fanucs15.cpp                         // skel
 //fanucspmg.cpp                        // mnw, no software
 //fb01.cpp                             // synth
