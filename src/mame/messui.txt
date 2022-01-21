@@ -242,6 +242,7 @@ dg680.cpp
 didact.cpp
 //digel804.cpp                         // eprom programmer
 //digijet.cpp                          // car mcu
+//digilog320.cpp                       // skeleton
 dim68k.cpp
 //dm7000.cpp                           // mnw, no media
 //dmax8000.cpp                         // cannot boot floppy
@@ -307,7 +308,7 @@ excali64.cpp
 exp85.cpp
 //f387x.cpp                            // seems useless, no media
 //facit4440.cpp                        // terminal
-//falco5220.cpp                        // terminal
+//falco500.cpp                         // terminal
 //falcots.cpp                          // terminal
 //falcots28.cpp                        // terminal
 //fanucs15.cpp                         // skel
