@@ -243,6 +243,7 @@ didact.cpp
 //digel804.cpp                         // eprom programmer
 //digijet.cpp                          // car mcu
 //digilog320.cpp                       // skeleton
+//digilog400.cpp                       // logic analyser, skel
 dim68k.cpp
 //dm7000.cpp                           // mnw, no media
 //dmax8000.cpp                         // cannot boot floppy
@@ -537,6 +538,7 @@ laser3k.cpp
 //lbpc.cpp
 lc80.cpp
 lcmate2.cpp
+//ld50.cpp                             // synth
 //leapfrog_iquest.cpp                  // skel
 //leapfrog_leappad.cpp
 //leapfrog_leapster_explorer.cpp       // skel, hangs mame
