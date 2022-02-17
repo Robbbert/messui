@@ -669,6 +669,7 @@ kontest.cpp
 kopunch.cpp
 kpontoon.cpp
 kpython.cpp
+krokha.cpp
 ksayakyu.cpp
 ksys573.cpp
 kungfur.cpp
@@ -995,6 +996,7 @@ playcenter.cpp
 plsonic4.cpp
 pluto5.cpp
 plygonet.cpp
+pmc.cpp
 pntnpuzl.cpp
 pokechmp.cpp
 poker72.cpp
@@ -1466,7 +1468,6 @@ welltris.cpp
 wgp.cpp
 wheelfir.cpp
 whitestar.cpp
-white_mod.cpp
 wico.cpp
 wildpkr.cpp
 williams.cpp

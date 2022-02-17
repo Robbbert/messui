@@ -9491,6 +9491,7 @@ watrball                        // (c) 1996 ABM
 blasto                          // [1978 Gremlin]
 blockade                        // 1-4 [1977 Gremlin]
 comotion                        // 5-7 [1977 Gremlin]
+comotionp                       // [Gremlin, US patent 4,089,524]
 hustle                          // 16-21 [1977 Gremlin]
 mineswpr                        // [1977 Amutech]
 mineswpr4                       // [1977 Amutech]
@@ -9610,10 +9611,11 @@ braiplus                        //
 
 @source:brkthru.cpp
 brkthru                         // (c) 1986 Data East USA (US)
+brkthrubl                       // bootleg
 brkthruj                        // (c) 1986 Data East Corporation (Japan)
 brkthrut                        // (c) 1986 Data East Corporation (Tecfri license)
 darwin                          // (c) 1986 Data East Corporation (Japan)
-forcebrk                        // (c) 1986 Data East Corporation (Japan)
+forcebrk                        // bootleg
 
 @source:bsktball.cpp
 bsktball                        // 034756-034766    1979/05 [6502]
@@ -12365,6 +12367,7 @@ ctisland                        // 16 1982.02 Treasure Island
 ctisland2                       // 16
 ctisland3                       // 16
 ctornado                        // 20 1982.05 Tornado
+ctower                          // 1981.03 The Tower
 ctsttape                        // ?
 czeroize                        // 37 1983.10 Zeroize
 decocass                        //
@@ -13822,6 +13825,7 @@ cbully                          // (c) 1991 Falgas
 
 @source:famibox.cpp
 famibox                         // 1986
+famistat                        // 1986
 
 @source:fantland.cpp
 borntofi                        // (c) International Games?
@@ -15538,6 +15542,7 @@ adpoker                         // 198?, Unknown
 animpkr                         // 198?, Unknown
 bchancep                        // 198?, Unknown
 bchanceq                        // 198?, Unknown
+boasorte                        // 198?, Unknown
 bonuspkr                        // 1984, Galanthis Inc.
 brasil86                        // 1986, Unknown
 brasil87                        // 1987, Unknown
@@ -16810,6 +16815,7 @@ girotutt                        // (c) 2000 High Video
 grancapi                        // (c) 2000 High Video
 magicbom                        // (c) 2000 High Video
 newmcard                        // (c) 19?? unknown
+newtiger                        // (c) 200? unknown
 nyjoker                         //
 record                          // (c) 2000 High Video
 tour4000                        // (c) 2000 High Video
@@ -17150,6 +17156,7 @@ amazoni2                        // (c) 2002
 amazonia                        // (c) 1999
 amazonkp                        // (c) 1999
 chessc2                         // (c) 200?
+extradrw                        // (c) 200?
 fruitpar                        // (c) 200?
 gonefsh2                        // (c) 200?
 haunthig                        // (c) 200?
@@ -35584,6 +35591,9 @@ polynetw                        // GX305 too? (c) 1993
 @source:pm68k.cpp
 pm68k                           //
 
+@source:pmc.cpp
+unkpmc
+
 @source:pmd85.cpp
 alfa                            // Alfa (PMD-85.1 clone)
 c2717                           // Consul 2717 (PMD-85.2 clone)
@@ -42511,7 +42521,8 @@ videopkr                        // (c) 1984 InterFlip
 jokrlady                        //
 ladygum                         //
 paradar                         //
-unkvsaa                         //
+scratch                         //
+toureiff                        //
 winner                          //
 
 @source:vigilant.cpp
@@ -42892,7 +42903,20 @@ wgpu                            // C32 (c) 1989 Taito America Corporation (US)
 @source:wheelfir.cpp
 wheelfir                        // (c) 199? TCH
 
-@source:white_mod.cpp
+@source:whitestar.cpp
+apollo13                        //
+apollo13_10                     //
+apollo13_20                     //
+apollo13_d4                     //
+aust201                         //
+aust300                         //
+aust301                         //
+austin                          //
+austinf                         //
+austing                         //
+austini                         //
+austnew                         //
+ctchzdlx                        //
 dalejr                          //
 elvisf                          //
 elvisf302                       //
@@ -42914,6 +42938,12 @@ elvisp                          //
 elvisp302                       //
 elvisp303                       //
 elvisp4                         //
+gldneye                         //
+gldneye_402                     //
+godzillp                        //
+godzillp_090                    //
+godzillp_100                    //
+goldcue                         //
 gprix                           //
 gprix_301                       //
 gprix_340                       //
@@ -42944,6 +42974,46 @@ gprixl_340                      //
 gprixl_350                      //
 gprixl_352                      //
 gprixl_400                      //
+harl_a10                        //
+harl_a13                        //
+harl_a18                        //
+harl_a30                        //
+harl_a40                        //
+harl_f13                        //
+harl_f18                        //
+harl_f30                        //
+harl_f40                        //
+harl_g13                        //
+harl_g18                        //
+harl_g30                        //
+harl_g40                        //
+harl_i13                        //
+harl_i18                        //
+harl_i30                        //
+harl_i40                        //
+harl_l13                        //
+harl_l18                        //
+harl_l30                        //
+harl_l40                        //
+harl_u13                        //
+hirol_fr                        //
+hirol_gr                        //
+hirol_gr_210                    //
+hirol_it                        //
+hirolcas                        //
+hirolcas_210                    //
+hirolcat                        //
+hironew                         //
+id4                             //
+id4_201                         //
+id4f                            //
+id4f_201                        //
+jplstw20                        //
+jplstw22                        //
+lostspc                         //
+lostspcf                        //
+lostspcg                        //
+lostspc_d1                      //
 lotr                            //
 lotr_fr                         //
 lotr_fr401                      //
@@ -42990,6 +43060,17 @@ lotr6                           //
 lotr7                           //
 lotr8                           //
 lotr9                           //
+mononew                         //
+monop233                        //
+monop251                        //
+monop301                        //
+monop303                        //
+monopolf                        //
+monopolg                        //
+monopoli                        //
+monopoll                        //
+monopolp                        //
+monopred                        //
 nascar                          //
 nascar_301                      //
 nascar_340                      //
@@ -43002,123 +43083,6 @@ nascarl_340                     //
 nascarl_350                     //
 nascarl_352                     //
 nascarl_400                     //
-rip300                          //
-rip301                          //
-rip302                          //
-rip310                          //
-ripf300                         //
-ripf301                         //
-ripf302                         //
-ripf310                         //
-ripg300                         //
-ripg301                         //
-ripg302                         //
-ripg310                         //
-ripi300                         //
-ripi301                         //
-ripi302                         //
-ripi310                         //
-ripl300                         //
-ripl301                         //
-ripl302                         //
-ripl310                         //
-ripleys                         //
-ripleysf                        //
-ripleysg                        //
-ripleysi                        //
-ripleysl                        //
-sopranof                        //
-sopranof_107                    //
-sopranof_300                    //
-sopranof_400                    //
-sopranog                        //
-sopranog_107                    //
-sopranog_300                    //
-sopranog_400                    //
-sopranoi                        //
-sopranoi_107                    //
-sopranoi_300                    //
-sopranoi_400                    //
-sopranol                        //
-sopranol_107                    //
-sopranol_300                    //
-sopranol_400                    //
-sopranos                        //
-sopranos_204                    //
-sopranos_300                    //
-sopranos_400                    //
-
-@source:whitestar.cpp
-apollo13                        //
-apollo13_10                     //
-apollo13_20                     //
-apollo13_d4                     //
-aust201                         //
-aust300                         //
-aust301                         //
-austin                          //
-austinf                         //
-austing                         //
-austini                         //
-austnew                         //
-ctchzdlx                        //
-gldneye                         //
-gldneye_402                     //
-godzillp                        //
-godzillp_090                    //
-godzillp_100                    //
-goldcue                         //
-harl_a10                        //
-harl_a13                        //
-harl_a18                        //
-harl_a30                        //
-harl_a40                        //
-harl_f13                        //
-harl_f18                        //
-harl_f30                        //
-harl_f40                        //
-harl_g13                        //
-harl_g18                        //
-harl_g30                        //
-harl_g40                        //
-harl_i13                        //
-harl_i18                        //
-harl_i30                        //
-harl_i40                        //
-harl_l13                        //
-harl_l18                        //
-harl_l30                        //
-harl_l40                        //
-harl_u13                        //
-hirol_fr                        //
-hirol_gr                        //
-hirol_gr_210                    //
-hirol_it                        //
-hirolcas                        //
-hirolcas_210                    //
-hirolcat                        //
-hironew                         //
-id4                             //
-id4_201                         //
-id4f                            //
-id4f_201                        //
-jplstw20                        //
-jplstw22                        //
-lostspc                         //
-lostspcf                        //
-lostspcg                        //
-lostspc_d1                      //
-mononew                         //
-monop233                        //
-monop251                        //
-monop301                        //
-monop303                        //
-monopolf                        //
-monopolg                        //
-monopoli                        //
-monopoll                        //
-monopolp                        //
-monopred                        //
 nfl                             //
 playboyf                        //
 playboyf_203                    //
@@ -43171,6 +43135,31 @@ rctycnl                         //
 rctycnl_400                     //
 rctycnl_600                     //
 rctycnl_701                     //
+rip300                          //
+rip301                          //
+rip302                          //
+rip310                          //
+ripf300                         //
+ripf301                         //
+ripf302                         //
+ripf310                         //
+ripg300                         //
+ripg301                         //
+ripg302                         //
+ripg310                         //
+ripi300                         //
+ripi301                         //
+ripi302                         //
+ripi310                         //
+ripl300                         //
+ripl301                         //
+ripl302                         //
+ripl310                         //
+ripleys                         //
+ripleysf                        //
+ripleysg                        //
+ripleysi                        //
+ripleysl                        //
 shrknew                         //
 shrky_207                       //
 shrkyfr                         //
@@ -43199,6 +43188,26 @@ simpprty                        //
 simpprty_204                    //
 simpprty_300                    //
 simpprty_400                    //
+sopranof                        //
+sopranof_107                    //
+sopranof_300                    //
+sopranof_400                    //
+sopranog                        //
+sopranog_107                    //
+sopranog_300                    //
+sopranog_400                    //
+sopranoi                        //
+sopranoi_107                    //
+sopranoi_300                    //
+sopranoi_400                    //
+sopranol                        //
+sopranol_107                    //
+sopranol_300                    //
+sopranol_400                    //
+sopranos                        //
+sopranos_204                    //
+sopranos_300                    //
+sopranos_400                    //
 spacejam                        //
 spacejam_200                    //
 spacejmf                        //
@@ -43711,6 +43720,7 @@ wy100                           // WY-100
 wy120                           // WY-120
 wy150                           // WY-150
 wy160                           // WY-160
+wy325                           // WY-325
 
 @source:wy30p.cpp
 wy30p                           // WY-30+
