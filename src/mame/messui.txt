@@ -528,7 +528,6 @@ kim1.cpp
 //korgws.cpp                           //synth
 //korgz3.cpp
 kramermc.cpp
-krokha.cpp
 //kron.cpp
 //krz2000.cpp
 //ktm3.cpp
