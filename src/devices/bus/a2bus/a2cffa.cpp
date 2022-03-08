@@ -17,7 +17,8 @@
 #include "imagedev/harddriv.h"
 #include "bus/ata/ataintf.h"
 
-#include "softlist_dev.h"
+#include "fileio.h"
+#include "softlist.h"
 
 
 namespace {

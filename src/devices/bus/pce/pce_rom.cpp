@@ -12,6 +12,9 @@
 #include "emu.h"
 #include "pce_rom.h"
 
+#include "fileio.h"
+
+
 
 
 //-------------------------------------------------
