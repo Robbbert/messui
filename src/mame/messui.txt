@@ -199,6 +199,7 @@ comx35.cpp
 //concept.cpp                          // no kbd, no software
 conchess.cpp
 conic_cchess2.cpp
+//conic_cchess3.cpp                    // skel
 //consola_emt.cpp                      // ticket machine
 //controlid.cpp                        // fingerprint reader
 cortex.cpp
@@ -348,6 +349,7 @@ fmtowns.cpp
 //fp1100.cpp                           // mnw
 fp200.cpp
 fp6000.cpp
+//freedom120.cpp                       // skel, terminal
 //fs3216.cpp                           // no kbd, no software
 //ft68m.cpp                            // no media
 galaxy.cpp
@@ -403,6 +405,7 @@ h01x.cpp
 hec2hrp.cpp
 hektor.cpp
 hh_amis2k.cpp
+//hh_b5000.cpp                         // mnw
 hh_cop400.cpp
 hh_cops1.cpp
 hh_hmcs40.cpp
@@ -655,6 +658,7 @@ mk14.cpp
 mk1forth.cpp
 //mk85.cpp
 //mk90.cpp
+//mk98.cpp                             // not usable
 mkit09.cpp
 //ml20.cpp
 mmd1.cpp
@@ -788,6 +792,7 @@ pce220.cpp
 //pcfx.cpp
 pcipc.cpp
 pcm.cpp
+//pcmx2.cpp                            // skel
 pcw.cpp
 //pcw16.cpp
 //pda600.cpp
