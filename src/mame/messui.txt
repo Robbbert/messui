@@ -903,6 +903,7 @@ rmnimbus.cpp
 //roland_sc55.cpp
 //roland_sc88.cpp
 //roland_tb303.cpp
+//roland_tnsc1.cpp                     // skel
 //roland_tr505.cpp                // synth
 //roland_tr606.cpp
 //roland_tr707.cpp
