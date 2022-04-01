@@ -30,6 +30,7 @@ To create the graphical frontend build:
 make subtarget=mess OSD=messui
 ```
 
+For MESSUI, you must use GCC 10.1 - later versions will compile but crash at start.
 
 
 Where can I find out more?
