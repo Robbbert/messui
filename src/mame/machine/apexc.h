@@ -50,7 +50,7 @@ public:
 private:
 	virtual void device_start() override { }
 
-	int m_writable;
+	int m_writable = 0;
 };
 
 /*

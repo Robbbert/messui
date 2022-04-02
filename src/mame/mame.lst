@@ -15607,10 +15607,14 @@ genie                           // (c) 198? Video Fun Games Ltd.
 geniea                          // 198?, Unknown
 goldnpkb                        // (c) 1981 Bonanza
 goldnpkc                        // Bootleg
+goldnpkd                        // Bootleg
+goldnpke                        // Intercoast (bootleg)
+goldnpkf                        // Intercoast (bootleg)
 goldnpkr                        // (c) 1981 Bonanza
 goodluck                        // Unknown
 jokercar                        // 199?, unknown
 maverik                         // 198?, Unknown
+maxidpkr                        // (c) 1990 Blitz System Inc
 megadpkr                        // (c) 1990 Blitz System Inc
 megadpkrb                       // (c) 1990 Blitz System Inc
 ngold                           // 198? Unknown
@@ -16442,14 +16446,6 @@ hexionb                         // bootleg
 @source:hh_amis2k.cpp
 wildfire                        // Parker Bros
 
-@source:hh_b5000.cpp
-autorace                        // Mattel
-gravity                         // Mattel
-mbaseb                          // Mattel
-mfootb                          // Mattel
-misatk                          // Mattel
-rw18r                           // Rockwell
-
 @source:hh_cop400.cpp
 bship82                         // Milton Bradley
 ctstein                         // Castle Toy
@@ -16549,6 +16545,18 @@ mwcfootb                        // Mattel
 rdqa                            // Selchow & Righter
 scrabsen                        // Selchow & Righter
 smastmind                       // Invicta
+
+@source:hh_rw5000.cpp
+autorace                        // Mattel
+gravity                         // Mattel
+mbaseb                          // Mattel
+mfootb                          // Mattel
+misatk                          // Mattel
+rw10r                           // Rockwell
+rw12r                           // Rockwell
+rw18r                           // Rockwell
+rw24k                           // Rockwell
+rw31r                           // Rockwell
 
 @source:hh_sm510.cpp
 atakaast                        // Elektronika
@@ -17469,6 +17477,9 @@ rpc86                           //
 isbc8605                        //
 isbc8630                        //
 sm1810                          //
+
+@source:isbc660.cpp
+isbc660                         // Intel iSBC 660 System Chassis
 
 @source:isbc8010.cpp
 isbc8010                        //
@@ -31725,6 +31736,9 @@ mvme162                         // (c) 1993 Motorola
 18w                             // 653 (c) 1979 Midway
 18w2                            // 653 (c) 1979 Midway
 
+@source:mw4pole.cpp
+mw4pole                         // (c) 1995 Waldorf Electronics GmbH Germany
+
 @source:mw8080bw.cpp
 280zzzap                        // 610 [1976]
 blueshrk                        // 742 [1978]
@@ -38820,13 +38834,13 @@ sidepcktj                       // (c) 1986 Data East Corporation
 sigma21                         //
 
 @source:sigmab31.cpp
-cptlucky                        // (c) 199? Sigma
+cptlucky                        // (c) 1988 Sigma
 
 @source:sigmab52.cpp
 jwildb52                        // (c) 199? Sigma
 jwildb52a                       // (c) 199? Sigma
 jwildb52h                       // (c) 199? Sigma
-s8waysfc                        // (c) 199? Sigma
+s8waysfc                        // (c) 1989 Sigma
 
 @source:sigmab98.cpp
 animalc                         // (c) 2000 Sammy

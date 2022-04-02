@@ -342,7 +342,7 @@ protected:
 	virtual const software_list_loader &get_software_list_loader() const override { return rom_software_list_loader::instance(); }
 
 private:
-	int m_type;
+	int m_type = 0;
 	device_neogeo_cart_interface*       m_cart;
 };
 
