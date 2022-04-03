@@ -184,13 +184,13 @@ int SoftwarePicker_LookupIndex(HWND hwndPicker, LPCSTR pszFilename)
 
 
 
-iodevice_t SoftwarePicker_GetImageType(HWND hwndPicker, int nIndex)
+string SoftwarePicker_GetImageType(HWND hwndPicker, int nIndex)
 {
-	iodevice_t type = IO_UNKNOWN;
+	string type = "unkn";
 	const device_image_interface *device = SoftwarePicker_LookupDevice(hwndPicker, nIndex);
 
 	if (device)
-		type = device->image_type();
+		type = string(device->image_brief_type_name());
 
 	return type;
 }
@@ -322,6 +322,30 @@ static BOOL SoftwarePicker_CalculateHash(HWND hwndPicker, int nIndex)
 }
 
 */
+
+bool uses_file_extension(device_image_interface &dev, const char *file_extension)
+{
+	bool result = false;
+
+	if (file_extension[0] == '.')
+		file_extension++;
+
+	/* find the extensions */
+	std::string extensions(dev.file_extensions());
+	char *ext = strtok((char*)extensions.c_str(),",");
+	while (ext != nullptr)
+	{
+		if (!core_stricmp(ext, file_extension))
+		{
+			result = true;
+			break;
+		}
+		ext = strtok (nullptr, ",");
+	}
+	return result;
+}
+
+
 #pragma GCC diagnostic ignored "-Wunused-but-set-variable"
 static void SoftwarePicker_RealizeHash(HWND hwndPicker, int nIndex)
 {
@@ -388,7 +412,7 @@ static BOOL SoftwarePicker_AddFileEntry(HWND hwndPicker, LPCSTR pszFilename, UIN
 		{
 			if (!dev.user_loadable())
 				continue;
-			if (dev.uses_file_extension(pszExtension))
+			if (uses_file_extension(dev, pszExtension))
 			{
 				device = &dev;
 				break;
