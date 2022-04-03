@@ -212,7 +212,7 @@ floppy_connector::floppy_connector(const machine_config &mconfig, const char *ta
 	device_t(mconfig, FLOPPY_CONNECTOR, tag, owner, clock),
 	device_slot_interface(mconfig, *this),
 	formats(nullptr),
-	m_enable_sound(false)
+	m_enable_sound(true)   // MESSUI
 {
 }
 
@@ -272,7 +272,7 @@ floppy_image_device::floppy_image_device(const machine_config &mconfig, device_t
 		image_dirty(false),
 		track_dirty(false),
 		ready_counter(0),
-		m_make_sound(false),
+		m_make_sound(true),            // MESSUI
 		m_sound_out(nullptr),
 		m_flux_screen(*this, "flux")
 {

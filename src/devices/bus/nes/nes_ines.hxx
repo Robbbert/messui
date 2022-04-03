@@ -568,7 +568,10 @@ void ines_mapr_setup( int mapper, int *pcb_id )
 {
 	const nes_mmc *mmc = nes_mapper_lookup(mapper);
 	if (mmc == nullptr)
-		fatalerror("Unimplemented Mapper %d\n", mapper);
+	{
+		osd_printf_error("Unimplemented Mapper %d\n", mapper);  // MESSUI - do not kill emulator please
+		return;
+	}
 
 	*pcb_id = mmc->pcb_id;
 }
@@ -675,6 +678,11 @@ void nes_cart_slot_device::call_load_ines()
 			vrom_size += ((header[9] & 0xf0) << 4) * 0x2000;
 	}
 	ines_mapr_setup(mapper, &pcb_id);
+	if (!pcb_id) // MESSUI this paragraph
+	{
+		printf("From nes_cart_slot_device::call_load_ines\n");
+		return;
+	}
 
 	// handle submappers
 	if (submapper)
@@ -1241,6 +1249,11 @@ const char * nes_cart_slot_device::get_default_card_ines(get_default_card_softwa
 	}
 
 	ines_mapr_setup(mapper, &pcb_id);
+	if (!pcb_id) // MESSUI this paragraph
+	{
+		printf("From nes_cart_slot_device::get_default_card_ines\n");
+		return 0;
+	}
 
 	// handle submappers
 	if (submapper)

@@ -56,7 +56,7 @@ const options_entry osd_options::s_option_entries[] =
 // OS X can be trusted to have working hardware OpenGL, so default to it on for the best user experience
 	{ OSDOPTION_VIDEO,                        OSDOPTVAL_AUTO,   OPTION_STRING,    "video output method: " },
 	{ OSDOPTION_NUMSCREENS "(1-4)",           "1",              OPTION_INTEGER,   "number of output screens/windows to create; usually, you want just one" },
-	{ OSDOPTION_WINDOW ";w",                  "0",              OPTION_BOOLEAN,   "enable window mode; otherwise, full screen mode is assumed" },
+	{ OSDOPTION_WINDOW ";w",                  "1",              OPTION_BOOLEAN,   "enable window mode; otherwise, full screen mode is assumed" },  // MESSUI
 	{ OSDOPTION_MAXIMIZE ";max",              "1",              OPTION_BOOLEAN,   "default to maximized windows" },
 	{ OSDOPTION_WAITVSYNC ";vs",              "0",              OPTION_BOOLEAN,   "enable waiting for the start of VBLANK before flipping screens (reduces tearing effects)" },
 	{ OSDOPTION_SYNCREFRESH ";srf",           "0",              OPTION_BOOLEAN,   "enable using the start of VBLANK for throttling instead of the game time" },
@@ -94,7 +94,7 @@ const options_entry osd_options::s_option_entries[] =
 	{ OSDOPTION_SWITCHRES,                    "0",              OPTION_BOOLEAN,   "enable resolution switching" },
 
 	{ nullptr,                                nullptr,          OPTION_HEADER,    "OSD ACCELERATED VIDEO OPTIONS" },
-	{ OSDOPTION_FILTER ";glfilter;flt",       "1",              OPTION_BOOLEAN,   "use bilinear filtering when scaling emulated video" },
+	{ OSDOPTION_FILTER ";glfilter;flt",       "0",              OPTION_BOOLEAN,   "use bilinear filtering when scaling emulated video" },   // MESSUI
 	{ OSDOPTION_PRESCALE "(1-8)",             "1",              OPTION_INTEGER,   "scale emulated video by this factor before applying filters/shaders" },
 
 #if USE_OPENGL

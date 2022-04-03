@@ -25,6 +25,7 @@
 #include "emu.h"
 #include "machine/x2201.h"
 
+#include "fileio.h"
 #include <algorithm>
 
 

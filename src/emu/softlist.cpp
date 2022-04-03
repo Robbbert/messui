@@ -5,6 +5,7 @@
     softlist.cpp
 
     Software list construction helpers.
+    NOTE: Many changes to keep MESSUI/MAMEUI working. Leave them alone.
 
 ***************************************************************************/
 
@@ -118,7 +119,7 @@ bool software_part::matches_interface(const char *interface_list) const noexcept
 //  software_info - constructor
 //-------------------------------------------------
 
-software_info::software_info(std::string &&name, std::string &&parent, std::string_view supported) :
+software_info::software_info(std::string &&name, std::string &&parent, const std::string &supported) :
 	m_supported(software_support::SUPPORTED),
 	m_shortname(std::move(name)),
 	m_parentname(std::move(parent))
@@ -136,13 +137,13 @@ software_info::software_info(std::string &&name, std::string &&parent, std::stri
 //  optional interface match
 //-------------------------------------------------
 
-const software_part *software_info::find_part(std::string_view part_name, const char *interface) const
+const software_part *software_info::find_part(const std::string &part_name, const char *interface) const
 {
 	// look for the part by name and match against the interface if provided
 	auto iter = std::find_if(
 		m_partdata.begin(),
 		m_partdata.end(),
-		[&part_name, interface] (const software_part &part)
+		[&](const software_part &part)
 		{
 			// try to match the part_name (or all parts if part_name is empty), and then try
 			// to match the interface (or all interfaces if interface is nullptr)
@@ -560,7 +561,7 @@ void softlist_parser::parse_main_start(const char *tagname, const char **attribu
 
 		if (!attrvalues[0].empty())
 		{
-			m_infolist.emplace_back(std::string(attrvalues[0]), std::string(attrvalues[1]), attrvalues[2]);
+			m_infolist.emplace_back(std::string(attrvalues[0]), std::string(attrvalues[1]), std::string(attrvalues[2]));
 			m_current_info = &m_infolist.back();
 		}
 		else

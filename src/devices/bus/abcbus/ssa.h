@@ -12,6 +12,7 @@
 #pragma once
 
 #include "abcbus.h"
+#include "fileio.h"
 
 
 

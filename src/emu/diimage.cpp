@@ -657,9 +657,9 @@ bool device_image_interface::load_software(software_list_device &swlist, std::st
 					return false;
 
 				if (swinfo->supported() == software_support::PARTIALLY_SUPPORTED)
-					osd_printf_error("WARNING: support for software %s (in list %s) is only partial\n", swname, swlist.list_name());
+					osd_printf_warning("WARNING: support for software %s (in list %s) is only partial\n", swname, swlist.list_name());    // MESSUI
 				else if (swinfo->supported() == software_support::UNSUPPORTED)
-					osd_printf_error("WARNING: support for software %s (in list %s) is only preliminary\n", swname, swlist.list_name());
+					osd_printf_warning("WARNING: support for software %s (in list %s) is only preliminary\n", swname, swlist.list_name());  // MESSUI
 
 				u32 crc = 0;
 				const bool has_crc = util::hash_collection(romp->hashdata()).crc(crc);

@@ -215,6 +215,11 @@ int sound_pa::init(osd_options const &options)
 
 	// 0 = use default
 	stream_params.suggestedLatency = options.pa_latency() ? options.pa_latency() : device_info->defaultLowOutputLatency;
+	// MESSUI
+	if (stream_params.suggestedLatency < 0.001)
+		stream_params.suggestedLatency = 0.001;
+	if (stream_params.suggestedLatency > 0.25)
+		stream_params.suggestedLatency = 0.25;
 
 #ifdef _WIN32
 	PaWasapiStreamInfo wasapi_stream_info;

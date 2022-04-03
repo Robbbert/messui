@@ -121,7 +121,7 @@ class software_info
 
 public:
 	// construction/destruction
-	software_info(std::string &&name, std::string &&parent, std::string_view supported);
+	software_info(std::string &&name, std::string &&parent, const std::string &supported);
 	software_info(software_info const &) = delete;
 	software_info(software_info &&) = delete;
 	software_info& operator=(software_info const &) = delete;
@@ -139,7 +139,7 @@ public:
 	const std::list<software_part> &parts() const { return m_partdata; }
 
 	// additional operations
-	const software_part *find_part(std::string_view part_name, const char *interface = nullptr) const;
+	const software_part *find_part(const std::string &part_name, const char *interface = nullptr) const;
 	bool has_multiple_parts(const char *interface) const;
 
 private:

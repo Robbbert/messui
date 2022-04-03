@@ -80,6 +80,7 @@
 #include "pc9801_memsw.h"
 
 #include "coreutil.h"
+#include "fileio.h"
 
 //**************************************************************************
 //  GLOBAL VARIABLES

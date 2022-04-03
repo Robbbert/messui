@@ -9,6 +9,8 @@
 #include "emu.h"
 #include "midwayic.h"
 
+#include "fileio.h"
+
 
 #define LOG_NVRAM           (0)
 

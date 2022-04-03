@@ -358,7 +358,7 @@ sol::object lua_engine::call_plugin(const std::string &name, sol::object in)
 		if (!res.valid())
 		{
 			sol::error err = res;
-			osd_printf_error("[LUA ERROR] in call_plugin: %s\n", err.what());
+			osd_printf_warning("[LUA ERROR] in call_plugin: %s\n", err.what());
 		}
 		else
 		{
@@ -378,7 +378,7 @@ std::optional<long> lua_engine::menu_populate(const std::string &menu, std::vect
 		if (!res.valid())
 		{
 			sol::error err = res;
-			osd_printf_error("[LUA ERROR] in menu_populate: %s\n", err.what());
+			osd_printf_warning("[LUA ERROR] in menu_populate: %s\n", err.what());
 		}
 		else
 		{
@@ -413,7 +413,7 @@ std::pair<bool, std::optional<long> > lua_engine::menu_callback(const std::strin
 		if (!res.valid())
 		{
 			sol::error err = res;
-			osd_printf_error("[LUA ERROR] in menu_callback: %s\n", err.what());
+			osd_printf_warning("[LUA ERROR] in menu_callback: %s\n", err.what());
 		}
 		else
 		{
@@ -459,7 +459,7 @@ bool lua_engine::execute_function(const char *id)
 				if (!ret.valid())
 				{
 					sol::error err = ret;
-					osd_printf_error("[LUA ERROR] in execute_function: %s\n", err.what());
+					osd_printf_warning("[LUA ERROR] in execute_function: %s\n", err.what());  // MESSUI
 				}
 				return true;
 			});
@@ -537,7 +537,7 @@ bool lua_engine::on_missing_mandatory_image(const std::string &instance_name)
 				if (!ret.valid())
 				{
 					sol::error err = ret;
-					osd_printf_error("[LUA ERROR] in on_missing_mandatory_image: %s\n", err.what());
+					osd_printf_warning("[LUA ERROR] in on_missing_mandatory_image: %s\n", err.what());  // MESSUI
 				}
 				else if (ret.get<bool>())
 				{
@@ -919,18 +919,18 @@ void lua_engine::initialize()
 							if (tmp != nullptr)
 								ctx.result = tmp;
 							else
-								osd_printf_error("[LUA ERROR] in thread: return value must be string\n");
+								osd_printf_warning("[LUA ERROR] in thread: return value must be string\n");  // MESSUI
 						}
 						else
 						{
 							sol::error err = ret;
-							osd_printf_error("[LUA ERROR] in thread: %s\n", err.what());
+							osd_printf_warning("[LUA ERROR] in thread: %s\n", err.what());  // MESSUI
 						}
 					}
 					else
 					{
 						sol::error err = res;
-						osd_printf_error("[LUA ERROR] when loading script for thread: %s\n", err.what());
+						osd_printf_warning("[LUA ERROR] when loading script for thread: %s\n", err.what());  // MESSUI
 					}
 					ctx.busy = false;
 				});
@@ -1925,7 +1925,7 @@ void lua_engine::resume(int nparam)
 	int stat = lua_resume(L, nullptr, 0);
 	if((stat != LUA_OK) && (stat != LUA_YIELD))
 	{
-		osd_printf_error("[LUA ERROR] in resume: %s\n", lua_tostring(L, -1));
+		osd_printf_warning("[LUA ERROR] in resume: %s\n", lua_tostring(L, -1));
 		lua_pop(L, 1);
 	}
 	luaL_unref(m_lua_state, LUA_REGISTRYINDEX, nparam);

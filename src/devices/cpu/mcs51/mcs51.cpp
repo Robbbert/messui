@@ -135,6 +135,7 @@
 #include "mcs51dasm.h"
 
 #include "debugger.h"
+#include "fileio.h"
 
 #define VERBOSE 0
 

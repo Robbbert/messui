@@ -1,0 +1,1272 @@
+//3do.cpp                              // mnw, no swlist
+4004clk.cpp
+//4dpi.cpp                             // unix workstation, mnw
+//68ksbc.cpp                           // useless, no media
+a2600.cpp
+a5105.cpp
+//a51xx.cpp                            // skel
+//a7150.cpp                            // mnw
+a7800.cpp
+aa310.cpp
+//aaa.cpp                              // terminal
+//abc1600.cpp                          // cannot boot floppy
+abc80.cpp
+abc80x.cpp
+ac1.cpp
+accomm.cpp
+//acd.cpp                              // skel
+//aceex.cpp                            // modem
+aci_boris.cpp
+aci_borisdpl.cpp
+aci_ggm.cpp
+aci_prodigy.cpp
+acrnsys1.cpp
+acrnsys.cpp
+//actions_atj2279b.cpp                 // skel
+//acvirus.cpp                          // skel
+//adacp150.cpp                         // printer
+adam.cpp
+//adds2020.cpp                         // terminal
+//adm11.cpp                            // terminal
+//adm23.cpp                            // terminal
+//adm31.cpp                            // terminal
+//adm36.cpp                            // terminal
+advision.cpp
+agat.cpp
+//aid80f.cpp                           // skel
+aim65.cpp
+//aim65_40.cpp                         // skel
+//airbase99.cpp                        // synth
+//akaiax80.cpp                         // synth
+//akaivx600.cpp                        // synth
+//alcat7100.cpp                        // terminal
+//alesis.cpp                           // synth
+//alesis_qs.cpp                        // synth
+//alfaskop41xx.cpp                     // skel
+//alphajuno.cpp                        // synth
+alphasma.cpp
+//alphasma3k.cpp                       // skeleton
+//alphatan.cpp                         // terminal
+alphatpx.cpp
+//alphatpc16.cpp                       // no kbd
+alphatro.cpp
+//altair.cpp                           // quik->no software
+//alto1.cpp                            // skel
+//alto2.cpp                            // mnw
+//altos2.cpp                           // terminal
+altos5.cpp
+//altos486.cpp                         // mnw
+//altos8600.cpp                        // mnw, crash on exit
+//am1000.cpp                           // skel
+amico2k.cpp
+amiga.cpp
+//ampex.cpp                            // terminal
+//ampex210.cpp                         // terminal
+ampro.cpp
+//ampscarp.cpp                         // phone
+amstr_pc.cpp
+amstrad.cpp
+//amust.cpp                            // cannot boot floppy
+//anzterm.cpp                          // useless
+apc.cpp
+apexc.cpp
+apf.cpp
+apogee.cpp
+//apollo.cpp                           // no response
+apple1.cpp
+apple2.cpp
+apple2e.cpp
+apple2gs.cpp
+apple3.cpp
+applix.cpp
+apricot.cpp
+//apricotf.cpp                         // fd issues
+//apricotp.cpp                         // black screen
+//apxen.cpp                            // skel
+aquarius.cpp
+arcadia.cpp
+argo.cpp
+//argox.cpp                            // printer
+asst128.cpp
+astrohome.cpp
+at.cpp
+atari400.cpp
+atarist.cpp
+atm.cpp
+atom.cpp
+atpci.cpp
+//att3b2.cpp                           // skel
+//att4425.cpp                          // skel
+//att610.cpp                           // skel
+//att630.cpp                           // skel
+attache.cpp
+aussiebyte.cpp
+ave_arb.cpp
+//avigo.cpp                            // useless
+//aviion88k.cpp                        // skeleton
+avrmax.cpp
+//ax20.cpp                             // fd->no software
+//b16.cpp                              // bad rom, need boot disk, no software
+//b2m.cpp                              // mnw
+//babbage.cpp                          // no media
+//banctec.cpp                          // document processor, skel
+//bandai_design_master.cpp             // skel
+//basf7100.cpp                         // boots from floppy but can't do anything
+basic52.cpp
+//basssta.cpp                          // synth
+bbc.cpp
+bbcbc.cpp
+bcs3.cpp
+//bebox.cpp                            // mnw
+bert.cpp
+//beta.cpp                             // cart->no software
+//betacam.cpp                          // skel
+//bigbord2.cpp                         // fd->no software
+binbug.cpp
+//bitel.cpp                            // terminal
+//bitgraph.cpp                         // terminal
+bk.cpp
+//blit.cpp                             // terminal
+//blw700i.cpp                          // mnw, no media
+bmjr.cpp
+bml3.cpp
+bob85.cpp
+//boss_se70.cpp                        // synth
+//boss_sx700.cpp                       // synth
+//bpmmicro.cpp                         // eprom programmer
+//br8641.cpp                           // coin counter
+//braiplus.cpp                         // skel
+bullet.cpp
+//busicom.cpp                          // broken adding-machine
+//bvm.cpp                              // monitor, skel
+bw12.cpp
+bw2.cpp
+//c10.cpp                              // skel
+c128.cpp
+//c2color.cpp                          // mnw
+c64.cpp
+//c64dtv.cpp                           // black screen, no media
+//c65.cpp                              // regressed, no media
+//c80.cpp                              // cassette nw therefore no media
+//c900.cpp                             // useless, no media
+camplynx.cpp
+candela.cpp
+//canon_s80.cpp                        // useless, no media
+//cardinal.cpp                         // terminal
+//casio_rompack.cpp                    // skel
+//casloopy.cpp                         // bad gfx, no inputs
+//cat.cpp                              // useless typewriter
+cbm2.cpp
+//cbnt2039.cpp                         // printer
+cc40.cpp
+//ccs2810.cpp                          // mnw
+//cd100.cpp                            // jukebox
+//cd2650.cpp                           // useless
+//cdc721.cpp                           // terminal
+//cdsys5.cpp                           // jukebox
+//ceres.cpp                            // workstation? mnw
+//cfx9850.cpp                          // no media, no kbd
+//cgc7900.cpp                          // mnw
+cgenie.cpp
+channelf.cpp
+//chaos.cpp                            // useless, no media
+chessmate.cpp
+chessmst.cpp
+chessmstdm.cpp
+//cit101.cpp                           // terminal
+//cit101xl.cpp                         // terminal
+//cit220.cpp                           // terminal
+//cit1500.cpp                          // terminal
+cking_master.cpp
+//ckz80.cpp                            // mnw, fd->no software
+//clcd.cpp                             // useless
+clickstart.cpp
+//clxvme186.cpp                        // bus-controller, skel
+//cm1800.cpp                           // no media
+//cmi.cpp                              // synth
+cms.cpp
+coco12.cpp
+coco3.cpp
+//codata.cpp                           // workstation? no media
+coleco.cpp
+compc.cpp
+compis.cpp
+//compmahj.cpp                         // skel
+compuchess.cpp
+compucolor.cpp
+//comquest.cpp                         // skel
+comx35.cpp
+//concept.cpp                          // no kbd, no software
+conchess.cpp
+conic_cchess2.cpp
+//conic_cchess3.cpp                    // skel
+//consola_emt.cpp                      // ticket machine
+//controlid.cpp                        // fingerprint reader
+cortex.cpp
+//cosmicos.cpp                         // mnw
+//cp1.cpp                              // trainer, no software
+//crei680.cpp                          // trainer, works but don't know how to use cassette
+//crimson.cpp                          // workstation, no media
+crvision.cpp
+ct486.cpp
+//ctk551.cpp                           // synth
+//ctk2000.cpp                          // mnw, no media
+//cvicny.cpp                           // trainer, no media
+cxg_ch2001.cpp
+cxg_dominator.cpp
+cxg_scptchess.cpp
+cxg_sphinx40.cpp
+//cxhumax.cpp                          // freezes mame
+//cybiko.cpp                           // how to use? no swlist
+//cz101.cpp                            // no media
+//d400.cpp                             // skel
+d6800.cpp
+//d6809.cpp                            // mnw
+dai.cpp
+//daruma.cpp                           // printer
+//datacast.cpp                         // what is this
+//datum.cpp                            // trainer, no media
+//dbox.cpp                             // tv settop box
+//dccons.cpp                           // hangs soon after start
+//dcebridge.cpp                        // wbdnu
+//dct11em.cpp                          // no media
+debut.cpp
+//decmate2.cpp                         // skel
+//decstation.cpp                       // unix workstation, no swlist
+//dectalk.cpp                          // useless, no media
+//decwritr.cpp                         // printer
+//dfs500.cpp                           // wbdnu
+dg680.cpp
+//dgn_beta.cpp                         // MNW
+//design.cpp                           // MNW, vending machine
+//diablo1300.cpp                       // printer?, skel
+didact.cpp
+//digel804.cpp                         // eprom programmer
+//digijet.cpp                          // car mcu
+//digilog320.cpp                       // skeleton
+//digilog400.cpp                       // logic analyser, skel
+dim68k.cpp
+//dm7000.cpp                           // mnw, no media
+//dmax8000.cpp                         // cannot boot floppy
+//dms5000.cpp                          // skel
+//dms86.cpp                            // no media
+dmv.cpp
+//dolphunk.cpp                         // no media (cassette routines are in missing rom)
+//dpb7000.cpp                          // no kbd
+dps1.cpp
+//dpsv55.cpp                           // synth
+dragon.cpp
+//drumsta.cpp                          // synth
+//dsb46.cpp                            // no media
+//dual68.cpp                           // no media
+//duet16.cpp                           // no software
+//dvk_kcgd.cpp                         // no media
+//dvk_ksm.cpp                          // terminal
+e100.cpp
+//e9161.cpp                            // terminal
+//eacc.cpp                             // wbdnu
+//easy_karaoke.cpp                     // skel
+ec184x.cpp
+//ec65.cpp                             // no media
+//ec7915.cpp                           // terminal
+einstein.cpp
+//eispc.cpp                            // no software
+elan_ep3a19a.cpp
+elan_eu3a05.cpp
+//elan_eu3a14.cpp                      // starts but can't play
+electron.cpp
+elekscmp.cpp
+//elektronmono.cpp                     // synth
+//elf.cpp                              // trainer, not working
+elwro800.cpp
+//elzet80.cpp                          // skel
+//emax.cpp                             // skel
+emma2.cpp
+//emu2.cpp                             // synth
+//emu3.cpp                             // synth
+//emu68k.cpp                           // synth
+//enmirage.cpp                         // synth
+ep64.cpp
+//epic14e.cpp                          // terminal
+//ergo201.cpp                          // terminal
+//esprit.cpp                           // terminal
+//esq1.cpp                             // synth
+//esq5505.cpp                          // synth
+//esqasr.cpp                           // synth
+//esqkt.cpp                            // synth
+//esqmr.cpp                            // synth
+et3400.cpp
+eti660.cpp
+//eurit.cpp                            // payphone
+//eurocom2.cpp                         // useless?
+europc.cpp
+//eva.cpp                              // voice alert?
+//evmbug.cpp                           // mnw
+//ews4800.cpp                          // skeleton
+excali64.cpp
+//exelv.cpp                            // mnw, no kbd
+//exorciser.cpp                        // useless? no swlist
+//exorterm.cpp                         // terminal
+exp85.cpp
+//f387x.cpp                            // seems useless, no media
+//facit4440.cpp                        // terminal
+//falco500.cpp                         // terminal
+//falcots.cpp                          // terminal
+//falcots28.cpp                        // terminal
+//fanucs15.cpp                         // skel
+//fanucspmg.cpp                        // mnw, no software
+//fb01.cpp                             // synth
+fc100.cpp
+//fccpu20.cpp                          // no media
+//fccpu30.cpp                          // mnw, no software
+fidel_as12.cpp
+fidel_card.cpp
+fidel_cc1.cpp
+fidel_cc10.cpp
+fidel_cc7.cpp
+fidel_checkc2.cpp
+fidel_chesster.cpp
+fidel_csc.cpp
+//fidel_dames.cpp                      // doesn't remove taken pieces, gets confused after a while
+fidel_desdis.cpp
+fidel_eag68k.cpp
+fidel_eldorado.cpp
+fidel_elite.cpp
+fidel_excel.cpp
+fidel_msc.cpp
+//fidel_phantom.cpp                    // not working?
+fidel_sc12.cpp
+fidel_sc6.cpp
+fidel_sc8.cpp
+fidel_sc9.cpp
+fidel_vcc.cpp
+fidel_vsc.cpp
+//fk1.cpp                              // mnw, cp/m, no media
+fm7.cpp
+fmtowns.cpp
+//fontwriter.cpp                       // printer
+//force68k.cpp                         // no software
+//fp1100.cpp                           // mnw
+fp200.cpp
+fp6000.cpp
+//freedom120.cpp                       // skel, terminal
+//fs3216.cpp                           // no kbd, no software
+//ft68m.cpp                            // no media
+galaxy.cpp
+galeb.cpp
+gamate.cpp
+gamecom.cpp
+//gamecube.cpp                         // skel
+gameking.cpp
+//gamemachine.cpp                      // are you serious?
+gamepock.cpp
+gb.cpp
+gba.cpp
+//gem_rp.cpp                           // synth
+//generalplus_gpl_unknown.cpp          // skel
+generalplus_gpl162xx_lcdtype.cpp
+//generalplus_gpl16250_mobigo.cpp      // no games in this file
+//generalplus_gpl16250_nand.cpp        // not working
+//generalplus_gpl16250_rom.cpp         // not working
+//generalplus_gpl16250_romram.cpp      // not working
+//generalplus_gpl16250_spi.cpp         // not working
+//generalplus_gpl16250_spi_direct.cpp  // mnw
+//generalplus_gpl32612.cpp             // not working
+//geneve.cpp                           // no software, no swlist. Only disk I have crashes 2nd time around.
+//geniusiq.cpp                         // no software, no swlist
+//geniusjr.cpp                         // crash at start
+genpc.cpp
+gigatron.cpp
+//gimix.cpp                            // regressed, cannot boot disk
+//gkidabc.cpp                          // skel
+//gizmondo.cpp                         // skel
+//glcx.cpp                             // skel
+//gm1000.cpp                           // synth
+gmaster.cpp
+//gnat10.cpp                           // cp/m, skel
+//goupil.cpp                           // no software, no swlist
+//gp2x.cpp                             // mnw
+gp32.cpp
+//grfd2301.cpp                         // network device
+//gridcomp.cpp                         // crash at start
+gs6502.cpp
+gs6809.cpp
+gscpm.cpp
+gsz80.cpp
+//h19.cpp                              // terminal
+h8.cpp
+h89.cpp
+//harriet.cpp                          // mnw
+//hawk.cpp                             // hangs at 68de
+//hazeltin.cpp                         // terminal
+//hazl1420.cpp                         // terminal
+h01x.cpp
+//hds200.cpp                           // terminal
+hec2hrp.cpp
+hektor.cpp
+hh_amis2k.cpp
+//hh_b5000.cpp                         // mnw
+hh_cop400.cpp
+hh_cops1.cpp
+hh_hmcs40.cpp
+hh_melps4.cpp
+hh_pic16.cpp
+hh_pps41.cpp
+hh_sm510.cpp
+hh_tms1k.cpp
+hh_ucom4.cpp
+//hhtiger.cpp                          // black screen
+//hk68v10.cpp                          // no swlist
+//hohnadam.cpp                         // synth
+homelab.cpp
+//homez80.cpp                          // bugfest, no media
+//horizon.cpp                          // skel
+hp_ipc.cpp
+//hp16500.cpp                          // mnw
+//hp2100.cpp                           // skel
+//hp2620.cpp                           // terminal
+//hp2640.cpp                           // terminal
+//hp3478a.cpp                          // multimeter
+//hp48.cpp                             // useless
+//hp49gp.cpp                           // black screen
+//hp64k.cpp                            // not working, no swlist
+//hp700.cpp                            // terminal
+hp80.cpp
+//hp95lx.cpp                           // useless
+//hp9825.cpp                           // does it work? how to use?
+//hp9845.cpp                           // does it work? how to use?
+//hp9k.cpp                             // no kbd
+hp9k_3xx.cpp
+//hprot1.cpp                           // printer
+//hpz80unk.cpp                         // useless
+//ht6000.cpp                           // synth
+ht68k.cpp
+huebler.cpp
+hunter2.cpp
+//hunter16.cpp                         // blank screen
+husky.cpp
+//hx20.cpp                             // blank screen
+//i7000.cpp                            // mnw
+//ibm3153.cpp                          // terminal
+//ibm6580.cpp                          // skel
+ibmpc.cpp
+ibmpcjr.cpp
+//icatel.cpp                           // payphone
+//icebox.cpp                           // can't boot floppy
+//ie15.cpp                             // terminal
+//iez80.cpp                            // useless
+//if800.cpp                            // skel
+//ikt5a.cpp                            // terminal
+im01.cpp                               // russian chess game
+//imds2.cpp                            // no software, no swlist
+//imsai.cpp                            // useless, no media
+//indiana.cpp                          // mnw, seems useless
+//indigo.cpp                           // mnw, black screen
+//indy_indigo2.cpp                     // unix workstation
+//informer_207_100.cpp                 // terminal
+//informer_207_376.cpp                 // terminal
+//informer_213.cpp                     // terminal
+//innotv_innotabmax.cpp                // skel
+instruct.cpp
+//inteladv.cpp                         // skel
+//intellec4.cpp                        // no media available
+//intellec8.cpp                        // skel
+intellect02.cpp
+//interpro.cpp                         // unix workstation, mnw
+intv.cpp
+//ipc.cpp                              // useless, no media
+//ipds.cpp                             // skel
+//iphone2g.cpp                         // useless
+iq151.cpp
+//iqunlim.cpp                          // skel
+//iris3130.cpp                         // unix workstation, skel
+//irisha.cpp                           // no media
+//iris_power.cpp                       // unix workstation, skel
+//is48x.cpp                            // skel
+//isbc.cpp                             // fails while booting
+//isbc8010.cpp                         // useless, no media
+//isbc8030.cpp                         // useless, no media
+//iskr103x.cpp                         // needs boot disk, no swlist
+//itc4.cpp                             // temperature controller
+//itt1700.cpp                          // terminal
+//itt3030.cpp                          // works but impossible to use
+//itt9216.cpp                          // terminal
+//jade.cpp
+//jazz.cpp                             // unix workstation, how to use?
+//jensen.cpp                           // unix workstation? skel
+//jonos.cpp                            // terminal
+//jornada.cpp                          // skel
+jr100.cpp
+jr200.cpp
+jtc.cpp
+juicebox.cpp
+juku.cpp
+//junior.cpp                           // no media
+//junior80.cpp                         // skel
+//juno106.cpp                          // synth
+//juno6.cpp                            // synth
+jupace.cpp
+//jupiter.cpp                          // skel
+//k1003.cpp                            // kbd issues
+k28.cpp
+//k8915.cpp
+//kawai_acr20.cpp                      // synth
+//kawai_k1.cpp
+//kawai_k4.cpp
+//kawai_k5.cpp
+//kawai_ksp10.cpp                      //synth
+//kawai_r100.cpp
+//kawai_sx240.cpp                      //synth
+kaypro.cpp
+kc.cpp
+kdt6.cpp
+kim1.cpp
+//kminus.cpp                           // computer, not working
+//konin.cpp
+//korgds8.cpp
+//korgdss1.cpp
+//korgdvp1.cpp
+//korgdw8k.cpp
+//korgm1.cpp
+//korgws.cpp                           //synth
+//korgz3.cpp
+kramermc.cpp
+//kron.cpp
+//krz2000.cpp
+//ktm3.cpp
+kyocera.cpp
+laser3k.cpp
+//lb186.cpp
+//lbpc.cpp
+lc80.cpp
+lcmate2.cpp
+//ld50.cpp                             // synth
+//leapfrog_iquest.cpp                  // skel
+//leapfrog_leappad.cpp
+//leapfrog_leapster_explorer.cpp       // skel, hangs mame
+//leapster.cpp
+//learnwin.cpp
+//lee1214.cpp
+//lee1220.cpp                          // terminal
+lft.cpp
+//lft_chiptune.cpp                     //wbdnu (works but does nothing useful)
+//lft_craft.cpp                        //wbdnu
+//lft_phasor.cpp                       //wbdnu
+//lg-dvd.cpp
+//lilith.cpp
+//lisa.cpp
+lk3000.cpp
+llc1.cpp
+llc2.cpp
+//lms46.cpp
+lnw80.cpp
+lola8a.cpp
+//luna_68k.cpp                         // skel
+lviv.cpp
+//lwriter.cpp
+lynx.cpp
+m20.cpp
+m24.cpp
+m3.cpp                                 // monitor ok, no software
+m5.cpp
+//m6805evs.cpp
+m68705prg.cpp
+//m79152pc.cpp
+mac.cpp
+mac128.cpp
+//macpci.cpp
+//macpdm.cpp                    // not working
+//macprtb.cpp                // not working
+//macpwrbk030.cpp            // not working
+//macquadra700.cpp                     // not working
+//magiceyes_pollux_vr3520f.cpp
+magnum.cpp
+mattelchess.cpp
+//max80.cpp              // skel
+//mbc020.cpp               // not useful?
+mbc200.cpp
+mbc55x.cpp
+mbee.cpp
+mc10.cpp
+mc1000.cpp
+//mc1502.cpp
+mc8020.cpp
+//mc8030.cpp
+mcb216.cpp
+mccpm.cpp
+//mdisk.cpp
+//mdt60.cpp
+megadriv.cpp
+megadriv_rad.cpp
+//megadriv_sunplus_hybrid.cpp        // mnw
+//megadriv_vt_hybrid.cpp             // mnw
+mekd1.cpp
+mekd2.cpp
+mekd3.cpp
+mekd4.cpp
+//mekd5.cpp
+mephisto_academy.cpp
+mephisto_amsterdam.cpp
+mephisto_berlin.cpp
+mephisto_brikett.cpp
+mephisto_glasgow.cpp
+mephisto_milano.cpp
+mephisto_mm1.cpp
+mephisto_mm2.cpp
+mephisto_modena.cpp
+mephisto_modular.cpp
+mephisto_modular_tm.cpp
+mephisto_mondial.cpp
+mephisto_mondial2.cpp
+mephisto_mondial68k.cpp
+mephisto_montec.cpp
+mephisto_polgar.cpp
+mephisto_risc.cpp
+mephisto_smondial.cpp
+meritum.cpp
+//mes.cpp
+mfabfz.cpp
+//mg1.cpp                           // workstation, not working
+mice.cpp
+//micral.cpp
+//micro20.cpp
+//microb.cpp
+//microdec.cpp
+//microkit.cpp
+//microkorg.cpp        //synth
+//micromon.cpp
+//micronic.cpp
+microtan.cpp
+//microterm_f8.cpp
+microvsn.cpp
+mikro80.cpp
+mikromik.cpp
+mikrosha.cpp
+//mightyframe.cpp
+milton6805.cpp
+//milwaukee.cpp
+mindset.cpp
+mini2440.cpp
+//minicom.cpp
+miniforce.cpp
+//miniframe.cpp
+//minitel_2_rpic.cpp
+//mips.cpp
+//mits680b.cpp
+//miuchiz.cpp              // skel
+mk14.cpp
+mk1forth.cpp
+//mk85.cpp
+//mk90.cpp
+//mk98.cpp                             // not usable
+mkit09.cpp
+//ml20.cpp
+mmd1.cpp
+mmd2.cpp
+mod8.cpp
+//modellot.cpp
+//molecular.cpp
+//monkey_king_3b.cpp   //skel
+//monon_color.cpp
+monty.cpp
+//mpc3000.cpp
+//mpc60.cpp                     // not working, synth
+mpf1.cpp
+//mps1230.cpp
+mpz80.cpp
+//ms0515.cpp
+//ms6102.cpp
+//ms9540.cpp
+//msbc1.cpp
+//mstation.cpp
+msx.cpp
+//mt420.cpp                   // terminal
+//mt5510.cpp                  // terminal
+//mt735.cpp
+//mtd1256.cpp
+mtx.cpp
+//multi16.cpp
+multi8.cpp
+//mupid2.cpp
+mvme147.cpp
+mvme162.cpp
+//mx2178.cpp
+//myb3k.cpp
+mycom.cpp
+myvision.cpp
+mz2000.cpp
+mz2500.cpp
+//mz3500.cpp
+//mz6500.cpp
+mz700.cpp
+mz80.cpp
+mzr8105.cpp
+n64.cpp
+nakajies.cpp
+//nanos.cpp
+nascom1.cpp
+//nc.cpp
+//ncd68k.cpp
+//ncd88k.cpp
+//ncdmips.cpp
+//ncdppc.cpp
+//nds.cpp
+neogeocd.cpp
+nes.cpp
+//nes_clone.cpp                 // inputs missing
+//nes_sh6578.cpp                // not working
+nes_vt02_vt03.cpp
+nes_vt09.cpp
+nes_vt32.cpp
+nes_vt369_vtunknown.cpp
+newbrain.cpp
+news_38xx.cpp
+//news_68k.cpp
+news_r3k.cpp
+//newton.cpp                      // skel
+next.cpp
+//nforcepc.cpp
+//ngen.cpp
+ngp.cpp
+//nokia_3310.cpp
+//notetaker.cpp
+novag_cexpert.cpp
+novag_cforte.cpp
+novag_const.cpp
+novag_diablo.cpp
+novag_micro.cpp
+novag_micro2.cpp
+novag_savant.cpp
+novag_sexpert.cpp
+//novag_snova.cpp          // chess? not working
+ns32kdb.cpp
+//ns5652.cpp
+//o2.cpp
+//ob68k1a.cpp
+//octane.cpp
+octopus.cpp
+odyssey2.cpp
+//okean240.cpp
+olivpc1.cpp
+//olyboss.cpp
+//olytext.cpp
+ondra.cpp
+//onyx.cpp
+orao.cpp
+oric.cpp
+orion.cpp
+osbexec.cpp
+osborne1.cpp
+osi.cpp
+//p112.cpp
+p2000t.cpp
+p8k.cpp
+//palm.cpp
+//palmz22.cpp
+//palestra.cpp
+partner.cpp
+//paso1600.cpp
+pasogo.cpp
+pasopia.cpp
+pasopia7.cpp
+//patinho_feio.cpp
+pb1000.cpp
+pc.cpp
+//pc100.cpp
+//pc1500.cpp
+pc1512.cpp
+//pc2000.cpp
+pc4.cpp
+//pc98ha.cpp                           // mnw
+pc6001.cpp
+pc8001.cpp
+//pc8401a.cpp
+pc8801.cpp
+//pc88va.cpp
+pc9801.cpp
+//pc9801_epson.cpp                     // mnw
+pc9821.cpp
+pcd.cpp
+pce.cpp
+pce220.cpp
+//pcfx.cpp
+pcipc.cpp
+pcm.cpp
+//pcmx2.cpp                            // skel
+pcw.cpp
+//pcw16.cpp
+//pda600.cpp
+pdp1.cpp
+//pdp11.cpp
+//pdt3100.cpp
+pecom.cpp
+pegasus.cpp
+pencil2.cpp
+//pensebem.cpp            // mnw
+pentagon.cpp
+//peoplepc.cpp
+//perq.cpp
+//pes.cpp
+pet.cpp
+//pg685.cpp
+phc25.cpp
+//philipsbo.cpp            // skel
+phunsy.cpp
+pimps.cpp
+pipbug.cpp
+//picno.cpp
+pk8000.cpp
+pk8020.cpp
+plan80.cpp
+plus4.cpp
+pm68k.cpp
+pmd85.cpp
+pmi80.cpp
+//pockchal.cpp
+pocketc.cpp
+pockstat.cpp
+//pofo.cpp
+poisk1.cpp
+pokemini.cpp
+poly.cpp
+poly88.cpp
+//poly800.cpp
+poly880.cpp
+//polysix.cpp
+//positron.cpp                         // mnw, no media
+//powerstack.cpp
+//pp.cpp
+pp01.cpp
+prestige.cpp
+primo.cpp
+pro80.cpp
+//prof180x.cpp
+//prof80.cpp
+//prophet600.cpp
+proteus.cpp
+proteus3.cpp
+//ps2.cpp
+//ps2sony.cpp
+//psion.cpp
+//psion5.cpp
+psx.cpp
+pt68k4.cpp
+ptcsol.cpp
+//pubint_storyreader.cpp
+pulsar.cpp
+pv1000.cpp
+pv2000.cpp
+//pv9234.cpp
+//pve500.cpp
+//pwp14.cpp                            // skel, word processor
+//pwrview.cpp
+px4.cpp
+//px8.cpp
+pyl601.cpp
+ql.cpp
+//qtsbc.cpp
+//qvt70.cpp
+//qvt102.cpp
+//qvt103.cpp
+//qvt190.cpp
+//qvt201.cpp
+qx10.cpp
+//r9751.cpp
+radio86.cpp
+radionic.cpp
+rainbow.cpp
+//rambo.cpp
+ravens.cpp
+//rc702.cpp
+//rc759.cpp
+rd100.cpp
+regence.cpp
+//replicator.cpp
+rex6000.cpp
+//riscpc.cpp
+//rm380z.cpp
+rmnimbus.cpp
+//roland_cm32p.cpp
+//roland_d10.cpp
+//roland_d50.cpp
+//roland_jd800.cpp               // synth
+//roland_jv80.cpp
+//roland_jx3p.cpp
+//roland_jx8p.cpp
+//roland_mc50.cpp
+//roland_mt32.cpp
+//roland_pr100.cpp               // synth
+//roland_r8.cpp
+//roland_ra30.cpp
+//roland_s10.cpp
+//roland_s50.cpp
+//roland_sc55.cpp
+//roland_sc88.cpp
+//roland_tb303.cpp
+//roland_tnsc1.cpp                     // skel
+//roland_tr505.cpp                // synth
+//roland_tr606.cpp
+//roland_tr707.cpp
+//roland_tr808.cpp                     // synth
+//roland_tr909.cpp
+//roland_u20.cpp
+//rt1715.cpp
+//rtpc.cpp                      // not working
+//rvoice.cpp
+rx78.cpp
+//rz1.cpp
+rzone.cpp
+sacstate.cpp
+sag.cpp
+//sage2.cpp
+saitek_ccompan.cpp
+saitek_chesstrv.cpp
+saitek_corona.cpp
+saitek_cp2000.cpp
+saitek_delta1.cpp
+saitek_exchess.cpp
+saitek_intchess.cpp
+saitek_leonardo.cpp
+saitek_mark5.cpp
+saitek_minichess.cpp
+saitek_prschess.cpp
+saitek_renaissance.cpp
+saitek_risc2500.cpp
+saitek_schess.cpp
+saitek_simultano.cpp
+saitek_ssystem3.cpp
+saitek_stratos.cpp
+saitek_superstar.cpp
+samcoupe.cpp
+//sansa_fuze.cpp
+sapi1.cpp
+//sartorius.cpp
+saturn.cpp
+savia84.cpp
+sb8085.cpp
+//sbc6510.cpp                   // need instructions
+sbrain.cpp
+sc2.cpp
+//scopus.cpp                    // need instructions, no media
+scorpion.cpp
+scv.cpp
+//sdk51.cpp                     // skel
+sdk80.cpp
+sdk85.cpp
+//sdk86.cpp                     // need instructions, no media
+seattlecmp.cpp
+//sega_beena.cpp                // no video
+//sega_sawatte.cpp              // skel
+segapico.cpp
+//segapm.cpp                    // skel
+selz80.cpp
+sg1000.cpp
+//sh4robot.cpp                   // skel, mech
+shine.cpp
+//si5500.cpp                     // skel, mech
+//sitcom.cpp                      // useless
+//sk1.cpp                           // synth
+//sk101bl.cpp                         // no inputs, useless
+slc1.cpp
+slicer.cpp
+//slsstars.cpp                        // skel, mech
+//sm1800.cpp                          // mnw, no inputs
+//sm7238.cpp                          // terminal
+smc777.cpp
+sms.cpp
+snes.cpp
+socrates.cpp
+softbox.cpp
+sorcerer.cpp
+//solbourne.cpp                       // skel
+spc1000.cpp
+spc1500.cpp
+spec128.cpp
+special.cpp
+specpls3.cpp
+spectrum.cpp
+spg110.cpp
+//spg29x.cpp                         // need swlist
+//spg29x_lexibook_jg7425.cpp         // skel
+spg2xx.cpp
+//spg2xx_digimake.cpp                // inputs missing
+spg2xx_dreamlife.cpp
+spg2xx_ican.cpp
+spg2xx_jakks.cpp
+spg2xx_jakks_gkr.cpp
+spg2xx_jakks_sharp.cpp
+//spg2xx_jakks_tvtouch.cpp           // inputs missing
+spg2xx_lexibook.cpp
+spg2xx_mysprtch.cpp
+spg2xx_pdc.cpp
+spg2xx_playvision.cpp
+spg2xx_senario.cpp
+spg2xx_senario_poker.cpp
+spg2xx_senca.cpp
+spg2xx_shredmjr.cpp
+//spg2xx_skannerztv.cpp              // needs missing mechanical device
+//spg2xx_smarttv.cpp                 // black screen
+spg2xx_telestory.cpp
+//spg2xx_tvgogo.cpp                  // inputs missing
+spg2xx_vii.cpp
+//spg2xx_wiwi.cpp                    // inputs missing
+spg2xx_zone.cpp
+squale.cpp
+ssem.cpp
+//st17xx.cpp                         // skel
+//st2302u_bbl_rom.cpp                // mnw
+//st2302u_bbl_spi.cpp                // mnw
+//storio.cpp                         // skel
+studio2.cpp
+//sun1.cpp                           // skel
+//sun2.cpp                           // mnw
+//sun3.cpp                           // mnw
+//sun3x.cpp                          // mnw
+//sun4.cpp                           // mnw
+//super6.cpp                         // floppy broke in new fd system
+super80.cpp
+superslave.cpp
+supracan.cpp
+sv8000.cpp
+svi318.cpp
+svision.cpp
+svmu.cpp
+//swtpc.cpp                          // floppy broke in new fd system
+//swtpc09.cpp                        // floppy broke in new fd system
+//swtpc8212.cpp                      // term
+//swyft.cpp                          // white screen, mnw
+//sx1000.cpp                           // skel
+sym1.cpp
+//symbolics.cpp                      // skel
+//synthex.cpp                        // synth
+//sys1121.cpp                          // useless, no media
+//sys2900.cpp                        // skel
+//sys9002.cpp                        // term
+//systec.cpp                         // needs boot disk but no swlist
+//systel1.cpp                        // needs boot disk but no swlist
+//tabe22.cpp                         // mnw terminal
+talkingbb.cpp
+talkingfb.cpp
+tamag1.cpp
+tandy1t.cpp
+tandy2k.cpp
+tasc.cpp
+//tavernie.cpp
+//tdv2324.cpp
+tec1.cpp
+//tecnbras.cpp
+//tek405x.cpp
+//tek410x.cpp
+//tek440x.cpp
+//tekigw.cpp                     // gets stuck during boot
+//tekxp33x.cpp
+//teleray10.cpp
+//telex1192.cpp
+//telex274.cpp
+//telex277d.cpp
+//terak.cpp
+//terco.cpp
+//terminal.cpp
+//test_t400.cpp
+//testconsole.cpp
+//testpat.cpp
+//textelcomp.cpp
+//tg100.cpp
+//thomson.cpp
+//ti630.cpp
+ti74.cpp
+ti85.cpp
+ti89.cpp
+//ti931.cpp
+ti99_2.cpp
+//ti99_4p.cpp
+ti99_4x.cpp
+ti99_8.cpp
+//ti990_10.cpp                    // black screen
+//ti990_4.cpp                     // white screen
+tiki100.cpp
+//tim011.cpp
+//tim100.cpp
+timex.cpp
+tispeak.cpp
+tispellb.cpp
+//titan_soc.cpp
+tk2000.cpp
+//tk635.cpp
+tk80.cpp
+tk80bs.cpp
+tm990189.cpp
+tmc1800.cpp
+//tmc2000e.cpp
+tmc600.cpp
+tosh1000.cpp
+//tomy_princ.cpp
+//tr175.cpp
+//tranz330.cpp
+//tricep.cpp
+trkfldch.cpp
+trs80.cpp
+//trs80dt1.cpp
+trs80m2.cpp
+trs80m3.cpp
+//ts802.cpp
+//ts803.cpp
+//ts816.cpp
+//ts3000.cpp
+//tsconf.cpp                           // mnw, stuck on bios screen
+//tsispch.cpp
+//tulip1.cpp
+tutor.cpp
+//tv910.cpp
+//tv912.cpp
+//tv924.cpp
+//tv950.cpp
+//tv955.cpp
+//tv965.cpp
+//tv990.cpp
+tvboy.cpp
+tvc.cpp
+tvgame.cpp
+//tx0.cpp
+//uchroma68.cpp
+//uknc.cpp
+//ultim809.cpp
+//umatic.cpp                 // skel
+unichamp.cpp
+unior.cpp
+//unistar.cpp
+//univac.cpp
+//unixpc.cpp
+ut88.cpp
+uzebox.cpp
+//v100.cpp
+//v102.cpp
+//v550.cpp
+v1050.cpp
+//v6809.cpp
+//vanguardmk1.cpp
+//vax11.cpp
+vboy.cpp
+vc4000.cpp
+vcs80.cpp
+//vd56sp.cpp
+//vdm7932x.cpp
+vector06.cpp
+vector4.cpp
+vectrex.cpp
+//vectrix.cpp
+vg5k.cpp
+vic10.cpp
+vic20.cpp
+victor9k.cpp
+//vidbrain.cpp
+vip.cpp
+//vis.cpp
+vixen.cpp
+//vk100.cpp
+//votrhv.cpp                      // skel
+//votrpss.cpp
+//votrtnt.cpp
+//vp415.cpp
+//vp60.cpp
+vsmile.cpp
+vsmileb.cpp
+//vsmilepro.cpp
+//vt52.cpp
+//vt62.cpp
+//vt100.cpp
+//vt220.cpp
+//vt240.cpp
+//vt320.cpp
+//vt520.cpp
+//vt1682.cpp
+//vta2000.cpp
+vtech1.cpp
+vtech2.cpp
+//vtech_eu3a12.cpp
+//vtech_innotab.cpp                       // skel
+//vt_unknown.cpp                  // skel
+wangpc.cpp
+//wicat.cpp
+//wizard.cpp                  // skel
+//wrinkles.cpp
+wswan.cpp
+//wxstar4000.cpp
+//wy100.cpp
+//wy150.cpp
+//wy30p.cpp
+//wy50.cpp
+//wy55.cpp
+//wy60.cpp
+//wy85.cpp
+x07.cpp
+x1.cpp
+x1twin.cpp
+x68k.cpp
+xavix.cpp
+xavix_2000.cpp
+//xavix2.cpp
+//xavix_2002.cpp          // unplayable
+//xbase09.cpp
+//xbox.cpp
+xerox820.cpp
+xor100.cpp
+//yes.cpp                                 // black screen
+//yman1x.cpp                 // skel, synth
+//ymdx11.cpp
+//ymdx100.cpp                // skel, synth
+//ymmu5.cpp               // synth
+//ymmu50.cpp
+//ymmu80.cpp
+//ymmu100.cpp
+//ympsr16.cpp                          // synth
+//ympsr40.cpp                          // synth
+//ympsr60.cpp                    // synth skel
+//ympsr340.cpp                // MNW, synth
+//ymrx15.cpp                           // synth
+//ymsy35.cpp                 // skel, synth
+//ymtx81z.cpp
+//ymvl70.cpp
+//z100.cpp
+z1013.cpp
+//z22.cpp
+//z29.cpp
+//z80clock.cpp                         // useless
+z80dev.cpp
+z80ne.cpp
+z88.cpp
+//z9001.cpp
+zapcomputer.cpp
+//zaurus.cpp
+//zeebo_qualcomm_adreno130.cpp    // skel
+//zexall.cpp
+//zms8085.cpp
+zorba.cpp
+//zrt80.cpp
+zsbc3.cpp
+//zt8802.cpp
+zx.cpp
+//exceptions + to add - to remove from imported list
+//3do.cpp
+-3dobios
+-orbatak
+-alg3do
+-md23do
+-sht3do
+//cps1.cpp
++wofch
++sfzch
++sfach
++sfzbch
+//cdi.cpp
++cdimono1
++cdimono2
++cdi910
++cdi490a
+//jaguar.cpp
++jaguar
++jaguarcd
+//neogeo.cpp
++aes
+//vectrex.cpp
+-raaspec
