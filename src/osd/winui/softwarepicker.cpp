@@ -186,13 +186,12 @@ int SoftwarePicker_LookupIndex(HWND hwndPicker, LPCSTR pszFilename)
 
 iodevice_t SoftwarePicker_GetImageType(HWND hwndPicker, int nIndex)
 {
-	iodevice_t type;
+	iodevice_t type = IO_UNKNOWN;
 	const device_image_interface *device = SoftwarePicker_LookupDevice(hwndPicker, nIndex);
 
 	if (device)
 		type = device->image_type();
-	else
-		type = IO_UNKNOWN;
+
 	return type;
 }
 
@@ -330,7 +329,7 @@ static void SoftwarePicker_RealizeHash(HWND hwndPicker, int nIndex)
 	file_info *pFileInfo;
 	//const char *nHashFunctionsUsed = NULL;
 	//unsigned int nCalculatedHashes = 0;
-	//iodevice_t type;
+	//iodevice_/t type;
 
 	pPickerInfo = GetSoftwarePickerInfo(hwndPicker);
 	assert((nIndex >= 0) && (nIndex < pPickerInfo->file_index_length));
@@ -342,7 +341,7 @@ static void SoftwarePicker_RealizeHash(HWND hwndPicker, int nIndex)
 	if ((pPickerInfo->config->hashfile != NULL) && (pFileInfo->device != NULL))
 	{
 		type = pFileInfo->device->image_type();
-		if (type < IO_COUNT)
+		if (type < std::size(s_devices))
 			nHashFunctionsUsed = hashfile_functions_used(pPickerInfo->config->hashfile, type);
 		nCalculatedHashes = hash_data_used_functions(pFileInfo->hash_string);
 	}

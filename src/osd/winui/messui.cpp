@@ -2,7 +2,7 @@
 //****************************************************************************
 //============================================================
 //
-//  messui.c - MESS extensions to src/osd/winui/winui.c
+//  messui.cpp - MESS extensions to src/osd/winui/winui.c
 //
 //============================================================
 
@@ -379,7 +379,7 @@ BOOL CreateMessIcons(void)
 {
 	// create the icon index, if we haven't already
 	if (!mess_icon_index)
-		mess_icon_index = make_unique_clear<int[]>(driver_list::total() * IO_COUNT);
+		mess_icon_index = make_unique_clear<int[]>(driver_list::total() * std::size(s_devices));
 
 	// Associate the image lists with the list view control.
 	HWND hwndSoftwareList = GetDlgItem(GetMainWindow(), IDC_SWLIST);
@@ -400,10 +400,11 @@ static int GetMessIcon(int drvindex, int nSoftwareType)
 	char buffer[256];
 	const char *iconname;
 
-	if ((nSoftwareType >= 0) && (nSoftwareType < IO_COUNT))
+	if ((nSoftwareType >= 0) && (nSoftwareType < std::size(s_devices)))
 	{
+		//iconname = device_image_interface::image_brief_type_name((iodevice_t)nSoftwareType);
 		iconname = device_image_interface::device_brieftypename((iodevice_t)nSoftwareType);
-		the_index = (drvindex * IO_COUNT) + nSoftwareType;
+		the_index = (drvindex * std::size(s_devices)) + nSoftwareType;
 
 		nIconPos = mess_icon_index[the_index];
 		if (nIconPos >= 0)
@@ -1143,7 +1144,7 @@ char *core_strdup(const char *str)
 }
 
 
-/* Specify IO_COUNT for type if you want all types */
+/* Specify std::size(s_devices) for type if you want all types */
 static void SetupImageTypes(const machine_config *config, mess_image_type *types, int count, BOOL bZip, const device_image_interface *dev)
 {
 	int num_extensions = 0;
@@ -1532,11 +1533,12 @@ static void SoftwarePicker_EnteringItem(HWND hwndSoftwarePicker, int nItem)
 
 
 // ------------------------------------------------------------------------
-// Software List Class
+// Software List Class - not used, swlist items don't have icons
 // ------------------------------------------------------------------------
 
 static int SoftwareList_GetItemImage(HWND hwndPicker, int nItem)
 {
+#if 0
 	HWND hwndGamePicker = GetDlgItem(GetMainWindow(), IDC_LIST);
 	HWND hwndSoftwareList = GetDlgItem(GetMainWindow(), IDC_SOFTLIST);
 	int drvindex = Picker_GetSelectedItem(hwndGamePicker);
@@ -1564,6 +1566,8 @@ static int SoftwareList_GetItemImage(HWND hwndPicker, int nItem)
 		}
 	}
 	return nIcon;
+#endif
+	return 0;
 }
 
 
