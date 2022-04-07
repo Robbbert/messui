@@ -1,80 +1,78 @@
-im01.cpp                               // russian chess game
-m3.cpp                                 // monitor ok, no software
-//3do.cpp                              // mnw, no swlist
+3do.cpp
 4004clk.cpp
-//4dpi.cpp                             // unix workstation, mnw
-//68ksbc.cpp                           // useless, no media
+4dpi.cpp
+68ksbc.cpp
 a2600.cpp
 a5105.cpp
-//a51xx.cpp                            // skel
-//a7150.cpp                            // mnw
+//a51xx.cpp                            // skel, a5130, log fills up
+a7150.cpp
 a7800.cpp
 aa310.cpp
-//aaa.cpp                              // terminal
-//abc1600.cpp                          // cannot boot floppy
+aaa.cpp
+abc1600.cpp
 abc80.cpp
 abc80x.cpp
 ac1.cpp
 accomm.cpp
-//acd.cpp                              // skel
-//aceex.cpp                            // modem
+acd.cpp
+//aceex.cpp                            // modem, aceex2814, log fills up
 aci_boris.cpp
 aci_borisdpl.cpp
 aci_ggm.cpp
 aci_prodigy.cpp
 acrnsys1.cpp
 acrnsys.cpp
-//actions_atj2279b.cpp                 // skel
-//acvirus.cpp                          // skel
-//adacp150.cpp                         // printer
+//actions_atj2279b.cpp                 // skel, freezes mame
+//acvirus.cpp                          // skel, fills up log
+adacp150.cpp
 adam.cpp
-//adds2020.cpp                         // terminal
-//adm11.cpp                            // terminal
-//adm23.cpp                            // terminal
-//adm31.cpp                            // terminal
-//adm36.cpp                            // terminal
+//adds2020.cpp                         // terminal, fills up log
+adm11.cpp
+adm23.cpp
+//adm31.cpp                            // terminal, fills up log
+adm36.cpp
 advision.cpp
 agat.cpp
-//aid80f.cpp                           // skel
+aid80f.cpp
 aim65.cpp
-//aim65_40.cpp                         // skel
-//airbase99.cpp                        // synth
-//akaiax80.cpp                         // synth
-//akaivx600.cpp                        // synth
-//alcat7100.cpp                        // terminal
-//alesis.cpp                           // synth
-//alesis_qs.cpp                        // synth
-//alfaskop41xx.cpp                     // skel
-//alphajuno.cpp                        // synth
+aim65_40.cpp
+airbase99.cpp
+//akaiax80.cpp                         // synth, fills up log
+akaivx600.cpp
+alcat7100.cpp
+alesis.cpp
+alesis_qs.cpp
+//alfaskop41xx.cpp                     // skel, fills up log
+//alphajuno.cpp                        // synth, fills up log
 alphasma.cpp
-//alphasma3k.cpp                       // skeleton
-//alphatan.cpp                         // terminal
+//alphasma3k.cpp                       // skeleton, fills up log
+alphatan.cpp
 alphatpx.cpp
-//alphatpc16.cpp                       // no kbd
+//alphatpc16.cpp                       // syntax error on everything in basic, fills up log
 alphatro.cpp
-//altair.cpp                           // quik->no software
-//alto1.cpp                            // skel
-//alto2.cpp                            // mnw
-//altos2.cpp                           // terminal
+altair.cpp
+alto1.cpp
+//alto2.cpp                            // mnw, fills up log
+altos2.cpp
 altos5.cpp
-//altos486.cpp                         // mnw
-//altos8600.cpp                        // mnw, crash on exit
-//am1000.cpp                           // skel
+altos486.cpp
+altos8600.cpp
+//am1000.cpp                           // skel, fills up the log
 amico2k.cpp
 amiga.cpp
-//ampex.cpp                            // terminal
-//ampex210.cpp                         // terminal
+ampex.cpp
+ampex210.cpp
 ampro.cpp
-//ampscarp.cpp                         // phone
+ampscarp.cpp
 amstr_pc.cpp
 amstrad.cpp
-//amust.cpp                            // cannot boot floppy
-//anzterm.cpp                          // useless
+amust.cpp
+//anzterm.cpp                          // useless, fills up log
 apc.cpp
 apexc.cpp
 apf.cpp
 apogee.cpp
-//apollo.cpp                           // no response
+apollo.cpp
 apple1.cpp
 apple2.cpp
 apple2e.cpp
@@ -82,13 +80,13 @@ apple2gs.cpp
 apple3.cpp
 applix.cpp
 apricot.cpp
-//apricotf.cpp                         // fd issues
-//apricotp.cpp                         // black screen
-//apxen.cpp                            // skel
+//apricotf.cpp                         // fd issues, fills up log
+//apricotp.cpp                         // black screen, fills up log
+//apxen.cpp                            // skel, fills up log
 aquarius.cpp
 arcadia.cpp
 argo.cpp
-//argox.cpp                            // printer
+//argox.cpp                            // printer, fills up log
 asst128.cpp
 astrohome.cpp
 at.cpp
@@ -97,17 +95,17 @@ atarist.cpp
 atm.cpp
 atom.cpp
 atpci.cpp
-//att3b2.cpp                           // skel
-//att4425.cpp                          // skel
-//att610.cpp                           // skel
-//att630.cpp                           // skel
+att3b2.cpp
+att4425.cpp
+//att610.cpp                           // skel, fills up the log
+att630.cpp
 attache.cpp
 aussiebyte.cpp
 ave_arb.cpp
-//avigo.cpp                            // useless
-//aviion88k.cpp                        // skeleton
+avigo.cpp
+aviion88k.cpp
 avrmax.cpp
-//ax20.cpp                             // fd->no software
+ax20.cpp
 //b16.cpp                              // bad rom, need boot disk, no software
 //b2m.cpp                              // mnw
 //babbage.cpp                          // no media
