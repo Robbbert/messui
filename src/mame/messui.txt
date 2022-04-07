@@ -1,3 +1,5 @@
+im01.cpp                               // russian chess game
+m3.cpp                                 // monitor ok, no software
 //3do.cpp                              // mnw, no swlist
 4004clk.cpp
 //4dpi.cpp                             // unix workstation, mnw
