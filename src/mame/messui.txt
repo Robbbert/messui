@@ -147,7 +147,7 @@ c2color.cpp
 c64.cpp
 c64dtv.cpp
 c65.cpp
-//c80.cpp                              // cassette nw therefore no media, random crash on exit
+c80.cpp
 //c900.cpp                             // useless, no media, fills up log
 camplynx.cpp
 candela.cpp
