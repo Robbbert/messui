@@ -106,58 +106,58 @@ avigo.cpp
 aviion88k.cpp
 avrmax.cpp
 ax20.cpp
-//b16.cpp                              // bad rom, need boot disk, no software
-//b2m.cpp                              // mnw
-//babbage.cpp                          // no media
-//banctec.cpp                          // document processor, skel
-//bandai_design_master.cpp             // skel
-//basf7100.cpp                         // boots from floppy but can't do anything
+//b16.cpp                              // bad rom, need boot disk, no software, fills up log
+b2m.cpp
+babbage.cpp
+//banctec.cpp                          // document processor, skel, fills up log
+//bandai_design_master.cpp             // skel, fills up log
+basf7100.cpp
 basic52.cpp
-//basssta.cpp                          // synth
+basssta.cpp
 bbc.cpp
 bbcbc.cpp
 bcs3.cpp
-//bebox.cpp                            // mnw
+//bebox.cpp                            // mnw, fills up log
 bert.cpp
-//beta.cpp                             // cart->no software
-//betacam.cpp                          // skel
-//bigbord2.cpp                         // fd->no software
+beta.cpp
+//betacam.cpp                          // skel, fills up log
+bigbord2.cpp
 binbug.cpp
-//bitel.cpp                            // terminal
-//bitgraph.cpp                         // terminal
+//bitel.cpp                            // terminal, fills up log
+bitgraph.cpp
 bk.cpp
-//blit.cpp                             // terminal
-//blw700i.cpp                          // mnw, no media
+blit.cpp
+//blw700i.cpp                          // mnw, no media, fills up log
 bmjr.cpp
 bml3.cpp
 bob85.cpp
-//boss_se70.cpp                        // synth
-//boss_sx700.cpp                       // synth
-//bpmmicro.cpp                         // eprom programmer
-//br8641.cpp                           // coin counter
-//braiplus.cpp                         // skel
+boss_se70.cpp
+//boss_sx700.cpp                       // synth, fills up log
+bpmmicro.cpp
+br8641.cpp
+braiplus.cpp
 bullet.cpp
-//busicom.cpp                          // broken adding-machine
-//bvm.cpp                              // monitor, skel
+busicom.cpp
+bvm.cpp
 bw12.cpp
 bw2.cpp
-//c10.cpp                              // skel
+c10.cpp
 c128.cpp
-//c2color.cpp                          // mnw
+c2color.cpp
 c64.cpp
-//c64dtv.cpp                           // black screen, no media
-//c65.cpp                              // regressed, no media
-//c80.cpp                              // cassette nw therefore no media
-//c900.cpp                             // useless, no media
+c64dtv.cpp
+c65.cpp
+//c80.cpp                              // cassette nw therefore no media, random crash on exit
+//c900.cpp                             // useless, no media, fills up log
 camplynx.cpp
 candela.cpp
-//canon_s80.cpp                        // useless, no media
-//cardinal.cpp                         // terminal
-//casio_rompack.cpp                    // skel
-//casloopy.cpp                         // bad gfx, no inputs
-//cat.cpp                              // useless typewriter
+canon_s80.cpp
+//cardinal.cpp                         // terminal, fills up log
+casio_rompack.cpp
+//casloopy.cpp                         // bad gfx, no inputs, fills up log
+cat.cpp
 cbm2.cpp
-//cbnt2039.cpp                         // printer
+//cbnt2039.cpp                         // printer, fills up log
 cc40.cpp
 //ccs2810.cpp                          // mnw
 //cd100.cpp                            // jukebox
