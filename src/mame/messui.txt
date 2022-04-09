@@ -159,54 +159,54 @@ cat.cpp
 cbm2.cpp
 //cbnt2039.cpp                         // printer, fills up log
 cc40.cpp
-//ccs2810.cpp                          // mnw
-//cd100.cpp                            // jukebox
-//cd2650.cpp                           // useless
-//cdc721.cpp                           // terminal
-//cdsys5.cpp                           // jukebox
-//ceres.cpp                            // workstation? mnw
-//cfx9850.cpp                          // no media, no kbd
-//cgc7900.cpp                          // mnw
+ccs2810.cpp
+cd100.cpp
+cd2650.cpp
+cdc721.cpp
+cdsys5.cpp
+ceres.cpp
+//cfx9850.cpp                          // no media, fills up log
+//cgc7900.cpp                          // mnw, fills up log
 cgenie.cpp
 channelf.cpp
-//chaos.cpp                            // useless, no media
+chaos.cpp
 chessmate.cpp
 chessmst.cpp
 chessmstdm.cpp
-//cit101.cpp                           // terminal
-//cit101xl.cpp                         // terminal
-//cit220.cpp                           // terminal
-//cit1500.cpp                          // terminal
+cit101.cpp
+cit101xl.cpp
+cit220.cpp
+cit1500.cpp
 cking_master.cpp
-//ckz80.cpp                            // mnw, fd->no software
-//clcd.cpp                             // useless
+ckz80.cpp
+clcd.cpp
 clickstart.cpp
-//clxvme186.cpp                        // bus-controller, skel
-//cm1800.cpp                           // no media
-//cmi.cpp                              // synth
+clxvme186.cpp
+//cm1800.cpp                           // no media, fills up log
+//cmi.cpp                              // synth, fills up log
 cms.cpp
 coco12.cpp
 coco3.cpp
-//codata.cpp                           // workstation? no media
+codata.cpp
 coleco.cpp
 compc.cpp
 compis.cpp
-//compmahj.cpp                         // skel
+//compmahj.cpp                         // skel, fills up log
 compuchess.cpp
 compucolor.cpp
-//comquest.cpp                         // skel
+//comquest.cpp                         // skel, fills up log
 comx35.cpp
-//concept.cpp                          // no kbd, no software
+concept.cpp
 conchess.cpp
 conic_cchess2.cpp
-//conic_cchess3.cpp                    // skel
-//consola_emt.cpp                      // ticket machine
-//controlid.cpp                        // fingerprint reader
+conic_cchess3.cpp
+consola_emt.cpp
+controlid.cpp
 cortex.cpp
-//cosmicos.cpp                         // mnw
-//cp1.cpp                              // trainer, no software
-//crei680.cpp                          // trainer, works but don't know how to use cassette
-//crimson.cpp                          // workstation, no media
+cosmicos.cpp
+cp1.cpp
+crei680.cpp
+crimson.cpp
 crvision.cpp
 ct486.cpp
 //ctk551.cpp                           // synth
