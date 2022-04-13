@@ -209,56 +209,56 @@ crei680.cpp
 crimson.cpp
 crvision.cpp
 ct486.cpp
-//ctk551.cpp                           // synth
-//ctk2000.cpp                          // mnw, no media
-//cvicny.cpp                           // trainer, no media
+ctk551.cpp
+//ctk2000.cpp                          // mnw, no media, fills up log
+cvicny.cpp
 cxg_ch2001.cpp
 cxg_dominator.cpp
 cxg_scptchess.cpp
 cxg_sphinx40.cpp
-//cxhumax.cpp                          // freezes mame
-//cybiko.cpp                           // how to use? no swlist
-//cz101.cpp                            // no media
-//d400.cpp                             // skel
+//cxhumax.cpp                          // almost freezes mame, fills up log
+//cybiko.cpp                           // very slow, fills up log
+//cz101.cpp                            // no media, no inputs, fills up log
+//d400.cpp                             // skel, fills up log
 d6800.cpp
-//d6809.cpp                            // mnw
+d6809.cpp
 dai.cpp
-//daruma.cpp                           // printer
-//datacast.cpp                         // what is this
-//datum.cpp                            // trainer, no media
-//dbox.cpp                             // tv settop box
+//daruma.cpp                           // printer, fills up log
+//datacast.cpp                         // what is this, fills up log
+datum.cpp
+dbox.cpp
 //dccons.cpp                           // hangs soon after start
-//dcebridge.cpp                        // wbdnu
-//dct11em.cpp                          // no media
+dcebridge.cpp
+dct11em.cpp
 debut.cpp
-//decmate2.cpp                         // skel
-//decstation.cpp                       // unix workstation, no swlist
-//dectalk.cpp                          // useless, no media
-//decwritr.cpp                         // printer
-//dfs500.cpp                           // wbdnu
+decmate2.cpp
+decstation.cpp
+//dectalk.cpp                          // useless, no media, fills up log
+decwritr.cpp
+dfs500.cpp
 dg680.cpp
-//dgn_beta.cpp                         // MNW
-//design.cpp                           // MNW, vending machine
-//diablo1300.cpp                       // printer?, skel
+//dgn_beta.cpp                         // MNW, fills up log
+design.cpp
+//diablo1300.cpp                       // printer?, skel, fills up log
 didact.cpp
-//digel804.cpp                         // eprom programmer
-//digijet.cpp                          // car mcu
-//digilog320.cpp                       // skeleton
-//digilog400.cpp                       // logic analyser, skel
+digel804.cpp
+digijet.cpp
+digilog320.cpp
+//digilog400.cpp                       // logic analyser, skel, fills up log
 dim68k.cpp
-//dm7000.cpp                           // mnw, no media
-//dmax8000.cpp                         // cannot boot floppy
-//dms5000.cpp                          // skel
-//dms86.cpp                            // no media
+//dm7000.cpp                           // mnw, no media, fills up log
+dmax8000.cpp
+dms5000.cpp
+dms86.cpp
 dmv.cpp
-//dolphunk.cpp                         // no media (cassette routines are in missing rom)
-//dpb7000.cpp                          // no kbd
+dolphunk.cpp
+//dpb7000.cpp                          // no kbd, fills up log
 dps1.cpp
-//dpsv55.cpp                           // synth
+dpsv55.cpp
 dragon.cpp
-//drumsta.cpp                          // synth
-//dsb46.cpp                            // no media
-//dual68.cpp                           // no media
+drumsta.cpp
+dsb46.cpp
+dual68.cpp
 //duet16.cpp                           // no software
 //dvk_kcgd.cpp                         // no media
 //dvk_ksm.cpp                          // terminal
