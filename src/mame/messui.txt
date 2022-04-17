@@ -259,58 +259,58 @@ dragon.cpp
 drumsta.cpp
 dsb46.cpp
 dual68.cpp
-//duet16.cpp                           // no software
-//dvk_kcgd.cpp                         // no media
-//dvk_ksm.cpp                          // terminal
+duet16.cpp
+dvk_kcgd.cpp
+dvk_ksm.cpp
 e100.cpp
-//e9161.cpp                            // terminal
-//eacc.cpp                             // wbdnu
-//easy_karaoke.cpp                     // skel
+e9161.cpp
+eacc.cpp
+easy_karaoke.cpp
 ec184x.cpp
-//ec65.cpp                             // no media
-//ec7915.cpp                           // terminal
+ec65.cpp
+ec7915.cpp
 einstein.cpp
-//eispc.cpp                            // no software
+eispc.cpp
 elan_ep3a19a.cpp
 elan_eu3a05.cpp
-//elan_eu3a14.cpp                      // starts but can't play
+elan_eu3a14.cpp
 electron.cpp
 elekscmp.cpp
-//elektronmono.cpp                     // synth
-//elf.cpp                              // trainer, not working
+//elektronmono.cpp                     // synth, fills up log
+elf.cpp
 elwro800.cpp
-//elzet80.cpp                          // skel
-//emax.cpp                             // skel
+//elzet80.cpp                          // skel, fills up log
+emax.cpp
 emma2.cpp
-//emu2.cpp                             // synth
-//emu3.cpp                             // synth
-//emu68k.cpp                           // synth
-//enmirage.cpp                         // synth
+emu2.cpp
+emu3.cpp
+//emu68k.cpp                           // synth, fills up log
+enmirage.cpp
 ep64.cpp
-//epic14e.cpp                          // terminal
-//ergo201.cpp                          // terminal
-//esprit.cpp                           // terminal
-//esq1.cpp                             // synth
-//esq5505.cpp                          // synth
-//esqasr.cpp                           // synth
-//esqkt.cpp                            // synth
-//esqmr.cpp                            // synth
+epic14e.cpp
+ergo201.cpp
+//esprit.cpp                           // terminal, fills up log
+esq1.cpp
+esq5505.cpp
+//esqasr.cpp                           // synth, fills up log
+//esqkt.cpp                            // synth, fills up log
+//esqmr.cpp                            // synth, fills up log
 et3400.cpp
 eti660.cpp
-//eurit.cpp                            // payphone
-//eurocom2.cpp                         // useless?
+eurit.cpp
+eurocom2.cpp
 europc.cpp
-//eva.cpp                              // voice alert?
-//evmbug.cpp                           // mnw
-//ews4800.cpp                          // skeleton
+eva.cpp
+evmbug.cpp
+ews4800.cpp
 excali64.cpp
-//exelv.cpp                            // mnw, no kbd
-//exorciser.cpp                        // useless? no swlist
-//exorterm.cpp                         // terminal
+exelv.cpp
+exorciser.cpp
+exorterm.cpp
 exp85.cpp
-//f387x.cpp                            // seems useless, no media
-//facit4440.cpp                        // terminal
-//falco500.cpp                         // terminal
+f387x.cpp
+facit4440.cpp
+//falco500.cpp                         // terminal, fills up log
 //falcots.cpp                          // terminal
 //falcots28.cpp                        // terminal
 //fanucs15.cpp                         // skel
