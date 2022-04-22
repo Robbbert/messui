@@ -311,14 +311,14 @@ exp85.cpp
 f387x.cpp
 facit4440.cpp
 //falco500.cpp                         // terminal, fills up log
-//falcots.cpp                          // terminal
-//falcots28.cpp                        // terminal
-//fanucs15.cpp                         // skel
-//fanucspmg.cpp                        // mnw, no software
-//fb01.cpp                             // synth
+falcots.cpp
+falcots28.cpp
+fanucs15.cpp
+fanucspmg.cpp
+fb01.cpp
 fc100.cpp
-//fccpu20.cpp                          // no media
-//fccpu30.cpp                          // mnw, no software
+fccpu20.cpp
+fccpu30.cpp
 fidel_as12.cpp
 fidel_card.cpp
 fidel_cc1.cpp
@@ -327,42 +327,42 @@ fidel_cc7.cpp
 fidel_checkc2.cpp
 fidel_chesster.cpp
 fidel_csc.cpp
-//fidel_dames.cpp                      // doesn't remove taken pieces, gets confused after a while
+fidel_dames.cpp
 fidel_desdis.cpp
 fidel_eag68k.cpp
 fidel_eldorado.cpp
 fidel_elite.cpp
 fidel_excel.cpp
 fidel_msc.cpp
-//fidel_phantom.cpp                    // not working?
+fidel_phantom.cpp
 fidel_sc12.cpp
 fidel_sc6.cpp
 fidel_sc8.cpp
 fidel_sc9.cpp
 fidel_vcc.cpp
 fidel_vsc.cpp
-//fk1.cpp                              // mnw, cp/m, no media
+fk1.cpp
 fm7.cpp
 fmtowns.cpp
-//fontwriter.cpp                       // printer
-//force68k.cpp                         // no software
-//fp1100.cpp                           // mnw
+fontwriter.cpp
+force68k.cpp
+fp1100.cpp
 fp200.cpp
 fp6000.cpp
-//freedom120.cpp                       // skel, terminal
-//fs3216.cpp                           // no kbd, no software
-//ft68m.cpp                            // no media
+//freedom120.cpp                       // skel, terminal, fills up log
+//fs3216.cpp                           // no kbd, no software, fills up log
+ft68m.cpp
 galaxy.cpp
 galeb.cpp
 gamate.cpp
 gamecom.cpp
-//gamecube.cpp                         // skel
+//gamecube.cpp                         // skel, fills up log
 gameking.cpp
-//gamemachine.cpp                      // are you serious?
+gamemachine.cpp
 gamepock.cpp
 gb.cpp
 gba.cpp
-//gem_rp.cpp                           // synth
+//gem_rp.cpp                           // synth, fills up log
 //generalplus_gpl_unknown.cpp          // skel
 generalplus_gpl162xx_lcdtype.cpp
 //generalplus_gpl16250_mobigo.cpp      // no games in this file
@@ -405,13 +405,13 @@ h01x.cpp
 hec2hrp.cpp
 hektor.cpp
 hh_amis2k.cpp
-//hh_b5000.cpp                         // mnw
 hh_cop400.cpp
 hh_cops1.cpp
 hh_hmcs40.cpp
 hh_melps4.cpp
 hh_pic16.cpp
 hh_pps41.cpp
+hh_rw5000.cpp
 hh_sm510.cpp
 hh_tms1k.cpp
 hh_ucom4.cpp
@@ -484,6 +484,7 @@ iq151.cpp
 //iris_power.cpp                       // unix workstation, skel
 //is48x.cpp                            // skel
 //isbc.cpp                             // fails while booting
+isbc660.cpp
 //isbc8010.cpp                         // useless, no media
 //isbc8030.cpp                         // useless, no media
 //iskr103x.cpp                         // needs boot disk, no swlist
@@ -690,6 +691,7 @@ multi8.cpp
 //mupid2.cpp
 mvme147.cpp
 mvme162.cpp
+mw4pole.cpp
 //mx2178.cpp
 //myb3k.cpp
 mycom.cpp
