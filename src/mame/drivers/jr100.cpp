@@ -285,6 +285,7 @@ GFXDECODE_END
 
 uint8_t jr100_state::pb_r()
 {
+	m_via->set_unscaled_clock(14'318'181 / 16);   // MESSUI - fix for the cassette
 	uint8_t data = 0x1f;
 	if (m_keyboard_line < 9)
 		data = m_io_keyboard[m_keyboard_line]->read() & 0xbf;
@@ -307,6 +308,7 @@ void jr100_state::pb_w(uint8_t data)
 
 WRITE_LINE_MEMBER(jr100_state::cb2_w)
 {
+	m_via->set_unscaled_clock(14'318'181 / 32);   // MESSUI - fix for the cassette
 	m_cassette->output(state ? -1.0 : +1.0);
 }
 
