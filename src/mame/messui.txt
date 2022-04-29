@@ -363,45 +363,45 @@ gamepock.cpp
 gb.cpp
 gba.cpp
 //gem_rp.cpp                           // synth, fills up log
-//generalplus_gpl_unknown.cpp          // skel
+//generalplus_gpl_unknown.cpp          // works, fills up log
 generalplus_gpl162xx_lcdtype.cpp
-//generalplus_gpl16250_mobigo.cpp      // no games in this file
-//generalplus_gpl16250_nand.cpp        // not working
-//generalplus_gpl16250_rom.cpp         // not working
-//generalplus_gpl16250_romram.cpp      // not working
-//generalplus_gpl16250_spi.cpp         // not working
-//generalplus_gpl16250_spi_direct.cpp  // mnw
-//generalplus_gpl32612.cpp             // not working
-//geneve.cpp                           // no software, no swlist. Only disk I have crashes 2nd time around.
-//geniusiq.cpp                         // no software, no swlist
+//generalplus_gpl16250_mobigo.cpp      // black screen, fills up log
+//generalplus_gpl16250_nand.cpp        // black screen, fills up log
+//generalplus_gpl16250_rom.cpp         // works, fills up log
+//generalplus_gpl16250_romram.cpp      // works, fills up log
+generalplus_gpl16250_spi.cpp
+//generalplus_gpl16250_spi_direct.cpp  // works, fills up log
+//generalplus_gpl32612.cpp             // black screen, fills up log
+geneve.cpp
+geniusiq.cpp
 //geniusjr.cpp                         // crash at start
 genpc.cpp
 gigatron.cpp
-//gimix.cpp                            // regressed, cannot boot disk
-//gkidabc.cpp                          // skel
-//gizmondo.cpp                         // skel
-//glcx.cpp                             // skel
-//gm1000.cpp                           // synth
+gimix.cpp
+gkidabc.cpp
+//gizmondo.cpp                         // black screen, fills up log
+glcx.cpp
+gm1000.cpp
 gmaster.cpp
-//gnat10.cpp                           // cp/m, skel
-//goupil.cpp                           // no software, no swlist
-//gp2x.cpp                             // mnw
+gnat10.cpp
+goupil.cpp
+//gp2x.cpp                             // fills up log
 gp32.cpp
-//grfd2301.cpp                         // network device
+//grfd2301.cpp                         // fills up log
 //gridcomp.cpp                         // crash at start
 gs6502.cpp
 gs6809.cpp
 gscpm.cpp
 gsz80.cpp
-//h19.cpp                              // terminal
+h19.cpp
 h8.cpp
 h89.cpp
-//harriet.cpp                          // mnw
-//hawk.cpp                             // hangs at 68de
-//hazeltin.cpp                         // terminal
-//hazl1420.cpp                         // terminal
+harriet.cpp
+hawk.cpp
+hazeltin.cpp
+hazl1420.cpp
 h01x.cpp
-//hds200.cpp                           // terminal
+hds200.cpp
 hec2hrp.cpp
 hektor.cpp
 hh_amis2k.cpp
@@ -415,58 +415,58 @@ hh_rw5000.cpp
 hh_sm510.cpp
 hh_tms1k.cpp
 hh_ucom4.cpp
-//hhtiger.cpp                          // black screen
-//hk68v10.cpp                          // no swlist
-//hohnadam.cpp                         // synth
+hhtiger.cpp                            // black screen, fills up log
+hk68v10.cpp
+hohnadam.cpp
 homelab.cpp
-//homez80.cpp                          // bugfest, no media
-//horizon.cpp                          // skel
+homez80.cpp
+horizon.cpp
 hp_ipc.cpp
-//hp16500.cpp                          // mnw
-//hp2100.cpp                           // skel
-//hp2620.cpp                           // terminal
-//hp2640.cpp                           // terminal
-//hp3478a.cpp                          // multimeter
-//hp48.cpp                             // useless
-//hp49gp.cpp                           // black screen
-//hp64k.cpp                            // not working, no swlist
-//hp700.cpp                            // terminal
+//hp16500.cpp                          // mnw, fills up log
+hp2100.cpp
+hp2620.cpp
+hp2640.cpp
+hp3478a.cpp
+hp48.cpp
+hp49gp.cpp
+//hp64k.cpp                            // not working, fills up the log
+hp700.cpp
 hp80.cpp
-//hp95lx.cpp                           // useless
-//hp9825.cpp                           // does it work? how to use?
-//hp9845.cpp                           // does it work? how to use?
-//hp9k.cpp                             // no kbd
+hp95lx.cpp
+hp9825.cpp
+hp9845.cpp
+hp9k.cpp
 hp9k_3xx.cpp
-//hprot1.cpp                           // printer
-//hpz80unk.cpp                         // useless
-//ht6000.cpp                           // synth
+//hprot1.cpp                           // printer, fills up the log
+//hpz80unk.cpp                         // useless, fills up the log
+//ht6000.cpp                           // synth, fills up log
 ht68k.cpp
 huebler.cpp
 hunter2.cpp
-//hunter16.cpp                         // blank screen
+hunter16.cpp
 husky.cpp
-//hx20.cpp                             // blank screen
-//i7000.cpp                            // mnw
-//ibm3153.cpp                          // terminal
-//ibm6580.cpp                          // skel
+hx20.cpp
+i7000.cpp
+ibm3153.cpp
+ibm6580.cpp
 ibmpc.cpp
 ibmpcjr.cpp
-//icatel.cpp                           // payphone
-//icebox.cpp                           // can't boot floppy
-//ie15.cpp                             // terminal
-//iez80.cpp                            // useless
-//if800.cpp                            // skel
-//ikt5a.cpp                            // terminal
-im01.cpp                               // russian chess game
-//imds2.cpp                            // no software, no swlist
-//imsai.cpp                            // useless, no media
-//indiana.cpp                          // mnw, seems useless
-//indigo.cpp                           // mnw, black screen
-//indy_indigo2.cpp                     // unix workstation
-//informer_207_100.cpp                 // terminal
-//informer_207_376.cpp                 // terminal
-//informer_213.cpp                     // terminal
-//innotv_innotabmax.cpp                // skel
+icatel.cpp
+icebox.cpp
+ie15.cpp
+//iez80.cpp                            // useless, fills up log
+if800.cpp
+ikt5a.cpp
+im01.cpp
+imds2.cpp
+//imsai.cpp                            // useless, no media, fills up log
+indiana.cpp
+indigo.cpp
+indy_indigo2.cpp
+//informer_207_100.cpp                 // terminal, fills up log
+informer_207_376.cpp
+//informer_213.cpp                     // terminal, fills up log
+//innotv_innotabmax.cpp                // skel, almost freezes, fills up log
 instruct.cpp
 //inteladv.cpp                         // skel
 //intellec4.cpp                        // no media available

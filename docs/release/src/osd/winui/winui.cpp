@@ -5888,7 +5888,7 @@ int FindIconIndex(int nIconResource)
 	return -1;
 }
 
-
+// not used
 int FindIconIndexByName(const char *icon_name)
 {
 	for (int i = 0; g_iconData[i].icon_name; i++)
