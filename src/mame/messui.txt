@@ -404,7 +404,6 @@ h01x.cpp
 hds200.cpp
 hec2hrp.cpp
 hektor.cpp
-hh_amis2k.cpp
 hh_cop400.cpp
 hh_cops1.cpp
 hh_hmcs40.cpp
@@ -468,56 +467,56 @@ informer_207_376.cpp
 //informer_213.cpp                     // terminal, fills up log
 //innotv_innotabmax.cpp                // skel, almost freezes, fills up log
 instruct.cpp
-//inteladv.cpp                         // skel
-//intellec4.cpp                        // no media available
-//intellec8.cpp                        // skel
+//inteladv.cpp                         // skel, cars2lap fills up log
+intellec4.cpp
+intellec8.cpp
 intellect02.cpp
-//interpro.cpp                         // unix workstation, mnw
+//interpro.cpp                         // unix workstation, mnw, fills up log
 intv.cpp
-//ipc.cpp                              // useless, no media
-//ipds.cpp                             // skel
-//iphone2g.cpp                         // useless
+//ipc.cpp                              // useless, no media, fills up log
+ipds.cpp
+iphone2g.cpp
 iq151.cpp
-//iqunlim.cpp                          // skel
-//iris3130.cpp                         // unix workstation, skel
-//irisha.cpp                           // no media
-//iris_power.cpp                       // unix workstation, skel
-//is48x.cpp                            // skel
-//isbc.cpp                             // fails while booting
+//iqunlim.cpp                          // skel, fills up log
+//iris3130.cpp                         // unix workstation, skel, fills up log
+irisha.cpp
+//iris_power.cpp                       // unix workstation, skel, fills up log
+is48x.cpp
+isbc.cpp
 isbc660.cpp
-//isbc8010.cpp                         // useless, no media
-//isbc8030.cpp                         // useless, no media
-//iskr103x.cpp                         // needs boot disk, no swlist
-//itc4.cpp                             // temperature controller
-//itt1700.cpp                          // terminal
-//itt3030.cpp                          // works but impossible to use
-//itt9216.cpp                          // terminal
-//jade.cpp
-//jazz.cpp                             // unix workstation, how to use?
-//jensen.cpp                           // unix workstation? skel
-//jonos.cpp                            // terminal
-//jornada.cpp                          // skel
+isbc8010.cpp
+isbc8030.cpp
+//iskr103x.cpp                         // needs boot disk, no swlist, fills up log
+itc4.cpp
+itt1700.cpp
+itt3030.cpp
+//itt9216.cpp                          // terminal, fills up log
+//jade.cpp                             // fills up log
+jazz.cpp
+jensen.cpp
+jonos.cpp
+jornada.cpp
 jr100.cpp
 jr200.cpp
 jtc.cpp
 juicebox.cpp
 juku.cpp
-//junior.cpp                           // no media
-//junior80.cpp                         // skel
-//juno106.cpp                          // synth
-//juno6.cpp                            // synth
+junior.cpp
+junior80.cpp
+juno106.cpp
+juno6.cpp
 jupace.cpp
-//jupiter.cpp                          // skel
-//k1003.cpp                            // kbd issues
+//jupiter.cpp                          // skel, fills up log
+k1003.cpp
 k28.cpp
-//k8915.cpp
-//kawai_acr20.cpp                      // synth
-//kawai_k1.cpp
-//kawai_k4.cpp
-//kawai_k5.cpp
-//kawai_ksp10.cpp                      //synth
-//kawai_r100.cpp
-//kawai_sx240.cpp                      //synth
+//k8915.cpp                            // fills up log
+//kawai_acr20.cpp                      // synth, fills up log
+kawai_k1.cpp
+kawai_k4.cpp
+//kawai_k5.cpp                         // fills up log
+//kawai_ksp10.cpp                      //synth, fills up log
+//kawai_r100.cpp                       // fills up log
+kawai_sx240.cpp
 kaypro.cpp
 kc.cpp
 kdt6.cpp
@@ -951,6 +950,7 @@ sbrain.cpp
 sc2.cpp
 //scopus.cpp                    // need instructions, no media
 scorpion.cpp
+//scrablex.cpp
 scv.cpp
 //sdk51.cpp                     // skel
 sdk80.cpp
@@ -1190,6 +1190,7 @@ vtech2.cpp
 //vt_unknown.cpp                  // skel
 wangpc.cpp
 //wicat.cpp
+//wildfire.cpp
 //wizard.cpp                  // skel
 //wrinkles.cpp
 wswan.cpp
