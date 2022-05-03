@@ -970,6 +970,10 @@ static DWORD RunMAME(int nGameIndex, const play_options *playopts)
 	global_opts.set_value(OPTION_PLUGINS, GetEnablePlugins(), OPTION_PRIORITY_CMDLINE);
 	global_opts.set_value(OPTION_PLUGIN, GetPlugins(), OPTION_PRIORITY_CMDLINE);
 	global_opts.set_value(OPTION_SYSTEMNAME, name, OPTION_PRIORITY_CMDLINE);
+	//global_opts.set_value(OPTION_LOG, 0, OPTION_PRIORITY_CMDLINE);   // see emu_opts.cpp for these
+	//global_opts.set_value(OPTION_OSLOG, 0, OPTION_PRIORITY_CMDLINE);
+	//global_opts.set_value(OPTION_VERBOSE, 0, OPTION_PRIORITY_CMDLINE);
+	//global_opts.set_value(OPTION_DEBUG, 0, OPTION_PRIORITY_CMDLINE);
 
 	// set any specified play options
 	if (playopts_apply == 0x57)
@@ -2261,11 +2265,11 @@ static LRESULT CALLBACK MameWindowProc(HWND hWnd, UINT message, WPARAM wParam, L
 	}
 
 	case WM_LBUTTONUP:
-	    if (g_listview_dragging)
-		    ButtonUpListViewDrag(MAKEPOINTS(lParam));
+		if (g_listview_dragging)
+			ButtonUpListViewDrag(MAKEPOINTS(lParam));
 		else
-		   /* for splitters */
-		   OnLButtonUp(hWnd, (UINT)wParam, MAKEPOINTS(lParam));
+			/* for splitters */
+			OnLButtonUp(hWnd, (UINT)wParam, MAKEPOINTS(lParam));
 		break;
 
 	case WM_NOTIFY:
@@ -2950,19 +2954,19 @@ static void CopyToolTipText(LPTOOLTIPTEXT lpttt)
 static HWND InitToolbar(HWND hParent)
 {
 	HWND hToolBar = CreateToolbarEx(hParent,
-						   WS_CHILD | WS_VISIBLE | WS_CLIPSIBLINGS |
-						   CCS_TOP | TBSTYLE_FLAT | TBSTYLE_TOOLTIPS,
-						   1,
-						   8,
-						   hInst,
-						   IDB_TOOLBAR,
-						   tbb,
-						   NUM_TOOLBUTTONS,
-						   16,
-						   16,
-						   0,
-						   0,
-						   sizeof(TBBUTTON));
+						WS_CHILD | WS_VISIBLE | WS_CLIPSIBLINGS |
+						CCS_TOP | TBSTYLE_FLAT | TBSTYLE_TOOLTIPS,
+						1,
+						8,
+						hInst,
+						IDB_TOOLBAR,
+						tbb,
+						NUM_TOOLBUTTONS,
+						16,
+						16,
+						0,
+						0,
+						sizeof(TBBUTTON));
 	RECT rect;
 
 	// get Edit Control position
@@ -4172,7 +4176,7 @@ static BOOL MameCommand(HWND hwnd,int id, HWND hwndCtl, UINT codeNotify)
 		}
 		/* Just in case the toggle MMX on/off */
 		UpdateStatusBar();
-	   break;
+		break;
 
 	/* ListView Context Menu */
 	case ID_CONTEXT_ADD_CUSTOM:
@@ -5704,7 +5708,7 @@ void MamePlayGame(void)
 
 static void MamePlayRecordWave()
 {
-	char filename[MAX_PATH];
+	char filename[MAX_PATH] = { };
 	int nGame = Picker_GetSelectedItem(hwndList);
 	if (nGame != -1)
 		strcpy(filename, driver_list::driver(nGame).name);
@@ -5722,7 +5726,7 @@ static void MamePlayRecordWave()
 
 static void MamePlayRecordMNG()
 {
-	char filename[MAX_PATH] = { 0, };
+	char filename[MAX_PATH] = { };
 	int nGame = Picker_GetSelectedItem(hwndList);
 	if (nGame != -1)
 		strcpy(filename, driver_list::driver(nGame).name);
@@ -5753,7 +5757,7 @@ static void MamePlayRecordMNG()
 
 static void MamePlayRecordAVI()
 {
-	char filename[MAX_PATH] = { 0, };
+	char filename[MAX_PATH] = { };
 	int nGame = Picker_GetSelectedItem(hwndList);
 	if (nGame != -1)
 		strcpy(filename, driver_list::driver(nGame).name);
@@ -6429,7 +6433,7 @@ static void RemoveGameCustomFolder(int driver_index)
 
 	for (int i=0;i<num_folders;i++)
 	{
-	    if (folders[i]->m_dwFlags & F_CUSTOM && folders[i]->m_nFolderId == GetCurrentFolderID())
+		if (folders[i]->m_dwFlags & F_CUSTOM && folders[i]->m_nFolderId == GetCurrentFolderID())
 		{
 			int current_pick_index;
 
