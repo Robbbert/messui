@@ -4,7 +4,7 @@
 68ksbc.cpp
 a2600.cpp
 a5105.cpp
-//a51xx.cpp                            // skel, a5130, log fills up
+a51xx.cpp
 a7150.cpp
 a7800.cpp
 aa310.cpp
@@ -15,7 +15,7 @@ abc80x.cpp
 ac1.cpp
 accomm.cpp
 acd.cpp
-//aceex.cpp                            // modem, aceex2814, log fills up
+aceex.cpp
 aci_boris.cpp
 aci_borisdpl.cpp
 aci_ggm.cpp
@@ -23,13 +23,13 @@ aci_prodigy.cpp
 acrnsys1.cpp
 acrnsys.cpp
 //actions_atj2279b.cpp                 // skel, freezes mame
-//acvirus.cpp                          // skel, fills up log
+acvirus.cpp
 adacp150.cpp
 adam.cpp
-//adds2020.cpp                         // terminal, fills up log
+adds2020.cpp
 adm11.cpp
 adm23.cpp
-//adm31.cpp                            // terminal, fills up log
+adm31.cpp
 adm36.cpp
 advision.cpp
 agat.cpp
@@ -37,27 +37,27 @@ aid80f.cpp
 aim65.cpp
 aim65_40.cpp
 airbase99.cpp
-//akaiax80.cpp                         // synth, fills up log
+akaiax80.cpp
 akaivx600.cpp
 alcat7100.cpp
 alesis.cpp
 alesis_qs.cpp
-//alfaskop41xx.cpp                     // skel, fills up log
-//alphajuno.cpp                        // synth, fills up log
+alfaskop41xx.cpp
+alphajuno.cpp
 alphasma.cpp
-//alphasma3k.cpp                       // skeleton, fills up log
+alphasma3k.cpp
 alphatan.cpp
 alphatpx.cpp
-//alphatpc16.cpp                       // syntax error on everything in basic, fills up log
+alphatpc16.cpp
 alphatro.cpp
 altair.cpp
 alto1.cpp
-//alto2.cpp                            // mnw, fills up log
+alto2.cpp
 altos2.cpp
 altos5.cpp
 altos486.cpp
 altos8600.cpp
-//am1000.cpp                           // skel, fills up the log
+am1000.cpp
 amico2k.cpp
 amiga.cpp
 ampex.cpp
@@ -67,7 +67,7 @@ ampscarp.cpp
 amstr_pc.cpp
 amstrad.cpp
 amust.cpp
-//anzterm.cpp                          // useless, fills up log
+anzterm.cpp
 apc.cpp
 apexc.cpp
 apf.cpp
@@ -80,13 +80,13 @@ apple2gs.cpp
 apple3.cpp
 applix.cpp
 apricot.cpp
-//apricotf.cpp                         // fd issues, fills up log
-//apricotp.cpp                         // black screen, fills up log
-//apxen.cpp                            // skel, fills up log
+apricotf.cpp
+apricotp.cpp
+apxen.cpp
 aquarius.cpp
 arcadia.cpp
 argo.cpp
-//argox.cpp                            // printer, fills up log
+argox.cpp
 asst128.cpp
 astrohome.cpp
 at.cpp
@@ -97,7 +97,7 @@ atom.cpp
 atpci.cpp
 att3b2.cpp
 att4425.cpp
-//att610.cpp                           // skel, fills up the log
+att610.cpp
 att630.cpp
 attache.cpp
 aussiebyte.cpp
@@ -106,33 +106,33 @@ avigo.cpp
 aviion88k.cpp
 avrmax.cpp
 ax20.cpp
-//b16.cpp                              // bad rom, need boot disk, no software, fills up log
+b16.cpp
 b2m.cpp
 babbage.cpp
-//banctec.cpp                          // document processor, skel, fills up log
-//bandai_design_master.cpp             // skel, fills up log
+banctec.cpp
+bandai_design_master.cpp
 basf7100.cpp
 basic52.cpp
 basssta.cpp
 bbc.cpp
 bbcbc.cpp
 bcs3.cpp
-//bebox.cpp                            // mnw, fills up log
+bebox.cpp
 bert.cpp
 beta.cpp
-//betacam.cpp                          // skel, fills up log
+betacam.cpp
 bigbord2.cpp
 binbug.cpp
-//bitel.cpp                            // terminal, fills up log
+bitel.cpp
 bitgraph.cpp
 bk.cpp
 blit.cpp
-//blw700i.cpp                          // mnw, no media, fills up log
+blw700i.cpp
 bmjr.cpp
 bml3.cpp
 bob85.cpp
 boss_se70.cpp
-//boss_sx700.cpp                       // synth, fills up log
+boss_sx700.cpp
 bpmmicro.cpp
 br8641.cpp
 braiplus.cpp
@@ -148,16 +148,16 @@ c64.cpp
 c64dtv.cpp
 c65.cpp
 c80.cpp
-//c900.cpp                             // useless, no media, fills up log
+c900.cpp
 camplynx.cpp
 candela.cpp
 canon_s80.cpp
-//cardinal.cpp                         // terminal, fills up log
+cardinal.cpp
 casio_rompack.cpp
-//casloopy.cpp                         // bad gfx, no inputs, fills up log
+casloopy.cpp
 cat.cpp
 cbm2.cpp
-//cbnt2039.cpp                         // printer, fills up log
+cbnt2039.cpp
 cc40.cpp
 ccs2810.cpp
 cd100.cpp
@@ -165,8 +165,8 @@ cd2650.cpp
 cdc721.cpp
 cdsys5.cpp
 ceres.cpp
-//cfx9850.cpp                          // no media, fills up log
-//cgc7900.cpp                          // mnw, fills up log
+cfx9850.cpp
+cgc7900.cpp
 cgenie.cpp
 channelf.cpp
 chaos.cpp
@@ -182,8 +182,8 @@ ckz80.cpp
 clcd.cpp
 clickstart.cpp
 clxvme186.cpp
-//cm1800.cpp                           // no media, fills up log
-//cmi.cpp                              // synth, fills up log
+cm1800.cpp
+cmi.cpp
 cms.cpp
 coco12.cpp
 coco3.cpp
@@ -191,10 +191,10 @@ codata.cpp
 coleco.cpp
 compc.cpp
 compis.cpp
-//compmahj.cpp                         // skel, fills up log
+compmahj.cpp
 compuchess.cpp
 compucolor.cpp
-//comquest.cpp                         // skel, fills up log
+comquest.cpp
 comx35.cpp
 concept.cpp
 conchess.cpp
@@ -210,49 +210,49 @@ crimson.cpp
 crvision.cpp
 ct486.cpp
 ctk551.cpp
-//ctk2000.cpp                          // mnw, no media, fills up log
+ctk2000.cpp
 cvicny.cpp
 cxg_ch2001.cpp
 cxg_dominator.cpp
 cxg_scptchess.cpp
 cxg_sphinx40.cpp
-//cxhumax.cpp                          // almost freezes mame, fills up log
-//cybiko.cpp                           // very slow, fills up log
-//cz101.cpp                            // no media, no inputs, fills up log
-//d400.cpp                             // skel, fills up log
+cxhumax.cpp
+cybiko.cpp
+cz101.cpp
+d400.cpp
 d6800.cpp
 d6809.cpp
 dai.cpp
-//daruma.cpp                           // printer, fills up log
-//datacast.cpp                         // what is this, fills up log
+daruma.cpp
+datacast.cpp
 datum.cpp
 dbox.cpp
-//dccons.cpp                           // hangs soon after start
+//dccons.cpp                           // hangs or crash soon after start
 dcebridge.cpp
 dct11em.cpp
 debut.cpp
 decmate2.cpp
 decstation.cpp
-//dectalk.cpp                          // useless, no media, fills up log
+dectalk.cpp
 decwritr.cpp
 dfs500.cpp
 dg680.cpp
-//dgn_beta.cpp                         // MNW, fills up log
+dgn_beta.cpp
 design.cpp
-//diablo1300.cpp                       // printer?, skel, fills up log
+diablo1300.cpp
 didact.cpp
 digel804.cpp
 digijet.cpp
 digilog320.cpp
-//digilog400.cpp                       // logic analyser, skel, fills up log
+digilog400.cpp
 dim68k.cpp
-//dm7000.cpp                           // mnw, no media, fills up log
+dm7000.cpp
 dmax8000.cpp
 dms5000.cpp
 dms86.cpp
 dmv.cpp
 dolphunk.cpp
-//dpb7000.cpp                          // no kbd, fills up log
+dpb7000.cpp
 dps1.cpp
 dpsv55.cpp
 dragon.cpp
@@ -276,25 +276,25 @@ elan_eu3a05.cpp
 elan_eu3a14.cpp
 electron.cpp
 elekscmp.cpp
-//elektronmono.cpp                     // synth, fills up log
+elektronmono.cpp
 elf.cpp
 elwro800.cpp
-//elzet80.cpp                          // skel, fills up log
+elzet80.cpp
 emax.cpp
 emma2.cpp
 emu2.cpp
 emu3.cpp
-//emu68k.cpp                           // synth, fills up log
+emu68k.cpp
 enmirage.cpp
 ep64.cpp
 epic14e.cpp
 ergo201.cpp
-//esprit.cpp                           // terminal, fills up log
+esprit.cpp
 esq1.cpp
 esq5505.cpp
-//esqasr.cpp                           // synth, fills up log
-//esqkt.cpp                            // synth, fills up log
-//esqmr.cpp                            // synth, fills up log
+esqasr.cpp
+esqkt.cpp
+esqmr.cpp
 et3400.cpp
 eti660.cpp
 eurit.cpp
@@ -310,7 +310,7 @@ exorterm.cpp
 exp85.cpp
 f387x.cpp
 facit4440.cpp
-//falco500.cpp                         // terminal, fills up log
+falco500.cpp
 falcots.cpp
 falcots28.cpp
 fanucs15.cpp
@@ -349,29 +349,29 @@ force68k.cpp
 fp1100.cpp
 fp200.cpp
 fp6000.cpp
-//freedom120.cpp                       // skel, terminal, fills up log
-//fs3216.cpp                           // no kbd, no software, fills up log
+freedom120.cpp
+fs3216.cpp
 ft68m.cpp
 galaxy.cpp
 galeb.cpp
 gamate.cpp
 gamecom.cpp
-//gamecube.cpp                         // skel, fills up log
+gamecube.cpp
 gameking.cpp
 gamemachine.cpp
 gamepock.cpp
 gb.cpp
 gba.cpp
-//gem_rp.cpp                           // synth, fills up log
-//generalplus_gpl_unknown.cpp          // works, fills up log
+gem_rp.cpp
+generalplus_gpl_unknown.cpp
 generalplus_gpl162xx_lcdtype.cpp
-//generalplus_gpl16250_mobigo.cpp      // black screen, fills up log
-//generalplus_gpl16250_nand.cpp        // black screen, fills up log
-//generalplus_gpl16250_rom.cpp         // works, fills up log
-//generalplus_gpl16250_romram.cpp      // works, fills up log
+generalplus_gpl16250_mobigo.cpp
+generalplus_gpl16250_nand.cpp
+generalplus_gpl16250_rom.cpp
+generalplus_gpl16250_romram.cpp
 generalplus_gpl16250_spi.cpp
-//generalplus_gpl16250_spi_direct.cpp  // works, fills up log
-//generalplus_gpl32612.cpp             // black screen, fills up log
+generalplus_gpl16250_spi_direct.cpp
+generalplus_gpl32612.cpp
 geneve.cpp
 geniusiq.cpp
 //geniusjr.cpp                         // crash at start
@@ -379,15 +379,15 @@ genpc.cpp
 gigatron.cpp
 gimix.cpp
 gkidabc.cpp
-//gizmondo.cpp                         // black screen, fills up log
+gizmondo.cpp
 glcx.cpp
 gm1000.cpp
 gmaster.cpp
 gnat10.cpp
 goupil.cpp
-//gp2x.cpp                             // fills up log
+gp2x.cpp
 gp32.cpp
-//grfd2301.cpp                         // fills up log
+grfd2301.cpp
 //gridcomp.cpp                         // crash at start
 gs6502.cpp
 gs6809.cpp
@@ -414,21 +414,21 @@ hh_rw5000.cpp
 hh_sm510.cpp
 hh_tms1k.cpp
 hh_ucom4.cpp
-hhtiger.cpp                            // black screen, fills up log
+hhtiger.cpp
 hk68v10.cpp
 hohnadam.cpp
 homelab.cpp
 homez80.cpp
 horizon.cpp
 hp_ipc.cpp
-//hp16500.cpp                          // mnw, fills up log
+hp16500.cpp
 hp2100.cpp
 hp2620.cpp
 hp2640.cpp
 hp3478a.cpp
 hp48.cpp
 hp49gp.cpp
-//hp64k.cpp                            // not working, fills up the log
+hp64k.cpp
 hp700.cpp
 hp80.cpp
 hp95lx.cpp
@@ -436,9 +436,9 @@ hp9825.cpp
 hp9845.cpp
 hp9k.cpp
 hp9k_3xx.cpp
-//hprot1.cpp                           // printer, fills up the log
-//hpz80unk.cpp                         // useless, fills up the log
-//ht6000.cpp                           // synth, fills up log
+hprot1.cpp
+hpz80unk.cpp
+ht6000.cpp
 ht68k.cpp
 huebler.cpp
 hunter2.cpp
@@ -453,45 +453,45 @@ ibmpcjr.cpp
 icatel.cpp
 icebox.cpp
 ie15.cpp
-//iez80.cpp                            // useless, fills up log
+iez80.cpp
 if800.cpp
 ikt5a.cpp
 im01.cpp
 imds2.cpp
-//imsai.cpp                            // useless, no media, fills up log
+imsai.cpp
 indiana.cpp
 indigo.cpp
 indy_indigo2.cpp
-//informer_207_100.cpp                 // terminal, fills up log
+informer_207_100.cpp
 informer_207_376.cpp
-//informer_213.cpp                     // terminal, fills up log
-//innotv_innotabmax.cpp                // skel, almost freezes, fills up log
+informer_213.cpp
+innotv_innotabmax.cpp
 instruct.cpp
-//inteladv.cpp                         // skel, cars2lap fills up log
+inteladv.cpp
 intellec4.cpp
 intellec8.cpp
 intellect02.cpp
-//interpro.cpp                         // unix workstation, mnw, fills up log
+interpro.cpp
 intv.cpp
-//ipc.cpp                              // useless, no media, fills up log
+ipc.cpp
 ipds.cpp
 iphone2g.cpp
 iq151.cpp
-//iqunlim.cpp                          // skel, fills up log
-//iris3130.cpp                         // unix workstation, skel, fills up log
+iqunlim.cpp
+iris3130.cpp
 irisha.cpp
-//iris_power.cpp                       // unix workstation, skel, fills up log
+iris_power.cpp
 is48x.cpp
 isbc.cpp
 isbc660.cpp
 isbc8010.cpp
 isbc8030.cpp
-//iskr103x.cpp                         // needs boot disk, no swlist, fills up log
+iskr103x.cpp
 itc4.cpp
 itt1700.cpp
 itt3030.cpp
-//itt9216.cpp                          // terminal, fills up log
-//jade.cpp                             // fills up log
+itt9216.cpp
+jade.cpp
 jazz.cpp
 jensen.cpp
 jonos.cpp
@@ -506,70 +506,70 @@ junior80.cpp
 juno106.cpp
 juno6.cpp
 jupace.cpp
-//jupiter.cpp                          // skel, fills up log
+jupiter.cpp
 k1003.cpp
 k28.cpp
-//k8915.cpp                            // fills up log
-//kawai_acr20.cpp                      // synth, fills up log
+k8915.cpp
+kawai_acr20.cpp
 kawai_k1.cpp
 kawai_k4.cpp
-//kawai_k5.cpp                         // fills up log
-//kawai_ksp10.cpp                      //synth, fills up log
-//kawai_r100.cpp                       // fills up log
+kawai_k5.cpp
+kawai_ksp10.cpp
+kawai_r100.cpp
 kawai_sx240.cpp
 kaypro.cpp
 kc.cpp
 kdt6.cpp
 kim1.cpp
-//kminus.cpp                           // computer, not working
-//konin.cpp
-//korgds8.cpp
-//korgdss1.cpp
-//korgdvp1.cpp
-//korgdw8k.cpp
-//korgm1.cpp
-//korgws.cpp                           //synth
-//korgz3.cpp
+kminus.cpp
+konin.cpp
+korgds8.cpp
+korgdss1.cpp
+korgdvp1.cpp
+korgdw8k.cpp
+korgm1.cpp
+korgws.cpp
+korgz3.cpp
 kramermc.cpp
-//kron.cpp
-//krz2000.cpp
-//ktm3.cpp
+kron.cpp
+krz2000.cpp
+ktm3.cpp
 kyocera.cpp
 laser3k.cpp
-//lb186.cpp
-//lbpc.cpp
+lb186.cpp
+lbpc.cpp
 lc80.cpp
 lcmate2.cpp
-//ld50.cpp                             // synth
-//leapfrog_iquest.cpp                  // skel
-//leapfrog_leappad.cpp
+ld50.cpp
+leapfrog_iquest.cpp
+leapfrog_leappad.cpp
 //leapfrog_leapster_explorer.cpp       // skel, hangs mame
-//leapster.cpp
-//learnwin.cpp
-//lee1214.cpp
-//lee1220.cpp                          // terminal
+//leapster.cpp                         // crash at start
+learnwin.cpp
+lee1214.cpp
+lee1220.cpp
 lft.cpp
-//lft_chiptune.cpp                     //wbdnu (works but does nothing useful)
-//lft_craft.cpp                        //wbdnu
-//lft_phasor.cpp                       //wbdnu
-//lg-dvd.cpp
-//lilith.cpp
-//lisa.cpp
+lft_chiptune.cpp
+lft_craft.cpp
+lft_phasor.cpp
+lg-dvd.cpp
+lilith.cpp
+lisa.cpp
 lk3000.cpp
 llc1.cpp
 llc2.cpp
-//lms46.cpp
+lms46.cpp
 lnw80.cpp
 lola8a.cpp
-//luna_68k.cpp                         // skel
+luna_68k.cpp
 lviv.cpp
-//lwriter.cpp
+lwriter.cpp
 lynx.cpp
 m20.cpp
 m24.cpp
-m3.cpp                                 // monitor ok, no software
+m3.cpp
 m5.cpp
-//m6805evs.cpp
+m6805evs.cpp
 m68705prg.cpp
 //m79152pc.cpp
 mac.cpp
