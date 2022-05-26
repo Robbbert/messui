@@ -1088,7 +1088,7 @@ ti99_4x.cpp
 ti99_8.cpp
 ti990_10.cpp
 ti990_4.cpp
-tiki100.cpp
+tiki100.cpp                            // has a reputation of crashing
 tim011.cpp
 tim100.cpp
 timex.cpp
