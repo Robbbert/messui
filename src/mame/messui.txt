@@ -542,6 +542,7 @@ lbpc.cpp
 lc80.cpp
 lcmate2.cpp
 ld50.cpp
+ldplayer.cpp
 leapfrog_iquest.cpp
 leapfrog_leappad.cpp
 //leapfrog_leapster_explorer.cpp       // hangs mame
@@ -1163,6 +1164,7 @@ vector4.cpp
 vectrex.cpp
 vectrix.cpp
 vg5k.cpp
+vgmplay.cpp
 vic10.cpp
 vic20.cpp
 victor9k.cpp
@@ -1194,6 +1196,7 @@ vtech_eu3a12.cpp
 //vtech_innotab.cpp                    // hangs at start for a while
 vt_unknown.cpp
 wangpc.cpp
+wavesynth.cpp
 wicat.cpp
 wildfire.cpp
 wizard.cpp
