@@ -1286,3 +1286,4 @@ zx.cpp
 -gamecst2
 //vectrex.cpp
 -raaspec
+//systems that crash or freeze
