@@ -38,6 +38,7 @@ copy /Y %from%\src\lib\util\options.*               %to%\src\lib\util
 copy /Y %from%\src\lib\util\chdcd.cpp               %to%\src\lib\util
 
 md %to%\src\mame\drivers
+copy /Y %from%\src\mame\mess.cpp                    %to%\src\mame
 copy /Y %from%\src\mame\drivers\snes.cpp            %to%\src\mame\drivers
 
 md %to%\src\osd\winui
