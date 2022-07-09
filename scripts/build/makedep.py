@@ -432,10 +432,9 @@ class DriverFilter:
             elif text:
                 if (len(text) >= 2) and ((text[0] == '"') or (text[0] == "'")) and (text[0] == text[-1]):
                     text = text[1:-1]
-                basepath = os.path.join('c:\\','mess','src','mame')
                 paths = glob.glob(os.path.join(basepath, *text.split('/')))
                 if not paths:
-                    sys.stderr.write('%s:%s: Pattern "%s\\%s" did not match any source files\n' % (path, parser.input_line, basepath,text))
+                    sys.stderr.write('%s:%s: Pattern "%s/%s" did not match any source files\n' % (path, parser.input_line, basepath,text))
                     sys.exit(1)
                 for source in paths:
                     sourcefile('/'.join(path_components(os.path.relpath(source, basepath))))
