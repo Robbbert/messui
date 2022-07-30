@@ -1,1 +1,1 @@
-edit c:\mess\src\mame\messui.txt
+edit c:\mess\src\mame\messui.flt
