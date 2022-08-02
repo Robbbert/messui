@@ -94,8 +94,7 @@ tms1k_base_device::tms1k_base_device(const machine_config &mconfig, device_type 
 	, m_write_ctl(*this)
 	, m_write_pdc(*this)
 	, m_decode_micro(*this)
-{
-}
+{ }
 
 // disasm
 void tms1k_base_device::state_string_export(const device_state_entry &entry, std::string &str) const
@@ -519,7 +518,7 @@ void tms1k_base_device::op_clo()
 void tms1k_base_device::op_ldx()
 {
 	// LDX: load X register with (x_bits) constant
-	m_x = m_c4 >> (4-m_x_bits);
+	m_x = m_c4 >> (4 - m_x_bits);
 }
 
 void tms1k_base_device::op_comx()

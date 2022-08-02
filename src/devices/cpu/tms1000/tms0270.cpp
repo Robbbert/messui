@@ -23,8 +23,7 @@ DEFINE_DEVICE_TYPE(TMS0270, tms0270_cpu_device, "tms0270", "Texas Instruments TM
 // device definitions
 tms0270_cpu_device::tms0270_cpu_device(const machine_config &mconfig, const char *tag, device_t *owner, u32 clock)
 	: tms0980_cpu_device(mconfig, TMS0270, tag, owner, clock, 16 /* o pins */, 16 /* r pins */, 7 /* pc bits */, 9 /* byte width */, 4 /* x width */, 11 /* prg width */, address_map_constructor(FUNC(tms0270_cpu_device::program_11bit_9), this), 8 /* data width */, address_map_constructor(FUNC(tms0270_cpu_device::data_144x4), this))
-{
-}
+{ }
 
 
 // machine configs
@@ -80,19 +79,18 @@ void tms0270_cpu_device::device_reset()
 // i/o handling
 void tms0270_cpu_device::dynamic_output()
 {
-	// R11: TMS5100 CTL port direction (0=read from TMS5100, 1=write to TMS5100)
-	m_ctl_dir = BIT(m_r, 11);
-
 	// R12: chip select (off=display via OPLA, on=TMS5100 via ACC/CKB)
 	m_chipsel = BIT(m_r, 12);
 
 	if (m_chipsel)
 	{
+		// R11: TMS5100 CTL port direction (0=read from TMS5100, 1=write to TMS5100)
+		m_ctl_dir = BIT(m_r, 11);
+
 		// ACC via SEG G,B,C,D: TMS5100 CTL pins
-		u8 ctl_out = (m_ctl_dir) ? m_a : m_read_ctl() & 0xf;
-		if (m_ctl_out != ctl_out)
+		if (m_ctl_dir && m_ctl_out != m_a)
 		{
-			m_ctl_out = ctl_out;
+			m_ctl_out = m_a;
 			m_write_ctl(m_ctl_out);
 		}
 
