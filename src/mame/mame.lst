@@ -1377,6 +1377,9 @@ ampscarp                        // Motorola Amps Car Phone
 amspdwy                         // no copyright notice, but (c) 1987 Enerdyne Technologies, Inc.
 amspdwya                        // no copyright notice, but (c) 1987 Enerdyne Technologies, Inc.
 
+@source:misc/amstarz80.cpp
+holddraw
+
 @source:amstrad/amstr_pc.cpp
 pc20                            // 1988 Amstrad PC20
 pc200                           // 1988 Sinclair PC200
@@ -16970,6 +16973,9 @@ hitme1                          // (c) 05/1976 Ramtek
 mirco21                         // (c) 08/1976 Mirco
 super21                         // (c) 1978 Mirco
 
+@source:atari/hitparade.cpp
+hitpar
+
 @source:misc/hitpoker.cpp
 hitpoker                        // (c) 1997
 
@@ -20386,7 +20392,7 @@ macxl                           // 1985 Apple Macintosh XL
 @source:tch/littlerb.cpp
 littlerb                        // (c) 1993 TCH
 
-@source:skeleton/lk3000.cpp
+@source:handheld/lk3000.cpp
 lk3000
 
 @source:taito/lkage.cpp
