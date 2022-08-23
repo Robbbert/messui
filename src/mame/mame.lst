@@ -1008,6 +1008,7 @@ karatblzbl                      // bootleg
 karatblzj                       // (c) 1991 Video System / Tecmo (Japan)
 karatblzt                       // (c) 1991 Video System Co. / Tecmo
 karatblzu                       // (c) 1991 Video System Co. (US)
+kickball                        // (c) 1998 Seoung Youn
 pspikes                         // (c) 1991 Video System Co. (World)
 pspikesb                        // bootleg
 pspikesba                       // bootleg
@@ -1025,8 +1026,8 @@ svolly91                        // (c) 1991 Video System Co. (Japan)
 turbofrc                        // (c) 1991 Video System Co.
 turbofrco                       // (c) 1991 Video System Co.
 turbofrcu                       // (c) 1991 Video System Co. (US)
+turbofrcua                      // (c) 1991 Video System Co. (US)
 wbbc97                          // (c) 1997 Comad
-kickball                        // (c) 1998 Seoung Youn
 
 @source:misc/age_candy.cpp
 age_cand                        // AGE Candy Crane
@@ -14652,7 +14653,6 @@ batman2                         // bootleg
 bigkonggx                       // bootleg
 blkhole                         // TDS (Tokyo Denshi Sekkei) & MINTS
 bmxstunts                       // (c) 1985 Jetsoft
-bmxstuntsa                      // (c) 1985 Jetsoft
 bomber                          //
 bongo                           // (c) 1983 Jetsoft
 calipso                         // (c) 1982 Tago
@@ -24329,7 +24329,7 @@ monacogpa                       // (c) 1980 Sega
 @source:tvgames/monkey_king_3b.cpp
 rs70_648                        //
 
-@source:skeleton/monon_color.cpp
+@source:misc/monon_color.cpp
 mononcol                        // (c) 2011 M&D
 
 @source:handheld/monty.cpp
