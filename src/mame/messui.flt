@@ -479,6 +479,7 @@ miltonbradley/vectrex.cpp
 mips/mips.cpp
 misc/3do.cpp
 misc/eva.cpp
+misc/micom_mahjong.cpp
 misc/monon_color.cpp
 mit/tx0.cpp
 mits/altair.cpp
@@ -984,7 +985,7 @@ sony/dpsv55.cpp
 sony/news_38xx.cpp
 sony/news_68k.cpp
 sony/news_r3k.cpp
-//sony/news_r4k.cpp          //to be checked
+sony/news_r4k.cpp
 sony/pockstat.cpp
 sony/ps2sony.cpp
 sony/psx.cpp
@@ -1216,7 +1217,7 @@ vtech/laser3k.cpp
 vtech/lcmate2.cpp
 vtech/pc2000.cpp
 vtech/pc4.cpp
-//vtech/phusion.cpp          //to be checked
+vtech/phusion.cpp
 vtech/prestige.cpp
 vtech/socrates.cpp
 vtech/storio.cpp
