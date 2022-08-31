@@ -186,6 +186,7 @@ static BOOL ChangeJoystickMap(HWND hWnd);
 static BOOL ResetJoystickMap(HWND hWnd);
 //static BOOL SelectDebugscript(HWND hWnd);
 //static BOOL ResetDebugscript(HWND hWnd);
+static bool g_bModifiedSoftwarePaths = false;
 
 static void BuildDataMap(void);
 static void ResetDataMap(HWND hWnd);
@@ -3753,7 +3754,7 @@ static BOOL SoftwareDirectories_OnInsertBrowse(HWND hDlg, BOOL bBrowse, LPCTSTR 
 	LPTSTR lpIn;
 	BOOL res = false;
 
-	g_bModifiedSoftwarePaths = true;
+	set_msp(true);
 
 	HWND hList = GetDlgItem(hDlg, IDC_DIR_LIST);
 	int nItem = ListView_GetNextItem(hList, -1, LVNI_SELECTED);
@@ -3796,7 +3797,7 @@ static BOOL SoftwareDirectories_OnDelete(HWND hDlg)
 	int nSelect = 0;
 	HWND hList = GetDlgItem(hDlg, IDC_DIR_LIST);
 
-	g_bModifiedSoftwarePaths = true;
+	set_msp(true);
 
 	int nItem = ListView_GetNextItem(hList, -1, LVNI_SELECTED | LVNI_ALL);
 
@@ -4100,6 +4101,16 @@ static BOOL RamPopulateControl(datamap *map, HWND dialog, HWND control, windows_
 	EnableWindow(control, i ? 1 : 0);
 
 	return true;
+}
+
+bool get_msp()
+{
+	return g_bModifiedSoftwarePaths;
+}
+
+void set_msp(bool data)
+{
+	g_bModifiedSoftwarePaths = data;
 }
 
 #endif

@@ -22,7 +22,7 @@ function maintargetosdoptions(_target,_subtarget)
 		linkoptions {
 			"-municode",
 			"-lmingw32",
-			"-Wl,--allow-multiple-definition",
+--			"-Wl,--allow-multiple-definition",
 		}
 
 	configuration { "x64", "Release" }

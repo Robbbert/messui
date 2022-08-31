@@ -4307,9 +4307,9 @@ static BOOL MameCommand(HWND hwnd,int id, HWND hwndCtl, UINT codeNotify)
 		{
 			InitPropertyPageToPage(hInst, hwnd, GetSelectedPickItemIcon(), OPTIONS_GAME, -1, current_game, PROPERTIES_PAGE);
 			{
-				if (g_bModifiedSoftwarePaths)
+				if (get_msp())
 				{
-					g_bModifiedSoftwarePaths = false;
+					set_msp(false);
 					MessUpdateSoftwareList(); // messui.cpp
 				}
 			}
