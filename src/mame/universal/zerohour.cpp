@@ -17,7 +17,8 @@ TODO:
   scrolling at the same speed as the stars, it's used in canyon parts and during the
   big ufo explosion
 - redclash canyon level, a gap sometimes appears on the right side, maybe BTANB
-- replace zerohour samples with netlist audio (schematics available but bad quality)
+- replace zerohour samples with netlist audio (schematics available)
+- zerohour should play a beep when an orange asteroid is shot, missing sample?
 - add redclash samples or netlist audio (eg. player shot sound, explosions)
 - redclash beeper frequency range should be higher, but it can't be solved with a
   simple multiply calculation. Besides, anything more than right now and ears will
@@ -37,6 +38,7 @@ BTANB:
 #include "cpu/z80/z80.h"
 #include "machine/74259.h"
 #include "machine/clock.h"
+#include "sound/dac.h"
 #include "sound/spkrdev.h"
 #include "sound/samples.h"
 #include "video/resnet.h"
@@ -77,7 +79,6 @@ protected:
 	virtual void video_start() override;
 
 	void videoram_w(offs_t offset, u8 data);
-	DECLARE_WRITE_LINE_MEMBER(flipscreen_w);
 	void irqack_w(u8 data) { m_maincpu->set_input_line(0, CLEAR_LINE); }
 	void star_reset_w(u8 data);
 	template <unsigned N> DECLARE_WRITE_LINE_MEMBER(star_w);
@@ -273,11 +274,6 @@ void redclash_state::background_w(u8 data)
 	m_background = data;
 }
 
-WRITE_LINE_MEMBER(zerohour_state::flipscreen_w)
-{
-	flip_screen_set(state);
-}
-
 template <unsigned N> WRITE_LINE_MEMBER(zerohour_state::star_w)
 {
 	m_stars->set_speed(state ? 1 << N : 0, 1U << N);
@@ -452,7 +448,6 @@ static const char *const zerohour_sample_names[] =
 	"zh7",
 	"zh8",
 	"zh9",
-	"zh10",
 	nullptr
 };
 
@@ -474,6 +469,8 @@ template <unsigned N> WRITE_LINE_MEMBER(zerohour_state::sample_w)
 {
 	if (m_sound_on && state)
 		m_samples->start(N, N);
+
+	// thrust sound is level-triggered
 	else if (N == 8)
 		m_samples->stop(N);
 }
@@ -770,7 +767,7 @@ void zerohour_state::base(machine_config &config)
 	m_outlatch[1]->q_out_cb<0>().set(FUNC(zerohour_state::star_w<0>));
 	m_outlatch[1]->q_out_cb<5>().set(FUNC(zerohour_state::star_w<1>));
 	m_outlatch[1]->q_out_cb<6>().set(FUNC(zerohour_state::star_w<2>));
-	m_outlatch[1]->q_out_cb<7>().set(FUNC(zerohour_state::flipscreen_w));
+	m_outlatch[1]->q_out_cb<7>().set(FUNC(zerohour_state::flip_screen_set));
 
 	// video hardware
 	screen_device &screen(SCREEN(config, "screen", SCREEN_TYPE_RASTER));
@@ -801,13 +798,14 @@ void zerohour_state::zerohour(machine_config &config)
 
 	m_outlatch[1]->q_out_cb<1>().set(FUNC(zerohour_state::sample_w<8>));
 	m_outlatch[1]->q_out_cb<2>().set(FUNC(zerohour_state::sound_enable_w));
-	m_outlatch[1]->q_out_cb<3>().set(FUNC(zerohour_state::sample_w<9>));
-	m_outlatch[1]->q_out_cb<4>().set(FUNC(zerohour_state::sample_w<10>));
+	m_outlatch[1]->q_out_cb<3>().set("dac", FUNC(dac_1bit_device::write));
+	m_outlatch[1]->q_out_cb<4>().set(FUNC(zerohour_state::sample_w<9>));
 
 	SPEAKER(config, "mono").front_center();
+	DAC_1BIT(config, "dac").add_route(ALL_OUTPUTS, "mono", 0.25);
 
 	SAMPLES(config, m_samples);
-	m_samples->set_channels(11);
+	m_samples->set_channels(10);
 	m_samples->set_samples_names(zerohour_sample_names);
 	m_samples->add_route(ALL_OUTPUTS, "mono", 0.5);
 }
