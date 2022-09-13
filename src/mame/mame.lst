@@ -16861,6 +16861,7 @@ quizwizc                        // Coleco
 raisedvl                        // Entex
 simon                           // Milton Bradley
 simonf                          // Milton Bradley
+slepachi                        // Tsukuda
 speechp                         // TSI
 splitsec                        // Parker Bros
 ssimon                          // Milton Bradley
@@ -16879,7 +16880,6 @@ tc7atc                          // Bandai
 tcfball                         // Tandy Corporation
 tcfballa                        // Tandy Corporation
 tdracula                        // Tsukuda
-tgpachi                         // Tsukuda
 ti1000                          // Texas Instruments
 ti1250                          // Texas Instruments
 ti125076                        // Texas Instruments
@@ -37143,6 +37143,9 @@ runaway                         // (proto)          (c) 1982
 rulechan                        // 1992 ElectroChance
 rulechab                        // 1992 ElectroChance
 
+@source:misc/amuzy.cpp
+mmhammer
+
 @source:konami/rungun.cpp
 rungun                          // GX247 (c) 1993 (World)
 runguna                         // GX247 (c) 1993 (World)
@@ -44853,3 +44856,6 @@ phusion                         //
 
 @source:misc/mtu130.cpp
 mtu130
+
+@source:yamaha/ymvl1.cpp
+vl1
