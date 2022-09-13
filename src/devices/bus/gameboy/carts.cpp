@@ -38,7 +38,7 @@ char const *const GB_MBC1           = "rom_mbc1";
 char const *const GB_MBC2           = "rom_mbc2";
 char const *const GB_MBC3           = "rom_mbc3";
 char const *const GB_MBC5           = "rom_mbc5";
-char const *const GB_MBC6           = "rom_mbc6";
+//char const *const GB_MBC6           = "rom_mbc6";
 char const *const GB_MBC7_2K        = "rom_mbc7_2k";
 char const *const GB_MBC7_4K        = "rom_mbc7_4k";
 char const *const GB_MMM01          = "rom_mmm01";
@@ -77,7 +77,7 @@ void gameboy_cartridges(device_slot_interface &device)
 	device.option_add_internal(slotoptions::GB_MBC2,            GB_ROM_MBC2);
 	device.option_add_internal(slotoptions::GB_MBC3,            GB_ROM_MBC3);
 	device.option_add_internal(slotoptions::GB_MBC5,            GB_ROM_MBC5);
-	device.option_add_internal(slotoptions::GB_MBC6,            GB_ROM_MBC6);
+//	device.option_add_internal(slotoptions::GB_MBC6,            GB_ROM_MBC6);
 	device.option_add_internal(slotoptions::GB_MBC7_2K,         GB_ROM_MBC7_2K);
 	device.option_add_internal(slotoptions::GB_MBC7_4K,         GB_ROM_MBC7_4K);
 	device.option_add_internal(slotoptions::GB_M161,            GB_ROM_M161);
