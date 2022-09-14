@@ -815,6 +815,7 @@ skeleton/design.cpp
 skeleton/diablo1300.cpp
 skeleton/didact.cpp
 skeleton/digel804.cpp
+//skeleton/digiblast.cpp          //to be checked
 skeleton/digijet.cpp
 skeleton/digilog320.cpp
 skeleton/digilog400.cpp
@@ -1263,6 +1264,7 @@ yamaha/ymqy70.cpp
 yamaha/ymrx15.cpp
 yamaha/ymsy35.cpp
 yamaha/ymtx81z.cpp
+//yamaha/ymvl1.cpp          //to be checked
 yamaha/ymvl70.cpp
 zenith/mdt60.cpp
 zenith/z100.cpp
