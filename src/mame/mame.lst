@@ -2994,6 +2994,7 @@ roadriotb                       // 136089           (c) 1991
 
 @source:atari/atarigt.cpp
 primrage                        // 136102           (c) 1994
+primragej                       // 136102           (c) 1994
 primrage20                      // 136102           (c) 1994
 tmek                            // 136100           (c) 1994
 tmek20                          // 136100           (c) 1994
@@ -14006,6 +14007,7 @@ fgoala                          // MF  (c) 1979 Taito Corporation
 @source:fidelity/as12.cpp
 feleg
 felega
+felega1
 
 @source:fidelity/card.cpp
 bridgec
@@ -14113,7 +14115,7 @@ fphantom                        //
 
 @source:fidelity/sc12.cpp
 fscc12                          //
-fscc12b                         //
+fscc12a                         //
 
 @source:fidelity/sc6.cpp
 fscc6                           //
@@ -15593,7 +15595,7 @@ gluck2                          // 1992 Yung Yu / CYE
 @source:skeleton/gm1000.cpp
 gm1000                          //
 
-@source:hartung/gmaster.cpp
+@source:handheld/gmaster.cpp
 gmaster                         // Hartung Gamemaster
 
 @source:skeleton/gnat10.cpp
@@ -37152,6 +37154,7 @@ rulechan                        // 1992 ElectroChance
 rulechab                        // 1992 ElectroChance
 
 @source:misc/amuzy.cpp
+docchift
 mmhammer
 
 @source:konami/rungun.cpp
@@ -43732,6 +43735,7 @@ bubblesp                        // (c) 1982
 bubblesr                        // (c) 1982
 colony7                         // (c) 1981 Taito
 colony7a                        // (c) 1981 Taito
+conquest                        // prototype
 defcmnd                         // bootleg
 defence                         // bootleg
 defender                        // (c) 1980
@@ -44432,6 +44436,9 @@ psr70                           // 1985 PSR-70
 
 @source:yamaha/ympsr340.cpp
 psr340                          // 1999 PSR-340
+
+@source:yamaha/ympsr400.cpp
+psr500                          // 1991 PSR-500
 
 @source:yamaha/ymqy70.cpp
 qy70                            // 1997 QY-70
