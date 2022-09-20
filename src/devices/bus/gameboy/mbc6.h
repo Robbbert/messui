@@ -12,7 +12,5 @@
 
 #include "slot.h"
 
-#if 0
 DECLARE_DEVICE_TYPE(GB_ROM_MBC6, device_gb_cart_interface)
-#endif
 #endif // MAME_BUS_GAMEBOY_MBC7_H
