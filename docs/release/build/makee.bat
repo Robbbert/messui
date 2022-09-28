@@ -12,6 +12,7 @@ copy /Y src\osd\winui\ui.rc src\osd\winui\mameui.rc
 touch src\osd\winui\mameui.rc
 call mk.bat
 call make64 -j4 "OSD=messui" %1 %2 %3
+rem call make64 -j4 "LDOPTS=-Wl,--pdb=" "OSD=messui" %1 %2 %3
 rem call make64 -j4 "ARCHOPTS='-fuse-ld=lld'" "OSD=messui" %1 %2 %3
 copy /Y src\mame\mess.bak src\mame\mess.flt
 del /Q build\mingw-gcc\bin\x64\Release\mame_mess
