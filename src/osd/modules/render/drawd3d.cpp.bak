@@ -833,7 +833,7 @@ void renderer_d3d9::update_presentation_parameters()
 	m_presentation.MultiSampleType = D3DMULTISAMPLE_NONE;
 	m_presentation.SwapEffect = D3DSWAPEFFECT_DISCARD;
 	m_presentation.hDeviceWindow = dynamic_cast<win_window_info &>(window()).platform_window();
-	m_presentation.Windowed = !window().fullscreen() || GetMenu(dynamic_cast<win_window_info &>(window()).platform_window()); // MESSUI;
+	m_presentation.Windowed = !window().fullscreen();
 	m_presentation.EnableAutoDepthStencil = FALSE;
 	m_presentation.AutoDepthStencilFormat = D3DFMT_D16;
 	m_presentation.Flags = 0;
@@ -1242,10 +1242,7 @@ int renderer_d3d9::config_adapter_mode()
 		return 1;
 	}
 
-	//auto win = assert_window();
-
-	// choose a resolution: window mode case
-	if (!window().fullscreen() || !video_config.switchres || GetMenu(dynamic_cast<win_window_info &>(window()).platform_window())) // MESSUI
+	if (!window().fullscreen() || !video_config.switchres)
 	{
 		// choose a resolution: window mode case
 
