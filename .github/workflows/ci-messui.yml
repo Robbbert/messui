@@ -1,4 +1,4 @@
-name: CI (MAMEUI)
+name: CI (MESSUI)
 
 on: [push, pull_request]
 
@@ -21,7 +21,7 @@ jobs:
       env:
         MINGW64: "/mingw64"
         PTR64: "1"
-      run: make -j2 PTR64=1 OSD=messui DEPRECATED=0 SYMBOLS=0 NO_SYMBOLS=1
+      run: make -j2 PTR64=1 OSD=messui SUBTARGET=mess DEPRECATED=0 SYMBOLS=0 NO_SYMBOLS=1
     - name: Validate
       run: ./messui -validate
     - uses: actions/upload-artifact@master
