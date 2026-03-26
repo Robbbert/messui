@@ -290,8 +290,13 @@ void software_list_device::parse()
 	m_errors.clear();
 
 	// attempt to open the file
+
 	const std::error_condition filerr = m_file.open(m_list_name + ".xml");
 	m_filename = m_file.filename();
+// old code
+//	emu_file file(mconfig().options().hash_path(), OPEN_FLAG_READ);
+//	const std::error_condition filerr = file.open(m_list_name + ".xml");
+//	m_filename = file.filename();
 	if (!filerr)
 	{
 		// parse if no error

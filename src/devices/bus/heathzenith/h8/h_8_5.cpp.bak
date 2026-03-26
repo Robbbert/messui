@@ -18,7 +18,6 @@
 #include "formats/h8_cas.h"
 
 #include "speaker.h"
-#include "softlist_dev.h"
 
 #define LOG_LINES (1U << 1)
 #define LOG_CASS  (1U << 2)
@@ -222,8 +221,7 @@ void h_8_5_device::device_add_mconfig(machine_config &config)
 	m_cass_player->set_formats(h8_cassette_formats);
 	m_cass_player->set_default_state(CASSETTE_STOPPED | CASSETTE_MOTOR_ENABLED | CASSETTE_SPEAKER_ENABLED);
 	m_cass_player->add_route(ALL_OUTPUTS, "mono", 0.15);
-	m_cass_player->set_interface("h8_cass");
-	SOFTWARE_LIST(config, "h8_cass").set_original("h8");
+	m_cass_player->set_interface("h8_cass_player");
 
 	CASSETTE(config, m_cass_recorder);
 	m_cass_recorder->set_formats(h8_cassette_formats);
@@ -237,4 +235,4 @@ void h_8_5_device::device_add_mconfig(machine_config &config)
 
 } // anonymous namespace
 
-DEFINE_DEVICE_TYPE_PRIVATE(H8BUS_H_8_5, device_h8bus_card_interface, h_8_5_device, "h8_h_8_5", "Heath H-8-5 Serial/Cassette Card");
+DEFINE_DEVICE_TYPE_PRIVATE(H8BUS_H_8_5, device_h8bus_card_interface, h_8_5_device, "h8_h_8_5", "Heath H-8-5 Serial/Casette Card");

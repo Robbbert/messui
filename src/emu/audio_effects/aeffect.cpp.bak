@@ -16,7 +16,7 @@ const char *const audio_effect::effect_names[COUNT] = {
 	N_p("audio-effect", "Filters"),
 	N_p("audio-effect", "Compressor"),
 	N_p("audio-effect", "Reverb"),
-	N_p("audio-effect", "Equaliser")
+	N_p("audio-effect", "Equalizer")
 };
 
 std::unique_ptr<audio_effect> audio_effect::create(int type, speaker_device *speaker, u32 sample_rate, audio_effect *def)

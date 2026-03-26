@@ -736,7 +736,7 @@ static int verify_length_and_hash(emu_file *file, std::string_view name, u32 exp
 	else if (hashes.flag(util::hash_collection::FLAG_BAD_DUMP))
 	{
 		// If it matches, but it is actually a bad dump, write it
-		osd_printf_info("%s NEEDS REDUMP\n",name);
+		osd_printf_error("%s NEEDS REDUMP\n",name);
 	}
 	return retval;
 }
@@ -1156,8 +1156,7 @@ void device_image_interface::update_names()
 	}
 
 	m_canonical_instance_name = util::string_format("%s%d", inst_name, index + 1);
-//	if (count > 1)   // now treat cass and cass1 as the same thing (cass) - MESSUI 2025-04-26
-	if (index)
+	if (count > 1)
 	{
 		m_instance_name = m_canonical_instance_name;
 		m_brief_instance_name = util::string_format("%s%d", brief_name, index + 1);

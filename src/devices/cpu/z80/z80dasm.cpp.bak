@@ -34,7 +34,7 @@ const u32 z80_disassembler::s_flags[] =
 {
 	0        ,0        ,0        ,0        ,STEP_OVER,0    ,0        ,0        ,
 	STEP_OVER,0        ,STEP_OVER,0        ,0        ,0    ,0        ,0        ,
-	STEP_COND,0        ,0        ,0        ,STEP_OVER,0    ,0        ,0        ,
+	STEP_OVER,0        ,0        ,0        ,STEP_OVER,0    ,0        ,0        ,
 	0        ,STEP_OVER,0        ,STEP_OVER,0        ,0    ,0        ,0        ,
 	STEP_OVER,0        ,STEP_OVER,0        ,0        ,0    ,STEP_OVER,STEP_OVER,
 	0        ,0        ,0        ,0        ,0        ,0    ,STEP_OUT ,STEP_OUT ,

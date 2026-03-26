@@ -38,8 +38,7 @@ namespace {
 
 constexpr machine_flags::type MACHINE_ERRORS    = machine_flags::MECHANICAL;
 constexpr machine_flags::type MACHINE_WARNINGS  = machine_flags::NO_COCKTAIL | machine_flags::REQUIRES_ARTWORK;
-//constexpr machine_flags::type MACHINE_BTANB     = machine_flags::NO_SOUND_HW | machine_flags::IS_INCOMPLETE;
-constexpr machine_flags::type MACHINE_BTANB     = machine_flags::IS_INCOMPLETE;  // 2025-08-23
+constexpr machine_flags::type MACHINE_BTANB     = machine_flags::NO_SOUND_HW | machine_flags::IS_INCOMPLETE;
 constexpr device_t::flags_type DEVICE_ERRORS    = device_t::flags::NOT_WORKING;
 
 constexpr std::pair<device_t::feature_type, char const *> FEATURE_NAMES[] = {
@@ -184,12 +183,12 @@ void get_system_warnings(
 			buf << '\n';
 		buf << _("This system was never completed. It may exhibit strange behavior or missing elements that are not bugs in the emulation.\n");
 	}
-//	if (machflags & ::machine_flags::NO_SOUND_HW)
-//	{
-//		if (buf.tellp() > start_position)
-//			buf << '\n';
-//		buf << _("This system has no sound hardware, MAME will produce no sounds, this is expected behavior.\n");
-//	}
+	if (machflags & ::machine_flags::NO_SOUND_HW)
+	{
+		if (buf.tellp() > start_position)
+			buf << '\n';
+		buf << _("This system has no sound hardware, MAME will produce no sounds, this is expected behavior.\n");
+	}
 
 	// list devices that don't work
 	if (has_nonworking_devices)

@@ -209,29 +209,15 @@ license:CC0-1.0
 			<bounds x="0" y="0" width="600" height="135" />
 		</element>
 
-		<repeat count="3">
+		<repeat count="9">
 			<param name="digitno" start="1" increment="1" />
 			<param name="x" start="107" increment="48" />
 			<element name="digit~digitno~" ref="digit">
 				<bounds x="~x~" y="10" width="47" height="71" />
 			</element>
 		</repeat>
-		<repeat count="3">
-			<param name="digitno" start="4" increment="1" />
-			<param name="x" start="267" increment="48" />
-			<element name="digit~digitno~" ref="digit">
-				<bounds x="~x~" y="10" width="47" height="71" />
-			</element>
-		</repeat>
-		<repeat count="3">
-			<param name="digitno" start="7" increment="1" />
-			<param name="x" start="447" increment="48" />
-			<element name="digit~digitno~" ref="digit">
-				<bounds x="~x~" y="10" width="47" height="71" />
-			</element>
-		</repeat>
 		<element name="adr_txt" ref="ADR">
-			<bounds x="100" width="315" y="110" height="15" />
+			<bounds x="100" width="355" y="110" height="15" />
 		</element>
 		<element name="pwr_txt" ref="DAT">
 			<bounds x="437" width="156" y="110" height="15" />
