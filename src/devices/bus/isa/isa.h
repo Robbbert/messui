@@ -84,10 +84,7 @@ public:
 	isa8_slot_device(const machine_config &mconfig, const char *tag, device_t *owner, uint32_t clock, T &&isa_tag, U &&opts, const char *dflt, bool fixed)
 		: isa8_slot_device(mconfig, tag, owner, clock)
 	{
-		option_reset();
-		opts(*this);
-		set_default_option(dflt);
-		set_fixed(fixed);
+		set_options(std::forward<U>(opts), dflt, fixed);
 		m_isa_bus.set_tag(std::forward<T>(isa_tag));
 	}
 	isa8_slot_device(const machine_config &mconfig, const char *tag, device_t *owner, uint32_t clock);
@@ -96,7 +93,7 @@ protected:
 	isa8_slot_device(const machine_config &mconfig, device_type type, const char *tag, device_t *owner, uint32_t clock);
 
 	// device_t implementation
-	virtual void device_start() override;
+	virtual void device_start() override ATTR_COLD;
 
 	// configuration
 	required_device<device_t> m_isa_bus;
@@ -212,9 +209,9 @@ protected:
 
 	// device_t implementation
 	virtual void device_config_complete() override;
-	virtual void device_resolve_objects() override;
-	virtual void device_start() override;
-	virtual void device_reset() override;
+	virtual void device_resolve_objects() override ATTR_COLD;
+	virtual void device_start() override ATTR_COLD;
+	virtual void device_reset() override ATTR_COLD;
 
 	// address spaces
 	required_address_space m_memspace, m_iospace;
@@ -283,17 +280,14 @@ public:
 	isa16_slot_device(const machine_config &mconfig, const char *tag, device_t *owner, uint32_t clock, T &&isa_tag, U &&opts, const char *dflt, bool fixed)
 		: isa16_slot_device(mconfig, tag, owner, clock)
 	{
-		option_reset();
-		opts(*this);
-		set_default_option(dflt);
-		set_fixed(fixed);
+		set_options(std::forward<U>(opts), dflt, fixed);
 		m_isa_bus.set_tag(std::forward<T>(isa_tag));
 	}
 	isa16_slot_device(const machine_config &mconfig, const char *tag, device_t *owner, uint32_t clock);
 
 protected:
 	// device_t implementation
-	virtual void device_start() override;
+	virtual void device_start() override ATTR_COLD;
 };
 
 

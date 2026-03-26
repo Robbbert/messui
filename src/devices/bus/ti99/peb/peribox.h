@@ -65,10 +65,10 @@ public:
 protected:
 	peribox_device(const machine_config &mconfig, device_type type, const char *tag, device_t *owner, uint32_t clock);
 
-	virtual void device_start() override;
+	virtual void device_start() override ATTR_COLD;
 	virtual void device_config_complete() override;
 
-	virtual void device_add_mconfig(machine_config &config) override;
+	virtual void device_add_mconfig(machine_config &config) override ATTR_COLD;
 
 	// Next three methods call back the console via slot 1
 	devcb_write_line m_slot1_inta;   // INTA line (Box to console)
@@ -125,7 +125,7 @@ public:
 	peribox_sg_device(const machine_config &mconfig, const char *tag, device_t *owner, uint32_t clock);
 
 protected:
-	virtual void device_add_mconfig(machine_config &config) override;
+	virtual void device_add_mconfig(machine_config &config) override ATTR_COLD;
 };
 
 /*
@@ -137,7 +137,19 @@ public:
 	peribox_ev_device(const machine_config &mconfig, const char *tag, device_t *owner, uint32_t clock);
 
 protected:
-	virtual void device_add_mconfig(machine_config &config) override;
+	virtual void device_add_mconfig(machine_config &config) override ATTR_COLD;
+};
+
+/*
+    Variation for ti99_4ev without EVPC inserted
+*/
+class peribox_ev1_device : public peribox_device
+{
+public:
+	peribox_ev1_device(const machine_config &mconfig, const char *tag, device_t *owner, uint32_t clock);
+
+protected:
+	virtual void device_add_mconfig(machine_config &config) override ATTR_COLD;
 };
 
 
@@ -151,7 +163,7 @@ public:
 
 protected:
 	peribox_gen_device(const machine_config &mconfig, device_type type, const char *tag, device_t *owner, uint32_t clock);
-	virtual void device_add_mconfig(machine_config &config) override;
+	virtual void device_add_mconfig(machine_config &config) override ATTR_COLD;
 };
 
 /*
@@ -163,7 +175,7 @@ public:
 	peribox_genmod_device(const machine_config &mconfig, const char *tag, device_t *owner, uint32_t clock);
 
 protected:
-	virtual void device_add_mconfig(machine_config &config) override;
+	virtual void device_add_mconfig(machine_config &config) override ATTR_COLD;
 };
 
 /*****************************************************************************
@@ -219,10 +231,7 @@ public:
 	peribox_slot_device(const machine_config &mconfig, const char *tag, device_t *owner, int slot, U &&opts, const char *dflt)
 		: peribox_slot_device(mconfig, tag, owner, 0)
 	{
-		option_reset();
-		opts(*this);
-		set_default_option(dflt);
-		set_fixed(false);
+		set_options(std::forward<U>(opts), dflt, false);
 		m_slotnumber = slot;
 	}
 
@@ -251,7 +260,7 @@ public:
 	void set_number(int number) { m_slotnumber = number; }
 
 protected:
-	virtual void device_start() override;
+	virtual void device_start() override ATTR_COLD;
 	virtual void device_config_complete() override;
 
 private:
@@ -266,6 +275,7 @@ private:
 
 DECLARE_DEVICE_TYPE_NS(TI99_PERIBOX,      bus::ti99::peb, peribox_device)
 DECLARE_DEVICE_TYPE_NS(TI99_PERIBOX_EV,   bus::ti99::peb, peribox_ev_device)
+DECLARE_DEVICE_TYPE_NS(TI99_PERIBOX_EV1,   bus::ti99::peb, peribox_ev1_device)
 DECLARE_DEVICE_TYPE_NS(TI99_PERIBOX_SLOT, bus::ti99::peb, peribox_slot_device)
 DECLARE_DEVICE_TYPE_NS(TI99_PERIBOX_SG,   bus::ti99::peb, peribox_sg_device)
 DECLARE_DEVICE_TYPE_NS(TI99_PERIBOX_GEN,  bus::ti99::peb, peribox_gen_device)

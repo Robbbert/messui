@@ -47,7 +47,7 @@ public:
 	DECLARE_INPUT_CHANGED_MEMBER(volume_changed);
 
 protected:
-	virtual void machine_start() override;
+	virtual void machine_start() override ATTR_COLD;
 
 private:
 	required_device<m6805_hmos_device> m_maincpu;
@@ -85,8 +85,8 @@ public:
 	milton_filter_device(const machine_config &mconfig, const char *tag, device_t *owner, uint32_t clock = 0);
 
 protected:
-	virtual void device_start() override;
-	virtual void sound_stream_update(sound_stream &stream, std::vector<read_stream_view> const &inputs, std::vector<write_stream_view> &outputs) override;
+	virtual void device_start() override ATTR_COLD;
+	virtual void sound_stream_update(sound_stream &stream) override;
 
 private:
 	sound_stream *m_stream = nullptr;
@@ -108,20 +108,20 @@ void milton_filter_device::device_start()
 	m_led_out.resolve();
 }
 
-void milton_filter_device::sound_stream_update(sound_stream &stream, std::vector<read_stream_view> const &inputs, std::vector<write_stream_view> &outputs)
+void milton_filter_device::sound_stream_update(sound_stream &stream)
 {
-	stream_buffer::sample_t level = 0;
+	sound_stream::sample_t level = 0;
 
-	for (int i = 0; i < outputs[0].samples(); i++)
-		level += fabsf(inputs[0].get(i));
+	for (int i = 0; i < stream.samples(); i++)
+		level += fabsf(stream.get(0, i));
 
-	outputs[0] = inputs[0];
+	stream.copy(0, 0);
 
-	if (outputs[0].samples() > 0)
-		level /= outputs[0].samples();
+	if (stream.samples() > 0)
+		level /= stream.samples();
 
 	// 2 leds connected to the audio circuit
-	const stream_buffer::sample_t threshold = 1500.0 / 32768.0;
+	const sound_stream::sample_t threshold = 1500.0 / 32768.0;
 	m_led_out = (level > threshold) ? 1 : 0;
 }
 
@@ -237,7 +237,7 @@ static INPUT_PORTS_START( milton )
 	PORT_BIT(0x08, IP_ACTIVE_HIGH, IPT_KEYPAD) PORT_CODE(KEYCODE_J) PORT_NAME("Yellow Button 7")
 
 	PORT_START("VOLUME")
-	PORT_CONFNAME( 0x01, 0x00, "Volume" ) PORT_CHANGED_MEMBER(DEVICE_SELF, milton_state, volume_changed, 0)
+	PORT_CONFNAME( 0x01, 0x00, "Volume" ) PORT_CHANGED_MEMBER(DEVICE_SELF, FUNC(milton_state::volume_changed), 0)
 	PORT_CONFSETTING(    0x01, "Low" )
 	PORT_CONFSETTING(    0x00, "High" )
 INPUT_PORTS_END

@@ -15,6 +15,8 @@
 #include "hp98603a.h"
 #include "hp98603b.h"
 #include "hp98620.h"
+#include "hp98624.h"
+#include "hp98628_9.h"
 #include "hp98643.h"
 #include "hp98644.h"
 #include "human_interface.h"
@@ -293,7 +295,7 @@ void device_dio16_card_interface::set_bus(dio16_device &bus)
 
 device_dio16_card_interface::device_dio16_card_interface(const machine_config &mconfig, device_t &device) :
 	device_interface(device, "hpdio"),
-	m_dio_dev(nullptr), m_next(nullptr)
+	m_dio_dev(nullptr)
 {
 }
 
@@ -350,9 +352,16 @@ void dio16_cards(device_slot_interface & device)
 	device.option_add("98544", HPDIO_98544);
 	device.option_add("98603a", HPDIO_98603A);
 	device.option_add("98603b", HPDIO_98603B);
+	device.option_add("98624", HPDIO_98624);
 	device.option_add("98643", HPDIO_98643);
 	device.option_add("98644", HPDIO_98644);
 	device.option_add("human_interface", HPDIO_HUMAN_INTERFACE);
+}
+
+void dio16_hp98x6_cards(device_slot_interface &device)
+{
+	device.option_add("98628", HPDIO_98628);
+	device.option_add("98629", HPDIO_98629);
 }
 
 void dio32_cards(device_slot_interface & device)

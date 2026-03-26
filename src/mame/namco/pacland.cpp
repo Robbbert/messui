@@ -163,12 +163,6 @@ Notes:
 
 Notes:
 -----
-
-- Sprites cover the top and bottom non-scrolling portions of the fg. This
-  includes the cookie cut light in round 19, which makes text disappear from
-  those areas. This looks odd, but it's the correct behaviour verified on the
-  real hardware.
-
 - There is an Easter egg in the service mode:
   1) Go into the service mode
   2) Press left or right to change the sound effect until it's $18
@@ -187,6 +181,16 @@ Notes:
   YURI.
   NEGIE
   S#TOU (# is the small ghost sprite)
+
+
+BTANB:
+-----
+- Sprites cover the top and bottom non-scrolling portions of the fg. This
+  includes the cookie cut light in round 19, which makes text disappear from
+  those areas. This looks odd, but it's the correct behaviour verified on the
+  real hardware.
+
+- Jump sound effect is silent for a while after car horn sound effect.
 
 ***************************************************************************/
 
@@ -227,8 +231,8 @@ public:
 	void pacland(machine_config &config);
 
 protected:
-	virtual void machine_start() override;
-	virtual void video_start() override;
+	virtual void machine_start() override ATTR_COLD;
+	virtual void video_start() override ATTR_COLD;
 
 private:
 	required_device<cpu_device> m_maincpu;
@@ -279,8 +283,8 @@ private:
 	void draw_sprites(screen_device &screen, bitmap_ind16 &bitmap, const rectangle &cliprect, int flip, int whichmask);
 	void draw_fg(screen_device &screen, bitmap_ind16 &bitmap, const rectangle &cliprect, int priority);
 
-	void main_map(address_map &map);
-	void mcu_map(address_map &map);
+	void main_map(address_map &map) ATTR_COLD;
+	void mcu_map(address_map &map) ATTR_COLD;
 };
 
 

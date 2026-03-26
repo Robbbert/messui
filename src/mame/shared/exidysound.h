@@ -7,6 +7,7 @@
 
 #include "machine/6821pia.h"
 #include "machine/mos6530.h"
+#include "machine/pit8253.h"
 #include "machine/timer.h"
 #include "sound/flt_biquad.h"
 #include "sound/hc55516.h"
@@ -36,7 +37,7 @@ class exidy_sound_device : public device_t, public device_sound_interface
 
 public:
 	exidy_sound_device(const machine_config &mconfig, const char *tag, device_t *owner, uint32_t clock);
-	~exidy_sound_device() {}
+	~exidy_sound_device();
 
 	uint8_t sh6840_r(offs_t offset);
 	void sh6840_w(offs_t offset, uint8_t data);
@@ -46,23 +47,17 @@ protected:
 	exidy_sound_device(const machine_config &mconfig, device_type type, const char *tag, device_t *owner, uint32_t clock);
 
 	// device_t implementation
-	virtual void device_start() override;
-	virtual void device_reset() override;
-
-	void common_sh_start();
-	void common_sh_reset();
-
-	void sh6840_register_state_globals();
+	virtual void device_start() override ATTR_COLD;
+	virtual void device_reset() override ATTR_COLD;
 
 	// sound stream update overrides
-	virtual void sound_stream_update(sound_stream &stream, std::vector<read_stream_view> const &inputs, std::vector<write_stream_view> &outputs) override;
+	virtual void sound_stream_update(sound_stream &stream) override;
 	virtual s32 generate_music_sample() { return 0; }
 
 	static inline void sh6840_apply_clock(sh6840_timer_channel *t, int clocks);
 
 	// sound streaming variables
 	sound_stream *m_stream;
-	double m_freq_to_step;
 
 private:
 	// internal state
@@ -80,7 +75,7 @@ private:
 
 	uint8_t m_sfxctrl;
 
-	inline int sh6840_update_noise(int clocks);
+	int sh6840_update_noise(int clocks);
 };
 
 DECLARE_DEVICE_TYPE(EXIDY, exidy_sound_device)
@@ -88,31 +83,25 @@ DECLARE_DEVICE_TYPE(EXIDY, exidy_sound_device)
 
 class exidy_sh8253_sound_device : public exidy_sound_device
 {
-	struct sh8253_timer_channel
-	{
-		uint8_t   clstate = 0;
-		uint8_t   enable = 0;
-		uint16_t  count = 0;
-		uint32_t  step = 0;
-		uint32_t  fraction = 0;
-	};
-
 protected:
 	exidy_sh8253_sound_device(const machine_config &mconfig, device_type type, const char *tag, device_t *owner, uint32_t clock);
 
 	// device_t implementation
-	virtual void device_start() override;
-	virtual void device_reset() override;
+	virtual void device_add_mconfig(machine_config &config) override ATTR_COLD;
+	virtual void device_start() override ATTR_COLD;
 
 	virtual s32 generate_music_sample() override;
 
 	void sh8253_w(offs_t offset, uint8_t data);
-	void sh8253_register_state_globals();
-
-	sh8253_timer_channel m_sh8253_timer[3];
 
 	required_device<mos6532_device> m_riot;
 	required_device<pia6821_device> m_pia;
+	required_device<pit8253_device> m_pit;
+
+private:
+	template <unsigned N> void pit_out(int state);
+
+	u8 m_pit_out;
 };
 
 
@@ -137,9 +126,9 @@ protected:
 	venture_sound_device(const machine_config &mconfig, device_type type, const char *tag, device_t *owner, uint32_t clock);
 
 	// device_t implementation
-	virtual void device_add_mconfig(machine_config &config) override;
+	virtual void device_add_mconfig(machine_config &config) override ATTR_COLD;
 
-	void venture_audio_map(address_map &map);
+	void venture_audio_map(address_map &map) ATTR_COLD;
 
 private:
 	void filter_w(uint8_t data);
@@ -167,8 +156,8 @@ public:
 
 protected:
 	// device_t implementation
-	virtual void device_start() override;
-	virtual void device_add_mconfig(machine_config &config) override;
+	virtual void device_start() override ATTR_COLD;
+	virtual void device_add_mconfig(machine_config &config) override ATTR_COLD;
 
 private:
 	required_device<timer_device> m_cvsd_timer;
@@ -185,8 +174,8 @@ private:
 	uint8_t m_cvsd_data;
 	uint8_t m_cvsd_clk;
 
-	void cvsd_map(address_map &map);
-	void cvsd_iomap(address_map &map);
+	void cvsd_map(address_map &map) ATTR_COLD;
+	void cvsd_iomap(address_map &map) ATTR_COLD;
 };
 
 DECLARE_DEVICE_TYPE(EXIDY_MTRAP, mtrap_sound_device)
@@ -204,9 +193,9 @@ public:
 
 protected:
 	// device_t implementation
-	virtual void device_start() override;
-	virtual void device_reset() override;
-	virtual void device_add_mconfig(machine_config &config) override;
+	virtual void device_start() override ATTR_COLD;
+	virtual void device_reset() override ATTR_COLD;
+	virtual void device_add_mconfig(machine_config &config) override ATTR_COLD;
 
 private:
 	required_device<tms5220_device> m_tms;
@@ -214,7 +203,7 @@ private:
 	void irq_clear_w(int state);
 	void main_ack_w(int state);
 
-	void victory_audio_map(address_map &map);
+	void victory_audio_map(address_map &map) ATTR_COLD;
 
 	// internal state
 	uint8_t m_sound_response_ack_clk; // 7474 @ F4

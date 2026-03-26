@@ -77,9 +77,9 @@ public:
 	void mikie(machine_config &config);
 
 protected:
-	virtual void machine_start() override;
-	virtual void machine_reset() override;
-	virtual void video_start() override;
+	virtual void machine_start() override ATTR_COLD;
+	virtual void machine_reset() override ATTR_COLD;
+	virtual void video_start() override ATTR_COLD;
 
 private:
 	// memory pointers
@@ -111,8 +111,8 @@ private:
 	uint32_t screen_update(screen_device &screen, bitmap_ind16 &bitmap, const rectangle &cliprect);
 	void vblank_irq(int state);
 	void draw_sprites(bitmap_ind16 &bitmap, const rectangle &cliprect);
-	void main_map(address_map &map);
-	void sound_map(address_map &map);
+	void main_map(address_map &map) ATTR_COLD;
+	void sound_map(address_map &map) ATTR_COLD;
 };
 
 
@@ -244,11 +244,10 @@ void mikie_state::draw_sprites(bitmap_ind16 &bitmap, const rectangle &cliprect)
 			flipy = !flipy;
 		}
 
-
 		m_gfxdecode->gfx(gfxbank)->transpen(bitmap, cliprect,
-		code, color,
-		flipx, flipy,
-		sx, sy, 0);
+				code, color,
+				flipx, flipy,
+				sx, sy, 0);
 	}
 }
 
@@ -610,7 +609,7 @@ ROM_END
  *
  *************************************/
 
-GAME( 1984, mikie,   0,     mikie, mikie, mikie_state, empty_init, ROT270, "Konami",  "Mikie",                        MACHINE_SUPPORTS_SAVE )
-GAME( 1984, mikiej,  mikie, mikie, mikie, mikie_state, empty_init, ROT270, "Konami",  "Shinnyuushain Tooru-kun",      MACHINE_SUPPORTS_SAVE )
-GAME( 1984, mikiek,  mikie, mikie, mikie, mikie_state, empty_init, ROT270, "bootleg", "Shin-ip Sawon - Seok Dol-i",   MACHINE_SUPPORTS_SAVE ) // 新入社員 - 石돌이 (신입사원 - 석돌이)
-GAME( 1984, mikiehs, mikie, mikie, mikie, mikie_state, empty_init, ROT270, "Konami",  "Mikie (High School Graffiti)", MACHINE_SUPPORTS_SAVE )
+GAME( 1984, mikie,   0,     mikie, mikie, mikie_state, empty_init, ROT270, "Konami",  "Mikie",                              MACHINE_SUPPORTS_SAVE )
+GAME( 1984, mikiej,  mikie, mikie, mikie, mikie_state, empty_init, ROT270, "Konami",  "Shinnyuu Shain Tooru-kun (Japan)",   MACHINE_SUPPORTS_SAVE )
+GAME( 1984, mikiek,  mikie, mikie, mikie, mikie_state, empty_init, ROT270, "bootleg", "Shin-ip Sawon - Seok Dol-i (Korea)", MACHINE_SUPPORTS_SAVE ) // 新入社員 - 石돌이 (신입사원 - 석돌이)
+GAME( 1984, mikiehs, mikie, mikie, mikie, mikie_state, empty_init, ROT270, "Konami",  "Mikie (High School Graffiti)",       MACHINE_SUPPORTS_SAVE )

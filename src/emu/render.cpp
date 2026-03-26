@@ -1273,12 +1273,14 @@ void render_target::update_pointer_fields()
 	}
 
 	// update item hit states
+	std::vector<u64> prev_hit(m_clickable_items.size());
 	u64 obscured(0U);
 	for (size_t i = 0; m_clickable_items.size() > i; ++i)
 	{
 		layout_view_item const &item(current_view().interactive_items()[i]);
 		u64 const inbounds(m_clickable_items[i].inbounds.first & m_clickable_items[i].inbounds.second);
 		u64 hit(m_clickable_items[i].hit);
+		prev_hit[i] = hit;
 		for (unsigned ptr = 0; m_pointers.size() > ptr; ++ptr)
 		{
 			pointer_info const &pointer(m_pointers[ptr]);
@@ -1294,21 +1296,28 @@ void render_target::update_pointer_fields()
 					obscured |= u64(1) << ptr;
 			}
 		}
+		m_clickable_items[i].hit = hit;
+	}
 
-		// update field state
-		if (bool(hit) != bool(m_clickable_items[i].hit))
+	// update field state
+	for (int state = 0; 2 > state; ++state)
+	{
+		for (size_t i = 0; m_clickable_items.size() > i; ++i)
 		{
-			auto const [port, mask] = item.input_tag_and_mask();
-			ioport_field *const field(port ? port->field(mask) : nullptr);
-			if (field)
+			if (bool(state) != bool(prev_hit[i]) && bool(state) == bool(m_clickable_items[i].hit))
 			{
-				if (hit)
-					field->set_value(1);
-				else
-					field->clear_value();
+				layout_view_item const &item(current_view().interactive_items()[i]);
+				auto const [port, mask] = item.input_tag_and_mask();
+				ioport_field *const field(port ? port->field(mask) : nullptr);
+				if (field)
+				{
+					if (state)
+						field->set_value(1);
+					else
+						field->clear_value();
+				}
 			}
 		}
-		m_clickable_items[i].hit = hit;
 	}
 }
 
@@ -1756,13 +1765,9 @@ bool render_target::map_point_container(s32 target_x, s32 target_y, render_conta
 	if (&container == m_ui_container)
 	{
 		// this hit test went against the UI container
-		if ((target_f.first >= 0.0f) && (target_f.first < 1.0f) && (target_f.second >= 0.0f) && (target_f.second < 1.0f))
-		{
-			// this point was successfully mapped
-			container_x = float(target_x) / m_width;
-			container_y = float(target_y) / m_height;
-			return true;
-		}
+		container_x = float(target_x) / m_width;
+		container_y = float(target_y) / m_height;
+		return (target_f.first >= 0.0f) && (target_f.first < 1.0f) && (target_f.second >= 0.0f) && (target_f.second < 1.0f);
 	}
 	else
 	{
@@ -1781,15 +1786,12 @@ bool render_target::map_point_container(s32 target_x, s32 target_y, render_conta
 					[&container] (layout_view_item &item) { return &item.screen()->container() == &container; }));
 		if (items.end() != found)
 		{
+			// point successfully mapped
 			layout_view_item &item(*found);
 			render_bounds const bounds(item.bounds());
-			if (bounds.includes(target_f.first, target_f.second))
-			{
-				// point successfully mapped
-				container_x = (target_f.first - bounds.x0) / bounds.width();
-				container_y = (target_f.second - bounds.y0) / bounds.height();
-				return true;
-			}
+			container_x = (target_f.first - bounds.x0) / bounds.width();
+			container_y = (target_f.second - bounds.y0) / bounds.height();
+			return bounds.includes(target_f.first, target_f.second);
 		}
 	}
 

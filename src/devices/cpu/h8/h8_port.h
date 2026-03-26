@@ -29,6 +29,7 @@ public:
 
 	void ddr_w(u8 data);
 	u8 ddr_r();
+	u8 ff_r() { return 0xff; }
 	void dr_w(u8 data);
 	u8 dr_r();
 	u8 port_r();
@@ -49,8 +50,8 @@ protected:
 	u8 m_dr;
 	s32 m_last_output;
 
-	virtual void device_start() override;
-	virtual void device_reset() override;
+	virtual void device_start() override ATTR_COLD;
+	virtual void device_reset() override ATTR_COLD;
 	void update_output();
 };
 

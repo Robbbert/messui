@@ -53,8 +53,8 @@ typedef void (*dialog_itemstoreval)(void *param, int val);
 typedef void (*dialog_itemchangedproc)(dialog_box *dialog, HWND dlgitem, void *changed_param);
 typedef void (*dialog_notification)(dialog_box *dialog, HWND dlgwnd, NMHDR *notification, void *param);
 
-#define SEQWM_SETFOCUS  (WM_APP + 0)
-#define SEQWM_KILLFOCUS (WM_APP + 1)
+#define SEQWM_SETFOCUS  (WM_APP + 200)
+#define SEQWM_KILLFOCUS (WM_APP + 201)
 
 enum
 {
@@ -317,7 +317,7 @@ static BOOL win_get_file_name_dialog(win_open_file_name *ofn)
 	}
 
 	// do we need to translate the file parameter?
-	if (ofn->filename)
+	//if (ofn->filename)   // gcc 13.2 errors because it says this cannot be null
 	{
 		buffer = newui_wstring_from_utf8(ofn->filename);
 		if (!buffer)
@@ -1532,7 +1532,7 @@ static int dialog_add_single_seqselect(struct _dialog_box *di, short x, short y,
 		return 1;
 
 	// initialize the structure
-	memset(stuff, 0, sizeof(*stuff));
+	stuff = { };
 	field->get_user_settings(stuff->settings);
 	stuff->field = field;
 	stuff->pos = di->item_count;
@@ -2707,18 +2707,18 @@ static void prepare_menus(HWND wnd)
 		}
 	}
 
-	if (window->machine().system().flags & MACHINE_SUPPORTS_SAVE)
-	{
+//	if (window->machine().system().flags & MACHINE_SUPPORTS_SAVE)
+//	{
 		set_command_state(menu_bar, ID_FILE_LOADSTATE_NEWUI, MFS_ENABLED);
 		set_command_state(menu_bar, ID_FILE_SAVESTATE_AS, MFS_ENABLED);
 		set_command_state(menu_bar, ID_FILE_SAVESTATE, state_filename[0] != '\0' ? MFS_ENABLED : MFS_GRAYED);
-	}
-	else
-	{
-		set_command_state(menu_bar, ID_FILE_LOADSTATE_NEWUI, MFS_GRAYED);
-		set_command_state(menu_bar, ID_FILE_SAVESTATE_AS, MFS_GRAYED);
-		set_command_state(menu_bar, ID_FILE_SAVESTATE, MFS_GRAYED);
-	}
+//	}
+//	else
+//	{
+//		set_command_state(menu_bar, ID_FILE_LOADSTATE_NEWUI, MFS_GRAYED);
+//		set_command_state(menu_bar, ID_FILE_SAVESTATE_AS, MFS_GRAYED);
+//		set_command_state(menu_bar, ID_FILE_SAVESTATE, MFS_GRAYED);
+//	}
 
 	set_command_state(menu_bar, ID_EDIT_PASTE, window->machine().natkeyboard().can_post() ? MFS_ENABLED : MFS_GRAYED);
 
@@ -2856,10 +2856,10 @@ static void prepare_menus(HWND wnd)
 				win_append_menu_utf8(sub_menu, MF_SEPARATOR, 0, NULL);
 
 			// Since a software list exists, add the Mount Item menu
-			win_append_menu_utf8(sub_menu, MF_STRING, new_item + DEVOPTION_ITEM, "Mount Item...");
+			win_append_menu_utf8(sub_menu, MF_STRING, new_item + DEVOPTION_ITEM, "Mount SW-List Item...");
 		}
 
-		win_append_menu_utf8(sub_menu, MF_STRING, new_item + DEVOPTION_OPEN, "Mount File...");
+		win_append_menu_utf8(sub_menu, MF_STRING, new_item + DEVOPTION_OPEN, "Mount Loose File...");
 
 		if (img.is_creatable())
 			win_append_menu_utf8(sub_menu, MF_STRING, new_item + DEVOPTION_CREATE, "Create...");
@@ -2939,7 +2939,8 @@ static void prepare_menus(HWND wnd)
 		std::string opt_name="0", current="0";
 
 		// name this option
-		const char *slot_option_name = slot.slot_name();
+		std::string slot_temp = std::string(slot.slot_name());
+		const char *slot_option_name = slot_temp.c_str();
 		current = window->machine().options().slot_option(slot_option_name).value();
 
 		const device_slot_interface::slot_option *option = slot.option(current.c_str());
@@ -2948,7 +2949,7 @@ static void prepare_menus(HWND wnd)
 
 		sub_menu = CreateMenu();
 		// add the slot
-		win_append_menu_utf8(slot_menu, MF_POPUP, (UINT_PTR)sub_menu, slot.slot_name());
+		win_append_menu_utf8(slot_menu, MF_POPUP, (UINT_PTR)sub_menu, slot_temp.c_str());
 		// build a list of user-selectable options
 		std::vector<device_slot_interface::slot_option *> option_list;
 		for (auto &option : slot.option_list())
@@ -2956,17 +2957,19 @@ static void prepare_menus(HWND wnd)
 				option_list.push_back(option.second.get());
 
 		// add the empty option
-		slot_map[cnt] = slot_data { slot.slot_name(), "" };
+		slot_map[cnt] = slot_data { slot_temp.c_str(), "" };
 		win_append_menu_utf8(sub_menu, MF_STRING | (opt_name == "0") ? MF_CHECKED : 0, cnt++, "[Empty]");
 
 		// sort them by name
-		std::sort(option_list.begin(), option_list.end(), [](device_slot_interface::slot_option *opt1, device_slot_interface::slot_option *opt2) {return strcmp(opt1->name(), opt2->name()) < 0;});
+		std::sort(option_list.begin(), option_list.end(), [](device_slot_interface::slot_option *opt1, device_slot_interface::slot_option *opt2)
+		{ std::string temp1 = std::string(opt1->name()), temp2 = std::string(opt1->name());
+			return strcmp(temp1.c_str(), temp2.c_str()) < 0;});
 
 		// add each option in sorted order
 		for (device_slot_interface::slot_option *opt : option_list)
 		{
-			std::string temp = opt->name() + std::string(" (") + opt->devtype().fullname() + std::string(")");
-			slot_map[cnt] = slot_data { slot.slot_name(), opt->name() };
+			std::string temp = std::string(opt->name()) + std::string(" (") + opt->devtype().fullname() + std::string(")");
+			slot_map[cnt] = slot_data { std::string(slot.slot_name()), std::string(opt->name()) };
 			win_append_menu_utf8(sub_menu, MF_STRING | (opt->name()==opt_name) ? MF_CHECKED : 0, cnt++, temp.c_str());
 		}
 	}
@@ -2997,7 +3000,7 @@ static void set_speed(running_machine &machine, int speed)
 //============================================================
 //  win_toggle_menubar
 //============================================================
-#if 0
+
 static void win_toggle_menubar(void)
 {
 	LONG width_diff = 0;
@@ -3047,7 +3050,7 @@ static void win_toggle_menubar(void)
 		RedrawWindow(hwnd, NULL, NULL, 0);
 	}
 }
-#endif
+
 
 
 //============================================================
@@ -3373,7 +3376,7 @@ static bool invoke_command(HWND wnd, UINT command)
 			break;
 
 		case ID_FILE_TOGGLEMENUBAR:
-			//win_toggle_menubar();
+			win_toggle_menubar();
 			break;
 
 		case ID_FRAMESKIP_AUTO:

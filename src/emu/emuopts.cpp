@@ -92,7 +92,7 @@ const options_entry emu_options::s_option_entries[] =
 	{ OPTION_SECONDS_TO_RUN ";str",                      "0",         core_options::option_type::INTEGER,    "number of emulated seconds to run before automatically exiting" },
 	{ OPTION_THROTTLE,                                   "1",         core_options::option_type::BOOLEAN,    "throttle emulation to keep system running in sync with real time" },
 	{ OPTION_SLEEP,                                      "1",         core_options::option_type::BOOLEAN,    "enable sleeping, which gives time back to other applications when idle" },
-	{ OPTION_SPEED "(0.01-100)",                         "1.0",       core_options::option_type::FLOAT,      "controls the speed of gameplay, relative to realtime; smaller numbers are slower" },
+	{ OPTION_SPEED "(0.1-100)",                          "1.0",       core_options::option_type::FLOAT,      "controls the speed of gameplay, relative to realtime; smaller numbers are slower" },
 	{ OPTION_REFRESHSPEED ";rs",                         "0",         core_options::option_type::BOOLEAN,    "automatically adjust emulation speed to keep the emulated refresh rate slower than the host screen" },
 	{ OPTION_LOWLATENCY ";lolat",                        "0",         core_options::option_type::BOOLEAN,    "draws new frame before throttling to reduce input latency" },
 
@@ -101,7 +101,7 @@ const options_entry emu_options::s_option_entries[] =
 	{ OPTION_KEEPASPECT ";ka",                           "1",         core_options::option_type::BOOLEAN,    "maintain aspect ratio when scaling to fill output screen/window" },
 	{ OPTION_UNEVENSTRETCH ";ues",                       "1",         core_options::option_type::BOOLEAN,    "allow non-integer ratios when scaling to fill output screen/window horizontally or vertically" },
 	{ OPTION_UNEVENSTRETCHX ";uesx",                     "0",         core_options::option_type::BOOLEAN,    "allow non-integer ratios when scaling to fill output screen/window horizontally"},
-	{ OPTION_UNEVENSTRETCHY ";uesy",                     "0",         core_options::option_type::BOOLEAN,    "allow non-integer ratios when scaling to fill otuput screen/window vertially"},
+	{ OPTION_UNEVENSTRETCHY ";uesy",                     "0",         core_options::option_type::BOOLEAN,    "allow non-integer ratios when scaling to fill output screen/window vertically"},
 	{ OPTION_AUTOSTRETCHXY ";asxy",                      "0",         core_options::option_type::BOOLEAN,    "automatically apply -unevenstretchx/y based on source native orientation"},
 	{ OPTION_INTOVERSCAN ";ios",                         "0",         core_options::option_type::BOOLEAN,    "allow overscan on integer scaled targets"},
 	{ OPTION_INTSCALEX ";sx",                            "0",         core_options::option_type::INTEGER,    "set horizontal integer scale factor"},
@@ -122,6 +122,7 @@ const options_entry emu_options::s_option_entries[] =
 	{ OPTION_ARTWORK_CROP ";artcrop",                    "0",         core_options::option_type::BOOLEAN,    "crop artwork so emulated screen image fills output screen/window in one axis" },
 	{ OPTION_FALLBACK_ARTWORK,                           nullptr,     core_options::option_type::STRING,     "fallback artwork if no external artwork or internal driver layout defined" },
 	{ OPTION_OVERRIDE_ARTWORK,                           nullptr,     core_options::option_type::STRING,     "override artwork for external artwork and internal driver layout" },
+	{ OPTION_ARTWORK_FONT ";artfont",                    "default",   core_options::option_type::STRING,     "specify a font to use for artwork text elements" },
 
 	// screen options
 	{ nullptr,                                           nullptr,     core_options::option_type::HEADER,     "CORE SCREEN OPTIONS" },
@@ -143,9 +144,7 @@ const options_entry emu_options::s_option_entries[] =
 	{ nullptr,                                           nullptr,     core_options::option_type::HEADER,     "CORE SOUND OPTIONS" },
 	{ OPTION_SAMPLERATE ";sr(1000-1000000)",             "48000",     core_options::option_type::INTEGER,    "set sound output sample rate" },
 	{ OPTION_SAMPLES,                                    "1",         core_options::option_type::BOOLEAN,    "enable the use of external samples if available" },
-	{ OPTION_VOLUME ";vol",                              "0",         core_options::option_type::INTEGER,    "sound volume in decibels (-32 min, 0 max)" },
-	{ OPTION_COMPRESSOR,                                 "1",         core_options::option_type::BOOLEAN,    "enable compressor for sound" },
-	{ OPTION_SPEAKER_REPORT "(0-4)",                     "0",         core_options::option_type::INTEGER,    "print report of speaker ouput maxima (0=none, or 1-4 for more detail)" },
+	{ OPTION_VOLUME ";vol(-96-12)",                      "0",         core_options::option_type::INTEGER,    "sound volume in decibels" },
 
 	// input options
 	{ nullptr,                                           nullptr,     core_options::option_type::HEADER,     "CORE INPUT OPTIONS" },
@@ -158,7 +157,6 @@ const options_entry emu_options::s_option_entries[] =
 	{ OPTION_MULTIMOUSE,                                 "0",         core_options::option_type::BOOLEAN,    "enable separate input from each mouse device (if present)" },
 	{ OPTION_STEADYKEY ";steady",                        "0",         core_options::option_type::BOOLEAN,    "enable steadykey support" },
 	{ OPTION_UI_ACTIVE,                                  "0",         core_options::option_type::BOOLEAN,    "enable user interface on top of emulated keyboard (if present)" },
-	{ OPTION_OFFSCREEN_RELOAD ";reload",                 "0",         core_options::option_type::BOOLEAN,    "convert lightgun button 2 into offscreen reload" },
 	{ OPTION_JOYSTICK_MAP ";joymap",                     "auto",      core_options::option_type::STRING,     "explicit joystick map, or auto to auto-select" },
 	{ OPTION_JOYSTICK_DEADZONE ";joy_deadzone;jdz(0.00-1)",       "0.15", core_options::option_type::FLOAT,  "center deadzone range for joystick where change is ignored (0.0 center, 1.0 end)" },
 	{ OPTION_JOYSTICK_SATURATION ";joy_saturation;jsat(0.00-1)",  "0.85", core_options::option_type::FLOAT,  "end of axis saturation range for joystick where change is ignored (0.0 center, 1.0 end)" },
@@ -198,14 +196,15 @@ const options_entry emu_options::s_option_entries[] =
 
 	// misc options
 	{ nullptr,                                           nullptr,     core_options::option_type::HEADER,     "CORE MISC OPTIONS" },
-	{ OPTION_DRC,                                        "1",         core_options::option_type::BOOLEAN,    "enable DRC CPU core if available" },
+	{ OPTION_DRC,                                        "1",         core_options::option_type::BOOLEAN,    "enable DRC CPU cores if available" },
+	{ OPTION_DRC_RWX,                                    "1",         core_options::option_type::BOOLEAN,    "allow DRC to use writable executable pages if supported" },
 	{ OPTION_DRC_USE_C,                                  "0",         core_options::option_type::BOOLEAN,    "force DRC to use C backend" },
 	{ OPTION_DRC_LOG_UML,                                "0",         core_options::option_type::BOOLEAN,    "write DRC UML disassembly log" },
 	{ OPTION_DRC_LOG_NATIVE,                             "0",         core_options::option_type::BOOLEAN,    "write DRC native disassembly log" },
 	{ OPTION_BIOS,                                       nullptr,     core_options::option_type::STRING,     "select the system BIOS to use" },
 	{ OPTION_CHEAT ";c",                                 "0",         core_options::option_type::BOOLEAN,    "enable cheat subsystem" },
 	{ OPTION_SKIP_GAMEINFO,                              "0",         core_options::option_type::BOOLEAN,    "skip displaying the system information screen at startup" },
-	{ OPTION_UI_FONT,                                    "default",   core_options::option_type::STRING,     "specify a font to use" },
+	{ OPTION_UI_FONT,                                    "default",   core_options::option_type::STRING,     "specify a font to use for UI text" },
 	{ OPTION_UI,                                         "cabinet",   core_options::option_type::STRING,     "type of UI (simple|cabinet)" },
 	{ OPTION_RAMSIZE ";ram",                             nullptr,     core_options::option_type::STRING,     "size of RAM (if supported by driver)" },
 	{ OPTION_CONFIRM_QUIT,                               "0",         core_options::option_type::BOOLEAN,    "ask for confirmation before exiting" },
@@ -292,8 +291,8 @@ namespace
 	class slot_option_entry : public core_options::entry
 	{
 	public:
-		slot_option_entry(const char *name, slot_option &host)
-			: entry(name)
+		slot_option_entry(std::string &&name, slot_option &host)
+			: entry(std::move(name))
 			, m_host(host)
 		{
 		}
@@ -567,7 +566,7 @@ bool emu_options::add_and_remove_slot_options()
 		for (const device_slot_interface &slot : slot_interface_enumerator(config.root_device()))
 		{
 			// come up with the canonical name of the slot
-			const char *slot_option_name = slot.slot_name();
+			const std::string_view slot_option_name = slot.slot_name();
 
 			// erase this option from existing (so we don't purge it later)
 			existing.remove(slot_option_name);
@@ -589,7 +588,7 @@ bool emu_options::add_and_remove_slot_options()
 						add_header(header);
 
 					// create a new entry in the options
-					auto new_entry = new_option.setup_option_entry(slot_option_name);
+					auto new_entry = new_option.setup_option_entry(std::string(slot_option_name));
 
 					// and add it
 					add_entry(std::move(new_entry), header);
@@ -1029,16 +1028,18 @@ emu_options::software_options emu_options::evaluate_initial_softlist_options(con
 //  find_slot_option
 //-------------------------------------------------
 
-const slot_option *emu_options::find_slot_option(const std::string &device_name) const
+const slot_option *emu_options::find_slot_option(std::string_view device_name) const
 {
-	auto iter = m_slot_options.find(device_name);
-	return iter != m_slot_options.end() ? &iter->second : nullptr;
+	// TODO: get rid of temporary std::string when we have C++20
+	auto const iter = m_slot_options.find(std::string(device_name));
+	return (iter != m_slot_options.end()) ? &iter->second : nullptr;
 }
 
-slot_option *emu_options::find_slot_option(const std::string &device_name)
+slot_option *emu_options::find_slot_option(std::string_view device_name)
 {
-	auto iter = m_slot_options.find(device_name);
-	return iter != m_slot_options.end() ? &iter->second : nullptr;
+	// TODO: get rid of temporary std::string when we have C++20
+	auto const iter = m_slot_options.find(std::string(device_name));
+	return (iter != m_slot_options.end()) ? &iter->second : nullptr;
 }
 
 
@@ -1047,16 +1048,16 @@ slot_option *emu_options::find_slot_option(const std::string &device_name)
 //  slot_option
 //-------------------------------------------------
 
-const slot_option &emu_options::slot_option(const std::string &device_name) const
+const slot_option &emu_options::slot_option(std::string_view device_name) const
 {
-	const ::slot_option *opt = find_slot_option(device_name);
+	::slot_option const *const opt = find_slot_option(device_name);
 	assert(opt && "Attempt to access non-existent slot option");
 	return *opt;
 }
 
-slot_option &emu_options::slot_option(const std::string &device_name)
+slot_option &emu_options::slot_option(std::string_view device_name)
 {
-	::slot_option *opt = find_slot_option(device_name);
+	::slot_option *const opt = find_slot_option(device_name);
 	assert(opt && "Attempt to access non-existent slot option");
 	return *opt;
 }
@@ -1066,16 +1067,18 @@ slot_option &emu_options::slot_option(const std::string &device_name)
 //  image_option
 //-------------------------------------------------
 
-const image_option &emu_options::image_option(const std::string &device_name) const
+const image_option &emu_options::image_option(std::string_view device_name) const
 {
-	auto iter = m_image_options.find(device_name);
+	// TODO: get rid of temporary std::string when we have C++20
+	auto const iter = m_image_options.find(std::string(device_name));
 	assert(iter != m_image_options.end() && "Attempt to access non-existent image option");
 	return *iter->second;
 }
 
-image_option &emu_options::image_option(const std::string &device_name)
+image_option &emu_options::image_option(std::string_view device_name)
 {
-	auto iter = m_image_options.find(device_name);
+	// TODO: get rid of temporary std::string when we have C++20
+	auto const iter = m_image_options.find(std::string(device_name));
 	assert(iter != m_image_options.end() && "Attempt to access non-existent image option");
 	return *iter->second;
 }
@@ -1270,13 +1273,13 @@ void slot_option::set_bios(std::string &&text)
 //  slot_option::setup_option_entry
 //-------------------------------------------------
 
-core_options::entry::shared_ptr slot_option::setup_option_entry(const char *name)
+core_options::entry::shared_ptr slot_option::setup_option_entry(std::string &&name)
 {
 	// this should only be called once
 	assert(m_entry.expired());
 
 	// create the entry and return it
-	core_options::entry::shared_ptr entry = std::make_shared<slot_option_entry>(name, *this);
+	auto entry = std::make_shared<slot_option_entry>(std::move(name), *this);
 	m_entry = entry;
 	return entry;
 }

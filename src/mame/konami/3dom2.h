@@ -160,10 +160,10 @@ public:
 
 protected:
 	// Device-level overrides
-	virtual void device_start() override;
-	virtual void device_reset() override;
+	virtual void device_start() override ATTR_COLD;
+	virtual void device_reset() override ATTR_COLD;
 	virtual void device_post_load() override;
-	virtual void device_add_mconfig(machine_config &config) override;
+	virtual void device_add_mconfig(machine_config &config) override ATTR_COLD;
 
 	TIMER_CALLBACK_MEMBER(dac_update);
 
@@ -207,13 +207,13 @@ public: // TODO: THIS SHOULD NOT BE PUBLIC
 	devcb_read_line m_videores_in;
 
 	// Sub-devices
-	required_device<m2_memctl_device>   m_memctl;
-	required_device<m2_powerbus_device> m_powerbus;
-	required_device<m2_vdu_device>      m_vdu;
-	required_device<m2_ctrlport_device> m_ctrlport;
-	required_device<dspp_device>        m_dspp;
-	required_device<m2_mpeg_device>     m_mpeg;
-	required_device<m2_te_device>       m_te;
+	required_device<m2_memctl_device>    m_memctl;
+	required_device<m2_powerbus_device>  m_powerbus;
+	required_device<m2_vdu_device>       m_vdu;
+	required_device<m2_ctrlport_device>  m_ctrlport;
+	required_device<dspp_bulldog_device> m_dspp;
+	required_device<m2_mpeg_device>      m_mpeg;
+	required_device<m2_te_device>        m_te;
 
 	// System RAM
 	std::unique_ptr<uint32_t[]> m_ram;
@@ -258,8 +258,8 @@ public:
 	uint32_t read(offs_t offset);
 
 protected:
-	virtual void device_start() override;
-	virtual void device_reset() override;
+	virtual void device_start() override ATTR_COLD;
+	virtual void device_reset() override ATTR_COLD;
 
 private:
 	enum reg_offs
@@ -302,8 +302,8 @@ public:
 	void write(offs_t offset, uint32_t data, uint32_t mem_mask = ~0);
 
 protected:
-	virtual void device_start() override;
-	virtual void device_reset() override;
+	virtual void device_start() override ATTR_COLD;
+	virtual void device_reset() override ATTR_COLD;
 
 private:
 	enum reg_offs
@@ -399,8 +399,8 @@ public:
 	uint32_t screen_update(screen_device &screen, bitmap_rgb32 &bitmap, const rectangle &cliprect);
 
 protected:
-	virtual void device_start() override;
-	virtual void device_reset() override;
+	virtual void device_start() override ATTR_COLD;
+	virtual void device_reset() override ATTR_COLD;
 
 	TIMER_CALLBACK_MEMBER(vint0_set);
 	TIMER_CALLBACK_MEMBER(vint1_set);
@@ -455,8 +455,8 @@ public:
 	void write(offs_t offset, uint32_t data);
 
 protected:
-	virtual void device_start() override;
-	virtual void device_reset() override;
+	virtual void device_start() override ATTR_COLD;
+	virtual void device_reset() override ATTR_COLD;
 };
 
 
@@ -474,8 +474,8 @@ public:
 	void write(offs_t offset, uint32_t data);
 
 protected:
-	virtual void device_start() override;
-	virtual void device_reset() override;
+	virtual void device_start() override ATTR_COLD;
+	virtual void device_reset() override ATTR_COLD;
 };
 
 
@@ -512,8 +512,8 @@ public:
 	}
 
 protected:
-	virtual void device_start() override;
-	virtual void device_reset() override;
+	virtual void device_start() override ATTR_COLD;
+	virtual void device_reset() override ATTR_COLD;
 	virtual void device_post_load() override;
 
 private:

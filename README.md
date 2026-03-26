@@ -15,13 +15,13 @@ How to compile?
 To create the command-line build:
 
 ```
-make subtarget=mess OSD=newui PTR64=1 SUBTARGET=arcade SYMBOLS=0 NO_SYMBOLS=1 DEPRECATED=0
+make subtarget=mess OSD=newui PTR64=1 SYMBOLS=0 NO_SYMBOLS=1 DEPRECATED=0
 ```
 
 To create the graphical frontend build:
 
 ```
-make subtarget=mess OSD=messui PTR64=1 SUBTARGET=arcade SYMBOLS=0 NO_SYMBOLS=1 DEPRECATED=0
+make subtarget=mess OSD=messui PTR64=1 SYMBOLS=0 NO_SYMBOLS=1 DEPRECATED=0
 ```
 
 

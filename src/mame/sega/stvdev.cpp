@@ -36,8 +36,8 @@ public:
 
 private:
 	required_device<cpu_device> m_maincpu;
-	void stvdev_io(address_map &map);
-	void stvdev_map(address_map &map);
+	void stvdev_io(address_map &map) ATTR_COLD;
+	void stvdev_map(address_map &map) ATTR_COLD;
 };
 
 
@@ -51,9 +51,6 @@ void stvdev_state::stvdev_map(address_map &map)
 void stvdev_state::stvdev_io(address_map &map)
 {
 }
-
-static INPUT_PORTS_START(stvdev)
-INPUT_PORTS_END
 
 void stvdev_state::stvdev(machine_config &config)
 {
@@ -76,4 +73,4 @@ ROM_END
 
 
 // NOTE: stvbios mentions HP and SUN archs being supported, "PC" suffix comes from there
-COMP(1998, stvdev, 0, 0, stvdev, stvdev, stvdev_state, empty_init, "Sega / ALi", "ST-V 486 dev box PC", MACHINE_IS_SKELETON )
+COMP(1998, stvdev, 0, 0, stvdev, 0, stvdev_state, empty_init, "Sega / ALi", "ST-V 486 dev box PC", MACHINE_NO_SOUND | MACHINE_NOT_WORKING )

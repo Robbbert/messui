@@ -197,12 +197,12 @@ private:
 	void ptm2_irq(int state);
 	void audiocpu_irq_update();
 
-	virtual void machine_start() override;
-	virtual void machine_reset() override;
+	virtual void machine_start() override ATTR_COLD;
+	virtual void machine_reset() override ATTR_COLD;
 
-	void jwildb52_hd63484_map(address_map &map);
-	void jwildb52_map(address_map &map);
-	void sound_prog_map(address_map &map);
+	void jwildb52_hd63484_map(address_map &map) ATTR_COLD;
+	void jwildb52_map(address_map &map) ATTR_COLD;
+	void sound_prog_map(address_map &map) ATTR_COLD;
 
 	required_device<cpu_device>     m_maincpu;
 	required_device<cpu_device>     m_audiocpu;
@@ -461,10 +461,10 @@ static INPUT_PORTS_START( jwildb52 )
 
 	PORT_START("IN1")
 	PORT_BIT( 0x01, IP_ACTIVE_LOW, IPT_UNKNOWN ) PORT_CODE(KEYCODE_1_PAD)
-	PORT_BIT( 0x02, IP_ACTIVE_LOW, IPT_GAMBLE_SERVICE ) PORT_NAME("Meter")
+	PORT_BIT( 0x02, IP_ACTIVE_LOW, IPT_GAMBLE_BOOK ) PORT_NAME("Meter")
 	PORT_BIT( 0x04, IP_ACTIVE_LOW, IPT_MEMORY_RESET ) PORT_NAME("Reset")
 	PORT_BIT( 0x08, IP_ACTIVE_LOW, IPT_OTHER ) PORT_CODE(KEYCODE_T) PORT_NAME("Last")
-	PORT_BIT( 0x10, IP_ACTIVE_LOW, IPT_GAMBLE_DOOR ) PORT_NAME("Machine Door")
+	PORT_BIT( 0x10, IP_ACTIVE_LOW, IPT_DOOR ) PORT_NAME("Machine Door")
 	PORT_BIT( 0x20, IP_ACTIVE_LOW, IPT_SERVICE )
 	PORT_BIT( 0x40, IP_ACTIVE_LOW, IPT_OTHER ) PORT_NAME("Hopper Weight Switch")
 	PORT_BIT( 0x80, IP_ACTIVE_LOW, IPT_OTHER )  // Hold 1
@@ -487,7 +487,7 @@ static INPUT_PORTS_START( jwildb52 )
 	PORT_BIT( 0x10, IP_ACTIVE_LOW, IPT_UNKNOWN ) PORT_CODE(KEYCODE_7_PAD)
 	PORT_BIT( 0x20, IP_ACTIVE_HIGH, IPT_OTHER ) PORT_NAME("V Door")
 	PORT_BIT( 0x40, IP_ACTIVE_LOW, IPT_UNKNOWN ) PORT_CODE(KEYCODE_8_PAD)
-	PORT_BIT( 0x80, IP_ACTIVE_HIGH, IPT_COIN1 ) PORT_CHANGED_MEMBER(DEVICE_SELF, sigmab52_state, coin_drop_start, 0)
+	PORT_BIT( 0x80, IP_ACTIVE_HIGH, IPT_COIN1 ) PORT_CHANGED_MEMBER(DEVICE_SELF, FUNC(sigmab52_state::coin_drop_start), 0)
 
 	PORT_START("DSW1")
 	PORT_DIPNAME( 0x01, 0x01, "DSW1-1" )        PORT_DIPLOCATION("SW1:1")

@@ -2,11 +2,11 @@
 // copyright-holders: Takahiro Nogi, David Haywood
 /******************************************************************************
 
-    Gomoku Narabe Renju
-    (c)1981 Nihon Bussan Co.,Ltd.
+Gomoku Narabe Renju
+(c)1981 Nihon Bussan Co.,Ltd.
 
-    Driver by Takahiro Nogi 1999/11/06 -
-    Updated to compile again by David Haywood 19th Oct 2002
+Driver by Takahiro Nogi 1999/11/06 -
+Updated to compile again by David Haywood 19th Oct 2002
 
 TODO:
 - Refactor sound emulation.
@@ -51,7 +51,7 @@ public:
 	void gomoku(machine_config &config);
 
 protected:
-	virtual void video_start() override;
+	virtual void video_start() override ATTR_COLD;
 
 private:
 	required_shared_ptr<uint8_t> m_videoram;
@@ -78,13 +78,13 @@ private:
 	TILE_GET_INFO_MEMBER(get_fg_tile_info);
 	void palette(palette_device &palette) const;
 	uint32_t screen_update(screen_device &screen, bitmap_ind16 &bitmap, const rectangle &cliprect);
-	void prg_map(address_map &map);
+	void prg_map(address_map &map) ATTR_COLD;
 };
 
 
 /******************************************************************************
 
-    palette RAM
+    Palette RAM
 
 ******************************************************************************/
 

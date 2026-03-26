@@ -144837,7 +144837,7 @@ license:CC0-1.0
 	</software>
 
 	<software name="ckrynn_98">
-		<description>Champions of Krynn (NEC PC-9801)</description>
+		<description>Advanced Dungeons &amp; Dragons - Champions of Krynn (NEC PC-9801)</description>
 		<year>1992</year>
 		<publisher>Pony Canyon</publisher>
 		<info name="cores" value="YM2203"/>
@@ -146017,7 +146017,7 @@ license:CC0-1.0
 	</software>
 
 	<software name="azurebnd_98">
-		<description>Curse of the Azure Bonds (NEC PC-9801)</description>
+		<description>Advanced Dungeons &amp; Dragons - Curse of the Azure Bonds (NEC PC-9801)</description>
 		<year>1991</year>
 		<publisher>Pony Canyon</publisher>
 		<info name="cores" value="YM2203"/>
@@ -146646,7 +146646,7 @@ license:CC0-1.0
 	</software>
 
 	<software name="dkkrynn_98">
-		<description>Death Knights of Krynn (NEC PC-9801)</description>
+		<description>Advanced Dungeons &amp; Dragons - Death Knights of Krynn (NEC PC-9801)</description>
 		<year>1993</year>
 		<publisher>Pony Canyon</publisher>
 		<info name="cores" value="YM2203"/>
@@ -149034,7 +149034,7 @@ license:CC0-1.0
 	</software>
 
 	<software name="drgstrik_98">
-		<description>DragonStrike (NEC PC-9801)</description>
+		<description>Advanced Dungeons &amp; Dragons - DragonStrike (NEC PC-9801)</description>
 		<year>1992</year>
 		<publisher>Pony Canyon</publisher>
 		<info name="cores" value="YM2203"/>
@@ -149113,7 +149113,7 @@ license:CC0-1.0
 	</software>
 
 	<software name="dragflam_98">
-		<description>Dragons of Flame (NEC PC-9801)</description>
+		<description>Advanced Dungeons &amp; Dragons - Dragons of Flame (NEC PC-9801)</description>
 		<year>1991</year>
 		<publisher>Pony Canyon</publisher>
 		<info name="cores" value="YM2203"/>
@@ -151354,7 +151354,7 @@ license:CC0-1.0
 	</software>
 
 	<software name="eyebehol_98">
-		<description>Eye of the Beholder (NEC PC-9801)</description>
+		<description>Advanced Dungeons &amp; Dragons - Eye of the Beholder (NEC PC-9801)</description>
 		<year>1992</year>
 		<publisher>Pony Canyon</publisher>
 		<info name="cores" value="YM2203"/>
@@ -151427,7 +151427,7 @@ license:CC0-1.0
 	</software>
 
 	<software name="eyebeho3_98o">
-		<description>Eye of the Beholder III - Assault on Myth Drannor (NEC PC-9801, OPN)</description>
+		<description>Advanced Dungeons &amp; Dragons - Eye of the Beholder III: Assault on Myth Drannor (NEC PC-9801, OPN)</description>
 		<year>1994</year>
 		<publisher>Ving</publisher>
 		<info name="cores" value="YM2203"/>
@@ -151590,7 +151590,7 @@ license:CC0-1.0
 	</software>
 
 	<software name="eyebeho3_98oa">
-		<description>Eye of the Beholder III - Assault on Myth Drannor (NEC PC-9801, OPNA)</description>
+		<description>Advanced Dungeons &amp; Dragons - Eye of the Beholder III: Assault on Myth Drannor (NEC PC-9801, OPNA)</description>
 		<year>1994</year>
 		<publisher>Ving</publisher>
 		<info name="cores" value="YM2608"/>
@@ -154146,7 +154146,7 @@ license:CC0-1.0
 	</software>
 
 	<software name="hillsfar_98">
-		<description>Hillsfar (NEC PC-9801)</description>
+		<description>Advanced Dungeons &amp; Dragons - Hillsfar (NEC PC-9801)</description>
 		<year>1990</year>
 		<publisher>Pony Canyon</publisher>
 		<info name="cores" value="YM2203"/>
@@ -160465,7 +160465,7 @@ license:CC0-1.0
 	</software>
 
 	<software name="pooldark_98">
-		<description>Pools of Darkness (NEC PC-9801)</description>
+		<description>Advanced Dungeons &amp; Dragons - Pools of Darkness (NEC PC-9801)</description>
 		<year>1993</year>
 		<publisher>Pony Canyon</publisher>
 		<info name="cores" value="YM2203"/>
@@ -164682,7 +164682,7 @@ license:CC0-1.0
 	</software>
 
 	<software name="ssilblad_98">
-		<description>Secret of the Silver Blades (NEC PC-9801)</description>
+		<description>Advanced Dungeons &amp; Dragons - Secret of the Silver Blades (NEC PC-9801)</description>
 		<year>1992</year>
 		<publisher>Pony Canyon</publisher>
 		<info name="cores" value="YM2203"/>
@@ -184572,7 +184572,7 @@ license:CC0-1.0
 	</software>
 
 	<software name="ckrynn_pc">
-		<description>Champions of Krynn (IBM PC AT)</description>
+		<description>Advanced Dungeons &amp; Dragons - Champions of Krynn (IBM PC AT)</description>
 		<year>1990</year>
 		<publisher>SSI, Inc./TSR, Inc.</publisher>
 		<info name="cores" value="Adlib / OPL2 (YM3812)"/>
@@ -185946,7 +185946,7 @@ license:CC0-1.0
 	</software>
 
 	<software name="dkkrynn_pc">
-		<description>Death Knights of Krynn (IBM PC AT)</description>
+		<description>Advanced Dungeons &amp; Dragons - Death Knights of Krynn (IBM PC AT)</description>
 		<year>1991</year>
 		<publisher>SSI, Inc. / TSR, Inc.</publisher>
 		<info name="cores" value="Adlib / OPL2 (YM3812)"/>
@@ -188253,7 +188253,7 @@ license:CC0-1.0
 	</software>
 
 	<software name="eyebehol_pc">
-		<description>Eye of the Beholder (IBM PC AT)</description>
+		<description>Advanced Dungeons &amp; Dragons - Eye of the Beholder (IBM PC AT)</description>
 		<year>1990</year>
 		<publisher>SSI, Inc./TSR, Inc.</publisher>
 		<info name="cores" value="Adlib / OPL2 (YM3812)"/>
@@ -188290,7 +188290,7 @@ license:CC0-1.0
 	</software>
 
 	<software name="eyebeho3_pc">
-		<description>Eye of the Beholder III - Assault on Myth Drannor (IBM PC AT)</description>
+		<description>Advanced Dungeons &amp; Dragons - Eye of the Beholder III: Assault on Myth Drannor (IBM PC AT)</description>
 		<year>1990</year>
 		<publisher>SSI, Inc./TSR, Inc.</publisher>
 		<info name="cores" value="Adlib / OPL2 (YM3812)"/>
@@ -188453,7 +188453,7 @@ license:CC0-1.0
 	</software>
 
 	<software name="eyebeho2_pc">
-		<description>Eye of the Beholder II - The Legend of Darkmoon (IBM PC AT)</description>
+		<description>Advanced Dungeons &amp; Dragons - Eye of the Beholder II: The Legend of Darkmoon (IBM PC AT)</description>
 		<year>1991</year>
 		<publisher>Strategic Simulations Inc.</publisher>
 		<info name="cores" value="YM3812"/>
@@ -196122,7 +196122,7 @@ license:CC0-1.0
 	</software>
 
 	<software name="ssilblad_pc">
-		<description>Secret of the Silver Blades (IBM PC AT)</description>
+		<description>Advanced Dungeons &amp; Dragons - Secret of the Silver Blades (IBM PC AT)</description>
 		<year>1990</year>
 		<publisher>SSI, Inc./TSR, Inc.</publisher>
 		<info name="cores" value="Adlib / OPL2 (YM3812)"/>
@@ -267903,7 +267903,7 @@ license:CC0-1.0
 	</software>
 
 	<software name="drgstrik_pc">
-		<description>DragonStrike (IBM PC AT)</description>
+		<description>Advanced Dungeons &amp; Dragons - DragonStrike (IBM PC AT)</description>
 		<year>1990</year>
 		<publisher>Westwood Associates</publisher>
 		<info name="cores" value="Adlib (YM3812)"/>
@@ -267958,7 +267958,7 @@ license:CC0-1.0
 	</software>
 
 	<software name="drgstrik_68k">
-		<description>DragonStrike (Sharp X68000)</description>
+		<description>Advanced Dungeons &amp; Dragons - DragonStrike (Sharp X68000)</description>
 		<year>1992</year>
 		<publisher>Pony Canyon</publisher>
 		<info name="cores" value="YM2151"/>
@@ -348636,7 +348636,7 @@ license:CC0-1.0
 	<software name="ncirc_md">
 		<description>Nightmare Circus (GEN/MD)</description>
 		<year>1995</year>
-		<publisher>TecToy</publisher>
+		<publisher>Tec Toy</publisher>
 		<info name="cores" value="SN76496, YM2612"/>
 		<part name="001" interface="vgm_quik">
 			<feature name="part_id" value="01 - title screen.vgz" />

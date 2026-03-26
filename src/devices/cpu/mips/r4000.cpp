@@ -27,10 +27,13 @@
  */
 
 #include "emu.h"
+#include "r4000.h"
+
+#include "mips3dsm.h"
+
 #include "divtlb.h"
 #include "debug/debugcpu.h"
-#include "r4000.h"
-#include "mips3dsm.h"
+
 #include "unicode.h"
 
 #include "softfloat3/source/include/softfloat.h"
@@ -1107,7 +1110,7 @@ void r4000_base_device::cpu_exception(u32 exception, u16 const vector)
 
 	if (exception == EXCEPTION_INT)
 	{
-		if (machine().debug_flags & DEBUG_FLAG_ENABLED)
+		if (debugger_enabled())
 		{
 			// notify the debugger of the first pending hardware interrupt
 			u32 const iphw = CAUSE & SR & CAUSE_IPHW;

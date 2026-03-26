@@ -12,16 +12,25 @@ The sound hardware is a modified version of the 6803-based one used by the
 classic Irem games. There's only one AY 3-8910 chip and no MSM5205. There
 are also two SN76489 controlled directly by main(!) CPU, and used only for
 in-game music.
-The video hardware is pretty much like Irem games too. The only
-strange thing is that the screen is flipped vertically.
+The video hardware is pretty much like Irem games too. The only strange thing
+is that the screen is flipped vertically.
+
+The Z80 is a Z80A, not Z80B, but it's been confirmed that it runs at 6.0MHz.
+
+HSync measured 15.9946kHz
+VSync measured 56.7180Hz
 
 TODO:
 - sprite-sprite priorities are imperfect (simply reversing them won't fix it,
   motorcycle level will get much worse)
-- accurate screen timing (raw params), attract mode doesn't 1:1 match PCB
+- remove VIDEO_UPDATE_AFTER_VBLANK workaround (sprite DMA, probably)
+- Attract mode doesn't 1:1 match PCB, possibly video timing related. See BTANB
+  note which is currently not happening on MAME. Note that the Z80 and vblank
+  IRQ don't run from the same XTAL, so there's going to be slight differences
+  on real PCBs as well here due to XTAL tolerance.
 
 BTANB:
-- attract mode demo play stops playing and lets the timer run out
+- attract mode 2nd demo stops playing at 35s and lets the timer run out
 - heads of baddies clip off when you defeat them on the lowest floor
 - player sprite 1-scanline glitch at the lower part of motorcycle level
 - player sprite may briefly turn into garbage after a boss fight
@@ -64,9 +73,9 @@ public:
 	void kncljoe(machine_config &config);
 
 protected:
-	virtual void machine_start() override;
-	virtual void machine_reset() override;
-	virtual void video_start() override;
+	virtual void machine_start() override ATTR_COLD;
+	virtual void machine_reset() override ATTR_COLD;
+	virtual void video_start() override ATTR_COLD;
 
 private:
 	required_shared_ptr<uint8_t> m_videoram;
@@ -106,8 +115,8 @@ private:
 	uint32_t screen_update(screen_device &screen, bitmap_ind16 &bitmap, const rectangle &cliprect);
 	INTERRUPT_GEN_MEMBER(sound_nmi);
 	void draw_sprites(bitmap_ind16 &bitmap, const rectangle &cliprect);
-	void main_map(address_map &map);
-	void sound_map(address_map &map);
+	void main_map(address_map &map) ATTR_COLD;
+	void sound_map(address_map &map) ATTR_COLD;
 };
 
 
@@ -136,10 +145,9 @@ void kncljoe_state::palette(palette_device &palette) const
 		int bit0, bit1, bit2;
 
 		// red component
-		bit0 = 0;
-		bit1 = BIT(color_prom[i + 0x300], 6);
-		bit2 = BIT(color_prom[i + 0x300], 7);
-		int const r = 0x21 * bit0 + 0x47 * bit1 + 0x97 * bit2;
+		bit0 = BIT(color_prom[i + 0x300], 6);
+		bit1 = BIT(color_prom[i + 0x300], 7);
+		int const r = 0x52 * bit0 + 0xad * bit1;
 
 		// green component
 		bit0 = BIT(color_prom[i + 0x300], 3);
@@ -520,25 +528,22 @@ void kncljoe_state::machine_reset()
 void kncljoe_state::kncljoe(machine_config &config)
 {
 	// basic machine hardware
-	Z80(config, m_maincpu, XTAL(6'000'000));  // verified on PCB
+	Z80(config, m_maincpu, 6_MHz_XTAL); // verified on PCB
 	m_maincpu->set_addrmap(AS_PROGRAM, &kncljoe_state::main_map);
 	m_maincpu->set_vblank_int("screen", FUNC(kncljoe_state::irq0_line_hold));
 
-	M6803(config, m_soundcpu, XTAL(3'579'545)); // verified on PCB
+	M6803(config, m_soundcpu, 3.579545_MHz_XTAL); // verified on PCB
 	m_soundcpu->set_addrmap(AS_PROGRAM, &kncljoe_state::sound_map);
 	m_soundcpu->in_p1_cb().set(FUNC(kncljoe_state::m6803_port1_r));
 	m_soundcpu->out_p1_cb().set(FUNC(kncljoe_state::m6803_port1_w));
 	m_soundcpu->in_p2_cb().set(FUNC(kncljoe_state::m6803_port2_r));
 	m_soundcpu->out_p2_cb().set(FUNC(kncljoe_state::m6803_port2_w));
-	m_soundcpu->set_periodic_int(FUNC(kncljoe_state::sound_nmi), attotime::from_hz(3970)); // measured 3.970 kHz
+	m_soundcpu->set_periodic_int(FUNC(kncljoe_state::sound_nmi), attotime::from_hz(4000)); // every 4 scanlines
 
 	// video hardware
 	SCREEN(config, m_screen, SCREEN_TYPE_RASTER);
+	m_screen->set_raw(18.432_MHz_XTAL / 3, 384, 8, 248, 282, 0, 256);
 	m_screen->set_video_attributes(VIDEO_UPDATE_AFTER_VBLANK);
-	m_screen->set_refresh_hz(60);
-	m_screen->set_vblank_time(ATTOSECONDS_IN_USEC(1500));
-	m_screen->set_size(32*8, 32*8);
-	m_screen->set_visarea(1*8, 31*8-1, 0*8, 32*8-1);
 	m_screen->set_screen_update(FUNC(kncljoe_state::screen_update));
 	m_screen->set_palette(m_palette);
 
@@ -550,14 +555,13 @@ void kncljoe_state::kncljoe(machine_config &config)
 
 	GENERIC_LATCH_8(config, m_soundlatch);
 
-	AY8910(config, m_ay8910, XTAL(3'579'545) / 4); // verified on PCB
+	AY8910(config, m_ay8910, 3.579545_MHz_XTAL / 4); // verified on PCB
 	m_ay8910->port_a_read_callback().set(m_soundlatch, FUNC(generic_latch_8_device::read));
 	m_ay8910->port_b_write_callback().set(FUNC(kncljoe_state::unused_w));
 	m_ay8910->add_route(ALL_OUTPUTS, "mono", 0.30);
 
-	SN76489(config, "sn1", XTAL(3'579'545)).add_route(ALL_OUTPUTS, "mono", 0.30); // verified on PCB
-
-	SN76489(config, "sn2", XTAL(3'579'545)).add_route(ALL_OUTPUTS, "mono", 0.30); // verified on PCB
+	SN76489(config, "sn1", 3.579545_MHz_XTAL).add_route(ALL_OUTPUTS, "mono", 0.30); // verified on PCB
+	SN76489(config, "sn2", 3.579545_MHz_XTAL).add_route(ALL_OUTPUTS, "mono", 0.30); // verified on PCB
 }
 
 
@@ -569,22 +573,22 @@ ROM_START( kncljoe )
 	ROM_LOAD( "kj-3.bin", 0x8000, 0x4000, CRC(0f50697b) SHA1(412c6aba270824299ca2a74e9bea42b83e69797b) )
 
 	ROM_REGION( 0x8000, "soundcpu", 0 )
-	ROM_LOAD( "kj-13.bin",0x6000, 0x2000, CRC(0a0be3f5) SHA1(00be47fc76500843b6f5de63622edb1748ef5f7d) )
+	ROM_LOAD( "kj-13.bin", 0x6000, 0x2000, CRC(0a0be3f5) SHA1(00be47fc76500843b6f5de63622edb1748ef5f7d) )
 
 	ROM_REGION( 0xc000, "tiles", 0 )
-	ROM_LOAD( "kj-10.bin", 0x0000,  0x4000, CRC(74d3ba33) SHA1(c7887d690cb7f7a7b24d59d490ffc088fb6cc49c) )
-	ROM_LOAD( "kj-11.bin", 0x4000,  0x4000, CRC(8ea01455) SHA1(b4b42fe373a1019b4f2a4b763a8a7219a5c9987e) )
-	ROM_LOAD( "kj-12.bin", 0x8000,  0x4000, CRC(33367c41) SHA1(e6c56bcad008f3af4bc0f7d7afe8e23c8eb9d943) )
+	ROM_LOAD( "kj-10.bin", 0x0000, 0x4000, CRC(74d3ba33) SHA1(c7887d690cb7f7a7b24d59d490ffc088fb6cc49c) )
+	ROM_LOAD( "kj-11.bin", 0x4000, 0x4000, CRC(8ea01455) SHA1(b4b42fe373a1019b4f2a4b763a8a7219a5c9987e) )
+	ROM_LOAD( "kj-12.bin", 0x8000, 0x4000, CRC(33367c41) SHA1(e6c56bcad008f3af4bc0f7d7afe8e23c8eb9d943) )
 
 	ROM_REGION( 0x18000, "sprites1", 0 )
-	ROM_LOAD( "kj-4.bin", 0x00000,  0x8000, CRC(a499ea10) SHA1(cb671cc75b3c6029dd3529e62d83025f78b45271) )
-	ROM_LOAD( "kj-6.bin", 0x08000,  0x8000, CRC(815f5c0a) SHA1(ad0b59eeebb2e57035a3f643ac0ef575569bec0f) )
-	ROM_LOAD( "kj-5.bin", 0x10000,  0x8000, CRC(11111759) SHA1(504c62fc6778a4afa86cba69634652708535bef6) )
+	ROM_LOAD( "kj-4.bin", 0x00000, 0x8000, CRC(a499ea10) SHA1(cb671cc75b3c6029dd3529e62d83025f78b45271) )
+	ROM_LOAD( "kj-6.bin", 0x08000, 0x8000, CRC(815f5c0a) SHA1(ad0b59eeebb2e57035a3f643ac0ef575569bec0f) )
+	ROM_LOAD( "kj-5.bin", 0x10000, 0x8000, CRC(11111759) SHA1(504c62fc6778a4afa86cba69634652708535bef6) )
 
 	ROM_REGION( 0xc000, "sprites2", 0 )
-	ROM_LOAD( "kj-7.bin", 0x0000,   0x4000, CRC(121fcccb) SHA1(77f3e7e49787d6a893c5d8c0c3ac612b1180e866) )
-	ROM_LOAD( "kj-9.bin", 0x4000,   0x4000, CRC(affbe3eb) SHA1(056111fc5b04ff14b114b5f724d02789c8e3ee10) )
-	ROM_LOAD( "kj-8.bin", 0x8000,   0x4000, CRC(e057e72a) SHA1(3a85750c72caaa027f302dc6ca4086bdbd49b5ff) )
+	ROM_LOAD( "kj-7.bin", 0x0000, 0x4000, CRC(121fcccb) SHA1(77f3e7e49787d6a893c5d8c0c3ac612b1180e866) )
+	ROM_LOAD( "kj-9.bin", 0x4000, 0x4000, CRC(affbe3eb) SHA1(056111fc5b04ff14b114b5f724d02789c8e3ee10) )
+	ROM_LOAD( "kj-8.bin", 0x8000, 0x4000, CRC(e057e72a) SHA1(3a85750c72caaa027f302dc6ca4086bdbd49b5ff) )
 
 	ROM_REGION( 0x420, "proms", 0 )
 	ROM_LOAD( "kjclr1.bin",  0x000, 0x100, CRC(c3378ac2) SHA1(264fdc0718b36e02fc1fc1064a9566e349f4bf25) ) // tile red
@@ -601,22 +605,22 @@ ROM_START( kncljoea )
 	ROM_LOAD( "kj-3.bin", 0x8000, 0x4000, CRC(0f50697b) SHA1(412c6aba270824299ca2a74e9bea42b83e69797b) )
 
 	ROM_REGION( 0x8000, "soundcpu", 0 )
-	ROM_LOAD( "kj-13.bin",0x6000, 0x2000, CRC(0a0be3f5) SHA1(00be47fc76500843b6f5de63622edb1748ef5f7d) )
+	ROM_LOAD( "kj-13.bin", 0x6000, 0x2000, CRC(0a0be3f5) SHA1(00be47fc76500843b6f5de63622edb1748ef5f7d) )
 
 	ROM_REGION( 0xc000, "tiles", 0 )
-	ROM_LOAD( "kj-10.bin", 0x0000,  0x4000, CRC(74d3ba33) SHA1(c7887d690cb7f7a7b24d59d490ffc088fb6cc49c) )
-	ROM_LOAD( "kj-11.bin", 0x4000,  0x4000, CRC(8ea01455) SHA1(b4b42fe373a1019b4f2a4b763a8a7219a5c9987e) )
-	ROM_LOAD( "kj-12.bin", 0x8000,  0x4000, CRC(33367c41) SHA1(e6c56bcad008f3af4bc0f7d7afe8e23c8eb9d943) )
+	ROM_LOAD( "kj-10.bin", 0x0000, 0x4000, CRC(74d3ba33) SHA1(c7887d690cb7f7a7b24d59d490ffc088fb6cc49c) )
+	ROM_LOAD( "kj-11.bin", 0x4000, 0x4000, CRC(8ea01455) SHA1(b4b42fe373a1019b4f2a4b763a8a7219a5c9987e) )
+	ROM_LOAD( "kj-12.bin", 0x8000, 0x4000, CRC(33367c41) SHA1(e6c56bcad008f3af4bc0f7d7afe8e23c8eb9d943) )
 
 	ROM_REGION( 0x18000, "sprites1", 0 )
-	ROM_LOAD( "kj-4.bin", 0x00000,  0x8000, CRC(a499ea10) SHA1(cb671cc75b3c6029dd3529e62d83025f78b45271) )
-	ROM_LOAD( "kj-6.bin", 0x08000,  0x8000, CRC(815f5c0a) SHA1(ad0b59eeebb2e57035a3f643ac0ef575569bec0f) )
-	ROM_LOAD( "kj-5.bin", 0x10000,  0x8000, CRC(11111759) SHA1(504c62fc6778a4afa86cba69634652708535bef6) )
+	ROM_LOAD( "kj-4.bin", 0x00000, 0x8000, CRC(a499ea10) SHA1(cb671cc75b3c6029dd3529e62d83025f78b45271) )
+	ROM_LOAD( "kj-6.bin", 0x08000, 0x8000, CRC(815f5c0a) SHA1(ad0b59eeebb2e57035a3f643ac0ef575569bec0f) )
+	ROM_LOAD( "kj-5.bin", 0x10000, 0x8000, CRC(11111759) SHA1(504c62fc6778a4afa86cba69634652708535bef6) )
 
 	ROM_REGION( 0xc000, "sprites2", 0 )
-	ROM_LOAD( "kj-7.bin", 0x0000,   0x4000, CRC(121fcccb) SHA1(77f3e7e49787d6a893c5d8c0c3ac612b1180e866) )
-	ROM_LOAD( "kj-9.bin", 0x4000,   0x4000, CRC(affbe3eb) SHA1(056111fc5b04ff14b114b5f724d02789c8e3ee10) )
-	ROM_LOAD( "kj-8.bin", 0x8000,   0x4000, CRC(e057e72a) SHA1(3a85750c72caaa027f302dc6ca4086bdbd49b5ff) )
+	ROM_LOAD( "kj-7.bin", 0x0000, 0x4000, CRC(121fcccb) SHA1(77f3e7e49787d6a893c5d8c0c3ac612b1180e866) )
+	ROM_LOAD( "kj-9.bin", 0x4000, 0x4000, CRC(affbe3eb) SHA1(056111fc5b04ff14b114b5f724d02789c8e3ee10) )
+	ROM_LOAD( "kj-8.bin", 0x8000, 0x4000, CRC(e057e72a) SHA1(3a85750c72caaa027f302dc6ca4086bdbd49b5ff) )
 
 	ROM_REGION( 0x420, "proms", 0 )
 	ROM_LOAD( "kjclr1.bin",  0x000, 0x100, CRC(c3378ac2) SHA1(264fdc0718b36e02fc1fc1064a9566e349f4bf25) ) // tile red
@@ -633,22 +637,22 @@ ROM_START( bcrusher )
 	ROM_LOAD( "bcrush3.bin", 0x8000, 0x4000, CRC(0772d993) SHA1(430f0319bd4765add2f1ee197e7217fdf9ae79c8) )
 
 	ROM_REGION( 0x8000, "soundcpu", 0 )
-	ROM_LOAD( "kj-13.bin",0x6000, 0x2000, CRC(0a0be3f5) SHA1(00be47fc76500843b6f5de63622edb1748ef5f7d) )
+	ROM_LOAD( "kj-13.bin", 0x6000, 0x2000, CRC(0a0be3f5) SHA1(00be47fc76500843b6f5de63622edb1748ef5f7d) )
 
 	ROM_REGION( 0xc000, "tiles", 0 )
-	ROM_LOAD( "bcrush10.bin", 0x0000,  0x4000, CRC(a62f4572) SHA1(4e38e175e25a955e5f83cac8c935163e2e861e94) )
-	ROM_LOAD( "bcrush11.bin", 0x4000,  0x4000, CRC(79cc5644) SHA1(bc356065a2475d0e0921fc5c84fa46f6629caae7) )
-	ROM_LOAD( "bcrush12.bin", 0x8000,  0x4000, CRC(8f09641d) SHA1(5ccc423b15148d96c0a348d41a3f4fff7bbae7b9) )
+	ROM_LOAD( "bcrush10.bin", 0x0000, 0x4000, CRC(a62f4572) SHA1(4e38e175e25a955e5f83cac8c935163e2e861e94) )
+	ROM_LOAD( "bcrush11.bin", 0x4000, 0x4000, CRC(79cc5644) SHA1(bc356065a2475d0e0921fc5c84fa46f6629caae7) )
+	ROM_LOAD( "bcrush12.bin", 0x8000, 0x4000, CRC(8f09641d) SHA1(5ccc423b15148d96c0a348d41a3f4fff7bbae7b9) )
 
 	ROM_REGION( 0x18000, "sprites1", 0 )
-	ROM_LOAD( "kj-4.bin", 0x00000,  0x8000, CRC(a499ea10) SHA1(cb671cc75b3c6029dd3529e62d83025f78b45271) )
-	ROM_LOAD( "kj-6.bin", 0x08000,  0x8000, CRC(815f5c0a) SHA1(ad0b59eeebb2e57035a3f643ac0ef575569bec0f) )
-	ROM_LOAD( "kj-5.bin", 0x10000,  0x8000, CRC(11111759) SHA1(504c62fc6778a4afa86cba69634652708535bef6) )
+	ROM_LOAD( "kj-4.bin", 0x00000, 0x8000, CRC(a499ea10) SHA1(cb671cc75b3c6029dd3529e62d83025f78b45271) )
+	ROM_LOAD( "kj-6.bin", 0x08000, 0x8000, CRC(815f5c0a) SHA1(ad0b59eeebb2e57035a3f643ac0ef575569bec0f) )
+	ROM_LOAD( "kj-5.bin", 0x10000, 0x8000, CRC(11111759) SHA1(504c62fc6778a4afa86cba69634652708535bef6) )
 
 	ROM_REGION( 0xc000, "sprites2", 0 )
-	ROM_LOAD( "kj-7.bin", 0x0000,   0x4000, CRC(121fcccb) SHA1(77f3e7e49787d6a893c5d8c0c3ac612b1180e866) )
-	ROM_LOAD( "kj-9.bin", 0x4000,   0x4000, CRC(affbe3eb) SHA1(056111fc5b04ff14b114b5f724d02789c8e3ee10) )
-	ROM_LOAD( "kj-8.bin", 0x8000,   0x4000, CRC(e057e72a) SHA1(3a85750c72caaa027f302dc6ca4086bdbd49b5ff) )
+	ROM_LOAD( "kj-7.bin", 0x0000, 0x4000, CRC(121fcccb) SHA1(77f3e7e49787d6a893c5d8c0c3ac612b1180e866) )
+	ROM_LOAD( "kj-9.bin", 0x4000, 0x4000, CRC(affbe3eb) SHA1(056111fc5b04ff14b114b5f724d02789c8e3ee10) )
+	ROM_LOAD( "kj-8.bin", 0x8000, 0x4000, CRC(e057e72a) SHA1(3a85750c72caaa027f302dc6ca4086bdbd49b5ff) )
 
 	ROM_REGION( 0x420, "proms", 0 )
 	ROM_LOAD( "kjclr1.bin",  0x000, 0x100, CRC(c3378ac2) SHA1(264fdc0718b36e02fc1fc1064a9566e349f4bf25) ) // tile red

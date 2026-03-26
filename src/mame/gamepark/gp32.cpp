@@ -35,7 +35,6 @@
 #include "gp32.h"
 
 #include "cpu/arm7/arm7.h"
-#include "cpu/arm7/arm7core.h"
 
 #include "softlist_dev.h"
 #include "speaker.h"
@@ -471,11 +470,11 @@ void gp32_state::s3c240x_check_pending_irq()
 		}
 		m_s3c240x_irq_regs[4] |= (1 << int_type); // INTPND
 		m_s3c240x_irq_regs[5] = int_type; // INTOFFSET
-		m_maincpu->set_input_line(ARM7_IRQ_LINE, ASSERT_LINE);
+		m_maincpu->set_input_line(arm7_cpu_device::ARM7_IRQ_LINE, ASSERT_LINE);
 	}
 	else
 	{
-		m_maincpu->set_input_line(ARM7_IRQ_LINE, CLEAR_LINE);
+		m_maincpu->set_input_line(arm7_cpu_device::ARM7_IRQ_LINE, CLEAR_LINE);
 	}
 }
 
@@ -487,7 +486,7 @@ void gp32_state::s3c240x_request_irq(uint32_t int_type)
 		m_s3c240x_irq_regs[0] |= (1 << int_type); // SRCPND
 		m_s3c240x_irq_regs[4] |= (1 << int_type); // INTPND
 		m_s3c240x_irq_regs[5] = int_type; // INTOFFSET
-		m_maincpu->set_input_line(ARM7_IRQ_LINE, ASSERT_LINE);
+		m_maincpu->set_input_line(arm7_cpu_device::ARM7_IRQ_LINE, ASSERT_LINE);
 	}
 	else
 	{
@@ -1697,10 +1696,9 @@ void gp32_state::gp32(machine_config &config)
 	m_screen->set_visarea(0, 239, 0, 319);
 	m_screen->set_screen_update(FUNC(gp32_state::screen_update_gp32));
 
-	SPEAKER(config, "lspeaker").front_left();
-	SPEAKER(config, "rspeaker").front_right();
-	DAC_16BIT_R2R_TWOS_COMPLEMENT(config, m_ldac, 0).add_route(ALL_OUTPUTS, "lspeaker", 1.0); // unknown DAC
-	DAC_16BIT_R2R_TWOS_COMPLEMENT(config, m_rdac, 0).add_route(ALL_OUTPUTS, "rspeaker", 1.0); // unknown DAC
+	SPEAKER(config, "speaker", 2).front();
+	DAC_16BIT_R2R_TWOS_COMPLEMENT(config, m_ldac, 0).add_route(ALL_OUTPUTS, "speaker", 1.0, 0); // unknown DAC
+	DAC_16BIT_R2R_TWOS_COMPLEMENT(config, m_rdac, 0).add_route(ALL_OUTPUTS, "speaker", 1.0, 1); // unknown DAC
 
 	NVRAM(config, "nvram", nvram_device::DEFAULT_ALL_1);
 

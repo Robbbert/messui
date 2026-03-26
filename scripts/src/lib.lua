@@ -26,7 +26,7 @@ project "utils"
 		ext_includedir("utf8proc"),
 	}
 
-if not _OPTIONS["with-system-utf8proc"] then
+if _OPTIONS["with-system-utf8proc"] ~= "1" then
 	defines {
 		"UTF8PROC_STATIC",
 	}
@@ -34,6 +34,8 @@ end
 
 	files {
 		MAME_DIR .. "src/lib/util/abi.h",
+		MAME_DIR .. "src/lib/util/aes256cbc.cpp",
+		MAME_DIR .. "src/lib/util/aes256cbc.h",
 		MAME_DIR .. "src/lib/util/avhuff.cpp",
 		MAME_DIR .. "src/lib/util/avhuff.h",
 		MAME_DIR .. "src/lib/util/aviio.cpp",
@@ -95,6 +97,8 @@ end
 		MAME_DIR .. "src/lib/util/lrucache.h",
 		MAME_DIR .. "src/lib/util/md5.cpp",
 		MAME_DIR .. "src/lib/util/md5.h",
+		MAME_DIR .. "src/lib/util/mfpresolve.cpp",
+		MAME_DIR .. "src/lib/util/mfpresolve.h",
 		MAME_DIR .. "src/lib/util/msdib.cpp",
 		MAME_DIR .. "src/lib/util/msdib.h",
 		MAME_DIR .. "src/lib/util/multibyte.h",

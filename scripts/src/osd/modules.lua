@@ -16,7 +16,7 @@ end
 function addlibfromstring(str)
 	if (str==nil) then return  end
 	for w in str:gmatch("%S+") do
-		if string.starts(w,"-l")==true then
+		if string.starts(w,"-l") then
 			links {
 				string.sub(w,3)
 			}
@@ -27,7 +27,7 @@ end
 function addoptionsfromstring(str)
 	if (str==nil) then return  end
 	for w in str:gmatch("%S+") do
-		if string.starts(w,"-l")==false then
+		if not string.starts(w,"-l") then
 			linkoptions {
 				w
 			}
@@ -50,10 +50,10 @@ function osdmodulesbuild()
 	}
 
 	files {
-		MAME_DIR .. "src/osd/osdnet.cpp",
-		MAME_DIR .. "src/osd/osdnet.h",
 		MAME_DIR .. "src/osd/watchdog.cpp",
 		MAME_DIR .. "src/osd/watchdog.h",
+		MAME_DIR .. "src/osd/interface/audio.cpp",
+		MAME_DIR .. "src/osd/interface/audio.h",
 		MAME_DIR .. "src/osd/interface/inputcode.h",
 		MAME_DIR .. "src/osd/interface/inputdev.h",
 		MAME_DIR .. "src/osd/interface/inputfwd.h",
@@ -79,6 +79,7 @@ function osdmodulesbuild()
 		MAME_DIR .. "src/osd/modules/font/font_none.cpp",
 		MAME_DIR .. "src/osd/modules/font/font_osx.cpp",
 		MAME_DIR .. "src/osd/modules/font/font_sdl.cpp",
+		MAME_DIR .. "src/osd/modules/font/font_sdl3.cpp",
 		MAME_DIR .. "src/osd/modules/font/font_windows.cpp",
 		MAME_DIR .. "src/osd/modules/input/assignmenthelper.cpp",
 		MAME_DIR .. "src/osd/modules/input/assignmenthelper.h",
@@ -91,6 +92,7 @@ function osdmodulesbuild()
 		MAME_DIR .. "src/osd/modules/input/input_none.cpp",
 		MAME_DIR .. "src/osd/modules/input/input_rawinput.cpp",
 		MAME_DIR .. "src/osd/modules/input/input_sdl.cpp",
+		MAME_DIR .. "src/osd/modules/input/input_sdl3.cpp",
 		MAME_DIR .. "src/osd/modules/input/input_win32.cpp",
 		MAME_DIR .. "src/osd/modules/input/input_wincommon.h",
 		MAME_DIR .. "src/osd/modules/input/input_windows.cpp",
@@ -111,6 +113,8 @@ function osdmodulesbuild()
 		MAME_DIR .. "src/osd/modules/monitor/monitor_module.h",
 		MAME_DIR .. "src/osd/modules/monitor/monitor_sdl.cpp",
 		MAME_DIR .. "src/osd/modules/monitor/monitor_win32.cpp",
+		MAME_DIR .. "src/osd/modules/netdev/netdev_common.cpp",
+		MAME_DIR .. "src/osd/modules/netdev/netdev_common.h",
 		MAME_DIR .. "src/osd/modules/netdev/netdev_module.h",
 		MAME_DIR .. "src/osd/modules/netdev/none.cpp",
 		MAME_DIR .. "src/osd/modules/netdev/pcap.cpp",
@@ -127,15 +131,22 @@ function osdmodulesbuild()
 		MAME_DIR .. "src/osd/modules/render/drawnone.cpp",
 		MAME_DIR .. "src/osd/modules/render/drawogl.cpp",
 		MAME_DIR .. "src/osd/modules/render/drawsdl.cpp",
+		MAME_DIR .. "src/osd/modules/render/drawsdl3accel.cpp",
+		MAME_DIR .. "src/osd/modules/render/drawsdl3soft.cpp",
 		MAME_DIR .. "src/osd/modules/render/render_module.h",
 		MAME_DIR .. "src/osd/modules/sound/coreaudio_sound.cpp",
-		MAME_DIR .. "src/osd/modules/sound/direct_sound.cpp",
 		MAME_DIR .. "src/osd/modules/sound/js_sound.cpp",
+		MAME_DIR .. "src/osd/modules/sound/mmdevice_helpers.cpp",
+		MAME_DIR .. "src/osd/modules/sound/mmdevice_helpers.h",
 		MAME_DIR .. "src/osd/modules/sound/none.cpp",
 		MAME_DIR .. "src/osd/modules/sound/pa_sound.cpp",
 		MAME_DIR .. "src/osd/modules/sound/pulse_sound.cpp",
+		MAME_DIR .. "src/osd/modules/sound/pipewire_sound.cpp",
 		MAME_DIR .. "src/osd/modules/sound/sdl_sound.cpp",
+		MAME_DIR .. "src/osd/modules/sound/sdl3_sound.cpp",
+		MAME_DIR .. "src/osd/modules/sound/sound_module.cpp",
 		MAME_DIR .. "src/osd/modules/sound/sound_module.h",
+		MAME_DIR .. "src/osd/modules/sound/wasapi_sound.cpp",
 		MAME_DIR .. "src/osd/modules/sound/xaudio2_sound.cpp",
 	}
 	includedirs {
@@ -301,6 +312,23 @@ function osdmodulesbuild()
 		}
 	end
 
+	if _OPTIONS["NO_USE_PIPEWIRE"]=="0" then
+		err = os.execute(pkgconfigcmd() .. " --exists libpipewire-0.3")
+		if not err then
+			_OPTIONS["NO_USE_PIPEWIRE"] = "1"
+		end
+	end
+
+	if _OPTIONS["NO_USE_PIPEWIRE"]=="1" then
+		defines {
+			"NO_USE_PIPEWIRE",
+		}
+	 else
+		buildoptions {
+			backtick(pkgconfigcmd() .. " --cflags libpipewire-0.3"),
+		}
+	end
+
 	if _OPTIONS["NO_USE_MIDI"]=="1" then
 		defines {
 			"NO_USE_MIDI",
@@ -381,24 +409,28 @@ function qtdebuggerbuild()
 			MOC = "moc"
 		else
 			if _OPTIONS["QT_HOME"]~=nil then
-				MOCTST = backtick(_OPTIONS["QT_HOME"] .. "/bin/moc --version 2>/dev/null")
-				if (MOCTST=='') then
-					MOCTST = backtick(_OPTIONS["QT_HOME"] .. "/libexec/moc --version 2>/dev/null")
-					if (MOCTST=='') then
+				local MOCTST = backtick(_OPTIONS["QT_HOME"] .. "/bin/moc --version 2>/dev/null")
+				if MOCTST=='' then
+					local qt_host_libexecs = backtick(_OPTIONS["QT_HOME"] .. "/bin/qmake -query QT_HOST_LIBEXECS")
+					if not string.starts(qt_host_libexecs,"/") then
+						qt_host_libexecs = _OPTIONS["QT_HOME"] .. "/libexec"
+					end
+					MOCTST = backtick(qt_host_libexecs .. "/moc --version 2>/dev/null")
+					if MOCTST=='' then
 						print("Qt's Meta Object Compiler (moc) wasn't found!")
 						os.exit(1)
 					else
-						MOC = _OPTIONS["QT_HOME"] .. "/libexec/moc"
+						MOC = qt_host_libexecs .. "/moc"
 					end
 				else
 					MOC = _OPTIONS["QT_HOME"] .. "/bin/moc"
 				end
 			else
-				MOCTST = backtick("which moc-qt5 2>/dev/null")
-				if (MOCTST=='') then
+				local MOCTST = backtick("which moc-qt5 2>/dev/null")
+				if MOCTST=='' then
 					MOCTST = backtick("which moc 2>/dev/null")
 				end
-				if (MOCTST=='') then
+				if MOCTST=='' then
 					print("Qt's Meta Object Compiler (moc) wasn't found!")
 					os.exit(1)
 				end
@@ -493,14 +525,23 @@ function osdmodulestargetconf()
 				"Qt5Widgets.dll",
 			}
 		elseif _OPTIONS["targetos"]=="macosx" then
+			local qt_version = str_to_version(backtick("qmake -query QT_VERSION"))
 			linkoptions {
 				"-F" .. backtick("qmake -query QT_INSTALL_LIBS"),
 			}
-			links {
-				"Qt5Core.framework",
-				"Qt5Gui.framework",
-				"Qt5Widgets.framework",
-			}
+			if qt_version < 60000 then
+				links {
+					"Qt5Core.framework",
+					"Qt5Gui.framework",
+					"Qt5Widgets.framework",
+				}
+			else
+				links {
+					"QtCore.framework",
+					"QtGui.framework",
+					"QtWidgets.framework",
+				}
+			end
 		else
 			if _OPTIONS["QT_HOME"]~=nil then
 				local qt_version = str_to_version(backtick(_OPTIONS["QT_HOME"] .. "/bin/qmake -query QT_VERSION"))
@@ -549,6 +590,12 @@ function osdmodulestargetconf()
 		links {
 			ext_lib("pulse"),
 		}
+	end
+
+	if _OPTIONS["NO_USE_PIPEWIRE"]=="0" then
+		local str = backtick(pkgconfigcmd() .. " --libs libpipewire-0.3")
+		addlibfromstring(str)
+		addoptionsfromstring(str)
 	end
 end
 
@@ -649,6 +696,23 @@ if not _OPTIONS["NO_USE_PULSEAUDIO"] then
 		_OPTIONS["NO_USE_PULSEAUDIO"] = "0"
 	else
 		_OPTIONS["NO_USE_PULSEAUDIO"] = "1"
+	end
+end
+
+newoption {
+	trigger = "NO_USE_PIPEWIRE",
+	description = "Disable Pipewire interface",
+	allowed = {
+		{ "0",  "Enable Pipewire"  },
+		{ "1",  "Disable Pipewire" },
+	},
+}
+
+if not _OPTIONS["NO_USE_PIPEWIRE"] then
+	if _OPTIONS["targetos"]=="linux" then
+		_OPTIONS["NO_USE_PIPEWIRE"] = "0"
+	else
+		_OPTIONS["NO_USE_PIPEWIRE"] = "1"
 	end
 end
 

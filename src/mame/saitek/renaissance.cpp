@@ -41,7 +41,7 @@ TODO:
 #include "machine/input_merger.h"
 #include "machine/nvram.h"
 #include "machine/sensorboard.h"
-#include "sound/spkrdev.h"
+#include "sound/dac.h"
 #include "video/pwm.h"
 #include "video/sed1500.h"
 
@@ -79,8 +79,8 @@ public:
 	void ren(machine_config &config);
 
 protected:
-	virtual void machine_start() override;
-	virtual void machine_reset() override;
+	virtual void machine_start() override ATTR_COLD;
+	virtual void machine_reset() override ATTR_COLD;
 
 private:
 	// devices/pointers
@@ -91,7 +91,7 @@ private:
 	required_device<pwm_display_device> m_display;
 	required_device<pwm_display_device> m_lcd_pwm;
 	required_device<sed1502_device> m_lcd;
-	required_device<speaker_sound_device> m_dac;
+	required_device<dac_1bit_device> m_dac;
 	required_device<rs232_port_device> m_rs232;
 	required_ioport_array<8+1> m_inputs;
 	output_finder<16, 34> m_out_lcd;
@@ -101,7 +101,7 @@ private:
 	u8 m_inp_mux = 0;
 	u8 m_led_data[2] = { };
 
-	void main_map(address_map &map);
+	void main_map(address_map &map) ATTR_COLD;
 
 	void lcd_pwm_w(offs_t offset, u8 data);
 	void lcd_output_w(offs_t offset, u64 data);
@@ -215,7 +215,7 @@ void ren_state::leds_w(u8 data)
 void ren_state::control_w(u8 data)
 {
 	// d1: speaker out
-	m_dac->level_w(BIT(data, 1));
+	m_dac->write(BIT(data, 1));
 
 	// d2: comm led
 	m_led_data[1] = (m_led_data[1] & ~0x4) | (~data & 0x4);
@@ -377,11 +377,11 @@ static INPUT_PORTS_START( ren )
 	PORT_CONFSETTING(    0x00, DEF_STR( Normal ) )
 
 	PORT_START("RESET")
-	PORT_BIT(0x01, IP_ACTIVE_HIGH, IPT_KEYPAD) PORT_CODE(KEYCODE_G) PORT_CHANGED_MEMBER(DEVICE_SELF, ren_state, go_button, 0) PORT_NAME("Go")
+	PORT_BIT(0x01, IP_ACTIVE_HIGH, IPT_KEYPAD) PORT_CODE(KEYCODE_G) PORT_CHANGED_MEMBER(DEVICE_SELF, FUNC(ren_state::go_button), 0) PORT_NAME("Go")
 
 	PORT_START("VIEW")
-	PORT_BIT(0x01, IP_ACTIVE_HIGH, IPT_CUSTOM) PORT_CHANGED_MEMBER(DEVICE_SELF, ren_state, change_view<+1>, 0)
-	PORT_BIT(0x02, IP_ACTIVE_HIGH, IPT_CUSTOM) PORT_CHANGED_MEMBER(DEVICE_SELF, ren_state, change_view<-1>, 0)
+	PORT_BIT(0x01, IP_ACTIVE_HIGH, IPT_CUSTOM) PORT_CHANGED_MEMBER(DEVICE_SELF, FUNC(ren_state::change_view<+1>), 0)
+	PORT_BIT(0x02, IP_ACTIVE_HIGH, IPT_CUSTOM) PORT_CHANGED_MEMBER(DEVICE_SELF, FUNC(ren_state::change_view<-1>), 0)
 INPUT_PORTS_END
 
 
@@ -433,7 +433,7 @@ void ren_state::ren(machine_config &config)
 
 	// sound hardware
 	SPEAKER(config, "speaker").front_center();
-	SPEAKER_SOUND(config, m_dac).add_route(ALL_OUTPUTS, "speaker", 0.25);
+	DAC_1BIT(config, m_dac).add_route(ALL_OUTPUTS, "speaker", 0.25);
 
 	// expansion module (configure after video)
 	SAITEKOSA_EXPANSION(config, m_expansion, saitekosa_expansion_modules);
@@ -460,6 +460,14 @@ ROM_END
 
 ROM_START( renaissaa )
 	ROM_REGION( 0x10000, "maincpu", 0 )
+	ROM_LOAD("sx7_518c.u3", 0x8000, 0x8000, CRC(c909ff4d) SHA1(d6509f5a267d98287197195bd2949a0a190758f1) ) // MBM27C256H-10
+
+	ROM_REGION( 795951, "screen", 0 )
+	ROM_LOAD("simultano.svg", 0, 795951, CRC(ac9942bb) SHA1(f9252e5bf7b8af698a403c3f8f5ea9e475e0bf0b) )
+ROM_END
+
+ROM_START( renaissab )
+	ROM_REGION( 0x10000, "maincpu", 0 )
 	ROM_LOAD("sx7_518b.u3", 0x8000, 0x8000, CRC(a0c3ffe8) SHA1(fa170a6d4d54d41de77e0bb72f969219e6f376af) ) // MBM27C256H-10
 
 	ROM_REGION( 795951, "screen", 0 )
@@ -477,3 +485,4 @@ ROM_END
 //    YEAR  NAME       PARENT    COMPAT  MACHINE  INPUT  CLASS      INIT        COMPANY, FULLNAME, FLAGS
 SYST( 1989, renaissa,  0,        0,      ren,     ren,   ren_state, empty_init, "Saitek / Heuristic Software", "Kasparov Renaissance (set 1)", MACHINE_SUPPORTS_SAVE )
 SYST( 1989, renaissaa, renaissa, 0,      ren,     ren,   ren_state, empty_init, "Saitek / Heuristic Software", "Kasparov Renaissance (set 2)", MACHINE_SUPPORTS_SAVE )
+SYST( 1989, renaissab, renaissa, 0,      ren,     ren,   ren_state, empty_init, "Saitek / Heuristic Software", "Kasparov Renaissance (set 3)", MACHINE_SUPPORTS_SAVE )

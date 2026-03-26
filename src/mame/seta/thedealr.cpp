@@ -78,10 +78,10 @@ private:
 	uint32_t screen_update(screen_device &screen, bitmap_ind16 &bitmap, const rectangle &cliprect);
 	void screen_vblank(int state);
 
-	void thedealr_main(address_map &map);
-	void thedealr_sub(address_map &map);
+	void thedealr_main(address_map &map) ATTR_COLD;
+	void thedealr_sub(address_map &map) ATTR_COLD;
 
-	virtual void machine_start() override;
+	virtual void machine_start() override ATTR_COLD;
 
 	// devices
 	required_device<cpu_device> m_maincpu;
@@ -270,7 +270,7 @@ static INPUT_PORTS_START( thedealr )
 	PORT_BIT( 0x10, IP_ACTIVE_LOW, IPT_POKER_HOLD5   ) // HL5 (hold 5)
 	PORT_BIT( 0x20, IP_ACTIVE_LOW, IPT_GAMBLE_HALF   ) // 1/2 (half gamble)
 	PORT_BIT( 0x40, IP_ACTIVE_LOW, IPT_GAMBLE_LOW    ) PORT_NAME("Small") // SML (small)
-	PORT_BIT( 0x80, IP_ACTIVE_LOW, IPT_GAMBLE_SERVICE ) PORT_NAME("Attendant Reset") // RST (reset: clears tilt condition)
+	PORT_BIT( 0x80, IP_ACTIVE_LOW, IPT_SERVICE1      ) PORT_NAME("Attendant Reset") // RST (reset: clears tilt condition)
 
 	PORT_START("IOX1")
 	PORT_BIT( 0x0f, IP_ACTIVE_LOW, IPT_UNUSED        )
@@ -361,7 +361,7 @@ Calculated returns based on 1 coin bet and paytable as shown above, Two Pair thr
 	PORT_DIPSETTING(    0x06, DEF_STR( 1C_1C ) )
 	PORT_DIPSETTING(    0x04, DEF_STR( 1C_2C ) )
 	PORT_DIPSETTING(    0x02, DEF_STR( 1C_5C ) )
-	PORT_DIPSETTING(    0x00, "1 Coin/10 Credits" )
+	PORT_DIPSETTING(    0x00, DEF_STR( 1C_10C ) )
 	PORT_DIPNAME( 0x18, 0x18, "SW2:4,5" ) PORT_DIPLOCATION("SW2:4,5")
 	PORT_DIPSETTING(    0x18, "0" )
 	PORT_DIPSETTING(    0x10, "1" )

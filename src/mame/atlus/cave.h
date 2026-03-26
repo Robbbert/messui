@@ -13,6 +13,7 @@
 
 #include "machine/eepromser.h"
 #include "machine/gen_latch.h"
+#include "machine/ticket.h"
 #include "machine/timer.h"
 #include "sound/okim6295.h"
 #include "video/tmap038.h"
@@ -29,6 +30,7 @@ public:
 		, m_oki(*this, "oki%u", 1)
 		, m_int_timer(*this, "int_timer")
 		, m_eeprom(*this, "eeprom")
+		, m_hopper(*this, "hopper")
 		, m_gfxdecode(*this, "gfxdecode.%u", 0U)
 		, m_spr_gfxdecode(*this, "spr_gfxdecode.%u", 0U)
 		, m_screen(*this, "screen.%u", 0U)
@@ -44,8 +46,6 @@ public:
 		, m_okiregion(*this, "oki%u", 1)
 	{ }
 
-	int korokoro_hopper_r();
-	int tjumpman_hopper_r();
 	int paccarn_bet4_r();
 	int paccarn_bet8_r();
 
@@ -60,6 +60,7 @@ public:
 	void init_tjumpman();
 	void init_uopoko();
 
+	void cellage(machine_config &config);
 	void crusherm(machine_config &config);
 	void ddonpach(machine_config &config);
 	void dfeveron(machine_config &config);
@@ -67,6 +68,7 @@ public:
 	void esprade(machine_config &config);
 	void gaia(machine_config &config);
 	void guwange(machine_config &config);
+	void jumbogod(machine_config &config);
 	void korokoro(machine_config &config);
 	void paccarn(machine_config &config);
 	void paceight(machine_config &config);
@@ -77,8 +79,8 @@ public:
 	void uopoko(machine_config &config);
 
 protected:
-	virtual void machine_start() override;
-	virtual void machine_reset() override;
+	virtual void machine_start() override ATTR_COLD;
+	virtual void machine_reset() override ATTR_COLD;
 	virtual void device_post_load() override;
 
 	// devices
@@ -86,6 +88,7 @@ protected:
 	optional_device_array<okim6295_device, 2> m_oki;
 	required_device<timer_device> m_int_timer;
 	optional_device<eeprom_serial_93cxx_device> m_eeprom;
+	optional_device<ticket_dispenser_device> m_hopper;
 	optional_device_array<gfxdecode_device, 4> m_gfxdecode;
 	optional_device_array<gfxdecode_device, 4> m_spr_gfxdecode;
 	optional_device_array<screen_device, 4> m_screen;
@@ -138,9 +141,9 @@ protected:
 	struct
 	{
 		int clip_left = 0, clip_right = 0, clip_top = 0, clip_bottom = 0;
-		u8  *baseaddr = 0U;
+		u32  *baseaddr = nullptr;
 		int line_offset = 0;
-		u8  *baseaddr_zbuf =0U;
+		u16  *baseaddr_zbuf = nullptr;
 		int line_offset_zbuf = 0;
 	} m_blit;
 
@@ -179,13 +182,9 @@ protected:
 	u8        m_unknown_irq = 0U;
 	u8        m_agallet_vblank_irq = 0U;
 
-	// game specific
-	// korokoro
+	int       m_rasflag = 0;
+	int       m_old_rasflag = 0;
 	u16       m_leds[2]{};
-	u8        m_hopper = 0;
-
-	int m_rasflag = 0;
-	int m_old_rasflag = 0;
 
 	void (cave_state::*m_get_sprite_info)(int chip);
 	void (cave_state::*m_sprite_draw)(int chip, int priority);
@@ -197,6 +196,7 @@ protected:
 	void gaia_coin_w(u8 data);
 	u16 donpachi_videoregs_r(offs_t offset);
 	template<int Chip> void videoregs_w(offs_t offset, u16 data, u16 mem_mask);
+	void jumbogod_leds_w(u8 data);
 	void korokoro_leds_w(offs_t offset, u16 data, u16 mem_mask);
 	void tjumpman_leds_w(u8 data);
 	void pacslot_leds_w(u8 data);
@@ -236,21 +236,26 @@ protected:
 	void init_cave();
 	void show_leds();
 
-	void crusherm_map(address_map &map);
-	void ddonpach_map(address_map &map);
-	void dfeveron_map(address_map &map);
-	void donpachi_map(address_map &map);
-	void esprade_map(address_map &map);
-	void gaia_map(address_map &map);
-	void guwange_map(address_map &map);
-	void korokoro_map(address_map &map);
-	void paccarn_map(address_map &map);
-	void paceight_map(address_map &map);
-	void pacslot_map(address_map &map);
-	void tekkenbs_map(address_map &map);
-	void tekkencw_map(address_map &map);
-	void tjumpman_map(address_map &map);
-	void uopoko_map(address_map &map);
+	void cellage_map(address_map &map) ATTR_COLD;
+	void crusherm_map(address_map &map) ATTR_COLD;
+	void ddonpach_map(address_map &map) ATTR_COLD;
+	void dfeveron_map(address_map &map) ATTR_COLD;
+	void donpachi_map(address_map &map) ATTR_COLD;
+	void esprade_map(address_map &map) ATTR_COLD;
+	void gaia_map(address_map &map) ATTR_COLD;
+	void guwange_map(address_map &map) ATTR_COLD;
+	void jumbogod_map(address_map &map) ATTR_COLD;
+	void korokoro_map(address_map &map) ATTR_COLD;
+	void paccarn_map(address_map &map) ATTR_COLD;
+	void paceight_map(address_map &map) ATTR_COLD;
+	void pacslot_map(address_map &map) ATTR_COLD;
+	void tekkenbs_map(address_map &map) ATTR_COLD;
+	void tekkencw_map(address_map &map) ATTR_COLD;
+	void tjumpman_map(address_map &map) ATTR_COLD;
+	void uopoko_map(address_map &map) ATTR_COLD;
+
+	void nmk112_oki0_map(address_map &map) ATTR_COLD;
+	void nmk112_oki1_map(address_map &map) ATTR_COLD;
 };
 
 // with sound Z80
@@ -283,8 +288,8 @@ public:
 	void sailormn(machine_config &config);
 
 protected:
-	virtual void machine_start() override;
-	virtual void machine_reset() override;
+	virtual void machine_start() override ATTR_COLD;
+	virtual void machine_reset() override ATTR_COLD;
 
 private:
 	required_device<cpu_device> m_audiocpu;
@@ -330,22 +335,22 @@ private:
 	void init_z80_bank();
 	void init_oki_bank(int chip);
 
-	void hotdogst_map(address_map &map);
-	void hotdogst_sound_map(address_map &map);
-	void hotdogst_sound_portmap(address_map &map);
-	void mazinger_map(address_map &map);
-	void mazinger_sound_map(address_map &map);
-	void mazinger_sound_portmap(address_map &map);
-	void metmqstr_map(address_map &map);
-	void metmqstr_sound_portmap(address_map &map);
-	void oki2_map(address_map &map);
-	void oki_map(address_map &map);
-	void pwrinst2_map(address_map &map);
-	void pwrinst2_sound_map(address_map &map);
-	void pwrinst2_sound_portmap(address_map &map);
-	void sailormn_map(address_map &map);
-	void sailormn_sound_map(address_map &map);
-	void sailormn_sound_portmap(address_map &map);
+	void hotdogst_map(address_map &map) ATTR_COLD;
+	void hotdogst_sound_map(address_map &map) ATTR_COLD;
+	void hotdogst_sound_portmap(address_map &map) ATTR_COLD;
+	void mazinger_map(address_map &map) ATTR_COLD;
+	void mazinger_sound_map(address_map &map) ATTR_COLD;
+	void mazinger_sound_portmap(address_map &map) ATTR_COLD;
+	void metmqstr_map(address_map &map) ATTR_COLD;
+	void metmqstr_sound_portmap(address_map &map) ATTR_COLD;
+	void oki2_map(address_map &map) ATTR_COLD;
+	void oki_map(address_map &map) ATTR_COLD;
+	void pwrinst2_map(address_map &map) ATTR_COLD;
+	void pwrinst2_sound_map(address_map &map) ATTR_COLD;
+	void pwrinst2_sound_portmap(address_map &map) ATTR_COLD;
+	void sailormn_map(address_map &map) ATTR_COLD;
+	void sailormn_sound_map(address_map &map) ATTR_COLD;
+	void sailormn_sound_portmap(address_map &map) ATTR_COLD;
 };
 
 // with 3 screens
@@ -365,8 +370,8 @@ public:
 	void ppsatan(machine_config &config);
 
 protected:
-	virtual void machine_start() override;
-	virtual void video_start() override;
+	virtual void machine_start() override ATTR_COLD;
+	virtual void video_start() override ATTR_COLD;
 
 private:
 	required_device<timer_device> m_int_timer_left;
@@ -388,7 +393,7 @@ private:
 	u32 screen_update_ppsatan_left (screen_device &screen, bitmap_rgb32 &bitmap, const rectangle &cliprect);
 	u32 screen_update_ppsatan_right(screen_device &screen, bitmap_rgb32 &bitmap, const rectangle &cliprect);
 
-	void ppsatan_map(address_map &map);
+	void ppsatan_map(address_map &map) ATTR_COLD;
 };
 
 #endif // MAME_ATLUS_CAVE_H

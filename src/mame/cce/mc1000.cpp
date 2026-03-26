@@ -92,8 +92,8 @@ private:
 
 	std::unique_ptr<uint8_t[]> m_banked_ram;
 
-	virtual void machine_start() override;
-	virtual void machine_reset() override;
+	virtual void machine_start() override ATTR_COLD;
+	virtual void machine_reset() override ATTR_COLD;
 
 	uint8_t printer_r();
 	void printer_w(uint8_t data);
@@ -129,9 +129,9 @@ private:
 
 	void init_mc1000();
 	TIMER_DEVICE_CALLBACK_MEMBER(ne555_tick);
-	void mc1000_banking_mem(address_map &map);
-	void mc1000_io(address_map &map);
-	void mc1000_mem(address_map &map);
+	void mc1000_banking_mem(address_map &map) ATTR_COLD;
+	void mc1000_io(address_map &map) ATTR_COLD;
+	void mc1000_mem(address_map &map) ATTR_COLD;
 };
 
 /* Memory Banking */
@@ -568,7 +568,7 @@ void mc1000_state::mc1000(machine_config &config)
 	/* video hardware */
 	SCREEN(config, SCREEN_TAG, SCREEN_TYPE_RASTER);
 
-	MC6847_NTSC(config, m_vdg, XTAL(3'579'545));
+	MC6847(config, m_vdg, XTAL(3'579'545));
 	m_vdg->hsync_wr_callback().set(FUNC(mc1000_state::hs_w));
 	m_vdg->fsync_wr_callback().set(FUNC(mc1000_state::fs_w));
 	m_vdg->input_callback().set(FUNC(mc1000_state::videoram_r));

@@ -103,11 +103,11 @@ const char * GetImageTabShortName(int tab_index);
 void SetViewMode(int val);
 int  GetViewMode();
 
-void SetEnableIndent(bool value);
-bool GetEnableIndent();
-
 void SetGameCheck(BOOL game_check);
 BOOL GetGameCheck();
+
+void SetEnableIndent(bool value);
+bool GetEnableIndent();
 
 void SetJoyGUI(BOOL use_joygui);
 BOOL GetJoyGUI();
@@ -208,20 +208,20 @@ BOOL GetSortReverse();
 const string GetBgDir();
 void SetBgDir(const char *path);
 
-int GetRomAuditResults(uint32_t driver_index);
-void SetRomAuditResults(uint32_t driver_index, int audit_results);
+int GetRomAuditResults(int);
+void SetRomAuditResults(int, int audit_results);
 
-int GetSampleAuditResults(uint32_t driver_index);
-void SetSampleAuditResults(uint32_t driver_index, int audit_results);
+int GetSampleAuditResults(int);
+void SetSampleAuditResults(int, int audit_results);
 
-void IncrementPlayCount(uint32_t driver_index);
-uint32_t GetPlayCount(uint32_t driver_index);
-void ResetPlayCount(int driver_index);
+void IncrementPlayCount(int);
+uint32_t GetPlayCount(int);
+void ResetPlayCount(int);
 
-void IncrementPlayTime(uint32_t driver_index, uint32_t playtime);
-uint32_t GetPlayTime(uint32_t driver_index);
-void GetTextPlayTime(uint32_t driver_index, char *buf);
-void ResetPlayTime(int driver_index);
+void IncrementPlayTime(int, uint32_t playtime);
+uint32_t GetPlayTime(int);
+void GetTextPlayTime(int, char *buf);
+void ResetPlayTime(int);
 
 const char * GetVersionString();
 
@@ -318,16 +318,14 @@ void SetHideMouseOnStartup(BOOL hide);
 BOOL GetRunFullScreen();
 void SetRunFullScreen(BOOL fullScreen);
 
-uint32_t GetDriverCacheLower(uint32_t driver_index);
-uint32_t GetDriverCacheUpper(uint32_t driver_index);
-void SetDriverCache(uint32_t driver_index, uint32_t val);
+uint32_t GetDriverCacheLower(int);
+uint32_t GetDriverCacheUpper(int);
+void SetDriverCache(int, uint32_t val);
 BOOL RequiredDriverCache();
 void ForceRebuild();
-BOOL DriverIsComputer(uint32_t driver_index);
-BOOL DriverIsConsole(uint32_t driver_index);
-BOOL DriverIsModified(uint32_t driver_index);
-BOOL DriverIsImperfect(uint32_t driver_index);
-string GetGameName(uint32_t driver_index);
+BOOL DriverIsModified(int);
+BOOL DriverIsImperfect(int);
+string GetGameName(int);
 
 // from optionsms.h (MESSUI)
 

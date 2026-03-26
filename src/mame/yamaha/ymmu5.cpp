@@ -37,8 +37,8 @@ public:
 	void mu5(machine_config &config);
 
 protected:
-	virtual void machine_start() override;
-	virtual void machine_reset() override;
+	virtual void machine_start() override ATTR_COLD;
+	virtual void machine_reset() override ATTR_COLD;
 
 private:
 	required_device<h83002_device> m_maincpu;
@@ -46,8 +46,8 @@ private:
 	required_device<mu5lcd_device> m_lcd;
 	required_ioport_array<6> m_key;
 
-	void mu5_map(address_map &map);
-	void ymw258_map(address_map &map);
+	void mu5_map(address_map &map) ATTR_COLD;
+	void ymw258_map(address_map &map) ATTR_COLD;
 
 	u8 m_lcd_ctrl = 0U;
 	u8 m_lcd_data = 0U;
@@ -204,13 +204,12 @@ void mu5_state::mu5(machine_config &config)
 
 	MU5LCD(config, m_lcd);
 
-	SPEAKER(config, "lspeaker").front_left();
-	SPEAKER(config, "rspeaker").front_right();
+	SPEAKER(config, "speaker", 2).front();
 
 	MULTIPCM(config, m_ymw258, 9.4_MHz_XTAL); // clock verified by schematics
 	m_ymw258->set_addrmap(0, &mu5_state::ymw258_map);
-	m_ymw258->add_route(0, "lspeaker", 1.0);
-	m_ymw258->add_route(1, "rspeaker", 1.0);
+	m_ymw258->add_route(0, "speaker", 1.0, 0);
+	m_ymw258->add_route(1, "speaker", 1.0, 1);
 
 	MIDI_PORT(config, "mdin", midiin_slot, "midiin").rxd_handler().set(m_maincpu, FUNC(h83002_device::sci_rx_w<1>));
 

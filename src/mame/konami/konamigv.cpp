@@ -253,9 +253,10 @@ public:
 	konamigv_state(const machine_config &mconfig, device_type type, const char *tag)
 		: driver_device(mconfig, type, tag)
 		, m_screen(*this, "screen")
-		, m_ncr53cf96(*this, "scsi:7:ncr53cf96")
+		, m_ncr53cf96(*this, "ncr53cf96")
 		, m_btc_trackball(*this, "upd%u", 1)
 		, m_maincpu(*this, "maincpu")
+		, m_duart(*this, "duart")
 	{
 	}
 
@@ -264,10 +265,10 @@ public:
 	void konamigv(machine_config &config);
 
 protected:
-	void konamigv_map(address_map &map);
+	void konamigv_map(address_map &map) ATTR_COLD;
 
-	virtual void machine_start() override;
-	virtual void machine_reset() override;
+	virtual void machine_start() override ATTR_COLD;
+	virtual void machine_reset() override ATTR_COLD;
 
 	void btc_trackball_w(offs_t offset, uint16_t data, uint16_t mem_mask = ~0);
 
@@ -275,8 +276,8 @@ protected:
 	void scsi_dma_write(uint32_t *p_n_psxram, uint32_t n_address, int32_t n_size);
 	void scsi_drq(int state);
 
-	void btchamp_map(address_map &map);
-	void kdeadeye_map(address_map &map);
+	void btchamp_map(address_map &map) ATTR_COLD;
+	void kdeadeye_map(address_map &map) ATTR_COLD;
 
 	TIMER_CALLBACK_MEMBER(scsi_dma_transfer);
 
@@ -286,6 +287,7 @@ protected:
 	optional_device_array<upd4701_device, 2> m_btc_trackball;
 
 	required_device<cpu_device> m_maincpu;
+	required_device<mb89371_device> m_duart;
 
 	uint32_t *m_dma_data_ptr;
 	uint32_t m_dma_offset;
@@ -308,12 +310,12 @@ public:
 	void simpbowl(machine_config &config);
 
 private:
-	virtual void machine_start() override;
+	virtual void machine_start() override ATTR_COLD;
 
 	uint16_t flash_r(offs_t offset);
 	void flash_w(offs_t offset, uint16_t data);
 
-	void simpbowl_map(address_map &map);
+	void simpbowl_map(address_map &map) ATTR_COLD;
 
 	required_device_array<fujitsu_29f016a_device, 4> m_flash8;
 
@@ -342,7 +344,7 @@ public:
 	uint16_t tokimeki_serial_r();
 	void tokimeki_serial_w(offs_t offset, uint16_t data, uint16_t mem_mask = ~0);
 
-	DECLARE_CUSTOM_INPUT_MEMBER(tokimeki_device_check_r);
+	ioport_value tokimeki_device_check_r();
 	void tokimeki_device_check_w(int state);
 
 private:
@@ -353,12 +355,12 @@ private:
 		PRINTER_PAGE_HEIGHT = 600,
 	};
 
-	virtual void machine_start() override;
-	virtual void machine_reset() override;
+	virtual void machine_start() override ATTR_COLD;
+	virtual void machine_reset() override ATTR_COLD;
 
 	uint32_t printer_screen_update(screen_device &screen, bitmap_rgb32 &bitmap, const rectangle &cliprect);
 
-	void tmosh_map(address_map &map);
+	void tmosh_map(address_map &map) ATTR_COLD;
 
 	TIMER_CALLBACK_MEMBER(heartbeat_timer_tick);
 	TIMER_CALLBACK_MEMBER(printing_status_timeout);
@@ -402,7 +404,8 @@ void konamigv_state::konamigv_map(address_map &map)
 	map(0x1f100004, 0x1f100007).portr("P2");
 	map(0x1f100008, 0x1f10000b).portr("P3_P4");
 	map(0x1f180000, 0x1f180003).portw("EEPROMOUT");
-	map(0x1f680000, 0x1f68001f).rw("mb89371", FUNC(mb89371_device::read), FUNC(mb89371_device::write)).umask32(0x00ff00ff);
+	map(0x1f680000, 0x1f680007).rw(m_duart, FUNC(mb89371_device::read<0>), FUNC(mb89371_device::write<0>)).umask32(0x00ff00ff);
+	map(0x1f680008, 0x1f68000f).rw(m_duart, FUNC(mb89371_device::read<1>), FUNC(mb89371_device::write<1>)).umask32(0x00ff00ff);
 	map(0x1f780000, 0x1f780003).nopw(); // watchdog?
 }
 
@@ -455,7 +458,7 @@ void konamigv_state::scsi_dma_read(uint32_t *p_n_psxram, uint32_t n_address, int
 	m_dma_offset = n_address;
 	m_dma_size = n_size * 4;
 	m_dma_is_write = false;
-	m_dma_timer->adjust(attotime::from_usec(10));
+	m_dma_timer->adjust(attotime::zero);
 }
 
 void konamigv_state::scsi_dma_write(uint32_t *p_n_psxram, uint32_t n_address, int32_t n_size)
@@ -464,12 +467,13 @@ void konamigv_state::scsi_dma_write(uint32_t *p_n_psxram, uint32_t n_address, in
 	m_dma_offset = n_address;
 	m_dma_size = n_size * 4;
 	m_dma_is_write = true;
-	m_dma_timer->adjust(attotime::from_usec(10));
+	m_dma_timer->adjust(attotime::zero);
 }
 
 TIMER_CALLBACK_MEMBER(konamigv_state::scsi_dma_transfer)
 {
-	if (m_dma_requested && m_dma_data_ptr != nullptr && m_dma_size > 0)
+	// TODO: Figure out proper DMA timings
+	while (m_dma_requested && m_dma_data_ptr != nullptr && m_dma_size > 0)
 	{
 		if (m_dma_is_write)
 			m_ncr53cf96->dma_w(util::little_endian_cast<const uint8_t>(m_dma_data_ptr)[m_dma_offset]);
@@ -479,15 +483,12 @@ TIMER_CALLBACK_MEMBER(konamigv_state::scsi_dma_transfer)
 		m_dma_offset++;
 		m_dma_size--;
 	}
-
-	if (m_dma_requested && m_dma_size > 0)
-		m_dma_timer->adjust(attotime::from_usec(10));
 }
 
 void konamigv_state::scsi_drq(int state)
 {
 	if (!m_dma_requested && state)
-		m_dma_timer->adjust(attotime::from_usec(10));
+		m_dma_timer->adjust(attotime::zero);
 
 	m_dma_requested = state;
 }
@@ -504,6 +505,8 @@ void konamigv_state::machine_reset()
 	m_dma_offset = 0;
 	m_dma_size = 0;
 	m_dma_requested = m_dma_is_write = false;
+
+	m_duart->write_cts<0>(CLEAR_LINE);
 }
 
 void simpbowl_state::machine_start()
@@ -575,23 +578,19 @@ void konamigv_state::konamigv(machine_config &config)
 	m_maincpu->subdevice<psxdma_device>("dma")->install_write_handler(5, psxdma_device::write_delegate(&konamigv_state::scsi_dma_write, this));
 	m_maincpu->subdevice<ram_device>("ram")->set_default_size("2M");
 
-	MB89371(config, "mb89371", 0);
+	MB89371(config, m_duart, 4_MHz_XTAL);
 	EEPROM_93C46_16BIT(config, "eeprom");
 
-	NSCSI_BUS(config, "scsi");
-	NSCSI_CONNECTOR(config, "scsi:4").option_set("cdrom", NSCSI_XM5401).machine_config(
-			[](device_t *device)
-			{
-				device->subdevice<cdda_device>("cdda")->add_route(0, "^^lspeaker", 1.0);
-				device->subdevice<cdda_device>("cdda")->add_route(1, "^^rspeaker", 1.0);
-			});
-	NSCSI_CONNECTOR(config, "scsi:7").option_set("ncr53cf96", NCR53CF96).clock(32_MHz_XTAL/2).machine_config(
-			[this](device_t *device)
-			{
-				ncr53cf96_device &adapter = downcast<ncr53cf96_device &>(*device);
-				adapter.irq_handler_cb().set(":maincpu:irq", FUNC(psxirq_device::intin10));
-				adapter.drq_handler_cb().set(*this, FUNC(konamigv_state::scsi_drq));
-			});
+	auto &scsi(NSCSI_BUS(config, "scsi"));
+	auto &cdrom(NSCSI_XM5401(config, "cdrom"));
+	scsi.set_external_device(4, cdrom);
+	cdrom.subdevice<cdda_device>("cdda")->add_route(0, ":speaker", 1.0, 0);
+	cdrom.subdevice<cdda_device>("cdda")->add_route(1, ":speaker", 1.0, 1);
+
+	NCR53CF96(config, m_ncr53cf96, 32_MHz_XTAL/2);
+	scsi.set_external_device(7, m_ncr53cf96);
+	m_ncr53cf96->irq_handler_cb().set(":maincpu:irq", FUNC(psxirq_device::intin10));
+	m_ncr53cf96->drq_handler_cb().set(DEVICE_SELF, FUNC(konamigv_state::scsi_drq));
 
 	// video hardware
 	CXD8514Q(config, "gpu", XTAL(53'693'175), 0x100000, subdevice<psxcpu_device>("maincpu")).set_screen("screen");
@@ -599,12 +598,11 @@ void konamigv_state::konamigv(machine_config &config)
 	SCREEN(config, m_screen, SCREEN_TYPE_RASTER);
 
 	// sound hardware
-	SPEAKER(config, "lspeaker").front_left();
-	SPEAKER(config, "rspeaker").front_right();
+	SPEAKER(config, "speaker", 2).front();
 
 	spu_device &spu(SPU(config, "spu", XTAL(67'737'600)/2, subdevice<psxcpu_device>("maincpu")));
-	spu.add_route(1, "lspeaker", 0.75); // to verify the channels, btchamp's "game sound test" in the sound test menu speaks the words left, right, center
-	spu.add_route(0, "rspeaker", 0.75);
+	spu.add_route(1, "speaker", 0.75, 0); // to verify the channels, btchamp's "game sound test" in the sound test menu speaks the words left, right, center
+	spu.add_route(0, "speaker", 0.75, 1);
 }
 
 
@@ -623,7 +621,7 @@ static INPUT_PORTS_START( konamigv )
 	PORT_BIT( 0x00000400, IP_ACTIVE_LOW, IPT_COIN1 )
 	PORT_BIT( 0x00000800, IP_ACTIVE_LOW, IPT_SERVICE1 )
 	PORT_SERVICE_NO_TOGGLE( 0x00001000, IP_ACTIVE_LOW )
-	PORT_BIT( 0x00002000, IP_ACTIVE_HIGH, IPT_CUSTOM ) PORT_READ_LINE_DEVICE_MEMBER( "eeprom", eeprom_serial_93cxx_device, do_read )
+	PORT_BIT( 0x00002000, IP_ACTIVE_HIGH, IPT_CUSTOM ) PORT_READ_LINE_DEVICE_MEMBER("eeprom", FUNC(eeprom_serial_93cxx_device::do_read))
 	PORT_BIT( 0x00004000, IP_ACTIVE_LOW, IPT_UNKNOWN )
 	PORT_BIT( 0x00008000, IP_ACTIVE_LOW, IPT_UNKNOWN )
 	PORT_BIT( 0xffff0000, IP_ACTIVE_LOW, IPT_UNKNOWN )
@@ -667,9 +665,9 @@ static INPUT_PORTS_START( konamigv )
 	PORT_BIT( 0xffff0000, IP_ACTIVE_LOW, IPT_UNKNOWN )
 
 	PORT_START("EEPROMOUT")
-	PORT_BIT( 0x01, IP_ACTIVE_HIGH, IPT_OUTPUT ) PORT_WRITE_LINE_DEVICE_MEMBER("eeprom", eeprom_serial_93cxx_device, di_write)
-	PORT_BIT( 0x02, IP_ACTIVE_HIGH, IPT_OUTPUT ) PORT_WRITE_LINE_DEVICE_MEMBER("eeprom", eeprom_serial_93cxx_device, cs_write)
-	PORT_BIT( 0x04, IP_ACTIVE_HIGH, IPT_OUTPUT ) PORT_WRITE_LINE_DEVICE_MEMBER("eeprom", eeprom_serial_93cxx_device, clk_write)
+	PORT_BIT( 0x01, IP_ACTIVE_HIGH, IPT_OUTPUT ) PORT_WRITE_LINE_DEVICE_MEMBER("eeprom", FUNC(eeprom_serial_93cxx_device::di_write))
+	PORT_BIT( 0x02, IP_ACTIVE_HIGH, IPT_OUTPUT ) PORT_WRITE_LINE_DEVICE_MEMBER("eeprom", FUNC(eeprom_serial_93cxx_device::cs_write))
+	PORT_BIT( 0x04, IP_ACTIVE_HIGH, IPT_OUTPUT ) PORT_WRITE_LINE_DEVICE_MEMBER("eeprom", FUNC(eeprom_serial_93cxx_device::clk_write))
 INPUT_PORTS_END
 
 // The Simpsons Bowling
@@ -1124,7 +1122,7 @@ void tokimeki_state::tmoshsp_init()
 	m_printer_is_manual_layout = true;
 }
 
-CUSTOM_INPUT_MEMBER(tokimeki_state::tokimeki_device_check_r)
+ioport_value tokimeki_state::tokimeki_device_check_r()
 {
 	return BIT(m_device_val, 15);
 }
@@ -1144,13 +1142,13 @@ static INPUT_PORTS_START( tmosh )
 
 	PORT_MODIFY("P2")
 	PORT_BIT( 0xfffffbff, IP_ACTIVE_LOW, IPT_UNUSED )
-	PORT_BIT( 0x00000400, IP_ACTIVE_HIGH, IPT_CUSTOM ) PORT_CUSTOM_MEMBER(tokimeki_state, tokimeki_device_check_r)
+	PORT_BIT( 0x00000400, IP_ACTIVE_HIGH, IPT_CUSTOM ) PORT_CUSTOM_MEMBER(FUNC(tokimeki_state::tokimeki_device_check_r))
 
 	PORT_MODIFY("P3_P4")
 	PORT_BIT( 0xffffffff, IP_ACTIVE_LOW, IPT_UNUSED )
 
 	PORT_MODIFY("EEPROMOUT")
-	PORT_BIT( 0x10, IP_ACTIVE_HIGH, IPT_OUTPUT ) PORT_WRITE_LINE_MEMBER(tokimeki_state, tokimeki_device_check_w)
+	PORT_BIT( 0x10, IP_ACTIVE_HIGH, IPT_OUTPUT ) PORT_WRITE_LINE_MEMBER(FUNC(tokimeki_state::tokimeki_device_check_w))
 
 	// valid range for heart rate is 50-150, anything outside of that range makes the game show ? in the heart rate meter area
 	// Setting the value here to 0 will act as if the player's hand is off the sensor, and anything after that acts as 50-100
@@ -1158,7 +1156,7 @@ static INPUT_PORTS_START( tmosh )
 	PORT_START("HEARTBEAT")
 	PORT_BIT( 0x0ff, 31,             IPT_PADDLE_V ) PORT_SENSITIVITY(10) PORT_KEYDELTA(10) PORT_CENTERDELTA(0) PORT_MINMAX(0, 101) PORT_NAME("Heart Rate") PORT_CONDITION("CONTROLS", 0x01, EQUALS, 0x01)
 	PORT_BIT( 0x0ff,  0,             IPT_CUSTOM ) PORT_CONDITION("CONTROLS", 0x01, EQUALS, 0x00)
-	PORT_BIT( 0x100, IP_ACTIVE_HIGH, IPT_BUTTON4 ) PORT_WRITE_LINE_MEMBER(tokimeki_state, heartbeat_pulse_w) PORT_NAME("Heartbeat Pulse") PORT_CONDITION("CONTROLS", 0x01, EQUALS, 0x00)
+	PORT_BIT( 0x100, IP_ACTIVE_HIGH, IPT_BUTTON4 ) PORT_WRITE_LINE_MEMBER(FUNC(tokimeki_state::heartbeat_pulse_w)) PORT_NAME("Heartbeat Pulse") PORT_CONDITION("CONTROLS", 0x01, EQUALS, 0x00)
 
 	// value read during calibration is treated as zero
 	// scale in operator menu goes from 0x00-0xff but only 0x00-0x80 is actually usable in-game
@@ -1304,7 +1302,7 @@ ROM_START( lacrazyc )
 	ROM_REGION16_BE( 0x0000080, "eeprom", 0 ) // default EEPROM
 	ROM_LOAD( "lacrazyc.25c",   0x000000, 0x000080, CRC(e20e5730) SHA1(066b49236c658a4ef2930f7bacc4b2354dd7f240) )
 
-	DISK_REGION( "scsi:4:cdrom" )
+	DISK_REGION( "cdrom" )
 	DISK_IMAGE_READONLY( "gv027-a1", 0, BAD_DUMP SHA1(840d0d4876cf1b814c9d8db975aa6c92e1fe4039) )
 ROM_END
 
@@ -1314,7 +1312,7 @@ ROM_START( susume )
 	ROM_REGION16_BE( 0x0000080, "eeprom", 0 ) // default EEPROM
 	ROM_LOAD( "susume.25c",   0x000000, 0x000080, CRC(52f17df7) SHA1(b8ad7787b0692713439d7d9bebfa0c801c806006) )
 
-	DISK_REGION( "scsi:4:cdrom" )
+	DISK_REGION( "cdrom" )
 	DISK_IMAGE_READONLY( "gv027j1", 0, BAD_DUMP SHA1(e7e6749ac65de7771eb8fed7d5eefaec3f902255) )
 ROM_END
 
@@ -1324,7 +1322,7 @@ ROM_START( hyperath )
 	ROM_REGION16_BE( 0x0000080, "eeprom", 0 ) // default EEPROM
 	ROM_LOAD( "hyperath.25c", 0x000000, 0x000080, CRC(20a8c435) SHA1(a0f203a999757fba68b391c525ac4b9684a57ba9) )
 
-	DISK_REGION( "scsi:4:cdrom" )
+	DISK_REGION( "cdrom" )
 	DISK_IMAGE_READONLY( "gv021-j1", 0, SHA1(579442444025b18da658cd6455c51459fbc3de0e) )
 ROM_END
 
@@ -1334,7 +1332,7 @@ ROM_START( powyak96 )
 	ROM_REGION16_BE( 0x0000080, "eeprom", 0 ) // default EEPROM
 	ROM_LOAD( "powyak96.25c", 0x000000, 0x000080, CRC(405a7fc9) SHA1(e2d978f49748ba3c4a425188abcd3d272ec23907) )
 
-	DISK_REGION( "scsi:4:cdrom" )
+	DISK_REGION( "cdrom" )
 	DISK_IMAGE_READONLY( "powyak96", 0, BAD_DUMP SHA1(ebd0ea18ff9ce300ea1e30d66a739a96acfb0621) )
 ROM_END
 
@@ -1344,7 +1342,7 @@ ROM_START( weddingr )
 	ROM_REGION16_BE( 0x0000080, "eeprom", 0 ) // default EEPROM
 	ROM_LOAD( "weddingr.25c", 0x000000, 0x000080, CRC(b90509a0) SHA1(41510a0ceded81dcb26a70eba97636d38d3742c3) )
 
-	DISK_REGION( "scsi:4:cdrom" )
+	DISK_REGION( "cdrom" )
 	DISK_IMAGE_READONLY( "weddingr", 0, BAD_DUMP SHA1(4e7122b191747ab7220fe4ce1b4483d62ab579af) )
 ROM_END
 
@@ -1354,7 +1352,7 @@ ROM_START( simpbowl )
 	ROM_REGION16_BE( 0x0000080, "eeprom", 0 ) // default EEPROM
 	ROM_LOAD( "simpbowl.25c", 0x000000, 0x000080, CRC(2c61050c) SHA1(16ae7f81cbe841c429c5c7326cf83e87db1782bf) )
 
-	DISK_REGION( "scsi:4:cdrom" )
+	DISK_REGION( "cdrom" )
 	DISK_IMAGE_READONLY( "829uaa02", 0, SHA1(2ec4cc608d5582e478ee047b60ccee67b52f060c) )
 ROM_END
 
@@ -1364,7 +1362,7 @@ ROM_START( btchamp )
 	ROM_REGION16_BE( 0x0000080, "eeprom", 0 ) // default EEPROM
 	ROM_LOAD( "btchmp.25c", 0x000000, 0x000080, CRC(6d02ea54) SHA1(d3babf481fd89db3aec17f589d0d3d999a2aa6e1) )
 
-	DISK_REGION( "scsi:4:cdrom" )
+	DISK_REGION( "cdrom" )
 	DISK_IMAGE_READONLY( "btchamp", 0, BAD_DUMP SHA1(c9c858e9034826e1a12c3c003dd068a49a3577e1) )
 ROM_END
 
@@ -1375,7 +1373,7 @@ ROM_START( kdeadeye )
 	ROM_LOAD( "kdeadeye.25c", 0x000000, 0x000080, CRC(3935d2df) SHA1(cbb855c475269077803c380dbc3621e522efe51e) )
 
 	// constructed from six reads of the same disc using two drives, 80 sectors have Q subcode CRC errors
-	DISK_REGION( "scsi:4:cdrom" )
+	DISK_REGION( "cdrom" )
 	DISK_IMAGE_READONLY( "054uaa01", 0, SHA1(a05079e4e5024ca66b7f6b81de74695d86c62dd8) )
 ROM_END
 
@@ -1385,7 +1383,7 @@ ROM_START( nagano98 )
 	ROM_REGION16_BE( 0x0000080, "eeprom", 0 ) // default EEPROM
 	ROM_LOAD( "nagano98.25c",  0x000000, 0x000080, CRC(b64b7451) SHA1(a77a37e0cc580934d1e7e05d523bae0acd2c1480) )
 
-	DISK_REGION( "scsi:4:cdrom" )
+	DISK_REGION( "cdrom" )
 	DISK_IMAGE_READONLY( "nagano98", 0, BAD_DUMP SHA1(1be7bd4531f249ff2233dd40a206c8d60054a8c6) )
 ROM_END
 
@@ -1395,7 +1393,7 @@ ROM_START( naganoj )
 	ROM_REGION16_BE( 0x0000080, "eeprom", 0 ) // default EEPROM
 	ROM_LOAD( "720ja.25c",  0x000000, 0x000080, CRC(34c473ba) SHA1(768225b04a293bdbc114a092d14dee28d52044e9) )
 
-	DISK_REGION( "scsi:4:cdrom" )
+	DISK_REGION( "cdrom" )
 	DISK_IMAGE_READONLY( "720jaa01", 0, SHA1(437160996551ef4dfca43899d1d14beca62eb4c9) )
 ROM_END
 
@@ -1405,7 +1403,7 @@ ROM_START( tmosh )
 	ROM_REGION16_BE( 0x0000080, "eeprom", 0 ) // default EEPROM
 	ROM_LOAD( "tmosh.25c", 0x000000, 0x000080, BAD_DUMP CRC(2f6a27fc) SHA1(4ead9313f07e9bf7aa0272dba59db6b21510e00b) ) // hand crafted
 
-	DISK_REGION( "scsi:4:cdrom" )
+	DISK_REGION( "cdrom" )
 	DISK_IMAGE_READONLY( "673jaa01", 0, SHA1(eaa76073749f9db48c1bee3dff9bea955683c8a8) )
 ROM_END
 
@@ -1415,7 +1413,7 @@ ROM_START( tmoshs )
 	ROM_REGION16_BE( 0x0000080, "eeprom", 0 ) // default EEPROM
 	ROM_LOAD( "tmoshs.25c", 0x000000, 0x000080, CRC(e57b833f) SHA1(f18a0974a6be69dc179706643aab837ff61c2738) )
 
-	DISK_REGION( "scsi:4:cdrom" )
+	DISK_REGION( "cdrom" )
 	DISK_IMAGE_READONLY( "755jaa01", 0, SHA1(fc742a0b763ba38350ba7eb5d775948632aafd9d) )
 ROM_END
 
@@ -1425,7 +1423,7 @@ ROM_START( tmoshsp )
 	ROM_REGION16_BE( 0x0000080, "eeprom", 0 ) // default EEPROM
 	ROM_LOAD( "tmoshsp.25c", 0x000000, 0x000080, CRC(af4cdd87) SHA1(97041e287e4c80066043967450779b81b62b2b8e) )
 
-	DISK_REGION( "scsi:4:cdrom" )
+	DISK_REGION( "cdrom" )
 	DISK_IMAGE_READONLY( "756jab01", 0, SHA1(b2c59b9801debccbbd986728152f314535c67e53) )
 ROM_END
 
@@ -1435,7 +1433,7 @@ ROM_START( tmoshspa )
 	ROM_REGION16_BE( 0x0000080, "eeprom", 0 ) // default EEPROM
 	ROM_LOAD( "tmoshsp.25c", 0x000000, 0x000080, CRC(af4cdd87) SHA1(97041e287e4c80066043967450779b81b62b2b8e) )
 
-	DISK_REGION( "scsi:4:cdrom" )
+	DISK_REGION( "cdrom" )
 	DISK_IMAGE_READONLY( "756jaa01", 0, BAD_DUMP SHA1(5e6d349ad1a22c0dbb1ec26aa05febc830254339) ) // The CD was damaged
 ROM_END
 

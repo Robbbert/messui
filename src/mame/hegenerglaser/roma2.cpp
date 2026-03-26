@@ -67,26 +67,23 @@ private:
 	required_ioport_array<4> m_inputs;
 	optional_ioport m_reset;
 
-	void main_map(address_map &map);
+	void main_map(address_map &map) ATTR_COLD;
 
 	u8 input_r();
 };
-
-INPUT_CHANGED_MEMBER(roma2_state::reset_button)
-{
-	// RES buttons in serial tied to CPU RESET
-	if (m_reset->read() == 3)
-	{
-		m_maincpu->pulse_input_line(INPUT_LINE_RESET, attotime::zero);
-		m_display->reset();
-	}
-}
 
 
 
 /*******************************************************************************
     I/O
 *******************************************************************************/
+
+INPUT_CHANGED_MEMBER(roma2_state::reset_button)
+{
+	// RES buttons in serial tied to CPU RESET
+	if (m_reset->read() == 3)
+		m_maincpu->pulse_input_line(INPUT_LINE_RESET, attotime::zero);
+}
 
 u8 roma2_state::input_r()
 {
@@ -161,8 +158,8 @@ static INPUT_PORTS_START( roma2 )
 	PORT_BIT(0x02, IP_ACTIVE_HIGH, IPT_KEYPAD) PORT_NAME("ENT") PORT_CODE(KEYCODE_ENTER) PORT_CODE(KEYCODE_ENTER_PAD)
 
 	PORT_START("RESET")
-	PORT_BIT(0x01, IP_ACTIVE_HIGH, IPT_KEYPAD) PORT_NAME("RES 1") PORT_CODE(KEYCODE_Z) PORT_CODE(KEYCODE_F1) PORT_CHANGED_MEMBER(DEVICE_SELF, roma2_state, reset_button, 0)
-	PORT_BIT(0x02, IP_ACTIVE_HIGH, IPT_KEYPAD) PORT_NAME("RES 2") PORT_CODE(KEYCODE_X) PORT_CODE(KEYCODE_F1) PORT_CHANGED_MEMBER(DEVICE_SELF, roma2_state, reset_button, 0)
+	PORT_BIT(0x01, IP_ACTIVE_HIGH, IPT_KEYPAD) PORT_NAME("RES 1") PORT_CODE(KEYCODE_Z) PORT_CODE(KEYCODE_F1) PORT_CHANGED_MEMBER(DEVICE_SELF, FUNC(roma2_state::reset_button), 0)
+	PORT_BIT(0x02, IP_ACTIVE_HIGH, IPT_KEYPAD) PORT_NAME("RES 2") PORT_CODE(KEYCODE_X) PORT_CODE(KEYCODE_F1) PORT_CHANGED_MEMBER(DEVICE_SELF, FUNC(roma2_state::reset_button), 0)
 INPUT_PORTS_END
 
 
@@ -181,8 +178,8 @@ void roma2_state::roma2(machine_config &config)
 	m_maincpu->set_periodic_int(FUNC(roma2_state::irq5_line_hold), irq_period);
 
 	HC259(config, m_outlatch);
-	// Q0-Q3: input mux; Q4: strobe; Q6-Q7: DAC
-	m_outlatch->q_out_cb<4>().set(m_display, FUNC(mephisto_display1_device::strobe_w));
+	// Q0-Q3: input mux; Q4: lcd common; Q6-Q7: DAC
+	m_outlatch->q_out_cb<4>().set(m_display, FUNC(mephisto_display1_device::common_w));
 	m_outlatch->parallel_out_cb().set(m_dac, FUNC(dac_2bit_ones_complement_device::write)).rshift(6).mask(3);
 
 	MEPHISTO_SENSORS_BOARD(config, m_board);

@@ -63,7 +63,7 @@ public:
 
 protected:
 	virtual void device_start() override {}
-	virtual void device_reset() override;
+	virtual void device_reset() override ATTR_COLD;
 
 	virtual void tra_callback() override { m_tx_cb(transmit_register_get_data_bit()); }
 	virtual void tra_complete() override { m_tx_irq_cb(1); }
@@ -115,8 +115,8 @@ public:
 	HD44780_PIXEL_UPDATE(lcd_pixel_update);
 
 protected:
-	virtual void machine_start() override;
-	virtual void machine_reset() override;
+	virtual void machine_start() override ATTR_COLD;
+	virtual void machine_reset() override ATTR_COLD;
 
 private:
 	enum
@@ -127,8 +127,8 @@ private:
 		FIRQ_TX1 = (1<<3)  // UART 1 Tx (MIDI)
 	};
 
-	void maincpu_map(address_map &map);
-	void sound_map(address_map &map);
+	void maincpu_map(address_map &map) ATTR_COLD;
+	void sound_map(address_map &map) ATTR_COLD;
 
 	template <int Shift> u8 time_r();
 
@@ -522,8 +522,7 @@ void vocalizer_state::vocalizer(machine_config &config)
 	m_lcdc->set_lcd_size(2, 8);
 	m_lcdc->set_pixel_update_cb(FUNC(vocalizer_state::lcd_pixel_update));
 
-	SPEAKER(config, "lspeaker").front_left();
-	SPEAKER(config, "rspeaker").front_right();
+	SPEAKER(config, "speaker", 2).front();
 
 	ES5503(config, m_es5503, 8_MHz_XTAL).set_channels(16);
 	m_es5503->set_addrmap(0, &vocalizer_state::sound_map);
@@ -531,14 +530,14 @@ void vocalizer_state::vocalizer(machine_config &config)
 	for (int i = 0; i < 16; i++)
 	{
 		if (i <= 8)
-			m_es5503->add_route(i, "lspeaker", 1.0);
+			m_es5503->add_route(i, "speaker", 1.0, 0);
 		else if (i < 15)
-			m_es5503->add_route(i, "lspeaker", (15 - i) / 7.0);
+			m_es5503->add_route(i, "speaker", (15 - i) / 7.0, 0);
 
 		if (i >= 8)
-			m_es5503->add_route(i, "rspeaker", 1.0);
+			m_es5503->add_route(i, "speaker", 1.0, 1);
 		else if (i > 0)
-			m_es5503->add_route(i, "rspeaker", i / 8.0);
+			m_es5503->add_route(i, "speaker", i / 8.0, 1);
 	}
 }
 

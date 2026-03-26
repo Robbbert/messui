@@ -3,26 +3,35 @@
 // thanks-to:Berger, Sean Riddle
 /*******************************************************************************
 
-Fidelity CC10 / Fidelity ACR
-
-TODO:
-- What is cc10 8255 PB.7 for? When set, maximum levels is 3, like in CC3. But
-  there is no CC3 with 16 buttons, and things get glitchy in this mode.
-
-********************************************************************************
-
 Fidelity Chess Challenger 10 (CCX)
--------------------
+----------------------------------
 3 versions are known to exist: A,B,C. Strangely, version C(UCC10) has an 8080
 instead of Z80 and no beeper, it's on CC1-based hardware (see cc1.cpp).
 
-Z80A CPU @ 4MHz, NEC D8255C
-4KB ROM(NEC 2332A), 2*256 bytes RAM(4*NEC 2111AL-4)
-The beeper is via a 556 timer, fixed-frequency at around 1300-1400Hz.
+Hardware notes:
+- Z80A CPU @ 4MHz, NEC D8255C
+- 4KB ROM(NEC 2332A), 2*256 bytes RAM(4*NEC 2111AL-4)
+- The beeper is via a 556 timer, fixed-frequency at around 1300-1400Hz.
 
 Checker Challenger (ACR) is on the same PCB, twice less RAM and the beeper gone.
 In the 1980s, Fidelity started naming it Checker Challenger "4" in some of their
 advertisements, but box and manual still simply name it Checker Challenger.
+
+CC10 (version A) was also bootlegged by Cassia (later known as Newcrest) as
+"Chess Mate", with the same ROM contents, though running twice slower (2MHz).
+See below for an anecdote from Ron Nelson about Cassia trying to release the
+bootleg in the USA.
+
+"When Eric White copied my CC10 ROM bit for bit and started selling CC10's in
+the States made in Hong Kong, I grew a dislike for him. He was stupid enough
+however to buy them from our Stateside ROM vendor. I called them and said, look
+they are buying a copy of the ROM you make for us. They looked, they compared
+and that was the end of Eric White's CC10 in a plastic housing. He didn't care,
+it got him into the business."
+
+TODO:
+- What is cc10 8255 PB.7 for? When set, maximum levels is 3, like in CC3. But
+  there is no CC3 with 16 buttons, and things get glitchy in this mode.
 
 *******************************************************************************/
 
@@ -66,7 +75,7 @@ public:
 	void ccx(machine_config &config);
 
 protected:
-	virtual void machine_start() override;
+	virtual void machine_start() override ATTR_COLD;
 
 private:
 	// devices/pointers
@@ -83,10 +92,10 @@ private:
 	u8 m_7seg_data = 0;
 
 	// address maps
-	void acr_map(address_map &map);
-	void ccx_map(address_map &map);
-	void main_trampoline(address_map &map);
-	void main_io(address_map &map);
+	void acr_map(address_map &map) ATTR_COLD;
+	void ccx_map(address_map &map) ATTR_COLD;
+	void main_trampoline(address_map &map) ATTR_COLD;
+	void main_io(address_map &map) ATTR_COLD;
 
 	u8 main_trampoline_r(offs_t offset);
 	void main_trampoline_w(offs_t offset, u8 data);
@@ -247,7 +256,7 @@ static INPUT_PORTS_START( ccx )
 	PORT_BIT(0x08, IP_ACTIVE_HIGH, IPT_KEYPAD) PORT_NAME("H8") PORT_CODE(KEYCODE_8) PORT_CODE(KEYCODE_8_PAD) PORT_CODE(KEYCODE_H)
 
 	PORT_START("RESET") // is not on matrix IN.0 d0
-	PORT_BIT(0x01, IP_ACTIVE_HIGH, IPT_KEYPAD) PORT_NAME("RE") PORT_CODE(KEYCODE_R) PORT_CHANGED_MEMBER(DEVICE_SELF, ccx_state, reset_button, 0)
+	PORT_BIT(0x01, IP_ACTIVE_HIGH, IPT_KEYPAD) PORT_NAME("RE") PORT_CODE(KEYCODE_R) PORT_CHANGED_MEMBER(DEVICE_SELF, FUNC(ccx_state::reset_button), 0)
 INPUT_PORTS_END
 
 static INPUT_PORTS_START( acr )
@@ -276,7 +285,7 @@ static INPUT_PORTS_START( acr )
 	PORT_BIT(0x08, IP_ACTIVE_HIGH, IPT_KEYPAD) PORT_NAME("3") PORT_CODE(KEYCODE_3) PORT_CODE(KEYCODE_3_PAD)
 
 	PORT_START("RESET") // is not on matrix IN.0 d0
-	PORT_BIT(0x01, IP_ACTIVE_HIGH, IPT_KEYPAD) PORT_NAME("RE") PORT_CODE(KEYCODE_R) PORT_CHANGED_MEMBER(DEVICE_SELF, ccx_state, reset_button, 0)
+	PORT_BIT(0x01, IP_ACTIVE_HIGH, IPT_KEYPAD) PORT_NAME("RE") PORT_CODE(KEYCODE_R) PORT_CHANGED_MEMBER(DEVICE_SELF, FUNC(ccx_state::reset_button), 0)
 INPUT_PORTS_END
 
 

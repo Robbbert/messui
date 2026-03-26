@@ -90,6 +90,10 @@ static const TCHAR software_picker_property_name[] = TEXT("SWPICKER");
 
 
 //============================================================
+// To Do: win_get_current_directory_utf8 returns a value:
+//         0 for failure, or the length of the returned string
+//         This needs to be incorporated into the code.
+//============================================================
 
 static LPCSTR NormalizePath(LPCSTR pszPath, LPSTR pszBuffer, size_t nBufferSize)
 {
@@ -137,9 +141,7 @@ static LPCSTR NormalizePath(LPCSTR pszPath, LPSTR pszBuffer, size_t nBufferSize)
 
 static software_picker_info *GetSoftwarePickerInfo(HWND hwndPicker)
 {
-	HANDLE h;
-	h = GetProp(hwndPicker, software_picker_property_name);
-	assert(h);
+	HANDLE h = GetProp(hwndPicker, software_picker_property_name);
 	return (software_picker_info *) h;
 }
 
@@ -186,7 +188,7 @@ int SoftwarePicker_LookupIndex(HWND hwndPicker, LPCSTR pszFilename)
 
 string SoftwarePicker_GetImageType(HWND hwndPicker, int nIndex)
 {
-	string type = "unkn";
+	string type = "flop";
 	const device_image_interface *device = SoftwarePicker_LookupDevice(hwndPicker, nIndex);
 
 	if (device)
@@ -199,14 +201,13 @@ string SoftwarePicker_GetImageType(HWND hwndPicker, int nIndex)
 
 void SoftwarePicker_SetDriver(HWND hwndPicker, const software_config *config)
 {
-	int i;
 	software_picker_info *pPickerInfo;
 
 	pPickerInfo = GetSoftwarePickerInfo(hwndPicker);
 	pPickerInfo->config = config;
 
 	// invalidate the hash "realization"
-	for (i = 0; i < pPickerInfo->file_index_length; i++)
+	for (int i = 0; i < pPickerInfo->file_index_length; i++)
 	{
 		//pPickerInfo->file_index[i]->hashinfo = NULL;
 		pPickerInfo->file_index[i]->hash_realized = FALSE;
@@ -387,7 +388,7 @@ static void SoftwarePicker_RealizeHash(HWND hwndPicker, int nIndex)
 }
 #pragma GCC diagnostic error "-Wunused-but-set-variable"
 
-
+// nCrc currently not used
 static BOOL SoftwarePicker_AddFileEntry(HWND hwndPicker, LPCSTR pszFilename, UINT nZipEntryNameLength, UINT32 nCrc, BOOL bForce, bool check)
 {
 	software_picker_info *pPickerInfo;
@@ -436,8 +437,8 @@ static BOOL SoftwarePicker_AddFileEntry(HWND hwndPicker, LPCSTR pszFilename, UIN
 
 	// set up device and CRC, if specified
 	pInfo->device = device;
-	if ((device != NULL))
-		nCrc = 0;
+	//if ((device != NULL))
+		//nCrc = 0;
 	//if (nCrc != 0)
 		//snprintf(pInfo->hash_string, std::size(pInfo->hash_string), "c:%08x#", nCrc);
 
@@ -454,7 +455,8 @@ static BOOL SoftwarePicker_AddFileEntry(HWND hwndPicker, LPCSTR pszFilename, UIN
 
 	ppNewIndex = (file_info**)malloc((pPickerInfo->file_index_length + 1) * sizeof(*pPickerInfo->file_index));
 	memcpy(ppNewIndex,pPickerInfo->file_index,pPickerInfo->file_index_length * sizeof(*pPickerInfo->file_index));
-	if (pPickerInfo->file_index) free(pPickerInfo->file_index);
+	if (pPickerInfo->file_index)
+		free(pPickerInfo->file_index);
 	if (!ppNewIndex)
 		goto error;
 
@@ -532,7 +534,7 @@ static BOOL SoftwarePicker_InternalAddFile(HWND hwndPicker, LPCSTR pszFilename, 
 
 BOOL SoftwarePicker_AddFile(HWND hwndPicker, LPCSTR pszFilename, bool check)
 {
-	char szBuffer[2048] = {0,};
+	char szBuffer[2048] = { };
 
 	Picker_ResetIdle(hwndPicker);
 	pszFilename = NormalizePath(pszFilename, szBuffer, std::size(szBuffer));
@@ -548,7 +550,7 @@ BOOL SoftwarePicker_AddDirectory(HWND hwndPicker, LPCSTR pszDirectory)
 	directory_search_info *pSearchInfo;
 	directory_search_info **ppLast;
 	size_t nSearchInfoSize;
-	char szBuffer[2048] = {0,};
+	char szBuffer[2048] = { };
 
 	pszDirectory = NormalizePath(pszDirectory, szBuffer, std::size(szBuffer));
 

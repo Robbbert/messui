@@ -30,7 +30,7 @@ typedef struct
 {
 	BOOL bOnDefaultPage;
 //	BOOL (*pfnFilterProc)(const machine_config *drv, const game_driver *gamedrv);
-	BOOL (*pfnFilterProc)(uint32_t driver_index);
+	BOOL (*pfnFilterProc)(int drvindex);
 	DWORD dwDlgID;
 	DLGPROC pfnDlgProc;
 } PROPERTYSHEETINFO;
@@ -47,8 +47,7 @@ int PropertiesCurrentGame(HWND hDlg);
 // from propertiesms.h (MESSUI)
 
 BOOL MessPropertiesCommand(HWND hWnd, WORD wNotifyCode, WORD wID, BOOL *changed);
-bool get_msp();
-void set_msp(bool);
+BOOL g_bModifiedSoftwarePaths = FALSE;
 INT_PTR CALLBACK GameMessOptionsProc(HWND hDlg, UINT Msg, WPARAM wParam, LPARAM lParam);
 //BOOL PropSheetFilter_Config(const machine_config *drv, const game_driver *gamedrv);  // not used
 

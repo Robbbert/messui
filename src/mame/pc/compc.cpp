@@ -55,7 +55,7 @@ public:
 	required_device<pc_noppi_mb_device> m_mb;
 	required_ioport m_dsw0;
 
-	void machine_reset() override;
+	void machine_reset() override ATTR_COLD;
 
 	u8 pioiii_portc_r();
 	void pioiii_portc_w(u8 data);
@@ -64,9 +64,9 @@ public:
 	void compc(machine_config &config);
 	void pc10iii(machine_config &config);
 	void compc1(machine_config &config);
-	void compc_io(address_map &map);
-	void compc_map(address_map &map);
-	void compciii_io(address_map &map);
+	void compc_io(address_map &map) ATTR_COLD;
+	void compc_map(address_map &map) ATTR_COLD;
+	void compciii_io(address_map &map) ATTR_COLD;
 private:
 	u8 m_dips = 0;
 };
@@ -184,9 +184,9 @@ void compc_state::compc(machine_config &config)
 	pit.set_clk<0>(XTAL(14'318'181)/12.0); /* heartbeat IRQ */
 	pit.out_handler<0>().set("mb:pic8259", FUNC(pic8259_device::ir0_w));
 	pit.set_clk<1>(XTAL(14'318'181)/12.0); /* dram refresh */
-	pit.out_handler<1>().set(m_mb, FUNC(ibm5160_mb_device::pc_pit8253_out1_changed));
+	pit.out_handler<1>().set(m_mb, FUNC(pc_noppi_mb_device::pc_pit8253_out1_changed));
 	pit.set_clk<2>(XTAL(14'318'181)/12.0); /* pio port c pin 4, and speaker polling enough */
-	pit.out_handler<2>().set(m_mb, FUNC(ibm5160_mb_device::pc_pit8253_out2_changed));
+	pit.out_handler<2>().set(m_mb, FUNC(pc_noppi_mb_device::pc_pit8253_out2_changed));
 
 	// FIXME: determine ISA bus clock
 	ISA8_SLOT(config, "isa1", 0, "mb:isa", pc_isa8_cards, "mda", false);

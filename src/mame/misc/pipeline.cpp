@@ -105,8 +105,8 @@ public:
 	void pipeline(machine_config &config);
 
 protected:
-	virtual void machine_start() override;
-	virtual void video_start() override;
+	virtual void machine_start() override ATTR_COLD;
+	virtual void video_start() override ATTR_COLD;
 
 private:
 	void vram2_w(offs_t offset, u8 data);
@@ -128,9 +128,9 @@ private:
 	TIMER_CALLBACK_MEMBER(vidctrl_deferred_w);
 	TIMER_CALLBACK_MEMBER(protection_deferred_w);
 
-	void cpu0_mem(address_map &map);
-	void cpu1_mem(address_map &map);
-	void sound_port(address_map &map);
+	void cpu0_mem(address_map &map) ATTR_COLD;
+	void cpu1_mem(address_map &map) ATTR_COLD;
+	void sound_port(address_map &map) ATTR_COLD;
 
 	required_device<cpu_device>         m_maincpu;
 	required_device<m68705r_device>     m_mcu;
@@ -297,7 +297,7 @@ static INPUT_PORTS_START( pipeline )
 	PORT_START("DSW1")
 	// bits 0 to 6 are tested from less to most significant - code at 0x00dd
 	PORT_DIPNAME( 0x7f, 0x00, DEF_STR( Coinage ) )
-	PORT_DIPSETTING(    0x07, "10 Coins/1 Credit" )
+	PORT_DIPSETTING(    0x07, DEF_STR( 10C_1C ) )
 	PORT_DIPSETTING(    0x03, DEF_STR( 5C_1C ) )
 	PORT_DIPSETTING(    0x01, DEF_STR( 2C_1C ) )
 	PORT_DIPSETTING(    0x00, DEF_STR( 1C_1C ) )

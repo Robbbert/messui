@@ -178,12 +178,12 @@ public:
 	void abort_key_w(int state);
 
 protected:
-	virtual void machine_reset() override;
-	virtual void machine_start() override;
+	virtual void machine_reset() override ATTR_COLD;
+	virtual void machine_start() override ATTR_COLD;
 
 private:
-	void dbg_map(address_map &map);
-	void mem_map(address_map &map);
+	void dbg_map(address_map &map) ATTR_COLD;
+	void mem_map(address_map &map) ATTR_COLD;
 
 	void irq_line_w(int state);
 	u8 m_irq;
@@ -282,12 +282,12 @@ void exorciser_state::mem_map(address_map &map)
 static INPUT_PORTS_START( exorciser )
 
 	PORT_START("ABORT_KEY")
-	PORT_BIT(0x01, IP_ACTIVE_HIGH, IPT_KEYPAD) PORT_NAME("Abort") PORT_WRITE_LINE_DEVICE_MEMBER(DEVICE_SELF, exorciser_state, abort_key_w)
+	PORT_BIT(0x01, IP_ACTIVE_HIGH, IPT_KEYPAD) PORT_NAME("Abort") PORT_WRITE_LINE_MEMBER(FUNC(exorciser_state::abort_key_w))
 
 	// The EXORciser I supported 1MHz, and the EXORciser II also supported
 	// 1.5 and 2.0MHz.
 	PORT_START("MAINCPU_CLOCK")
-	PORT_CONFNAME(0xffffff, 1000000, "CPU clock") PORT_CHANGED_MEMBER(DEVICE_SELF, exorciser_state, maincpu_clock_change, 0)
+	PORT_CONFNAME(0xffffff, 1000000, "CPU clock") PORT_CHANGED_MEMBER(DEVICE_SELF, FUNC(exorciser_state::maincpu_clock_change), 0)
 	PORT_CONFSETTING(1000000, "1.0 MHz")
 	PORT_CONFSETTING(2000000, "1.5 MHz")
 	PORT_CONFSETTING(4000000, "2.0 MHz")
@@ -621,17 +621,8 @@ void exorciser_state::machine_start()
 	m_trace_timer = timer_alloc(FUNC(exorciser_state::assert_trace), this);
 }
 
-static DEVICE_INPUT_DEFAULTS_START(exorterm)
-	DEVICE_INPUT_DEFAULTS("RS232_RXBAUD", 0xff, RS232_BAUD_9600)
-	DEVICE_INPUT_DEFAULTS("RS232_TXBAUD", 0xff, RS232_BAUD_9600)
-	DEVICE_INPUT_DEFAULTS("RS232_DATABITS", 0xff, RS232_DATABITS_8)
-	DEVICE_INPUT_DEFAULTS("RS232_PARITY", 0xff, RS232_PARITY_NONE)
-	DEVICE_INPUT_DEFAULTS("RS232_STOPBITS", 0xff, RS232_STOPBITS_1)
-DEVICE_INPUT_DEFAULTS_END
-
 static DEVICE_INPUT_DEFAULTS_START(printer)
 	DEVICE_INPUT_DEFAULTS("RS232_RXBAUD", 0xff, RS232_BAUD_9600)
-	DEVICE_INPUT_DEFAULTS("RS232_TXBAUD", 0xff, RS232_BAUD_9600)
 	DEVICE_INPUT_DEFAULTS("RS232_DATABITS", 0xff, RS232_DATABITS_8)
 	DEVICE_INPUT_DEFAULTS("RS232_PARITY", 0xff, RS232_PARITY_NONE)
 	DEVICE_INPUT_DEFAULTS("RS232_STOPBITS", 0xff, RS232_STOPBITS_1)
@@ -674,7 +665,6 @@ void exorciser_state::exorciser(machine_config &config)
 
 	rs232_port_device &rs232(RS232_PORT(config, "rs232", exorciser_state::exorciser_rs232_devices, "exorterm155"));
 	rs232.rxd_handler().set(m_acia, FUNC(acia6850_device::write_rxd));
-	rs232.set_option_device_input_defaults("exorterm155", DEVICE_INPUT_DEFAULTS_NAME(exorterm));
 
 	PIA6821(config, m_pia_dbg);
 	m_pia_dbg->writepa_handler().set(FUNC(exorciser_state::pia_dbg_pa_w));

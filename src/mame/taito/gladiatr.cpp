@@ -496,7 +496,7 @@ u8 ppking_state::ppking_qx0_r(offs_t offset)
 			m_mcu[0].rxd |= 0x40;
 	}
 
-	//printf("%04x rst %d\n",m_maincpu->pc(),m_mcu[0].rst);
+	//logerror("%04x rst %d\n", m_maincpu->pc(),m_mcu[0].rst);
 
 	return m_mcu[0].rxd;
 }
@@ -536,8 +536,7 @@ void ppking_state::ppking_qx0_w(offs_t offset, u8 data)
 				break;
 
 			default:
-				printf("%02x %02x\n",offset,data);
-				break;
+				logerror("ppking_qx0_w: %02x %02x\n", offset, data);
 		}
 	}
 	else
@@ -858,8 +857,8 @@ static INPUT_PORTS_START( gladiatr )
 	PORT_BIT( 0x02, IP_ACTIVE_LOW, IPT_JOYSTICK_LEFT )  PORT_8WAY
 	PORT_BIT( 0x04, IP_ACTIVE_LOW, IPT_JOYSTICK_UP )    PORT_8WAY
 	PORT_BIT( 0x08, IP_ACTIVE_LOW, IPT_JOYSTICK_DOWN )  PORT_8WAY
-	PORT_BIT( 0x10, IP_ACTIVE_LOW, IPT_BUTTON1 )                                   PORT_CHANGED_MEMBER(DEVICE_SELF, gladiatr_state, p1_s1, 0)
-	PORT_BIT( 0x20, IP_ACTIVE_LOW, IPT_BUTTON2 )                                   PORT_CHANGED_MEMBER(DEVICE_SELF, gladiatr_state, p1_s2, 0)
+	PORT_BIT( 0x10, IP_ACTIVE_LOW, IPT_BUTTON1 )                                   PORT_CHANGED_MEMBER(DEVICE_SELF, FUNC(gladiatr_state::p1_s1), 0)
+	PORT_BIT( 0x20, IP_ACTIVE_LOW, IPT_BUTTON2 )                                   PORT_CHANGED_MEMBER(DEVICE_SELF, FUNC(gladiatr_state::p1_s2), 0)
 	PORT_BIT( 0x40, IP_ACTIVE_LOW, IPT_START1 )
 	PORT_BIT( 0x80, IP_ACTIVE_LOW, IPT_START2 )
 
@@ -868,8 +867,8 @@ static INPUT_PORTS_START( gladiatr )
 	PORT_BIT( 0x02, IP_ACTIVE_LOW, IPT_JOYSTICK_LEFT )  PORT_8WAY   PORT_COCKTAIL
 	PORT_BIT( 0x04, IP_ACTIVE_LOW, IPT_JOYSTICK_UP )    PORT_8WAY   PORT_COCKTAIL
 	PORT_BIT( 0x08, IP_ACTIVE_LOW, IPT_JOYSTICK_DOWN )  PORT_8WAY   PORT_COCKTAIL
-	PORT_BIT( 0x10, IP_ACTIVE_LOW, IPT_BUTTON1 )                    PORT_COCKTAIL  PORT_CHANGED_MEMBER(DEVICE_SELF, gladiatr_state, p2_s1, 0)
-	PORT_BIT( 0x20, IP_ACTIVE_LOW, IPT_BUTTON2 )                    PORT_COCKTAIL  PORT_CHANGED_MEMBER(DEVICE_SELF, gladiatr_state, p2_s2, 0)
+	PORT_BIT( 0x10, IP_ACTIVE_LOW, IPT_BUTTON1 )                    PORT_COCKTAIL  PORT_CHANGED_MEMBER(DEVICE_SELF, FUNC(gladiatr_state::p2_s1), 0)
+	PORT_BIT( 0x20, IP_ACTIVE_LOW, IPT_BUTTON2 )                    PORT_COCKTAIL  PORT_CHANGED_MEMBER(DEVICE_SELF, FUNC(gladiatr_state::p2_s2), 0)
 	PORT_BIT( 0xc0, IP_ACTIVE_LOW, IPT_UNUSED )                                     // coin counter outputs
 
 	PORT_START("IN2")   // cctl p1

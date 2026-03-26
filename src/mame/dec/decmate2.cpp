@@ -51,7 +51,7 @@
 #include "emu.h"
 #include "bus/rs232/rs232.h"
 #include "cpu/pdp8/hd6120.h"
-#include "cpu/mcs51/mcs51.h"
+#include "cpu/mcs51/i8051.h"
 #include "imagedev/floppy.h"
 #include "machine/ay31015.h"
 #include "machine/clock.h"
@@ -106,8 +106,8 @@ public:
 	void init_pc238();
 
 protected:
-	virtual void machine_start() override;
-	virtual void machine_reset() override;
+	virtual void machine_start() override ATTR_COLD;
+	virtual void machine_reset() override ATTR_COLD;
 
 private:
 	u32 screen_update(screen_device &screen, bitmap_rgb32 &bitmap, const rectangle &cliprect);
@@ -179,12 +179,12 @@ private:
 	void rx_sel_w(u8 data);
 	u8 rx_rdy_r();
 
-	void inst_map(address_map &map);
-	void data_map(address_map &map);
-	void pc278_io_map(address_map &map);
-	void pc238_io_map(address_map &map);
-	void devctl_map(address_map &map);
-	void rx_map(address_map &map);
+	void inst_map(address_map &map) ATTR_COLD;
+	void data_map(address_map &map) ATTR_COLD;
+	void pc278_io_map(address_map &map) ATTR_COLD;
+	void pc238_io_map(address_map &map) ATTR_COLD;
+	void devctl_map(address_map &map) ATTR_COLD;
+	void rx_map(address_map &map) ATTR_COLD;
 
 	required_device<hd6120_device> m_maincpu;
 	required_device<i8051_device> m_rxcpu;
@@ -879,7 +879,7 @@ void decmate2_state::pc278(machine_config &config)
 	m_maincpu->strtup_callback().set_constant(0);
 
 	I8051(config, m_rxcpu, 16_MHz_XTAL / 2);
-	m_rxcpu->set_addrmap(AS_IO, &decmate2_state::rx_map);
+	m_rxcpu->set_addrmap(AS_DATA, &decmate2_state::rx_map);
 	m_rxcpu->port_in_cb<1>().set(FUNC(decmate2_state::rx_intr_r));
 	m_rxcpu->port_out_cb<1>().set(FUNC(decmate2_state::rx_sel_w));
 	m_rxcpu->port_in_cb<2>().set(FUNC(decmate2_state::rx_rdy_r));
@@ -1009,5 +1009,5 @@ ROM_END
 } // anonymous namespace
 
 
-COMP(1982, decmate2, 0, 0, pc278, decmate2, decmate2_state, init_pc278, "Digital Equipment Corporation", "DECmate II (PC278)", MACHINE_IS_SKELETON)
-COMP(1984, decmate3, 0, 0, pc238, decmate2, decmate2_state, init_pc238, "Digital Equipment Corporation", "DECmate III (PC238)", MACHINE_IS_SKELETON)
+COMP(1982, decmate2, 0, 0, pc278, decmate2, decmate2_state, init_pc278, "Digital Equipment Corporation", "DECmate II (PC278)", MACHINE_NO_SOUND | MACHINE_NOT_WORKING)
+COMP(1984, decmate3, 0, 0, pc238, decmate2, decmate2_state, init_pc238, "Digital Equipment Corporation", "DECmate III (PC238)", MACHINE_NO_SOUND | MACHINE_NOT_WORKING)

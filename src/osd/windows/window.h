@@ -172,6 +172,7 @@ private:
 
 	win_window_info *   m_main;
 	bool                m_attached_mode;
+	bool                m_cursor_clipped;
 
 	// these functions first appear in Windows 8/Server 2012
 	OSD_DYNAMIC_API(user32, "User32.dll", "User32.dll");
@@ -207,7 +208,7 @@ void winwindow_toggle_fsfx(void);
 void winwindow_ui_pause(running_machine &machine, int pause);
 int winwindow_ui_is_paused(running_machine &machine);
 
-void winwindow_dispatch_message(running_machine &machine, MSG *message);
+void winwindow_dispatch_message(running_machine &machine, MSG const &message);
 
 extern int win_create_menu(running_machine &machine, HMENU *menus); // MESSUI
 extern LRESULT CALLBACK winwindow_video_window_proc_ui(HWND wnd, UINT message, WPARAM wparam, LPARAM lparam); // MESSUI

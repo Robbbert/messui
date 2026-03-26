@@ -74,12 +74,12 @@ public:
 	required_device<ram_device> m_ram;
 
 private:
-	void pippin_map(address_map &map);
-	void cdmcu_mem(address_map &map);
-	void cdmcu_data(address_map &map);
+	void pippin_map(address_map &map) ATTR_COLD;
+	void cdmcu_mem(address_map &map) ATTR_COLD;
+	void cdmcu_data(address_map &map) ATTR_COLD;
 
-	virtual void machine_start() override;
-	virtual void machine_reset() override;
+	virtual void machine_start() override ATTR_COLD;
+	virtual void machine_reset() override ATTR_COLD;
 
 	void cuda_reset_w(int state)
 	{
@@ -173,7 +173,7 @@ void pippin_state::pippin(machine_config &config)
 	ASPEN(config, m_aspen, 66000000, "maincpu").set_dev_offset(1);
 
 	cdrom_image_device &cdrom(CDROM(config, "cdrom", 0));
-	cdrom.set_interface("pippin_cdrom");
+	cdrom.set_interface("cdrom");
 	SOFTWARE_LIST(config, "cd_list").set_original("pippin");
 
 	RAM(config, m_ram);
@@ -189,10 +189,9 @@ void pippin_state::pippin(machine_config &config)
 	grandcentral.codec_r_callback().set(awacs, FUNC(awacs_macrisc_device::read_macrisc));
 	grandcentral.codec_w_callback().set(awacs, FUNC(awacs_macrisc_device::write_macrisc));
 
-	SPEAKER(config, "lspeaker").front_left();
-	SPEAKER(config, "rspeaker").front_right();
-	awacs.add_route(0, "lspeaker", 1.0);
-	awacs.add_route(1, "rspeaker", 1.0);
+	SPEAKER(config, "speaker", 2).front();
+	awacs.add_route(0, "speaker", 1.0, 0);
+	awacs.add_route(1, "speaker", 1.0, 1);
 
 	MACADB(config, m_macadb, 15.6672_MHz_XTAL);
 

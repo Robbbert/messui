@@ -28,7 +28,11 @@
 #endif
 
 #if defined(OSD_SDL) || defined(SDLMAME_WIN32)
+#ifdef SDLMAME_SDL3
+#include <SDL3/SDL.h>
+#else
 #include <SDL2/SDL.h>
+#endif
 #define KEY_TRANS_SDL(sdlsc) SDL_SCANCODE_##sdlsc,
 #else
 #define KEY_TRANS_SDL(sdlsc)
@@ -90,9 +94,7 @@ key_trans_entry keyboard_trans_table::s_default_table[] =
 	KEY_TRANS_ENTRY1(TILDE,        GRAVE,          GRAVE,          VK_OEM_3,               '`'),
 	KEY_TRANS_ENTRY1(LSHIFT,       LSHIFT,         LSHIFT,         VK_LSHIFT,              0),
 	KEY_TRANS_ENTRY1(BACKSLASH,    BACKSLASH,      BACKSLASH,      VK_OEM_5,               '\\'),
-//  KEY_TRANS_ENTRY1(BACKSLASH2,   NONUSHASH,      UNKNOWN,      OEM_102,        VK_OEM_102,     '<'),
-// This is the additional key that ISO keyboards have over ANSI ones, located between left shift and Y.
-	KEY_TRANS_ENTRY1(BACKSLASH2,   NONUSBACKSLASH, OEM_102,        VK_OEM_102,             '<'),
+	KEY_TRANS_ENTRY1(BACKSLASH2,   NONUSBACKSLASH, OEM_102,        VK_OEM_102,             '<'), // immediately to the right of left shift on ISO keyboards
 	KEY_TRANS_ENTRY1(Z,            Z,              Z,              'Z',                    'Z'),
 	KEY_TRANS_ENTRY1(X,            X,              X,              'X',                    'X'),
 	KEY_TRANS_ENTRY1(C,            C,              C,              'C',                    'C'),
@@ -138,6 +140,11 @@ key_trans_entry keyboard_trans_table::s_default_table[] =
 	KEY_TRANS_ENTRY1(F13,          F13,            F13,            VK_F13,                 0),
 	KEY_TRANS_ENTRY1(F14,          F14,            F14,            VK_F14,                 0),
 	KEY_TRANS_ENTRY1(F15,          F15,            F15,            VK_F15,                 0),
+	KEY_TRANS_ENTRY1(F16,          F16,            UNKNOWN,        VK_F16,                 0),
+	KEY_TRANS_ENTRY1(F17,          F17,            UNKNOWN,        VK_F17,                 0),
+	KEY_TRANS_ENTRY1(F18,          F18,            UNKNOWN,        VK_F18,                 0),
+	KEY_TRANS_ENTRY1(F19,          F19,            UNKNOWN,        VK_F19,                 0),
+	KEY_TRANS_ENTRY1(F20,          F20,            UNKNOWN,        VK_F20,                 0),
 	KEY_TRANS_ENTRY1(ENTER_PAD,    KP_ENTER,       NUMPADENTER,    VK_RETURN,              0),
 	KEY_TRANS_ENTRY1(RCONTROL,     RCTRL,          RCONTROL,       VK_RCONTROL,            0),
 	KEY_TRANS_ENTRY1(SLASH_PAD,    KP_DIVIDE,      DIVIDE,         VK_DIVIDE,              0),
@@ -155,7 +162,7 @@ key_trans_entry keyboard_trans_table::s_default_table[] =
 	KEY_TRANS_ENTRY0(DEL,          DELETE,         DELETE,         VK_DELETE,              0,        "DELETE"),
 	KEY_TRANS_ENTRY1(LWIN,         LGUI,           LWIN,           VK_LWIN,                0),
 	KEY_TRANS_ENTRY1(RWIN,         RGUI,           RWIN,           VK_RWIN,                0),
-	KEY_TRANS_ENTRY1(MENU,         MENU,           APPS,           VK_APPS,                0),
+	KEY_TRANS_ENTRY1(MENU,         APPLICATION,    APPS,           VK_APPS,                0),
 	KEY_TRANS_ENTRY1(PAUSE,        PAUSE,          PAUSE,          VK_PAUSE,               0),
 	KEY_TRANS_ENTRY1(CANCEL,       CANCEL,         UNKNOWN,        0,                      0),
 	KEY_TRANS_ENTRY1(BS_PAD,       KP_BACKSPACE,   UNKNOWN,        0,                      0),
@@ -166,10 +173,21 @@ key_trans_entry keyboard_trans_table::s_default_table[] =
 	KEY_TRANS_ENTRY1(EQUALS_PAD,   KP_EQUALS,      NUMPADEQUALS,   VK_OEM_NEC_EQUAL,       0),
 
 	// keys that have no specific MAME input item IDs
+	KEY_TRANS_ENTRY0(OTHER_SWITCH, F21,            UNKNOWN,        VK_F21,                 0,        "F21"),
+	KEY_TRANS_ENTRY0(OTHER_SWITCH, F22,            UNKNOWN,        VK_F22,                 0,        "F22"),
+	KEY_TRANS_ENTRY0(OTHER_SWITCH, F23,            UNKNOWN,        VK_F23,                 0,        "F23"),
+	KEY_TRANS_ENTRY0(OTHER_SWITCH, F24,            UNKNOWN,        VK_F24,                 0,        "F24"),
+#ifdef SDLMAME_SDL3
+	KEY_TRANS_ENTRY0(OTHER_SWITCH, MEDIA_NEXT_TRACK, NEXTTRACK,    VK_MEDIA_NEXT_TRACK,    0,        "AUDIONEXT"),
+	KEY_TRANS_ENTRY0(OTHER_SWITCH, MUTE,           MUTE,           VK_VOLUME_MUTE,         0,        "VOLUMEMUTE"),
+	KEY_TRANS_ENTRY0(OTHER_SWITCH, MEDIA_PLAY,     PLAYPAUSE,      VK_MEDIA_PLAY_PAUSE,    0,        "AUDIOPLAY"),
+	KEY_TRANS_ENTRY0(OTHER_SWITCH, MEDIA_STOP,     MEDIASTOP,      VK_MEDIA_STOP,          0,        "AUDIOSTOP"),
+#else
 	KEY_TRANS_ENTRY0(OTHER_SWITCH, AUDIONEXT,      NEXTTRACK,      VK_MEDIA_NEXT_TRACK,    0,        "AUDIONEXT"),
 	KEY_TRANS_ENTRY0(OTHER_SWITCH, AUDIOMUTE,      MUTE,           VK_VOLUME_MUTE,         0,        "VOLUMEMUTE"),
 	KEY_TRANS_ENTRY0(OTHER_SWITCH, AUDIOPLAY,      PLAYPAUSE,      VK_MEDIA_PLAY_PAUSE,    0,        "AUDIOPLAY"),
 	KEY_TRANS_ENTRY0(OTHER_SWITCH, AUDIOSTOP,      MEDIASTOP,      VK_MEDIA_STOP,          0,        "AUDIOSTOP"),
+#endif
 	KEY_TRANS_ENTRY0(OTHER_SWITCH, VOLUMEDOWN,     VOLUMEDOWN,     VK_VOLUME_DOWN,         0,        "VOLUMEDOWN"),
 	KEY_TRANS_ENTRY0(OTHER_SWITCH, VOLUMEUP,       VOLUMEUP,       VK_VOLUME_UP,           0,        "VOLUMEUP"),
 	KEY_TRANS_ENTRY0(OTHER_SWITCH, AC_HOME,        WEBHOME,        VK_BROWSER_HOME,        0,        "NAVHOME"),
@@ -179,8 +197,12 @@ key_trans_entry keyboard_trans_table::s_default_table[] =
 	KEY_TRANS_ENTRY0(OTHER_SWITCH, AC_STOP,        WEBSTOP,        VK_BROWSER_STOP,        0,        "NAVSTOP"),
 	KEY_TRANS_ENTRY0(OTHER_SWITCH, AC_FORWARD,     WEBFORWARD,     VK_BROWSER_FORWARD,     0,        "NAVFORWARD"),
 	KEY_TRANS_ENTRY0(OTHER_SWITCH, AC_BACK,        WEBBACK,        VK_BROWSER_BACK,        0,        "NAVBACK"),
+#ifdef SDLMAME_SDL3
+	KEY_TRANS_ENTRY0(OTHER_SWITCH, MEDIA_SELECT,   MEDIASELECT,    VK_LAUNCH_MEDIA_SELECT, 0,        "MEDIASEL"),
+#else
 	KEY_TRANS_ENTRY0(OTHER_SWITCH, MAIL,           MAIL,           VK_LAUNCH_MAIL,         0,        "MAIL"),
 	KEY_TRANS_ENTRY0(OTHER_SWITCH, MEDIASELECT,    MEDIASELECT,    VK_LAUNCH_MEDIA_SELECT, 0,        "MEDIASEL"),
+#endif
 
 	// sentinel
 	KEY_TRANS_ENTRY0(INVALID,      UNKNOWN,        UNKNOWN,        0,                      0,        "INVALID")

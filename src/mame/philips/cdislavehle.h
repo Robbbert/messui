@@ -38,16 +38,18 @@ public:
 	auto read_mousex() { return m_read_mousex.bind(); }
 	auto read_mousey() { return m_read_mousey.bind(); }
 	auto read_mousebtn() { return m_read_mousebtn.bind(); }
+	auto atten_callback() { return m_atten_w.bind(); }
 
 	uint8_t* get_lcd_state() { return m_lcd_state; }
 
 	uint16_t slave_r(offs_t offset);
 	void slave_w(offs_t offset, uint16_t data);
+	void slave_w_mouse(offs_t offset, uint16_t data);
 
 protected:
 	// device_t implementation
-	virtual void device_start() override;
-	virtual void device_reset() override;
+	virtual void device_start() override ATTR_COLD;
+	virtual void device_reset() override ATTR_COLD;
 
 	// internal callbacks
 	TIMER_CALLBACK_MEMBER( trigger_readback_int );
@@ -63,6 +65,7 @@ private:
 	devcb_read8 m_read_mousebtn;
 
 	required_device_array<dmadac_sound_device, 2> m_dmadac;
+	devcb_write32 m_atten_w;
 
 	struct channel_state
 	{

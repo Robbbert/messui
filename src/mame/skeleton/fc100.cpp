@@ -89,11 +89,11 @@ private:
 	{
 		return m_p_chargen[(ch * 16 + line) & 0xfff];
 	}
-	void io_map(address_map &map);
-	void mem_map(address_map &map);
+	void io_map(address_map &map) ATTR_COLD;
+	void mem_map(address_map &map) ATTR_COLD;
 
-	virtual void machine_start() override;
-	virtual void machine_reset() override;
+	virtual void machine_start() override ATTR_COLD;
+	virtual void machine_reset() override ATTR_COLD;
 
 	// graphics signals
 	uint8_t m_ag = 0U;
@@ -524,7 +524,7 @@ void fc100_state::fc100(machine_config &config)
 	m_maincpu->set_addrmap(AS_IO, &fc100_state::io_map);
 
 	/* video hardware */
-	M5C6847P1(config, m_vdg, XTAL(7'159'090)/3);  // Clock not verified
+	M5C6847P1(config, m_vdg, XTAL(7'159'090)/2);  // Clock not verified
 	m_vdg->set_screen("screen");
 	m_vdg->input_callback().set(FUNC(fc100_state::mc6847_videoram_r));
 	m_vdg->set_get_char_rom(FUNC(fc100_state::get_char_rom));

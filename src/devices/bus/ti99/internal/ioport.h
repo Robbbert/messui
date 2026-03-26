@@ -38,6 +38,7 @@ public:
 	virtual void msast_in(int state) { }
 	virtual void clock_in(int state) { }
 	virtual void reset_in(int state) { }
+	virtual void sbe(int state) { }
 
 	void set_ioport(ioport_device* ioport) { m_ioport = ioport; }
 
@@ -80,13 +81,14 @@ public:
 	void msast_in(int state);
 	void clock_in(int state);
 	void reset_in(int state);
+	void sbe(int state);
 
 	// Callbacks
 	auto extint_cb() { return m_console_extint.bind(); }
 	auto ready_cb() { return m_console_ready.bind(); }
 
 protected:
-	virtual void device_start() override;
+	virtual void device_start() override ATTR_COLD;
 	virtual void device_config_complete() override;
 
 	// Methods called back from the external device
@@ -103,5 +105,6 @@ DECLARE_DEVICE_TYPE_NS(TI99_IOPORT, bus::ti99::internal, ioport_device)
 
 void ti99_ioport_options_plain(device_slot_interface &device);
 void ti99_ioport_options_evpc(device_slot_interface &device);
+void ti99_ioport_options_evpc1(device_slot_interface &device);
 
 #endif /* __TI99IOPORT__ */

@@ -7,7 +7,7 @@ DEFINE_DEVICE_TYPE(SWX00, swx00_device, "swx00", "Yamaha SWX00")
 
 swx00_device::swx00_device(const machine_config &mconfig, const char *tag, device_t *owner, u32 clock, u8 mode) :
 	h8s2000_device(mconfig, SWX00, tag, owner, clock, address_map_constructor(FUNC(swx00_device::map), this)),
-	device_mixer_interface(mconfig, *this, 2),
+	device_mixer_interface(mconfig, *this),
 	m_intc(*this, "intc"),
 	m_adc(*this, "adc"),
 	m_dma(*this, "dma"),
@@ -99,18 +99,18 @@ void swx00_device::map(address_map &map)
 	map(0xfffea5, 0xfffea5).rw(m_timer16_5, FUNC(h8_timer16_channel_device::tsr_r), FUNC(h8_timer16_channel_device::tsr_w));
 	map(0xfffea6, 0xfffea7).rw(m_timer16_5, FUNC(h8_timer16_channel_device::tcnt_r), FUNC(h8_timer16_channel_device::tcnt_w));
 	map(0xfffea8, 0xfffeab).rw(m_timer16_5, FUNC(h8_timer16_channel_device::tgr_r), FUNC(h8_timer16_channel_device::tgr_w));
-	map(0xfffeb0, 0xfffeb0).w(m_port1, FUNC(h8_port_device::ddr_w));
-	map(0xfffeb1, 0xfffeb1).w(m_port2, FUNC(h8_port_device::ddr_w));
-	map(0xfffeb2, 0xfffeb2).w(m_port3, FUNC(h8_port_device::ddr_w));
-	map(0xfffeb4, 0xfffeb4).w(m_port5, FUNC(h8_port_device::ddr_w));
-	map(0xfffeb5, 0xfffeb5).w(m_port6, FUNC(h8_port_device::ddr_w));
-	map(0xfffeb9, 0xfffeb9).w(m_porta, FUNC(h8_port_device::ddr_w));
-	map(0xfffeba, 0xfffeba).w(m_portb, FUNC(h8_port_device::ddr_w));
-	map(0xfffebb, 0xfffebb).w(m_portc, FUNC(h8_port_device::ddr_w));
-	map(0xfffebc, 0xfffebc).w(m_portd, FUNC(h8_port_device::ddr_w));
-	map(0xfffebd, 0xfffebd).w(m_porte, FUNC(h8_port_device::ddr_w));
-	map(0xfffebe, 0xfffebe).w(m_portf, FUNC(h8_port_device::ddr_w));
-	map(0xfffebf, 0xfffebf).w(m_portg, FUNC(h8_port_device::ddr_w));
+	map(0xfffeb0, 0xfffeb0).rw(m_port1, FUNC(h8_port_device::ff_r), FUNC(h8_port_device::ddr_w));
+	map(0xfffeb1, 0xfffeb1).rw(m_port2, FUNC(h8_port_device::ff_r), FUNC(h8_port_device::ddr_w));
+	map(0xfffeb2, 0xfffeb2).rw(m_port3, FUNC(h8_port_device::ff_r), FUNC(h8_port_device::ddr_w));
+	map(0xfffeb4, 0xfffeb4).rw(m_port5, FUNC(h8_port_device::ff_r), FUNC(h8_port_device::ddr_w));
+	map(0xfffeb5, 0xfffeb5).rw(m_port6, FUNC(h8_port_device::ff_r), FUNC(h8_port_device::ddr_w));
+	map(0xfffeb9, 0xfffeb9).rw(m_porta, FUNC(h8_port_device::ff_r), FUNC(h8_port_device::ddr_w));
+	map(0xfffeba, 0xfffeba).rw(m_portb, FUNC(h8_port_device::ff_r), FUNC(h8_port_device::ddr_w));
+	map(0xfffebb, 0xfffebb).rw(m_portc, FUNC(h8_port_device::ff_r), FUNC(h8_port_device::ddr_w));
+	map(0xfffebc, 0xfffebc).rw(m_portd, FUNC(h8_port_device::ff_r), FUNC(h8_port_device::ddr_w));
+	map(0xfffebd, 0xfffebd).rw(m_porte, FUNC(h8_port_device::ff_r), FUNC(h8_port_device::ddr_w));
+	map(0xfffebe, 0xfffebe).rw(m_portf, FUNC(h8_port_device::ff_r), FUNC(h8_port_device::ddr_w));
+	map(0xfffebf, 0xfffebf).rw(m_portg, FUNC(h8_port_device::ff_r), FUNC(h8_port_device::ddr_w));
 	map(0xfffec0, 0xfffec2).rw(m_intc, FUNC(h8s_intc_device::icr_r), FUNC(h8s_intc_device::icr_w));
 	map(0xfffec4, 0xfffece).rw(m_intc, FUNC(h8s_intc_device::ipr_r), FUNC(h8s_intc_device::ipr_w));
 
@@ -316,8 +316,8 @@ void swx00_device::device_add_mconfig(machine_config &config)
 
 	SWX00_SOUND(config, m_swx00);
 	m_swx00->set_space(DEVICE_SELF, AS_S);
-	m_swx00->add_route(0, DEVICE_SELF, 1.0, AUTO_ALLOC_INPUT, 0);
-	m_swx00->add_route(1, DEVICE_SELF, 1.0, AUTO_ALLOC_INPUT, 1);
+	m_swx00->add_route(0, DEVICE_SELF, 1.0, 0);
+	m_swx00->add_route(1, DEVICE_SELF, 1.0, 1);
 }
 
 device_memory_interface::space_config_vector swx00_device::memory_space_config() const

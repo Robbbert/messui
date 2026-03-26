@@ -81,10 +81,10 @@ private:
 	void sf2mdt_soundlatch_w(offs_t offset, uint16_t data, uint16_t mem_mask = ~0);
 	void sf2mdta_layer_w(offs_t offset, uint16_t data);
 
-	void captcommb2_map(address_map &map);
-	void sf2b_map(address_map &map);
-	void sf2mdt_map(address_map &map);
-	void captcommb2_z80map(address_map &map);
+	void captcommb2_map(address_map &map) ATTR_COLD;
+	void sf2b_map(address_map &map) ATTR_COLD;
+	void sf2mdt_map(address_map &map) ATTR_COLD;
+	void captcommb2_z80map(address_map &map) ATTR_COLD;
 
 	bool m_captcommb2_mux_toggle = false;
 
@@ -227,7 +227,7 @@ void cps1bl_5205_state::knightsb_layer_w(offs_t offset, uint16_t data)
 				data = 0x1380;
 				break;
 			default:
-				printf ("Unknown control word = %X\n",data);
+				logerror("Unknown control word = %X\n", data);
 				data = 0x12c0;
 			}
 		m_cps_b_regs[m_layer_enable_reg / 2] = data;
@@ -271,7 +271,7 @@ void cps1bl_5205_state::sf2b_layer_w(offs_t offset, uint16_t data)
 		m_cps_b_regs[m_layer_enable_reg / 2] = data;
 		break;
 	default:
-		printf("%X:%X ",offset,data);
+		logerror("%X:%X ", offset,data);
 	}
 }
 
@@ -354,8 +354,7 @@ void cps1bl_5205_state::captcommb2(machine_config &config)
 	// xtals: 30MHz, 24MHz, 400KHz
 	M68000(config, m_maincpu, 24000000 / 2);   // 12MHz measured on pcb
 	m_maincpu->set_addrmap(AS_PROGRAM, &cps1bl_5205_state::captcommb2_map);
-	m_maincpu->set_vblank_int("screen", FUNC(cps1bl_5205_state::cps1_interrupt));
-	m_maincpu->set_addrmap(m68000_base_device::AS_CPU_SPACE, &cps1bl_5205_state::cpu_space_map);
+	m_maincpu->set_vblank_int("screen", FUNC(cps1bl_5205_state::irq2_line_hold));
 
 	Z80(config, m_audiocpu, 30000000 / 8);  // 3.75MHz measured on pcb
 	m_audiocpu->set_addrmap(AS_PROGRAM, &cps1bl_5205_state::captcommb2_z80map);
@@ -367,6 +366,7 @@ void cps1bl_5205_state::captcommb2(machine_config &config)
 	m_screen->set_raw(CPS_PIXEL_CLOCK, CPS_HTOTAL, CPS_HBEND, CPS_HBSTART, CPS_VTOTAL, CPS_VBEND, CPS_VBSTART);
 	m_screen->set_screen_update(FUNC(cps1bl_5205_state::screen_update_fcrash));
 	m_screen->screen_vblank().set(FUNC(cps1bl_5205_state::screen_vblank_cps1));
+	m_screen->screen_vblank().append(FUNC(cps1bl_5205_state::cps1_objram_latch));
 	m_screen->set_palette(m_palette);
 
 	GFXDECODE(config, m_gfxdecode, m_palette, gfx_cps1);
@@ -428,10 +428,11 @@ void cps1bl_5205_state::sf2mdt(machine_config &config)
 	m_screen->set_raw(CPS_PIXEL_CLOCK, CPS_HTOTAL, CPS_HBEND, CPS_HBSTART, CPS_VTOTAL, CPS_VBEND, CPS_VBSTART);
 	m_screen->set_screen_update(FUNC(cps1bl_5205_state::screen_update_fcrash));
 	m_screen->screen_vblank().set(FUNC(cps1bl_5205_state::screen_vblank_cps1));
+	m_screen->screen_vblank().append(FUNC(cps1bl_5205_state::cps1_objram_latch));
 	m_screen->set_palette(m_palette);
 
 	GFXDECODE(config, m_gfxdecode, m_palette, gfx_cps1);
-	PALETTE(config, m_palette, palette_device::BLACK).set_entries(4096);
+	PALETTE(config, m_palette, palette_device::BLACK).set_entries(0xc00);
 
 	/* sound hardware */
 	SPEAKER(config, "mono").front_center();
@@ -615,8 +616,6 @@ void cps1bl_5205_state::init_sf2b()
 	m_bootleg_sprite_ram = std::make_unique<uint16_t[]>(0x2000);
 	m_maincpu->space(AS_PROGRAM).install_ram(0x700000, 0x703fff, m_bootleg_sprite_ram.get());
 	m_maincpu->space(AS_PROGRAM).install_ram(0x704000, 0x707fff, m_bootleg_sprite_ram.get());
-
-	init_cps1();
 }
 
 void cps1bl_5205_state::init_sf2mdt()

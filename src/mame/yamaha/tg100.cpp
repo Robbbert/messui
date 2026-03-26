@@ -51,14 +51,15 @@ public:
 private:
 	required_device<h8520_device> m_maincpu;
 	required_device<multipcm_device> m_ymw258;
-	void tg100_map(address_map &map);
-	void ymw258_map(address_map &map);
+	void tg100_map(address_map &map) ATTR_COLD;
+	void ymw258_map(address_map &map) ATTR_COLD;
 };
 
 /* all memory accesses are decoded by the gate array... */
 void tg100_state::tg100_map(address_map &map)
 {
 	map(0x00000000, 0x0007ffff).ram(); /* gate array stuff */
+	map(0x00000000, 0x000000ff).rom().region("prgrom", 0x00000);
 	map(0x00080000, 0x0009ffff).rom().region("prgrom", 0x00000);
 }
 
@@ -76,13 +77,12 @@ void tg100_state::tg100(machine_config &config)
 	HD6435208(config, m_maincpu, XTAL(20'000'000));
 	m_maincpu->set_addrmap(AS_PROGRAM, &tg100_state::tg100_map);
 
-	SPEAKER(config, "lspeaker").front_left();
-	SPEAKER(config, "rspeaker").front_right();
+	SPEAKER(config, "speaker", 2).front();
 
 	MULTIPCM(config, m_ymw258, 9400000);
 	m_ymw258->set_addrmap(0, &tg100_state::ymw258_map);
-	m_ymw258->add_route(0, "lspeaker", 1.0);
-	m_ymw258->add_route(1, "rspeaker", 1.0);
+	m_ymw258->add_route(0, "speaker", 1.0, 0);
+	m_ymw258->add_route(1, "speaker", 1.0, 1);
 }
 
 ROM_START( tg100 )
@@ -90,7 +90,6 @@ ROM_START( tg100 )
 	ROM_LOAD( "xk731c0.ic4", 0x00000, 0x20000, CRC(8fb6139c) SHA1(483103a2ffc63a90a2086c597baa2b2745c3a1c2) )
 
 	ROM_REGION(0x4000, "maincpu", 0)
-	ROM_LOAD( "hd6435208a00p.bin", 0x0000, 0x4000, NO_DUMP )
 	ROM_COPY( "prgrom", 0x0000, 0x0000, 0x4000 )
 
 	ROM_REGION(0x200000, "ymw258", 0)

@@ -8482,6 +8482,127 @@ license:CC0-1.0
 		</part>
 	</software>
 
+	<software name="dgolf">
+		<description>NESert Golfing (v1.5)</description>
+		<year>2022</year>
+		<publisher>rainwarrior</publisher>
+		<info name="release" value="20221015" /> <!-- From NESertGolfing Git tag -->
+		<part name="cart" interface="nes_cart">
+			<feature name="slot" value="uxrom" />
+			<feature name="pcb" value="NES-UNROM" />
+			<feature name="mirroring" value="vertical" />
+			<dataarea name="prg" size="32768">
+				<rom name="dgolf prg" size="32768" crc="1629e5e2" sha1="9a77fbc6176099cbd86aa14141b340faba793f63" />
+			</dataarea>
+			<!-- 8k VRAM on cartridge -->
+			<dataarea name="vram" size="8192" />
+		</part>
+	</software>
+
+	<software name="dgolf14te" cloneof="dgolf">
+		<description>NESert Golfing Tournament Edition (v1.4)</description>
+		<year>2019</year>
+		<publisher>rainwarrior</publisher>
+		<info name="release" value="20191124" /> <!-- From NESertGolfing Git tag, apparently released earlier than this as downloads as early as 2019-11-10 exist -->
+		<part name="cart" interface="nes_cart">
+			<feature name="slot" value="uxrom" />
+			<feature name="pcb" value="NES-UNROM" />
+			<feature name="mirroring" value="vertical" />
+			<dataarea name="prg" size="32768">
+				<rom name="dgolf_te prg" size="32768" crc="3ec19565" sha1="24c243f3edd8f1ba9c7f55ef45a1b4110e68ba1a" />
+			</dataarea>
+			<!-- 8k VRAM on cartridge -->
+			<dataarea name="vram" size="8192" />
+		</part>
+	</software>
+
+	<software name="dgolf14" cloneof="dgolf">
+		<description>NESert Golfing (v1.4)</description>
+		<year>2019</year>
+		<publisher>rainwarrior</publisher>
+		<info name="release" value="20191006" /> <!-- From NESertGolfing Git tag -->
+		<part name="cart" interface="nes_cart">
+			<feature name="slot" value="uxrom" />
+			<feature name="pcb" value="NES-UNROM" />
+			<feature name="mirroring" value="vertical" />
+			<dataarea name="prg" size="32768">
+				<rom name="dgolf 1.4 prg" size="32768" crc="2eaadd18" sha1="c221ad67730e84728beb11ae841d6d7498066c19" />
+			</dataarea>
+			<!-- 8k VRAM on cartridge -->
+			<dataarea name="vram" size="8192" />
+		</part>
+	</software>
+
+	<!-- Author considers this the first proper release, and was -->
+	<!-- submitted to the NESDev competition. -->
+	<software name="dgolf13" cloneof="dgolf">
+		<description>NESert Golfing (v1.3)</description>
+		<year>2019</year>
+		<publisher>rainwarrior</publisher>
+		<info name="release" value="20190208" /> <!-- From NESertGolfing Git tag -->
+		<part name="cart" interface="nes_cart">
+			<feature name="slot" value="uxrom" />
+			<feature name="pcb" value="NES-UNROM" />
+			<feature name="mirroring" value="vertical" />
+			<dataarea name="prg" size="32768">
+				<rom name="dgolf 1.3 prg" size="32768" crc="2e0b16d5" sha1="e47620104ffde304c5c636218f6d998813a52c50" />
+			</dataarea>
+			<!-- 8k VRAM on cartridge -->
+			<dataarea name="vram" size="8192" />
+		</part>
+	</software>
+
+	<software name="dgolf12" cloneof="dgolf">
+		<description>NESert Golfing (beta v1.2)</description>
+		<year>2019</year>
+		<publisher>rainwarrior</publisher>
+		<info name="release" value="20190202" /> <!-- From NESertGolfing Git tag -->
+		<part name="cart" interface="nes_cart">
+			<feature name="slot" value="uxrom" />
+			<feature name="pcb" value="NES-UNROM" />
+			<feature name="mirroring" value="vertical" />
+			<dataarea name="prg" size="32768">
+				<rom name="dgolf 1.2 prg" size="32768" crc="7cce6964" sha1="6521da1d3d5e6526ad7979513226770d24dfceda" />
+			</dataarea>
+			<!-- 8k VRAM on cartridge -->
+			<dataarea name="vram" size="8192" />
+		</part>
+	</software>
+
+	<software name="dgolf11" cloneof="dgolf">
+		<description>NESert Golfing (beta v1.1)</description>
+		<year>2019</year>
+		<publisher>rainwarrior</publisher>
+		<info name="release" value="20190202" /> <!-- From NESertGolfing Git tag -->
+		<part name="cart" interface="nes_cart">
+			<feature name="slot" value="uxrom" />
+			<feature name="pcb" value="NES-UNROM" />
+			<feature name="mirroring" value="vertical" />
+			<dataarea name="prg" size="32768">
+				<rom name="dgolf 1.1 prg" size="32768" crc="a175cd8d" sha1="5b5dca5d093a3f396e2e7332597279b9458d8e11" />
+			</dataarea>
+			<!-- 8k VRAM on cartridge -->
+			<dataarea name="vram" size="8192" />
+		</part>
+	</software>
+
+	<software name="dgolf10" cloneof="dgolf">
+		<description>NESert Golfing (beta v1.0)</description>
+		<year>2019</year>
+		<publisher>rainwarrior</publisher>
+		<info name="release" value="20190201" /> <!-- From NESertGolfing Git tag -->
+		<part name="cart" interface="nes_cart">
+			<feature name="slot" value="uxrom" />
+			<feature name="pcb" value="NES-UNROM" />
+			<feature name="mirroring" value="vertical" />
+			<dataarea name="prg" size="32768">
+				<rom name="dgolf 1.0 prg" size="32768" crc="7b26bea4" sha1="67261747d51202535423eeed437a5186c72cea42" />
+			</dataarea>
+			<!-- 8k VRAM on cartridge -->
+			<dataarea name="vram" size="8192" />
+		</part>
+	</software>
+
 	<software name="dicktr">
 		<description>Dick Tracy (USA)</description>
 		<year>1990</year>
@@ -11716,7 +11837,8 @@ license:CC0-1.0
 		<info name="serial" value="HVC-BS"/>
 		<info name="release" value="19840621"/>
 		<info name="alt_title" value="ファミリーベーシック"/>
-		<sharedfeat name="exp_default" value="fc_keyboard"/>
+		<sharedfeat name="compatibility" value="EXP" />
+		<sharedfeat name="exp_default" value="fc_keyboard" />
 		<part name="cart" interface="nes_cart">
 			<feature name="slot" value="hvc_basic" />
 			<feature name="pcb_model" value="FB-R-128-01" />
@@ -11742,7 +11864,8 @@ license:CC0-1.0
 		<info name="serial" value="HVC-BS"/>
 		<info name="release" value="19840621"/>
 		<info name="alt_title" value="ファミリーベーシック"/>
-		<sharedfeat name="exp_default" value="fc_keyboard"/>
+		<sharedfeat name="compatibility" value="EXP" />
+		<sharedfeat name="exp_default" value="fc_keyboard" />
 		<part name="cart" interface="nes_cart">
 			<feature name="slot" value="hvc_basic" />
 			<feature name="pcb_model" value="FB-N-128-02" />
@@ -11768,7 +11891,8 @@ license:CC0-1.0
 		<info name="serial" value="HVC-VT"/>
 		<info name="release" value="19850221"/>
 		<info name="alt_title" value="ファミリーベーシックV3"/>
-		<sharedfeat name="exp_default" value="fc_keyboard"/>
+		<sharedfeat name="compatibility" value="EXP" />
+		<sharedfeat name="exp_default" value="fc_keyboard" />
 		<part name="cart" interface="nes_cart">
 			<feature name="slot" value="hvc_basic" />
 			<feature name="pcb_model" value="VT-N-256-41" />
@@ -12035,6 +12159,7 @@ license:CC0-1.0
 		<info name="serial" value="FT-01"/>
 		<info name="release" value="19861112"/>
 		<info name="alt_title" value="ファミリートレーナー① アスレチックワールド"/>
+		<sharedfeat name="compatibility" value="EXP" />
 		<sharedfeat name="exp_default" value="family_trainer"/>
 		<part name="cart" interface="nes_cart">
 			<feature name="slot" value="cnrom" />
@@ -12056,6 +12181,7 @@ license:CC0-1.0
 		<info name="serial" value="FT-01"/>
 		<info name="release" value="19861112"/>
 		<info name="alt_title" value="ファミリートレーナー① アスレチックワールド"/>
+		<sharedfeat name="compatibility" value="EXP" />
 		<sharedfeat name="exp_default" value="family_trainer"/>
 		<part name="cart" interface="nes_cart">
 			<feature name="slot" value="cnrom" />
@@ -12077,6 +12203,7 @@ license:CC0-1.0
 		<info name="serial" value="FT-02"/>
 		<info name="release" value="19861223"/>
 		<info name="alt_title" value="ファミリートレーナー② ランニングスタジアム"/>
+		<sharedfeat name="compatibility" value="EXP" />
 		<sharedfeat name="exp_default" value="family_trainer"/>
 		<part name="cart" interface="nes_cart">
 			<feature name="slot" value="cnrom" />
@@ -12098,6 +12225,7 @@ license:CC0-1.0
 		<info name="serial" value="FT-03"/>
 		<info name="release" value="19870226"/>
 		<info name="alt_title" value="ファミリートレーナー③ エアロビスタジオ"/>
+		<sharedfeat name="compatibility" value="EXP" />
 		<sharedfeat name="exp_default" value="family_trainer"/>
 		<part name="cart" interface="nes_cart">
 			<feature name="slot" value="bandai_pt554" />
@@ -12123,6 +12251,7 @@ license:CC0-1.0
 		<info name="serial" value="FT-04"/>
 		<info name="release" value="19870528"/>
 		<info name="alt_title" value="ファミリートレーナー④ ジョギングレース"/>
+		<sharedfeat name="compatibility" value="EXP" />
 		<sharedfeat name="exp_default" value="family_trainer"/>
 		<part name="cart" interface="nes_cart">
 			<feature name="slot" value="cnrom" />
@@ -12144,6 +12273,7 @@ license:CC0-1.0
 		<info name="serial" value="FT-05"/>
 		<info name="release" value="19870731"/>
 		<info name="alt_title" value="ファミリートレーナー⑤ 迷路大作戦"/>
+		<sharedfeat name="compatibility" value="EXP" />
 		<sharedfeat name="exp_default" value="family_trainer"/>
 		<part name="cart" interface="nes_cart">
 			<feature name="slot" value="discrete_74x161" />
@@ -12165,6 +12295,7 @@ license:CC0-1.0
 		<info name="serial" value="FT-07"/>
 		<info name="release" value="19871127"/>
 		<info name="alt_title" value="ファミリートレーナー⑦ ファミトレ大運動会"/>
+		<sharedfeat name="compatibility" value="EXP" />
 		<sharedfeat name="exp_default" value="family_trainer"/>
 		<part name="cart" interface="nes_cart">
 			<feature name="slot" value="cnrom" />
@@ -12186,6 +12317,7 @@ license:CC0-1.0
 		<info name="serial" value="FT-08"/>
 		<info name="release" value="19871201"/>
 		<info name="alt_title" value="ファミリートレーナー⑧ 突撃!風雲たけし城"/>
+		<sharedfeat name="compatibility" value="EXP" />
 		<sharedfeat name="exp_default" value="family_trainer"/>
 		<part name="cart" interface="nes_cart">
 			<feature name="slot" value="cnrom" />
@@ -12207,6 +12339,7 @@ license:CC0-1.0
 		<info name="serial" value="FT-09"/>
 		<info name="release" value="19881220"/>
 		<info name="alt_title" value="ファミリートレーナー⑨ 風雲たけし城二"/>
+		<sharedfeat name="compatibility" value="EXP" />
 		<sharedfeat name="exp_default" value="family_trainer"/>
 		<part name="cart" interface="nes_cart">
 			<feature name="slot" value="gxrom" />
@@ -13694,6 +13827,50 @@ license:CC0-1.0
 			</dataarea>
 			<dataarea name="chr" size="8192">
 				<rom name="nes-ag-0 chr" size="8192" crc="e2d5964e" sha1="62b2cd49a6a4c6f1e2b0742db3b7493e167e9a23" offset="00000" />
+			</dataarea>
+		</part>
+	</software>
+
+	<software name="galagahal" supported="partial">
+		<description>Galaga (prototype)</description>
+		<year>1988?</year>
+		<publisher>HAL Laboratory</publisher>
+		<notes><![CDATA[
+Entirely different from Namco's port. The CHR ROM to this prototype is lost.
+]]></notes>
+		<info name="serial" value="NES-JU-USA"/>
+		<part name="cart" interface="nes_cart">
+			<feature name="slot" value="nrom" />
+			<feature name="pcb" value="HVC-NROM-128" />
+			<feature name="mirroring" value="horizontal" />
+			<dataarea name="prg" size="32768">
+				<rom name="galaga.prg" size="16384" crc="92467be0" sha1="972a2602d1eff57a42263245ecc97ba476a2173c" offset="00000" />
+				<rom size="16384" offset="0x4000" loadflag="reload" />
+			</dataarea>
+			<dataarea name="chr" size="8192">
+				<rom name="chr" size="8192" status="nodump" />  <!-- CHR ROM missing -->
+			</dataarea>
+		</part>
+	</software>
+
+	<software name="galagahalg" cloneof="galagahal">
+		<description>Galaga (prototype, with recreated graphics)</description>
+		<year>1988?</year>
+		<publisher>HAL Laboratory</publisher>
+		<notes><![CDATA[
+The graphics for the recreated CHR ROM were mostly sourced from HAL's port of Stargate and from the arcade version of Galaga.
+]]></notes>
+		<info name="serial" value="NES-JU-USA"/>
+		<part name="cart" interface="nes_cart">
+			<feature name="slot" value="nrom" />
+			<feature name="pcb" value="HVC-NROM-128" />
+			<feature name="mirroring" value="horizontal" />
+			<dataarea name="prg" size="32768">
+				<rom name="galaga.prg" size="16384" crc="92467be0" sha1="972a2602d1eff57a42263245ecc97ba476a2173c" offset="00000" />
+				<rom size="16384" offset="0x4000" loadflag="reload" />
+			</dataarea>
+			<dataarea name="chr" size="8192">
+				<rom name="chr" size="8192" crc="bab53928" sha1="2c5b17a25e2b7db497096a1d28b3412e4aaa1ed2" offset="00000" status="baddump" /> <!-- Custom CHR ROM with recreated graphics -->
 			</dataarea>
 		</part>
 	</software>
@@ -22076,6 +22253,181 @@ license:CC0-1.0
 		</part>
 	</software>
 
+	<software name="lj65">
+		<description>LJ65 (0.41, NTSC)</description>
+		<year>2009</year>
+		<publisher>Pin Eight</publisher>
+		<info name="release" value="20090602" />
+		<info name="version" value="0.41" />
+		<part name="cart" interface="nes_cart">
+			<feature name="slot" value="nrom" />
+			<feature name="pcb" value="NES-NROM-128" />
+			<feature name="mirroring" value="horizontal" />
+			<dataarea name="prg" size="32768">
+				<rom name="lj65 0.41 prg" size="16384" crc="2c54109c" sha1="4d27a00707e05dbfe98af524c54e21f28d837641" offset="00000" />
+				<rom size="16384" offset="0x4000" loadflag="reload" />
+			</dataarea>
+			<dataarea name="chr" size="8192">
+				<rom name="lj65 0.41 chr" size="8192" crc="de91b2e6" sha1="b1f4389010a908c1cedd2b632b5abace4263899b" offset="00000" />
+			</dataarea>
+			<!-- 8k WRAM on cartridge -->
+			<dataarea name="wram" size="8192" />
+		</part>
+	</software>
+
+	<software name="lj65pal" cloneof="lj65">
+		<description>LJ65 (0.41, PAL)</description>
+		<year>2009</year>
+		<publisher>Pin Eight</publisher>
+		<info name="release" value="20090602" />
+		<info name="version" value="0.41" />
+		<part name="cart" interface="nes_cart">
+			<feature name="slot" value="nrom" />
+			<feature name="pcb" value="NES-NROM-128" />
+			<feature name="mirroring" value="horizontal" />
+			<dataarea name="prg" size="32768">
+				<rom name="lj65-pal 0.41 prg" size="16384" crc="fffbc8ea" sha1="ccc6bb05aeb9a168097273113e53f2a79a804d73" offset="00000" />
+				<rom size="16384" offset="0x4000" loadflag="reload" />
+			</dataarea>
+			<dataarea name="chr" size="8192">
+				<rom name="lj65 0.41 chr" size="8192" crc="de91b2e6" sha1="b1f4389010a908c1cedd2b632b5abace4263899b" offset="00000" />
+			</dataarea>
+			<!-- 8k WRAM on cartridge -->
+			<dataarea name="wram" size="8192" />
+		</part>
+	</software>
+
+	<software name="tetram30" cloneof="lj65">
+		<description>Tetramino (0.30, NTSC)</description>
+		<year>2007</year>
+		<publisher>Pin Eight</publisher>
+		<info name="release" value="20070218" />
+		<info name="version" value="0.30" />
+		<part name="cart" interface="nes_cart">
+			<feature name="slot" value="nrom" />
+			<feature name="pcb" value="NES-NROM-128" />
+			<feature name="mirroring" value="horizontal" />
+			<dataarea name="prg" size="32768">
+				<rom name="tetramino 0.30 prg" size="16384" crc="546ff8b1" sha1="ced291dc67243d351ed80bb755682ae4fbcd8277" offset="00000" />
+				<rom size="16384" offset="0x4000" loadflag="reload" />
+			</dataarea>
+			<dataarea name="chr" size="8192">
+				<rom name="tetramino 0.30 chr" size="8192" crc="9a4b6cfd" sha1="6cc933bf0df4aa1946106e1d80831c0f8e2c6faa" offset="00000" />
+			</dataarea>
+			<!-- 8k WRAM on cartridge -->
+			<dataarea name="wram" size="8192" />
+		</part>
+	</software>
+
+	<software name="tetram30pal" cloneof="lj65">
+		<description>Tetramino (0.30, PAL)</description>
+		<year>2007</year>
+		<publisher>Pin Eight</publisher>
+		<info name="release" value="20070218" />
+		<info name="version" value="0.30" />
+		<part name="cart" interface="nes_cart">
+			<feature name="slot" value="nrom" />
+			<feature name="pcb" value="NES-NROM-128" />
+			<feature name="mirroring" value="horizontal" />
+			<dataarea name="prg" size="32768">
+				<rom name="tetramino-pal 0.30 prg" size="16384" crc="22fca23b" sha1="6dec4e7b8ab198637f96f33098f5c0d024d3fcea" offset="00000" />
+				<rom size="16384" offset="0x4000" loadflag="reload" />
+			</dataarea>
+			<dataarea name="chr" size="8192">
+				<rom name="tetramino 0.30 chr" size="8192" crc="9a4b6cfd" sha1="6cc933bf0df4aa1946106e1d80831c0f8e2c6faa" offset="00000" />
+			</dataarea>
+			<!-- 8k WRAM on cartridge -->
+			<dataarea name="wram" size="8192" />
+		</part>
+	</software>
+
+	<software name="tetram27" cloneof="lj65">
+		<description>Tetramino (0.27, NTSC)</description>
+		<year>2005</year>
+		<publisher>Pin Eight</publisher>
+		<info name="release" value="20051029" />
+		<info name="version" value="0.27" />
+		<part name="cart" interface="nes_cart">
+			<feature name="slot" value="nrom" />
+			<feature name="pcb" value="NES-NROM-128" />
+			<feature name="mirroring" value="horizontal" />
+			<dataarea name="prg" size="32768">
+				<rom name="tetramino 0.27 prg" size="16384" crc="1497769d" sha1="79ae948bc1ca3787738ed6a94e91045ef8f44d55" offset="00000" />
+				<rom size="16384" offset="0x4000" loadflag="reload" />
+			</dataarea>
+			<dataarea name="chr" size="8192">
+				<rom name="tetramino 0.27 chr" size="8192" crc="9b83a887" sha1="6ba81be4e23f3a38a80ddeba69bf11c6efd3476d" offset="00000" />
+			</dataarea>
+			<!-- 8k WRAM on cartridge -->
+			<dataarea name="wram" size="8192" />
+		</part>
+	</software>
+
+	<software name="tetram27pal" cloneof="lj65">
+		<description>Tetramino (0.27, PAL)</description>
+		<year>2005</year>
+		<publisher>Pin Eight</publisher>
+		<info name="release" value="20051029" />
+		<info name="version" value="0.27" />
+		<part name="cart" interface="nes_cart">
+			<feature name="slot" value="nrom" />
+			<feature name="pcb" value="NES-NROM-128" />
+			<feature name="mirroring" value="horizontal" />
+			<dataarea name="prg" size="32768">
+				<rom name="tetramino-pal 0.27 prg" size="16384" crc="d55a6236" sha1="0b3effe6edc1699dc9d4c3294839591331ae6d1b" offset="00000" />
+				<rom size="16384" offset="0x4000" loadflag="reload" />
+			</dataarea>
+			<dataarea name="chr" size="8192">
+				<rom name="tetramino 0.27 chr" size="8192" crc="9b83a887" sha1="6ba81be4e23f3a38a80ddeba69bf11c6efd3476d" offset="00000" />
+			</dataarea>
+			<!-- 8k WRAM on cartridge -->
+			<dataarea name="wram" size="8192" />
+		</part>
+	</software>
+
+	<software name="tetram2" cloneof="lj65">
+		<description>Tetramino (0.2)</description>
+		<year>2003</year>
+		<publisher>Pin Eight</publisher>
+		<info name="release" value="20031217" />
+		<info name="version" value="0.2" />
+		<part name="cart" interface="nes_cart">
+			<feature name="slot" value="nrom" />
+			<feature name="pcb" value="NES-NROM-256" />
+			<feature name="mirroring" value="horizontal" />
+			<dataarea name="prg" size="32768">
+				<rom name="tetramino 0.2 prg" size="16384" crc="6b69b03d" sha1="6c92b8c9f5e5ec9be99a96ba9a134e0a85bd1139" offset="00000" />
+				<rom size="16384" offset="0x4000" loadflag="reload" />
+			</dataarea>
+			<dataarea name="chr" size="8192">
+				<rom name="tetramino 0.2 chr" size="8192" crc="f883d794" sha1="b940c8f1dcb19be7b6aefb303b184386c82ca1bc" offset="00000" />
+			</dataarea>
+			<!-- 8k WRAM on cartridge -->
+			<dataarea name="wram" size="8192" />
+		</part>
+	</software>
+
+	<software name="tetram1" cloneof="lj65">
+		<description>Tetramino (0.1)</description>
+		<year>2003</year>
+		<publisher>Pin Eight</publisher>
+		<info name="release" value="20031101" />
+		<info name="version" value="0.1" />
+		<part name="cart" interface="nes_cart">
+			<feature name="slot" value="nrom" />
+			<feature name="pcb" value="NES-NROM-256" />
+			<feature name="mirroring" value="horizontal" />
+			<dataarea name="prg" size="32768">
+				<rom name="tetramino 0.1 prg" size="32768" crc="80fe53e0" sha1="790bc8d2d844b4f49a5ece72d91d6bcac8414c5b" offset="00000" />
+			</dataarea>
+			<dataarea name="chr" size="8192">
+				<rom name="tetramino 0.1 chr" size="8192" crc="2e87f789" sha1="6544d571d5d0bf1b9dc028fd06aa3dc853c33199" offset="00000" />
+			</dataarea>
+			<!-- 8k WRAM on cartridge -->
+			<dataarea name="wram" size="8192" />
+		</part>
+	</software>
+
 	<software name="lonerang">
 		<description>The Lone Ranger (USA)</description>
 		<year>1991</year>
@@ -24623,6 +24975,43 @@ license:CC0-1.0
 			</dataarea>
 			<!-- 8k VRAM on cartridge -->
 			<dataarea name="vram" size="8192" />
+		</part>
+	</software>
+
+	<software name="micromages">
+		<description>Micro Mages</description>
+		<year>2019</year>
+		<publisher>Morphcat Games</publisher>
+		<info name="serial" value="NES-MM-MCG" />
+		<info name="release" value="20190212" />
+		<part name="cart" interface="nes_cart">
+		<feature name="slot" value="nrom" />
+		<feature name="pcb" value="NES-NROM-256" />
+		<feature name="mirroring" value="horizontal" />
+		<dataarea name="prg" size="32768">
+			<rom name="Micro Mages prg" size="32768" crc="1f4aa740" sha1="c1f0e973815687e06086e57a615abc116aa37e61" />
+		</dataarea>
+		<dataarea name="chr" size="8192">
+			<rom name="Micro Mages chr" size="8192" crc="24144d94" sha1="e08bec8c93dce07262be37c7cceb7019817bea69" />
+		</dataarea>
+		</part>
+	</software>
+
+	<software name="micromages2">
+		<description>Micro Mages Second Quest</description>
+		<year>2022</year>
+		<publisher>Morphcat Games</publisher>
+		<info name="release" value="20220915" />
+		<part name="cart" interface="nes_cart">
+			<feature name="slot" value="nrom" />
+			<feature name="pcb" value="NES-NROM-256" />
+			<feature name="mirroring" value="horizontal" />
+			<dataarea name="prg" size="32768">
+				<rom name="Micro Mages Second Quest prg" size="32768" crc="94cd391e" sha1="de626fd4556f8377c2c09928c7c89f333301cbe1" />
+			</dataarea>
+			<dataarea name="chr" size="8192">
+				<rom name="Micro Mages Second Quest chr" size="8192" crc="6f579478" sha1="73dea6d0bd2f8a9fb47e9d6329c9ebb8c9ace37b" />
+			</dataarea>
 		</part>
 	</software>
 
@@ -28445,6 +28834,24 @@ license:CC0-1.0
 		</part>
 	</software>
 
+	<!-- https://forums.nesdev.org/viewtopic.php?t=4965 -->
+	<software name="pcmdemo">
+		<description>PCM Demo With Graphics</description>
+		<year>2009</year>
+		<publisher>frantik</publisher>
+		<info name="release" value="20090317"/>
+		<info name="alt_title" value="Rick Rolled!"/>
+		<part name="cart" interface="nes_cart">
+			<feature name="slot" value="uxrom"/>
+			<feature name="pcb" value="NES-UNROM"/>
+			<feature name="mirroring" value="horizontal"/>
+			<dataarea name="prg" size="262144">
+				<rom name="pcm demo wgraphics" size="262144" crc="3c5be639" sha1="07d361a75b3d445607667a114c581d9a594958ff"/>
+			</dataarea>
+			<dataarea name="vram" size="8192"/>
+		</part>
+	</software>
+
 	<software name="peepart">
 		<description>Peepar Time (Japan)</description>
 		<year>1990</year>
@@ -29028,6 +29435,62 @@ license:CC0-1.0
 			</dataarea>
 			<dataarea name="chr" size="8192">
 				<rom name="hvc-en-0 chr" size="8192" crc="fccc0f36" sha1="3566709c3c74960ce2ee1e60a85d026e70d7fd2c" offset="00000" />
+			</dataarea>
+		</part>
+	</software>
+
+	<software name="popils" supported="partial">
+		<description>Magical Puzzle Popils (prototype)</description>
+		<year>1989</year>
+		<publisher>Tengen</publisher>
+		<notes><![CDATA[
+The EEPROM chip that contained the sequence data for the music and sound effects could not be found, which means that the game no longer has any audio to play at all.
+]]></notes>
+		<part name="cart" interface="nes_cart">
+			<feature name="slot" value="namcot_3433" />
+			<feature name="pcb" value="TENGEN-800030" />
+			<feature name="mirroring" value="vertical" />
+			<dataarea name="chr" size="0x10000">
+				<rom name="popil chr0.bin" size="0x8000" crc="18fa74c0" sha1="64672be98a4745ceca3863759e586a6778e3958a" offset="0x00000" />
+				<rom name="popil chr1.bin" size="0x8000" crc="5980514c" sha1="8f793c1a9d587a2f60eaa22c14eca2fea53fe71b" offset="0x08000" />
+			</dataarea>
+			<dataarea name="prg" size="0x20000">
+				<rom name="popil prg0.bin" size="0x8000" status="nodump" /> <!-- EEPROM chip for the sound data, not found with the others -->
+				<rom name="popil prg1.bin" size="0x8000" crc="2ce83498" sha1="d3fc1b7cadb9be9de1a6028ef59df700a6e8588a" offset="0x08000" />
+				<rom name="popil prg2.bin" size="0x8000" crc="d0a719a8" sha1="bef214d4670df0b5eb44b1760b58a3b1f87f8fb5" offset="0x10000" />
+				<rom name="popil prg3.bin" size="0x8000" crc="b7b8b773" sha1="cb90b4ddfe0e5b7213905301292882be97f5a852" offset="0x18000" />
+			</dataarea>
+			<!-- 8k WRAM on cartridge, battery backed up -->
+			<dataarea name="bwram" size="0x2000">
+				<rom value="0x00" size="0x2000" offset="0" loadflag="fill" />
+			</dataarea>
+		</part>
+	</software>
+
+	<software name="popilss" cloneof="popils">
+		<description>Magical Puzzle Popils (prototype, with recreated sound)</description>
+		<year>1989</year>
+		<publisher>Tengen</publisher>
+		<notes><![CDATA[
+This mod inserts recreations of the music tracks and sound effects into the prototype. This was done by porting the sequence data of all sounds found in the Game Gear version, along with doing many adjustments (ASDR, vibrato and note transposing edits) to match the audio heard in Jun Amanai’s gameplay videos as closely as possible.
+]]></notes>
+		<part name="cart" interface="nes_cart">
+			<feature name="slot" value="namcot_3433" />
+			<feature name="pcb" value="TENGEN-800030" />
+			<feature name="mirroring" value="vertical" />
+			<dataarea name="chr" size="0x10000">
+				<rom name="popil chr0.bin" size="0x8000" crc="18fa74c0" sha1="64672be98a4745ceca3863759e586a6778e3958a" offset="0x00000" />
+				<rom name="popil chr1.bin" size="0x8000" crc="5980514c" sha1="8f793c1a9d587a2f60eaa22c14eca2fea53fe71b" offset="0x08000" />
+			</dataarea>
+			<dataarea name="prg" size="0x20000">
+				<rom name="prg0" size="0x8000" crc="90da0dd3" sha1="7db3ea71db43d4df7d75851f485d57620d3d57f3" offset="0" status="baddump" /> <!-- EEPROM chip for the sound data, recreated using the Game Gear version's sound data -->
+				<rom name="popil prg1.bin" size="0x8000" crc="2ce83498" sha1="d3fc1b7cadb9be9de1a6028ef59df700a6e8588a" offset="0x08000" />
+				<rom name="popil prg2.bin" size="0x8000" crc="d0a719a8" sha1="bef214d4670df0b5eb44b1760b58a3b1f87f8fb5" offset="0x10000" />
+				<rom name="popil prg3.bin" size="0x8000" crc="b7b8b773" sha1="cb90b4ddfe0e5b7213905301292882be97f5a852" offset="0x18000" />
+			</dataarea>
+			<!-- 8k WRAM on cartridge, battery backed up -->
+			<dataarea name="bwram" size="0x2000">
+				<rom value="0x00" size="0x2000" offset="0" loadflag="fill" />
 			</dataarea>
 		</part>
 	</software>
@@ -31758,6 +32221,43 @@ license:CC0-1.0
 			<feature name="mmc1_type" value="MMC1" />
 			<dataarea name="prg" size="131072">
 				<rom name="tks-g2-0 prg" size="131072" crc="cf9cf7a2" sha1="6ddcd59dc386a2e6a69c32bf0ceb9a9fe3e80bfc" offset="00000" />
+			</dataarea>
+			<!-- 8k VRAM on cartridge -->
+			<dataarea name="vram" size="8192" />
+		</part>
+	</software>
+
+	<software name="roniu">
+		<description>Roniu's Tale</description>
+		<year>2022</year>
+		<publisher>Mega Cat Studios</publisher>
+		<info name="developer" value="Kunjee Studio" />
+		<info name="release" value="20220221" />
+		<part name="cart" interface="nes_cart">
+			<feature name="slot" value="uxrom" />
+			<feature name="pcb" value="NES-UNROM" />
+			<feature name="mirroring" value="vertical" />
+			<dataarea name="prg" size="262144">
+				<rom name="roniu's tale" size="262144" crc="22accf19" sha1="7217551cfebd33fb5501a8dc57560b9d576ff842" />
+			</dataarea>
+			<!-- 8k VRAM on cartridge -->
+			<dataarea name="vram" size="8192" />
+		</part>
+	</software>
+
+	<!-- Original file name is "Ronius_Tale_NewDemo.nes". Do older versions exist? -->
+	<software name="roniudemo" cloneof="roniu">
+		<description>Roniu's Tale (demo version)</description>
+		<year>2021</year>
+		<publisher>Mega Cat Studios</publisher>
+		<info name="developer" value="Kunjee Studio" />
+		<info name="release" value="20210908" />
+		<part name="cart" interface="nes_cart">
+			<feature name="slot" value="uxrom" />
+			<feature name="pcb" value="NES-UNROM" />
+			<feature name="mirroring" value="vertical" />
+			<dataarea name="prg" size="262144">
+				<rom name="roniu's tale demo" size="262144" crc="a0b8cb59" sha1="9f89467cbaf7adbbe42c7226358a484732027c07" />
 			</dataarea>
 			<!-- 8k VRAM on cartridge -->
 			<dataarea name="vram" size="8192" />
@@ -44012,7 +44512,8 @@ We should eventually add it to MAME as a separate driver with a NES CPU and a GB
 		<description>Playbox BASIC (Japan, V1.0)</description>
 		<year>198?</year>
 		<publisher>Nintendo / Hudson Soft / Sharp</publisher>
-		<sharedfeat name="exp_default" value="fc_keyboard"/>
+		<sharedfeat name="compatibility" value="EXP" />
+		<sharedfeat name="exp_default" value="fc_keyboard" />
 		<part name="cart" interface="nes_cart">
 			<feature name="slot" value="hvc_basic" />
 			<feature name="mirroring" value="vertical" />
@@ -44033,7 +44534,8 @@ We should eventually add it to MAME as a separate driver with a NES CPU and a GB
 		<description>Playbox BASIC (Japan, V0.0)</description>
 		<year>198?</year>
 		<publisher>Nintendo / Hudson Soft / Sharp</publisher>
-		<sharedfeat name="exp_default" value="fc_keyboard"/>
+		<sharedfeat name="compatibility" value="EXP" />
+		<sharedfeat name="exp_default" value="fc_keyboard" />
 		<part name="cart" interface="nes_cart">
 			<feature name="slot" value="hvc_basic" />
 			<feature name="pcb" value="HVC-FAMILYBASIC" />
@@ -45963,6 +46465,57 @@ preliminary proto for the PAL version, still running on NTSC systems) or the gfx
 		</part>
 	</software>
 
+	<software name="dpadherov10" cloneof="dpadhero">
+		<description>D-Pad Hero (version 1.0)</description>
+		<year>2009</year>
+		<publisher>D-Pad Hero Team</publisher>
+		<info name="release" value="20090131" />
+		<part name="cart" interface="nes_cart">
+			<feature name="slot" value="txrom" />
+			<feature name="pcb" value="NES-TLROM" /> <!-- original download is an iNES file -->
+			<dataarea name="prg" size="131072">
+				<rom name="dpadhero-1.0 prg" size="131072" crc="b824fa19" sha1="c80a2acb8b39982c0764d84051736dd799854712" />
+			</dataarea>
+			<dataarea name="chr" size="131072">
+				<rom name="dpadhero chr" size="131072" crc="85db1444" sha1="6384b0eb3e036287393ef98811949252e37233bf" />
+			</dataarea>
+		</part>
+	</software>
+
+	<software name="dpadhero">
+		<description>D-Pad Hero (version 1.1)</description>
+		<year>2009</year>
+		<publisher>D-Pad Hero Team</publisher>
+		<info name="release" value="20090204" />
+		<part name="cart" interface="nes_cart">
+			<feature name="slot" value="txrom" />
+			<feature name="pcb" value="NES-TLROM" /> <!-- original download is an iNES file -->
+			<dataarea name="prg" size="131072">
+				<rom name="dpadhero prg" size="131072" crc="9afe169b" sha1="7b7804e4bcfa0d8c389789a404d7cd62a4f9ed9f" />
+			</dataarea>
+			<dataarea name="chr" size="131072">
+				<rom name="dpadhero chr" size="131072" crc="85db1444" sha1="6384b0eb3e036287393ef98811949252e37233bf" />
+			</dataarea>
+		</part>
+	</software>
+
+	<software name="dpadhero2">
+		<description>D-Pad Hero II</description>
+		<year>2010</year>
+		<publisher>D-Pad Hero Team</publisher>
+		<info name="release" value="20100514" />
+		<part name="cart" interface="nes_cart">
+			<feature name="slot" value="txrom" />
+			<feature name="pcb" value="NES-TLROM" /> <!-- original download is an iNES file -->
+			<dataarea name="prg" size="131072">
+				<rom name="dpadhero2 prg" size="131072" crc="0105cfe8" sha1="2a97bc3951777c2f8249c7b565b8b7e38eea93c6" />
+			</dataarea>
+			<dataarea name="chr" size="131072">
+				<rom name="dpadhero2 chr" size="131072" crc="f44a6f24" sha1="8db48088aae7b93a8cccfffe07bb86ba23c14051" />
+			</dataarea>
+		</part>
+	</software>
+
 	<software name="drmariop2" cloneof="drmario">
 		<description>Dr. Mario (prototype, alt 2)</description>
 		<year>1990</year>
@@ -46465,7 +47018,8 @@ preliminary proto for the PAL version, still running on NTSC systems) or the gfx
 		<info name="serial" value="HVC-BS"/>
 		<info name="release" value="19840621"/>
 		<info name="alt_title" value="ファミリーベーシック"/>
-		<sharedfeat name="exp_default" value="fc_keyboard"/>
+		<sharedfeat name="compatibility" value="EXP" />
+		<sharedfeat name="exp_default" value="fc_keyboard" />
 		<part name="cart" interface="nes_cart">
 			<feature name="slot" value="hvc_basic" />
 			<feature name="pcb_model" value="FB-R-128-01" />
@@ -46505,6 +47059,8 @@ preliminary proto for the PAL version, still running on NTSC systems) or the gfx
 		<description>Family Trainer 10 - Rairai Kyonshiizu - Baby Kyonshii no Amida Daibouken (Japan, prototype)</description>
 		<year>1989</year>
 		<publisher>Bandai</publisher>
+		<sharedfeat name="compatibility" value="EXP" />
+		<sharedfeat name="exp_default" value="family_trainer"/>
 		<part name="cart" interface="nes_cart">
 			<feature name="slot" value="cnrom" />
 			<feature name="pcb" value="NES-CNROM" />
@@ -46526,6 +47082,8 @@ preliminary proto for the PAL version, still running on NTSC systems) or the gfx
 		<info name="serial" value="FT-10"/>
 		<info name="release" value="19890131"/>
 		<info name="alt_title" value="来来キョンシーズ ベビーキョンシーのあみだ大冒険"/>
+		<sharedfeat name="compatibility" value="EXP" />
+		<sharedfeat name="exp_default" value="family_trainer"/>
 		<part name="cart" interface="nes_cart">
 			<feature name="slot" value="cnrom" />
 			<feature name="pcb" value="NES-CNROM" />
@@ -46540,6 +47098,7 @@ preliminary proto for the PAL version, still running on NTSC systems) or the gfx
 		</part>
 	</software>
 
+
 	<software name="train6mp" cloneof="streetcp">
 		<description>Family Trainer 6 - Manhattan Police (Japan)</description>
 		<year>1987</year>
@@ -46547,6 +47106,8 @@ preliminary proto for the PAL version, still running on NTSC systems) or the gfx
 		<info name="serial" value="FT-06"/>
 		<info name="release" value="19870801"/>
 		<info name="alt_title" value="ファミリートレーナー⑥ マンハッタンポリス"/>
+		<sharedfeat name="compatibility" value="EXP" />
+		<sharedfeat name="exp_default" value="family_trainer"/>
 		<part name="cart" interface="nes_cart">
 			<feature name="slot" value="discrete_74x161" />
 			<feature name="pcb" value="BANDAI-74*161/161/32" />
@@ -79584,6 +80145,22 @@ be better to redump them properly. -->
 		</part>
 	</software>
 
+	<software name="xmas23" supported="no">
+		<description>8-bit Xmas 2023</description>
+		<year>2023</year>
+		<publisher>retroUSB</publisher>
+		<info name="serial" value="RET-Y3-GBL"/>
+		<part name="cart" interface="nes_cart">
+			<feature name="slot" value="8bitxmas" />
+			<feature name="mirroring" value="vertical" />
+			<dataarea name="prg" size="0x20000">
+				<rom name="xmas23demo.prg" size="0x20000" crc="7c30674c" sha1="b1aa0d0ab8dab24f7dda27036d8dd12f1d6b7bea" />
+			</dataarea>
+			<!-- 32k VRAM on cartridge? -->
+			<dataarea name="vram" size="0x8000" />
+		</part>
+	</software>
+
 	<software name="musicpow">
 		<description>8Bit Music Power</description>
 		<year>2016</year>
@@ -80970,6 +81547,27 @@ be better to redump them properly. -->
 			<dataarea name="prg" size="131072">
 				<rom name="150-in-1 (mapper 202) [p1].prg" size="131072" crc="74a91246" sha1="8fffe4681171070208c494657de90ac979edba45" offset="00000" status="baddump" />
 			</dataarea>
+		</part>
+	</software>
+
+	<!-- Hangs when selecting a game from the game list screen -->
+	<software name="mc_150cbhk" supported="no">
+		<description>150 Chāojí Bàng Hé Kǎ</description> <!-- 150 Super Cool Cards -->
+		<year>19??</year>
+		<publisher>&lt;pirate&gt;</publisher>
+		<info name="alt_title" value="150 超級棒合卡"/>
+		<part name="cart" interface="nes_cart">
+			<feature name="slot" value="bmc_ds927" />
+			<dataarea name="prg" size="1048576">
+				<rom name="donald1.bin" size="1048576" crc="fc210050" sha1="d698f54d5e225c95c0886009720bbb688c97020e" />
+			</dataarea>
+			<dataarea name="pld" size="0x104">
+				<rom name="pal16l8acn.bin" size="0x104" crc="d89af856" sha1="90e0fef5e63568ddd65ad571507986321ace7f02" />
+			</dataarea>
+			<!-- 8k VRAM on cartridge -->
+			<dataarea name="vram" size="8192" />
+			<!-- 8k WRAM on cartridge -->
+			<dataarea name="wram" size="8192" />
 		</part>
 	</software>
 

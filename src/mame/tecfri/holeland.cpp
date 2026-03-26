@@ -11,9 +11,7 @@
     - In stop mode press p1 start to freeze the screen, p2 start to resume
 
     TODO:
-    - missing high bit of sprite X coordinate? (see round 2 and 3 of attract
-      mode in crzrally)
-    - crzrally: emulate steering wheel;
+    - crzrally: emulate steering wheel
 
 ***************************************************************************/
 
@@ -70,10 +68,8 @@ protected:
 	void colorram_w(offs_t offset, uint8_t data);
 	void pal_offs_w(uint8_t data);
 	void scroll_w(uint8_t data);
-	void flipscreen_x_w(int state);
-	void flipscreen_y_w(int state);
 
-	void io_map(address_map &map);
+	void io_map(address_map &map) ATTR_COLD;
 };
 
 class holeland_state : public base_state
@@ -86,13 +82,13 @@ public:
 	void holeland(machine_config &config);
 
 protected:
-	virtual void video_start() override;
+	virtual void video_start() override ATTR_COLD;
 
 private:
 	TILE_GET_INFO_MEMBER(get_tile_info);
 	uint32_t screen_update(screen_device &screen, bitmap_ind16 &bitmap, const rectangle &cliprect);
 	void draw_sprites(bitmap_ind16 &bitmap, const rectangle &cliprect);
-	void prg_map(address_map &map);
+	void prg_map(address_map &map) ATTR_COLD;
 };
 
 class crzrally_state : public base_state
@@ -105,13 +101,13 @@ public:
 	void crzrally(machine_config &config);
 
 protected:
-	virtual void video_start() override;
+	virtual void video_start() override ATTR_COLD;
 
 private:
 	TILE_GET_INFO_MEMBER(get_tile_info);
 	uint32_t screen_update(screen_device &screen, bitmap_ind16 &bitmap, const rectangle &cliprect);
 	void draw_sprites(bitmap_ind16 &bitmap, const rectangle &cliprect);
-	void prg_map(address_map &map);
+	void prg_map(address_map &map) ATTR_COLD;
 };
 
 /***************************************************************************
@@ -200,16 +196,6 @@ void base_state::scroll_w(uint8_t data)
 	m_bg_tilemap->set_scrollx(0, data);
 }
 
-void base_state::flipscreen_x_w(int state)
-{
-	flip_screen_x_set(state);
-}
-
-void base_state::flipscreen_y_w(int state)
-{
-	flip_screen_y_set(state);
-}
-
 
 void holeland_state::draw_sprites(bitmap_ind16 &bitmap, const rectangle &cliprect)
 {
@@ -258,7 +244,21 @@ void crzrally_state::draw_sprites(bitmap_ind16 &bitmap, const rectangle &cliprec
 		int const code = m_spriteram[offs + 1] + ((m_spriteram[offs + 3] & 0x01) << 8);
 		int const color = (m_spriteram[offs + 3] >> 4) + ((m_spriteram[offs + 3] & 0x01) << 4);
 
-		// Bit 1 unknown but somehow related to X offset (clipping range?)
+		// Bit 1 somehow related to X offset (clipping range?)
+		if (m_spriteram[offs + 3] & 0x02)
+		{
+			if (sx > 0xc0)
+			{
+				// Sign extend
+				sx = int8_t(sx);
+			}
+		}
+		else
+		{
+			if (sx < 0x40)
+				continue;
+		}
+
 		int flipx = m_spriteram[offs + 3] & 0x04;
 		int flipy = m_spriteram[offs + 3] & 0x08;
 
@@ -329,7 +329,7 @@ void crzrally_state::prg_map(address_map &map)
 void base_state::io_map(address_map &map)
 {
 	map.global_mask(0xff);
-	map(0x01, 0x01).r("watchdog", FUNC(watchdog_timer_device::reset_r));  // ?
+	map(0x01, 0x01).r("watchdog", FUNC(watchdog_timer_device::reset_r)); // ?
 	map(0x04, 0x04).r("ay1", FUNC(ay8910_device::data_r));
 	map(0x04, 0x05).w("ay1", FUNC(ay8910_device::address_data_w));
 	map(0x06, 0x06).r("ay2", FUNC(ay8910_device::data_r));
@@ -560,8 +560,8 @@ void holeland_state::holeland(machine_config &config)
 	LS259(config, m_latch); // 3J
 	m_latch->parallel_out_cb().set(FUNC(holeland_state::pal_offs_w)).mask(0x03);
 	m_latch->q_out_cb<5>().set(FUNC(holeland_state::coin_counter_w));
-	m_latch->q_out_cb<6>().set(FUNC(holeland_state::flipscreen_x_w));
-	m_latch->q_out_cb<7>().set(FUNC(holeland_state::flipscreen_y_w));
+	m_latch->q_out_cb<6>().set(FUNC(holeland_state::flip_screen_x_set));
+	m_latch->q_out_cb<7>().set(FUNC(holeland_state::flip_screen_y_set));
 
 	WATCHDOG_TIMER(config, "watchdog");
 
@@ -596,7 +596,7 @@ void holeland_state::holeland(machine_config &config)
 void crzrally_state::crzrally(machine_config &config)
 {
 	// basic machine hardware
-	Z80(config, m_maincpu, 20_MHz_XTAL / 4);        // 5 MHz
+	Z80(config, m_maincpu, 20_MHz_XTAL / 4); // 5 MHz
 	m_maincpu->set_addrmap(AS_PROGRAM, &crzrally_state::prg_map);
 	m_maincpu->set_addrmap(AS_IO, &crzrally_state::io_map);
 	m_maincpu->set_vblank_int("screen", FUNC(crzrally_state::irq0_line_hold));
@@ -862,6 +862,7 @@ ROM_END
 
 GAME( 1984, holeland,   0,        holeland, holeland,  holeland_state, empty_init, ROT0,   "Tecfri",                              "Hole Land (Japan)",                        MACHINE_IMPERFECT_GRAPHICS | MACHINE_SUPPORTS_SAVE )
 GAME( 1984, holeland2,  holeland, holeland, holeland2, holeland_state, empty_init, ROT0,   "Tecfri",                              "Hole Land (Spain)",                        MACHINE_IMPERFECT_GRAPHICS | MACHINE_SUPPORTS_SAVE ) //attract is different
+
 GAME( 1985, crzrally,   0,        crzrally, crzrally,  crzrally_state, empty_init, ROT270, "Tecfri",                              "Crazy Rally (set 1)",                      MACHINE_IMPERFECT_GRAPHICS | MACHINE_SUPPORTS_SAVE )
 GAME( 1985, crzrallya,  crzrally, crzrally, crzrally,  crzrally_state, empty_init, ROT270, "Tecfri",                              "Crazy Rally (set 2)",                      MACHINE_IMPERFECT_GRAPHICS | MACHINE_SUPPORTS_SAVE )
 GAME( 1985, crzrallyg,  crzrally, crzrally, crzrally,  crzrally_state, empty_init, ROT270, "Tecfri (Gecas license)",              "Crazy Rally (Gecas license)",              MACHINE_IMPERFECT_GRAPHICS | MACHINE_SUPPORTS_SAVE )

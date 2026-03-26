@@ -27,7 +27,6 @@
 #include "machine/input_merger.h"
 #include "machine/mpc106.h"
 #include "machine/pci.h"
-#include "machine/pci-ide.h"
 #include "machine/ram.h"
 #include "video/atirage.h"
 #include "burgundy.h"
@@ -53,10 +52,10 @@ public:
 private:
 	u16 m_sense;
 
-	void imac_map(address_map &map);
+	void imac_map(address_map &map) ATTR_COLD;
 
-	virtual void machine_start() override;
-	virtual void machine_reset() override;
+	virtual void machine_start() override ATTR_COLD;
+	virtual void machine_reset() override ATTR_COLD;
 
 	void cuda_reset_w(int state)
 	{
@@ -213,10 +212,9 @@ void imac_state::imac(machine_config &config)
 	paddington.codec_r_callback().set(burgundy, FUNC(burgundy_device::read_macrisc));
 	paddington.codec_w_callback().set(burgundy, FUNC(burgundy_device::write_macrisc));
 
-	SPEAKER(config, "lspeaker").front_left();
-	SPEAKER(config, "rspeaker").front_right();
-	burgundy.add_route(0, "lspeaker", 1.0);
-	burgundy.add_route(1, "rspeaker", 1.0);
+	SPEAKER(config, "speaker", 2).front();
+	burgundy.add_route(0, "speaker", 1.0, 0);
+	burgundy.add_route(1, "speaker", 1.0, 1);
 }
 
 ROM_START(imac)

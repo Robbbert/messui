@@ -2,11 +2,12 @@
 // copyright-holders:
 
 /*
-Banpresto medal games with Seibu customs
+Banpresto M68K-based medal games with Seibu customs
 
 Confirmed games (but there are probably several more):
 Terebi Denwa Doraemon
 Terebi Denwa Super Mario World
+Terebi Denwa Thomas the Tank Engine and Friends
 Mario Undoukai
 
 The following is from Mario Undoukai PCB pics:
@@ -76,8 +77,8 @@ public:
 	void init_oki();
 
 protected:
-	virtual void machine_start() override;
-	virtual void video_start() override;
+	virtual void machine_start() override ATTR_COLD;
+	virtual void video_start() override ATTR_COLD;
 
 private:
 	required_device<cpu_device> m_maincpu;
@@ -108,8 +109,8 @@ private:
 	uint32_t pri_cb(uint8_t pri, uint8_t ext);
 	uint32_t screen_update(screen_device &screen, bitmap_ind16 &bitmap, const rectangle &cliprect);
 
-	void prg_map(address_map &map);
-	void oki_map(address_map &map);
+	void prg_map(address_map &map) ATTR_COLD;
+	void oki_map(address_map &map) ATTR_COLD;
 };
 
 
@@ -118,16 +119,6 @@ void banprestoms_state::machine_start()
 	m_okibank->configure_entries(0, 4, memregion("oki")->base(), 0x40000);
 	m_okibank->set_entry(0);
 }
-
-
-void banprestoms_state::okibank_w(uint16_t data)
-{
-	m_okibank->set_entry(data & 0x03);
-
-	m_ticket->motor_w(BIT(data, 4)); // bit 3 is suspect, too
-	// TODO: what do the other bits do?
-}
-
 
 void banprestoms_state::video_start()
 {
@@ -182,9 +173,9 @@ uint32_t banprestoms_state::screen_update(screen_device &screen, bitmap_ind16 &b
 	m_tilemap[1]->set_scrollx(0, m_scrollram[2]);
 	m_tilemap[1]->set_scrolly(0, m_scrollram[3] - 16);
 	m_tilemap[2]->set_scrollx(0, m_scrollram[4]);
-	m_tilemap[2]->set_scrolly(0, m_scrollram[5] - 16);
-	m_tilemap[3]->set_scrollx(0, 128);
-	m_tilemap[3]->set_scrolly(0, -16);
+	m_tilemap[2]->set_scrolly(0, m_scrollram[5]);
+	//m_tilemap[3]->set_scrollx(0, 128);
+	//m_tilemap[3]->set_scrolly(0, -16);
 
 	if (BIT(~m_layer_en, 0)) { m_tilemap[0]->draw(screen, bitmap, cliprect, 0, 1); }
 	if (BIT(~m_layer_en, 1)) { m_tilemap[1]->draw(screen, bitmap, cliprect, 0, 2); }
@@ -205,6 +196,13 @@ void banprestoms_state::layer_scroll_w(offs_t offset, uint16_t data, uint16_t me
 	COMBINE_DATA(&m_scrollram[offset]);
 }
 
+void banprestoms_state::okibank_w(uint16_t data)
+{
+	m_okibank->set_entry(data & 0x03);
+
+	m_ticket->motor_w(BIT(data, 4)); // bit 3 is suspect, too
+	// TODO: what do the other bits do?
+}
 
 void banprestoms_state::prg_map(address_map &map)
 {
@@ -240,41 +238,42 @@ void banprestoms_state::oki_map(address_map &map)
 static INPUT_PORTS_START( tvdenwad )
 	PORT_START("IN1")
 	// TODO: convert to keypad
-	PORT_BIT( 0x0001, IP_ACTIVE_LOW, IPT_BUTTON1 ) // 1
-	PORT_BIT( 0x0002, IP_ACTIVE_LOW, IPT_BUTTON2 ) // 2
-	PORT_BIT( 0x0004, IP_ACTIVE_LOW, IPT_BUTTON3 ) // 3
-	PORT_BIT( 0x0008, IP_ACTIVE_LOW, IPT_BUTTON4 ) // 4
-	PORT_BIT( 0x0010, IP_ACTIVE_LOW, IPT_BUTTON5 ) // 5
-	PORT_BIT( 0x0020, IP_ACTIVE_LOW, IPT_BUTTON6 ) // 6
-	PORT_BIT( 0x0040, IP_ACTIVE_LOW, IPT_BUTTON7 ) // 7
-	PORT_BIT( 0x0080, IP_ACTIVE_LOW, IPT_BUTTON8 ) // 8
-	PORT_BIT( 0x0100, IP_ACTIVE_LOW, IPT_BUTTON9 ) // 9
-	PORT_BIT( 0x0200, IP_ACTIVE_HIGH, IPT_BUTTON10 ) // 0, why active high?
-	PORT_BIT( 0x0400, IP_ACTIVE_LOW, IPT_BUTTON11 ) // #
-	PORT_BIT( 0x0800, IP_ACTIVE_LOW, IPT_BUTTON12 ) // *
-	PORT_BIT( 0x1000, IP_ACTIVE_LOW, IPT_UNUSED ) // couldn't find anything from here on
+	PORT_BIT( 0x0001, IP_ACTIVE_LOW, IPT_KEYPAD ) PORT_NAME("Keypad 1") PORT_CODE(KEYCODE_1_PAD)
+	PORT_BIT( 0x0002, IP_ACTIVE_LOW, IPT_KEYPAD ) PORT_NAME("Keypad 2") PORT_CODE(KEYCODE_2_PAD)
+	PORT_BIT( 0x0004, IP_ACTIVE_LOW, IPT_KEYPAD ) PORT_NAME("Keypad 3") PORT_CODE(KEYCODE_3_PAD)
+	PORT_BIT( 0x0008, IP_ACTIVE_LOW, IPT_KEYPAD ) PORT_NAME("Keypad 4") PORT_CODE(KEYCODE_4_PAD)
+	PORT_BIT( 0x0010, IP_ACTIVE_LOW, IPT_KEYPAD ) PORT_NAME("Keypad 5") PORT_CODE(KEYCODE_5_PAD)
+	PORT_BIT( 0x0020, IP_ACTIVE_LOW, IPT_KEYPAD ) PORT_NAME("Keypad 6") PORT_CODE(KEYCODE_6_PAD)
+	PORT_BIT( 0x0040, IP_ACTIVE_LOW, IPT_KEYPAD ) PORT_NAME("Keypad 7") PORT_CODE(KEYCODE_7_PAD)
+	PORT_BIT( 0x0080, IP_ACTIVE_LOW, IPT_KEYPAD ) PORT_NAME("Keypad 8") PORT_CODE(KEYCODE_8_PAD)
+	PORT_BIT( 0x0100, IP_ACTIVE_LOW, IPT_KEYPAD ) PORT_NAME("Keypad 9") PORT_CODE(KEYCODE_9_PAD)
+	// TODO: this wants active high otherwise cannot enter service mode
+	PORT_BIT( 0x0200, IP_ACTIVE_HIGH, IPT_KEYPAD ) PORT_NAME("Keypad 0") PORT_CODE(KEYCODE_0_PAD)
+	PORT_BIT( 0x0400, IP_ACTIVE_LOW, IPT_KEYPAD ) PORT_NAME("Keypad #") PORT_CODE(KEYCODE_PLUS_PAD)
+	PORT_BIT( 0x0800, IP_ACTIVE_LOW, IPT_KEYPAD ) PORT_NAME("Keypad *") PORT_CODE(KEYCODE_ASTERISK)
+	PORT_BIT( 0x1000, IP_ACTIVE_LOW, IPT_UNUSED )
 	PORT_BIT( 0x2000, IP_ACTIVE_LOW, IPT_UNUSED )
 	PORT_BIT( 0x4000, IP_ACTIVE_LOW, IPT_UNUSED )
 	PORT_BIT( 0x8000, IP_ACTIVE_LOW, IPT_UNUSED )
 
 	PORT_START("IN2")
-	PORT_BIT( 0x0001, IP_ACTIVE_LOW, IPT_BUTTON13 ) // Card Emp in switch test
-	PORT_BIT( 0x0002, IP_ACTIVE_LOW, IPT_BUTTON14 ) // Card Pos in switch test
-	PORT_BIT( 0x0004, IP_ACTIVE_LOW, IPT_CUSTOM ) PORT_READ_LINE_DEVICE_MEMBER("ticket", ticket_dispenser_device, line_r) // Card Pay in switch test
+	PORT_BIT( 0x0001, IP_ACTIVE_LOW, IPT_CUSTOM ) // Card Emp
+	PORT_BIT( 0x0002, IP_ACTIVE_HIGH, IPT_CUSTOM ) // Card Pos
+	// TODO: should be IP_ACTIVE_HIGH but that breaks tvdenwad boot
+	PORT_BIT( 0x0004, IP_ACTIVE_LOW, IPT_CUSTOM ) PORT_READ_LINE_DEVICE_MEMBER("ticket", FUNC(ticket_dispenser_device::line_r)) // Card Pay
 	PORT_BIT( 0x0008, IP_ACTIVE_LOW, IPT_START )
-	PORT_BIT( 0x0010, IP_ACTIVE_LOW, IPT_UNUSED ) // ?
+	PORT_BIT( 0x0010, IP_ACTIVE_LOW, IPT_UNKNOWN )
 	PORT_SERVICE( 0x0020, IP_ACTIVE_LOW )
-	PORT_BIT( 0x0040, IP_ACTIVE_LOW, IPT_UNUSED ) // ?
-	PORT_BIT( 0x0080, IP_ACTIVE_LOW, IPT_BUTTON16 ) // Hook in switch test
+	PORT_BIT( 0x0040, IP_ACTIVE_LOW, IPT_UNKNOWN )
+	PORT_BIT( 0x0080, IP_ACTIVE_LOW, IPT_CUSTOM ) // Hook
 	PORT_BIT( 0x0100, IP_ACTIVE_LOW, IPT_COIN1 )
-	PORT_BIT( 0x0200, IP_ACTIVE_LOW, IPT_UNUSED ) // couldn't find anything from here on
+	PORT_BIT( 0x0200, IP_ACTIVE_LOW, IPT_UNUSED )
 	PORT_BIT( 0x0400, IP_ACTIVE_LOW, IPT_UNUSED )
 	PORT_BIT( 0x0800, IP_ACTIVE_LOW, IPT_UNUSED )
 	PORT_BIT( 0x1000, IP_ACTIVE_LOW, IPT_UNUSED )
 	PORT_BIT( 0x2000, IP_ACTIVE_LOW, IPT_UNUSED )
 	PORT_BIT( 0x4000, IP_ACTIVE_LOW, IPT_UNUSED )
 	PORT_BIT( 0x8000, IP_ACTIVE_LOW, IPT_UNUSED )
-
 
 	PORT_START("DSW1") // marked SW0913 on PCB
 	PORT_DIPNAME( 0x03, 0x03, DEF_STR( Coinage ) ) PORT_DIPLOCATION("DSW1:1,2")
@@ -324,7 +323,7 @@ static INPUT_PORTS_START( marioun ) // inputs defined as IPT_UNKNOWN don't show 
 	PORT_START("IN2")
 	PORT_BIT( 0x0001, IP_ACTIVE_LOW, IPT_BUTTON7 ) // Card Emp
 	PORT_BIT( 0x0002, IP_ACTIVE_LOW, IPT_BUTTON8 ) // Card Pos
-	PORT_BIT( 0x0004, IP_ACTIVE_LOW, IPT_CUSTOM ) PORT_READ_LINE_DEVICE_MEMBER("ticket", ticket_dispenser_device, line_r) // Card Pay
+	PORT_BIT( 0x0004, IP_ACTIVE_LOW, IPT_CUSTOM ) PORT_READ_LINE_DEVICE_MEMBER("ticket", FUNC(ticket_dispenser_device::line_r)) // Card Pay
 	PORT_BIT( 0x0008, IP_ACTIVE_LOW, IPT_START1 )
 	PORT_BIT( 0x0010, IP_ACTIVE_LOW, IPT_UNKNOWN )
 	PORT_BIT( 0x0020, IP_ACTIVE_LOW, IPT_SERVICE1 )
@@ -338,7 +337,6 @@ static INPUT_PORTS_START( marioun ) // inputs defined as IPT_UNKNOWN don't show 
 	PORT_BIT( 0x2000, IP_ACTIVE_LOW, IPT_UNKNOWN )
 	PORT_BIT( 0x4000, IP_ACTIVE_LOW, IPT_UNKNOWN )
 	PORT_BIT( 0x8000, IP_ACTIVE_LOW, IPT_UNKNOWN )
-
 
 	PORT_START("DSW1") // marked SW0913 on PCB
 	PORT_DIPNAME( 0x03, 0x03, DEF_STR( Coinage ) ) PORT_DIPLOCATION("DSW1:1,2")
@@ -412,7 +410,7 @@ void banprestoms_state::banprestoms(machine_config &config)
 
 	NVRAM(config, "nvram", nvram_device::DEFAULT_ALL_0);
 
-	TICKET_DISPENSER(config, m_ticket, attotime::from_msec(100), TICKET_MOTOR_ACTIVE_HIGH, TICKET_STATUS_ACTIVE_HIGH); // TODO: period is guessed
+	TICKET_DISPENSER(config, m_ticket, attotime::from_msec(100)); // TODO: period is guessed
 
 	// video hardware
 	screen_device &screen(SCREEN(config, "screen", SCREEN_TYPE_RASTER)); // TODO: copied from other drivers using the same CRTC
@@ -426,6 +424,13 @@ void banprestoms_state::banprestoms(machine_config &config)
 	seibu_crtc_device &crtc(SEIBU_CRTC(config, "crtc", 0));
 	crtc.layer_en_callback().set(FUNC(banprestoms_state::layer_en_w));
 	crtc.layer_scroll_callback().set(FUNC(banprestoms_state::layer_scroll_w));
+	crtc.layer_scroll_base_callback().set([this] (offs_t offset, u16 data, u16 mem_mask) {
+		const u8 layer_n = offset >> 1;
+		if (!BIT(offset, 0))
+			m_tilemap[layer_n]->set_scrolldx((0x1c0 - data) & 0x1ff, (0x1c0 - data) & 0x1ff);
+		else
+			m_tilemap[layer_n]->set_scrolldy((0x1ff - data) & 0x1ff, (0x1ff - data) & 0x1ff);
+	});
 
 	LH5045(config, m_rtc, XTAL(32'768));
 
@@ -512,6 +517,40 @@ ROM_START( tvdenwam )
 	ROM_LOAD( "sc006.u248", 0x800, 0x117, NO_DUMP ) // gal16v8a
 ROM_END
 
+ROM_START( tvdenwat )
+	ROM_REGION( 0x100000, "maincpu", 0 )
+	ROM_LOAD16_BYTE( "s72_b02.u15",  0x00000, 0x20000, CRC(db713202) SHA1(4883152273925207929757da0eae333ac18aa585) )
+	ROM_LOAD16_BYTE( "s72_b01.u14",  0x00001, 0x20000, CRC(fe4e48ff) SHA1(2a31520ddd3c4a61daf2868114cfd1f1a5f3f201) )
+
+	ROM_REGION( 0x80000, "spr_gfx", 0 )
+	ROM_LOAD( "s72_a05.u119", 0x00000, 0x80000, CRC(9fda5789) SHA1(5d1e37d42c9f255253bcb3714be8fd04238b47fa) )
+
+	ROM_REGION( 0x80000, "gfx_tiles", 0 )
+	ROM_LOAD( "s72_a04.u18", 0x00000, 0x80000, CRC(66fbbf66) SHA1(4d46204661282c311ace3c749d9484c2e3e69500) )
+
+	ROM_REGION( 0x80000, "bg_gfx", 0 )
+	ROM_COPY( "gfx_tiles" , 0x00000, 0x00000, 0x80000)
+
+	ROM_REGION( 0x80000, "md_gfx", 0 )
+	ROM_COPY( "gfx_tiles" , 0x00000, 0x00000, 0x80000)
+
+	ROM_REGION( 0x80000, "fg_gfx", 0 )
+	ROM_COPY( "gfx_tiles" , 0x00000, 0x00000, 0x80000)
+
+	ROM_REGION( 0x80000, "tx_gfx", 0 )
+	ROM_COPY( "gfx_tiles" , 0x00000, 0x00000, 0x80000)
+
+	ROM_REGION( 0x100000, "oki", 0 )
+	ROM_LOAD( "s72_a03.u17", 0x000000, 0x100000, CRC(e7d09642) SHA1(0cee5193497698239f44ef457d92f1d1d042c42b) )
+
+	ROM_REGION( 0xa00, "plds", 0 )
+	ROM_LOAD( "sc001.u110", 0x000, 0x104, NO_DUMP ) // tibpal16l8-25cn
+	ROM_LOAD( "sc002.u235", 0x200, 0x104, NO_DUMP ) // tibpal16l8-25cn
+	ROM_LOAD( "sc003.u36",  0x400, 0x155, NO_DUMP ) // 18cv8pc-25
+	ROM_LOAD( "sc004c.u68", 0x600, 0x117, NO_DUMP ) // gal16v8a
+	ROM_LOAD( "sc006.u248", 0x800, 0x117, NO_DUMP ) // gal16v8a
+ROM_END
+
 ROM_START( marioun )
 	ROM_REGION( 0x100000, "maincpu", 0 )
 	ROM_LOAD16_BYTE( "s98_b02.u15",  0x00000, 0x20000, CRC(d88eecfc) SHA1(5a15a1f925ae10e439e5aee8f3ef5a2fa956b80f) )
@@ -580,6 +619,7 @@ void banprestoms_state::init_oki() // The Oki mask ROM is in an unusual format, 
 } // Anonymous namespace
 
 
-GAME( 1991, tvdenwad, 0, banprestoms, tvdenwad, banprestoms_state, init_oki, ROT0, "Banpresto", "Terebi Denwa Doraemon",              MACHINE_NOT_WORKING | MACHINE_IMPERFECT_SOUND | MACHINE_IMPERFECT_GRAPHICS | MACHINE_SUPPORTS_SAVE )
-GAME( 1992, tvdenwam, 0, banprestoms, tvdenwad, banprestoms_state, init_oki, ROT0, "Banpresto", "Terebi Denwa Super Mario World",     MACHINE_NOT_WORKING | MACHINE_IMPERFECT_SOUND | MACHINE_IMPERFECT_GRAPHICS | MACHINE_SUPPORTS_SAVE )
-GAME( 1993, marioun,  0, banprestoms, marioun,  banprestoms_state, init_oki, ROT0, "Banpresto", "Super Mario World - Mario Undoukai", MACHINE_NOT_WORKING | MACHINE_IMPERFECT_SOUND | MACHINE_IMPERFECT_GRAPHICS | MACHINE_SUPPORTS_SAVE )
+GAME( 1991, tvdenwad, 0, banprestoms, tvdenwad, banprestoms_state, init_oki, ROT0, "Banpresto", "Terebi Denwa Doraemon",                            MACHINE_NOT_WORKING | MACHINE_IMPERFECT_SOUND | MACHINE_IMPERFECT_GRAPHICS | MACHINE_SUPPORTS_SAVE )
+GAME( 1992, tvdenwam, 0, banprestoms, tvdenwad, banprestoms_state, init_oki, ROT0, "Banpresto", "Terebi Denwa Super Mario World",                   MACHINE_NOT_WORKING | MACHINE_IMPERFECT_SOUND | MACHINE_IMPERFECT_GRAPHICS | MACHINE_SUPPORTS_SAVE )
+GAME( 1992, tvdenwat, 0, banprestoms, tvdenwad, banprestoms_state, init_oki, ROT0, "Banpresto", "Terebi Denwa Thomas the Tank Engine and Friends",  MACHINE_NOT_WORKING | MACHINE_IMPERFECT_SOUND | MACHINE_IMPERFECT_GRAPHICS | MACHINE_SUPPORTS_SAVE )
+GAME( 1993, marioun,  0, banprestoms, marioun,  banprestoms_state, init_oki, ROT0, "Banpresto", "Super Mario World - Mario Undoukai",               MACHINE_NOT_WORKING | MACHINE_IMPERFECT_SOUND | MACHINE_IMPERFECT_GRAPHICS | MACHINE_SUPPORTS_SAVE )

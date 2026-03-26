@@ -37,7 +37,8 @@ void i82371sb_isa_device::internal_io_map(address_map &map)
 	map(0x0000, 0x001f).rw("dma8237_1", FUNC(am9517a_device::read), FUNC(am9517a_device::write));
 	map(0x0020, 0x0021).rw("pic8259_master", FUNC(pic8259_device::read), FUNC(pic8259_device::write));
 //  map(0x002e, 0x002f) Super I/O config
-	map(0x0040, 0x005f).rw("pit8254", FUNC(pit8254_device::read), FUNC(pit8254_device::write));
+	map(0x0040, 0x0043).rw("pit8254", FUNC(pit8254_device::read), FUNC(pit8254_device::write));
+//  map(0x004e, 0x004f) Alt Super I/O config, watchdog-ish in thinkpad600e
 	map(0x0061, 0x0061).rw(FUNC(i82371sb_isa_device::at_portb_r), FUNC(i82371sb_isa_device::at_portb_w));
 //  map(0x0070, 0x0070) RTC address, bit 7 NMI enable
 //  map(0x0071, 0x0071) RTC data
@@ -47,7 +48,9 @@ void i82371sb_isa_device::internal_io_map(address_map &map)
 	map(0x00b2, 0x00b3).rw(FUNC(i82371sb_isa_device::read_apmcapms), FUNC(i82371sb_isa_device::write_apmcapms));
 	// Up to $de according to TC430HX spec?
 	map(0x00c0, 0x00df).rw(FUNC(i82371sb_isa_device::at_dma8237_2_r), FUNC(i82371sb_isa_device::at_dma8237_2_w));
-	map(0x00e0, 0x00ef).noprw();
+//  map(0x00e0, 0x00ef) MCA bus (cfr. Bochs) or PnP
+	map(0x00ed, 0x00ed).lw8(NAME([] (offs_t offset, u8 data) { }));
+
 //  map(0x00f0, 0x00f0) Reset Numeric Error
 //  map(0x0270, 0x0273) I/O read port for PnP
 	map(0x04d0, 0x04d1).rw(FUNC(i82371sb_isa_device::eisa_irq_read), FUNC(i82371sb_isa_device::eisa_irq_write));
@@ -260,6 +263,7 @@ void i82371sb_isa_device::xbcs_w(offs_t offset, uint16_t data, uint16_t mem_mask
 {
 	COMBINE_DATA(&xbcs);
 	logerror("xbcs = %04x\n", xbcs);
+	// TODO: likely needs a remap_cb
 }
 
 uint8_t i82371sb_isa_device::pirqrc_r(offs_t offset)
@@ -972,7 +976,7 @@ int i82371sb_isa_device::pin_mapper(int pin)
 
 void i82371sb_isa_device::irq_handler(int line, int state)
 {
-	if(line < 0 && line >= 16)
+	if(line < 0 || line >= 16)
 		return;
 
 	logerror("irq_handler %d %d\n", line, state);

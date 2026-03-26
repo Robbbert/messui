@@ -331,16 +331,17 @@ static INPUT_PORTS_START( trs80 )
 	PORT_BIT(0xfe, 0x00, IPT_UNUSED)
 
 	PORT_START("RESET") // special button
-	PORT_BIT(0x01, 0x00, IPT_OTHER) PORT_NAME("Reset") PORT_CODE(KEYCODE_DEL) PORT_WRITE_LINE_DEVICE_MEMBER("nmigate", input_merger_device, in_w<0>)
+	PORT_BIT(0x01, 0x00, IPT_OTHER) PORT_NAME("Reset") PORT_CODE(KEYCODE_DEL) PORT_WRITE_LINE_DEVICE_MEMBER("nmigate", FUNC(input_merger_device::in_w<0>))
 INPUT_PORTS_END
 
 static INPUT_PORTS_START(trs80l2)
 	PORT_INCLUDE (trs80)
+
 	PORT_START("CONFIG")
 	PORT_CONFNAME(    0x80, 0x00,   "Floppy Disc Drives")
 	PORT_CONFSETTING(   0x00, DEF_STR( Off ) )
 	PORT_CONFSETTING(   0x80, DEF_STR( On ) )
-	PORT_BIT(0x7f, 0x7f, IPT_UNUSED)
+	PORT_BIT(0x7f, IP_ACTIVE_LOW, IPT_UNUSED)
 
 	PORT_START("E9")    // these are the power-on uart settings
 	PORT_BIT(0x07, IP_ACTIVE_LOW, IPT_UNUSED )
@@ -360,12 +361,14 @@ INPUT_PORTS_END
 
 static INPUT_PORTS_START(sys80)
 	PORT_INCLUDE (trs80l2)
+
 	PORT_MODIFY("CONFIG")
 	PORT_CONFNAME(    0x08, 0x00,   "Video Cut")  // Toggle switch on the back
 	PORT_CONFSETTING(   0x00, DEF_STR( Off ) )
 	PORT_CONFSETTING(   0x08, DEF_STR( On ) )
 	PORT_BIT(0x04, 0x00, IPT_KEYBOARD) PORT_NAME("Page") PORT_CODE(KEYCODE_F6) PORT_TOGGLE  // extra keys above the main keyboard
 	//PORT_BIT(0x02, 0x00, IPT_KEYBOARD) PORT_NAME("F1") PORT_CODE(KEYCODE_F7) PORT_TOGGLE  // this turns on the tape motor
+
 	PORT_START("BAUD")
 	PORT_DIPNAME( 0xff, 0x06, "Baud Rate")
 	PORT_DIPSETTING(    0x00, "110")

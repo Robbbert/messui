@@ -1,13 +1,9 @@
 // license:BSD-3-Clause
 // copyright-holders: Allard van der Bas
-
 /***************************************************************************
-                Wiping
-                (C) 1982 Nichibutsu
 
-                    driver by
-
-            Allard van der Bas (allard@mindless.com)
+Wiping (C) 1982 Nichibutsu
+driver by Allard van der Bas (allard@mindless.com)
 
 1 x Z80 CPU main game, 1 x Z80 with ???? sound hardware.
 
@@ -15,7 +11,8 @@ Given the similarities with clshroad.cpp this was probably developed by
 Masao Suzuki, who later left Nichibutsu to form Woodplace Inc.
 
 ----------------------------------------------------------------------------
-Main processor :
+
+Main processor:
 
 0xA800 - 0xA807 : 64 bits of input and dipswitches.
 
@@ -75,7 +72,7 @@ public:
 	void wiping(machine_config &config);
 
 protected:
-	virtual void machine_start() override;
+	virtual void machine_start() override ATTR_COLD;
 
 private:
 	required_device<cpu_device> m_maincpu;
@@ -105,8 +102,8 @@ private:
 	INTERRUPT_GEN_MEMBER(vblank_irq);
 	INTERRUPT_GEN_MEMBER(sound_timer_irq);
 
-	void main_map(address_map &map);
-	void sound_map(address_map &map);
+	void main_map(address_map &map) ATTR_COLD;
+	void sound_map(address_map &map) ATTR_COLD;
 };
 
 

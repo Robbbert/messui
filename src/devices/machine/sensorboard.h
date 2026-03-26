@@ -76,18 +76,18 @@ public:
 	DECLARE_INPUT_CHANGED_MEMBER(ui_init);
 	DECLARE_INPUT_CHANGED_MEMBER(ui_refresh) { refresh(); }
 
-	DECLARE_CUSTOM_INPUT_MEMBER(check_sensor_busy) { return (m_sensorpos == -1) ? 0 : 1; }
-	DECLARE_CUSTOM_INPUT_MEMBER(check_bs_mask) { return m_bs_mask; }
-	DECLARE_CUSTOM_INPUT_MEMBER(check_ss_mask) { return m_ss_mask; }
-	DECLARE_CUSTOM_INPUT_MEMBER(check_ui_enabled) { return m_ui_enabled; }
+	ioport_value check_sensor_busy() { return (m_sensorpos == -1) ? 0 : 1; }
+	ioport_value check_bs_mask() { return m_bs_mask; }
+	ioport_value check_ss_mask() { return m_ss_mask; }
+	ioport_value check_ui_enabled() { return m_ui_enabled; }
 
 protected:
 	// device-level overrides
-	virtual void device_start() override;
-	virtual void device_reset() override;
+	virtual void device_start() override ATTR_COLD;
+	virtual void device_reset() override ATTR_COLD;
 	virtual void device_post_load() override { refresh(); }
 
-	virtual ioport_constructor device_input_ports() const override;
+	virtual ioport_constructor device_input_ports() const override ATTR_COLD;
 
 	// device_nvram_interface overrides
 	virtual void nvram_default() override;
@@ -99,7 +99,7 @@ private:
 	output_finder<0x10, 0x10> m_out_piece;
 	output_finder<0x20+1> m_out_pui;
 	output_finder<2> m_out_count;
-	required_ioport_array<10> m_inp_rank;
+	required_ioport_array<13> m_inp_rank;
 	required_ioport m_inp_spawn;
 	required_ioport m_inp_ui;
 	required_ioport m_inp_conf;

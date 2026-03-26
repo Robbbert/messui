@@ -216,7 +216,7 @@ void sh_mtu_channel_device::device_reset()
 	m_last_clock_update = 0;
 	m_event_time = 0;
 	m_phase = 0;
-	m_counter_cycle = 0;
+	m_counter_cycle = 1;
 	m_counter_incrementing = true;
 }
 
@@ -316,14 +316,16 @@ u8 sh_mtu_channel_device::tier_r()
 
 void sh_mtu_channel_device::tier_w(u8 data)
 {
+	update_counter();
 	m_tier = data;
-	logerror("irq %c%c%c%c%c%c\n",
-			 m_tier & IRQ_A ? 'a' : '.',
-			 m_tier & IRQ_B ? 'b' : '.',
-			 m_tier & IRQ_C ? 'c' : '.',
-			 m_tier & IRQ_D ? 'd' : '.',
-			 m_tier & IRQ_V ? 'v' : '.',
-			 m_tier & IRQ_U ? 'u' : '.');
+	if(0)
+		logerror("irq %c%c%c%c%c%c\n",
+				 m_tier & IRQ_A ? 'a' : '.',
+				 m_tier & IRQ_B ? 'b' : '.',
+				 m_tier & IRQ_C ? 'c' : '.',
+				 m_tier & IRQ_D ? 'd' : '.',
+				 m_tier & IRQ_V ? 'v' : '.',
+				 m_tier & IRQ_U ? 'u' : '.');
 	recalc_event();
 }
 
@@ -343,7 +345,7 @@ u16 sh_mtu_channel_device::tcnt_r()
 {
 	if(!machine().side_effects_disabled())
 		update_counter();
-	// Nedd to implement phase counting for the rotary controller on the psr540
+	// Need to implement phase counting for the rotary controller on the psr540
 	if(m_tmdr & 0xf)
 		return 0;
 	return m_tcnt;
@@ -418,7 +420,7 @@ void sh_mtu_channel_device::recalc_event(u64 cur_time)
 	}
 
 	if(!cur_time)
-		cur_time = m_cpu->total_cycles();
+		cur_time = m_cpu->current_cycles();
 
 	if(m_counter_incrementing) {
 		u32 event_delay = 0xffffffff;
@@ -465,7 +467,7 @@ void sh_mtu_channel_device::update_counter(u64 cur_time)
 		return;
 
 	if(!cur_time)
-		cur_time = m_cpu->total_cycles();
+		cur_time = m_cpu->current_cycles();
 
 	if(!m_channel_active) {
 		m_last_clock_update = cur_time;

@@ -183,13 +183,13 @@ public:
 	void replicator(machine_config &config);
 
 private:
-	virtual void machine_start() override;
-	virtual void machine_reset() override;
+	virtual void machine_start() override ATTR_COLD;
+	virtual void machine_reset() override ATTR_COLD;
 
 	void palette_init(palette_device &palette) const;
 
-	void prg_map(address_map &map);
-	void data_map(address_map &map);
+	void prg_map(address_map &map) ATTR_COLD;
+	void data_map(address_map &map) ATTR_COLD;
 
 	uint8_t port_a_r();
 	uint8_t port_b_r();
@@ -605,12 +605,12 @@ void replicator_state::port_l_w(uint8_t data)
 
 void replicator_state::prg_map(address_map &map)
 {
-	map(0x0000, 0x1FFFF).rom();
+	map(0x00000, 0x1ffff).rom();
 }
 
 void replicator_state::data_map(address_map &map)
 {
-	map(0x0200, 0x21FF).ram();  /* ATMEGA1280 Internal SRAM */
+	map(0x0200, 0x21ff).ram();  /* ATMEGA1280 Internal SRAM */
 }
 
 /****************************************************\

@@ -10,11 +10,12 @@ TODO (main):
 \- fan monitor, cfr. I/O $294 reads in shutms11 BIOS fan tests;
 \- FDC doesn't work, moans on first boot;
 - '900 Ethernet PXE (missing ROM dump);
-- USB controllers (OpenHCI complaint);
-- ACPI is not fully lpc-acpi complaint;
+- USB controllers (OpenHCI compliant);
+- ACPI is not fully lpc-acpi compliant;
 - EISA slots;
 - SMBus;
 - PS/2 mouse is unstable, worked around by disabling and using a serial mouse instead.
+- BIOS won't recognize PCI_SLOT expansion ROMs;
 
 TODO (usability, to be moved in a SW list):
 - windows xp sp3: tests HW then does an ACPI devtrap write ($48), will eventually BSoD with
@@ -28,7 +29,7 @@ TODO (usability, to be moved in a SW list):
   with a STOP #a0 INTERNAL_POWER_ERROR with param1 0x5 ("reserved"!?)
 
 - gamecstl Kontron BIOS:
-\- hangs at PC=0xf3cf2, again wanting a SMI# from devtrap_en_w;
+\- hangs at PC=0xf3cf2 with a jp $-2, after software SMI#;
 \- No PS/2 inputs;
 
 - gamecstl dump (tested from shutms11, also see notes below):
@@ -151,11 +152,30 @@ Notes on possible shutms11 BIOS bugs:
     80000000       00000000       00000000       B8BA1941       00038881
     C0000000       00000000       00000000       B8BA1941       00038881
 
+
+    The JAMMA adaptor is a small external PCB from Azkoyen with an MCU (unknown type):
+                                _______________         _______
+     ____--__-- _______________|   DB-25      |________| DB-9 |_____
+    |   |__||__| <-Jacks       |______________|        |______|    |
+    | _________                                               ___  |
+    ||o o o o |<-Power                     ________________  |  |  |
+    |                                     | MCU           |  | <-MAX232N
+    |                                     |_______________|  |__|  |
+    |                                      _________   Xtal        |
+    |                                     |DIPS x 8|   6 MHz       |
+    |                                                              |
+    |    Test sw->(o)         _________   _________   _________    |
+    | Service sw->(o)         SN74HC245N  SN74HC245N  SN74HC245N   |
+    |_________                                          ___________|
+             |_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|
+                               JAMMA
+
 **************************************************************************************************/
 
 #include "emu.h"
 #include "cpu/i386/i386.h"
 #include "bus/isa/isa_cards.h"
+#include "bus/pci/pci_slot.h"
 #include "bus/pc_kbd/keyboards.h"
 #include "bus/rs232/hlemouse.h"
 #include "bus/rs232/null_modem.h"
@@ -171,6 +191,7 @@ Notes on possible shutms11 BIOS bugs:
 #include "machine/sis7001_usb.h"
 #include "machine/sis7018_audio.h"
 #include "machine/sis900_eth.h"
+#include "machine/sis950_acpi.h"
 #include "machine/sis950_lpc.h"
 #include "machine/sis950_smbus.h"
 
@@ -183,8 +204,6 @@ public:
 	sis630_state(const machine_config &mconfig, device_type type, const char *tag)
 		: driver_device(mconfig, type, tag)
 		, m_maincpu(*this, "maincpu")
-		, m_ide_00_1(*this, "pci:00.1")
-		, m_lpc_01_0(*this, "pci:01.0")
 	{ }
 
 	void sis630(machine_config &config);
@@ -197,11 +216,9 @@ public:
 private:
 
 	required_device<pentium3_device> m_maincpu;
-	required_device<sis5513_ide_device> m_ide_00_1;
-	required_device<sis950_lpc_device> m_lpc_01_0;
 
-//  void main_io(address_map &map);
-//  void main_map(address_map &map);
+//  void main_io(address_map &map) ATTR_COLD;
+//  void main_map(address_map &map) ATTR_COLD;
 	static void ite_superio_config(device_t *device);
 };
 
@@ -248,7 +265,7 @@ void sis630_state::sis630(machine_config &config)
 //  m_maincpu->set_addrmap(AS_PROGRAM, &sis630_state::main_map);
 //  m_maincpu->set_addrmap(AS_IO, &sis630_state::main_io);
 	m_maincpu->set_irq_acknowledge_callback("pci:01.0:pic_master", FUNC(pic8259_device::inta_cb));
-//  m_maincpu->smiact().set("pci:00.0", FUNC(sis950_lpc_device::smi_act_w));
+	m_maincpu->smiact().set("pci:00.0", FUNC(sis630_host_device::smi_act_w));
 
 	// TODO: unknown flash ROM types
 	// Needs a $80000 sized ROM
@@ -257,19 +274,17 @@ void sis630_state::sis630(machine_config &config)
 	PCI_ROOT(config, "pci", 0);
 	// up to 512MB, 2 x DIMM sockets
 	SIS630_HOST(config, "pci:00.0", 0, "maincpu", 256*1024*1024);
-	SIS5513_IDE(config, m_ide_00_1, 0, "maincpu");
-	// TODO: both on same line as default, should also trigger towards LPC
-	m_ide_00_1->irq_pri().set("pci:01.0:pic_slave", FUNC(pic8259_device::ir6_w));
-		//FUNC(sis950_lpc_device::pc_irq14_w));
-	m_ide_00_1->irq_sec().set("pci:01.0:pic_slave", FUNC(pic8259_device::ir7_w));
-		//FUNC(sis950_lpc_device::pc_mirq0_w));
+	sis5513_ide_device &ide(SIS5513_IDE(config, "pci:00.1", 0, "maincpu"));
+	ide.irq_pri().set("pci:01.0", FUNC(sis950_lpc_device::pc_iirqa_w));
+	ide.irq_sec().set("pci:01.0", FUNC(sis950_lpc_device::pc_iirqb_w));
 
-	SIS950_LPC(config, m_lpc_01_0, XTAL(33'000'000), "maincpu", "flash");
-	m_lpc_01_0->fast_reset_cb().set([this] (int state) {
+	sis950_lpc_device &lpc(SIS950_LPC(config, "pci:01.0", XTAL(33'000'000), "maincpu", "flash"));
+	lpc.fast_reset_cb().set([this] (int state) {
 		if (state)
 			machine().schedule_soft_reset();
 	});
-	LPC_ACPI(config, "pci:01.0:acpi", 0);
+	sis950_acpi_device &acpi(SIS950_ACPI(config, "pci:01.0:acpi", 0));
+	acpi.smi().set_inputline("maincpu", INPUT_LINE_SMI);
 	SIS950_SMBUS(config, "pci:01.0:smbus", 0);
 
 	SIS900_ETH(config, "pci:01.1", 0);
@@ -290,13 +305,16 @@ void sis630_state::sis630(machine_config &config)
 //  "pci:08.0" SCSI controller (vendor=1000 NCR / LSI Logic / Symbios Logic device=0012 53C895A)
 //  "pci:09.0" IEEE1394 controller (vendor=1033 NEC device=00ce uPD72872 / μPD72872)
 
-	// TODO: 3 expansion PCI slots (PC104+)
+	// 3 expansion PCI slots (PC104+)
 	// "pci:09.x" to "pci:12.x"?
+	PCI_SLOT(config, "pci:1", pci_cards, 9,  0, 1, 2, 3, nullptr);
+	PCI_SLOT(config, "pci:2", pci_cards, 10, 1, 2, 3, 0, nullptr);
+	PCI_SLOT(config, "pci:3", pci_cards, 11, 2, 3, 0, 1, nullptr);
+
 	// (PIC-MG)
 	// "pci:20.x" to "pci:17.x"?
 
-	// TODO: 1 parallel + 2 serial ports
-	// TODO: 1 game port ('7018?)
+	// TODO: 1 game port (as connection in '7018?)
 
 	// TODO: move in MB implementations
 	// (some unsupported variants uses W83697HF, namely Gigabyte GA-6SMZ7)
@@ -316,7 +334,7 @@ void sis630_state::sis630(machine_config &config)
 	serport1.ri_handler().set("superio:it8705f", FUNC(it8705f_device::nri2_w));
 	serport1.cts_handler().set("superio:it8705f", FUNC(it8705f_device::ncts2_w));
 
-	// TODO: AMR (Audio/modem riser) + UPT (Panel Link-TV out), assume [E]ISA complaint, needs specific slot options
+	// TODO: AMR (Audio/modem riser) + UPT (Panel Link-TV out), assume [E]ISA compliant, needs specific slot options
 //  ISA16_SLOT(config, "isa1", 0, "pci:01.0:isabus", pc_isa16_cards, nullptr, false);
 //  ISA16_SLOT(config, "isa2", 0, "pci:01.0:isabus", pc_isa16_cards, nullptr, false);
 }
@@ -400,9 +418,8 @@ ROM_START(zidav630e)
 //  ROMX_LOAD( "V630e104.bin",     0x040000, 0x040000, CRC(?) SHA1(?), ROM_BIOS(1) )
 ROM_END
 
-/*
- * Arcade based GameCristal
- */
+
+// GameCristal - PC-based multigame arcade (with an unknown emulator).
 
 ROM_START(gamecstl)
 	ROM_REGION32_LE(0x80000, "flash", ROMREGION_ERASEFF )
@@ -412,6 +429,9 @@ ROM_START(gamecstl)
 
 	DISK_REGION( "pci:00.1:ide1:0:hdd" )
 	DISK_IMAGE( "gamecstl", 0, SHA1(b431af3c42c48ba07972d77a3d24e60ee1e4359e) )
+
+	ROM_REGION( 0x2000, "mcu", 0 )
+	ROM_LOAD( "gamecristal_datasat.bin", 0x0000, 0x2000, NO_DUMP ) // MCU on the JAMMA interface PCB, unknown type and ROM size
 ROM_END
 
 ROM_START(gamecst2)
@@ -421,15 +441,18 @@ ROM_START(gamecst2)
 
 	DISK_REGION( "pci:00.1:ide1:0:hdd" )
 	DISK_IMAGE( "gamecst2", 0, SHA1(14e1b311cb474801c7bdda3164a0c220fb102159) )
+
+	ROM_REGION( 0x2000, "mcu", 0 )
+	ROM_LOAD( "gamecristal_datasat.bin", 0x0000, 0x2000, NO_DUMP ) // MCU on the JAMMA interface PCB, unknown type and ROM size
 ROM_END
 
 } // anonymous namespace
 
 
-COMP( 2000, shutms11,  0,      0,      sis630,   sis630, sis630_state, empty_init, "Shuttle", "MS11 PC (SiS630 chipset)", MACHINE_NOT_WORKING | MACHINE_IMPERFECT_SOUND | MACHINE_IMPERFECT_GRAPHICS )
-COMP( 2001, asuspolo,  0,      0,      asuspolo, sis630, sis630_state, empty_init, "Asus", "Polo \"Genie\" (SiS630 chipset)", MACHINE_NOT_WORKING | MACHINE_IMPERFECT_SOUND | MACHINE_IMPERFECT_GRAPHICS ) // hangs at CMOS check first time, corrupts flash ROM on successive boots
-COMP( 2001, asuscusc,  0,      0,      asuscusc, sis630, sis630_state, empty_init, "Asus", "Terminator P-3 \"Cusc\" (SiS630 chipset)", MACHINE_NOT_WORKING | MACHINE_IMPERFECT_SOUND | MACHINE_IMPERFECT_GRAPHICS ) // fails CMOS test, does crc with I/O accesses at $c00
-COMP( 2001, zidav630e, 0,      0,      zidav630e,sis630, sis630_state, empty_init, "Zida", "V630E Baby AT (SiS630 chipset)", MACHINE_NOT_WORKING | MACHINE_IMPERFECT_SOUND | MACHINE_IMPERFECT_GRAPHICS ) // Flash ROM corrupts often, otherwise same-y as shutms11
+COMP( 2000, shutms11,  0, 0, sis630,   sis630, sis630_state, empty_init, "Shuttle", "MS11 PC (SiS630 chipset)",                 MACHINE_NOT_WORKING | MACHINE_IMPERFECT_SOUND | MACHINE_IMPERFECT_GRAPHICS )
+COMP( 2001, asuspolo,  0, 0, asuspolo, sis630, sis630_state, empty_init, "Asus",    "Polo \"Genie\" (SiS630 chipset)",          MACHINE_NOT_WORKING | MACHINE_IMPERFECT_SOUND | MACHINE_IMPERFECT_GRAPHICS ) // hangs at CMOS check first time, corrupts flash ROM on successive boots
+COMP( 2001, asuscusc,  0, 0, asuscusc, sis630, sis630_state, empty_init, "Asus",    "Terminator P-3 \"Cusc\" (SiS630 chipset)", MACHINE_NOT_WORKING | MACHINE_IMPERFECT_SOUND | MACHINE_IMPERFECT_GRAPHICS ) // fails CMOS test, does crc with I/O accesses at $c00
+COMP( 2001, zidav630e, 0, 0, zidav630e,sis630, sis630_state, empty_init, "Zida",    "V630E Baby AT (SiS630 chipset)",           MACHINE_NOT_WORKING | MACHINE_IMPERFECT_SOUND | MACHINE_IMPERFECT_GRAPHICS ) // Flash ROM corrupts often, otherwise same-y as shutms11
 
 
 // Arcade based games

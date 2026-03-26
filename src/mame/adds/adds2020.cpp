@@ -17,7 +17,7 @@
 
 #include "emu.h"
 //#include "bus/rs232/rs232.h"
-#include "cpu/mcs51/mcs51.h"
+#include "cpu/mcs51/i8051.h"
 #include "machine/input_merger.h"
 #include "machine/nvram.h"
 #include "machine/scn_pci.h"
@@ -48,9 +48,9 @@ private:
 	void unknown_0000_w(u8 data);
 	void unknown_9800_w(offs_t offset, u8 data);
 
-	void prog_map(address_map &map);
-	void ext_map(address_map &map);
-	void char_map(address_map &map);
+	void prog_map(address_map &map) ATTR_COLD;
+	void ext_map(address_map &map) ATTR_COLD;
+	void char_map(address_map &map) ATTR_COLD;
 
 	required_device<mcs51_cpu_device> m_maincpu;
 	required_device<scn_pci_device> m_epci;
@@ -106,7 +106,7 @@ void adds2020_state::adds2020(machine_config &config)
 {
 	I8031(config, m_maincpu, 10.92_MHz_XTAL); // P8031AH
 	m_maincpu->set_addrmap(AS_PROGRAM, &adds2020_state::prog_map);
-	m_maincpu->set_addrmap(AS_IO, &adds2020_state::ext_map);
+	m_maincpu->set_addrmap(AS_DATA, &adds2020_state::ext_map);
 
 	INPUT_MERGER_ANY_HIGH(config, "mainint").output_handler().set_inputline(m_maincpu, MCS51_INT1_LINE);
 
@@ -141,4 +141,4 @@ ROM_END
 
 } // anonymous namespace
 
-COMP(1986, adds2020, 0, 0, adds2020, adds2020, adds2020_state, empty_init, "Applied Digital Data Systems", "ADDS 2020", MACHINE_IS_SKELETON)
+COMP(1986, adds2020, 0, 0, adds2020, adds2020, adds2020_state, empty_init, "Applied Digital Data Systems", "ADDS 2020", MACHINE_NO_SOUND | MACHINE_NOT_WORKING)

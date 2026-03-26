@@ -43,11 +43,11 @@
 // This must be outside of the namespace
 DECLARE_DEVICE_TYPE(STINGNET_ATAPI_CDROM, stingnet_cdr)
 
-class stingnet_cdr : public atapi_fixed_cdrom_device
+class stingnet_cdr : public atapi_cdrom_device
 {
 public:
 	stingnet_cdr(const machine_config &mconfig, const char *tag, device_t *owner, uint32_t clock)
-		: atapi_fixed_cdrom_device(mconfig, STINGNET_ATAPI_CDROM, tag, owner, clock)
+		: atapi_cdrom_device(mconfig, STINGNET_ATAPI_CDROM, tag, owner, clock)
 	{
 	}
 
@@ -56,7 +56,7 @@ public:
 		m_sector_timer = timer_alloc(FUNC(stingnet_cdr::sector_tick), this);
 		m_sector_timer->adjust(attotime::never);
 
-		atapi_fixed_cdrom_device::device_start();
+		atapi_cdrom_device::device_start();
 	}
 
 	// atapicdr has zero delay between the end of a sector and the completion of the next.
@@ -75,7 +75,7 @@ public:
 	TIMER_CALLBACK_MEMBER(sector_tick)
 	{
 		m_sector_timer->adjust(attotime::never);
-		atapi_fixed_cdrom_device::fill_buffer();
+		atapi_cdrom_device::fill_buffer();
 	}
 
 private:
@@ -107,8 +107,8 @@ public:
 	void stingnet(machine_config &config);
 
 protected:
-	virtual void machine_start() override;
-	virtual void machine_reset() override;
+	virtual void machine_start() override ATTR_COLD;
+	virtual void machine_reset() override ATTR_COLD;
 
 private:
 	required_device<ppc_device> m_maincpu;
@@ -123,8 +123,8 @@ private:
 
 	u32 screen_update(screen_device &screen, bitmap_ind16 &bitmap, const rectangle &cliprect);
 
-	void main_map(address_map &map);
-	void ymz280b_map(address_map &map);
+	void main_map(address_map &map) ATTR_COLD;
+	void ymz280b_map(address_map &map) ATTR_COLD;
 
 	void gcu_interrupt(int state);
 	void ata_interrupt(int state);
@@ -344,13 +344,12 @@ void stingnet_state::stingnet(machine_config &config)
 	NS16550(config, "duart:chan0", XTAL(19'660'800));
 	NS16550(config, "duart:chan1", XTAL(19'660'800));
 
-	SPEAKER(config, "lspeaker").front_left();
-	SPEAKER(config, "rspeaker").front_right();
+	SPEAKER(config, "speaker", 2).front();
 
 	ymz280b_device &ymz(YMZ280B(config, m_ymz, 16934400));
 	ymz.set_addrmap(0, &stingnet_state::ymz280b_map);
-	ymz.add_route(1, "lspeaker", 1.0);
-	ymz.add_route(0, "rspeaker", 1.0);
+	ymz.add_route(1, "speaker", 1.0, 0);
+	ymz.add_route(0, "speaker", 1.0, 1);
 }
 
 ROM_START( tropchnc )

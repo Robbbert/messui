@@ -64,9 +64,9 @@ ToDo:
 ****************************************************************************************************/
 #include "emu.h"
 #include "genpin.h"
-#include "cpu/m6502/m65c02.h"
+#include "cpu/m6502/w65c02.h"
 #include "cpu/m6809/m6809.h"
-#include "cpu/mcs51/mcs51.h"
+#include "cpu/mcs51/i8051.h"
 #include "machine/6522via.h"
 #include "machine/clock.h"
 #include "machine/i8255.h"
@@ -116,14 +116,14 @@ public:
 	void pca020(machine_config &config);  // DMD controller
 
 private:
-	void main_map(address_map &map);
-	void pca002_map(address_map &map);
-	void pca003_map(address_map &map);
-	void pca008_map(address_map &map);
-	void pca020_io_map(address_map &map);
-	void pca020_mem_map(address_map &map);
-	void machine_start() override;
-	void machine_reset() override;
+	void main_map(address_map &map) ATTR_COLD;
+	void pca002_map(address_map &map) ATTR_COLD;
+	void pca003_map(address_map &map) ATTR_COLD;
+	void pca008_map(address_map &map) ATTR_COLD;
+	void pca020_data_map(address_map &map) ATTR_COLD;
+	void pca020_mem_map(address_map &map) ATTR_COLD;
+	void machine_start() override ATTR_COLD;
+	void machine_reset() override ATTR_COLD;
 	void display_w(offs_t, u8);
 	void ppi0_pa_w(u8 data) { for (u8 i = 0; i < 8; i++) m_io_outputs[i] = BIT(data, i); }
 	void ppi0_pb_w(u8 data) { for (u8 i = 0; i < 8; i++) m_io_outputs[8U+i] = BIT(data, i); }
@@ -242,7 +242,7 @@ void alvg_state::pca020_mem_map(address_map &map)
 	map(0x8000, 0xffff).bankr("dmd");
 }
 
-void alvg_state::pca020_io_map(address_map &map)
+void alvg_state::pca020_data_map(address_map &map)
 {
 	map.unmap_value_high();
 	map(0x0000, 0x7fff).ram().share("vram");
@@ -559,13 +559,12 @@ void alvg_state::pca008(machine_config &config)
 	m_audiocpu->set_addrmap(AS_PROGRAM, &alvg_state::pca008_map);
 	m_via1->writepa_handler().set(FUNC(alvg_state::via1_pa_w));
 
-	SPEAKER(config, "lspeaker").front_left();
-	SPEAKER(config, "rspeaker").front_right();
+	SPEAKER(config, "speaker", 2).front();
 
 	BSMT2000(config, m_bsmt, XTAL(24'000'000));
 	m_bsmt->set_ready_callback(FUNC(alvg_state::bsmt_ready_w));
-	m_bsmt->add_route(0, "lspeaker", 1.2);
-	m_bsmt->add_route(1, "rspeaker", 1.2);
+	m_bsmt->add_route(0, "speaker", 1.2, 0);
+	m_bsmt->add_route(1, "speaker", 1.2, 1);
 
 	CLOCK(config, "fclock", 2'000'000 / 4096).signal_handler().set_inputline(m_audiocpu, 1);
 }
@@ -575,7 +574,7 @@ void alvg_state::pca020(machine_config &config)
 	/* basic machine hardware */
 	I8031(config, m_dmdcpu, XTAL(12'000'000));
 	m_dmdcpu->set_addrmap(AS_PROGRAM, &alvg_state::pca020_mem_map);
-	m_dmdcpu->set_addrmap(AS_IO, &alvg_state::pca020_io_map);
+	m_dmdcpu->set_addrmap(AS_DATA, &alvg_state::pca020_data_map);
 	m_dmdcpu->port_out_cb<1>().set(FUNC(alvg_state::dmd_port1_w));
 	m_dmdcpu->port_in_cb<1>().set(FUNC(alvg_state::dmd_port1_r));
 	m_dmdcpu->port_out_cb<3>().set(FUNC(alvg_state::dmd_port3_w));
@@ -596,7 +595,7 @@ void alvg_state::pca020(machine_config &config)
 void alvg_state::alvg(machine_config &config)
 {
 	/* basic machine hardware */
-	M65C02(config, m_maincpu, XTAL(4'000'000) / 2);
+	W65C02(config, m_maincpu, XTAL(4'000'000) / 2);
 	m_maincpu->set_addrmap(AS_PROGRAM, &alvg_state::main_map);
 
 	NVRAM(config, "nvram", nvram_device::DEFAULT_ALL_0);
@@ -628,7 +627,7 @@ void alvg_state::alvg(machine_config &config)
 
 	genpin_audio(config);
 
-	INPUT_MERGER_ANY_HIGH(config, "cpuirq").output_handler().set_inputline(m_maincpu, M65C02_IRQ_LINE);
+	INPUT_MERGER_ANY_HIGH(config, "cpuirq").output_handler().set_inputline(m_maincpu, W65C02_IRQ_LINE);
 }
 
 
@@ -1047,19 +1046,19 @@ ROM_END
 } // Anonymous namespace
 
 
-GAME( 1991, agsoccer,   0,        group1, alvg, alvg_state, empty_init, ROT0, "Alvin G", "A.G. Soccer Ball (R18u, 2.5L sound)",          MACHINE_IS_SKELETON_MECHANICAL | MACHINE_SUPPORTS_SAVE )
-GAME( 1991, agsoccera,  agsoccer, group1, alvg, alvg_state, empty_init, ROT0, "Alvin G", "A.G. Soccer Ball (R18u, 2.1 sound)",           MACHINE_IS_SKELETON_MECHANICAL | MACHINE_SUPPORTS_SAVE )
-GAME( 1991, agsoccer07, agsoccer, group1, alvg, alvg_state, empty_init, ROT0, "Alvin G", "A.G. Soccer Ball (R07u)",                      MACHINE_IS_SKELETON_MECHANICAL | MACHINE_SUPPORTS_SAVE )
-GAME( 1992, wrldtour,   0,        group3, alvg, alvg_state, empty_init, ROT0, "Alvin G", "Al's Garage Band Goes On A World Tour (R01c)", MACHINE_IS_SKELETON_MECHANICAL | MACHINE_SUPPORTS_SAVE )
-GAME( 1992, wrldtour2,  wrldtour, group3, alvg, alvg_state, empty_init, ROT0, "Alvin G", "Al's Garage Band Goes On A World Tour (R02b)", MACHINE_IS_SKELETON_MECHANICAL | MACHINE_SUPPORTS_SAVE )
-GAME( 1992, wrldtour3,  wrldtour, group3, alvg, alvg_state, empty_init, ROT0, "Alvin G", "Al's Garage Band Goes On A World Tour (R06a)", MACHINE_IS_SKELETON_MECHANICAL | MACHINE_SUPPORTS_SAVE )
-GAME( 1993, usafootb,   0,        group1, alvg, alvg_state, empty_init, ROT0, "Alvin G", "U.S.A. Football (R06u)",                       MACHINE_IS_SKELETON_MECHANICAL | MACHINE_SUPPORTS_SAVE )
-GAME( 1993, usafootba,  usafootb, group1, alvg, alvg_state, empty_init, ROT0, "Alvin G", "U.S.A. Football (R01u)",                       MACHINE_IS_SKELETON_MECHANICAL | MACHINE_SUPPORTS_SAVE )
-GAME( 1994, usafootf,   0,        group1, alvg, alvg_state, empty_init, ROT0, "Alvin G", "U.S.A. Football (P08, redemption)",            MACHINE_IS_SKELETON_MECHANICAL | MACHINE_SUPPORTS_SAVE )
-GAME( 1993, mystcast,   0,        group3, alvg, alvg_state, empty_init, ROT0, "Alvin G", "Mystery Castle (R02)",                         MACHINE_IS_SKELETON_MECHANICAL | MACHINE_SUPPORTS_SAVE )
-GAME( 1993, mystcasta,  mystcast, group3, alvg, alvg_state, empty_init, ROT0, "Alvin G", "Mystery Castle (R03)",                         MACHINE_IS_SKELETON_MECHANICAL | MACHINE_SUPPORTS_SAVE )
-GAME( 1993, pstlpkr,    0,        group3, alvg, alvg_state, empty_init, ROT0, "Alvin G", "Pistol Poker (R02)",                           MACHINE_IS_SKELETON_MECHANICAL | MACHINE_SUPPORTS_SAVE )
-GAME( 1993, pstlpkr1,   pstlpkr,  group3, alvg, alvg_state, empty_init, ROT0, "Alvin G", "Pistol Poker (R01)",                           MACHINE_IS_SKELETON_MECHANICAL | MACHINE_SUPPORTS_SAVE )
-GAME( 1993, punchy,     0,        group1, alvg, alvg_state, empty_init, ROT0, "Alvin G", "Punchy The Clown (R02)",                       MACHINE_IS_SKELETON_MECHANICAL | MACHINE_SUPPORTS_SAVE )
-GAME( 1993, punchy3,    punchy,   group1, alvg, alvg_state, empty_init, ROT0, "Alvin G", "Punchy The Clown (R03)",                       MACHINE_IS_SKELETON_MECHANICAL | MACHINE_SUPPORTS_SAVE )
-GAME( 1993, dinoeggs,   0,        group2, alvg, alvg_state, empty_init, ROT0, "Alvin G", "Dinosaur Eggs (R02)",                          MACHINE_IS_SKELETON_MECHANICAL | MACHINE_SUPPORTS_SAVE )
+GAME( 1991, agsoccer,   0,        group1, alvg, alvg_state, empty_init, ROT0, "Alvin G", "A.G. Soccer Ball (R18u, 2.5L sound)",          MACHINE_NO_SOUND | MACHINE_NOT_WORKING | MACHINE_MECHANICAL | MACHINE_REQUIRES_ARTWORK | MACHINE_SUPPORTS_SAVE )
+GAME( 1991, agsoccera,  agsoccer, group1, alvg, alvg_state, empty_init, ROT0, "Alvin G", "A.G. Soccer Ball (R18u, 2.1 sound)",           MACHINE_NO_SOUND | MACHINE_NOT_WORKING | MACHINE_MECHANICAL | MACHINE_REQUIRES_ARTWORK | MACHINE_SUPPORTS_SAVE )
+GAME( 1991, agsoccer07, agsoccer, group1, alvg, alvg_state, empty_init, ROT0, "Alvin G", "A.G. Soccer Ball (R07u)",                      MACHINE_NO_SOUND | MACHINE_NOT_WORKING | MACHINE_MECHANICAL | MACHINE_REQUIRES_ARTWORK | MACHINE_SUPPORTS_SAVE )
+GAME( 1992, wrldtour,   0,        group3, alvg, alvg_state, empty_init, ROT0, "Alvin G", "Al's Garage Band Goes On A World Tour (R01c)", MACHINE_NO_SOUND | MACHINE_NOT_WORKING | MACHINE_MECHANICAL | MACHINE_REQUIRES_ARTWORK | MACHINE_SUPPORTS_SAVE )
+GAME( 1992, wrldtour2,  wrldtour, group3, alvg, alvg_state, empty_init, ROT0, "Alvin G", "Al's Garage Band Goes On A World Tour (R02b)", MACHINE_NO_SOUND | MACHINE_NOT_WORKING | MACHINE_MECHANICAL | MACHINE_REQUIRES_ARTWORK | MACHINE_SUPPORTS_SAVE )
+GAME( 1992, wrldtour3,  wrldtour, group3, alvg, alvg_state, empty_init, ROT0, "Alvin G", "Al's Garage Band Goes On A World Tour (R06a)", MACHINE_NO_SOUND | MACHINE_NOT_WORKING | MACHINE_MECHANICAL | MACHINE_REQUIRES_ARTWORK | MACHINE_SUPPORTS_SAVE )
+GAME( 1993, usafootb,   0,        group1, alvg, alvg_state, empty_init, ROT0, "Alvin G", "U.S.A. Football (R06u)",                       MACHINE_NO_SOUND | MACHINE_NOT_WORKING | MACHINE_MECHANICAL | MACHINE_REQUIRES_ARTWORK | MACHINE_SUPPORTS_SAVE )
+GAME( 1993, usafootba,  usafootb, group1, alvg, alvg_state, empty_init, ROT0, "Alvin G", "U.S.A. Football (R01u)",                       MACHINE_NO_SOUND | MACHINE_NOT_WORKING | MACHINE_MECHANICAL | MACHINE_REQUIRES_ARTWORK | MACHINE_SUPPORTS_SAVE )
+GAME( 1994, usafootf,   0,        group1, alvg, alvg_state, empty_init, ROT0, "Alvin G", "U.S.A. Football (P08, redemption)",            MACHINE_NO_SOUND | MACHINE_NOT_WORKING | MACHINE_MECHANICAL | MACHINE_REQUIRES_ARTWORK | MACHINE_SUPPORTS_SAVE )
+GAME( 1993, mystcast,   0,        group3, alvg, alvg_state, empty_init, ROT0, "Alvin G", "Mystery Castle (R02)",                         MACHINE_NO_SOUND | MACHINE_NOT_WORKING | MACHINE_MECHANICAL | MACHINE_REQUIRES_ARTWORK | MACHINE_SUPPORTS_SAVE )
+GAME( 1993, mystcasta,  mystcast, group3, alvg, alvg_state, empty_init, ROT0, "Alvin G", "Mystery Castle (R03)",                         MACHINE_NO_SOUND | MACHINE_NOT_WORKING | MACHINE_MECHANICAL | MACHINE_REQUIRES_ARTWORK | MACHINE_SUPPORTS_SAVE )
+GAME( 1993, pstlpkr,    0,        group3, alvg, alvg_state, empty_init, ROT0, "Alvin G", "Pistol Poker (R02)",                           MACHINE_NO_SOUND | MACHINE_NOT_WORKING | MACHINE_MECHANICAL | MACHINE_REQUIRES_ARTWORK | MACHINE_SUPPORTS_SAVE )
+GAME( 1993, pstlpkr1,   pstlpkr,  group3, alvg, alvg_state, empty_init, ROT0, "Alvin G", "Pistol Poker (R01)",                           MACHINE_NO_SOUND | MACHINE_NOT_WORKING | MACHINE_MECHANICAL | MACHINE_REQUIRES_ARTWORK | MACHINE_SUPPORTS_SAVE )
+GAME( 1993, punchy,     0,        group1, alvg, alvg_state, empty_init, ROT0, "Alvin G", "Punchy The Clown (R02)",                       MACHINE_NO_SOUND | MACHINE_NOT_WORKING | MACHINE_MECHANICAL | MACHINE_REQUIRES_ARTWORK | MACHINE_SUPPORTS_SAVE )
+GAME( 1993, punchy3,    punchy,   group1, alvg, alvg_state, empty_init, ROT0, "Alvin G", "Punchy The Clown (R03)",                       MACHINE_NO_SOUND | MACHINE_NOT_WORKING | MACHINE_MECHANICAL | MACHINE_REQUIRES_ARTWORK | MACHINE_SUPPORTS_SAVE )
+GAME( 1993, dinoeggs,   0,        group2, alvg, alvg_state, empty_init, ROT0, "Alvin G", "Dinosaur Eggs (R02)",                          MACHINE_NO_SOUND | MACHINE_NOT_WORKING | MACHINE_MECHANICAL | MACHINE_REQUIRES_ARTWORK | MACHINE_SUPPORTS_SAVE )

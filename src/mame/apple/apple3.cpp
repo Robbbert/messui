@@ -86,10 +86,10 @@ void apple3_state::apple3(machine_config &config)
 	m_a2bus->nmi_w().set(FUNC(apple3_state::a2bus_nmi_w));
 	m_a2bus->inh_w().set(FUNC(apple3_state::a2bus_inh_w));
 	m_a2bus->dma_w().set_inputline(m_maincpu, INPUT_LINE_HALT);
-	A2BUS_SLOT(config, "sl1", m_a2bus, apple3_cards, nullptr);
-	A2BUS_SLOT(config, "sl2", m_a2bus, apple3_cards, nullptr);
-	A2BUS_SLOT(config, "sl3", m_a2bus, apple3_cards, nullptr);
-	A2BUS_SLOT(config, "sl4", m_a2bus, apple3_cards, nullptr);
+	A2BUS_SLOT(config, "sl1", 14.318181_MHz_XTAL / 2, m_a2bus, apple3_cards, nullptr);
+	A2BUS_SLOT(config, "sl2", 14.318181_MHz_XTAL / 2, m_a2bus, apple3_cards, nullptr);
+	A2BUS_SLOT(config, "sl3", 14.318181_MHz_XTAL / 2, m_a2bus, apple3_cards, nullptr);
+	A2BUS_SLOT(config, "sl4", 14.318181_MHz_XTAL / 2, m_a2bus, apple3_cards, nullptr);
 
 	/* fdc */
 	APPLEIII_FDC(config, m_fdc, 1021800*2);
@@ -304,10 +304,10 @@ static INPUT_PORTS_START( apple3 )
 	PORT_BIT(0x01, IP_ACTIVE_HIGH, IPT_KEYBOARD) PORT_NAME("Caps Lock")    PORT_CODE(KEYCODE_CAPSLOCK) PORT_TOGGLE
 	PORT_BIT(0x02, IP_ACTIVE_HIGH, IPT_KEYBOARD) PORT_NAME("Left Shift")   PORT_CODE(KEYCODE_LSHIFT)   PORT_CHAR(UCHAR_SHIFT_1)
 	PORT_BIT(0x04, IP_ACTIVE_HIGH, IPT_KEYBOARD) PORT_NAME("Right Shift")  PORT_CODE(KEYCODE_RSHIFT)   PORT_CHAR(UCHAR_SHIFT_1)
-	PORT_BIT(0x08, IP_ACTIVE_HIGH, IPT_KEYBOARD) PORT_NAME("Control") PORT_CHANGED_MEMBER(DEVICE_SELF, apple3_state, apple3_state::keyb_special_changed, 0) PORT_CODE(KEYCODE_LCONTROL) PORT_CHAR(UCHAR_SHIFT_2)
+	PORT_BIT(0x08, IP_ACTIVE_HIGH, IPT_KEYBOARD) PORT_NAME("Control") PORT_CHANGED_MEMBER(DEVICE_SELF, FUNC(apple3_state::apple3_state::keyb_special_changed), 0) PORT_CODE(KEYCODE_LCONTROL) PORT_CHAR(UCHAR_SHIFT_2)
 	PORT_BIT(0x10, IP_ACTIVE_HIGH, IPT_KEYBOARD) PORT_NAME("Open Apple")   PORT_CODE(KEYCODE_LALT)
 	PORT_BIT(0x20, IP_ACTIVE_HIGH, IPT_KEYBOARD) PORT_NAME("Solid Apple")  PORT_CODE(KEYCODE_RALT)
-	PORT_BIT(0x80, IP_ACTIVE_HIGH, IPT_KEYBOARD) PORT_NAME("RESET") PORT_CHANGED_MEMBER(DEVICE_SELF, apple3_state, apple3_state::keyb_special_changed, 0) PORT_CODE(KEYCODE_F12)
+	PORT_BIT(0x80, IP_ACTIVE_HIGH, IPT_KEYBOARD) PORT_NAME("RESET") PORT_CHANGED_MEMBER(DEVICE_SELF, FUNC(apple3_state::apple3_state::keyb_special_changed), 0) PORT_CODE(KEYCODE_F12)
 
 	PORT_START("joy_1_x")      /* Joystick 1 X Axis */
 	PORT_BIT( 0xff, 0x80, IPT_AD_STICK_X) PORT_SENSITIVITY(100) PORT_KEYDELTA(1) PORT_NAME("P1 Joystick X")
@@ -335,7 +335,7 @@ INPUT_PORTS_END
 ROM_START(apple3)
 	ROM_REGION(0x1000,"maincpu",0)
 	ROM_SYSTEM_BIOS(0, "original", "Apple /// boot ROM")
-	ROMX_LOAD( "apple3.rom", 0x0000, 0x1000, CRC(55e8eec9) SHA1(579ee4cd2b208d62915a0aa482ddc2744ff5e967), ROM_BIOS(0))
+	ROMX_LOAD( "apple3.rom", 0x0000, 0x1000, CRC(1af7ec42) SHA1(8043f914ebdcdab9838dbb78f8a2ee3867d210d2), ROM_BIOS(0))
 
 	ROM_SYSTEM_BIOS(1, "soshd", "Rob Justice SOSHDBOOT")
 	ROMX_LOAD( "soshdboot.bin", 0x000000, 0x001000, CRC(fd5ac9e2) SHA1(ba466a54ddb7f618c4f18f344754343c5945b417), ROM_BIOS(1))

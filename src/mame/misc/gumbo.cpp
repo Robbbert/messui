@@ -72,7 +72,7 @@ public:
 	void gumbo(machine_config &config);
 
 protected:
-	virtual void video_start() override;
+	virtual void video_start() override ATTR_COLD;
 
 private:
 	// memory pointers
@@ -92,9 +92,9 @@ private:
 	TILE_GET_INFO_MEMBER(get_fg_tile_info);
 	uint32_t screen_update(screen_device &screen, bitmap_ind16 &bitmap, const rectangle &cliprect);
 
-	void dblpoint_map(address_map &map);
-	void gumbo_map(address_map &map);
-	void mspuzzle_map(address_map &map);
+	void dblpoint_map(address_map &map) ATTR_COLD;
+	void gumbo_map(address_map &map) ATTR_COLD;
+	void mspuzzle_map(address_map &map) ATTR_COLD;
 };
 
 
@@ -342,12 +342,11 @@ void gumbo_state::gumbo(machine_config &config)
 
 	PALETTE(config, "palette").set_format(palette_device::xRGB_555, 0x200);
 
-	SPEAKER(config, "lspeaker").front_left();
-	SPEAKER(config, "rspeaker").front_right();
+	SPEAKER(config, "speaker", 2).front();
 
 	okim6295_device &oki(OKIM6295(config, "oki", XTAL(14'318'181) / 16, okim6295_device::PIN7_HIGH)); // clock frequency & pin 7 not verified
-	oki.add_route(ALL_OUTPUTS, "lspeaker", 0.47);
-	oki.add_route(ALL_OUTPUTS, "rspeaker", 0.47);
+	oki.add_route(ALL_OUTPUTS, "speaker", 0.47, 0);
+	oki.add_route(ALL_OUTPUTS, "speaker", 0.47, 1);
 }
 
 void gumbo_state::mspuzzle(machine_config &config)

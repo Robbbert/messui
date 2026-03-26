@@ -36,7 +36,7 @@ public:
 	void pgm_arm_type1(machine_config &config);
 
 protected:
-	virtual void machine_start() override;
+	virtual void machine_start() override ATTR_COLD;
 
 private:
 	/////////////// simulations
@@ -70,7 +70,6 @@ private:
 	optional_shared_ptr<u32> m_arm7_shareram;
 
 	optional_device<cpu_device> m_prot;
-	DECLARE_MACHINE_START(pgm_arm_type1);
 
 	u32 arm7_type1_protlatch_r();
 	void arm7_type1_protlatch_w(offs_t offset, u32 data, u32 mem_mask);
@@ -136,10 +135,10 @@ private:
 
 
 	int puzzli2_take_leveldata_value(u8 datvalue);
-	void _55857E_arm7_map(address_map &map);
-	void cavepgm_mem(address_map &map);
-	void kov_map(address_map &map);
-	void kov_sim_map(address_map &map);
+	void _55857E_arm7_map(address_map &map) ATTR_COLD;
+	void cavepgm_mem(address_map &map) ATTR_COLD;
+	void kov_map(address_map &map) ATTR_COLD;
+	void kov_sim_map(address_map &map) ATTR_COLD;
 };
 
 INPUT_PORTS_EXTERN( sango );

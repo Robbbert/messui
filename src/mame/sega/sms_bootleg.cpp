@@ -271,8 +271,8 @@ public:
 	void init_sms_supergame();
 
 protected:
-	virtual void machine_start() override;
-	virtual void machine_reset() override;
+	virtual void machine_start() override ATTR_COLD;
+	virtual void machine_reset() override ATTR_COLD;
 
 	virtual void refresh_banks();
 	required_memory_bank_array<3> m_game_bank;
@@ -287,8 +287,8 @@ private:
 	void port08_w(uint8_t data);
 	void port18_w(uint8_t data);
 
-	void sms_supergame_io(address_map &map);
-	void sms_supergame_map(address_map &map);
+	void sms_supergame_io(address_map &map) ATTR_COLD;
+	void sms_supergame_map(address_map &map) ATTR_COLD;
 };
 
 class smsbootleg_a_state : public smsbootleg_state
@@ -406,7 +406,7 @@ static INPUT_PORTS_START( sms_supergame )
 	PORT_START("PAUSE")
 	PORT_BIT( 0x7f, IP_ACTIVE_LOW, IPT_UNUSED )
 	// TODO: are games really supposed to not have a way to pause?
-	PORT_BIT( 0x80, IP_ACTIVE_LOW, IPT_UNUSED )// PORT_NAME(DEF_STR(Pause)) PORT_CODE(KEYCODE_1) PORT_WRITE_LINE_DEVICE_MEMBER("sms_vdp", sega315_5124_device, n_nmi_in_write)
+	PORT_BIT( 0x80, IP_ACTIVE_LOW, IPT_UNUSED )// PORT_NAME(DEF_STR(Pause)) PORT_CODE(KEYCODE_1) PORT_WRITE_LINE_DEVICE_MEMBER("sms_vdp", FUNC(sega315_5124_device::n_nmi_in_write))
 
 	PORT_START("IN2")
 	PORT_BIT( 0x01, IP_ACTIVE_LOW, IPT_JOYSTICK_UP ) PORT_8WAY
@@ -520,8 +520,19 @@ ROM_START( smssgamea )
 //  ROM_FILL(            0x780000, 0x80000, 0xff) // ROM1 position not populated
 ROM_END
 
+ROM_START( atgsms )
+	ROM_REGION( 0x10000, "maincpu", ROMREGION_ERASEFF )
+
+	ROM_REGION( 0x400000, "game_data", ROMREGION_ERASEFF )
+	ROM_LOAD( "atgames_sms.u5",   0x000000, 0x400000, CRC(bf23cd7d) SHA1(185b8af5afc14615733475e927555e3f6bd28770) )
+ROM_END
+
 } // Anonymous namespace
 
 
 GAME( 199?, smssgame,  0,           sms_supergame, sms_supergame, smsbootleg_state, init_sms_supergame, ROT0, "Sono Corp Japan", "Super Game (Sega Master System Multi-game bootleg, 01 Final Bubble Bobble)", MACHINE_NOT_WORKING | MACHINE_UNEMULATED_PROTECTION )
 GAME( 1990, smssgamea, smssgame,    sms_supergame, sms_supergame, smsbootleg_a_state, init_sms_supergame, ROT0, "Seo Jin (TV-Tuning license)", "Super Game (Sega Master System Multi-game bootleg, 01 Tri Formation)", MACHINE_NOT_WORKING | MACHINE_UNEMULATED_PROTECTION ) // for German market?
+
+// should probably go in its own driver
+// this was dumped from a silver / purple unit with a 'time' logo on it, software seems to be generic AtGames though
+GAME( 200?, atgsms,    0,           sms_supergame, sms_supergame, smsbootleg_state, empty_init, ROT0, "AtGames / time", "20 SEGA Master System & Game Gear Classics - Plug & Play on TV", MACHINE_NOT_WORKING | MACHINE_UNEMULATED_PROTECTION )

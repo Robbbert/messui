@@ -46,10 +46,10 @@ public:
 
 protected:
 	// driver_device overrides
-	virtual void machine_start() override;
-	virtual void machine_reset() override;
+	virtual void machine_start() override ATTR_COLD;
+	virtual void machine_reset() override ATTR_COLD;
 
-	virtual void video_start() override;
+	virtual void video_start() override ATTR_COLD;
 
 private:
 	HD44780_PIXEL_UPDATE(lcd_pixel_update);
@@ -58,8 +58,8 @@ private:
 	u8 panel_sw_r();
 	void panel_leds_w(u8 data);
 
-	void korgm1_map(address_map &map);
-	void korgm1_io(address_map &map);
+	void korgm1_map(address_map &map) ATTR_COLD;
+	void korgm1_io(address_map &map) ATTR_COLD;
 
 	void palette_init(palette_device &palette);
 
@@ -376,6 +376,7 @@ ROM_START( korgm1p1 )
 	ROM_CONTINUE( 0x0000, 0x4000 )
 
 	ROM_REGION16_LE( 0x400000, "pcm", 0 )
+	// Signed 16-bit PCM LE, 48000 Hz
 	ROM_LOAD16_BYTE( "ic36.bin", 0x000000, 0x080000, CRC(5a3adc4c) SHA1(964fd245e46b4adf63b9b03b0490117b6df5e272) )
 	ROM_LOAD16_BYTE( "ic40.bin", 0x000001, 0x080000, CRC(77ac122b) SHA1(aa5a99ac697d673cf758eae323cbaeca0bb6f243) )
 	ROM_LOAD16_BYTE( "ic37.bin", 0x100000, 0x080000, CRC(fe15f7ca) SHA1(aa339c0972662d38773cdb533ceb0feb30b62eda) )

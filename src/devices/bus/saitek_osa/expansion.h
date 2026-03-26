@@ -24,8 +24,8 @@
 
 *******************************************************************************/
 
-#ifndef MAME_BUS_SAITEKOSA_EXPANSION_H
-#define MAME_BUS_SAITEKOSA_EXPANSION_H
+#ifndef MAME_BUS_SAITEK_OSA_EXPANSION_H
+#define MAME_BUS_SAITEK_OSA_EXPANSION_H
 
 #pragma once
 
@@ -50,10 +50,7 @@ public:
 	saitekosa_expansion_device(machine_config const &mconfig, char const *tag, device_t *owner, T &&opts) :
 		saitekosa_expansion_device(mconfig, tag, owner, u32(0))
 	{
-		option_reset();
-		opts(*this);
-		set_default_option(nullptr);
-		set_fixed(false);
+		set_options(std::forward<T>(opts), nullptr, false);
 	}
 
 	saitekosa_expansion_device(const machine_config &mconfig, const char *tag, device_t *owner, u32 clock);
@@ -81,8 +78,8 @@ public:
 
 protected:
 	// device-level overrides
-	virtual void device_start() override;
-	virtual void device_add_mconfig(machine_config &config) override;
+	virtual void device_start() override ATTR_COLD;
+	virtual void device_add_mconfig(machine_config &config) override ATTR_COLD;
 
 private:
 	devcb_write_line m_stb_handler;
@@ -123,5 +120,4 @@ protected:
 
 void saitekosa_expansion_modules(device_slot_interface &device);
 
-
-#endif // MAME_BUS_SAITEKOSA_EXPANSION_H
+#endif // MAME_BUS_SAITEK_OSA_EXPANSION_H

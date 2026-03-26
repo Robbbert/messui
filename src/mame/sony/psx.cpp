@@ -11,13 +11,14 @@
 
 #include "emu.h"
 
+#include "psxcd.h"
+
 #include "bus/psx/ctlrport.h"
 #include "bus/psx/parallel.h"
-#include "cpu/m6805/m6805.h"
+#include "cpu/m6805/hd6305.h"
 #include "cpu/psx/psx.h"
 #include "imagedev/cdromimg.h"
 #include "imagedev/snapquik.h"
-#include "psxcd.h"
 #include "machine/ram.h"
 #include "sound/spu.h"
 #include "video/psx.h"
@@ -67,8 +68,8 @@ private:
 	required_device<psxcpu_device> m_maincpu;
 	required_device<ram_device> m_ram;
 
-	void psx_map(address_map &map);
-	void subcpu_map(address_map &map);
+	void psx_map(address_map &map) ATTR_COLD;
+	void subcpu_map(address_map &map) ATTR_COLD;
 
 	required_device<psx_parallel_slot_device> m_parallel;
 	required_device<psxcd_device> m_psxcd;
@@ -518,11 +519,10 @@ void psx1_state::psx_base(machine_config &config)
 	SCREEN(config, "screen", SCREEN_TYPE_RASTER);
 
 	/* sound hardware */
-	SPEAKER(config, "lspeaker").front_left();
-	SPEAKER(config, "rspeaker").front_right();
+	SPEAKER(config, "speaker", 2).front();
 	spu_device &spu(SPU(config, "spu", XTAL(67'737'600)/2, m_maincpu.target()));
-	spu.add_route(0, "lspeaker", 1.00);
-	spu.add_route(1, "rspeaker", 1.00);
+	spu.add_route(0, "speaker", 1.00, 0);
+	spu.add_route(1, "speaker", 1.00, 1);
 
 	QUICKLOAD(config, "quickload", "cpe,exe,psf,psx").set_load_callback(FUNC(psx1_state::quickload_exe));
 

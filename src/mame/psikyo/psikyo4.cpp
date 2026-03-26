@@ -166,7 +166,7 @@ INTERRUPT_GEN_MEMBER(psikyo4_state::interrupt)
 }
 
 template <int P>
-CUSTOM_INPUT_MEMBER(psikyo4_state::mahjong_ctrl_r)/* used by hotgmck/hgkairak */
+ioport_value psikyo4_state::mahjong_ctrl_r()/* used by hotgmck/hgkairak */
 {
 	int ret = 0xff;
 
@@ -297,25 +297,25 @@ void psikyo4_state::ps4_ymf_map(address_map &map)
 }
 
 
-CUSTOM_INPUT_MEMBER(psikyo4_state::system_r)
+ioport_value psikyo4_state::system_r()
 {
 	return m_system->read();
 }
 
 static INPUT_PORTS_START( hotgmck )
 	PORT_START("P1_P2")
-	PORT_BIT( 0x000000ff, IP_ACTIVE_HIGH, IPT_UNKNOWN ) PORT_CUSTOM_MEMBER(psikyo4_state, system_r)
+	PORT_BIT( 0x000000ff, IP_ACTIVE_HIGH, IPT_UNKNOWN ) PORT_CUSTOM_MEMBER(FUNC(psikyo4_state::system_r))
 	PORT_BIT( 0x00ffff00, IP_ACTIVE_LOW, IPT_UNKNOWN )
-	PORT_BIT( 0xff000000, IP_ACTIVE_HIGH, IPT_UNKNOWN ) PORT_CUSTOM_MEMBER(psikyo4_state, mahjong_ctrl_r<0>)
+	PORT_BIT( 0xff000000, IP_ACTIVE_HIGH, IPT_UNKNOWN ) PORT_CUSTOM_MEMBER(FUNC(psikyo4_state::mahjong_ctrl_r<0>))
 
 	PORT_START("P3_P4")
-	PORT_BIT( 0x000000ff, IP_ACTIVE_HIGH, IPT_UNKNOWN ) PORT_CUSTOM_MEMBER(psikyo4_state, system_r)
+	PORT_BIT( 0x000000ff, IP_ACTIVE_HIGH, IPT_UNKNOWN ) PORT_CUSTOM_MEMBER(FUNC(psikyo4_state::system_r))
 	PORT_BIT( 0x00ffff00, IP_ACTIVE_LOW, IPT_UNKNOWN )
-	PORT_BIT( 0xff000000, IP_ACTIVE_HIGH, IPT_UNKNOWN ) PORT_CUSTOM_MEMBER(psikyo4_state, mahjong_ctrl_r<4>)
+	PORT_BIT( 0xff000000, IP_ACTIVE_HIGH, IPT_UNKNOWN ) PORT_CUSTOM_MEMBER(FUNC(psikyo4_state::mahjong_ctrl_r<4>))
 
 	PORT_START("JP4")/* jumper pads 'JP4' on the PCB */
 	/* EEPROM is read here */
-	PORT_BIT( 0x00100000, IP_ACTIVE_HIGH, IPT_CUSTOM ) PORT_READ_LINE_DEVICE_MEMBER("eeprom", eeprom_serial_93cxx_device, do_read)
+	PORT_BIT( 0x00100000, IP_ACTIVE_HIGH, IPT_CUSTOM ) PORT_READ_LINE_DEVICE_MEMBER("eeprom", FUNC(eeprom_serial_93cxx_device::do_read))
 
 	PORT_START("SYSTEM")    /* system inputs */
 	PORT_BIT( 0x01, IP_ACTIVE_LOW, IPT_COIN1 )  // Screen 1
@@ -490,7 +490,7 @@ static INPUT_PORTS_START( loderndf )
 	PORT_DIPSETTING(          0x00000000, "Japan (Shows Version Number)" )
 	PORT_DIPSETTING(          0x00010000, "World (Does Not Show Version Number)" )
 	/* EEPROM is read here */
-	PORT_BIT( 0x00100000, IP_ACTIVE_HIGH, IPT_CUSTOM ) PORT_READ_LINE_DEVICE_MEMBER("eeprom", eeprom_serial_93cxx_device, do_read)
+	PORT_BIT( 0x00100000, IP_ACTIVE_HIGH, IPT_CUSTOM ) PORT_READ_LINE_DEVICE_MEMBER("eeprom", FUNC(eeprom_serial_93cxx_device::do_read))
 INPUT_PORTS_END
 
 /* unused inputs also act as duplicate buttons */
@@ -569,7 +569,7 @@ static INPUT_PORTS_START( hotdebut )
 
 	PORT_START("JP4")/* jumper pads 'JP4' on the PCB */
 	/* EEPROM is read here */
-	PORT_BIT( 0x00100000, IP_ACTIVE_HIGH, IPT_CUSTOM ) PORT_READ_LINE_DEVICE_MEMBER("eeprom", eeprom_serial_93cxx_device, do_read)
+	PORT_BIT( 0x00100000, IP_ACTIVE_HIGH, IPT_CUSTOM ) PORT_READ_LINE_DEVICE_MEMBER("eeprom", FUNC(eeprom_serial_93cxx_device::do_read))
 INPUT_PORTS_END
 
 
@@ -633,18 +633,17 @@ void psikyo4_state::ps4big(machine_config &config)
 	m_rscreen->set_palette(m_palette[1]);
 
 	/* sound hardware */
-	SPEAKER(config, "lspeaker").front_left();
-	SPEAKER(config, "rspeaker").front_right();
+	SPEAKER(config, "speaker", 2).front();
 
 	ymf278b_device &ymf(YMF278B(config, "ymf", 57272700/2));
 	ymf.set_addrmap(0, &psikyo4_state::ps4_ymf_map);
 	ymf.irq_handler().set_inputline("maincpu", 12);
-	ymf.add_route(0, "rspeaker", 1.0); // Output for each screen
-	ymf.add_route(1, "lspeaker", 1.0);
-	ymf.add_route(2, "rspeaker", 1.0);
-	ymf.add_route(3, "lspeaker", 1.0);
-	ymf.add_route(4, "rspeaker", 1.0);
-	ymf.add_route(5, "lspeaker", 1.0);
+	ymf.add_route(0, "speaker", 1.0, 1); // Output for each screen
+	ymf.add_route(1, "speaker", 1.0, 0);
+	ymf.add_route(2, "speaker", 1.0, 1);
+	ymf.add_route(3, "speaker", 1.0, 0);
+	ymf.add_route(4, "speaker", 1.0, 1);
+	ymf.add_route(5, "speaker", 1.0, 0);
 }
 
 void psikyo4_state::ps4small(machine_config &config)

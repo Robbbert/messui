@@ -53,8 +53,8 @@ public:
 	DECLARE_INPUT_CHANGED_MEMBER(key_on);
 
 protected:
-	virtual void machine_start() override;
-	virtual void machine_reset() override;
+	virtual void machine_start() override ATTR_COLD;
+	virtual void machine_reset() override ATTR_COLD;
 
 private:
 	required_device<cpu_device> m_maincpu;
@@ -71,9 +71,9 @@ private:
 
 	void palette_init(palette_device &palette);
 
-	void mem_map(address_map &map);
-	void io_map(address_map &map);
-	void asic1_map(address_map &map);
+	void mem_map(address_map &map) ATTR_COLD;
+	void io_map(address_map &map) ATTR_COLD;
+	void asic1_map(address_map &map) ATTR_COLD;
 
 	uint8_t port_data_r();
 	void port_data_w(uint8_t data);
@@ -205,7 +205,7 @@ static INPUT_PORTS_START( psion3 )
 	PORT_BIT(0xf8, IP_ACTIVE_HIGH, IPT_UNUSED)
 
 	PORT_START("ESC")
-	PORT_BIT(0x01, IP_ACTIVE_HIGH, IPT_KEYBOARD) PORT_CODE(KEYCODE_ESC) PORT_CHAR(UCHAR_MAMEKEY(ESC)) PORT_NAME("Esc On") PORT_CHANGED_MEMBER(DEVICE_SELF, psion3_state, key_on, 0)
+	PORT_BIT(0x01, IP_ACTIVE_HIGH, IPT_KEYBOARD) PORT_CODE(KEYCODE_ESC) PORT_CHAR(UCHAR_MAMEKEY(ESC)) PORT_NAME("Esc On") PORT_CHANGED_MEMBER(DEVICE_SELF, FUNC(psion3_state::key_on), 0)
 INPUT_PORTS_END
 
 
@@ -345,9 +345,14 @@ void psion3_state::psion3s(machine_config &config)
 
 ROM_START(psion3)
 	ROM_REGION16_LE(0x80000, "flash", ROMREGION_ERASEFF)
-	ROM_SYSTEM_BIOS(0, "177f", "V1.77F/ENG 221091")
-	ROMX_LOAD("3504-3002-01_19-11-91v1.77f_eng.bin", 0x00000, 0x20000, CRC(73ba99fa) SHA1(1b3f7b2da9cc2f189e88a9aa01fdb6fad7598925), ROM_BIOS(0))
-	ROMX_LOAD("3504-3001-01_19-11-91v1.77f_eng.bin", 0x40000, 0x40000, CRC(e868c250) SHA1(48cce7dd219fb776bffe247c48ba070a89bff121), ROM_BIOS(0))
+	ROM_SYSTEM_BIOS(0, "191f", "V1.91F/ENG/FRN/GER/ESP/ITA 270892")
+	ROMX_LOAD("s3_v1.91f_multi.bin", 0x00000, 0x80000, CRC(2d6846d8) SHA1(cf427216e37930e5edf33fe6c29b551d12e3971a), ROM_BIOS(0))
+	ROM_SYSTEM_BIOS(1, "180f", "V1.80F/ENG/FRN/GER/ITA 241291")
+	ROMX_LOAD("s3_v1.80f_multi.bin", 0x00000, 0x80000, CRC(e30cc1ab) SHA1(b349465683ecaebc31b4188469b7c73c7eec00f8), ROM_BIOS(1))
+	ROM_SYSTEM_BIOS(2, "177f", "V1.77F/ENG 221091")
+	ROMX_LOAD("3504-3002-01_19-11-91v1.77f_eng.bin", 0x00000, 0x20000, CRC(73ba99fa) SHA1(1b3f7b2da9cc2f189e88a9aa01fdb6fad7598925), ROM_BIOS(2))
+	ROM_RELOAD(0x20000, 0x20000)
+	ROMX_LOAD("3504-3001-01_19-11-91v1.77f_eng.bin", 0x40000, 0x40000, CRC(e868c250) SHA1(48cce7dd219fb776bffe247c48ba070a89bff121), ROM_BIOS(2))
 ROM_END
 
 ROM_START(psion3s)

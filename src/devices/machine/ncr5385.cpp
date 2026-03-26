@@ -38,8 +38,8 @@ unsigned constexpr SCSI_RST_HOLD = 25'000;
 unsigned constexpr SCSI_SEL_TIMEOUT = 250'000'000;
 
 ncr5385_device::ncr5385_device(machine_config const &mconfig, char const *tag, device_t *owner, u32 clock)
-	: nscsi_device(mconfig, NCR5385, tag, owner, clock)
-	, nscsi_slot_card_interface(mconfig, *this, DEVICE_SELF)
+	: device_t(mconfig, NCR5385, tag, owner, clock)
+	, nscsi_device_interface(mconfig, *this)
 	, m_int(*this)
 	, m_dreq(*this)
 	, m_int_state(false)
@@ -111,7 +111,6 @@ enum aux_status_mask : u8
 
 enum cmd_mask : u8
 {
-	CMD_INT = 0x08, // interrupting
 	CMD_SBX = 0x40, // single byte transfer
 	CMD_DMA = 0x80, // DMA mode
 };
@@ -158,14 +157,14 @@ void ncr5385_device::device_reset()
 	m_sbx = false;
 
 	// monitor all control lines (device has no RST line)
-	scsi_bus->ctrl_wait(scsi_refid, S_ALL & ~S_RST, S_ALL & ~S_RST);
+	m_scsi_bus->ctrl_wait(m_scsi_refid, S_ALL & ~S_RST, S_ALL & ~S_RST);
 
 	update_int();
 }
 
 void ncr5385_device::scsi_ctrl_changed()
 {
-	u32 const ctrl = scsi_bus->ctrl_r();
+	u32 const ctrl = m_scsi_bus->ctrl_r();
 
 	static char const *const nscsi_phase[] = { "DATA OUT", "DATA IN", "COMMAND", "STATUS", "*", "*", "MESSAGE OUT", "MESSAGE IN" };
 
@@ -246,7 +245,7 @@ u8 ncr5385_device::aux_status_r()
 	if (!m_int_status)
 	{
 		// return current phase
-		u32 const ctrl = scsi_bus->ctrl_r();
+		u32 const ctrl = m_scsi_bus->ctrl_r();
 		if (ctrl & S_MSG)
 			data |= AUX_STATUS_MSG;
 		if (ctrl & S_CTL)
@@ -336,11 +335,11 @@ void ncr5385_device::cmd_w(u8 data)
 			break;
 		case 0x03: // set atn
 			LOGMASKED(LOG_COMMAND, "set atn\n");
-			scsi_bus->ctrl_w(scsi_refid, S_ATN, S_ATN);
+			m_scsi_bus->ctrl_w(m_scsi_refid, S_ATN, S_ATN);
 			break;
 		case 0x04: // message accepted
 			LOGMASKED(LOG_COMMAND, "message accepted\n");
-			scsi_bus->ctrl_w(scsi_refid, 0, S_ACK);
+			m_scsi_bus->ctrl_w(m_scsi_refid, 0, S_ACK);
 			break;
 		case 0x05: // chip disabled
 			LOGMASKED(LOG_COMMAND, "chip disabled\n");
@@ -421,6 +420,9 @@ void ncr5385_device::cmd_w(u8 data)
 		case 0x18: case 0x19: case 0x1a: case 0x1b:
 		case 0x1c: case 0x1d: case 0x1e: case 0x1f:
 			// reserved
+			LOGMASKED(LOG_COMMAND, "reserved / invalid cmd\n");
+			m_int_status |= INT_INVALID_CMD;
+			update_int();
 			break;
 		}
 	}
@@ -490,7 +492,7 @@ void ncr5385_device::state_timer(s32 param)
 
 int ncr5385_device::state_step()
 {
-	u32 const ctrl = scsi_bus->ctrl_r();
+	u32 const ctrl = m_scsi_bus->ctrl_r();
 	int delay = 0;
 
 	u8 const oid = 1 << m_own_id;
@@ -531,19 +533,19 @@ int ncr5385_device::state_step()
 		delay = SCSI_ARB_DELAY;
 
 		// assert own ID and BSY
-		scsi_bus->data_w(scsi_refid, oid);
-		scsi_bus->ctrl_w(scsi_refid, S_BSY, S_BSY);
+		m_scsi_bus->data_w(m_scsi_refid, oid);
+		m_scsi_bus->ctrl_w(m_scsi_refid, S_BSY, S_BSY);
 		break;
 	case ARB_EVALUATE:
 		// check if SEL asserted, or if there's a higher ID on the bus
-		if ((ctrl & S_SEL) || (scsi_bus->data_r() & ~((oid - 1) | oid)))
+		if ((ctrl & S_SEL) || (m_scsi_bus->data_r() & ~((oid - 1) | oid)))
 		{
 			LOGMASKED(LOG_STATE, "arbitration: lost\n");
 			m_state = ARB_BUS_FREE;
 
 			// clear data and BSY
-			scsi_bus->data_w(scsi_refid, 0);
-			scsi_bus->ctrl_w(scsi_refid, 0, S_BSY);
+			m_scsi_bus->data_w(m_scsi_refid, 0);
+			m_scsi_bus->ctrl_w(m_scsi_refid, 0, S_BSY);
 		}
 		else
 		{
@@ -559,8 +561,8 @@ int ncr5385_device::state_step()
 		delay = SCSI_BUS_SKEW * 2;
 
 		// assert own and target ID and SEL
-		scsi_bus->data_w(scsi_refid, oid | tid);
-		scsi_bus->ctrl_w(scsi_refid, S_SEL, S_SEL);
+		m_scsi_bus->data_w(m_scsi_refid, oid | tid);
+		m_scsi_bus->ctrl_w(m_scsi_refid, S_SEL, S_SEL);
 		break;
 	case SEL_DELAY:
 		LOGMASKED(LOG_STATE, "selection: BSY cleared\n");
@@ -569,9 +571,9 @@ int ncr5385_device::state_step()
 
 		// clear BSY, optionally assert ATN
 		if (!BIT(m_cmd, 0))
-			scsi_bus->ctrl_w(scsi_refid, S_ATN, S_BSY | S_ATN);
+			m_scsi_bus->ctrl_w(m_scsi_refid, S_ATN, S_BSY | S_ATN);
 		else
-			scsi_bus->ctrl_w(scsi_refid, 0, S_BSY);
+			m_scsi_bus->ctrl_w(m_scsi_refid, 0, S_BSY);
 		break;
 	case SEL_WAIT_BSY:
 		if (ctrl & S_BSY)
@@ -586,7 +588,7 @@ int ncr5385_device::state_step()
 			m_int_status |= INT_DISCONNECTED;
 			m_state = IDLE;
 
-			scsi_bus->ctrl_w(scsi_refid, 0, S_ATN | S_SEL);
+			m_scsi_bus->ctrl_w(m_scsi_refid, 0, S_ATN | S_SEL);
 
 			update_int();
 		}
@@ -601,8 +603,8 @@ int ncr5385_device::state_step()
 		update_int();
 
 		// clear data and SEL
-		scsi_bus->data_w(scsi_refid, 0);
-		scsi_bus->ctrl_w(scsi_refid, 0, S_SEL);
+		m_scsi_bus->data_w(m_scsi_refid, 0);
+		m_scsi_bus->ctrl_w(m_scsi_refid, 0, S_SEL);
 		break;
 	case SEL_WAIT_REQ:
 		// don't generate bus service interrupt until the function complete is cleared
@@ -635,7 +637,7 @@ int ncr5385_device::state_step()
 				if (!BIT(m_cmd, 0))
 				{
 					m_aux_status |= AUX_STATUS_DATA_FULL;
-					m_dat = scsi_bus->data_r();
+					m_dat = m_scsi_bus->data_r();
 
 					if (m_cmd & CMD_DMA)
 						set_dreq(true);
@@ -662,7 +664,7 @@ int ncr5385_device::state_step()
 		LOGMASKED(LOG_STATE, "xfi_in: data 0x%02x\n", m_dat);
 
 		// assert ACK
-		scsi_bus->ctrl_w(scsi_refid, S_ACK, S_ACK);
+		m_scsi_bus->ctrl_w(m_scsi_refid, S_ACK, S_ACK);
 		break;
 	case XFI_IN_ACK:
 		if (!(ctrl & S_REQ))
@@ -690,7 +692,7 @@ int ncr5385_device::state_step()
 				update_int();
 			}
 			else
-				scsi_bus->ctrl_w(scsi_refid, 0, S_ACK);
+				m_scsi_bus->ctrl_w(m_scsi_refid, 0, S_ACK);
 		}
 		else
 			delay = -1;
@@ -730,11 +732,11 @@ int ncr5385_device::state_step()
 		LOGMASKED(LOG_STATE, "xfi_out: data 0x%02x\n", m_dat);
 
 		// assert data and ACK
-		scsi_bus->data_w(scsi_refid, m_dat);
+		m_scsi_bus->data_w(m_scsi_refid, m_dat);
 		if (remaining(1) && (ctrl & S_PHASE_MASK) == S_PHASE_MSG_OUT)
-			scsi_bus->ctrl_w(scsi_refid, S_ACK, S_ACK | S_ATN);
+			m_scsi_bus->ctrl_w(m_scsi_refid, S_ACK, S_ACK | S_ATN);
 		else
-			scsi_bus->ctrl_w(scsi_refid, S_ACK, S_ACK);
+			m_scsi_bus->ctrl_w(m_scsi_refid, S_ACK, S_ACK);
 		break;
 	case XFI_OUT_ACK:
 		if (!(ctrl & S_REQ))
@@ -757,8 +759,8 @@ int ncr5385_device::state_step()
 				m_sbx = false;
 
 			// clear data and ACK
-			scsi_bus->data_w(scsi_refid, 0);
-			scsi_bus->ctrl_w(scsi_refid, 0, S_ACK);
+			m_scsi_bus->data_w(m_scsi_refid, 0);
+			m_scsi_bus->ctrl_w(m_scsi_refid, 0, S_ACK);
 		}
 		else
 			delay = -1;
@@ -814,7 +816,8 @@ void ncr5385_device::set_dreq(bool dreq)
 
 void ncr5385_device::update_int()
 {
-	bool const int_state = m_int_status & 0x5f;
+	bool const int_state = m_int_status & (INT_FUNC_COMPLETE | INT_BUS_SERVICE |
+			INT_DISCONNECTED | INT_SELECTED | INT_RESELECTED | INT_INVALID_CMD);
 
 	if (m_int_state != int_state)
 	{
@@ -826,7 +829,7 @@ void ncr5385_device::update_int()
 			m_cmd = 0;
 
 			// latch current phase
-			u32 const ctrl = scsi_bus->ctrl_r();
+			u32 const ctrl = m_scsi_bus->ctrl_r();
 			if (ctrl & S_MSG)
 				m_aux_status |= AUX_STATUS_MSG;
 			if (ctrl & S_CTL)

@@ -132,15 +132,15 @@ protected:
 	virtual void driver_start() override;
 	virtual void driver_reset() override;
 
-	void intellec4_program_banks(address_map &map);
-	void intellec4_rom_port_banks(address_map &map);
+	void intellec4_program_banks(address_map &map) ATTR_COLD;
+	void intellec4_rom_port_banks(address_map &map) ATTR_COLD;
 
-	void intellec4_rom(address_map &map);
-	void intellec4_ram_memory(address_map &map);
-	void intellec4_rom_ports(address_map &map);
-	void intellec4_ram_status(address_map &map);
-	void intellec4_ram_ports(address_map &map);
-	void intellec4_program_memory(address_map &map);
+	void intellec4_rom(address_map &map) ATTR_COLD;
+	void intellec4_ram_memory(address_map &map) ATTR_COLD;
+	void intellec4_rom_ports(address_map &map) ATTR_COLD;
+	void intellec4_ram_status(address_map &map) ATTR_COLD;
+	void intellec4_ram_ports(address_map &map) ATTR_COLD;
+	void intellec4_program_memory(address_map &map) ATTR_COLD;
 
 	void intellec4(machine_config &config);
 
@@ -248,20 +248,20 @@ private:
 
 INPUT_PORTS_START(intellec4)
 	PORT_START("MODE")
-	PORT_BIT( 0x0004, IP_ACTIVE_LOW,  IPT_KEYPAD )             PORT_NAME("RESET")                                         PORT_CHANGED_MEMBER(DEVICE_SELF, intellec4_state, sw_reset,       0)
-	PORT_BIT( 0x0008, IP_ACTIVE_HIGH, IPT_KEYPAD ) PORT_TOGGLE PORT_NAME("RESET MODE")                                    PORT_CHANGED_MEMBER(DEVICE_SELF, intellec4_state, sw_reset_mode,  0)
-	PORT_BIT( 0x0010, IP_ACTIVE_LOW,  IPT_KEYPAD )             PORT_NAME("MON")              PORT_CODE(KEYCODE_1_PAD)     PORT_CHANGED_MEMBER(DEVICE_SELF, intellec4_state, sw_prg_mode<0>, 0)
-	PORT_BIT( 0x0020, IP_ACTIVE_LOW,  IPT_KEYPAD )             PORT_NAME("RAM")              PORT_CODE(KEYCODE_2_PAD)     PORT_CHANGED_MEMBER(DEVICE_SELF, intellec4_state, sw_prg_mode<1>, 0)
-	PORT_BIT( 0x0040, IP_ACTIVE_LOW,  IPT_KEYPAD )             PORT_NAME("PROM")             PORT_CODE(KEYCODE_3_PAD)     PORT_CHANGED_MEMBER(DEVICE_SELF, intellec4_state, sw_prg_mode<2>, 0)
+	PORT_BIT( 0x0004, IP_ACTIVE_LOW,  IPT_KEYPAD )             PORT_NAME("RESET")                                         PORT_CHANGED_MEMBER(DEVICE_SELF, FUNC(intellec4_state::sw_reset),       0)
+	PORT_BIT( 0x0008, IP_ACTIVE_HIGH, IPT_KEYPAD ) PORT_TOGGLE PORT_NAME("RESET MODE")                                    PORT_CHANGED_MEMBER(DEVICE_SELF, FUNC(intellec4_state::sw_reset_mode),  0)
+	PORT_BIT( 0x0010, IP_ACTIVE_LOW,  IPT_KEYPAD )             PORT_NAME("MON")              PORT_CODE(KEYCODE_1_PAD)     PORT_CHANGED_MEMBER(DEVICE_SELF, FUNC(intellec4_state::sw_prg_mode<0>), 0)
+	PORT_BIT( 0x0020, IP_ACTIVE_LOW,  IPT_KEYPAD )             PORT_NAME("RAM")              PORT_CODE(KEYCODE_2_PAD)     PORT_CHANGED_MEMBER(DEVICE_SELF, FUNC(intellec4_state::sw_prg_mode<1>), 0)
+	PORT_BIT( 0x0040, IP_ACTIVE_LOW,  IPT_KEYPAD )             PORT_NAME("PROM")             PORT_CODE(KEYCODE_3_PAD)     PORT_CHANGED_MEMBER(DEVICE_SELF, FUNC(intellec4_state::sw_prg_mode<2>), 0)
 
 	PORT_START("CONTROL")
-	PORT_BIT( 0x0001, IP_ACTIVE_LOW,  IPT_KEYPAD ) PORT_TOGGLE PORT_NAME("RUN")                                           PORT_CHANGED_MEMBER(DEVICE_SELF, intellec4_state, sw_run,         0)
-	PORT_BIT( 0x0002, IP_ACTIVE_LOW,  IPT_KEYPAD ) PORT_TOGGLE PORT_NAME("NEXT INST")                                     PORT_CHANGED_MEMBER(DEVICE_SELF, intellec4_state, sw_next_inst,   0)
-	PORT_BIT( 0x0004, IP_ACTIVE_HIGH, IPT_KEYPAD )             PORT_NAME("DECR")             PORT_CODE(KEYCODE_MINUS_PAD) PORT_CHANGED_MEMBER(DEVICE_SELF, intellec4_state, sw_decr,        0)
-	PORT_BIT( 0x0008, IP_ACTIVE_HIGH, IPT_KEYPAD )             PORT_NAME("INCR")             PORT_CODE(KEYCODE_PLUS_PAD)  PORT_CHANGED_MEMBER(DEVICE_SELF, intellec4_state, sw_incr,        0)
-	PORT_BIT( 0x0010, IP_ACTIVE_HIGH, IPT_KEYPAD )             PORT_NAME("LOAD")             PORT_CODE(KEYCODE_ENTER_PAD) PORT_CHANGED_MEMBER(DEVICE_SELF, intellec4_state, sw_load,        0)
-	PORT_BIT( 0x0020, IP_ACTIVE_HIGH, IPT_KEYPAD ) PORT_TOGGLE PORT_NAME("CMA ENABLE")                                    PORT_CHANGED_MEMBER(DEVICE_SELF, intellec4_state, sw_cma_enable,  0)
-	PORT_BIT( 0x0040, IP_ACTIVE_HIGH, IPT_KEYPAD )             PORT_NAME("CMA WRITE")        PORT_CODE(KEYCODE_SLASH_PAD) PORT_CHANGED_MEMBER(DEVICE_SELF, intellec4_state, sw_cma_write,   0)
+	PORT_BIT( 0x0001, IP_ACTIVE_LOW,  IPT_KEYPAD ) PORT_TOGGLE PORT_NAME("RUN")                                           PORT_CHANGED_MEMBER(DEVICE_SELF, FUNC(intellec4_state::sw_run),         0)
+	PORT_BIT( 0x0002, IP_ACTIVE_LOW,  IPT_KEYPAD ) PORT_TOGGLE PORT_NAME("NEXT INST")                                     PORT_CHANGED_MEMBER(DEVICE_SELF, FUNC(intellec4_state::sw_next_inst),   0)
+	PORT_BIT( 0x0004, IP_ACTIVE_HIGH, IPT_KEYPAD )             PORT_NAME("DECR")             PORT_CODE(KEYCODE_MINUS_PAD) PORT_CHANGED_MEMBER(DEVICE_SELF, FUNC(intellec4_state::sw_decr),        0)
+	PORT_BIT( 0x0008, IP_ACTIVE_HIGH, IPT_KEYPAD )             PORT_NAME("INCR")             PORT_CODE(KEYCODE_PLUS_PAD)  PORT_CHANGED_MEMBER(DEVICE_SELF, FUNC(intellec4_state::sw_incr),        0)
+	PORT_BIT( 0x0010, IP_ACTIVE_HIGH, IPT_KEYPAD )             PORT_NAME("LOAD")             PORT_CODE(KEYCODE_ENTER_PAD) PORT_CHANGED_MEMBER(DEVICE_SELF, FUNC(intellec4_state::sw_load),        0)
+	PORT_BIT( 0x0020, IP_ACTIVE_HIGH, IPT_KEYPAD ) PORT_TOGGLE PORT_NAME("CMA ENABLE")                                    PORT_CHANGED_MEMBER(DEVICE_SELF, FUNC(intellec4_state::sw_cma_enable),  0)
+	PORT_BIT( 0x0040, IP_ACTIVE_HIGH, IPT_KEYPAD )             PORT_NAME("CMA WRITE")        PORT_CODE(KEYCODE_SLASH_PAD) PORT_CHANGED_MEMBER(DEVICE_SELF, FUNC(intellec4_state::sw_cma_write),   0)
 
 	PORT_START("ADDRDAT")
 	PORT_BIT( 0x0001, IP_ACTIVE_LOW,  IPT_KEYPAD ) PORT_TOGGLE PORT_NAME("ADDRESS/DATA 0")
@@ -284,8 +284,8 @@ INPUT_PORTS_START(intellec4)
 	PORT_BIT( 0x0008, IP_ACTIVE_HIGH, IPT_KEYPAD ) PORT_TOGGLE PORT_NAME("PASSES 3")
 
 	PORT_START("PROM")
-	PORT_BIT( 0x0001, IP_ACTIVE_LOW,  IPT_KEYPAD ) PORT_TOGGLE PORT_NAME("PRGM PROM PWR")                                 PORT_CHANGED_MEMBER(DEVICE_SELF, intellec4_state, sw_prgm_pwr,    0)
-	PORT_CONFNAME( 0x0002, 0x0002, "PROM PROGRAMMER DATA OUT ENABLE" )                                                    PORT_CHANGED_MEMBER(DEVICE_SELF, intellec4_state, sw_do_enable,   0)
+	PORT_BIT( 0x0001, IP_ACTIVE_LOW,  IPT_KEYPAD ) PORT_TOGGLE PORT_NAME("PRGM PROM PWR")                                 PORT_CHANGED_MEMBER(DEVICE_SELF, FUNC(intellec4_state::sw_prgm_pwr),    0)
+	PORT_CONFNAME( 0x0002, 0x0002, "PROM PROGRAMMER DATA OUT ENABLE" )                                                    PORT_CHANGED_MEMBER(DEVICE_SELF, FUNC(intellec4_state::sw_do_enable),   0)
 	PORT_CONFSETTING(      0x0000, DEF_STR(Off) )
 	PORT_CONFSETTING(      0x0002, DEF_STR(On)  )
 INPUT_PORTS_END
@@ -822,14 +822,24 @@ void intellec4_state::intellec4_program_memory(address_map &map)
   Common machine configuration
 ----------------------------------*/
 
-DEVICE_INPUT_DEFAULTS_START(tty)
+DEVICE_INPUT_DEFAULTS_START(terminal)
 	DEVICE_INPUT_DEFAULTS("RS232_TXBAUD",    0x00ff, RS232_BAUD_110)
 	DEVICE_INPUT_DEFAULTS("RS232_RXBAUD",    0x00ff, RS232_BAUD_110)
 	DEVICE_INPUT_DEFAULTS("RS232_DATABITS",  0x00ff, RS232_DATABITS_8)
 	DEVICE_INPUT_DEFAULTS("RS232_PARITY",    0x00ff, RS232_PARITY_NONE)
 	DEVICE_INPUT_DEFAULTS("RS232_STOPBITS",  0x00ff, RS232_STOPBITS_2)
-	DEVICE_INPUT_DEFAULTS("TERM_CONF",       0x01c0, 0x0000)
-	DEVICE_INPUT_DEFAULTS("FLOW_CONTROL",    0x0001, 0x0000)
+	DEVICE_INPUT_DEFAULTS("TERM_CONF",       0x0040, 0x0000) // auto CR on LF off
+	DEVICE_INPUT_DEFAULTS("TERM_CONF",       0x0080, 0x0000) // auto LF on CR off
+	DEVICE_INPUT_DEFAULTS("TERM_CONF",       0x0100, 0x0000) // local echo off
+DEVICE_INPUT_DEFAULTS_END
+
+DEVICE_INPUT_DEFAULTS_START(null_modem)
+	DEVICE_INPUT_DEFAULTS("RS232_TXBAUD",    0x00ff, RS232_BAUD_110)
+	DEVICE_INPUT_DEFAULTS("RS232_RXBAUD",    0x00ff, RS232_BAUD_110)
+	DEVICE_INPUT_DEFAULTS("RS232_DATABITS",  0x00ff, RS232_DATABITS_8)
+	DEVICE_INPUT_DEFAULTS("RS232_PARITY",    0x00ff, RS232_PARITY_NONE)
+	DEVICE_INPUT_DEFAULTS("RS232_STOPBITS",  0x00ff, RS232_STOPBITS_2)
+	DEVICE_INPUT_DEFAULTS("FLOW_CONTROL",    0x0007, 0x0000) // no flow control
 DEVICE_INPUT_DEFAULTS_END
 
 void intellec4_state::intellec4(machine_config &config)
@@ -851,8 +861,8 @@ void intellec4_state::intellec4(machine_config &config)
 	INTEL_IMM6_76(config, m_prom_programmer, 0);
 
 	RS232_PORT(config, m_tty, default_rs232_devices, "terminal");
-	m_tty->set_option_device_input_defaults("terminal",   DEVICE_INPUT_DEFAULTS_NAME(tty));
-	m_tty->set_option_device_input_defaults("null_modem", DEVICE_INPUT_DEFAULTS_NAME(tty));
+	m_tty->set_option_device_input_defaults("terminal",   DEVICE_INPUT_DEFAULTS_NAME(terminal));
+	m_tty->set_option_device_input_defaults("null_modem", DEVICE_INPUT_DEFAULTS_NAME(null_modem));
 
 	INTELLEC4_UNIV_BUS(config, m_bus, 518000. / 7);
 	m_bus->set_rom_space(m_program_banks, AS_PROGRAM);
@@ -1082,8 +1092,8 @@ INPUT_PORTS_START(mod4)
 	PORT_INCLUDE(intellec4)
 
 	PORT_MODIFY("MODE")
-	PORT_BIT( 0x0001, IP_ACTIVE_LOW,  IPT_KEYPAD ) PORT_TOGGLE PORT_NAME("HOLD")     PORT_CODE(KEYCODE_LEFT)  PORT_CHANGED_MEMBER(DEVICE_SELF, mod4_state, sw_hold,     0)
-	PORT_BIT( 0x0002, IP_ACTIVE_HIGH, IPT_KEYPAD )             PORT_NAME("ONE SHOT") PORT_CODE(KEYCODE_RIGHT) PORT_CHANGED_MEMBER(DEVICE_SELF, mod4_state, sw_one_shot, 0)
+	PORT_BIT( 0x0001, IP_ACTIVE_LOW,  IPT_KEYPAD ) PORT_TOGGLE PORT_NAME("HOLD")     PORT_CODE(KEYCODE_LEFT)  PORT_CHANGED_MEMBER(DEVICE_SELF, FUNC(mod4_state::sw_hold),     0)
+	PORT_BIT( 0x0002, IP_ACTIVE_HIGH, IPT_KEYPAD )             PORT_NAME("ONE SHOT") PORT_CODE(KEYCODE_RIGHT) PORT_CHANGED_MEMBER(DEVICE_SELF, FUNC(mod4_state::sw_one_shot), 0)
 INPUT_PORTS_END
 
 
@@ -1278,8 +1288,8 @@ INPUT_PORTS_START(mod40)
 	PORT_INCLUDE(intellec4)
 
 	PORT_MODIFY("MODE")
-	PORT_BIT( 0x0001, IP_ACTIVE_LOW,  IPT_KEYPAD ) PORT_TOGGLE PORT_NAME("STOP")        PORT_CODE(KEYCODE_LEFT)  PORT_CHANGED_MEMBER(DEVICE_SELF, mod40_state, sw_stop,        0)
-	PORT_BIT( 0x0002, IP_ACTIVE_HIGH, IPT_KEYPAD )             PORT_NAME("SINGLE STEP") PORT_CODE(KEYCODE_RIGHT) PORT_CHANGED_MEMBER(DEVICE_SELF, mod40_state, sw_single_step, 0)
+	PORT_BIT( 0x0001, IP_ACTIVE_LOW,  IPT_KEYPAD ) PORT_TOGGLE PORT_NAME("STOP")        PORT_CODE(KEYCODE_LEFT)  PORT_CHANGED_MEMBER(DEVICE_SELF, FUNC(mod40_state::sw_stop),        0)
+	PORT_BIT( 0x0002, IP_ACTIVE_HIGH, IPT_KEYPAD )             PORT_NAME("SINGLE STEP") PORT_CODE(KEYCODE_RIGHT) PORT_CHANGED_MEMBER(DEVICE_SELF, FUNC(mod40_state::sw_single_step), 0)
 INPUT_PORTS_END
 
 

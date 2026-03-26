@@ -18,7 +18,6 @@
 #include "machine/timer.h"
 #include "sound/msm5205.h"
 #include "sound/okim6295.h"
-#include "sound/qsound.h"
 
 #include "emupal.h"
 #include "screen.h"
@@ -108,11 +107,6 @@ class cps_state : public driver_device
 {
 public:
 	cps_state(const machine_config &mconfig, device_type type, const char *tag)
-		: cps_state(mconfig, type, tag, 1)
-	{ }
-
-protected:
-	cps_state(const machine_config &mconfig, device_type type, const char *tag, int version)
 		: driver_device(mconfig, type, tag)
 		, m_mainram(*this, "mainram")
 		, m_gfxram(*this, "gfxram")
@@ -120,7 +114,6 @@ protected:
 		, m_cps_b_regs(*this, "cps_b_regs")
 		, m_qsound_sharedram1(*this, "qsound_ram1")
 		, m_qsound_sharedram2(*this, "qsound_ram2")
-		, m_cps_version(version)
 		, m_maincpu(*this, "maincpu")
 		, m_audiocpu(*this, "audiocpu")
 		, m_oki(*this, "oki")
@@ -148,13 +141,14 @@ public:
 	void varthb2(machine_config &config);
 	void varthb3(machine_config &config);
 
-	void init_cps1();
+	void init_cps1mult();
 	void init_sf2ee();
 	void init_wof();
 	void init_dino();
 	void init_punisher();
 	void init_slammast();
 	void init_pang3();
+	void init_rasters();
 	void init_ganbare();
 	void init_pang3b();
 	void init_pang3b4();
@@ -215,30 +209,33 @@ protected:
 	TILE_GET_INFO_MEMBER(get_tile0_info);
 	TILE_GET_INFO_MEMBER(get_tile1_info);
 	TILE_GET_INFO_MEMBER(get_tile2_info);
-	virtual void video_start() override;
+	virtual void video_start() override ATTR_COLD;
 
 	INTERRUPT_GEN_MEMBER(cps1_interrupt);
-	TIMER_DEVICE_CALLBACK_MEMBER(ganbare_interrupt);
+	TIMER_DEVICE_CALLBACK_MEMBER(raster_scanline);
+	TIMER_CALLBACK_MEMBER(raster_irq);
+	uint16_t irqack_r(offs_t offset);
 
 	virtual void render_layers(screen_device &screen, bitmap_ind16 &bitmap, const rectangle &cliprect);
 	uint32_t screen_update_cps1(screen_device &screen, bitmap_ind16 &bitmap, const rectangle &cliprect);
 	void screen_vblank_cps1(int state);
+	void cps1_objram_latch(int state);
 
 	void kabuki_setup(void (*decode)(uint8_t *src, uint8_t *dst));
 
 	/* maps */
-	void cpu_space_map(address_map &map);
-	void main_map(address_map &map);
-	void forgottn_map(address_map &map);
-	void qsound_main_map(address_map &map);
-	void qsound_decrypted_opcodes_map(address_map &map);
-	void sub_map(address_map &map);
-	void qsound_sub_map(address_map &map);
-	void sf2m3_map(address_map &map);
-	void sf2cems6_map(address_map &map);
-	void sf2m10_map(address_map &map);
-	void varthb2_map(address_map &map);
-	void varthb3_map(address_map &map);
+	void main_map(address_map &map) ATTR_COLD;
+	void cpu_space_map(address_map &map) ATTR_COLD;
+	void forgottn_map(address_map &map) ATTR_COLD;
+	void qsound_main_map(address_map &map) ATTR_COLD;
+	void qsound_decrypted_opcodes_map(address_map &map) ATTR_COLD;
+	void sub_map(address_map &map) ATTR_COLD;
+	void qsound_sub_map(address_map &map) ATTR_COLD;
+	void sf2m3_map(address_map &map) ATTR_COLD;
+	void sf2cems6_map(address_map &map) ATTR_COLD;
+	void sf2m10_map(address_map &map) ATTR_COLD;
+	void varthb2_map(address_map &map) ATTR_COLD;
+	void varthb3_map(address_map &map) ATTR_COLD;
 
 	// game-specific
 	uint16_t m_sf2ceblp_prot = 0;
@@ -246,9 +243,9 @@ protected:
 
 	/* video-related */
 	tilemap_t *m_bg_tilemap[3]{};
-	int m_scanline1 = 0;
-	int m_scanline2 = 0;
-	int m_scancalls = 0;
+	uint16_t m_raster_counter[3]{};
+	uint16_t m_raster_reload[3]{};
+	emu_timer *m_raster_irq = nullptr;
 
 	int m_scroll1x = 0;
 	int m_scroll1y = 0;
@@ -302,7 +299,6 @@ protected:
 	optional_shared_ptr<uint8_t> m_qsound_sharedram1;
 	optional_shared_ptr<uint8_t> m_qsound_sharedram2;
 	std::unique_ptr<uint8_t[]> m_decrypt_kabuki;
-	int m_cps_version = 0;
 
 	/* devices */
 	required_device<m68000_base_device> m_maincpu;
@@ -319,7 +315,7 @@ protected:
 };
 
 
-/*----------- defined in drivers/cps1.cpp -----------*/
+/*----------- defined in capcom/cps1.cpp -----------*/
 
 extern gfx_decode_entry const gfx_cps1[];
 

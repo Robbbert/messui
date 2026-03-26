@@ -100,13 +100,13 @@ Notes:
 
     TODO
 
-	- screen update is too fast
-	- cursor on text should blink as dark blue
-	- PRWNOISE and PRBEEP return wrong values
-	- CDP1869 white noise
+    - screen update is too fast
+    - cursor on text should blink as dark blue
+    - PRWNOISE and PRBEEP return wrong values
+    - CDP1869 white noise
     - connect expansion bus
-	- series I ROMs
-	- DOS ROMs
+    - series I ROMs
+    - DOS ROMs
 
 */
 
@@ -184,7 +184,7 @@ QUICKLOAD_LOAD_MEMBER(tmc600_state::quickload_cb)
 	image.fseek(0x5, SEEK_SET);
 	image.fread(program.get_write_ptr(0x6181), 4); // DEFUS and EOP
 	image.fread(program.get_write_ptr(0x6192), 4); // STRING and ARRAY
-	
+
 	image.fseek(0x9, SEEK_SET);
 	image.fread(program.get_write_ptr(0x6199), 2); // EOD
 
@@ -303,7 +303,7 @@ static INPUT_PORTS_START( tmc600 )
 	PORT_BIT( 0x80, IP_ACTIVE_LOW, IPT_KEYBOARD ) PORT_NAME("\u2190") PORT_CODE(KEYCODE_LEFT) PORT_CHAR(UCHAR_MAMEKEY(LEFT))
 
 	PORT_START("RUN")
-	PORT_BIT( 0x01, IP_ACTIVE_HIGH, IPT_KEYBOARD ) PORT_NAME("Run/Stop") PORT_CODE(KEYCODE_F3) PORT_CHAR(UCHAR_MAMEKEY(F3)) PORT_TOGGLE PORT_WRITE_LINE_DEVICE_MEMBER(CDP1802_TAG, cosmac_device, clear_w)
+	PORT_BIT( 0x01, IP_ACTIVE_HIGH, IPT_KEYBOARD ) PORT_NAME("Run/Stop") PORT_CODE(KEYCODE_F3) PORT_CHAR(UCHAR_MAMEKEY(F3)) PORT_TOGGLE PORT_WRITE_LINE_DEVICE_MEMBER(CDP1802_TAG, FUNC(cosmac_device::clear_w))
 INPUT_PORTS_END
 
 

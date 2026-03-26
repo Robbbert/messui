@@ -77,12 +77,12 @@ protected:
 	{ }
 
 	uint32_t screen_update(screen_device &screen, bitmap_ind16 &bitmap, const rectangle &cliprect);
-	virtual void video_start() override;
+	virtual void video_start() override ATTR_COLD;
 
 	virtual void sound_w(offs_t offset, uint16_t data, uint16_t mem_mask) = 0;
 
 	void astormbl_video(machine_config &config);
-	void astormbl_map(address_map &map);
+	void astormbl_map(address_map &map) ATTR_COLD;
 
 	required_device<cpu_device> m_maincpu;
 
@@ -117,14 +117,14 @@ public:
 	void astormbl(machine_config &config);
 
 protected:
-	virtual void machine_start() override;
+	virtual void machine_start() override ATTR_COLD;
 
 	virtual void sound_w(offs_t offset, uint16_t data, uint16_t mem_mask) override;
 
 private:
-	void sound_map(address_map &map);
-	void sound_portmap(address_map &map);
-	void pcm_map(address_map &map);
+	void sound_map(address_map &map) ATTR_COLD;
+	void sound_portmap(address_map &map) ATTR_COLD;
+	void pcm_map(address_map &map) ATTR_COLD;
 	void soundbank_w(uint8_t data);
 	void astormbl_sound(machine_config &config);
 
@@ -146,14 +146,14 @@ public:
 	void astormb2(machine_config &config);
 
 protected:
-	virtual void machine_start() override;
+	virtual void machine_start() override ATTR_COLD;
 
 	virtual void sound_w(offs_t offset, uint16_t data, uint16_t mem_mask) override;
 
 private:
 	void sys18bl_okibank_w(uint8_t data);
-	void sys18bl_sound_map(address_map &map);
-	void sys18bl_oki_map(address_map &map);
+	void sys18bl_sound_map(address_map &map) ATTR_COLD;
+	void sys18bl_oki_map(address_map &map) ATTR_COLD;
 
 	void astormb2_sound(machine_config &config);
 
@@ -401,35 +401,37 @@ uint32_t segas18_astormbl_state::screen_update(screen_device &screen, bitmap_ind
 
 	// mix in sprites
 	bitmap_ind16 &sprites = m_sprites->bitmap();
-	for (const sparse_dirty_rect *rect = m_sprites->first_dirty_rect(cliprect); rect != nullptr; rect = rect->next())
-	{
-		for (int y = rect->min_y; y <= rect->max_y; y++)
-		{
-			uint16_t *dest = &bitmap.pix(y);
-			uint16_t *src = &sprites.pix(y);
-			uint8_t *pri = &screen.priority().pix(y);
-			for (int x = rect->min_x; x <= rect->max_x; x++)
+	m_sprites->iterate_dirty_rects(
+			cliprect,
+			[this, &screen, &bitmap, &sprites] (rectangle const &rect)
 			{
-				// only process written pixels
-				uint16_t pix = src[x];
-				if (pix != 0xffff)
+				for (int y = rect.min_y; y <= rect.max_y; y++)
 				{
-					// compare sprite priority against tilemap priority
-					int priority = (pix >> 10) & 3;
-					if ((1 << priority) > pri[x])
+					uint16_t *const dest = &bitmap.pix(y);
+					uint16_t const *const src = &sprites.pix(y);
+					uint8_t *const pri = &screen.priority().pix(y);
+					for (int x = rect.min_x; x <= rect.max_x; x++)
 					{
-						// if the color is set to maximum, shadow pixels underneath us
-						if ((pix & 0x03f0) == 0x03f0)
-							dest[x] += m_palette_entries;
+						// only process written pixels
+						uint16_t const pix = src[x];
+						if (pix != 0xffff)
+						{
+							// compare sprite priority against tilemap priority
+							int const priority = (pix >> 10) & 3;
+							if ((1 << priority) > pri[x])
+							{
+								// if the color is set to maximum, shadow pixels underneath us
+								if ((pix & 0x03f0) == 0x03f0)
+									dest[x] += m_palette_entries;
 
-						// otherwise, just add in sprite palette base
-						else
-							dest[x] = 0x400 | (pix & 0x3ff);
+								// otherwise, just add in sprite palette base
+								else
+									dest[x] = 0x400 | (pix & 0x3ff);
+							}
+						}
 					}
 				}
-			}
-		}
-	}
+			});
 
 	return 0;
 }

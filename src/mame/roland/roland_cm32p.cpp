@@ -256,7 +256,7 @@ Some routine locations
 #include "cpu/mcs96/i8x9x.h"
 #include "machine/ram.h"
 #include "machine/timer.h"
-#include "sound/rolandpcm.h"
+#include "sound/roland_lp.h"
 #include "video/msm6222b.h"
 #include "bus/generic/slot.h"
 #include "bus/generic/carts.h"
@@ -313,8 +313,8 @@ public:
 	void init_cm32p();
 
 protected:
-	virtual void machine_start() override;
-	virtual void machine_reset() override;
+	virtual void machine_start() override ATTR_COLD;
+	virtual void machine_reset() override ATTR_COLD;
 
 private:
 	required_device<i8x9x_device> cpu;
@@ -349,7 +349,7 @@ private:
 	DECLARE_DEVICE_IMAGE_LOAD_MEMBER(card_load);
 	DECLARE_DEVICE_IMAGE_UNLOAD_MEMBER(card_unload);
 
-	void cm32p_map(address_map &map);
+	void cm32p_map(address_map &map) ATTR_COLD;
 
 	void descramble_rom_internal(u8* dst, const u8* src);
 	void descramble_rom_external(u8* dst, const u8* src);
@@ -631,13 +631,12 @@ void cm32p_state::cm32p(machine_config &config)
 	maincpu.serial_tx_cb().set(FUNC(cm32p_state::midi_w));
 	maincpu.in_p0_cb().set(FUNC(cm32p_state::port0_r));
 
-	SPEAKER(config, "lspeaker").front_left();
-	SPEAKER(config, "rspeaker").front_right();
+	SPEAKER(config, "speaker", 2).front();
 
 	MB87419_MB87420(config, pcm, 32.768_MHz_XTAL);
 	pcm->int_callback().set_inputline(cpu, i8x9x_device::EXTINT_LINE);
-	pcm->add_route(0, "lspeaker", 1.0);
-	pcm->add_route(1, "rspeaker", 1.0);
+	pcm->add_route(0, "speaker", 1.0, 0);
+	pcm->add_route(1, "speaker", 1.0, 1);
 
 	RAM(config, some_ram).set_default_size("8K");
 

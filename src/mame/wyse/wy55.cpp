@@ -12,7 +12,7 @@
 ***********************************************************************************************************************************/
 
 #include "emu.h"
-#include "cpu/mcs51/mcs51.h"
+#include "cpu/mcs51/i80c52.h"
 //#include "machine/ins8250.h"
 #include "machine/nvram.h"
 #include "machine/scn_pci.h"
@@ -37,7 +37,7 @@ public:
 	void wy185es(machine_config &config);
 
 protected:
-	virtual void machine_start() override;
+	virtual void machine_start() override ATTR_COLD;
 	virtual void driver_start() override;
 
 private:
@@ -47,10 +47,10 @@ private:
 
 	u32 screen_update(screen_device &screen, bitmap_rgb32 &bitmap, const rectangle &cliprect);
 
-	void prog_map(address_map &map);
-	void ext_map(address_map &map);
-	void wy65_ext_map(address_map &map);
-	void wy185es_ext_map(address_map &map);
+	void prog_map(address_map &map) ATTR_COLD;
+	void ext_map(address_map &map) ATTR_COLD;
+	void wy65_ext_map(address_map &map) ATTR_COLD;
+	void wy185es_ext_map(address_map &map) ATTR_COLD;
 
 	required_device<mcs51_cpu_device> m_maincpu;
 	optional_device<scn_pci_device> m_epci;
@@ -107,7 +107,7 @@ void wy55_state::wy55(machine_config &config)
 {
 	I80C32(config, m_maincpu, 14.7456_MHz_XTAL);
 	m_maincpu->set_addrmap(AS_PROGRAM, &wy55_state::prog_map);
-	m_maincpu->set_addrmap(AS_IO, &wy55_state::ext_map);
+	m_maincpu->set_addrmap(AS_DATA, &wy55_state::ext_map);
 	m_maincpu->port_out_cb<1>().set_membank("progbank").bit(2);
 
 	NVRAM(config, "nvram0", nvram_device::DEFAULT_ALL_0); // 8K SRAM + battery
@@ -125,7 +125,7 @@ void wy55_state::wy185es(machine_config &config)
 {
 	wy55(config);
 	m_maincpu->set_clock(11_MHz_XTAL);
-	m_maincpu->set_addrmap(AS_IO, &wy55_state::wy185es_ext_map);
+	m_maincpu->set_addrmap(AS_DATA, &wy55_state::wy185es_ext_map);
 	m_maincpu->port_out_cb<1>().set_nop();
 
 	SCN2661B(config, m_epci, 49.4235_MHz_XTAL / 10); // SCN2661BC1N28
@@ -136,7 +136,7 @@ void wy55_state::wy65(machine_config &config)
 {
 	DS80C320(config, m_maincpu, 58.9824_MHz_XTAL / 4); // divider uncertain
 	m_maincpu->set_addrmap(AS_PROGRAM, &wy55_state::prog_map);
-	m_maincpu->set_addrmap(AS_IO, &wy55_state::wy65_ext_map);
+	m_maincpu->set_addrmap(AS_DATA, &wy55_state::wy65_ext_map);
 
 	// TODO: NVRAM? (4x W24257S-70LL on board)
 
@@ -177,6 +177,6 @@ void wy55_state::driver_start()
 
 } // anonymous namespace
 
-COMP(1991, wy185es, 0, 0, wy185es, wy55, wy55_state, empty_init, "Wyse Technology", "WY-185ES (v2.0)", MACHINE_IS_SKELETON)
-COMP(1993, wy55,    0, 0, wy55,    wy55, wy55_state, empty_init, "Wyse Technology", "WY-55 (v2.1)", MACHINE_IS_SKELETON)
-COMP(1996, wy65,    0, 0, wy65,    wy55, wy55_state, empty_init, "Wyse Technology", "WY-65 (v2.1)", MACHINE_IS_SKELETON)
+COMP(1991, wy185es, 0, 0, wy185es, wy55, wy55_state, empty_init, "Wyse Technology", "WY-185ES (v2.0)", MACHINE_NO_SOUND | MACHINE_NOT_WORKING)
+COMP(1993, wy55,    0, 0, wy55,    wy55, wy55_state, empty_init, "Wyse Technology", "WY-55 (v2.1)", MACHINE_NO_SOUND | MACHINE_NOT_WORKING)
+COMP(1996, wy65,    0, 0, wy65,    wy55, wy55_state, empty_init, "Wyse Technology", "WY-65 (v2.1)", MACHINE_NO_SOUND | MACHINE_NOT_WORKING)

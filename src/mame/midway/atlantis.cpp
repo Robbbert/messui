@@ -15,7 +15,7 @@
         * VR4310 CPU (similar to the N64's VR4300)
         * VR4373 "Nile 3" system controller / PCI bridge
         * CMD 646U2 Ultra DMA IDE controller
-        * M4T28-8R128H1 TimeKeeper RTC/CMOS
+        * M4T28-BR128H1 TimeKeeper RTC/CMOS
         * PLX PCI9050 Bus Target Interface Chip (interfaces ISA-style designs to PCI)
         * Midway ZeusII-series custom video
         * Actiontec PM560LKI PCI Data/Fax Modem (PCI\VEN_11C1&DEV_0480&SUBSYS_04801668)
@@ -46,7 +46,6 @@
 #include "bus/rs232/rs232.h"
 #include "cpu/adsp2100/adsp2100.h"
 #include "cpu/mips/mips3.h"
-#include "machine/idectrl.h"
 #include "machine/ins8250.h"
 #include "machine/pci-ide.h"
 #include "machine/pci.h"
@@ -132,8 +131,8 @@ public:
 	void mwskins(machine_config &config);
 
 protected:
-	virtual void machine_start() override;
-	virtual void machine_reset() override;
+	virtual void machine_start() override ATTR_COLD;
+	virtual void machine_reset() override ATTR_COLD;
 
 	TIMER_CALLBACK_MEMBER(adc_ready);
 
@@ -188,7 +187,7 @@ private:
 
 	void duart_irq_callback(int state);
 
-	DECLARE_CUSTOM_INPUT_MEMBER(port_mod_r);
+	ioport_value port_mod_r();
 	uint16_t port_ctrl_r(offs_t offset);
 	void port_ctrl_w(offs_t offset, uint16_t data, uint16_t mem_mask = ~0);
 	uint16_t m_port_data = 0;
@@ -203,10 +202,10 @@ private:
 	uint8_t parallel_r(offs_t offset);
 	void parallel_w(offs_t offset, uint8_t data);
 
-	void map0(address_map &map);
-	void map1(address_map &map);
-	void map2(address_map &map);
-	void map3(address_map &map);
+	void map0(address_map &map) ATTR_COLD;
+	void map1(address_map &map) ATTR_COLD;
+	void map2(address_map &map) ATTR_COLD;
+	void map3(address_map &map) ATTR_COLD;
 };
 
 // Parallel Port
@@ -363,7 +362,6 @@ uint8_t atlantis_state::cmos_r(offs_t offset)
 
 void atlantis_state::cmos_w(offs_t offset, uint8_t data, uint8_t mem_mask)
 {
-	system_time systime;
 	// User I/O 0 = Allow write to cmos[0]. Serial Write Enable?
 	if (offset == 0 && (m_user_io_state & 0x1)) {
 		// Data written is shifted by 1 bit each time.  Maybe a serial line output?
@@ -760,7 +758,7 @@ static INPUT_PORTS_START( mwskins )
 	PORT_BIT(0x8000, IP_ACTIVE_LOW, IPT_UNUSED)
 
 	PORT_START("IN2")
-	//PORT_BIT(0x0007, IP_ACTIVE_HIGH, IPT_CUSTOM) PORT_CUSTOM_MEMBER(atlantis_state, port_mod_r)
+	//PORT_BIT(0x0007, IP_ACTIVE_HIGH, IPT_CUSTOM) PORT_CUSTOM_MEMBER(FUNC(atlantis_state::port_mod_r))
 	PORT_BIT(0xffff, IP_ACTIVE_LOW, IPT_UNUSED)
 
 	PORT_START("AN.0")
@@ -826,6 +824,7 @@ void atlantis_state::mwskins(machine_config &config)
 	m_rtc->reset_cb().set(FUNC(atlantis_state::watchdog_reset));
 	m_rtc->irq_cb().set(FUNC(atlantis_state::watchdog_irq));
 
+	// Silicon Image/CMD PCI0646
 	IDE_PCI(config, m_ide, 0, 0x10950646, 0x07, 0x0, PCI_ID_NILE, AS_DATA).irq_handler().set(FUNC(atlantis_state::ide_irq));
 
 	/* video hardware */
@@ -840,15 +839,14 @@ void atlantis_state::mwskins(machine_config &config)
 	m_screen->set_screen_update("zeus2", FUNC(zeus2_device::screen_update));
 
 	/* sound hardware */
-	SPEAKER(config, "lspeaker").front_left();
-	SPEAKER(config, "rspeaker").front_right();
+	SPEAKER(config, "speaker", 2).front();
 
 	DCS2_AUDIO_DENVER_2CH(config, m_dcs, 0);
 	m_dcs->set_maincpu_tag(m_maincpu);
 	m_dcs->set_dram_in_mb(4);
 	m_dcs->set_polling_offset(0xe33);
-	m_dcs->add_route(0, "rspeaker", 1.0);
-	m_dcs->add_route(1, "lspeaker", 1.0);
+	m_dcs->add_route(0, "speaker", 1.0, 1);
+	m_dcs->add_route(1, "speaker", 1.0, 0);
 
 	MIDWAY_IOASIC(config, m_ioasic, 0);
 	m_ioasic->in_port_cb<0>().set_ioport("DIPS");
@@ -907,6 +905,9 @@ ROM_START( mwskins )
 	ROM_REGION32_LE( 0x80000, PCI_ID_NILE":rom", 0 )  /* 512k for R4310 code */
 	ROM_LOAD( "skins_game_u4_boot_1.00.u4", 0x000000, 0x080000, CRC(0fe87720) SHA1(4b24abbe662a2d7b61e6a3f079e28b73605ba19f) ) // EPR 1.00 Feb 14 2000 12:20:22
 
+	ROM_REGION( 0x2000, "serial_security_pic", 0 ) // security PIC (provides game ID code and serial number)
+	ROM_LOAD( "342_skins_game.u44", 0x0000, 0x2000, CRC(a99734bd) SHA1(eb0db94d1023d33b84caeef68a7d276d90cd3c4f) )
+
 	DISK_REGION(PCI_ID_IDE":ide:0:hdd" )
 	DISK_IMAGE( "mwskins", 0, SHA1(5cb293a6fdb2478293f48ddfc93cdd018acb2bb5) )
 ROM_END
@@ -914,6 +915,9 @@ ROM_END
 ROM_START( mwskinsa )
 	ROM_REGION32_LE( 0x80000, PCI_ID_NILE":rom", 0 )  /* 512k for R4310 code */
 	ROM_LOAD( "skins_game_u4_boot_1.00.u4", 0x000000, 0x080000, CRC(0fe87720) SHA1(4b24abbe662a2d7b61e6a3f079e28b73605ba19f) )
+
+	ROM_REGION( 0x2000, "serial_security_pic", 0 ) // security PIC (provides game ID code and serial number)
+	ROM_LOAD( "342_skins_game.u44", 0x0000, 0x2000, CRC(a99734bd) SHA1(eb0db94d1023d33b84caeef68a7d276d90cd3c4f) )
 
 	DISK_REGION(PCI_ID_IDE":ide:0:hdd" )
 	DISK_IMAGE( "mwskinsa", 0, SHA1(72497917b31156eb11a46bbcc6f22a254dcec044) )
@@ -923,6 +927,9 @@ ROM_START( mwskinso )
 	ROM_REGION32_LE( 0x80000, PCI_ID_NILE":rom", 0 )  /* 512k for R4310 code */
 	ROM_LOAD( "skins_game_u4_boot_1.00.u4", 0x000000, 0x080000, CRC(0fe87720) SHA1(4b24abbe662a2d7b61e6a3f079e28b73605ba19f) )
 
+	ROM_REGION( 0x2000, "serial_security_pic", 0 ) // security PIC (provides game ID code and serial number)
+	ROM_LOAD( "342_skins_game.u44", 0x0000, 0x2000, CRC(a99734bd) SHA1(eb0db94d1023d33b84caeef68a7d276d90cd3c4f) )
+
 	DISK_REGION(PCI_ID_IDE":ide:0:hdd" )
 	DISK_IMAGE( "mwskins104", 0, SHA1(6917f66718999c144c854795c5856bf5659b85fa) )
 ROM_END
@@ -931,12 +938,15 @@ ROM_START( mwskinst )
 	ROM_REGION32_LE( 0x80000, PCI_ID_NILE":rom", 0 )  /* 512k for R4310 code */
 	ROM_LOAD( "boot101.bin", 0x000000, 0x080000, CRC(8b02035f) SHA1(e7c6c2711052230c117a9342f38c185e311f2950) ) // EPR 1.01 Apr 13 2000 11:18:32
 
+	ROM_REGION( 0x2000, "serial_security_pic", 0 ) // security PIC (provides game ID code and serial number)
+	ROM_LOAD( "342_skins_game.u44", 0x0000, 0x2000, CRC(a99734bd) SHA1(eb0db94d1023d33b84caeef68a7d276d90cd3c4f) )
+
 	DISK_REGION(PCI_ID_IDE":ide:0:hdd" )
 	DISK_IMAGE( "mwskinst", 0, SHA1(1edcf05bd9d5c9d1422e84bd713d1d120940e365) )
 	// another dump with data SHA1 cba09f0240dd797b554ae28b74416472d2327e5b is available, both have latest version 1.15 in the changelog at 0x934687
 ROM_END
 
-} // Anonymous namespace
+} // anonymous namespace
 
 
 /*************************************

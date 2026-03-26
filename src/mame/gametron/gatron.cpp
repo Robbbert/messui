@@ -355,7 +355,7 @@ public:
 	void gat(machine_config &config);
 
 protected:
-	virtual void video_start() override;
+	virtual void video_start() override ATTR_COLD;
 
 private:
 	required_shared_ptr<uint8_t> m_videoram;
@@ -371,8 +371,8 @@ private:
 
 	uint32_t screen_update(screen_device &screen, bitmap_ind16 &bitmap, const rectangle &cliprect);
 
-	void prg_map(address_map &map);
-	void port_map(address_map &map);
+	void prg_map(address_map &map) ATTR_COLD;
+	void port_map(address_map &map) ATTR_COLD;
 };
 
 
@@ -551,7 +551,7 @@ static INPUT_PORTS_START( poker41 )
 	PORT_BIT( 0x04, IP_ACTIVE_LOW, IPT_GAMBLE_BOOK )  PORT_NAME("Service 2 (Test Mode Out / Coin Stuck)")
 	PORT_BIT( 0x08, IP_ACTIVE_LOW, IPT_UNKNOWN )      /* Payout? */
 	PORT_BIT( 0x10, IP_ACTIVE_LOW, IPT_UNKNOWN )
-	PORT_BIT( 0x20, IP_ACTIVE_LOW, IPT_GAMBLE_SERVICE ) PORT_NAME("Service 1 (Test/Settings)")
+	PORT_BIT( 0x20, IP_ACTIVE_LOW, IPT_SERVICE1 ) PORT_NAME("Service 1 (Test/Settings)")
 	PORT_BIT( 0x40, IP_ACTIVE_LOW, IPT_UNKNOWN )
 	PORT_BIT( 0x80, IP_ACTIVE_LOW, IPT_POKER_HOLD1 )  PORT_NAME("Discard 1 / Low")
 INPUT_PORTS_END

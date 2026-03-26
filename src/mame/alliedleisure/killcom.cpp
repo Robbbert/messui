@@ -148,7 +148,8 @@ uint32_t killcom_state::screen_update(screen_device &screen, bitmap_ind16 &bitma
 	{
 		for (int x = cliprect.min_x; x <= cliprect.max_x; x++)
 		{
-			bitmap.pix(y, x) = m_videoram[y << 8 | x] & 0x07;
+			const uint16_t offset = (y << 8 & 0xff00) | (x & 0xff);
+			bitmap.pix(y, x) = m_videoram[offset] & 0x07;
 		}
 	}
 
@@ -800,7 +801,7 @@ static INPUT_PORTS_START( kaos )
 	PORT_DIPSETTING(    0x08, DEF_STR( 1C_7C ) )
 	PORT_DIPSETTING(    0x07, DEF_STR( 1C_8C ) )
 	PORT_DIPSETTING(    0x06, DEF_STR( 1C_9C ) )
-	PORT_DIPSETTING(    0x05, "1 Coin/10 Credits" )
+	PORT_DIPSETTING(    0x05, DEF_STR( 1C_10C ) )
 	PORT_DIPSETTING(    0x04, "1 Coin/11 Credits" )
 	PORT_DIPSETTING(    0x03, "1 Coin/12 Credits" )
 	PORT_DIPSETTING(    0x02, "1 Coin/13 Credits" )

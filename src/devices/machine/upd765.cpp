@@ -189,6 +189,7 @@ upd765_family_device::upd765_family_device(const machine_config &mconfig, device
 	ready_polled(true),
 	select_connected(true),
 	select_multiplexed(true),
+	ts_connected(true),
 	has_dor(true),
 	external_ready(false),
 	recalibrate_steps(77),
@@ -197,6 +198,7 @@ upd765_family_device::upd765_family_device(const machine_config &mconfig, device
 	drq_cb(*this),
 	hdl_cb(*this),
 	idx_cb(*this),
+	ts_cb(*this, ASSERT_LINE),
 	us_cb(*this)
 {
 }
@@ -211,6 +213,11 @@ void upd765_family_device::set_select_lines_connected(bool _select)
 	select_connected = _select;
 }
 
+void upd765_family_device::set_ts_line_connected(bool ts)
+{
+	ts_connected = ts;
+}
+
 void ps2_fdc_device::set_mode(mode_t _mode)
 {
 	mode = _mode;
@@ -218,7 +225,73 @@ void ps2_fdc_device::set_mode(mode_t _mode)
 
 void upd765_family_device::device_start()
 {
+	save_item(STRUCT_MEMBER(flopi, main_state));
+	save_item(STRUCT_MEMBER(flopi, sub_state));
+	save_item(STRUCT_MEMBER(flopi, dir));
+	save_item(STRUCT_MEMBER(flopi, counter));
+	save_item(STRUCT_MEMBER(flopi, pcn));
+	save_item(STRUCT_MEMBER(flopi, st0));
+	save_item(STRUCT_MEMBER(flopi, st0_filled));
+	save_item(STRUCT_MEMBER(flopi, live));
+	save_item(STRUCT_MEMBER(flopi, index));
+	save_item(STRUCT_MEMBER(flopi, ready));
+	//save_item(STRUCT_MEMBER(cur_live, tm));
+	//save_item(STRUCT_MEMBER(checkpoint_live, tm));
+	//save_item(STRUCT_MEMBER(cur_live, state));
+	//save_item(STRUCT_MEMBER(checkpoint_live, state));
+	//save_item(STRUCT_MEMBER(cur_live, next_state));
+	//save_item(STRUCT_MEMBER(checkpoint_live, next_state));
+	//save_item(STRUCT_MEMBER(cur_live, shift_reg));
+	//save_item(STRUCT_MEMBER(checkpoint_live, shift_reg));
+	//save_item(STRUCT_MEMBER(cur_live, crc));
+	//save_item(STRUCT_MEMBER(checkpoint_live, crc));
+	//save_item(STRUCT_MEMBER(cur_live, bit_counter));
+	//save_item(STRUCT_MEMBER(checkpoint_live, bit_counter));
+	//save_item(STRUCT_MEMBER(cur_live, byte_counter));
+	//save_item(STRUCT_MEMBER(checkpoint_live, byte_counter));
+	//save_item(STRUCT_MEMBER(cur_live, previous_type));
+	//save_item(STRUCT_MEMBER(checkpoint_live, previous_type));
+	//save_item(STRUCT_MEMBER(cur_live, data_separator_phase));
+	//save_item(STRUCT_MEMBER(checkpoint_live, data_separator_phase));
+	//save_item(STRUCT_MEMBER(cur_live, data_bit_context));
+	//save_item(STRUCT_MEMBER(checkpoint_live, data_bit_context));
+	//save_item(STRUCT_MEMBER(cur_live, data_reg));
+	//save_item(STRUCT_MEMBER(checkpoint_live, data_reg));
+	//save_item(STRUCT_MEMBER(cur_live, idbuf));
+	//save_item(STRUCT_MEMBER(checkpoint_live, idbuf));
+	save_item(NAME(external_ready));
+	//save_item(NAME(mode));
+	save_item(NAME(main_phase));
+	save_item(NAME(cur_irq));
+	save_item(NAME(irq));
+	save_item(NAME(drq));
+	save_item(NAME(internal_drq));
+	save_item(NAME(tc));
+	save_item(NAME(tc_done));
+	save_item(NAME(locked));
+	save_item(NAME(mfm));
+	save_item(NAME(scan_done));
+	save_item(NAME(fifo_write));
+	save_item(NAME(fifo_pos));
+	save_item(NAME(fifo_expected));
+	save_item(NAME(command_pos));
+	save_item(NAME(result_pos));
+	save_item(NAME(sectors_read));
+	save_item(NAME(dor));
+	save_item(NAME(dsr));
+	save_item(NAME(fifo));
+	save_item(NAME(command));
+	save_item(NAME(result));
+	save_item(NAME(st1));
+	save_item(NAME(st2));
+	save_item(NAME(st3));
+	save_item(NAME(fifocfg));
+	save_item(NAME(precomp));
+	save_item(NAME(spec));
+	save_item(NAME(sector_size));
+	save_item(NAME(cur_rate));
 	save_item(NAME(selected_drive));
+	save_item(NAME(drive_busy));
 
 	for(int i=0; i != 4; i++) {
 		char name[2];
@@ -282,7 +355,7 @@ void upd765_family_device::device_reset()
 
 void upd765_family_device::soft_reset()
 {
-	main_phase = PHASE_CMD;
+	main_phase = PHASE_IDLE;
 	for(int i=0; i<4; i++) {
 		flopi[i].main_state = IDLE;
 		flopi[i].sub_state = IDLE;
@@ -319,6 +392,7 @@ void upd765_family_device::soft_reset()
 
 void upd765_family_device::end_reset()
 {
+	main_phase = PHASE_CMD;
 	if(ready_polled)
 		poll_timer->adjust(attotime::from_usec(100), 0, attotime::from_usec(1024));
 }
@@ -505,11 +579,12 @@ uint8_t upd765_family_device::msr_r()
 		msr |= MSR_RQM|MSR_DIO|MSR_CB;
 		break;
 	}
-	for(int i=0; i<4; i++)
+	for(int i=0; i<4; i++) {
 		if(flopi[i].main_state == RECALIBRATE || flopi[i].main_state == SEEK) {
 			msr |= 1<<i;
 			//msr |= MSR_CB;
 		}
+	}
 	msr |= get_drive_busy();
 
 	return msr;
@@ -712,7 +787,7 @@ uint8_t upd765_family_device::fifo_pop(bool internal)
 	if(!fifo_write && !fifo_pos)
 		disable_transfer();
 	int thr = fifocfg & FIF_THR;
-	if(fifo_write && fifo_expected && (fifo_pos <= thr || (fifocfg & FIF_DIS)))
+	if(fifo_write && fifo_expected && (fifo_pos <= thr || (fifocfg & FIF_DIS)) && !tc_done)
 		enable_transfer();
 	return r;
 }
@@ -1585,8 +1660,10 @@ void upd765_family_device::command_end(floppy_info &fi, bool data_completion)
 	LOGDONE("command done (%s) - %s\n", data_completion ? "data" : "seek", results());
 	fi.main_state = fi.sub_state = IDLE;
 	irq = true;
-	if(!data_completion)
+	if(!data_completion) {
 		fi.st0_filled = true;
+		drive_busy |= (1 << fi.id);
+	}
 	check_irq();
 }
 
@@ -1596,10 +1673,16 @@ uint8_t upd765_family_device::get_st3(floppy_info &fi)
 	if(fi.ready)
 		st3 |= ST3_RY;
 	if(fi.dev)
+	{
 		st3 |=
 			(fi.dev->wpt_r() ? ST3_WP : 0x00) |
-			(fi.dev->trk00_r() ? 0x00 : ST3_T0) |
-			(fi.dev->twosid_r() ? 0x00 : ST3_TS);
+			(fi.dev->trk00_r() ? 0x00 : ST3_T0);
+
+		if (ts_connected)
+			st3 |= (fi.dev->twosid_r() ? 0x00 : ST3_TS);
+		else
+			st3 |= ts_cb() ? 0x00 : ST3_TS;
+	}
 	return st3;
 }
 
@@ -1611,8 +1694,13 @@ void upd765_family_device::recalibrate_start(floppy_info &fi)
 	fi.dir = 1;
 	fi.counter = recalibrate_steps;
 	fi.ready = get_ready(command[1] & 3);
-	fi.st0 = (fi.ready ? 0 : ST0_NR);
-	seek_continue(fi);
+	fi.st0 = command[1] & 7;
+	if(fi.ready) {
+		seek_continue(fi);
+	} else {
+		fi.st0 |= ST0_NR | ST0_FAIL | ST0_SE;
+		command_end(fi, false);
+	}
 }
 
 void upd765_family_device::seek_start(floppy_info &fi)
@@ -1622,8 +1710,13 @@ void upd765_family_device::seek_start(floppy_info &fi)
 	fi.sub_state = SEEK_WAIT_STEP_TIME_DONE;
 	fi.dir = fi.pcn > command[2] ? 1 : 0;
 	fi.ready = get_ready(command[1] & 3);
-	fi.st0 = (fi.ready ? 0 : ST0_NR);
-	seek_continue(fi);
+	fi.st0 = command[1] & 7;
+	if(fi.ready) {
+		seek_continue(fi);
+	} else {
+		fi.st0 |= ST0_NR | ST0_FAIL | ST0_SE;
+		command_end(fi, false);
+	}
 }
 
 void upd765_family_device::delay_cycles(floppy_info &fi, int cycles)
@@ -1858,12 +1951,6 @@ void upd765_family_device::read_data_continue(floppy_info &fi)
 
 		case SCAN_ID:
 			LOGSTATE("SCAN_ID\n");
-			if(cur_live.crc) {
-				fi.st0 |= ST0_FAIL;
-				st1 |= ST1_DE|ST1_ND;
-				fi.sub_state = COMMAND_DONE;
-				break;
-			}
 			// MZ: This st1 handling ensures that both HX5102 floppy and the
 			// Speedlock protection scheme are properly working.
 			// a) HX5102 requires that the ND flag not be set when no address
@@ -1884,6 +1971,13 @@ void upd765_family_device::read_data_continue(floppy_info &fi)
 				LOGSTATE("SEARCH_ADDRESS_MARK_HEADER\n");
 				live_start(fi, SEARCH_ADDRESS_MARK_HEADER);
 				return;
+			}
+			if(cur_live.crc) {
+				fi.st0 |= ST0_FAIL;
+				st1 |= ST1_DE;
+				st1 &= ~ST1_ND;
+				fi.sub_state = COMMAND_DONE;
+				break;
 			}
 			st1 &= ~ST1_ND;
 			st2 &= ~ST2_WC;
@@ -2563,7 +2657,7 @@ TIMER_CALLBACK_MEMBER(upd765_family_device::run_drive_ready_polling)
 			LOGCOMMAND("polled %d : %d -> %d\n", fid, flopi[fid].ready, ready);
 			flopi[fid].ready = ready;
 			if(!flopi[fid].st0_filled) {
-				flopi[fid].st0 = ST0_ABRT | fid;
+				flopi[fid].st0 = ST0_ABRT | fid | (ready ? 0 : ST0_NR);
 				flopi[fid].st0_filled = true;
 				irq = true;
 			}
@@ -2811,7 +2905,6 @@ void i82072_device::device_start()
 	save_item(NAME(motorcfg));
 	save_item(NAME(motor_off_counter));
 	save_item(NAME(motor_on_counter));
-	save_item(NAME(drive_busy));
 	save_item(NAME(delayed_command));
 }
 
@@ -2975,31 +3068,16 @@ void i82072_device::execute_command(int cmd)
 	}
 }
 
-/*
- * The Intel datasheet says that the drive busy bits in the MSR are supposed to remain
- * set after a seek or recalibrate until a sense interrupt status status command is
- * executed. The InterPro 2000 diagnostic routine goes further, and tests the drive
- * status bits before and after the first sense interrupt status result byte is read,
- * and expects the drive busy bit to clear only after.
- *
- * The Amstrad CPC6128 uses a upd765a and seems to expect the busy bits to be cleared
- * immediately after the seek/recalibrate interrupt is generated.
- *
- * Special casing the i82072 here seems the only way to reconcile this apparently
- * different behaviour for now.
- */
 void i82072_device::command_end(floppy_info &fi, bool data_completion)
 {
-	if(!data_completion)
-		drive_busy |= (1 << fi.id);
-
 	// set motor off counter
 	if(motorcfg)
 		motor_off_counter = (2 + ((motorcfg & MOFF) >> 4)) << (motorcfg & HSDA ? 1 : 0);
 
 	// clear existing interrupt sense data
-	for(floppy_info &fi : flopi)
+	for(floppy_info &fi : flopi) {
 		fi.st0_filled = false;
+	}
 
 	upd765_family_device::command_end(fi, data_completion);
 }
@@ -3121,6 +3199,7 @@ n82077aa_device::n82077aa_device(const machine_config &mconfig, const char *tag,
 	ready_connected = false;
 	select_connected = true;
 	select_multiplexed = false;
+	recalibrate_steps = 80;
 }
 
 pc_fdc_superio_device::pc_fdc_superio_device(const machine_config &mconfig, const char *tag, device_t *owner, uint32_t clock) : upd765_family_device(mconfig, PC_FDC_SUPERIO, tag, owner, clock)
@@ -3224,11 +3303,30 @@ void tc8566af_device::device_start()
 
 void tc8566af_device::cr1_w(uint8_t data)
 {
-	m_cr1 = data;
-
-	if(m_cr1 & 0x02) {
+	// Enable CR0 - FDC Terminal Count
+	if(BIT(data, 1)) {
 		// Not sure if this inverted or not
-		tc_w((m_cr1 & 0x01) ? true : false);
+		tc_w(BIT(data, 0) ? true : false);
+		m_cr1 &= ~0x03;
+		m_cr1 |= data & 0x03;
+	}
+
+	// Enable CR2 - Standby Mode
+	if(BIT(data, 3)) {
+		m_cr1 &= ~0x0c;
+		m_cr1 |= data & 0x0c;
+	}
+
+	// Enable CR4 - Control 4
+	if(BIT(data, 5)) {
+		m_cr1 &= ~0x30;
+		m_cr1 |= data & 0x30;
+	}
+
+	// Enable CR6 - Control 6
+	if(BIT(data, 7)) {
+		m_cr1 &= ~0xc0;
+		m_cr1 |= data & 0xc0;
 	}
 }
 
@@ -3282,14 +3380,60 @@ void upd72067_device::auxcmd_w(uint8_t data)
 
 void upd72069_device::auxcmd_w(uint8_t data)
 {
+	// 72068 has all but two of the following auxiliary commands
 	switch(data) {
-	case 0x36: // reset
+	case 0x36: // software reset
 		soft_reset();
 		break;
-	case 0x1e: // motor on, probably
+	case 0x0e: case 0x1e: case 0x2e: case 0x3e: // enable motors
+	case 0x4e: case 0x5e: case 0x6e: case 0x7e:
+	case 0x8e: case 0x9e: case 0xae: case 0xbe:
+	case 0xce: case 0xde: case 0xee: case 0xfe:
 		for(unsigned i = 0; i < 4; i++)
 			if(flopi[i].dev)
 				flopi[i].dev->mon_w(!BIT(data, i + 4));
+		main_phase = PHASE_RESULT;
+		result[0] = ST0_UNK;
+		result_pos = 1;
+		break;
+	case 0x0b: case 0x1b: case 0x2b: case 0x3b: // control internal mode
+	case 0x4b: case 0x5b: case 0x6b: case 0x7b:
+	case 0x8b: case 0x9b: case 0xab: case 0xbb:
+	case 0xcb: case 0xdb: case 0xeb: case 0xfb:
+		switch(data & 0xc0)
+		{
+		case 0x00: cur_rate = 250000; break;
+		case 0x40: cur_rate = 500000; break;
+		case 0x80: cur_rate = 600000; break;
+		case 0xc0: cur_rate = 300000; break;
+		}
+		main_phase = PHASE_RESULT;
+		result[0] = ST0_UNK;
+		result_pos = 1;
+		break;
+	case 0x88: case 0x98: case 0xa8: case 0xb8: // control data transfer rate (72069 exclusive)
+	case 0xc8: case 0xd8: case 0xe8: case 0xf8:
+		switch(data & 0x70)
+		{
+		case 0x00: cur_rate = 250000; break;
+		case 0x10: case 0x40: cur_rate = 500000; break;
+		case 0x20: case 0x70: cur_rate = 600000; break;
+		case 0x30: cur_rate = 300000; break;
+		case 0x50: cur_rate = 1000000; break;
+		case 0x60: cur_rate = 1250000; break;
+		}
+		main_phase = PHASE_RESULT;
+		result[0] = ST0_UNK;
+		result_pos = 1;
+		break;
+	case 0xc3: case 0xd3: case 0xe3: case 0xf3: // precompensation (72069 exclusive)
+	case 0x4f: // select IBM format (select 77 tracks on some other 7206x variants)
+	case 0x5f: // select ECMA/ISO format (select 255 tracks on some other 7206x variants)
+	case 0x35: // set standby
+	case 0x47: // start clock
+	case 0x34: // reset standby
+	case 0x33: // enable external mode
+	case 0x80: // Not a valid auxcmd, but the Akai S3000 sends it and expects an ACK.
 		main_phase = PHASE_RESULT;
 		result[0] = ST0_UNK;
 		result_pos = 1;
@@ -3431,7 +3575,6 @@ void hd63266f_device::motor_control(int fid, bool start_motor)
 		if(selected_drive != fid)
 			return;
 
-		logerror("motor_on_counter %d\n", motor_on_counter);
 		// decrement motor on counter
 		if(motor_on_counter)
 			motor_on_counter--;

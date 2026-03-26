@@ -49,36 +49,37 @@ end
 		"Symbols", -- always include minimum symbols for executables
 	}
 
-	if _OPTIONS["SYMBOLS"] then
+	if _OPTIONS["SYMBOLS"]~=nil and _OPTIONS["SYMBOLS"]~=0 and (_OPTIONS["PDB_SYMBOLS"]==nil or _OPTIONS["PDB_SYMBOLS"]==0) then
+		local llvm_obdjump = false
+		local objdump_ver = backtick('objdump --version')
+		if string.match(objdump_ver, 'LLVM version ') then
+			llvm_obdjump = true
+		end
+
 		configuration { "mingw*" }
-			postbuildcommands {
-				"$(SILENT) echo Dumping symbols.",
-				"$(SILENT) objdump --section=.text --line-numbers --syms --demangle $(TARGET) >$(subst .exe,.sym,$(TARGET))"
-			}
+			if llvm_obdjump then
+				postbuildcommands {
+					"$(SILENT) echo Dumping symbols.",
+					"$(SILENT) " .. PYTHON .. " " .. MAME_DIR .. "scripts/build/llvm-objdump-filter.py $(TARGET) | c++filt >$(subst .exe,.sym,$(TARGET))"
+				}
+			else
+				postbuildcommands {
+					"$(SILENT) echo Dumping symbols.",
+					"$(SILENT) objdump --section=.text --syms --demangle $(TARGET) >$(subst .exe,.sym,$(TARGET))"
+				}
+			end
 	end
 
-	configuration { "x64", "Release" }
+	configuration { "Release" }
 		targetsuffix ""
 		if _OPTIONS["PROFILE"] then
 			targetsuffix "p"
 		end
 
-	configuration { "x64", "Debug" }
+	configuration { "Debug" }
 		targetsuffix "d"
 		if _OPTIONS["PROFILE"] then
 			targetsuffix "dp"
-		end
-
-	configuration { "x32", "Release" }
-		targetsuffix "32"
-		if _OPTIONS["PROFILE"] then
-			targetsuffix "32p"
-		end
-
-	configuration { "x32", "Debug" }
-		targetsuffix "32d"
-		if _OPTIONS["PROFILE"] then
-			targetsuffix "32dp"
 		end
 
 	configuration { "mingw*" or "vs20*" }
@@ -165,7 +166,7 @@ end
 		ext_lib("jpeg"),
 		"7z",
 	}
-if not _OPTIONS["FORCE_DRC_C_BACKEND"] then
+if CPU_INCLUDE_DRC_NATIVE then
 	links {
 		"asmjit",
 	}
@@ -212,6 +213,7 @@ end
 	}
 
 	override_resources = false;
+	rctarget = _subtarget;
 
 	maintargetosdoptions(_target,_subtarget)
 
@@ -247,7 +249,6 @@ if (STANDALONE~=true) then
 		}
 
 	end
-	local rctarget = _subtarget
 
 	if _OPTIONS["targetos"]=="windows" and (not override_resources) then
 		rcfile = MAME_DIR .. "scripts/resources/windows/" .. _subtarget .. "/" .. rctarget ..".rc"
@@ -275,7 +276,8 @@ if (STANDALONE~=true) then
 	end
 	files {
 		mainfile,
-		MAME_DIR .. "src/version.cpp",
+--		MAME_DIR .. "src/version.cpp",
+		GEN_DIR .. "version.cpp",
 		GEN_DIR  .. _target .. "/" .. _subtarget .."/drivlist.cpp",
 	}
 
@@ -318,8 +320,16 @@ if (STANDALONE~=true) then
 
 	configuration { "mingw*" }
 		custombuildtask {
---			{ GEN_DIR .. "version.cpp" ,  GEN_DIR  .. "resource/" .. rctarget .. "vers.rc",    {  MAME_DIR .. "scripts/build/verinfo.py" }, {"@echo Emitting " .. rctarget .. "vers.rc" .. "...",    PYTHON .. " $(1)  -r -b " .. rctarget .. " $(<) > $(@)" }},
-			{ MAME_DIR .. "src/version.cpp" ,  GEN_DIR  .. "resource/" .. rctarget .. "vers.rc",    {  MAME_DIR .. "scripts/build/verinfo.py" }, {"@echo Emitting " .. rctarget .. "vers.rc" .. "...",    PYTHON .. " $(1)  -r -b " .. rctarget .. " $(<) > $(@)" }},
+			{
+--				MAME_DIR .. "src/version.cpp" ,
+				GEN_DIR .. "version.cpp" ,
+				GEN_DIR  .. "resource/" .. rctarget .. "vers.rc",
+				{ MAME_DIR .. "scripts/build/verinfo.py" },
+				{
+					"@echo Emitting " .. rctarget .. "vers.rc" .. "...",
+					PYTHON .. " $(1)  -r -b " .. rctarget .. " $(<) > $(@)"
+				}
+			},
 		}
 
 	configuration { "vs20*" }

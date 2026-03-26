@@ -475,17 +475,14 @@ public:
 	ohci_usb_connector(const machine_config &mconfig, const char *tag, device_t *owner, T &&opts, const char *dflt, bool fixed)
 		: ohci_usb_connector(mconfig, tag, owner, 0)
 	{
-		option_reset();
-		opts(*this);
-		set_default_option(dflt);
-		set_fixed(fixed);
+		set_options(std::forward<T>(opts), dflt, fixed);
 	}
 
 	ohci_usb_connector(const machine_config &mconfig, const char *tag, device_t *owner, uint32_t clock);
 	virtual ~ohci_usb_connector();
 
 protected:
-	virtual void device_start() override;
+	virtual void device_start() override ATTR_COLD;
 };
 
 DECLARE_DEVICE_TYPE(OHCI_USB_CONNECTOR, ohci_usb_connector)
@@ -505,8 +502,8 @@ public:
 	int handle_interrupt_pid(int endpoint, int pid, uint8_t *buffer, int size) override;
 
 protected:
-	virtual void device_start() override;
-	virtual ioport_constructor device_input_ports() const override;
+	virtual void device_start() override ATTR_COLD;
+	virtual ioport_constructor device_input_ports() const override ATTR_COLD;
 private:
 	static const USBStandardDeviceDescriptor devdesc;
 	static const USBStandardConfigurationDescriptor condesc;

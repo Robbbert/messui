@@ -51,6 +51,9 @@ Parts:
  X                    - 8MHz xtal
  3V Bat             - Lithium 3V power module
 
+ Both the ROMs and the RAMs are interleaved and there's board variants,
+ that replace the SRAM with ST M48Z08 timekeepers and omit the large battery.
+
 Video Board:
 ------------
  ____________________________________________________________
@@ -193,8 +196,8 @@ public:
 	void skattva(machine_config &config);
 
 protected:
-	virtual void machine_start() override;
-	virtual void machine_reset() override;
+	virtual void machine_start() override ATTR_COLD;
+	virtual void machine_reset() override ATTR_COLD;
 
 private:
 	required_device<microtouch_device> m_microtouch;
@@ -216,16 +219,16 @@ private:
 	//INTERRUPT_GEN_MEMBER(adp_int);
 	void skattva_nvram_init(nvram_device &nvram, void *base, size_t size);
 
-	void adp_hd63484_map(address_map &map);
-	void fc7_map(address_map &map);
-	void fashiong_hd63484_map(address_map &map);
-	void fstation_hd63484_map(address_map &map);
-	void fstation_mem(address_map &map);
-	void funland_mem(address_map &map);
-	void quickjac_mem(address_map &map);
-	void ramdac_map(address_map &map);
-	void skattv_mem(address_map &map);
-	void skattva_mem(address_map &map);
+	void adp_hd63484_map(address_map &map) ATTR_COLD;
+	void fc7_map(address_map &map) ATTR_COLD;
+	void fashiong_hd63484_map(address_map &map) ATTR_COLD;
+	void fstation_hd63484_map(address_map &map) ATTR_COLD;
+	void fstation_mem(address_map &map) ATTR_COLD;
+	void funland_mem(address_map &map) ATTR_COLD;
+	void quickjac_mem(address_map &map) ATTR_COLD;
+	void ramdac_map(address_map &map) ATTR_COLD;
+	void skattv_mem(address_map &map) ATTR_COLD;
+	void skattva_mem(address_map &map) ATTR_COLD;
 };
 
 void adp_state::skattva_nvram_init(nvram_device &nvram, void *base, size_t size)
@@ -315,7 +318,7 @@ void adp_state::skattva_mem(address_map &map)
 	map(0x000000, 0x03ffff).rom();
 	map(0x400000, 0x40001f).rw("rtc", FUNC(msm6242_device::read), FUNC(msm6242_device::write)).umask16(0x00ff);
 	map(0x800080, 0x800083).rw(m_acrtc, FUNC(hd63484_device::read16), FUNC(hd63484_device::write16));
-	map(0x800100, 0x800101).portr("IN0");
+	map(0x800100, 0x800101).portr(m_in0);
 	map(0x800140, 0x800143).rw("aysnd", FUNC(ay8910_device::data_r), FUNC(ay8910_device::address_data_w)).umask16(0x00ff); //18b too
 	map(0x800180, 0x80019f).rw(m_duart, FUNC(mc68681_device::read), FUNC(mc68681_device::write)).umask16(0x00ff);
 	map(0xffc000, 0xffffff).ram().share("nvram");
@@ -326,7 +329,7 @@ void adp_state::quickjac_mem(address_map &map)
 	map(0x000000, 0x01ffff).rom();
 	map(0x400000, 0x40001f).rw("rtc", FUNC(msm6242_device::read), FUNC(msm6242_device::write)).umask16(0x00ff);
 	map(0x800080, 0x800083).rw(m_acrtc, FUNC(hd63484_device::read16), FUNC(hd63484_device::write16)); // bad
-	map(0x800100, 0x800101).portr("IN0");
+	map(0x800100, 0x800101).portr(m_in0);
 	map(0x800140, 0x800143).rw("aysnd", FUNC(ay8910_device::data_r), FUNC(ay8910_device::address_data_w)).umask16(0x00ff); //18b too
 	map(0x800180, 0x80019f).rw(m_duart, FUNC(mc68681_device::read), FUNC(mc68681_device::write)).umask16(0x00ff);
 	map(0xff0000, 0xffffff).ram().share("nvram");
@@ -340,7 +343,7 @@ void adp_state::funland_mem(address_map &map)
 	map(0x800089, 0x800089).w("ramdac", FUNC(ramdac_device::index_w));
 	map(0x80008b, 0x80008b).w("ramdac", FUNC(ramdac_device::pal_w));
 	map(0x80008d, 0x80008d).w("ramdac", FUNC(ramdac_device::mask_w));
-	map(0x800100, 0x800101).portr("IN0");
+	map(0x800100, 0x800101).portr(m_in0);
 	map(0x800140, 0x800143).rw("aysnd", FUNC(ay8910_device::data_r), FUNC(ay8910_device::address_data_w)).umask16(0x00ff); //18b too
 	map(0x800180, 0x80019f).rw(m_duart, FUNC(mc68681_device::read), FUNC(mc68681_device::write)).umask16(0x00ff);
 	map(0xfc0000, 0xffffff).ram().share("nvram");
@@ -384,8 +387,8 @@ INPUT_PORTS_END
 static INPUT_PORTS_START( skattv )
 	PORT_START("PA")
 	PORT_BIT( 0x9f, IP_ACTIVE_HIGH, IPT_UNKNOWN )
-	PORT_BIT( 0x20, IP_ACTIVE_HIGH, IPT_CUSTOM ) PORT_HBLANK("screen")
-	PORT_BIT( 0x40, IP_ACTIVE_HIGH, IPT_CUSTOM ) PORT_VBLANK("screen")
+	PORT_BIT( 0x20, IP_ACTIVE_HIGH, IPT_CUSTOM ) PORT_READ_LINE_DEVICE_MEMBER("screen", FUNC(screen_device::hblank))
+	PORT_BIT( 0x40, IP_ACTIVE_HIGH, IPT_CUSTOM ) PORT_READ_LINE_DEVICE_MEMBER("screen", FUNC(screen_device::vblank))
 
 	PORT_START("DSW1")
 	PORT_BIT( 0x0001, IP_ACTIVE_LOW,  IPT_COIN5    )
@@ -437,8 +440,8 @@ INPUT_PORTS_END
 static INPUT_PORTS_START( skattva )
 	PORT_START("PA")
 	PORT_BIT( 0x01, IP_ACTIVE_HIGH, IPT_COIN1 )
-	PORT_BIT( 0x20, IP_ACTIVE_HIGH, IPT_CUSTOM ) PORT_HBLANK("screen")
-	PORT_BIT( 0x40, IP_ACTIVE_HIGH, IPT_CUSTOM ) PORT_VBLANK("screen")
+	PORT_BIT( 0x20, IP_ACTIVE_HIGH, IPT_CUSTOM ) PORT_READ_LINE_DEVICE_MEMBER("screen", FUNC(screen_device::hblank))
+	PORT_BIT( 0x40, IP_ACTIVE_HIGH, IPT_CUSTOM ) PORT_READ_LINE_DEVICE_MEMBER("screen", FUNC(screen_device::vblank))
 	PORT_BIT( 0x9e, IP_ACTIVE_HIGH, IPT_UNKNOWN )
 
 	PORT_START("IN0")
@@ -463,8 +466,8 @@ static INPUT_PORTS_START( fstation )
 	PORT_BIT( 0x04, IP_ACTIVE_LOW, IPT_COIN2 )
 	PORT_BIT( 0x08, IP_ACTIVE_LOW, IPT_COIN1 )
 	PORT_BIT( 0x10, IP_ACTIVE_LOW, IPT_UNKNOWN )
-	PORT_BIT( 0x20, IP_ACTIVE_HIGH, IPT_CUSTOM ) PORT_HBLANK("screen")
-	PORT_BIT( 0x40, IP_ACTIVE_HIGH, IPT_CUSTOM ) PORT_VBLANK("screen")
+	PORT_BIT( 0x20, IP_ACTIVE_HIGH, IPT_CUSTOM ) PORT_READ_LINE_DEVICE_MEMBER("screen", FUNC(screen_device::hblank))
+	PORT_BIT( 0x40, IP_ACTIVE_HIGH, IPT_CUSTOM ) PORT_READ_LINE_DEVICE_MEMBER("screen", FUNC(screen_device::vblank))
 	PORT_BIT( 0x80, IP_ACTIVE_LOW, IPT_UNKNOWN )
 
 	PORT_START("DSW1")
@@ -636,6 +639,16 @@ ROM_START( quickjac )
 	ROM_LOAD16_BYTE( "quick_jack_video_inde_a.2.u6.bin", 0x00001, 0x20000, CRC(61d55be2) SHA1(bc17dc91fd1ef0f862eb0d7dbbbfa354a8403eb8) )
 ROM_END
 
+ROM_START(sbsoli)
+	ROM_REGION( 0x100000, "maincpu", ROMREGION_ERASEFF )
+	ROM_LOAD16_BYTE( "skat_bierskat_solitaire_f2_i.u2", 0x00000, 0x20000, CRC(314390cf) SHA1(86c2f4e120235eba379ec54f2afea59e68c94e7e))
+	ROM_LOAD16_BYTE( "skat_bierskat_solitaire_f2_ii.u6", 0x00001, 0x20000, CRC(6e7f88cc) SHA1(07e306222cbd94ab7a39be2685941d12c82645fb))
+
+	ROM_REGION16_BE( 0x100000, "gfx1", 0 )
+	ROM_LOAD16_BYTE( "skat_bier_solitaire_video_f1_i.u2", 0x00000, 0x80000, CRC(3726a21e) SHA1(63fd2f01ce6103ef9a2c585f1045091dfc4b3408))
+	ROM_LOAD16_BYTE( "skat_bier_solitaire_video_f1_ii.u5", 0x00001, 0x80000, CRC(9109774f) SHA1(480a7cd4260dc3481049b108eba749de7eeedfa3))
+ROM_END
+
 ROM_START( skattv )
 	ROM_REGION( 0x100000, "maincpu", 0 )
 	ROM_LOAD16_BYTE( "f2_i.bin", 0x00000, 0x20000, CRC(3cb8b431) SHA1(e7930876b6cd4cba837c3da05d6948ef9167daea) )
@@ -694,6 +707,61 @@ ROM_START( funlddlx )
 	ROM_REGION16_BE( 0x100000, "gfx1", 0 )
 	ROM_LOAD16_BYTE( "flv_f1_i.bin", 0x00000, 0x80000, CRC(286fccdc) SHA1(dd23deda625e486a7cfe1f3268731d10053a96e9) )
 	ROM_LOAD16_BYTE( "flv_f1_ii.bin", 0x00001, 0x80000, CRC(2aa904e6) SHA1(864530b136dd488d619cc95f48e7dce8d93d88e0) )
+
+	ROM_REGION( 0x40000, "nvram", 0 )
+	//nvram - 16 bit - taken from parent
+	ROM_LOAD16_BYTE( "v62c5181024ll.u5", 0x0000, 0x20000, CRC(66e00617) SHA1(74abbf8fae63f88f9dcbe9c72ff3d2f2fbf9cd87) )
+	ROM_LOAD16_BYTE( "v62c5181024ll.u8", 0x0001, 0x20000, CRC(89705c86) SHA1(e5b57ab26a5034349ee61b8821d1ae64e2dd45f4) )
+ROM_END
+
+ROM_START( funlddlx2 )
+	ROM_REGION( 0x100000, "maincpu", 0 )
+	ROM_LOAD16_BYTE( "funny_land_dlx_w2.p1", 0x00000, 0x80000, CRC(d51abc1d) SHA1(e9c30efc36cf754fe8aa369c83ead6a8f4b300f4) )
+	ROM_LOAD16_BYTE( "funny_land_dlx_w2.p2", 0x00001, 0x80000, CRC(44691005) SHA1(faf88d6e5e67a4f789f5535a1f2eb2eb93d0f9fd) )
+
+	ROM_REGION16_BE( 0x100000, "gfx1", 0 )
+	ROM_LOAD16_BYTE( "flv_f1_i.bin", 0x00000, 0x80000, CRC(286fccdc) SHA1(dd23deda625e486a7cfe1f3268731d10053a96e9) )
+	ROM_LOAD16_BYTE( "flv_f1_ii.bin", 0x00001, 0x80000, CRC(2aa904e6) SHA1(864530b136dd488d619cc95f48e7dce8d93d88e0) )
+
+	ROM_REGION( 0x40000, "nvram", 0 )
+	//nvram - 16 bit - taken from parent
+	ROM_LOAD16_BYTE( "v62c5181024ll.u5", 0x0000, 0x20000, CRC(66e00617) SHA1(74abbf8fae63f88f9dcbe9c72ff3d2f2fbf9cd87) )
+	ROM_LOAD16_BYTE( "v62c5181024ll.u8", 0x0001, 0x20000, CRC(89705c86) SHA1(e5b57ab26a5034349ee61b8821d1ae64e2dd45f4) )
+ROM_END
+
+ROM_START( funlddlx4 )
+	ROM_REGION( 0x100000, "maincpu", 0 )
+	ROM_LOAD16_BYTE( "fldl_w4_1.bin", 0x00000, 0x80000, CRC(dc64234e) SHA1(4bdcb6b54095307939118cc479aa89db66e02757) )
+	ROM_LOAD16_BYTE( "fldl_w4_2.bin", 0x00001, 0x80000, CRC(fde4caa0) SHA1(0db9e8c16c86d005b2f0957f0a42a947b24890a9) )
+
+	ROM_REGION16_BE( 0x100000, "gfx1", 0 )
+	ROM_LOAD16_BYTE( "flv_f1_i.bin", 0x00000, 0x80000, CRC(286fccdc) SHA1(dd23deda625e486a7cfe1f3268731d10053a96e9) )
+	ROM_LOAD16_BYTE( "flv_f1_ii.bin", 0x00001, 0x80000, CRC(2aa904e6) SHA1(864530b136dd488d619cc95f48e7dce8d93d88e0) )
+
+	ROM_REGION( 0x40000, "nvram", 0 )
+	//nvram - 16 bit - generated by running 0x188dc
+	ROM_LOAD16_BYTE( "v62c5181024ll.u5", 0x0000, 0x20000, CRC(66e00617) SHA1(74abbf8fae63f88f9dcbe9c72ff3d2f2fbf9cd87) )
+	ROM_LOAD16_BYTE( "v62c5181024ll.u8", 0x0001, 0x20000, CRC(89705c86) SHA1(e5b57ab26a5034349ee61b8821d1ae64e2dd45f4) )
+ROM_END
+
+ROM_START( fstation7 )
+	ROM_REGION( 0x100000, "maincpu", ROMREGION_ERASEFF )
+	ROM_LOAD16_BYTE("m27c4001_spielekoffer_7_sp_f1_i.u2", 0x00000, 0x80000, CRC(bbf4bbd9) SHA1(80e785cb04213f8cc2f580b523e20b4825ba45e5))
+	ROM_LOAD16_BYTE("m27c4001_spielekoffer_7_sp_f1_ii.u6", 0x00001, 0x80000, CRC(cd8ab9e3) SHA1(cb9206d0367f00bec278cee0a4115594ba715fcd))
+
+	ROM_REGION16_BE( 0x100000, "gfx1", 0)
+	ROM_LOAD16_BYTE("m27c4001_spielekoffer_7_sp_video_f1_i.u2", 0x00000, 0x80000, CRC(dcddb25a) SHA1(7c54bd7a368fd57e3eb995a26462b3d2d589b0db))
+	ROM_LOAD16_BYTE("m27c4001_spielekoffer_7_sp_video_f1_ii.u5", 0x00001, 0x80000, CRC(400f9b8f) SHA1(4c4a9f46016eee805653b5fae65680225ac71436))
+ROM_END
+
+ROM_START( fstation8 )
+	ROM_REGION( 0x100000, "maincpu", ROMREGION_ERASEFF )
+	ROM_LOAD16_BYTE("m27c4001_spielekoffer_8_sp_f1_i.u2", 0x00000, 0x80000, CRC(f9c792ab) SHA1(30ab7352cce22340be87ddae80e4b3c2f69ea778))
+	ROM_LOAD16_BYTE("m27c4001_spielekoffer_8_sp_f1_ii.u5", 0x00001, 0x80000, CRC(0cb7b719) SHA1(e87bc67da903d9514dd97a6abf2d4e2171e15dbd))
+
+	ROM_REGION16_BE( 0x100000, "gfx1", 0 )
+	ROM_LOAD16_BYTE( "spielekoffer_8_sp_video_1.u2", 0x00000, 0x80000, NO_DUMP )
+	ROM_LOAD16_BYTE( "spielekoffer_8_sp_video_2.u6", 0x00001, 0x80000, NO_DUMP )
 ROM_END
 
 ROM_START( fstation )
@@ -706,13 +774,29 @@ ROM_START( fstation )
 	ROM_LOAD16_BYTE( "spielekoffer_video_9_sp_f1.ii", 0x00001, 0x80000, CRC(64138dcb) SHA1(1b629915cba32f8f6164ae5075c175b522b4a323) )
 ROM_END
 
+ROM_START(trumpfas)
+	ROM_REGION( 0x100000, "maincpu", ROMREGION_ERASEFF )
+	ROM_LOAD16_BYTE( "trumpf_as_dm_f2_pr1.u2", 0x00000, 0x20000, CRC(542b1517) SHA1(fcddb31b4b429c8d67161037d356861413567bb8))
+	ROM_LOAD16_BYTE( "trumpf_as_dm_f2_pr2.u6", 0x00001, 0x20000, CRC(d39bbd88) SHA1(64f47fd0076845ed3f9f3e84aca3504c110ad8ad))
+
+	ROM_REGION16_BE( 0x40000, "gfx1", 0 )
+	ROM_LOAD16_BYTE( "trumpf_as_video_1.u2", 0x00000, 0x20000, NO_DUMP )
+	ROM_LOAD16_BYTE( "trumpf_as_video_2.u6", 0x00001, 0x20000, NO_DUMP )
+ROM_END
+
 } // Anonymous namespace
 
 
 GAME( 1993, quickjac,  0,        quickjac, quickjac, adp_state, empty_init, ROT0, "ADP",     "Quick Jack",                        0 )
 GAME( 1994, skattv,    0,        skattv,   skattv,   adp_state, empty_init, ROT0, "ADP",     "Skat TV",                           0 )
+GAME( 1994, trumpfas,  skattv,   skattv,   skattv,   adp_state, empty_init, ROT0, "ADP",     "Trumpf As",                         MACHINE_NOT_WORKING ) // throws FOUL error on startup
 GAME( 1995, skattva,   skattv,   skattva,  skattva,  adp_state, empty_init, ROT0, "ADP",     "Skat TV (version TS3)",             0 )
 GAME( 1997, fashiong,  0,        fashiong, skattv,   adp_state, empty_init, ROT0, "ADP",     "Fashion Gambler (set 1)",           0 )
 GAME( 1997, fashiong2, fashiong, fashiong, skattv,   adp_state, empty_init, ROT0, "ADP",     "Fashion Gambler (set 2)",           0 )
-GAME( 1999, funlddlx,  0,        funland,  skattv,   adp_state, empty_init, ROT0, "Stella",  "Funny Land de Luxe",                MACHINE_NOT_WORKING ) // keeps looping between F_IN and FOUL messages
+GAME( 1998, sbsoli,    0,        fashiong, skattv,   adp_state, empty_init, ROT0, "ADP",     "Skat Bierskat Solitaire (F2)",      0 )
+GAME( 1999, funlddlx,  funlddlx4,funland,  skattv,   adp_state, empty_init, ROT0, "Stella",  "Funny Land de Luxe",                MACHINE_NOT_WORKING )
+GAME( 2000, fstation7, fstation, fstation, fstation, adp_state, empty_init, ROT0, "ADP",     "Fun Station Spielekoffer 7 Spiele", MACHINE_NOT_WORKING ) // suntris crashes when executing HD63484 paint commands
+GAME( 2000, fstation8, fstation, fstation, fstation, adp_state, empty_init, ROT0, "ADP",     "Fun Station Spielekoffer 8 Spiele", MACHINE_NOT_WORKING ) // suntris crashes when executing HD63484 paint commands
 GAME( 2000, fstation,  0,        fstation, fstation, adp_state, empty_init, ROT0, "ADP",     "Fun Station Spielekoffer 9 Spiele", MACHINE_NOT_WORKING ) // suntris crashes when executing HD63484 paint commands
+GAME( 2001, funlddlx2, funlddlx4,funland,  skattv,   adp_state, empty_init, ROT0, "Stella",  "Funny Land de Luxe (W2 set)",       MACHINE_NOT_WORKING )
+GAME( 2001, funlddlx4, 0,        funland,  skattv,   adp_state, empty_init, ROT0, "Stella",  "Funny Land de Luxe (W4 set)",       MACHINE_NOT_WORKING )

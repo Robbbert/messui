@@ -30,10 +30,10 @@ public:
 
 protected:
 	// device-level overrides
-	virtual void device_start() override;
-	virtual void device_reset() override;
-
-	virtual void sound_stream_update(sound_stream &stream, std::vector<read_stream_view> const &inputs, std::vector<write_stream_view> &outputs) override;
+	virtual void device_start() override ATTR_COLD;
+	virtual void device_reset() override ATTR_COLD;
+	TIMER_CALLBACK_MEMBER(update_sample_rate);
+	virtual void sound_stream_update(sound_stream &stream) override;
 
 	virtual void internal_reg_write(uint8_t reg, uint8_t data);
 	virtual uint32_t get_phrase_offs(int phrase) { return m_rom[(4 * phrase) + 1] << 16 | m_rom[(4 * phrase) + 2] << 8 | m_rom[(4 * phrase) + 3]; }
@@ -41,9 +41,10 @@ protected:
 	virtual void sequencer();
 	uint8_t get_rom_byte(uint32_t offset) { return m_rom[offset % m_rom.bytes()]; } // need optimise or its good as is ?
 
-	ymz770_device(const machine_config &mconfig, device_type type, const char *tag, device_t *owner, uint32_t clock, uint32_t sclock);
+	ymz770_device(const machine_config &mconfig, device_type type, const char *tag, device_t *owner, uint32_t clock, uint32_t divider);
 
 	sound_stream *m_stream;
+	uint32_t m_divider;
 	uint32_t m_sclock;
 
 	// data

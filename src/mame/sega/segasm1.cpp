@@ -85,16 +85,16 @@ public:
 	void m1comm(machine_config &config);
 
 protected:
-	virtual void machine_start() override;
+	virtual void machine_start() override ATTR_COLD;
 
 private:
 	u32 screen_update(screen_device &screen, bitmap_rgb32 &bitmap, const rectangle &cliprect);
 
-	void mem_map(address_map &map);
-	void mem_comm_map(address_map &map);
-	void z80_map(address_map &map);
-	void z80_io_map(address_map &map);
-	void comm_map(address_map &map);
+	void mem_map(address_map &map) ATTR_COLD;
+	void mem_comm_map(address_map &map) ATTR_COLD;
+	void z80_map(address_map &map) ATTR_COLD;
+	void z80_io_map(address_map &map) ATTR_COLD;
+	void comm_map(address_map &map) ATTR_COLD;
 
 	required_device<m68000_device> m_maincpu;
 	required_device<z80_device> m_soundcpu;
@@ -323,7 +323,7 @@ static INPUT_PORTS_START( tinkerbl )
 	PORT_BIT( 0x10, IP_ACTIVE_LOW, IPT_POKER_HOLD4 )
 	PORT_BIT( 0x20, IP_ACTIVE_LOW, IPT_POKER_HOLD5 )
 	PORT_BIT( 0x40, IP_ACTIVE_LOW, IPT_UNUSED )
-	PORT_BIT( 0x80, IP_ACTIVE_LOW, IPT_GAMBLE_DOOR )
+	PORT_BIT( 0x80, IP_ACTIVE_LOW, IPT_DOOR )
 
 	PORT_START("IN1_PC")
 	PORT_BIT( 0x1f, IP_ACTIVE_LOW, IPT_UNUSED )
@@ -332,10 +332,9 @@ static INPUT_PORTS_START( tinkerbl )
 	PORT_BIT( 0x80, IP_ACTIVE_LOW, IPT_GAMBLE_BOOK ) PORT_NAME("Analyzer")
 
 	PORT_START("IN1_PD")
-	// Following can't be IPT_SERVICE1, it will collide with IPT_GAMBLE_SERVICE
 	// TODO: verify what's for (doesn't increment credits)
-	PORT_BIT( 0x01, IP_ACTIVE_LOW, IPT_SERVICE3 ) PORT_NAME("Service Switch")
-	PORT_BIT( 0x02, IP_ACTIVE_LOW, IPT_GAMBLE_SERVICE ) PORT_NAME("All Reset")
+	PORT_BIT( 0x01, IP_ACTIVE_LOW, IPT_SERVICE1 ) PORT_NAME("Service Switch")
+	PORT_BIT( 0x02, IP_ACTIVE_LOW, IPT_MEMORY_RESET ) PORT_NAME("All Reset")
 	PORT_BIT( 0x38, IP_ACTIVE_LOW, IPT_UNUSED )
 	PORT_BIT( 0x40, IP_ACTIVE_LOW, IPT_COIN1 )
 	PORT_BIT( 0x80, IP_ACTIVE_LOW, IPT_UNUSED )
@@ -615,12 +614,11 @@ void systemm1_state::m1base(machine_config &config)
 
 	NVRAM(config, "nvram", nvram_device::DEFAULT_ALL_0);
 
-	SPEAKER(config, "lspeaker").front_left();
-	SPEAKER(config, "rspeaker").front_right();
+	SPEAKER(config, "speaker", 2).front();
 
 	YM3438(config, m_ym, XTAL(8'000'000));
-	m_ym->add_route(0, "lspeaker", 0.40);
-	m_ym->add_route(1, "rspeaker", 0.40);
+	m_ym->add_route(0, "speaker", 0.40, 0);
+	m_ym->add_route(1, "speaker", 0.40, 1);
 
 	SEGA_315_5296(config, m_io1, XTAL(16'000'000));
 	m_io1->in_pa_callback().set_ioport("IN1_PA");

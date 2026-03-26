@@ -2,6 +2,7 @@
 // copyright-holders:Ernesto Corvi
 /*
 World Cup 90 ( Tecmo ) driver
+Tecmo 6303A + 6303B PCBs
 -----------------------------
 
 Ernesto Corvi
@@ -97,8 +98,8 @@ public:
 	void pac90(machine_config &config);
 
 protected:
-	virtual void machine_start() override;
-	virtual void video_start() override;
+	virtual void machine_start() override ATTR_COLD;
+	virtual void video_start() override ATTR_COLD;
 
 private:
 	required_device<cpu_device> m_maincpu;
@@ -140,9 +141,9 @@ private:
 
 	uint32_t screen_update(screen_device &screen, bitmap_ind16 &bitmap, const rectangle &cliprect);
 
-	void sound_map(address_map &map);
-	void main_map(address_map &map);
-	void sub_map(address_map &map);
+	void sound_map(address_map &map) ATTR_COLD;
+	void main_map(address_map &map) ATTR_COLD;
+	void sub_map(address_map &map) ATTR_COLD;
 };
 
 
@@ -390,7 +391,7 @@ static INPUT_PORTS_START( wc90 )
 
 	PORT_START("DSW1")
 	PORT_DIPNAME( 0x0f, 0x0f, DEF_STR( Coinage ) )      PORT_DIPLOCATION("SW1:8,7,6,5")
-	PORT_DIPSETTING(    0x00, "10 Coins/1 Credit" )
+	PORT_DIPSETTING(    0x00, DEF_STR( 10C_1C ) )
 	PORT_DIPSETTING(    0x08, DEF_STR( 9C_1C ) )
 	PORT_DIPSETTING(    0x04, DEF_STR( 8C_1C ) )
 	PORT_DIPSETTING(    0x0c, DEF_STR( 7C_1C ) )
@@ -586,9 +587,9 @@ void wc90_state::wc90(machine_config &config)
 
 	ym2608_device &ymsnd(YM2608(config, "ymsnd", XTAL(8'000'000)));  // verified on PCB
 	ymsnd.irq_handler().set_inputline("audiocpu", 0);
-	ymsnd.add_route(0, "mono", 0.50);
-	ymsnd.add_route(1, "mono", 1.0);
-	ymsnd.add_route(2, "mono", 1.0);
+	ymsnd.add_route(0, "mono", 0.75);
+	ymsnd.add_route(1, "mono", 0.5);
+	ymsnd.add_route(2, "mono", 0.5);
 }
 
 void wc90_state::wc90t(machine_config &config)
@@ -803,9 +804,9 @@ ROM_END
 
 
 GAME( 1989, twcup90,  0,       wc90,  wc90,  wc90_state, empty_init, ROT0,  "Tecmo", "Tecmo World Cup '90 (World set 1)",     MACHINE_IMPERFECT_SOUND | MACHINE_SUPPORTS_SAVE )
-GAME( 1989, twcup90a, twcup90, wc90,  wc90,  wc90_state, empty_init, ROT0,  "Tecmo", "Tecmo World Cup '90 (Euro set 1)",      MACHINE_IMPERFECT_SOUND | MACHINE_SUPPORTS_SAVE )
-GAME( 1989, twcup90b, twcup90, wc90,  wc90,  wc90_state, empty_init, ROT0,  "Tecmo", "Tecmo World Cup '90 (Euro set 2)",      MACHINE_IMPERFECT_SOUND | MACHINE_SUPPORTS_SAVE )
-GAME( 1989, twcup90c, twcup90, wc90,  wc90,  wc90_state, empty_init, ROT0,  "Tecmo", "Tecmo World Cup '90 (Euro set 3)",      MACHINE_IMPERFECT_SOUND | MACHINE_SUPPORTS_SAVE )
+GAME( 1989, twcup90a, twcup90, wc90,  wc90,  wc90_state, empty_init, ROT0,  "Tecmo", "Tecmo World Cup '90 (Europe set 1)",    MACHINE_IMPERFECT_SOUND | MACHINE_SUPPORTS_SAVE )
+GAME( 1989, twcup90b, twcup90, wc90,  wc90,  wc90_state, empty_init, ROT0,  "Tecmo", "Tecmo World Cup '90 (Europe set 2)",    MACHINE_IMPERFECT_SOUND | MACHINE_SUPPORTS_SAVE )
+GAME( 1989, twcup90c, twcup90, wc90,  wc90,  wc90_state, empty_init, ROT0,  "Tecmo", "Tecmo World Cup '90 (Europe set 3)",    MACHINE_IMPERFECT_SOUND | MACHINE_SUPPORTS_SAVE )
 GAME( 1989, twcup90t, twcup90, wc90t, wc90,  wc90_state, empty_init, ROT0,  "Tecmo", "Tecmo World Cup '90 (trackball set 1)", MACHINE_IMPERFECT_SOUND | MACHINE_SUPPORTS_SAVE )
 
 GAME( 199?, pac90, puckman, pac90, pac90, wc90_state, empty_init, ROT90, "bootleg (Macro)", "Pac-Man (bootleg on World Cup '90 hardware)", MACHINE_IMPERFECT_SOUND | MACHINE_SUPPORTS_SAVE ) // made by Mike Coates etc.

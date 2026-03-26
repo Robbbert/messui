@@ -33,10 +33,12 @@ extern char const *const DISK_ML30DC;
 extern char const *const DISK_NMS1200;
 extern char const *const DISK_TADPF550;
 extern char const *const DISK_VY0010;
+extern char const *const DOUBLE_RAM;
 extern char const *const DOOLY;
 extern char const *const EASISPEECH;
 extern char const *const EC701;
 extern char const *const FMPAC;
+extern char const *const FRANKY;
 extern char const *const FS_SR021;
 extern char const *const FS_SR022;
 extern char const *const GAMEMASTER2;
@@ -65,6 +67,7 @@ extern char const *const MM768K;
 extern char const *const MM1024K;
 extern char const *const MM2048K ;
 extern char const *const MM4096K;
+extern char const *const MMM;
 extern char const *const MOONSOUND;
 extern char const *const MSXAUD_FSCA1;
 extern char const *const MSXAUD_HXMU900;
@@ -83,12 +86,13 @@ extern char const *const SLOTEXP;
 extern char const *const SOFTCARD;
 extern char const *const SOUND_SNATCHER;
 extern char const *const SOUND_SDSNATCH;
+extern char const *const SUNRISE_ATAIDE;
 extern char const *const SUNRISE_SCC;
 extern char const *const SUPER_SWANGI;
 extern char const *const SUPERLODERUNNER;
 extern char const *const SYNTHESIZER;
 extern char const *const UCN01;
-
+extern char const *const VIDEO80;
 } // namespace bus::msx::cart::slotoptions
 
 #endif // MAME_BUS_MSX_CART_SLOTOPTIONS_H

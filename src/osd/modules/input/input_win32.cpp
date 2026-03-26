@@ -46,6 +46,7 @@ public:
 
 	virtual void reset() override
 	{
+		event_based_device::reset();
 		memset(&m_keyboard, 0, sizeof(m_keyboard));
 	}
 
@@ -219,6 +220,7 @@ public:
 
 	virtual void reset() override
 	{
+		event_based_device::reset();
 		memset(&m_mouse, 0, sizeof(m_mouse));
 		memset(&m_win32_mouse, 0, sizeof(m_win32_mouse));
 		m_vscroll = m_hscroll = 0;
@@ -269,9 +271,6 @@ public:
 	{
 		wininput_module<win32_mouse_device>::input_init(machine);
 
-		if (!options()->mouse())
-			return;
-
 		// allocate a device
 		create_device<win32_mouse_device>(DEVICE_CLASS_MOUSE, "Win32 Mouse 1", "Win32 Mouse 1");
 	}
@@ -303,6 +302,7 @@ class win32_lightgun_device_base : public event_based_device<MouseUpdateEventArg
 public:
 	virtual void reset() override
 	{
+		event_based_device::reset();
 		memset(&m_mouse, 0, sizeof(m_mouse));
 	}
 

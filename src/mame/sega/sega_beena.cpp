@@ -11,6 +11,8 @@
         MIDI audio
         Peripherals (including the SD-Card adapter)
         Component list / PCB diagram
+        Fix graphical glitches (e.g. 'Car Beena' scrolling background)
+        Fix test mode for 'Car Beena' (fails on 'Test EEP')
 
     Hardware
     --------
@@ -125,11 +127,16 @@
 
     Toggling 'Memory Cache' allows the player to observe differences between test failure and success.
 
+    For 'TV Ocha-Ken', hold down A B C, then power on the system, release all buttons, and press B 3 times.
+
+    For 'Car Beena', hold down all 3 buttons, turn the handle left to full lock, then power on the system.
+
 *******************************************************************************/
 
 #include "emu.h"
 
-#include "tvochken_card.h"
+#include "9h0-0008_card.h"
+#include "9h0-0008_card_reader.h"
 
 #include "bus/generic/slot.h"
 #include "bus/generic/carts.h"
@@ -186,14 +193,14 @@ protected:
 	void sega_9h0_0008(machine_config &config);
 
 	virtual void device_post_load() override;
-	virtual void machine_start() override;
-	virtual void machine_reset() override;
-	virtual void video_start() override;
+	virtual void machine_start() override ATTR_COLD;
+	virtual void machine_reset() override ATTR_COLD;
+	virtual void video_start() override ATTR_COLD;
 
 	virtual void install_game_rom();
 	virtual void update_sensors(offs_t offset);
 
-	void beena_arm7_map(address_map &map);
+	void beena_arm7_map(address_map &map) ATTR_COLD;
 
 	void request_irq();
 	void request_fiq();
@@ -847,7 +854,7 @@ void sega_9h0_0008_state::memcache_parse_data_bit(uint32_t &status)
 
 uint32_t sega_9h0_0008_state::io_expansion_r()
 {
-	return 0; // TODO
+	return 0; // FIXME: Confirm with hardware tests.
 }
 
 uint32_t sega_9h0_0008_state::io_memcache_r()
@@ -1673,15 +1680,15 @@ int32_t sega_9h0_0008_state::rescale_alpha_step(uint8_t step)
 
 void sega_9h0_0008_state::request_irq()
 {
-	m_maincpu->set_input_line(ARM7_IRQ_LINE, ASSERT_LINE);
-	m_maincpu->set_input_line(ARM7_IRQ_LINE, CLEAR_LINE);
+	m_maincpu->set_input_line(arm7_cpu_device::ARM7_IRQ_LINE, ASSERT_LINE);
+	m_maincpu->set_input_line(arm7_cpu_device::ARM7_IRQ_LINE, CLEAR_LINE);
 }
 
 void sega_9h0_0008_state::request_fiq()
 {
 	if (m_requested_fiq) {
-		m_maincpu->set_input_line(ARM7_FIRQ_LINE, ASSERT_LINE);
-		m_maincpu->set_input_line(ARM7_FIRQ_LINE, CLEAR_LINE);
+		m_maincpu->set_input_line(arm7_cpu_device::ARM7_FIRQ_LINE, ASSERT_LINE);
+		m_maincpu->set_input_line(arm7_cpu_device::ARM7_FIRQ_LINE, CLEAR_LINE);
 
 		m_requested_fiq = false;
 	}
@@ -1724,12 +1731,52 @@ void sega_9h0_0008_state::sega_9h0_0008(machine_config &config)
 }
 
 
-class sega_beena_state : public sega_9h0_0008_state
+class sega_9h0_0008_cart_state : public sega_9h0_0008_state
+{
+public:
+	sega_9h0_0008_cart_state(const machine_config &mconfig, device_type type, const char *tag)
+		: sega_9h0_0008_state(mconfig, type, tag)
+		, m_cart(*this, "cartslot")
+	{ }
+
+protected:
+	DECLARE_DEVICE_IMAGE_LOAD_MEMBER(cart_load);
+
+	required_device<generic_slot_device> m_cart;
+};
+
+DEVICE_IMAGE_LOAD_MEMBER(sega_9h0_0008_cart_state::cart_load)
+{
+	uint32_t const size = m_cart->common_get_size("rom");
+
+	m_cart->rom_alloc(size, GENERIC_ROM32_WIDTH, ENDIANNESS_BIG);
+	m_cart->common_load_rom(m_cart->get_rom_base(), size, "rom");
+
+	if (!image.loaded_through_softlist()) {
+		// loadflags weren't parsed, start by manually applying `endianness="big"`,
+		// taking into consideration the host's endianness.
+		uint32_t *rom32 = reinterpret_cast<uint32_t *>(m_cart->get_rom_base());
+		for (size_t i = 0; i < size / 4; i++) {
+			rom32[i] = big_endianize_int32(rom32[i]);
+		}
+		// Afterwards apply `load16_word_swap`, regardless of host's endianness,
+		// since this reflects how ROM data was stored, not the CPU's architecture.
+		uint16_t *rom16 = reinterpret_cast<uint16_t *>(m_cart->get_rom_base());
+		for (size_t i = 0; i < size / 2; i++) {
+			rom16[i] = swapendian_int16(rom16[i]);
+		}
+	}
+
+	return std::make_pair(std::error_condition(), std::string());
+}
+
+
+class sega_beena_state : public sega_9h0_0008_cart_state
 {
 public:
 	sega_beena_state(const machine_config &mconfig, device_type type, const char *tag)
-		: sega_9h0_0008_state(mconfig, type, tag)
-		, m_cart(*this, "cartslot")
+		: sega_9h0_0008_cart_state(mconfig, type, tag)
+		, m_card(*this, "card")
 		, m_io_page_config(*this, "PAGE_CONFIG")
 		, m_io_page(*this, "PAGE")
 		, m_io_pad_left(*this, "PAD_LEFT")
@@ -1744,14 +1791,16 @@ public:
 
 	virtual DECLARE_CROSSHAIR_MAPPER_MEMBER(pen_y_mapper);
 
+protected:
+	virtual void video_start() override ATTR_COLD;
+
 private:
-	DECLARE_DEVICE_IMAGE_LOAD_MEMBER(cart_load);
 	virtual void install_game_rom() override;
+	virtual uint32_t io_expansion_r() override;
 	virtual void update_crosshair(screen_device &screen) override;
 	virtual void update_sensors(offs_t offset) override;
 
-	required_device<generic_slot_device> m_cart;
-
+	required_device<sega_9h0_0008_card_device> m_card;
 	required_ioport m_io_page_config;
 	required_ioport m_io_page;
 	required_ioport m_io_pad_left;
@@ -1761,6 +1810,12 @@ private:
 	required_ioport m_io_pen_x;
 	required_ioport m_io_pen_y;
 };
+
+static void beena_iox_devices(device_slot_interface &device)
+{
+	device.option_add("rd", BEENA_CARD_READER);
+	device.option_add("rd2061", BEENA_CARD_READER_2061);
+}
 
 void sega_beena_state::sega_beena(machine_config &config)
 {
@@ -1772,9 +1827,19 @@ void sega_beena_state::sega_beena(machine_config &config)
 	m_cart->set_device_load(FUNC(sega_beena_state::cart_load));
 	m_cart->set_must_be_loaded(false);
 
+	SEGA_9H0_0008_CARD(config, m_card, beena_iox_devices, nullptr, false);
+
 	SOFTWARE_LIST(config, "cart_list").set_original("sega_beena_cart");
 
 	config.set_default_layout(layout_beena);
+}
+
+void sega_beena_state::video_start()
+{
+	const int view = m_card->get_card_device() ? 1 : 0;
+	machine().render().first_target()->set_view(view);
+
+	sega_9h0_0008_state::video_start();
 }
 
 void sega_beena_state::install_game_rom()
@@ -1805,6 +1870,23 @@ void sega_beena_state::install_game_rom()
 		}
 		m_maincpu->space(AS_PROGRAM).install_rom(base_address, base_address + 0x7fffff, 0x800000, cart_rom->base());
 	}
+}
+
+/**
+ * Combines:
+ * - Scanned card barcode
+ *   - bit 5: current data bit to read from 16-bit value;
+ *   - bit 6: status for advancing data bit position;
+ * - Peripheral status
+ *   - bit 7 == 0: peripheral is ready;
+ */
+uint32_t sega_beena_state::io_expansion_r()
+{
+	if (m_card->get_card_device()) {
+		return m_card->get_card_device()->read(true);
+	}
+
+	return 0; // FIXME: Confirm with hardware tests.
 }
 
 void sega_beena_state::update_crosshair(screen_device &screen)
@@ -1937,31 +2019,6 @@ void sega_beena_state::update_sensors(offs_t offset)
 	}
 }
 
-DEVICE_IMAGE_LOAD_MEMBER(sega_beena_state::cart_load)
-{
-	uint32_t const size = m_cart->common_get_size("rom");
-
-	m_cart->rom_alloc(size, GENERIC_ROM32_WIDTH, ENDIANNESS_BIG);
-	m_cart->common_load_rom(m_cart->get_rom_base(), size, "rom");
-
-	if (!image.loaded_through_softlist()) {
-		// loadflags weren't parsed, start by manually applying `endianness="big"`,
-		// taking into consideration the host's endianness.
-		uint32_t *rom32 = reinterpret_cast<uint32_t *>(m_cart->get_rom_base());
-		for (size_t i = 0; i < size / 4; i++) {
-			rom32[i] = big_endianize_int32(rom32[i]);
-		}
-		// Afterwards apply `load16_word_swap`, regardless of host's endianness,
-		// since this reflects how ROM data was stored, not the CPU's architecture.
-		uint16_t *rom16 = reinterpret_cast<uint16_t *>(m_cart->get_rom_base());
-		for (size_t i = 0; i < size / 2; i++) {
-			rom16[i] = swapendian_int16(rom16[i]);
-		}
-	}
-
-	return std::make_pair(std::error_condition(), std::string());
-}
-
 CROSSHAIR_MAPPER_MEMBER(sega_beena_state::pen_y_mapper)
 {
 	// TODO: Either remove or adapt for Storyware layout
@@ -1982,66 +2039,29 @@ public:
 
 	virtual uint32_t io_expansion_r() override;
 
-	void scan_card(int state);
-
 private:
-	enum card_state : uint8_t
-	{
-		IDLE = 0,
-		START_WRITE_DATA,
-		WRITE_DATA,
-	};
-
-	virtual void machine_start() override;
-	virtual void machine_reset() override;
-
 	virtual void install_game_rom() override;
 
-	required_device<tvochken_card_device> m_card;
-
+	required_device<sega_9h0_0008_card_device> m_card;
 	required_ioport m_io_buttons;
-	uint8_t m_card_previous_input;
-
-	uint16_t m_card_data;
-	uint8_t m_card_data_i;
-	uint8_t m_card_state;
-	uint8_t m_card_hold_i;
-	uint8_t m_card_status;
 };
+
+static void tvochken_iox_devices(device_slot_interface &device)
+{
+	device.option_add("rd1831", TVOCHKEN_CARD_READER);
+	device.set_default_option("rd1831");
+	device.set_fixed(true);
+}
 
 void tvochken_state::tvochken(machine_config &config)
 {
 	sega_9h0_0008(config);
 
-	TVOCHKEN_CARD(config, m_card);
+	SEGA_9H0_0008_CARD(config, m_card, tvochken_iox_devices, nullptr, false);
 
 	SOFTWARE_LIST(config, "card_list").set_original("tvochken");
 
 	config.set_default_layout(layout_tvochken);
-}
-
-void tvochken_state::machine_start()
-{
-	sega_9h0_0008_state::machine_start();
-
-	save_item(NAME(m_card_data));
-	save_item(NAME(m_card_data_i));
-	save_item(NAME(m_card_hold_i));
-	save_item(NAME(m_card_state));
-	save_item(NAME(m_card_status));
-}
-
-void tvochken_state::machine_reset()
-{
-	sega_9h0_0008_state::machine_reset();
-
-	m_card_previous_input = 0;
-
-	m_card_data = 0;
-	m_card_data_i = 0;
-	m_card_hold_i = 0;
-	m_card_state = IDLE;
-	m_card_status = 0;
 }
 
 /**
@@ -2054,7 +2074,7 @@ void tvochken_state::machine_reset()
  *   - bit 5: current data bit to read from 16-bit value;
  *   - bit 6: status for advancing data bit position;
  *
- * Parsing protocol at function 0xa0001240 doesn't seem to use any
+ * Parsing protocol for tvochken at function 0xa0001240 doesn't seem to use any
  * control commands to start parsing either input. It expects each parsed barcode
  * to take several reads before advancing to the next data bit. We handle this
  * by holding the value for a few reads, which also covers reads unrelated
@@ -2062,75 +2082,69 @@ void tvochken_state::machine_reset()
  */
 uint32_t tvochken_state::io_expansion_r()
 {
-	if (machine().side_effects_disabled() || (m_io_auxiliary_regs[0x8/4] & 0xff) != 0) {
-		return 0x98 | m_io_buttons->read();
-	}
-
-	/**
-	 * Each scanned barcode is compared against these values taken from
-	 * an in-memory table at 0xc00d0f9c. Valid barcodes always have the
-	 * last bit set.
-	 *
-	 * 0x900a, 0xa05a, 0xb0aa, 0x90ca, 0x910a,
-	 * 0x914a, 0x918a, 0x91ca, 0x920a, 0xa25a,
-	 * 0x928a, 0x92ca, 0xa312, 0x934a, 0x938a,
-	 * 0x93ca, 0xa41a, 0x944a, 0x948a, 0xb4da,
-	 * 0xb512, 0xa55a, 0x958a, 0x95ca, 0x960a,
-	 * 0x964a, 0xb69a, 0x96ca, 0x970a, 0x974a,
-	 * 0x978a, 0x97ca, 0x980a, 0x984a, 0xa892,
-	 * 0xa8da, 0xa91a, 0xa952, 0x998a, 0xb9da,
-	 * 0xaa1a, 0x9a4a, 0x9a8a, 0x9aca, 0xab12,
-	 * 0xab52, 0xbba2, 0xabd2, 0x9c0a, 0x9c4a
-	*/
-
-	if (m_card_state == START_WRITE_DATA) {
-		m_card_hold_i--;
-		if (m_card_hold_i == 0) {
-			m_card_hold_i = 10;
-			m_card_data_i = 0;
-			m_card_status = 0;
-			m_card_state = WRITE_DATA;
-		}
-
-		return 0x98 | (1 << 5) | m_io_buttons->read();
-	}
-
-	if (m_card_state == WRITE_DATA) {
-		uint8_t data_bit = (m_card_data >> (15 - m_card_data_i)) & 1;
-		LOG("write card: bit %d -> %d (sync %d)\n", m_card_data_i, data_bit, m_card_status);
-
-		m_card_hold_i--;
-		if (m_card_hold_i == 0) {
-			m_card_hold_i = 10;
-			m_card_status ^= 1;
-			m_card_data_i++;
-			if (m_card_data_i == 16) {
-				m_card_data_i = 0;
-				m_card_status = 0;
-				m_card_state = IDLE;
-			}
-		}
-
-		return 0x98 | (m_card_status << 6) | (data_bit << 5) | m_io_buttons->read();
-	}
-
-	return 0x98 | m_io_buttons->read();
-}
-
-void tvochken_state::scan_card(int state)
-{
-	if (m_card->exists() && state && (m_card_state == IDLE)) {
-		m_card_data = m_card->barcode();
-		m_card_hold_i = 10;
-		m_card_state = START_WRITE_DATA;
-		LOG("scanning card: %04x\n", m_card_data);
-	}
+	const uint32_t card_data = m_card->get_card_device()
+		? m_card->get_card_device()->read((m_io_auxiliary_regs[0x8/4] & 0xff) == 0)
+		: 0;
+	return card_data | m_io_buttons->read();
 }
 
 void tvochken_state::install_game_rom()
 {
 	memory_region *rom = memregion("flash_rom");
 	m_maincpu->space(AS_PROGRAM).install_rom(ROM_FLASH_BASE, ROM_FLASH_BASE + 0x7fffff, 0x800000, rom->base());
+}
+
+
+class carbeena_state : public sega_9h0_0008_cart_state
+{
+public:
+	carbeena_state(const machine_config &mconfig, device_type type, const char *tag)
+		: sega_9h0_0008_cart_state(mconfig, type, tag)
+		, m_io_buttons(*this, "BUTTONS")
+	{ }
+
+	void carbeena(machine_config &config);
+
+	virtual uint32_t io_expansion_r() override;
+
+private:
+	virtual void install_game_rom() override;
+
+	required_ioport m_io_buttons;
+};
+
+void carbeena_state::carbeena(machine_config &config)
+{
+	sega_9h0_0008(config);
+
+	GENERIC_CARTSLOT(config, m_cart, generic_plain_slot, "carbeena_cart");
+	m_cart->set_endian(ENDIANNESS_BIG);
+	m_cart->set_width(GENERIC_ROM32_WIDTH);
+	m_cart->set_device_load(FUNC(carbeena_state::cart_load));
+	m_cart->set_must_be_loaded(false);
+
+	SOFTWARE_LIST(config, "cart_list").set_original("carbeena_cart");
+}
+
+uint32_t carbeena_state::io_expansion_r()
+{
+	return m_io_buttons->read() & 0x3f;
+}
+
+void carbeena_state::install_game_rom()
+{
+	// TODO: These mappings are controlled by program code via writes to 0x60020004 and 0x60020010.
+	// Likely only one of them should be mapped at a time (also suggested by test mode, which only
+	// outputs 1 size out of 2 installed ROMs).
+	if (m_cart->exists()) {
+		std::string region_tag;
+		memory_region *cart_rom = m_cart->memregion("cart:rom");
+		m_maincpu->space(AS_PROGRAM).install_rom(ROM_FLASH_BASE, ROM_FLASH_BASE + 0x7fffff, 0x800000, cart_rom->base());
+	}
+
+	// Despite being a flash ROM, it gets mapped on the base address usually assigned to mask ROMs.
+	memory_region *rom = memregion("mainboard_rom");
+	m_maincpu->space(AS_PROGRAM).install_rom(ROM_MASK_BASE, ROM_MASK_BASE + 0x7fffff, 0x800000, rom->base());
 }
 
 
@@ -2192,7 +2206,7 @@ static INPUT_PORTS_START( sega_beena )
 	PORT_BIT( 0xff, 0x80, IPT_LIGHTGUN_X ) PORT_CROSSHAIR(X, 1.0, 0.0, 0) PORT_SENSITIVITY(30) PORT_KEYDELTA(10) PORT_MINMAX(0, 255) PORT_PLAYER(1) PORT_NAME("Pen X")
 
 	PORT_START("PENY")
-	PORT_BIT( 0xff, 0x80, IPT_LIGHTGUN_Y ) PORT_CROSSHAIR(Y, 1.0, 0.0, 0) PORT_SENSITIVITY(30) PORT_KEYDELTA(10) PORT_MINMAX(0, 255) PORT_PLAYER(1) PORT_NAME("Pen Y") PORT_CROSSHAIR_MAPPER_MEMBER(DEVICE_SELF, sega_beena_state, pen_y_mapper)
+	PORT_BIT( 0xff, 0x80, IPT_LIGHTGUN_Y ) PORT_CROSSHAIR(Y, 1.0, 0.0, 0) PORT_SENSITIVITY(30) PORT_KEYDELTA(10) PORT_MINMAX(0, 255) PORT_PLAYER(1) PORT_NAME("Pen Y") PORT_CROSSHAIR_MAPPER_MEMBER(FUNC(sega_beena_state::pen_y_mapper))
 INPUT_PORTS_END
 
 static INPUT_PORTS_START( tvochken )
@@ -2202,22 +2216,29 @@ static INPUT_PORTS_START( tvochken )
 	PORT_BIT( 0x0001, IP_ACTIVE_LOW, IPT_BUTTON1 ) PORT_PLAYER(1) PORT_NAME("A")
 	PORT_BIT( 0x0002, IP_ACTIVE_LOW, IPT_BUTTON2 ) PORT_PLAYER(1) PORT_NAME("B")
 	PORT_BIT( 0x0004, IP_ACTIVE_LOW, IPT_BUTTON3 ) PORT_PLAYER(1) PORT_NAME("C")
-
-	PORT_START("CARDS")
-	PORT_BIT( 0x01, IP_ACTIVE_HIGH, IPT_BUTTON4 ) PORT_PLAYER(1) PORT_NAME("Scan Card") PORT_WRITE_LINE_MEMBER(tvochken_state, scan_card)
 INPUT_PORTS_END
 
+static INPUT_PORTS_START( carbeena )
+	PORT_INCLUDE( sega_9h0_0008 )
+
+	PORT_START("BUTTONS")
+	PORT_BIT( 0x0001, IP_ACTIVE_LOW, IPT_JOYSTICK_LEFT ) PORT_PLAYER(1) PORT_NAME("Handle Left")
+	PORT_BIT( 0x0002, IP_ACTIVE_LOW, IPT_JOYSTICK_DOWN ) PORT_PLAYER(1) PORT_NAME("Handle Limit") // TODO: Likely set when turning the handle to full lock
+	PORT_BIT( 0x0004, IP_ACTIVE_LOW, IPT_JOYSTICK_RIGHT ) PORT_PLAYER(1) PORT_NAME("Handle Right")
+	PORT_BIT( 0x0008, IP_ACTIVE_LOW, IPT_BUTTON3 ) PORT_PLAYER(1) PORT_NAME("Blue Button") // At the right of the center button, despite being mapped to a lower bit
+	PORT_BIT( 0x0010, IP_ACTIVE_LOW, IPT_BUTTON2 ) PORT_PLAYER(1) PORT_NAME("Center Button")
+	PORT_BIT( 0x0020, IP_ACTIVE_LOW, IPT_BUTTON1 ) PORT_PLAYER(1) PORT_NAME("Yellow Button")
+INPUT_PORTS_END
 
 #define ROM_9H0_0008 \
 	/* SoC internal BIOS dumped with a JTAG debugger. */ \
 	ROM_REGION32_BE( 0x20000, "maincpu", 0 ) \
-	ROM_LOAD( "9h0-0008.bios.ic1", 0x00000000, 0x20000, CRC(5471aaf8) SHA1(33d756b6c64afb0fa377b3f85ab74505e9ae2f9c) )
-
-	// SoC MIDI synthesizer parameters and PCM data.
-	// Control ROM doesn't appear to be memory-mapped, so this data will only
-	// be usable when the synthesizer gets reverse engineered.
-	// ROM_REGION32_BE( 0x8000, "midipcm", 0 )
-	// ROM_LOAD( "9h0-0008.midipcm.ic1", 0x00000000, 0x8000, CRC(ed336d29) SHA1(4af7b7cf7fc4fe8b7a514cde91f930a582742509) )
+	ROM_LOAD( "9h0-0008.bios.ic1", 0x00000000, 0x20000, CRC(5471aaf8) SHA1(33d756b6c64afb0fa377b3f85ab74505e9ae2f9c) ) \
+	/* SoC MIDI synthesizer parameters and PCM data. */ \
+	/* Control ROM doesn't appear to be memory-mapped, so this data will only */ \
+	/* be usable when the synthesizer gets reverse engineered. */ \
+	ROM_REGION32_BE( 0x8000, "midipcm", 0 ) \
+	ROM_LOAD( "9h0-0008.midipcm.ic1", 0x00000000, 0x8000, CRC(ed336d29) SHA1(4af7b7cf7fc4fe8b7a514cde91f930a582742509) )
 
 ROM_START( beena )
 	ROM_9H0_0008
@@ -2230,8 +2251,17 @@ ROM_START( tvochken )
 	ROM_LOAD16_WORD_SWAP( "m5m29gt320vp-80.u3", 0x00000000, 0x400000, CRC(75c1fbc1) SHA1(b07adcabaadb8b684335f52dd953f4696585c819) )
 ROM_END
 
+ROM_START( carbeena )
+	ROM_9H0_0008
+
+	ROM_REGION32_BE( 0x800000, "mainboard_rom", ROMREGION_ERASEFF )
+	ROM_LOAD16_WORD_SWAP( "en29lv640b.ic9", 0x00000000, 0x800000, CRC(ce6649df) SHA1(e09568b93c9ab0901c6eb32d5e0408e484d4c564) )
+ROM_END
+
 } // anonymous namespace
 
-//    year, name,     parent, compat, machine,    input,      class,            init,       company, fullname,              flags
-CONS( 2005, beena,    0,      0,      sega_beena, sega_beena, sega_beena_state, empty_init, "Sega",  "Advanced Pico BEENA", MACHINE_IMPERFECT_GRAPHICS|MACHINE_IMPERFECT_TIMING|MACHINE_IMPERFECT_SOUND )
-CONS( 2005, tvochken, 0,      0,      tvochken,   tvochken,   tvochken_state,   empty_init, "Sega",  "TV Ocha-Ken",         MACHINE_IMPERFECT_GRAPHICS|MACHINE_IMPERFECT_TIMING|MACHINE_IMPERFECT_SOUND )
+//    year, name,     parent, compat, machine,    input,      class,            init,       company,                                fullname,              flags
+CONS( 2005, beena,    0,      0,      sega_beena, sega_beena, sega_beena_state, empty_init, "Sega Toys",                            "Advanced Pico BEENA", MACHINE_IMPERFECT_GRAPHICS|MACHINE_IMPERFECT_TIMING|MACHINE_IMPERFECT_SOUND )
+CONS( 2005, tvochken, 0,      0,      tvochken,   tvochken,   tvochken_state,   empty_init, "Sega Toys",                            "TV Ocha-Ken",         MACHINE_IMPERFECT_GRAPHICS|MACHINE_IMPERFECT_TIMING|MACHINE_IMPERFECT_SOUND )
+// Release date 2009-12: http://products.alpine.co.jp/om/owner/product?P1=1632
+CONS( 2009, carbeena, 0,      0,      carbeena,   carbeena,   carbeena_state,   empty_init, "Sega Toys / Alpine Electronics, Inc.", "Car Beena",           MACHINE_IMPERFECT_GRAPHICS|MACHINE_IMPERFECT_TIMING|MACHINE_IMPERFECT_SOUND )

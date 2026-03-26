@@ -209,12 +209,12 @@ public:
 	void mtrap(machine_config &config);
 	void pepper2(machine_config &config);
 
-	DECLARE_CUSTOM_INPUT_MEMBER(intsource_coins_r);
+	ioport_value intsource_coins_r();
 	DECLARE_INPUT_CHANGED_MEMBER(coin_count_w);
 
 protected:
-	virtual void machine_start() override;
-	virtual void video_start() override;
+	virtual void machine_start() override ATTR_COLD;
+	virtual void video_start() override ATTR_COLD;
 
 	required_ioport m_dsw;
 	required_ioport m_in0;
@@ -231,7 +231,7 @@ protected:
 
 	uint8_t exidy_interrupt_r();
 
-	void exidy_map(address_map &map);
+	void exidy_map(address_map &map) ATTR_COLD;
 
 private:
 	required_shared_ptr<uint8_t> m_videoram;
@@ -268,9 +268,9 @@ private:
 	void draw_sprites(bitmap_ind16 &bitmap, const rectangle &cliprect);
 	void check_collision();
 
-	void venture_map(address_map &map);
-	void mtrap_map(address_map &map);
-	void pepper2_map(address_map &map);
+	void venture_map(address_map &map) ATTR_COLD;
+	void mtrap_map(address_map &map) ATTR_COLD;
+	void pepper2_map(address_map &map) ATTR_COLD;
 };
 
 
@@ -289,20 +289,22 @@ public:
 	void rallys(machine_config &config);
 	void phantoma(machine_config &config);
 
-	DECLARE_CUSTOM_INPUT_MEMBER(spectar_coins_r);
-	DECLARE_CUSTOM_INPUT_MEMBER(rallys_coin1_r);
+	ioport_value spectar_coins_r();
+	ioport_value rallys_coin1_r();
 
 	void init_sidetrac();
 	void init_spectar();
 
 protected:
-	virtual void machine_start() override;
+	virtual void machine_start() override ATTR_COLD;
+	virtual void machine_reset() override ATTR_COLD { exidy_state::machine_reset(); init_tonegen(); }
 
 	void set_max_freq(int freq) { m_max_freq = freq; }
 
 	void spectar_audio_1_w(uint8_t data);
 	void spectar_audio_2_w(uint8_t data);
 
+	void init_tonegen();
 	void adjust_sample(uint8_t freq);
 	bool RISING_EDGE(uint8_t data, uint8_t bit) const { return (data & bit) && !(m_port_1_last & bit); }
 	bool FALLING_EDGE(uint8_t data, uint8_t bit) const { return !(data & bit) && (m_port_1_last & bit); }
@@ -317,10 +319,10 @@ private:
 	uint8_t m_tone_freq = 0;
 	uint8_t m_tone_active = 0;
 
-	void sidetrac_map(address_map &map);
-	void spectar_map(address_map &map);
-	void rallys_map(address_map &map);
-	void phantoma_map(address_map &map);
+	void sidetrac_map(address_map &map) ATTR_COLD;
+	void spectar_map(address_map &map) ATTR_COLD;
+	void rallys_map(address_map &map) ATTR_COLD;
+	void phantoma_map(address_map &map) ATTR_COLD;
 };
 
 
@@ -338,7 +340,7 @@ public:
 	void init_targ();
 
 protected:
-	virtual void machine_start() override;
+	virtual void machine_start() override ATTR_COLD;
 
 	void targ_audio_1_w(uint8_t data);
 	void targ_audio_2_w(uint8_t data);
@@ -349,7 +351,7 @@ private:
 	uint8_t m_port_2_last = 0;
 	uint8_t m_tone_pointer = 0;
 
-	void targ_map(address_map &map);
+	void targ_map(address_map &map) ATTR_COLD;
 };
 
 
@@ -364,10 +366,10 @@ public:
 
 	void teetert(machine_config &config);
 
-	DECLARE_CUSTOM_INPUT_MEMBER(teetert_input_r);
+	ioport_value teetert_input_r();
 
 protected:
-	virtual void machine_start() override;
+	virtual void machine_start() override ATTR_COLD;
 
 private:
 	required_ioport m_dial;
@@ -387,14 +389,14 @@ public:
 	void fax(machine_config &config);
 
 protected:
-	virtual void machine_start() override;
+	virtual void machine_start() override ATTR_COLD;
 
 private:
 	required_memory_bank m_rom_bank;
 
 	void fax_bank_select_w(uint8_t data);
 
-	void fax_map(address_map &map);
+	void fax_map(address_map &map) ATTR_COLD;
 };
 
 
@@ -404,26 +406,26 @@ private:
  *
  *************************************/
 
-CUSTOM_INPUT_MEMBER(exidy_state::intsource_coins_r)
+ioport_value exidy_state::intsource_coins_r()
 {
 	uint8_t const dsw = m_dsw->read();
 	uint8_t const in0 = m_in0->read();
 	return (BIT(~in0, 7) << 1) | BIT(dsw, 0);
 }
 
-CUSTOM_INPUT_MEMBER(spectar_state::spectar_coins_r)
+ioport_value spectar_state::spectar_coins_r()
 {
 	uint8_t const dsw = m_dsw->read();
 	uint8_t const in0 = m_in0->read();
 	return (BIT(~in0, 7) << 1) | BIT(~dsw, 0);
 }
 
-CUSTOM_INPUT_MEMBER(spectar_state::rallys_coin1_r)
+ioport_value spectar_state::rallys_coin1_r()
 {
 	return BIT(m_in0->read(), 7);
 }
 
-CUSTOM_INPUT_MEMBER(teetert_state::teetert_input_r)
+ioport_value teetert_state::teetert_input_r()
 {
 	uint8_t const dial = m_dial->read();
 
@@ -682,8 +684,8 @@ static INPUT_PORTS_START( targ )
 
 	PORT_START("INTSOURCE")
 	PORT_BIT( 0x1f, IP_ACTIVE_HIGH, IPT_CUSTOM )
-	PORT_BIT( 0x60, IP_ACTIVE_HIGH, IPT_CUSTOM ) PORT_CUSTOM_MEMBER(spectar_state, spectar_coins_r)
-	PORT_BIT( 0x80, IP_ACTIVE_LOW, IPT_CUSTOM ) PORT_VBLANK("screen")
+	PORT_BIT( 0x60, IP_ACTIVE_HIGH, IPT_CUSTOM ) PORT_CUSTOM_MEMBER(FUNC(spectar_state::spectar_coins_r))
+	PORT_BIT( 0x80, IP_ACTIVE_LOW, IPT_CUSTOM ) PORT_READ_LINE_DEVICE_MEMBER("screen", FUNC(screen_device::vblank))
 
 	PORT_START("IN2")
 	PORT_BIT( 0xff, IP_ACTIVE_LOW, IPT_UNKNOWN )
@@ -752,7 +754,7 @@ static INPUT_PORTS_START( rallys )
 	PORT_MODIFY("INTSOURCE")
 	PORT_BIT( 0x1f, IP_ACTIVE_HIGH, IPT_CUSTOM )
 	PORT_BIT( 0x20, IP_ACTIVE_LOW, IPT_COIN2 )
-	PORT_BIT( 0x40, IP_ACTIVE_HIGH, IPT_CUSTOM ) PORT_CUSTOM_MEMBER(spectar_state, rallys_coin1_r)
+	PORT_BIT( 0x40, IP_ACTIVE_HIGH, IPT_CUSTOM ) PORT_CUSTOM_MEMBER(FUNC(spectar_state::rallys_coin1_r))
 INPUT_PORTS_END
 
 static INPUT_PORTS_START( phantoma )
@@ -820,8 +822,8 @@ static INPUT_PORTS_START( mtrap )
 */
 
 	PORT_BIT( 0x1f, IP_ACTIVE_HIGH, IPT_CUSTOM )
-	PORT_BIT( 0x60, IP_ACTIVE_HIGH, IPT_CUSTOM ) PORT_CUSTOM_MEMBER(exidy_state, intsource_coins_r)
-	PORT_BIT( 0x80, IP_ACTIVE_LOW, IPT_CUSTOM ) PORT_VBLANK("screen")
+	PORT_BIT( 0x60, IP_ACTIVE_HIGH, IPT_CUSTOM ) PORT_CUSTOM_MEMBER(FUNC(exidy_state::intsource_coins_r))
+	PORT_BIT( 0x80, IP_ACTIVE_LOW, IPT_CUSTOM ) PORT_READ_LINE_DEVICE_MEMBER("screen", FUNC(screen_device::vblank))
 
 	PORT_START("IN2")
 	PORT_BIT( 0x01, IP_ACTIVE_LOW, IPT_BUTTON2 ) PORT_NAME("Yellow Button")
@@ -836,16 +838,16 @@ INPUT_PORTS_END
 
 static INPUT_PORTS_START( venture )
 	PORT_START("DSW")
-	PORT_BIT( 0x01, IP_ACTIVE_HIGH, IPT_COIN2 ) PORT_CHANGED_MEMBER(DEVICE_SELF, exidy_state, coin_count_w, 1)
+	PORT_BIT( 0x01, IP_ACTIVE_HIGH, IPT_COIN2 ) PORT_CHANGED_MEMBER(DEVICE_SELF, FUNC(exidy_state::coin_count_w), 1)
 	PORT_DIPNAME( 0x06, 0x00, DEF_STR( Bonus_Life ) ) PORT_DIPLOCATION("SW1:2,3")
 	PORT_DIPSETTING(    0x00, "20000" )
 	PORT_DIPSETTING(    0x02, "30000" )
 	PORT_DIPSETTING(    0x04, "40000" )
 	PORT_DIPSETTING(    0x06, "50000" )
-	PORT_DIPNAME( 0x98, 0x80, DEF_STR( Coinage ) ) PORT_DIPLOCATION("SW1:4,5,8")
+	PORT_DIPNAME( 0x98, 0x90, DEF_STR( Coinage ) ) PORT_DIPLOCATION("SW1:4,5,8")
 	PORT_DIPSETTING(    0x88, DEF_STR( 2C_1C ) )
 	PORT_DIPSETTING(    0x80, DEF_STR( 1C_1C ) )
-	/*0x90 same as 0x80 */
+	PORT_DIPSETTING(    0x90, DEF_STR( 1C_1C ) ) // this is the 1 coin/1 credit setting shown in the manual
 	PORT_DIPSETTING(    0x98, DEF_STR( 1C_2C ) )
 	PORT_DIPSETTING(    0x00, "Pence: A 2C/1C B 1C/3C" )
 	PORT_DIPSETTING(    0x18, "Pence: A 1C/1C B 1C/6C" )
@@ -864,7 +866,7 @@ static INPUT_PORTS_START( venture )
 	PORT_BIT( 0x10, IP_ACTIVE_LOW, IPT_BUTTON1 )
 	PORT_BIT( 0x20, IP_ACTIVE_LOW, IPT_JOYSTICK_UP ) PORT_8WAY
 	PORT_BIT( 0x40, IP_ACTIVE_LOW, IPT_JOYSTICK_DOWN ) PORT_8WAY
-	PORT_BIT( 0x80, IP_ACTIVE_LOW, IPT_COIN1 ) PORT_CHANGED_MEMBER(DEVICE_SELF, exidy_state, coin_count_w, 0)
+	PORT_BIT( 0x80, IP_ACTIVE_LOW, IPT_COIN1 ) PORT_CHANGED_MEMBER(DEVICE_SELF, FUNC(exidy_state::coin_count_w), 0)
 
 	PORT_START("INTSOURCE")
 /*
@@ -881,8 +883,8 @@ static INPUT_PORTS_START( venture )
     PORT_DIPSETTING(    0x08, DEF_STR( Cocktail ) )
 */
 	PORT_BIT( 0x1f, IP_ACTIVE_HIGH, IPT_CUSTOM )
-	PORT_BIT( 0x60, IP_ACTIVE_HIGH, IPT_CUSTOM ) PORT_CUSTOM_MEMBER(exidy_state, intsource_coins_r)
-	PORT_BIT( 0x80, IP_ACTIVE_LOW, IPT_CUSTOM ) PORT_VBLANK("screen")
+	PORT_BIT( 0x60, IP_ACTIVE_HIGH, IPT_CUSTOM ) PORT_CUSTOM_MEMBER(FUNC(exidy_state::intsource_coins_r))
+	PORT_BIT( 0x80, IP_ACTIVE_LOW, IPT_CUSTOM ) PORT_READ_LINE_DEVICE_MEMBER("screen", FUNC(screen_device::vblank))
 
 	PORT_START("IN2")
 	PORT_BIT( 0xff, IP_ACTIVE_LOW, IPT_UNKNOWN )
@@ -915,7 +917,7 @@ static INPUT_PORTS_START( teetert )
 	PORT_START("IN0")
 	PORT_BIT( 0x01, IP_ACTIVE_LOW, IPT_START1 )
 	PORT_BIT( 0x02, IP_ACTIVE_LOW, IPT_START2 )
-	PORT_BIT( 0x44, IP_ACTIVE_HIGH, IPT_CUSTOM ) PORT_CUSTOM_MEMBER(teetert_state, teetert_input_r)
+	PORT_BIT( 0x44, IP_ACTIVE_HIGH, IPT_CUSTOM ) PORT_CUSTOM_MEMBER(FUNC(teetert_state::teetert_input_r))
 	PORT_BIT( 0x08, IP_ACTIVE_LOW, IPT_UNKNOWN )
 	PORT_BIT( 0x10, IP_ACTIVE_LOW, IPT_BUTTON1 )
 	PORT_BIT( 0x20, IP_ACTIVE_LOW, IPT_UNKNOWN )
@@ -936,8 +938,8 @@ static INPUT_PORTS_START( teetert )
     PORT_DIPSETTING(    0x08, DEF_STR( Cocktail ) )
 */
 	PORT_BIT( 0x1f, IP_ACTIVE_HIGH, IPT_UNKNOWN )
-	PORT_BIT( 0x60, IP_ACTIVE_HIGH, IPT_CUSTOM ) PORT_CUSTOM_MEMBER(exidy_state, intsource_coins_r)
-	PORT_BIT( 0x80, IP_ACTIVE_LOW, IPT_CUSTOM ) PORT_VBLANK("screen")
+	PORT_BIT( 0x60, IP_ACTIVE_HIGH, IPT_CUSTOM ) PORT_CUSTOM_MEMBER(FUNC(exidy_state::intsource_coins_r))
+	PORT_BIT( 0x80, IP_ACTIVE_LOW, IPT_CUSTOM ) PORT_READ_LINE_DEVICE_MEMBER("screen", FUNC(screen_device::vblank))
 
 	PORT_START("IN2")
 	PORT_BIT( 0xff, IP_ACTIVE_LOW, IPT_UNKNOWN )
@@ -995,8 +997,8 @@ static INPUT_PORTS_START( pepper2 )
     PORT_DIPSETTING(    0x08, DEF_STR( Cocktail ) )
 */
 	PORT_BIT( 0x1f, IP_ACTIVE_HIGH, IPT_CUSTOM )
-	PORT_BIT( 0x60, IP_ACTIVE_HIGH, IPT_CUSTOM ) PORT_CUSTOM_MEMBER(exidy_state, intsource_coins_r)
-	PORT_BIT( 0x80, IP_ACTIVE_LOW, IPT_CUSTOM ) PORT_VBLANK("screen")
+	PORT_BIT( 0x60, IP_ACTIVE_HIGH, IPT_CUSTOM ) PORT_CUSTOM_MEMBER(FUNC(exidy_state::intsource_coins_r))
+	PORT_BIT( 0x80, IP_ACTIVE_LOW, IPT_CUSTOM ) PORT_READ_LINE_DEVICE_MEMBER("screen", FUNC(screen_device::vblank))
 
 	PORT_START("IN2")
 	PORT_BIT( 0xff, IP_ACTIVE_LOW, IPT_UNKNOWN )
@@ -1046,8 +1048,8 @@ static INPUT_PORTS_START( fax )
     PORT_DIPSETTING(    0x08, DEF_STR( Cocktail ) )
 */
 	PORT_BIT( 0x1f, IP_ACTIVE_HIGH, IPT_CUSTOM )
-	PORT_BIT( 0x60, IP_ACTIVE_HIGH, IPT_CUSTOM ) PORT_CUSTOM_MEMBER(exidy_state, intsource_coins_r)
-	PORT_BIT( 0x80, IP_ACTIVE_LOW, IPT_CUSTOM ) PORT_VBLANK("screen")
+	PORT_BIT( 0x60, IP_ACTIVE_HIGH, IPT_CUSTOM ) PORT_CUSTOM_MEMBER(FUNC(exidy_state::intsource_coins_r))
+	PORT_BIT( 0x80, IP_ACTIVE_LOW, IPT_CUSTOM ) PORT_READ_LINE_DEVICE_MEMBER("screen", FUNC(screen_device::vblank))
 
 	PORT_START("IN2")
 	PORT_BIT( 0xff, IP_ACTIVE_LOW, IPT_UNKNOWN )
@@ -1469,14 +1471,6 @@ void spectar_state::machine_start()
 {
 	exidy_state::machine_start();
 
-	/* start_raw can't be called here: chan.source will be set by
-	samples_device::device_start and then nulled out by samples_device::device_reset
-	at the soft_reset stage of init_machine() and will never be set again.
-	Thus, I've moved it to exidy_state::adjust_sample() were it will be set after
-	machine initialization. */
-	//m_samples->set_volume(3, 0);
-	//m_samples->start_raw(3, sine_wave, 32, 1000, true);
-
 	save_item(NAME(m_port_1_last));
 	save_item(NAME(m_tone_freq));
 	save_item(NAME(m_tone_active));
@@ -1700,28 +1694,34 @@ void fax_state::fax(machine_config &config)
 *************************************************************************/
 
 /* Sound channel usage
-   0 = CPU music,  Shoot
+   0 = CPU music, Shoot
    1 = Crash
    2 = Spectar sound
    3 = Tone generator
 */
 
-static const int16_t sine_wave[32] =
+void spectar_state::init_tonegen()
 {
-	 0x0f0f,  0x0f0f,  0x0f0f,  0x0606,  0x0606,  0x0909,  0x0909,  0x0606,  0x0606,  0x0909,  0x0606,  0x0d0d,  0x0f0f,  0x0f0f,  0x0d0d,  0x0000,
-	-0x191a, -0x2122, -0x1e1f, -0x191a, -0x1314, -0x191a, -0x1819, -0x1819, -0x1819, -0x1314, -0x1314, -0x1314, -0x1819, -0x1e1f, -0x1e1f, -0x1819
-};
+	static const int16_t sine_wave[32] =
+	{
+		0x0f0f,  0x0f0f,  0x0f0f,  0x0606,  0x0606,  0x0909,  0x0909,  0x0606,
+		0x0606,  0x0909,  0x0606,  0x0d0d,  0x0f0f,  0x0f0f,  0x0d0d,  0x0000,
+		-0x191a, -0x2122, -0x1e1f, -0x191a, -0x1314, -0x191a, -0x1819, -0x1819,
+		-0x1819, -0x1314, -0x1314, -0x1314, -0x1819, -0x1e1f, -0x1e1f, -0x1819
+	};
+
+	// initialized after samples_device::device_reset
+	if (!m_samples->playing(3))
+	{
+		m_samples->set_volume(3, 0);
+		m_samples->start_raw(3, sine_wave, 32, m_max_freq, true);
+	}
+}
 
 
 void spectar_state::adjust_sample(uint8_t freq)
 {
 	m_tone_freq = freq;
-
-	if (!m_samples->playing(3))
-	{
-		m_samples->set_volume(3, 0);
-		m_samples->start_raw(3, sine_wave, 32, 1000, true);
-	}
 
 	if ((m_tone_freq == 0xff) || (m_tone_freq == 0x00))
 		m_samples->set_volume(3, 0);

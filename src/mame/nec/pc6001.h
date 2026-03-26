@@ -5,8 +5,7 @@
 
 #pragma once
 
-#include "pc80s31k.h"
-
+#include "bus/nec_fdd/pc80s31k.h"
 #include "cpu/z80/z80.h"
 #include "imagedev/cassette.h"
 #include "imagedev/floppy.h"
@@ -109,18 +108,18 @@ protected:
 	uint8_t m_timer_irq_vector = 0;
 	uint16_t m_timer_hz_div = 0;
 
-	virtual void machine_start() override;
-	virtual void machine_reset() override;
+	virtual void machine_start() override ATTR_COLD;
+	virtual void machine_reset() override ATTR_COLD;
 
 	void default_cartridge_reset();
 	void default_cassette_hack_reset();
 	void default_keyboard_hle_reset();
 	void irq_reset(u8 timer_default_setting);
 
-	virtual void video_start() override;
+	virtual void video_start() override ATTR_COLD;
 
-	void pc6001_map(address_map &map);
-	void pc6001_io(address_map &map);
+	void pc6001_map(address_map &map) ATTR_COLD;
+	void pc6001_io(address_map &map) ATTR_COLD;
 
 	// i/o functions
 	uint8_t check_joy_press();
@@ -234,8 +233,8 @@ public:
 	virtual uint32_t screen_update(screen_device &screen, bitmap_ind16 &bitmap, const rectangle &cliprect) override;
 
 protected:
-	void pc6001mk2_map(address_map &map);
-	void pc6001mk2_io(address_map &map);
+	void pc6001mk2_map(address_map &map) ATTR_COLD;
+	void pc6001mk2_io(address_map &map) ATTR_COLD;
 
 	uint8_t m_bgcol_bank = 0;
 	uint8_t m_gfx_bank_on = 0;
@@ -248,8 +247,8 @@ protected:
 	optional_memory_bank m_bank8;
 	virtual void refresh_crtc_params();
 
-	virtual void video_start() override;
-	virtual void machine_reset() override;
+	virtual void video_start() override ATTR_COLD;
+	virtual void machine_reset() override ATTR_COLD;
 
 	virtual u8 vrtc_ack() override;
 
@@ -280,11 +279,11 @@ public:
 	void pc6601(machine_config &config);
 
 protected:
-	virtual void machine_start() override;
+	virtual void machine_start() override ATTR_COLD;
 
-	void pc6601_io(address_map &map);
+	void pc6601_io(address_map &map) ATTR_COLD;
 
-	void pc6601_fdc_io(address_map &map);
+	void pc6601_fdc_io(address_map &map) ATTR_COLD;
 	void pc6601_fdc_config(machine_config &config);
 	static void floppy_formats(format_registration &fr);
 
@@ -314,12 +313,12 @@ public:
 	void pc6001mk2sr(machine_config &config);
 
 protected:
-	virtual void video_start() override;
-	virtual void machine_reset() override;
+	virtual void video_start() override ATTR_COLD;
+	virtual void machine_reset() override ATTR_COLD;
 
-	void pc6001mk2sr_map(address_map &map);
-	void sr_banked_map(address_map &map);
-	void pc6001mk2sr_io(address_map &map);
+	void pc6001mk2sr_map(address_map &map) ATTR_COLD;
+	void sr_banked_map(address_map &map) ATTR_COLD;
+	void pc6001mk2sr_io(address_map &map) ATTR_COLD;
 
 	virtual u8 vrtc_ack() override;
 	virtual u8 get_timer_base_divider() override;

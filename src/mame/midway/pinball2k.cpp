@@ -69,9 +69,9 @@ public:
 	void init_pinball2k();
 
 protected:
-	virtual void machine_start() override;
-	virtual void machine_reset() override;
-	virtual void video_start() override;
+	virtual void machine_start() override ATTR_COLD;
+	virtual void machine_reset() override ATTR_COLD;
+	virtual void video_start() override ATTR_COLD;
 
 private:
 	required_shared_ptr<uint32_t> m_main_ram;
@@ -127,9 +127,9 @@ private:
 	void draw_char(bitmap_rgb32 &bitmap, const rectangle &cliprect, gfx_element *gfx, int ch, int att, int x, int y);
 	void draw_framebuffer(bitmap_rgb32 &bitmap, const rectangle &cliprect);
 	void draw_cga(bitmap_rgb32 &bitmap, const rectangle &cliprect);
-	void mediagx_io(address_map &map);
-	void mediagx_map(address_map &map);
-	void ramdac_map(address_map &map);
+	void mediagx_io(address_map &map) ATTR_COLD;
+	void mediagx_map(address_map &map) ATTR_COLD;
+	void ramdac_map(address_map &map) ATTR_COLD;
 
 	uint32_t cx5510_pci_r(int function, int reg, uint32_t mem_mask);
 	void cx5510_pci_w(int function, int reg, uint32_t data, uint32_t mem_mask);
@@ -653,8 +653,7 @@ void pinball2k_state::mediagx(machine_config &config)
 	PALETTE(config, m_palette).set_entries(256);
 
 	/* sound hardware */
-	SPEAKER(config, "lspeaker").front_left();
-	SPEAKER(config, "rspeaker").front_right();
+	SPEAKER(config, "speaker", 2).front();
 }
 
 
@@ -762,6 +761,6 @@ ROM_END
 
 /*****************************************************************************/
 
-GAME( 1999, swe1pb,   0,     mediagx, mediagx, pinball2k_state, init_pinball2k, ROT0, "Midway",  "Pinball 2000: Star Wars Episode 1", MACHINE_IS_SKELETON_MECHANICAL )
-GAME( 1999, rfmpb,    0,     mediagx, mediagx, pinball2k_state, init_pinball2k, ROT0, "Midway",  "Pinball 2000: Revenge From Mars (rev. 1)", MACHINE_IS_SKELETON_MECHANICAL )
-GAME( 1999, rfmpbr2,  rfmpb, mediagx, mediagx, pinball2k_state, init_pinball2k, ROT0, "Midway",  "Pinball 2000: Revenge From Mars (rev. 2)", MACHINE_IS_SKELETON_MECHANICAL )
+GAME( 1999, swe1pb,   0,     mediagx, mediagx, pinball2k_state, init_pinball2k, ROT0, "Midway",  "Pinball 2000: Star Wars Episode 1", MACHINE_NO_SOUND | MACHINE_NOT_WORKING | MACHINE_MECHANICAL | MACHINE_REQUIRES_ARTWORK )
+GAME( 1999, rfmpb,    0,     mediagx, mediagx, pinball2k_state, init_pinball2k, ROT0, "Midway",  "Pinball 2000: Revenge From Mars (rev. 1)", MACHINE_NO_SOUND | MACHINE_NOT_WORKING | MACHINE_MECHANICAL | MACHINE_REQUIRES_ARTWORK )
+GAME( 1999, rfmpbr2,  rfmpb, mediagx, mediagx, pinball2k_state, init_pinball2k, ROT0, "Midway",  "Pinball 2000: Revenge From Mars (rev. 2)", MACHINE_NO_SOUND | MACHINE_NOT_WORKING | MACHINE_MECHANICAL | MACHINE_REQUIRES_ARTWORK )

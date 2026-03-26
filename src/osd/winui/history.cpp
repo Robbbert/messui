@@ -68,11 +68,11 @@ HSOURCEINFO;
 // The order of these is the order they are displayed
 const HGAMEINFO m_gameInfo[MAX_HFILES] =
 {
+	{ "gameinit.dat", "\n**** :GAMEINIT: ****\n\n",         "$mame",  1 },
 	{ "history.xml",  "\n**** :HISTORY: ****\n\n",          "<text>",   1 },
 //	{ "sysinfo.dat",  "\n**** :SYSINFO: ****\n\n",          "$bio",   1 },
 	{ "messinfo.dat", "\n**** :MESSINFO: ****\n\n",         "$mame",  1 },
 	{ "mameinfo.dat", "\n**** :MAMEINFO: ****\n\n",         "$mame",  1 },
-	{ "gameinit.dat", "\n**** :GAMEINIT: ****\n\n",         "$mame",  1 },
 	{ "command.dat",  "\n**** :COMMANDS: ****\n\n",         "$cmd",   1 },
 //	{ "story.dat",    "\n**** :HIGH SCORES: ****\n\n",      "$story", 0 },
 //	{ "marp.dat",     "\n**** :MARP HIGH SCORES: ****\n\n", "$marp",  0 },
@@ -81,10 +81,10 @@ const HGAMEINFO m_gameInfo[MAX_HFILES] =
 const HSOURCEINFO m_sourceInfo[MAX_HFILES] =
 {
 	{ NULL },
+	{ NULL },
 //	{ NULL },
 	{ "messinfo.dat", "\n***:MESSINFO DRIVER: ",  "$drv" },
 	{ "mameinfo.dat", "\n***:MAMEINFO DRIVER: ",  "$drv" },
-	{ NULL },
 	{ NULL },
 //	{ NULL },
 //	{ NULL },
@@ -92,9 +92,9 @@ const HSOURCEINFO m_sourceInfo[MAX_HFILES] =
 
 const HSOURCEINFO m_swInfo[MAX_HFILES] =
 {
+	{ NULL },
 	{ "history.xml",  "\n**** :HISTORY item: ",     "<text>" },
 //	{ NULL },
-	{ NULL },
 	{ NULL },
 	{ NULL },
 	{ NULL },
@@ -104,7 +104,7 @@ const HSOURCEINFO m_swInfo[MAX_HFILES] =
 
 /*************************** END CONFIGURABLE AREA *******************************/
 
-int file_sizes[MAX_HFILES] = { 0, };
+int file_sizes[MAX_HFILES] = { };
 std::map<std::string, std::streampos> mymap[MAX_HFILES];
 const size_t npos = std::string::npos;
 
@@ -269,7 +269,7 @@ static bool create_index(const char* datsdir, std::ifstream &fp, int filenum)
 	fp.seekg(0);
 	std::string file_line;
 	std::getline(fp, file_line);
-	if (filenum == 0)
+	if (filenum == 1)
 		create_index_history(datsdir, fp, file_line, filenum);
 	else
 	{
@@ -298,7 +298,7 @@ static bool create_index(const char* datsdir, std::ifstream &fp, int filenum)
 		}
 	}
 	// check contents
-//	if (filenum == 6)
+//	if (filenum == 4)
 //		for (auto const &it : mymap[filenum])
 //			printf("%s = %X\n", it.first.c_str(), int(it.second));
 	return true;
@@ -375,7 +375,7 @@ static std::string load_datafile_text(std::ifstream &fp, std::string keycode, in
 		// read text until buffer is full or end of entry is encountered
 		while (std::getline(fp, file_line))
 		{
-			//if (filenum == 6) ("*******2: %s\n",file_line.c_str());
+			//if (filenum == 4) printf("*******2: %s\n",file_line.c_str());
 			if (file_line == "- CONTRIBUTE -")
 				break;
 
@@ -545,6 +545,8 @@ std::string load_driver_geninfo(const game_driver *drv, int drvindex)
 		buffer.append("The sound emulation isn't 100% accurate.\n");
 
 	if (BIT(cache, 7))
+		buffer.append("Save state supported.\n");
+	else
 		buffer.append("Save state not supported.\n");
 
 	if (BIT(cache, 14))
@@ -757,7 +759,7 @@ std::string load_driver_geninfo(const game_driver *drv, int drvindex)
 		if (g != -1)
 			drv = &driver_list::driver(g);
 
-		buffer.append("\nORIGINAL:\n");
+		buffer.append("\nPARENT:\n");
 		buffer.append(drv->type.fullname());
 		buffer.append("\n\nCLONES:\n");
 

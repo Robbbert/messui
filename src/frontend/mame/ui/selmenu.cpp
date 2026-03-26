@@ -222,6 +222,7 @@ template void menu_select_launch::draw_left_panel<software_filter>(u32 flags, so
 
 menu_select_launch::system_flags::system_flags(machine_static_info const &info)
 	: m_machine_flags(info.machine_flags())
+	, m_emulation_flags(info.emulation_flags())
 	, m_unemulated_features(info.unemulated_features())
 	, m_imperfect_features(info.imperfect_features())
 	, m_has_keyboard(info.has_keyboard())
@@ -800,7 +801,7 @@ void menu_select_launch::recompute_metrics(uint32_t width, uint32_t height, floa
 //  perform our special rendering
 //-------------------------------------------------
 
-void menu_select_launch::custom_render(u32 flags, void *selectedref, float top, float bottom, float origx1, float origy1, float origx2, float origy2)
+void menu_select_launch::custom_render(uint32_t flags, void *selectedref, float top, float bottom, float origx1, float origy1, float origx2, float origy2)
 {
 	std::string tempbuf[4];
 
@@ -876,12 +877,12 @@ void menu_select_launch::custom_render(u32 flags, void *selectedref, float top, 
 
 		// next line is overall driver status
 		system_flags const &flags(get_system_flags(driver));
-		if (flags.machine_flags() & machine_flags::NOT_WORKING)
-			tempbuf[2] = _("Overall: NOT WORKING");
+		if (flags.emulation_flags() & device_t::flags::NOT_WORKING)
+			tempbuf[2] = _("Status: NOT WORKING");
 		else if ((flags.unemulated_features() | flags.imperfect_features()) & device_t::feature::PROTECTION)
-			tempbuf[2] = _("Overall: Unemulated Protection");
+			tempbuf[2] = _("Status: Unemulated Protection");
 		else
-			tempbuf[2] = _("Overall: Working");
+			tempbuf[2] = _("Status: Working");
 
 		// next line is graphics, sound status
 		if (flags.unemulated_features() & device_t::feature::GRAPHICS)
@@ -961,12 +962,12 @@ void menu_select_launch::rotate_focus(int dir)
 	case focused_menu::MAIN:
 		if (selected_index() >= m_available_items)
 		{
-			if ((0 > dir) || (m_panels_status == HIDE_BOTH))
+			if ((m_panels_status == HIDE_BOTH) || ((0 > dir) && m_available_items))
 				select_prev();
-			else if (m_panels_status == HIDE_LEFT_PANEL)
-				set_focus(focused_menu::RIGHTTOP);
+			else if (0 > dir)
+				set_focus((m_panels_status == HIDE_RIGHT_PANEL) ? focused_menu::LEFT : focused_menu::RIGHTBOTTOM);
 			else
-				set_focus(focused_menu::LEFT);
+				set_focus((m_panels_status == HIDE_LEFT_PANEL) ? focused_menu::RIGHTTOP : focused_menu::LEFT);
 		}
 		else if (m_skip_main_items || (m_panels_status != HIDE_BOTH))
 		{
@@ -1364,10 +1365,10 @@ bool menu_select_launch::scale_icon(bitmap_argb32 &&src, texture_and_bitmap &dst
 	assert(dst.texture);
 	if (src.valid())
 	{
-		// reduce the source bitmap if it's too big
+		// scale the source bitmap
 		bitmap_argb32 tmp;
-		float const ratio((std::min)({ float(m_icon_height) / src.height(), float(m_icon_width) / src.width(), 1.0F }));
-		if (1.0F > ratio)
+		float const ratio((std::min)(float(m_icon_height) / src.height(), float(m_icon_width) / src.width()));
+		if ((1.0F > ratio) || (1.2F < ratio))
 		{
 			float const pix_height(std::ceil(src.height() * ratio));
 			float const pix_width(std::ceil(src.width() * ratio));
@@ -1736,7 +1737,7 @@ bool menu_select_launch::handle_events(u32 flags, event &ev)
 
 		// text input goes to the search field unless there's an error message displayed
 		case ui_event::type::IME_CHAR:
-			if (!pointer_idle())
+			if (have_pointer() && !pointer_idle())
 				break;
 
 			if (exclusive_input_pressed(ev.iptkey, IPT_UI_FOCUS_NEXT, 0) || exclusive_input_pressed(ev.iptkey, IPT_UI_FOCUS_PREV, 0))
@@ -1921,7 +1922,11 @@ bool menu_select_launch::handle_keys(u32 flags, int &iptkey)
 
 	if (exclusive_input_pressed(iptkey, IPT_UI_CANCEL, 0))
 	{
-		if (!m_search.empty())
+		if (m_ui_error)
+		{
+			// dismiss error
+		}
+		else if (!m_search.empty())
 		{
 			// escape pressed with non-empty search text clears it
 			m_search.clear();
@@ -1943,7 +1948,12 @@ bool menu_select_launch::handle_keys(u32 flags, int &iptkey)
 	// accept left/right keys as-is with repeat
 	if (exclusive_input_pressed(iptkey, IPT_UI_LEFT, (flags & PROCESS_LR_REPEAT) ? 6 : 0))
 	{
-		if (m_focus == focused_menu::RIGHTTOP)
+		if (m_ui_error)
+		{
+			// dismiss error
+			return false;
+		}
+		else if (m_focus == focused_menu::RIGHTTOP)
 		{
 			// Swap the right panel and swallow it
 			iptkey = IPT_INVALID;
@@ -1974,7 +1984,12 @@ bool menu_select_launch::handle_keys(u32 flags, int &iptkey)
 	// swallow left/right keys if they are not appropriate
 	if (exclusive_input_pressed(iptkey, IPT_UI_RIGHT, (flags & PROCESS_LR_REPEAT) ? 6 : 0))
 	{
-		if (m_focus == focused_menu::RIGHTTOP)
+		if (m_ui_error)
+		{
+			// dismiss error
+			return false;
+		}
+		else if (m_focus == focused_menu::RIGHTTOP)
 		{
 			// Swap the right panel and swallow it
 			iptkey = IPT_INVALID;
@@ -2601,7 +2616,7 @@ std::tuple<int, bool, bool> menu_select_launch::handle_middle_down(bool changed,
 		{
 			// left panel
 			assert(show_left_panel());
-			if ((get_focus() == focused_menu::MAIN) && (selected_index() <= m_available_items))
+			if ((get_focus() == focused_menu::MAIN) && (selected_index() < m_available_items))
 				m_prev_selected = get_selection_ref();
 			set_focus(focused_menu::LEFT);
 			return std::make_tuple(IPT_INVALID, true, true);
@@ -2610,7 +2625,7 @@ std::tuple<int, bool, bool> menu_select_launch::handle_middle_down(bool changed,
 		{
 			// right panel
 			assert(show_right_panel());
-			if ((get_focus() == focused_menu::MAIN) && (selected_index() <= m_available_items))
+			if ((get_focus() == focused_menu::MAIN) && (selected_index() < m_available_items))
 				m_prev_selected = get_selection_ref();
 			set_focus((y < m_right_tabs_bottom) ? focused_menu::RIGHTTOP : focused_menu::RIGHTBOTTOM);
 			return std::make_tuple(IPT_INVALID, true, true);
@@ -3160,7 +3175,7 @@ bool menu_select_launch::main_force_visible_selection()
 			return true;
 		}
 	}
-	else
+	else if (m_prev_selected)
 	{
 		int selection(0);
 		while ((m_available_items > selection) && (item(selection).ref() != m_prev_selected))
@@ -3369,8 +3384,6 @@ void menu_select_launch::draw(u32 flags)
 		// work out colours
 		rgb_t fgcolor = ui().colors().text_color();
 		rgb_t bgcolor = ui().colors().text_bg_color();
-		bool const hovered(is_selectable(pitem) && pointer_in_rect(m_primary_items_hbounds.first, linetop, m_primary_items_hbounds.second, linebottom));
-		bool const pointerline((pointer_action::MAIN_TRACK_LINE == m_pointer_action) && ((m_primary_lines + linenum) == m_clicked_line));
 		if (is_selected(itemnum) && (get_focus() == focused_menu::MAIN))
 		{
 			// if we're selected, draw with a different background
@@ -3382,19 +3395,24 @@ void menu_select_launch::draw(u32 flags)
 					bgcolor, rgb_t(43, 43, 43),
 					hilight_main_texture(), PRIMFLAG_BLENDMODE(BLENDMODE_ALPHA) | PRIMFLAG_TEXWRAP(1));
 		}
-		else if (pointerline && hovered)
+		else if (is_selectable(pitem))
 		{
-			// draw selected highlight for tracked item
-			fgcolor = ui().colors().selected_color();
-			bgcolor = ui().colors().selected_bg_color();
-			highlight(m_primary_items_hbounds.first, linetop, m_primary_items_hbounds.second, linebottom, bgcolor);
-		}
-		else if (pointerline || (!m_ui_error && !(flags & PROCESS_NOINPUT) && hovered && pointer_idle()))
-		{
-			// draw hover highlight when hovered over or dragged off
-			fgcolor = ui().colors().mouseover_color();
-			bgcolor = ui().colors().mouseover_bg_color();
-			highlight(m_primary_items_hbounds.first, linetop, m_primary_items_hbounds.second, linebottom, bgcolor);
+			bool const hovered(pointer_in_rect(m_primary_items_hbounds.first, linetop, m_primary_items_hbounds.second, linebottom));
+			bool const pointerline((pointer_action::MAIN_TRACK_LINE == m_pointer_action) && ((m_primary_lines + linenum) == m_clicked_line));
+			if (pointerline && hovered)
+			{
+				// draw selected highlight for tracked item
+				fgcolor = ui().colors().selected_color();
+				bgcolor = ui().colors().selected_bg_color();
+				highlight(m_primary_items_hbounds.first, linetop, m_primary_items_hbounds.second, linebottom, bgcolor);
+			}
+			else if (pointerline || (!m_ui_error && !(flags & PROCESS_NOINPUT) && hovered && pointer_idle()))
+			{
+				// draw hover highlight when hovered over or dragged off
+				fgcolor = ui().colors().mouseover_color();
+				bgcolor = ui().colors().mouseover_bg_color();
+				highlight(m_primary_items_hbounds.first, linetop, m_primary_items_hbounds.second, linebottom, bgcolor);
+			}
 		}
 
 		if (pitem.type() == menu_item_type::SEPARATOR)
@@ -3864,12 +3882,15 @@ std::string menu_select_launch::make_system_audit_fail_text(media_auditor const 
 	{
 		str << "System media audit failed:\n";
 		auditor.summarize(nullptr, &str);
-		osd_printf_info(str.str());
+		osd_printf_info(std::move(str).str());
 		str.str("");
 	}
-	str << _("Required ROM/disk images for the selected system are missing or incorrect. Please acquire the correct files or select a different system.\n\n");
+	if ((media_auditor::NOTFOUND != summary) && !auditor.records().empty())
+		str << _("The following ROM/disk images required for the selected system are missing or incorrect:\n\n");
+	else
+		str << _("Required ROM/disk images for the selected system are missing or incorrect.\n\n");
 	make_audit_fail_text(str, auditor, summary);
-	return str.str();
+	return std::move(str).str();
 }
 
 
@@ -3878,14 +3899,17 @@ std::string menu_select_launch::make_software_audit_fail_text(media_auditor cons
 	std::ostringstream str;
 	if (!auditor.records().empty())
 	{
-		str << "System media audit failed:\n";
+		str << "Software media audit failed:\n";
 		auditor.summarize(nullptr, &str);
-		osd_printf_info(str.str());
+		osd_printf_info(std::move(str).str());
 		str.str("");
 	}
-	str << _("Required ROM/disk images for the selected software are missing or incorrect. Please acquire the correct files or select a different software item.\n\n");
+	if ((media_auditor::NOTFOUND != summary) && !auditor.records().empty())
+		str << _("The following ROM/disk images required for the selected software are missing or incorrect:\n\n");
+	else
+		str << _("Required ROM/disk images for the selected software are missing or incorrect.\n\n");
 	make_audit_fail_text(str, auditor, summary);
-	return str.str();
+	return std::move(str).str();
 }
 
 
@@ -4136,7 +4160,7 @@ void menu_select_launch::general_info(ui_system_info const *system, game_driver 
 	if (flags.has_keyboard())
 		str << _("Keyboard Inputs\tYes\n");
 
-	if (flags.machine_flags() & machine_flags::NOT_WORKING)
+	if (flags.emulation_flags() & device_t::flags::NOT_WORKING)
 		str << _("Overall\tNOT WORKING\n");
 	else if ((flags.unemulated_features() | flags.imperfect_features()) & device_t::feature::PROTECTION)
 		str << _("Overall\tUnemulated Protection\n");
@@ -4248,13 +4272,13 @@ void menu_select_launch::general_info(ui_system_info const *system, game_driver 
 	else if (flags.imperfect_features() & device_t::feature::TIMING)
 		str << _("Timing\tImperfect\n");
 
-	str << ((flags.machine_flags() & machine_flags::MECHANICAL)        ? _("Mechanical System\tYes\n")          : _("Mechanical System\tNo\n"));
-	str << ((flags.machine_flags() & machine_flags::REQUIRES_ARTWORK)  ? _("Requires Artwork\tYes\n")           : _("Requires Artwork\tNo\n"));
+	str << ((flags.machine_flags() & machine_flags::MECHANICAL)           ? _("Mechanical System\tYes\n")          : _("Mechanical System\tNo\n"));
+	str << ((flags.machine_flags() & machine_flags::REQUIRES_ARTWORK)     ? _("Requires Artwork\tYes\n")           : _("Requires Artwork\tNo\n"));
 	if (flags.machine_flags() & machine_flags::NO_COCKTAIL)
 		str << _("Support Cocktail\tNo\n");
-	str << ((flags.machine_flags() & machine_flags::IS_BIOS_ROOT)      ? _("System is BIOS\tYes\n")             : _("System is BIOS\tNo\n"));
-	str << ((flags.machine_flags() & machine_flags::SUPPORTS_SAVE)     ? _("Support Save\tYes\n")               : _("Support Save\tNo\n"));
-	str << ((flags.machine_flags() & ORIENTATION_SWAP_XY)              ? _("Screen Orientation\tVertical\n")    : _("Screen Orientation\tHorizontal\n"));
+	str << ((flags.machine_flags() & machine_flags::IS_BIOS_ROOT)         ? _("System is BIOS\tYes\n")             : _("System is BIOS\tNo\n"));
+	str << ((flags.emulation_flags() & device_t::flags::SAVE_UNSUPPORTED) ? _("Support Save\tNo\n")                : _("Support Save\tYes\n"));
+	str << ((flags.machine_flags() & ORIENTATION_SWAP_XY)                 ? _("Screen Orientation\tVertical\n")    : _("Screen Orientation\tHorizontal\n"));
 	bool found = false;
 	for (romload::region const &region : romload::entries(driver.rom).get_regions())
 	{

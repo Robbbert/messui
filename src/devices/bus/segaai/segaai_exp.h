@@ -1,7 +1,7 @@
 // license:BSD-3-Clause
 // copyright-holders:Wilbert Pol
-#ifndef MAME_BUS_SEGAAI_EXP_H
-#define MAME_BUS_SEGAAI_EXP_H
+#ifndef MAME_BUS_SEGAAI_SEGAAI_EXP_H
+#define MAME_BUS_SEGAAI_SEGAAI_EXP_H
 
 #pragma once
 
@@ -19,10 +19,7 @@ public:
 	segaai_exp_slot_device(const machine_config &mconfig, const char *tag, device_t *owner, u32 clock, T &&opts, const char *dflt)
 		: segaai_exp_slot_device(mconfig, tag, owner, clock)
 	{
-		option_reset();
-		opts(*this);
-		set_default_option(dflt);
-		set_fixed(false);
+		set_options(std::forward<T>(opts), dflt, false);
 	}
 	segaai_exp_slot_device(const machine_config &mconfig, const char *tag, device_t *owner, u32 clock);
 	virtual ~segaai_exp_slot_device();
@@ -60,4 +57,4 @@ private:
 // slot interfaces
 void segaai_exp(device_slot_interface &device);
 
-#endif
+#endif // MAME_BUS_SEGAAI_SEGAAI_EXP_H

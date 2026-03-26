@@ -404,7 +404,7 @@ void dcs_audio_device::dsio_data_map(address_map &map)
 {
 	map.unmap_value_high();
 	map(0x0000, 0x1fff).m(m_ram_map, FUNC(address_map_bank_device::amap16));
-	map(0x2000, 0x3fdf).ram().share(m_internal_data_ram);
+	map(0x2000, 0x3fdf).ram();
 	map(0x3fe0, 0x3fff).rw(FUNC(dcs_audio_device::adsp_control_r), FUNC(dcs_audio_device::adsp_control_w));
 }
 
@@ -444,7 +444,7 @@ void dcs_audio_device::denver_data_map(address_map &map)
 {
 	map.unmap_value_high();
 	map(0x0000, 0x1fff).m(m_ram_map, FUNC(address_map_bank_device::amap16));
-	map(0x2000, 0x3fdf).ram().share(m_internal_data_ram);
+	map(0x2000, 0x3fdf).ram();
 	map(0x3fe0, 0x3fff).rw(FUNC(dcs_audio_device::adsp_control_r), FUNC(dcs_audio_device::adsp_control_w));
 }
 
@@ -682,9 +682,9 @@ void dcs_audio_device::denver_postload()
 //  dcs_audio_device - constructor
 //-------------------------------------------------
 
-dcs_audio_device::dcs_audio_device(const machine_config &mconfig, device_type type, const char *tag, device_t *owner, uint32_t clock, int rev, int outputs) :
+dcs_audio_device::dcs_audio_device(const machine_config &mconfig, device_type type, const char *tag, device_t *owner, uint32_t clock, int rev) :
 	device_t(mconfig, type, tag, owner, clock),
-	device_mixer_interface(mconfig, *this, outputs),
+	device_mixer_interface(mconfig, *this),
 	m_maincpu(*this, finder_base::DUMMY_TAG),
 	m_reg_timer(*this, "dcs_reg_timer"),
 	m_sport0_timer(*this, "dcs_sport0_timer"),
@@ -693,7 +693,6 @@ dcs_audio_device::dcs_audio_device(const machine_config &mconfig, device_type ty
 	m_bootrom(*this, DEVICE_SELF),
 	m_internal_program_ram(*this, "dcsint"),
 	m_external_program_ram(*this, "dcsext"),
-	m_internal_data_ram(*this, "dcsint_data"),
 	m_iram(*this, "iram"),
 	m_data_bank(*this, "databank"),
 	m_rom_page(*this, "rompage"),
@@ -2463,7 +2462,7 @@ void dcs_audio_device::add_mconfig_dcs(machine_config &config)
 	TIMER(config, m_reg_timer).configure_generic(FUNC(dcs_audio_device::dcs_irq));
 	TIMER(config, m_internal_timer).configure_generic(FUNC(dcs_audio_device::internal_timer_callback));
 
-	DMADAC(config, "dac").add_route(ALL_OUTPUTS, *this, 1.0, AUTO_ALLOC_INPUT, 0); // AD-1851 16bit mono
+	DMADAC(config, "dac").add_route(ALL_OUTPUTS, *this, 1.0, 0); // AD-1851 16bit mono
 }
 
 DEFINE_DEVICE_TYPE(DCS_AUDIO_2K, dcs_audio_2k_device, "dcs_audio_2k", "DCS Audio 2K")
@@ -2473,7 +2472,7 @@ DEFINE_DEVICE_TYPE(DCS_AUDIO_2K, dcs_audio_2k_device, "dcs_audio_2k", "DCS Audio
 //-------------------------------------------------
 
 dcs_audio_2k_device::dcs_audio_2k_device(const machine_config &mconfig, const char *tag, device_t *owner, uint32_t clock) :
-	dcs_audio_device(mconfig, DCS_AUDIO_2K, tag, owner, clock, REV_DCS1, 1)
+	dcs_audio_device(mconfig, DCS_AUDIO_2K, tag, owner, clock, REV_DCS1)
 {
 }
 
@@ -2489,7 +2488,7 @@ DEFINE_DEVICE_TYPE(DCS_AUDIO_2K_UART, dcs_audio_2k_uart_device, "dcs_audio_2k_ua
 //-------------------------------------------------
 
 dcs_audio_2k_uart_device::dcs_audio_2k_uart_device(const machine_config &mconfig, const char *tag, device_t *owner, uint32_t clock) :
-	dcs_audio_device(mconfig, DCS_AUDIO_2K_UART, tag, owner, clock, REV_DCS1, 1)
+	dcs_audio_device(mconfig, DCS_AUDIO_2K_UART, tag, owner, clock, REV_DCS1)
 {
 }
 
@@ -2507,7 +2506,7 @@ DEFINE_DEVICE_TYPE(DCS_AUDIO_8K, dcs_audio_8k_device, "dcs_audio_8k", "DCS Audio
 //-------------------------------------------------
 
 dcs_audio_8k_device::dcs_audio_8k_device(const machine_config &mconfig, const char *tag, device_t *owner, uint32_t clock) :
-	dcs_audio_device(mconfig, DCS_AUDIO_8K, tag, owner, clock, REV_DCS1, 1)
+	dcs_audio_device(mconfig, DCS_AUDIO_8K, tag, owner, clock, REV_DCS1)
 {
 }
 
@@ -2526,7 +2525,7 @@ DEFINE_DEVICE_TYPE(DCS_AUDIO_WPC, dcs_audio_wpc_device, "dcs_audio_wpc", "DCS Au
 //-------------------------------------------------
 
 dcs_audio_wpc_device::dcs_audio_wpc_device(const machine_config &mconfig, const char *tag, device_t *owner, uint32_t clock) :
-	dcs_audio_device(mconfig, DCS_AUDIO_WPC, tag, owner, clock, REV_DCS1P5, 1)
+	dcs_audio_device(mconfig, DCS_AUDIO_WPC, tag, owner, clock, REV_DCS1P5)
 {
 }
 
@@ -2542,8 +2541,8 @@ void dcs_audio_wpc_device::device_add_mconfig(machine_config &config)
 //  dcs2_audio_device - constructor
 //-------------------------------------------------
 
-dcs2_audio_device::dcs2_audio_device(const machine_config &mconfig, device_type type, const char *tag, device_t *owner, uint32_t clock, int outputs) :
-	dcs_audio_device(mconfig, type, tag, owner, clock, REV_DCS1, outputs)
+dcs2_audio_device::dcs2_audio_device(const machine_config &mconfig, device_type type, const char *tag, device_t *owner, uint32_t clock) :
+	dcs_audio_device(mconfig, type, tag, owner, clock, REV_DCS1)
 {
 }
 
@@ -2560,8 +2559,8 @@ void dcs2_audio_device::add_mconfig_dcs2(machine_config &config)
 	TIMER(config, m_internal_timer).configure_generic(FUNC(dcs2_audio_device::internal_timer_callback));
 	TIMER(config, "dcs_hle_timer").configure_generic(FUNC(dcs2_audio_device::transfer_watchdog_callback));
 
-	DMADAC(config, "dac1").add_route(ALL_OUTPUTS, *this, 1.0, AUTO_ALLOC_INPUT, 0);
-	DMADAC(config, "dac2").add_route(ALL_OUTPUTS, *this, 1.0, AUTO_ALLOC_INPUT, 1);
+	DMADAC(config, "dac1").add_route(ALL_OUTPUTS, *this, 1.0, 0);
+	DMADAC(config, "dac2").add_route(ALL_OUTPUTS, *this, 1.0, 1);
 }
 
 DEFINE_DEVICE_TYPE(DCS2_AUDIO_2115, dcs2_audio_2115_device, "dcs2_audio_2115", "DCS2 Audio 2115")
@@ -2571,7 +2570,7 @@ DEFINE_DEVICE_TYPE(DCS2_AUDIO_2115, dcs2_audio_2115_device, "dcs2_audio_2115", "
 //-------------------------------------------------
 
 dcs2_audio_2115_device::dcs2_audio_2115_device(const machine_config &mconfig, const char *tag, device_t *owner, uint32_t clock) :
-	dcs2_audio_device(mconfig, DCS2_AUDIO_2115, tag, owner, clock, 2)
+	dcs2_audio_device(mconfig, DCS2_AUDIO_2115, tag, owner, clock)
 {
 }
 
@@ -2588,7 +2587,7 @@ DEFINE_DEVICE_TYPE(DCS2_AUDIO_2104, dcs2_audio_2104_device, "dcs2_audio_2104", "
 
 
 dcs2_audio_2104_device::dcs2_audio_2104_device(const machine_config &mconfig, const char *tag, device_t *owner, uint32_t clock) :
-	dcs2_audio_device(mconfig, DCS2_AUDIO_2104, tag, owner, clock, 2)
+	dcs2_audio_device(mconfig, DCS2_AUDIO_2104, tag, owner, clock)
 {
 }
 
@@ -2610,7 +2609,7 @@ DEFINE_DEVICE_TYPE(DCS2_AUDIO_DSIO, dcs2_audio_dsio_device, "dcs2_audio_dsio", "
 //-------------------------------------------------
 
 dcs2_audio_dsio_device::dcs2_audio_dsio_device(const machine_config &mconfig, const char *tag, device_t *owner, uint32_t clock) :
-	dcs2_audio_device(mconfig, DCS2_AUDIO_DSIO, tag, owner, clock, 2)
+	dcs2_audio_device(mconfig, DCS2_AUDIO_DSIO, tag, owner, clock)
 {
 }
 
@@ -2630,16 +2629,16 @@ void dcs2_audio_dsio_device::device_add_mconfig(machine_config &config)
 	TIMER(config, m_internal_timer).configure_generic(FUNC(dcs2_audio_dsio_device::internal_timer_callback));
 	TIMER(config, m_sport0_timer).configure_generic(FUNC(dcs2_audio_dsio_device::sport0_irq)); // roadburn needs this to pass hardware test
 
-	DMADAC(config, "dac1").add_route(ALL_OUTPUTS, *this, 1.0, AUTO_ALLOC_INPUT, 0);
-	DMADAC(config, "dac2").add_route(ALL_OUTPUTS, *this, 1.0, AUTO_ALLOC_INPUT, 1);
+	DMADAC(config, "dac1").add_route(ALL_OUTPUTS, *this, 1.0, 0);
+	DMADAC(config, "dac2").add_route(ALL_OUTPUTS, *this, 1.0, 1);
 }
 
 
 //-------------------------------------------------
 //  dcs2_audio_denver_device - constructor
 //-------------------------------------------------
-dcs2_audio_denver_device::dcs2_audio_denver_device(const machine_config &mconfig, device_type type, const char *tag, device_t *owner, uint32_t clock, int outputs) :
-	dcs2_audio_device(mconfig, type, tag, owner, clock, outputs)
+dcs2_audio_denver_device::dcs2_audio_denver_device(const machine_config &mconfig, device_type type, const char *tag, device_t *owner, uint32_t clock) :
+	dcs2_audio_device(mconfig, type, tag, owner, clock)
 {
 }
 
@@ -2661,7 +2660,7 @@ void dcs2_audio_denver_device::device_add_mconfig(machine_config &config)
 }
 
 dcs2_audio_denver_5ch_device::dcs2_audio_denver_5ch_device(const machine_config &mconfig, const char *tag, device_t *owner, uint32_t clock) :
-	dcs2_audio_denver_device(mconfig, DCS2_AUDIO_DENVER_5CH, tag, owner, clock, 5)
+	dcs2_audio_denver_device(mconfig, DCS2_AUDIO_DENVER_5CH, tag, owner, clock)
 {
 }
 
@@ -2669,18 +2668,18 @@ void dcs2_audio_denver_5ch_device::device_add_mconfig(machine_config &config)
 {
 	dcs2_audio_denver_device::device_add_mconfig(config);
 
-	DMADAC(config, "dac1").add_route(ALL_OUTPUTS, *this, 1.0, AUTO_ALLOC_INPUT, 0);
-	DMADAC(config, "dac2").add_route(ALL_OUTPUTS, *this, 1.0, AUTO_ALLOC_INPUT, 1);
-	DMADAC(config, "dac3").add_route(ALL_OUTPUTS, *this, 1.0, AUTO_ALLOC_INPUT, 2);
-	DMADAC(config, "dac4").add_route(ALL_OUTPUTS, *this, 1.0, AUTO_ALLOC_INPUT, 3);
-	DMADAC(config, "dac5").add_route(ALL_OUTPUTS, *this, 1.0, AUTO_ALLOC_INPUT, 4);
+	DMADAC(config, "dac1").add_route(ALL_OUTPUTS, *this, 1.0, 0);
+	DMADAC(config, "dac2").add_route(ALL_OUTPUTS, *this, 1.0, 1);
+	DMADAC(config, "dac3").add_route(ALL_OUTPUTS, *this, 1.0, 2);
+	DMADAC(config, "dac4").add_route(ALL_OUTPUTS, *this, 1.0, 3);
+	DMADAC(config, "dac5").add_route(ALL_OUTPUTS, *this, 1.0, 4);
 	DMADAC(config, "dac6"); // Does not produce sound
 }
 
 DEFINE_DEVICE_TYPE(DCS2_AUDIO_DENVER_5CH, dcs2_audio_denver_5ch_device, "dcs2_audio_denver_5ch", "DCS2 Audio Denver 5 Channel")
 
 dcs2_audio_denver_2ch_device::dcs2_audio_denver_2ch_device(const machine_config &mconfig, const char *tag, device_t *owner, uint32_t clock) :
-	dcs2_audio_denver_device(mconfig, DCS2_AUDIO_DENVER_2CH, tag, owner, clock, 2)
+	dcs2_audio_denver_device(mconfig, DCS2_AUDIO_DENVER_2CH, tag, owner, clock)
 {
 }
 
@@ -2688,8 +2687,8 @@ void dcs2_audio_denver_2ch_device::device_add_mconfig(machine_config &config)
 {
 	dcs2_audio_denver_device::device_add_mconfig(config);
 
-	DMADAC(config, "dac1").add_route(ALL_OUTPUTS, *this, 1.0, AUTO_ALLOC_INPUT, 0);
-	DMADAC(config, "dac2").add_route(ALL_OUTPUTS, *this, 1.0, AUTO_ALLOC_INPUT, 1);
+	DMADAC(config, "dac1").add_route(ALL_OUTPUTS, *this, 1.0, 0);
+	DMADAC(config, "dac2").add_route(ALL_OUTPUTS, *this, 1.0, 1);
 }
 
 DEFINE_DEVICE_TYPE(DCS2_AUDIO_DENVER_2CH, dcs2_audio_denver_2ch_device, "dcs2_audio_denver_2ch", "DCS2 Audio Denver 2 Channel")

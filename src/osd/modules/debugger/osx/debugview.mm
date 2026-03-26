@@ -49,6 +49,11 @@ static void debugwin_view_update(debug_view &view, void *osdprivate)
 
 
 @implementation MAMEDebugView
+{
+	// workaround for the bug that prevents the console view from scrolling
+	// to the bottom when the console window is not full yet
+	BOOL ignoreNextFrameUpdate;
+}
 
 + (void)initialize {
 	// 10.15 and better get full adaptive Dark Mode support
@@ -257,7 +262,8 @@ static void debugwin_view_update(debug_view &view, void *osdprivate)
 	type = t;
 	machine = &m;
 	view = machine->debug_view().alloc_view((debug_view_type)type, debugwin_view_update, self);
-	if (view == nil) {
+	if (view == nil)
+	{
 		[self release];
 		return nil;
 	}
@@ -298,24 +304,21 @@ static void debugwin_view_update(debug_view &view, void *osdprivate)
 - (void)update {
 	// resize our frame if the total size has changed
 	debug_view_xy const newSize = view->total_size();
-	BOOL const resized = (newSize.x != totalWidth) || (newSize.y != totalHeight);
-	if (resized)
+	NSScrollView *const scroller = [self enclosingScrollView];
+	if (scroller)
 	{
-		NSScrollView *const scroller = [self enclosingScrollView];
-		if (scroller)
-		{
-			NSSize const clip = [[scroller contentView] bounds].size;
-			NSSize content = NSMakeSize((fontWidth * newSize.x) + (2 * [textContainer lineFragmentPadding]),
-										fontHeight * newSize.y);
-			if (wholeLineScroll)
-				content.height += (fontHeight * 2) - 1;
-			[self setFrameSize:NSMakeSize(ceil(std::max(clip.width, content.width)),
-										  ceil(std::max(clip.height, content.height)))];
-			[scroller reflectScrolledClipView:[scroller contentView]];
-		}
-		totalWidth = newSize.x;
-		totalHeight = newSize.y;
+		NSSize const clip = [[scroller contentView] bounds].size;
+		NSSize content = NSMakeSize((fontWidth * newSize.x) + (2 * [textContainer lineFragmentPadding]),
+									fontHeight * newSize.y);
+		if (wholeLineScroll)
+			content.height += (fontHeight * 2) - 1;
+		[self setFrameSize:NSMakeSize(ceil(std::max(clip.width, content.width)),
+									  ceil(std::max(clip.height, content.height)))];
+		ignoreNextFrameUpdate = YES;
+		[scroller reflectScrolledClipView:[scroller contentView]];
 	}
+	totalWidth = newSize.x;
+	totalHeight = newSize.y;
 
 	// scroll the view if we're being told to
 	debug_view_xy const newOrigin = view->visible_position();
@@ -432,15 +435,15 @@ static void debugwin_view_update(debug_view &view, void *osdprivate)
 	NSRange const run = NSMakeRange(0, [text length]);
 	[text addAttribute:NSFontAttributeName value:font range:run];
 	NSPasteboard *const board = [NSPasteboard generalPasteboard];
-	[board declareTypes:[NSArray arrayWithObject:NSRTFPboardType] owner:nil];
-	[board setData:[text RTFFromRange:run documentAttributes:[NSDictionary dictionary]] forType:NSRTFPboardType];
+	[board declareTypes:[NSArray arrayWithObject:NSPasteboardTypeRTF] owner:nil];
+	[board setData:[text RTFFromRange:run documentAttributes:[NSDictionary dictionary]] forType:NSPasteboardTypeRTF];
 	[text deleteCharactersInRange:run];
 }
 
 
 - (IBAction)paste:(id)sender {
 	NSPasteboard *const board = [NSPasteboard generalPasteboard];
-	NSString *const avail = [board availableTypeFromArray:[NSArray arrayWithObject:NSStringPboardType]];
+	NSString *const avail = [board availableTypeFromArray:[NSArray arrayWithObject:NSPasteboardTypeString]];
 	if (avail == nil)
 	{
 		NSBeep();
@@ -476,6 +479,13 @@ static void debugwin_view_update(debug_view &view, void *osdprivate)
 
 
 - (void)viewFrameDidChange:(NSNotification *)notification {
+	if (ignoreNextFrameUpdate)
+	{
+		ignoreNextFrameUpdate = NO;
+		return;
+	}
+	ignoreNextFrameUpdate = NO;
+
 	NSView *const changed = [notification object];
 	if (changed == [[self enclosingScrollView] contentView])
 		[self adjustSizeAndRecomputeVisible];
@@ -904,9 +914,11 @@ static void debugwin_view_update(debug_view &view, void *osdprivate)
 		string = [string string];
 	for (len = [string length], found = NSMakeRange(0, 0);
 		 found.location < len;
-		 found.location += found.length) {
+		 found.location += found.length)
+	{
 		found = [string rangeOfComposedCharacterSequenceAtIndex:found.location];
-		if (found.length == 1) {
+		if (found.length == 1)
+		{
 			unichar ch = [string characterAtIndex:found.location];
 			if ((ch >= 32) && (ch < 127))
 				[self typeCharacterAndScrollToCursor:ch];
@@ -921,7 +933,7 @@ static void debugwin_view_update(debug_view &view, void *osdprivate)
 	if (action == @selector(paste:))
 	{
 		NSPasteboard *const board = [NSPasteboard generalPasteboard];
-		return [board availableTypeFromArray:[NSArray arrayWithObject:NSStringPboardType]] != nil;
+		return [board availableTypeFromArray:[NSArray arrayWithObject:NSPasteboardTypeString]] != nil;
 	}
 	else
 	{

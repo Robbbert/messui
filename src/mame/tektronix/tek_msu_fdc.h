@@ -12,22 +12,23 @@
 #include "machine/upd765.h"
 
 class tek_msu_fdc_device
-	: public nscsi_device
+	: public device_t
+	, public nscsi_device_interface
 	, public nscsi_slot_card_interface
 {
 public:
 	tek_msu_fdc_device(const machine_config &mconfig, const char *tag, device_t *owner, u32 clock = 0);
 
 protected:
-	virtual void device_start() override;
-	virtual void device_reset() override;
-	virtual void device_add_mconfig(machine_config &config) override;
-	virtual const tiny_rom_entry *device_rom_region() const override;
+	virtual void device_start() override ATTR_COLD;
+	virtual void device_reset() override ATTR_COLD;
+	virtual void device_add_mconfig(machine_config &config) override ATTR_COLD;
+	virtual const tiny_rom_entry *device_rom_region() const override ATTR_COLD;
 
 	virtual void scsi_ctrl_changed() override;
 
 private:
-	void mem_map(address_map &map);
+	void mem_map(address_map &map) ATTR_COLD;
 
 	u8 status_r();
 	u8 data_r();

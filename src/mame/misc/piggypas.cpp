@@ -10,7 +10,7 @@ game details unknown
 */
 
 #include "emu.h"
-#include "cpu/mcs51/mcs51.h"
+#include "cpu/mcs51/i80c51.h"
 #include "machine/i8255.h"
 #include "machine/nvram.h"
 #include "machine/ticket.h"
@@ -42,8 +42,8 @@ public:
 
 private:
 	void output_digits();
-	virtual void machine_start() override;
-	virtual void machine_reset() override;
+	virtual void machine_start() override ATTR_COLD;
+	virtual void machine_reset() override ATTR_COLD;
 	void ctrl_w(uint8_t data);
 	void port3_w(uint8_t data);
 	void led_strobe_w(uint8_t data);
@@ -58,9 +58,9 @@ private:
 	uint8_t   m_ctrl = 0;
 	uint8_t   m_lcd_latch = 0;
 	uint32_t  m_digit_latch = 0;
-	void piggypas_io(address_map &map);
-	void piggypas_map(address_map &map);
-	void fidlstix_io(address_map &map);
+	void piggypas_data(address_map &map) ATTR_COLD;
+	void piggypas_map(address_map &map) ATTR_COLD;
+	void fidlstix_data(address_map &map) ATTR_COLD;
 };
 
 
@@ -131,7 +131,7 @@ void piggypas_state::piggypas_map(address_map &map)
 	map(0x0000, 0x7fff).rom();
 }
 
-void piggypas_state::piggypas_io(address_map &map)
+void piggypas_state::piggypas_data(address_map &map)
 {
 	map(0x0000, 0x07ff).ram().share("nvram");
 	map(0x0800, 0x0803).rw("ppi", FUNC(i8255_device::read), FUNC(i8255_device::write));
@@ -140,7 +140,7 @@ void piggypas_state::piggypas_io(address_map &map)
 	map(0x1802, 0x1803).r(m_hd44780, FUNC(hd44780_device::read));
 }
 
-void piggypas_state::fidlstix_io(address_map &map)
+void piggypas_state::fidlstix_data(address_map &map)
 {
 	map(0x0000, 0x07ff).ram().share("nvram");
 	map(0x0800, 0x0803).rw("ppi", FUNC(i8255_device::read), FUNC(i8255_device::write));
@@ -159,7 +159,7 @@ static INPUT_PORTS_START( piggypas )
 	PORT_BIT(0x01, IP_ACTIVE_LOW, IPT_COIN3)
 	PORT_BIT(0x02, IP_ACTIVE_LOW, IPT_START1)
 	PORT_BIT(0x04, IP_ACTIVE_LOW, IPT_COIN4)
-	PORT_BIT(0x08, IP_ACTIVE_LOW, IPT_CUSTOM)  PORT_READ_LINE_DEVICE_MEMBER("ticket", ticket_dispenser_device, line_r)
+	PORT_BIT(0x08, IP_ACTIVE_LOW, IPT_CUSTOM)  PORT_READ_LINE_DEVICE_MEMBER("ticket", FUNC(ticket_dispenser_device::line_r))
 	PORT_BIT(0x10, IP_ACTIVE_LOW, IPT_COIN2)
 	PORT_BIT(0x20, IP_ACTIVE_HIGH, IPT_KEYPAD)  PORT_NAME("Gate sensor")   PORT_CODE(KEYCODE_G)
 	PORT_BIT(0x40, IP_ACTIVE_HIGH, IPT_UNUSED)
@@ -176,7 +176,7 @@ static INPUT_PORTS_START( piggypas )
 	PORT_BIT(0x80, IP_ACTIVE_LOW, IPT_SERVICE)  PORT_NAME("Program")
 
 	PORT_START("IN2")
-	PORT_BIT(0x08, IP_ACTIVE_LOW, IPT_BUTTON1) PORT_CHANGED_MEMBER(DEVICE_SELF, piggypas_state, ball_sensor, 0) // ball sensor
+	PORT_BIT(0x08, IP_ACTIVE_LOW, IPT_BUTTON1) PORT_CHANGED_MEMBER(DEVICE_SELF, FUNC(piggypas_state::ball_sensor), 0) // ball sensor
 INPUT_PORTS_END
 
 
@@ -202,7 +202,7 @@ void piggypas_state::piggypas(machine_config &config)
 	/* basic machine hardware */
 	I80C31(config, m_maincpu, 8.448_MHz_XTAL); // OKI M80C31F or M80C154S
 	m_maincpu->set_addrmap(AS_PROGRAM, &piggypas_state::piggypas_map);
-	m_maincpu->set_addrmap(AS_IO, &piggypas_state::piggypas_io);
+	m_maincpu->set_addrmap(AS_DATA, &piggypas_state::piggypas_data);
 	m_maincpu->port_out_cb<1>().set(FUNC(piggypas_state::led_strobe_w));
 	m_maincpu->port_in_cb<3>().set_ioport("IN2");
 	m_maincpu->port_out_cb<3>().set(FUNC(piggypas_state::port3_w));
@@ -235,14 +235,14 @@ void piggypas_state::piggypas(machine_config &config)
 	ppi.out_pb_callback().set(FUNC(piggypas_state::ctrl_w));
 	ppi.in_pc_callback().set_ioport("IN0");
 
-	TICKET_DISPENSER(config, "ticket", attotime::from_msec(100), TICKET_MOTOR_ACTIVE_HIGH, TICKET_STATUS_ACTIVE_HIGH);
+	TICKET_DISPENSER(config, "ticket", attotime::from_msec(100));
 }
 
 void piggypas_state::fidlstix(machine_config &config)
 {
 	piggypas(config);
 
-	m_maincpu->set_addrmap(AS_IO, &piggypas_state::fidlstix_io);
+	m_maincpu->set_addrmap(AS_DATA, &piggypas_state::fidlstix_data);
 	m_maincpu->port_in_cb<1>().set(m_hd44780, FUNC(hd44780_device::db_r));
 	m_maincpu->port_out_cb<1>().set(FUNC(piggypas_state::lcd_latch_w));
 	m_maincpu->port_out_cb<3>().set(FUNC(piggypas_state::lcd_control_w));

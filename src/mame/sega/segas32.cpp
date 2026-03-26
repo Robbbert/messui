@@ -9,10 +9,9 @@
     Still to do:
         * fix protection
         * fix jpark correctly
-        * priorities in multi32 appear wrong - stadium cross map screen
-                                           and title fight ingame backgrounds
         * should f1lap be set up as a twin cabinet / direct link or can it
           be operated as a single screen, unlike f1en/air rescue
+        * also see segas32_v.cpp for gfx issues
 
 ****************************************************************************
 
@@ -61,13 +60,13 @@ PCB Layout
 |         93C46                                                              D42264         |
 |CNB                         SW2                                             D42264         |
 |                            SW1                                             D42264         |
-|       CNA                  DSW1    32MHz  50MHz                            D42264         |
+|       CNA                  DSW1    32.2159MHz  50MHz                       D42264         |
 |-------------------------------------------------------------------------------------------|
 
 Notes:
-      V60 CPU running at 16.00MHz [32/2]
-      Z80 CPU running at 8.000MHz [32/4]
-      YM3438 running at 8.000MHz [32/4]
+      V60 CPU running at 16.108MHz [32.2159/2]
+      Z80 CPU running at 8.054MHz [32.2159/4]
+      YM3438 running at 8.054MHz [32.2159/4]
       CNE/F/I - Multi-pin connectors for connection of ROM Board
       CND     - 4 pin connector for 2nd Speaker for Stereo Output
       CNA     - 30 pin connector for extra controls PCB
@@ -211,7 +210,7 @@ Notes:
       V70 CPU running at 20.00MHz [40/2]
       Z80 CPU running at 8.000MHz [32/4]
       YM3438 running at 8.000MHz [32/4]
-      315-5560 running at 8.000MHz [32/4]
+      315-5560 running at 10.000MHz [40/4]
       CND/E/F/H: Multi-pin connectors for connection of ROM Board
       CNC      : 4 pin connector for 2nd Speaker for Stereo Output
       CNJ      : 32 pin connector (purpose unknown)
@@ -485,7 +484,6 @@ JP1234   - Four 2-pin jumpers. JP3 is shorted, the others are not shorted
 
 *********************************************************************************************
 
-
 On "Super Visual Football: European Sega Cup" and "JLEAGUE" :
 
 JLEAGUE was the original code developed and released in early
@@ -606,13 +604,6 @@ segas32_state::segas32_state(const machine_config &mconfig, device_type type, co
  *
  *************************************/
 
-#define MASTER_CLOCK        32215900
-#define RFC_CLOCK           XTAL(50'000'000)
-#define MULTI32_CLOCK       XTAL(40'000'000)
-
-#define TIMER_0_CLOCK       ((MASTER_CLOCK/2)/2048) /* confirmed */
-#define TIMER_1_CLOCK       ((RFC_CLOCK/16)/256)    /* confirmed */
-
 #define MAIN_IRQ_VBSTART    0
 #define MAIN_IRQ_VBSTOP     1
 #define MAIN_IRQ_SOUND      2
@@ -692,10 +683,8 @@ void segas32_state::update_irq_state()
 
 void segas32_state::signal_v60_irq(int which)
 {
-	int i;
-
 	/* see if this interrupt input is mapped to any vectors; if so, mark them */
-	for (i = 0; i < 5; i++)
+	for (int i = 0; i < 5; i++)
 		if (m_v60_irq_control[i] == which)
 			m_v60_irq_control[7] |= 1 << i;
 	update_irq_state();
@@ -728,8 +717,6 @@ uint8_t segas32_state::int_control_r(offs_t offset)
 
 void segas32_state::int_control_w(offs_t offset, uint8_t data)
 {
-	int duration;
-
 //  logerror("%06X:int_control_w(%X) = %02X\n", m_maincpu->pc(), offset, data);
 	switch (offset)
 	{
@@ -757,25 +744,30 @@ void segas32_state::int_control_w(offs_t offset, uint8_t data)
 
 		case 8:
 		case 9:         /* timer 0 count */
+		{
 			m_v60_irq_control[offset] = data;
-			duration = m_v60_irq_control[8] + ((m_v60_irq_control[9] << 8) & 0xf00);
+			uint16_t duration = m_v60_irq_control[8] | ((m_v60_irq_control[9] << 8) & 0xf00);
 			if (duration)
 			{
-				attotime period = attotime::from_hz(TIMER_0_CLOCK) * duration;
+				const XTAL xtal = m_is_multi32 ? 32_MHz_XTAL : 32.2159_MHz_XTAL;
+				attotime period = attotime::from_ticks(0x800 * duration, xtal / 2);
 				m_v60_irq_timer[0]->adjust(period, MAIN_IRQ_TIMER0);
 			}
 			break;
+		}
 
 		case 10:
 		case 11:        /* timer 1 count */
+		{
 			m_v60_irq_control[offset] = data;
-			duration = m_v60_irq_control[10] + ((m_v60_irq_control[11] << 8) & 0xf00);
+			uint16_t duration = m_v60_irq_control[10] | ((m_v60_irq_control[11] << 8) & 0xf00);
 			if (duration)
 			{
-				attotime period = attotime::from_hz(TIMER_1_CLOCK) * duration;
+				attotime period = attotime::from_ticks(0x100 * duration, 50_MHz_XTAL / 16);
 				m_v60_irq_timer[1]->adjust(period, MAIN_IRQ_TIMER1);
 			}
 			break;
+		}
 
 		case 12:
 		case 13:
@@ -1349,7 +1341,7 @@ static INPUT_PORTS_START( system32_generic )
 	PORT_BIT( 0x10, IP_ACTIVE_LOW, IPT_SERVICE3 ) PORT_NAME("Push SW1 (Service)") // on PCB
 	PORT_BIT( 0x20, IP_ACTIVE_LOW, IPT_SERVICE4 ) PORT_NAME("Push SW2 (Test)") // on PCB
 	PORT_BIT( 0x40, IP_ACTIVE_LOW, IPT_UNKNOWN )
-	PORT_BIT( 0x80, IP_ACTIVE_HIGH, IPT_CUSTOM ) PORT_READ_LINE_DEVICE_MEMBER("mainpcb:eeprom", eeprom_serial_93cxx_device, do_read)
+	PORT_BIT( 0x80, IP_ACTIVE_HIGH, IPT_CUSTOM ) PORT_READ_LINE_DEVICE_MEMBER("mainpcb:eeprom", FUNC(eeprom_serial_93cxx_device::do_read))
 INPUT_PORTS_END
 
 
@@ -1403,7 +1395,7 @@ static INPUT_PORTS_START( system32_generic_slave )
 	PORT_BIT( 0x10, IP_ACTIVE_LOW, IPT_OTHER ) PORT_NAME("slavepcb:Push SW1 (Service)") PORT_CODE(KEYCODE_OPENBRACE)
 	PORT_BIT( 0x20, IP_ACTIVE_LOW, IPT_OTHER ) PORT_NAME("slavepcb:Push SW2 (Test)") PORT_CODE(KEYCODE_CLOSEBRACE)
 	PORT_BIT( 0x40, IP_ACTIVE_LOW, IPT_UNKNOWN )
-	PORT_BIT( 0x80, IP_ACTIVE_HIGH, IPT_CUSTOM ) PORT_READ_LINE_DEVICE_MEMBER("slavepcb:eeprom", eeprom_serial_93cxx_device, do_read)
+	PORT_BIT( 0x80, IP_ACTIVE_HIGH, IPT_CUSTOM ) PORT_READ_LINE_DEVICE_MEMBER("slavepcb:eeprom", FUNC(eeprom_serial_93cxx_device::do_read))
 INPUT_PORTS_END
 
 static INPUT_PORTS_START( multi32_generic )
@@ -1433,7 +1425,7 @@ static INPUT_PORTS_START( multi32_generic )
 	PORT_BIT( 0x4f, IP_ACTIVE_LOW, IPT_UNUSED )
 	PORT_BIT( 0x10, IP_ACTIVE_LOW, IPT_OTHER ) PORT_NAME("Push SW3 (Service)") PORT_CODE(KEYCODE_OPENBRACE)
 	PORT_BIT( 0x20, IP_ACTIVE_LOW, IPT_OTHER ) PORT_NAME("Push SW4 (Test)") PORT_CODE(KEYCODE_CLOSEBRACE)
-	PORT_BIT( 0x80, IP_ACTIVE_HIGH, IPT_CUSTOM ) PORT_READ_LINE_DEVICE_MEMBER("mainpcb:eeprom", eeprom_serial_93cxx_device, do_read)
+	PORT_BIT( 0x80, IP_ACTIVE_HIGH, IPT_CUSTOM ) PORT_READ_LINE_DEVICE_MEMBER("mainpcb:eeprom", FUNC(eeprom_serial_93cxx_device::do_read))
 INPUT_PORTS_END
 
 
@@ -1515,13 +1507,13 @@ static INPUT_PORTS_START( alien3 )
 	PORT_BIT( 0xff, 0x80, IPT_AD_STICK_X ) PORT_SENSITIVITY(50) PORT_KEYDELTA(5)
 
 	PORT_START("mainpcb:ANALOG2")
-	PORT_BIT( 0xff, 0x80, IPT_AD_STICK_Y ) PORT_SENSITIVITY(50) PORT_KEYDELTA(5)
+	PORT_BIT( 0xff, 0x80, IPT_AD_STICK_Y ) PORT_MINMAX(0x01, 0xff) PORT_SENSITIVITY(50) PORT_KEYDELTA(5)
 
 	PORT_START("mainpcb:ANALOG3")
 	PORT_BIT( 0xff, 0x80, IPT_AD_STICK_X ) PORT_SENSITIVITY(50) PORT_KEYDELTA(5) PORT_PLAYER(2)
 
 	PORT_START("mainpcb:ANALOG4")
-	PORT_BIT( 0xff, 0x80, IPT_AD_STICK_Y ) PORT_SENSITIVITY(50) PORT_KEYDELTA(5) PORT_PLAYER(2)
+	PORT_BIT( 0xff, 0x80, IPT_AD_STICK_Y ) PORT_MINMAX(0x01, 0xff) PORT_SENSITIVITY(50) PORT_KEYDELTA(5) PORT_PLAYER(2)
 INPUT_PORTS_END
 
 
@@ -2232,7 +2224,6 @@ GFXDECODE_END
 
 
 
-
 /*************************************
  *
  *  Machine driver
@@ -2241,6 +2232,8 @@ GFXDECODE_END
 
 void segas32_state::device_add_mconfig(machine_config &config)
 {
+	constexpr XTAL MASTER_CLOCK = 32.2159_MHz_XTAL;
+
 	/* basic machine hardware */
 	V60(config, m_maincpu, MASTER_CLOCK/2);
 	m_maincpu->set_addrmap(AS_PROGRAM, &segas32_state::system32_map);
@@ -2250,7 +2243,7 @@ void segas32_state::device_add_mconfig(machine_config &config)
 	m_soundcpu->set_addrmap(AS_PROGRAM, &segas32_state::system32_sound_map);
 	m_soundcpu->set_addrmap(AS_IO, &segas32_state::system32_sound_portmap);
 
-	sega_315_5296_device &io_chip(SEGA_315_5296(config, "io_chip", 0)); // unknown clock
+	sega_315_5296_device &io_chip(SEGA_315_5296(config, "io_chip", MASTER_CLOCK/4));
 	io_chip.in_pa_callback().set_ioport("P1_A");
 	io_chip.in_pb_callback().set_ioport("P2_A");
 	io_chip.in_pc_callback().set_ioport("PORTC_A");
@@ -2281,21 +2274,20 @@ void segas32_state::device_add_mconfig(machine_config &config)
 	m_screen->set_screen_update(FUNC(segas32_state::screen_update_system32));
 
 	/* sound hardware */
-	SPEAKER(config, "lspeaker").front_left();
-	SPEAKER(config, "rspeaker").front_right();
+	SPEAKER(config, "speaker", 2).front();
 
 	ym3438_device &ym1(YM3438(config, "ym1", MASTER_CLOCK/4));
 	ym1.irq_handler().set(FUNC(segas32_state::ym3438_irq_handler));
-	ym1.add_route(0, "lspeaker", 0.40);
-	ym1.add_route(1, "rspeaker", 0.40);
+	ym1.add_route(0, "speaker", 0.30, 0);
+	ym1.add_route(1, "speaker", 0.30, 1);
 
 	ym3438_device &ym2(YM3438(config, "ym2", MASTER_CLOCK/4));
-	ym2.add_route(0, "lspeaker", 0.40);
-	ym2.add_route(1, "rspeaker", 0.40);
+	ym2.add_route(0, "speaker", 0.30, 0);
+	ym2.add_route(1, "speaker", 0.30, 1);
 
-	rf5c68_device &rfsnd(RF5C68(config, "rfsnd", RFC_CLOCK/4)); // ASSP (RF)5C105 or Sega 315-5476A
-	rfsnd.add_route(0, "lspeaker", 0.55);
-	rfsnd.add_route(1, "rspeaker", 0.55);
+	rf5c68_device &rfsnd(RF5C68(config, "rfsnd", 50_MHz_XTAL/4)); // ASSP (RF)5C105 or Sega 315-5476A
+	rfsnd.add_route(0, "speaker", 0.40, 0);
+	rfsnd.add_route(1, "speaker", 0.40, 1);
 	rfsnd.set_addrmap(0, &segas32_state::rf5c68_map);
 
 	S32COMM(config, m_s32comm, 0);
@@ -2307,8 +2299,6 @@ segas32_regular_state::segas32_regular_state(const machine_config &mconfig, cons
 	: segas32_state(mconfig, SEGA_S32_REGULAR_DEVICE, tag, owner, clock, false)
 {
 }
-
-
 
 
 
@@ -2343,8 +2333,6 @@ segas32_analog_state::segas32_analog_state(const machine_config &mconfig, device
 	: segas32_state(mconfig, type, tag, owner, clock, false)
 {
 }
-
-
 
 
 
@@ -2388,8 +2376,6 @@ segas32_trackball_state::segas32_trackball_state(const machine_config &mconfig, 
 
 
 
-
-
 void segas32_state::system32_4player_map(address_map &map)
 {
 	map.unmap_value_high();
@@ -2423,8 +2409,6 @@ segas32_4player_state::segas32_4player_state(const machine_config &mconfig, devi
 
 
 
-
-
 void segas32_state::ga2_main_map(address_map &map)
 {
 	map.unmap_value_high();
@@ -2454,21 +2438,20 @@ segas32_v25_state::segas32_v25_state(const machine_config &mconfig, const char *
 
 
 
-
-
 void segas32_upd7725_state::device_add_mconfig(machine_config &config)
 {
 	segas32_analog_state::device_add_mconfig(config);
 
-	/* add a upd7725; this is on the 837-8341 daughterboard which plugs into the socket on the master pcb's ROM board where an fd1149 could go */
-	upd7725_device &dsp(UPD7725(config, "dsp", 8000000)); // TODO: Find real clock speed for the upd7725; this is a canned oscillator on the 837-8341 pcb
+	// add a upd7725; this is on the 837-8341 daughterboard which plugs into the socket on the master pcb's ROM board where an fd1149 could go
+	upd7725_device &dsp(UPD7725(config, "dsp", 16_MHz_XTAL/2));
 	dsp.set_addrmap(AS_PROGRAM, &segas32_upd7725_state::upd7725_prg_map);
 	dsp.set_addrmap(AS_DATA, &segas32_upd7725_state::upd7725_data_map);
 	dsp.set_disable(); // TODO: disable for now, needs DMA pins and interrupts implemented in upd7725 core
+
 	// TODO: find /INT source for upd7725
 	// TODO: figure out how the p0 and p1 lines from the upd7725 affect the mainboard; do they select one of four (or 8) latches to/from the mainboard?
 	// TODO: trace out the 837-8341 pcb
-	// See HLE of this dsp in /src/mame/machine/segas32.cpp : arescue_dsp_r and arescue_dsp_w
+	// See HLE of this dsp in segas32_m.cpp: arescue_dsp_r and arescue_dsp_w
 }
 
 DEFINE_DEVICE_TYPE(SEGA_S32_UPD7725_DEVICE, segas32_upd7725_state, "segas32_pcb_upd7725", "Sega System 32 uPD7725 PCB")
@@ -2477,7 +2460,6 @@ segas32_upd7725_state::segas32_upd7725_state(const machine_config &mconfig, cons
 	: segas32_analog_state(mconfig, SEGA_S32_UPD7725_DEVICE, tag, owner, clock)
 {
 }
-
 
 
 
@@ -2508,13 +2490,8 @@ void segas32_state::system32_cd_map(address_map &map)
 {
 	map.unmap_value_high();
 	system32_map(map);
-	map(0xc00040, 0xc0005f).mirror(0x0fff80).m("scsi:7:spc", FUNC(mb89352_device::map)).umask16(0x00ff);
+	map(0xc00040, 0xc0005f).mirror(0x0fff80).m("spc", FUNC(mb89352_device::map)).umask16(0x00ff);
 	map(0xc00060, 0xc0006f).mirror(0x0fff80).rw("cxdio", FUNC(cxd1095_device::read), FUNC(cxd1095_device::write)).umask16(0x00ff);
-}
-
-static void scsi_devices(device_slot_interface &device)
-{
-	device.option_add("cdrom", NSCSI_CDROM);
 }
 
 void segas32_cd_state::device_add_mconfig(machine_config &config)
@@ -2523,28 +2500,17 @@ void segas32_cd_state::device_add_mconfig(machine_config &config)
 
 	m_maincpu->set_addrmap(AS_PROGRAM, &segas32_cd_state::system32_cd_map);
 
-	NSCSI_BUS(config, "scsi");
-	NSCSI_CONNECTOR(config, "scsi:0").option_set("cdrom", NSCSI_CDROM).machine_config(
-		[](device_t *device)
-		{
-			device->subdevice<cdda_device>("cdda")->add_route(0, "^^lspeaker", 1.0);
-			device->subdevice<cdda_device>("cdda")->add_route(1, "^^rspeaker", 1.0);
-		});
-	NSCSI_CONNECTOR(config, "scsi:1", scsi_devices, nullptr);
-	NSCSI_CONNECTOR(config, "scsi:2", scsi_devices, nullptr);
-	NSCSI_CONNECTOR(config, "scsi:3", scsi_devices, nullptr);
-	NSCSI_CONNECTOR(config, "scsi:4", scsi_devices, nullptr);
-	NSCSI_CONNECTOR(config, "scsi:5", scsi_devices, nullptr);
-	NSCSI_CONNECTOR(config, "scsi:6", scsi_devices, nullptr);
-	NSCSI_CONNECTOR(config, "scsi:7").option_set("spc", MB89352).machine_config(
-		[this](device_t *device)
-		{
-			mb89352_device &spc = downcast<mb89352_device &>(*device);
+	auto &scsi(NSCSI_BUS(config, "scsi"));
 
-			spc.set_clock(8_MHz_XTAL);
-			spc.out_irq_callback().set(*this, FUNC(segas32_cd_state::scsi_irq_w));
-			spc.out_dreq_callback().set(*this, FUNC(segas32_cd_state::scsi_drq_w));
-		});
+	auto &cdrom(NSCSI_CDROM(config, "cdrom"));
+	scsi.set_external_device(0, cdrom);
+	cdrom.subdevice<cdda_device>("cdda")->add_route(0, "speaker", 1.0, 0);
+	cdrom.subdevice<cdda_device>("cdda")->add_route(1, "speaker", 1.0, 1);
+
+	auto &spc(MB89352(config, "spc", 8_MHz_XTAL));
+	scsi.set_external_device(7, spc);
+	spc.out_irq_callback().set(DEVICE_SELF, FUNC(segas32_cd_state::scsi_irq_w));
+	spc.out_dreq_callback().set(DEVICE_SELF, FUNC(segas32_cd_state::scsi_drq_w));
 
 	cxd1095_device &cxdio(CXD1095(config, "cxdio"));
 	cxdio.out_porta_cb().set(FUNC(segas32_cd_state::lamps1_w));
@@ -2564,6 +2530,9 @@ segas32_cd_state::segas32_cd_state(const machine_config &mconfig, const char *ta
 
 void sega_multi32_state::device_add_mconfig(machine_config &config)
 {
+	constexpr XTAL MASTER_CLOCK = 32_MHz_XTAL;
+	constexpr XTAL MULTI32_CLOCK = 40_MHz_XTAL;
+
 	/* basic machine hardware */
 	V70(config, m_maincpu, MULTI32_CLOCK/2);
 	m_maincpu->set_addrmap(AS_PROGRAM, &sega_multi32_state::multi32_map);
@@ -2573,7 +2542,7 @@ void sega_multi32_state::device_add_mconfig(machine_config &config)
 	m_soundcpu->set_addrmap(AS_PROGRAM, &sega_multi32_state::multi32_sound_map);
 	m_soundcpu->set_addrmap(AS_IO, &sega_multi32_state::multi32_sound_portmap);
 
-	sega_315_5296_device &io_chip_0(SEGA_315_5296(config, "io_chip_0", 0)); // unknown clock
+	sega_315_5296_device &io_chip_0(SEGA_315_5296(config, "io_chip_0", MASTER_CLOCK/4));
 	io_chip_0.in_pa_callback().set_ioport("P1_A");
 	io_chip_0.in_pb_callback().set_ioport("P2_A");
 	io_chip_0.in_pc_callback().set_ioport("PORTC_A");
@@ -2585,7 +2554,7 @@ void sega_multi32_state::device_add_mconfig(machine_config &config)
 	io_chip_0.out_cnt1_callback().set(FUNC(segas32_state::display_enable_w<0>));
 	io_chip_0.out_cnt2_callback().set_inputline(m_soundcpu, INPUT_LINE_RESET).invert();
 
-	sega_315_5296_device &io_chip_1(SEGA_315_5296(config, "io_chip_1", 0)); // unknown clock
+	sega_315_5296_device &io_chip_1(SEGA_315_5296(config, "io_chip_1", MASTER_CLOCK/4));
 	io_chip_1.in_pa_callback().set_ioport("P1_B");
 	io_chip_1.in_pb_callback().set_ioport("P2_B");
 	io_chip_1.in_pc_callback().set_ioport("PORTC_B");
@@ -2621,18 +2590,19 @@ void sega_multi32_state::device_add_mconfig(machine_config &config)
 	screen2.set_screen_update(FUNC(segas32_state::screen_update_multi32_right));
 
 	/* sound hardware */
-	SPEAKER(config, "lspeaker").front_left();
-	SPEAKER(config, "rspeaker").front_right();
+	/* Two mono speakers in separate cabinets */
+	SPEAKER(config, "sleft").front_center();
+	SPEAKER(config, "sright").front_center();
 
 	ym3438_device &ymsnd(YM3438(config, "ymsnd", MASTER_CLOCK/4));
 	ymsnd.irq_handler().set(FUNC(segas32_state::ym3438_irq_handler));
-	ymsnd.add_route(1, "lspeaker", 0.40);
-	ymsnd.add_route(0, "rspeaker", 0.40);
+	ymsnd.add_route(1, "sleft", 0.15);
+	ymsnd.add_route(0, "sright", 0.15);
 
 	MULTIPCM(config, m_multipcm, MULTI32_CLOCK/4);
 	m_multipcm->set_addrmap(0, &sega_multi32_state::multipcm_map);
-	m_multipcm->add_route(1, "lspeaker", 1.0);
-	m_multipcm->add_route(0, "rspeaker", 1.0);
+	m_multipcm->add_route(1, "sleft", 0.35);
+	m_multipcm->add_route(0, "sright", 0.35);
 
 	S32COMM(config, m_s32comm, 0);
 }
@@ -2852,12 +2822,12 @@ void segas32_new_state::sega_multi32_6p(machine_config &config)
 	SEGA_MULTI32_6PLAYER_DEVICE(config, "mainpcb", 0);
 }
 
+
 /*************************************
  *
  *  ROM definition(s)
  *
  *************************************/
-
 
 #define ROM_LOAD_x2(name, base, length, crc) \
 	ROM_LOAD( name, base + 0 * length, length, crc ) \
@@ -4314,7 +4284,7 @@ ROM_START( kokoroj )
 	ROM_LOAD64_WORD( "mpr-15534.ic25", 0x800006, 0x200000, CRC(4fa5c56d) SHA1(52926bef0f21ef17dc9d49e3137712bf6d8c29af) )
 
 	// Audio CD
-	DISK_REGION( "mainpcb:scsi:0:cdrom" )
+	DISK_REGION( "mainpcb:cdrom" )
 	DISK_IMAGE_READONLY( "kokoroj", 0, NO_DUMP )
 ROM_END
 
@@ -4344,7 +4314,7 @@ ROM_START( kokoroja )
 	ROM_LOAD64_WORD( "mpr-15534.ic25", 0x800006, 0x200000, CRC(4fa5c56d) SHA1(52926bef0f21ef17dc9d49e3137712bf6d8c29af) )
 
 	// Audio CD
-	DISK_REGION( "mainpcb:scsi:0:cdrom" )
+	DISK_REGION( "mainpcb:cdrom" )
 	DISK_IMAGE_READONLY( "kokoroj", 0, NO_DUMP )
 ROM_END
 
@@ -4385,7 +4355,7 @@ ROM_START( kokoroj2 )
 	ROM_LOAD64_WORD( "mpr-16196.ic25", 0x800006, 0x200000, CRC(b8e22e05) SHA1(dd667e2c5d421cba356421825e6aca9b5ca0af45) )
 
 	/* AUDIO CD */
-	DISK_REGION( "mainpcb:scsi:0:cdrom" )
+	DISK_REGION( "mainpcb:cdrom" )
 	DISK_IMAGE_READONLY( "cdp-00146", 0, SHA1(0b37e0ea2380ecd9abef2ccd6a8096d76d2ba344) )
 ROM_END
 
@@ -5058,7 +5028,7 @@ ROM_START( scross )
 	ROM_LOAD( "mpr-15031.ic1", 0x000000, 0x100000, CRC(6af139dc) SHA1(2378c2ad0c52c114eb93206a6fbee723c038d030) )
 	ROM_LOAD( "mpr-15032.ic2", 0x200000, 0x100000, CRC(915d6096) SHA1(e1f670949b1254f5a3c3131993ca9b3baa4d9f6b) )
 
-	ROM_REGION( 0x20000, "user2", 0 ) /*  comms board? - might not belong to this game, just going based on epr number  */
+	ROM_REGION( 0x20000, "user2", 0 ) /* comms board confirmed */
 	ROM_LOAD( "epr-15033.ic17", 0x00000, 0x20000, CRC(dc19ac00) SHA1(16bbb5af034e5419673e637be30283b73ab7b290) )
 ROM_END
 
@@ -5127,6 +5097,9 @@ ROM_START( scrossu )
 	ROM_REGION( 0x400000, "mainpcb:sega", 0 ) /* Sega PCM sound data */
 	ROM_LOAD( "mpr-15031.ic1", 0x000000, 0x100000, CRC(6af139dc) SHA1(2378c2ad0c52c114eb93206a6fbee723c038d030) )
 	ROM_LOAD( "mpr-15032.ic2", 0x200000, 0x100000, CRC(915d6096) SHA1(e1f670949b1254f5a3c3131993ca9b3baa4d9f6b) )
+
+	ROM_REGION( 0x20000, "user2", 0 ) /* comms board confirmed */
+	ROM_LOAD( "epr-15033.ic17", 0x00000, 0x20000, CRC(dc19ac00) SHA1(16bbb5af034e5419673e637be30283b73ab7b290) )
 ROM_END
 
 
@@ -5410,23 +5383,98 @@ ROM_END
     AS-1 - Multi-32
     not protected?
 */
-ROM_START( as1 )
+ROM_START( as1 ) // 'AS-1 CONTROLLER FOR SYSTEM 32 MULTI'
 	ROM_REGION( 0x200000, "mainpcb:maincpu", 0 ) /* v60 code */
-	ROM_LOAD32_WORD_x4( "epr15420.ic37", 0x000000, 0x20000, CRC(1f9747b0) SHA1(51d1fbccf6960967d4458ba26fad42ac51978c67) )
-	ROM_LOAD32_WORD_x4( "epr15421.ic40", 0x000002, 0x20000, CRC(aa96422a) SHA1(21cf327d102f5c7c4a4e41d889d9b4d10c44de35) )
+	ROM_LOAD32_WORD_x4( "epr-15420.ic37", 0x000000, 0x20000, CRC(1f9747b0) SHA1(51d1fbccf6960967d4458ba26fad42ac51978c67) )
+	ROM_LOAD32_WORD_x4( "epr-15421.ic40", 0x000002, 0x20000, CRC(aa96422a) SHA1(21cf327d102f5c7c4a4e41d889d9b4d10c44de35) )
 
 	ROM_REGION( 0x80000, "mainpcb:soundcpu", 0 ) /* sound CPU */
-	ROM_LOAD_x4( "epr15367.ic31", 0x00000, 0x20000, CRC(0220f078) SHA1(9fab79fc91764ecf678bfa4d38d1b4054e258b76) )
+	ROM_LOAD_x4( "epr-15367.ic31", 0x00000, 0x20000, CRC(0220f078) SHA1(9fab79fc91764ecf678bfa4d38d1b4054e258b76) )
 
 	ROM_REGION( 0x100000, "mainpcb:gfx1", 0 ) /* tiles */
-	ROM_LOAD16_BYTE( "epr15422.ic3",  0x000000, 0x080000, CRC(6c61ba6d) SHA1(b41237ced4a2e8741ae0339c333bea4221903690) )
-	ROM_LOAD16_BYTE( "epr15423.ic11", 0x000001, 0x080000, CRC(5178912a) SHA1(b637451c28877ddc93c9920bea356888b4c8eea3) )
+	ROM_LOAD16_BYTE( "epr-15422.ic3",  0x000000, 0x080000, CRC(6c61ba6d) SHA1(b41237ced4a2e8741ae0339c333bea4221903690) )
+	ROM_LOAD16_BYTE( "epr-15423.ic11", 0x000001, 0x080000, CRC(5178912a) SHA1(b637451c28877ddc93c9920bea356888b4c8eea3) )
 
 	ROM_REGION32_BE( 0x1000000, "mainpcb:sprites", ROMREGION_ERASEFF ) /* sprites */
 	// empty
 
 	ROM_REGION( 0x400000, "mainpcb:sega", ROMREGION_ERASEFF ) /* Sega PCM sound data */
 	// empty
+ROM_END
+
+// 837-9414-04 sticker
+ROM_START( as1a ) // 'AS-1 CONTROLLER FOR SYSTEM MULTI 32' 'with Michael Jackson Scramble training'
+	ROM_REGION( 0x200000, "mainpcb:maincpu", 0 ) /* v60 code */
+	ROM_LOAD32_WORD_x4( "epr-16631.ic37", 0x000000, 0x20000, CRC(fef1a8ef) SHA1(faf530b909e936f980c1a3030aceba878d3ff191) )
+	ROM_LOAD32_WORD_x4( "epr-16632.ic40", 0x000002, 0x20000, CRC(e41dbf85) SHA1(1009c923a7c64eb419f62e499f5ee05eed525699) )
+
+	ROM_REGION( 0x80000, "mainpcb:soundcpu", 0 ) /* sound CPU */
+	ROM_LOAD_x4( "epr-15367.ic31", 0x00000, 0x20000, CRC(0220f078) SHA1(9fab79fc91764ecf678bfa4d38d1b4054e258b76) )
+
+	ROM_REGION( 0x100000, "mainpcb:gfx1", 0 ) /* tiles */
+	ROM_LOAD16_BYTE( "epr-15422.ic3",  0x000000, 0x080000, CRC(6c61ba6d) SHA1(b41237ced4a2e8741ae0339c333bea4221903690) )
+	ROM_LOAD16_BYTE( "epr-15423.ic11", 0x000001, 0x080000, CRC(5178912a) SHA1(b637451c28877ddc93c9920bea356888b4c8eea3) )
+
+	ROM_REGION32_BE( 0x1000000, "mainpcb:sprites", ROMREGION_ERASEFF ) /* sprites */
+	// empty
+
+	ROM_REGION( 0x400000, "mainpcb:sega", ROMREGION_ERASEFF ) /* Sega PCM sound data */
+	// empty
+ROM_END
+
+// 837-9414-01 sticker
+ROM_START( as1b ) // 'AS-1 CONTROLLER FOR SYSTEM MULTI 32' 'with Michael Jackson Scramble training'
+	ROM_REGION( 0x200000, "mainpcb:maincpu", 0 ) /* v60 code */
+	ROM_LOAD32_WORD_x4( "epr-17881.ic37", 0x000000, 0x20000, CRC(4f69cb5b) SHA1(c69404ff3885e28d5f44aaec15348f3cf39b037a) )
+	ROM_LOAD32_WORD_x4( "epr-17882.ic40", 0x000002, 0x20000, CRC(06de75f5) SHA1(a4bae6c60f003c402354d538752ce977bcdcbbd5) )
+	ROM_LOAD32_WORD( "epr-15357.ic36",    0x100000, 0x80000, CRC(5e7a4d40) SHA1(ad5ce4175bf146e32b389d159d885221ffece3f4) )
+	ROM_LOAD32_WORD( "epr-15358.ic39",    0x100002, 0x80000, CRC(b262a1ab) SHA1(9457a00b92ad5718baff30c71f73340ade9fbc52) )
+
+	ROM_REGION( 0x80000, "mainpcb:soundcpu", 0 ) /* sound CPU */
+	ROM_LOAD_x4( "epr-15367.ic31", 0x00000, 0x20000, CRC(0220f078) SHA1(9fab79fc91764ecf678bfa4d38d1b4054e258b76) )
+
+	ROM_REGION( 0x100000, "mainpcb:gfx1", 0 ) /* tiles */
+	ROM_LOAD16_BYTE( "epr-15363.ic3",  0x000000, 0x080000, CRC(1586b05c) SHA1(053e665afaace36337dc59356d2b81f492440486) )
+	ROM_LOAD16_BYTE( "epr-15364.ic11", 0x000001, 0x080000, CRC(ec751e99) SHA1(09b09ebff5063c7a95b49704f915955fe0f74b04) )
+
+	ROM_REGION32_BE( 0x400000, "mainpcb:sprites", 0 ) /* sprites */
+	ROM_LOAD64_WORD( "epr-15359.ic14", 0x000000, 0x100000, CRC(39b5f9c6) SHA1(c2df9daed4c52625b3620a2c740d37369d54dbf4) )
+	ROM_LOAD64_WORD( "epr-15360.ic15", 0x000002, 0x100000, CRC(1cb862d6) SHA1(25bc3f4ff57cb0cd13e12c19dac3d4641f40063e) )
+	ROM_LOAD64_WORD( "epr-15361.ic10", 0x000004, 0x100000, CRC(0f45174c) SHA1(61d4c8c89c7a525a6fe4f407890f479ee4479f17) )
+	ROM_LOAD64_WORD( "epr-15362.ic38", 0x000006, 0x100000, CRC(09f713db) SHA1(bf4c824c882f7c85e5b3e1102463e0d1a6abf405) )
+
+	ROM_REGION( 0x400000, "mainpcb:sega", ROMREGION_ERASEFF ) /* Sega PCM sound data */
+	ROM_LOAD( "epr-15365.ic1", 0x000000, 0x100000, CRC(56d47661) SHA1(c36426fcbdd3b4315be66f64c088ad3573cf28a3) )
+	ROM_LOAD( "epr-15366.ic2", 0x100000, 0x100000, CRC(9ac14e99) SHA1(ad934860f2da74e0308a1f6dff664c9fac9a0e0b) )
+ROM_END
+
+// 837-9414-02 sticker
+ROM_START( as1c ) // 'AS-1 CONTROLLER FOR SYSTEM MULTI 32' ' with Michael Jackson Scramble training'
+	ROM_REGION( 0x200000, "mainpcb:maincpu", 0 ) /* v60 code */
+	ROM_LOAD32_WORD_x4( "epr-15683.ic37",   0x000000, 0x20000, CRC(323426f0) SHA1(81327c1e846ba06d5869303ea9163ece33d99612) )
+	ROM_LOAD32_WORD_SWAP( "epr-15684.ic40", 0x000002, 0x20000, CRC(fc418a55) SHA1(72dfc859c7186b77ce08cd98259af0cf65e045f0) ) // weirdly, word swapped??
+	ROM_RELOAD(                             0x040002, 0x20000 )
+	ROM_RELOAD(                             0x080002, 0x20000 )
+	ROM_RELOAD(                             0x0c0002, 0x20000 )
+	ROM_LOAD32_WORD( "epr-15685.ic36",      0x100000, 0x80000, CRC(5da82597) SHA1(c516dc2f223f396412ff1a52f11ca81f3534b525) )
+	ROM_LOAD32_WORD( "epr-15686.ic39",      0x100002, 0x80000, CRC(f11a50fd) SHA1(fd9ed2a9dec3ebbf5c72cae69e72b5be88fa4b41) )
+
+	ROM_REGION( 0x80000, "mainpcb:soundcpu", 0 ) /* sound CPU */
+	ROM_LOAD_x4( "epr-15695.ic31", 0x00000, 0x20000, CRC(a9760b04) SHA1(7a69d80219c3e5817104d5ca8df08796a63b30a0) )
+
+	ROM_REGION( 0x100000, "mainpcb:gfx1", 0 ) /* tiles */
+	ROM_LOAD16_BYTE( "epr-15363.ic3",  0x000000, 0x080000, CRC(1586b05c) SHA1(053e665afaace36337dc59356d2b81f492440486) )
+	ROM_LOAD16_BYTE( "epr-15364.ic11", 0x000001, 0x080000, CRC(ec751e99) SHA1(09b09ebff5063c7a95b49704f915955fe0f74b04) )
+
+	ROM_REGION32_BE( 0x400000, "mainpcb:sprites", 0 ) /* sprites */
+	ROM_LOAD64_WORD( "epr-15689.ic14", 0x000000, 0x100000, CRC(bb8fc39e) SHA1(2ff37ca7745aa1686102f08ea6f2c62a0337a5a3) )
+	ROM_LOAD64_WORD( "epr-15690.ic15", 0x000002, 0x100000, CRC(b26fb774) SHA1(3a576d9dfd8c024309abf90094f4a6aee9e02c03) )
+	ROM_LOAD64_WORD( "epr-15691.ic10", 0x000004, 0x100000, CRC(b3d2732b) SHA1(d8e741205fd1b749b3720f02733d4600e85bbbbe) )
+	ROM_LOAD64_WORD( "epr-15692.ic38", 0x000006, 0x100000, CRC(2c18f008) SHA1(3574cf6202f8158942c71731d8708acd724ae147) )
+
+	ROM_REGION( 0x400000, "mainpcb:sega", ROMREGION_ERASEFF ) /* Sega PCM sound data */
+	ROM_LOAD( "epr-15693.ic1", 0x000000, 0x100000, CRC(1bf02938) SHA1(d702ce631f47467c2e59cc25e940c8a59906cd75) )
+	ROM_LOAD( "epr-15694.ic2", 0x100000, 0x100000, CRC(831c23cd) SHA1(9dcf789eddccc424becf964cb9a47d7a9d833841) )
 ROM_END
 
 /*************************************
@@ -5847,8 +5895,8 @@ void segas32_state::init_jpark()
 
 	segas32_common_init();
 
-	pROM[0xC15A8/2] = 0xCD70;
-	pROM[0xC15AA/2] = 0xD8CD;
+	pROM[0xc15a8/2] = 0xcd70;
+	pROM[0xc15aa/2] = 0xd8cd;
 
 	m_sw1_output = &segas32_state::jpark_sw1_output;
 }
@@ -6023,11 +6071,14 @@ GAME( 1992, orunnersu, orunners, sega_multi32_analog,       orunners, segas32_ne
 GAME( 1992, orunnersj, orunners, sega_multi32_analog,       orunners, segas32_new_state, init_orunners, ROT0, "Sega", "OutRunners (Japan)", MACHINE_IMPERFECT_GRAPHICS )
 
 GAME( 1992, scross,    0,        sega_multi32_analog,       scross,   segas32_new_state, init_scross,   ROT0, "Sega", "Stadium Cross (World)", MACHINE_IMPERFECT_GRAPHICS )
-GAME( 1992, scrossa,   scross,   sega_multi32_analog,       scross,   segas32_new_state, init_scross,   ROT0, "Sega", "Stadium Cross (World, alt)", MACHINE_IMPERFECT_GRAPHICS )
+GAME( 1992, scrossa,   scross,   sega_multi32_analog,       scross,   segas32_new_state, init_scross,   ROT0, "Sega", "Stadium Cross (World, linkable)", MACHINE_IMPERFECT_GRAPHICS )
 GAME( 1992, scrossu,   scross,   sega_multi32_analog,       scross,   segas32_new_state, init_scross,   ROT0, "Sega", "Stadium Cross (US)", MACHINE_IMPERFECT_GRAPHICS )
 
 GAME( 1992, titlef,    0,        sega_multi32,              titlef,   segas32_new_state, init_titlef,   ROT0, "Sega",   "Title Fight (World)", MACHINE_IMPERFECT_GRAPHICS )
 GAME( 1992, titlefu,   titlef,   sega_multi32,              titlef,   segas32_new_state, init_titlef,   ROT0, "Sega",   "Title Fight (US)", MACHINE_IMPERFECT_GRAPHICS )
 GAME( 1992, titlefj,   titlef,   sega_multi32,              titlef,   segas32_new_state, init_titlef,   ROT0, "Sega",   "Title Fight (Japan)", MACHINE_IMPERFECT_GRAPHICS )
 
-GAME( 1993, as1,       0,        sega_multi32,              multi32_generic,  segas32_new_state, init_holo, ROT0, "Sega",   "AS-1 Controller", MACHINE_NOT_WORKING | MACHINE_IMPERFECT_GRAPHICS | MACHINE_IMPERFECT_SOUND ) // needs laserdisc emulation
+GAME( 1993, as1,       0,        sega_multi32,              multi32_generic,  segas32_new_state, init_holo, ROT0, "Sega",   "AS-1 Controller (set 1)", MACHINE_NOT_WORKING | MACHINE_IMPERFECT_GRAPHICS | MACHINE_IMPERFECT_SOUND ) // needs laserdisc emulation
+GAME( 1993, as1a,      as1,      sega_multi32,              multi32_generic,  segas32_new_state, init_holo, ROT0, "Sega",   "AS-1 Controller (set 2)", MACHINE_NOT_WORKING | MACHINE_IMPERFECT_GRAPHICS | MACHINE_IMPERFECT_SOUND ) // needs laserdisc emulation
+GAME( 1993, as1b,      as1,      sega_multi32,              multi32_generic,  segas32_new_state, init_holo, ROT0, "Sega",   "AS-1 Controller (set 3)", MACHINE_NOT_WORKING | MACHINE_IMPERFECT_GRAPHICS | MACHINE_IMPERFECT_SOUND ) // needs laserdisc emulation
+GAME( 1993, as1c,      as1,      sega_multi32,              multi32_generic,  segas32_new_state, init_holo, ROT0, "Sega",   "AS-1 Controller (set 4)", MACHINE_NOT_WORKING | MACHINE_IMPERFECT_GRAPHICS | MACHINE_IMPERFECT_SOUND ) // needs laserdisc emulation

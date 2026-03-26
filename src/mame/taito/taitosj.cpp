@@ -148,15 +148,15 @@ port B: bit 0 NMI enable
 
 Notes:
 ------
-- Alpine Sky uses the feature where write to d50e-d50f can be processed by a PAL and
+- Alpine Ski uses the feature where write to d50e-d50f can be processed by a PAL and
   answer read back from d40b.
 
 Kickstart Wheelie King :
-- additional ram @ $d800-$dfff (scroll ram  + ??)
+- additional ram @ $d800-$dfff (scroll ram + ??)
 - color bank @ $d000-$d001
 - taitosj_scroll @ $d002-$d007
 - strange controls :
-     - 'revolve type' - 3 pos switch (gears) +  button/pedal (accel)
+     - 'revolve type' - 3 pos switch (gears) + button/pedal (accel)
      - two buttons for gear change, auto acceleration
 
 TODO:
@@ -168,7 +168,6 @@ TODO:
 #include "emu.h"
 #include "taitosj.h"
 
-#include "cpu/z80/z80.h"
 #include "machine/watchdog.h"
 #include "speaker.h"
 
@@ -196,7 +195,7 @@ void taitosj_state::sound_semaphore2_w(uint8_t data)
 	machine().scheduler().synchronize(timer_expired_delegate(FUNC(taitosj_state::sound_semaphore2_w_cb), this), data);
 }
 
-CUSTOM_INPUT_MEMBER(taitosj_state::input_port_4_f0_r)
+ioport_value taitosj_state::input_port_4_f0_r()
 {
 	return m_input_port_4_f0;
 }
@@ -255,7 +254,7 @@ void taitosj_state::main_mcu_map(address_map &map)
 // seems the most logical way to do the gears
 
 template <int Player>
-CUSTOM_INPUT_MEMBER(taitosj_state::kikstart_gear_r)
+ioport_value taitosj_state::kikstart_gear_r()
 {
 	// gear MUST be 1, 2 or 3
 	if (m_gear[Player]->read() & 0x01) m_kikstart_gears[Player] = 0x02;
@@ -507,7 +506,7 @@ static INPUT_PORTS_START( spaceskr )
 
 	PORT_START("IN4")
 	PORT_BIT( 0x0f, IP_ACTIVE_LOW, IPT_UNKNOWN )
-	PORT_BIT( 0xf0, IP_ACTIVE_HIGH, IPT_CUSTOM ) PORT_CUSTOM_MEMBER(taitosj_state, input_port_4_f0_r)    // from sound CPU
+	PORT_BIT( 0xf0, IP_ACTIVE_HIGH, IPT_CUSTOM ) PORT_CUSTOM_MEMBER(FUNC(taitosj_state::input_port_4_f0_r))    // from sound CPU
 
 	PORT_START("DSW1")
 	PORT_DIPNAME( 0x01, 0x01, DEF_STR( Unknown ) )         PORT_DIPLOCATION("SWA:1")
@@ -589,7 +588,7 @@ static INPUT_PORTS_START( spacecr )
 
 	PORT_START("IN4")
 	PORT_BIT( 0x0f, IP_ACTIVE_LOW, IPT_UNKNOWN )
-	PORT_BIT( 0xf0, IP_ACTIVE_HIGH, IPT_CUSTOM ) PORT_CUSTOM_MEMBER(taitosj_state, input_port_4_f0_r)    // from sound CPU
+	PORT_BIT( 0xf0, IP_ACTIVE_HIGH, IPT_CUSTOM ) PORT_CUSTOM_MEMBER(FUNC(taitosj_state::input_port_4_f0_r))    // from sound CPU
 
 	PORT_START("DSW1") // according to the manual, dips 1, 2, 3 and 6 are unused but should be left off
 	PORT_DIPNAME( 0x01, 0x01, DEF_STR( Unused ) )          PORT_DIPLOCATION("SWA:1")
@@ -673,7 +672,7 @@ static INPUT_PORTS_START( junglek )
 
 	PORT_START("IN4")
 	PORT_BIT( 0x0f, IP_ACTIVE_LOW, IPT_UNKNOWN )
-	PORT_BIT( 0xf0, IP_ACTIVE_HIGH, IPT_CUSTOM ) PORT_CUSTOM_MEMBER(taitosj_state, input_port_4_f0_r)    // from sound CPU
+	PORT_BIT( 0xf0, IP_ACTIVE_HIGH, IPT_CUSTOM ) PORT_CUSTOM_MEMBER(FUNC(taitosj_state::input_port_4_f0_r))    // from sound CPU
 
 	PORT_START("DSW1")
 	PORT_DIPNAME( 0x03, 0x03, "Finish Bonus" )             PORT_DIPLOCATION("SWA:1,2")
@@ -792,7 +791,7 @@ static INPUT_PORTS_START( alpine )
 
 	PORT_START("IN4")
 	PORT_BIT( 0x0f, IP_ACTIVE_LOW, IPT_UNKNOWN )
-	PORT_BIT( 0xf0, IP_ACTIVE_HIGH, IPT_CUSTOM ) PORT_CUSTOM_MEMBER(taitosj_state, input_port_4_f0_r)    // from sound CPU
+	PORT_BIT( 0xf0, IP_ACTIVE_HIGH, IPT_CUSTOM ) PORT_CUSTOM_MEMBER(FUNC(taitosj_state::input_port_4_f0_r))    // from sound CPU
 
 	PORT_START("DSW1")
 	PORT_DIPNAME( 0x03, 0x03, "Jump Bonus" )               PORT_DIPLOCATION("SWA:1,2")
@@ -877,7 +876,7 @@ static INPUT_PORTS_START( alpinea )
 
 	PORT_START("IN4")
 	PORT_BIT( 0x0f, IP_ACTIVE_LOW, IPT_UNKNOWN )
-	PORT_BIT( 0xf0, IP_ACTIVE_HIGH, IPT_CUSTOM ) PORT_CUSTOM_MEMBER(taitosj_state, input_port_4_f0_r)    // from sound CPU
+	PORT_BIT( 0xf0, IP_ACTIVE_HIGH, IPT_CUSTOM ) PORT_CUSTOM_MEMBER(FUNC(taitosj_state::input_port_4_f0_r))    // from sound CPU
 
 	PORT_START("DSW1")
 	PORT_DIPNAME( 0x03, 0x03, "Jump Bonus" )               PORT_DIPLOCATION("SWA:1,2")
@@ -955,7 +954,7 @@ static INPUT_PORTS_START( timetunl )
 
 	PORT_START("IN4")
 	PORT_BIT( 0x0f, IP_ACTIVE_LOW, IPT_UNKNOWN )
-	PORT_BIT( 0xf0, IP_ACTIVE_HIGH, IPT_CUSTOM ) PORT_CUSTOM_MEMBER(taitosj_state, input_port_4_f0_r)    // from sound CPU
+	PORT_BIT( 0xf0, IP_ACTIVE_HIGH, IPT_CUSTOM ) PORT_CUSTOM_MEMBER(FUNC(taitosj_state::input_port_4_f0_r))    // from sound CPU
 
 	PORT_START("DSW1")
 	PORT_DIPNAME( 0x01, 0x01, DEF_STR( Unknown ) )         PORT_DIPLOCATION("SWA:1")
@@ -1155,7 +1154,7 @@ static INPUT_PORTS_START( elevator )
 
 	PORT_START("IN4")
 	PORT_BIT( 0x0f, IP_ACTIVE_LOW, IPT_UNKNOWN )
-	PORT_BIT( 0xf0, IP_ACTIVE_HIGH, IPT_CUSTOM ) PORT_CUSTOM_MEMBER(taitosj_state, input_port_4_f0_r)    // from sound CPU
+	PORT_BIT( 0xf0, IP_ACTIVE_HIGH, IPT_CUSTOM ) PORT_CUSTOM_MEMBER(FUNC(taitosj_state::input_port_4_f0_r))    // from sound CPU
 
 	PORT_START("DSW1")
 	PORT_DIPNAME( 0x03, 0x03, DEF_STR( Bonus_Life ) )      PORT_DIPLOCATION("SWA:1,2")
@@ -1238,7 +1237,7 @@ static INPUT_PORTS_START( tinstar )
 	PORT_BIT( 0x02, IP_ACTIVE_LOW, IPT_JOYSTICKLEFT_RIGHT ) PORT_8WAY PORT_COCKTAIL
 	PORT_BIT( 0x04, IP_ACTIVE_LOW, IPT_JOYSTICKLEFT_DOWN ) PORT_8WAY PORT_COCKTAIL
 	PORT_BIT( 0x08, IP_ACTIVE_LOW, IPT_JOYSTICKLEFT_UP ) PORT_8WAY PORT_COCKTAIL
-	PORT_BIT( 0xf0, IP_ACTIVE_HIGH, IPT_CUSTOM ) PORT_CUSTOM_MEMBER(taitosj_state, input_port_4_f0_r)    // from sound CPU
+	PORT_BIT( 0xf0, IP_ACTIVE_HIGH, IPT_CUSTOM ) PORT_CUSTOM_MEMBER(FUNC(taitosj_state::input_port_4_f0_r))    // from sound CPU
 
 	PORT_START("DSW1")
 	PORT_DIPNAME( 0x03, 0x03, "Bonus Life Range?" )         PORT_DIPLOCATION("SWA:1,2")  // manual says "scores for additional players"... but what does that mean?
@@ -1320,7 +1319,7 @@ static INPUT_PORTS_START( waterski )
 
 	PORT_START("IN4")
 	PORT_BIT( 0x0f, IP_ACTIVE_LOW, IPT_UNKNOWN )
-	PORT_BIT( 0xf0, IP_ACTIVE_HIGH, IPT_CUSTOM ) PORT_CUSTOM_MEMBER(taitosj_state, input_port_4_f0_r)    // from sound CPU
+	PORT_BIT( 0xf0, IP_ACTIVE_HIGH, IPT_CUSTOM ) PORT_CUSTOM_MEMBER(FUNC(taitosj_state::input_port_4_f0_r))    // from sound CPU
 
 	PORT_START("DSW1")
 	PORT_DIPNAME( 0x01, 0x01, DEF_STR( Unknown ) )         PORT_DIPLOCATION("SWA:1")
@@ -1409,7 +1408,7 @@ static INPUT_PORTS_START( bioatack )
 
 	PORT_START("IN4")
 	PORT_BIT( 0x0f, IP_ACTIVE_LOW, IPT_UNKNOWN )
-	PORT_BIT( 0xf0, IP_ACTIVE_HIGH, IPT_CUSTOM ) PORT_CUSTOM_MEMBER(taitosj_state, input_port_4_f0_r)    // from sound CPU
+	PORT_BIT( 0xf0, IP_ACTIVE_HIGH, IPT_CUSTOM ) PORT_CUSTOM_MEMBER(FUNC(taitosj_state::input_port_4_f0_r))    // from sound CPU
 
 	PORT_START("DSW1")      // d50a
 	PORT_DIPNAME( 0x03, 0x03, DEF_STR( Bonus_Life ) )      PORT_DIPLOCATION("SWA:1,2")
@@ -1476,7 +1475,7 @@ static INPUT_PORTS_START( sfposeid )
 
 	PORT_START("IN4")
 	PORT_BIT( 0x0f, IP_ACTIVE_LOW, IPT_UNKNOWN )
-	PORT_BIT( 0xf0, IP_ACTIVE_HIGH, IPT_CUSTOM ) PORT_CUSTOM_MEMBER(taitosj_state, input_port_4_f0_r)    // from sound CPU
+	PORT_BIT( 0xf0, IP_ACTIVE_HIGH, IPT_CUSTOM ) PORT_CUSTOM_MEMBER(FUNC(taitosj_state::input_port_4_f0_r))    // from sound CPU
 
 	PORT_START("DSW1")
 	PORT_DIPNAME( 0x03, 0x02, DEF_STR( Bonus_Life ) )      PORT_DIPLOCATION("SWA:1,2")
@@ -1542,7 +1541,7 @@ static INPUT_PORTS_START( hwrace )
 
 	PORT_START("IN4")
 	PORT_BIT( 0x0f, IP_ACTIVE_LOW, IPT_UNKNOWN )
-	PORT_BIT( 0xf0, IP_ACTIVE_HIGH, IPT_CUSTOM ) PORT_CUSTOM_MEMBER(taitosj_state, input_port_4_f0_r)    // from sound CPU
+	PORT_BIT( 0xf0, IP_ACTIVE_HIGH, IPT_CUSTOM ) PORT_CUSTOM_MEMBER(FUNC(taitosj_state::input_port_4_f0_r))    // from sound CPU
 
 	PORT_START("DSW1")
 	PORT_DIPNAME( 0x01, 0x01, DEF_STR( Unknown ) )         PORT_DIPLOCATION("SWA:1")
@@ -1632,7 +1631,7 @@ static INPUT_PORTS_START( kikstart )
 	PORT_BIT( 0x80, IP_ACTIVE_LOW, IPT_START2 )
 
 	PORT_START("IN3")      // Service
-	PORT_BIT( 0x03, IP_ACTIVE_HIGH, IPT_CUSTOM ) PORT_CUSTOM_MEMBER(taitosj_state, kikstart_gear_r<0>) PORT_CONDITION("DSW3", 0x08, EQUALS, 0x08)
+	PORT_BIT( 0x03, IP_ACTIVE_HIGH, IPT_CUSTOM ) PORT_CUSTOM_MEMBER(FUNC(taitosj_state::kikstart_gear_r<0>)) PORT_CONDITION("DSW3", 0x08, EQUALS, 0x08)
 	PORT_BIT( 0x03, IP_ACTIVE_LOW, IPT_UNKNOWN ) PORT_CONDITION("DSW3", 0x08, EQUALS, 0x00)
 	PORT_BIT( 0x04, IP_ACTIVE_LOW, IPT_UNKNOWN )
 	PORT_BIT( 0x08, IP_ACTIVE_HIGH, IPT_UNKNOWN )   // needs to be 0, otherwise cannot shift
@@ -1642,7 +1641,7 @@ static INPUT_PORTS_START( kikstart )
 	PORT_BIT( 0x80, IP_ACTIVE_LOW, IPT_UNKNOWN )
 
 	PORT_START("IN4")
-	PORT_BIT( 0x03, IP_ACTIVE_HIGH, IPT_CUSTOM ) PORT_CUSTOM_MEMBER(taitosj_state, kikstart_gear_r<1>) PORT_CONDITION("DSW3", 0x08, EQUALS, 0x08)
+	PORT_BIT( 0x03, IP_ACTIVE_HIGH, IPT_CUSTOM ) PORT_CUSTOM_MEMBER(FUNC(taitosj_state::kikstart_gear_r<1>)) PORT_CONDITION("DSW3", 0x08, EQUALS, 0x08)
 	PORT_BIT( 0x03, IP_ACTIVE_LOW, IPT_UNKNOWN ) PORT_CONDITION("DSW3", 0x08, EQUALS, 0x00)
 	PORT_BIT( 0x04, IP_ACTIVE_LOW, IPT_UNKNOWN )
 	PORT_BIT( 0x08, IP_ACTIVE_HIGH, IPT_UNKNOWN )   // needs to be 0, otherwise cannot shift
@@ -1739,10 +1738,10 @@ static const gfx_layout spritelayout =
 
 
 static GFXDECODE_START( gfx_taitosj )
-	GFXDECODE_ENTRY( nullptr, 0x9000, charlayout,   0, 8 )    // the game dynamically modifies this
-	GFXDECODE_ENTRY( nullptr, 0x9000, spritelayout, 0, 8 )    // the game dynamically modifies this
-	GFXDECODE_ENTRY( nullptr, 0xa800, charlayout,   0, 8 )    // the game dynamically modifies this
-	GFXDECODE_ENTRY( nullptr, 0xa800, spritelayout, 0, 8 )    // the game dynamically modifies this
+	GFXDECODE_RAM( nullptr, 0x9000, charlayout,   0, 8 )
+	GFXDECODE_RAM( nullptr, 0x9000, spritelayout, 0, 8 )
+	GFXDECODE_RAM( nullptr, 0xa800, charlayout,   0, 8 )
+	GFXDECODE_RAM( nullptr, 0xa800, spritelayout, 0, 8 )
 GFXDECODE_END
 
 static const discrete_dac_r1_ladder taitosj_dacvol_ladder =
@@ -1823,8 +1822,9 @@ void taitosj_state::nomcu(machine_config &config)
 
 	WATCHDOG_TIMER(config, "watchdog").set_vblank_count("screen", 128); // 74LS393 on CPU board, counts 128 vblanks before firing watchdog
 
-	DAC_8BIT_R2R(config, m_dac, 0).add_route(ALL_OUTPUTS, "speaker", 0.15); // 30k r-2r network
+	DAC_8BIT_R2R(config, m_dac).add_route(ALL_OUTPUTS, "speaker", 0.15); // 30k r-2r network
 	DISCRETE(config, m_dacvol, taitosj_dacvol_discrete);
+	m_dacvol->set_clock(48000 * 32); // match dac.cpp samplerate
 	m_dacvol->add_route(0, "dac", 1.0, DAC_INPUT_RANGE_HI);
 	m_dacvol->add_route(0, "dac", -1.0, DAC_INPUT_RANGE_LO);
 }
@@ -1836,6 +1836,7 @@ void taitosj_state::mcu(machine_config &config)
 	nomcu(config);
 
 	// basic machine hardware
+	m_maincpu->busack_cb().set(m_mcu, FUNC(taito_sj_security_mcu_device::busak_w));
 	m_maincpu->set_addrmap(AS_PROGRAM, &taitosj_state::main_mcu_map);
 
 	TAITO_SJ_SECURITY_MCU(config, m_mcu, 3_MHz_XTAL); // divided by 4 internally
@@ -1843,7 +1844,7 @@ void taitosj_state::mcu(machine_config &config)
 	m_mcu->m68read_cb().set(FUNC(taitosj_state::mcu_mem_r));
 	m_mcu->m68write_cb().set(FUNC(taitosj_state::mcu_mem_w));
 	m_mcu->m68intrq_cb().set(FUNC(taitosj_state::mcu_intrq_w));
-	m_mcu->busrq_cb().set(FUNC(taitosj_state::mcu_busrq_w));
+	m_mcu->busrq_cb().set_inputline(m_maincpu, Z80_INPUT_LINE_BUSREQ);
 
 	config.set_maximum_quantum(attotime::from_hz(6000));
 }

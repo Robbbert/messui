@@ -22,7 +22,6 @@
 #include "machine/input_merger.h"
 #include "machine/mpc106.h"
 #include "machine/pci.h"
-#include "machine/pci-ide.h"
 #include "machine/ram.h"
 #include "video/atirage.h"
 #include "awacs_macrisc.h"
@@ -48,10 +47,10 @@ public:
 private:
 	u16 m_sense;
 
-	void pwrmacg3_map(address_map &map);
+	void pwrmacg3_map(address_map &map) ATTR_COLD;
 
-	virtual void machine_start() override;
-	virtual void machine_reset() override;
+	virtual void machine_start() override ATTR_COLD;
+	virtual void machine_reset() override ATTR_COLD;
 
 	u16 read_sense();
 	void write_sense(u16 data);
@@ -204,10 +203,9 @@ void pwrmacg3_state::pwrmacg3(machine_config &config)
 	heathrow.codec_r_callback().set(screamer, FUNC(screamer_device::read_macrisc));
 	heathrow.codec_w_callback().set(screamer, FUNC(screamer_device::write_macrisc));
 
-	SPEAKER(config, "lspeaker").front_left();
-	SPEAKER(config, "rspeaker").front_right();
-	screamer.add_route(0, "lspeaker", 1.0);
-	screamer.add_route(1, "rspeaker", 1.0);
+	SPEAKER(config, "speaker", 2).front();
+	screamer.add_route(0, "speaker", 1.0, 0);
+	screamer.add_route(1, "speaker", 1.0, 1);
 }
 
 /*

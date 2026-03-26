@@ -91,7 +91,7 @@ public:
 
 	symbol_table_wrapper(lua_engine &host, running_machine &machine, std::shared_ptr<symbol_table_wrapper> const &parent, device_t *device)
 		: m_host(host)
-		, m_table(machine, parent ? &parent->table() : nullptr, device)
+		, m_table(machine, symbol_table::BUILTIN_GLOBALS, parent ? &parent->table() : nullptr, device)
 		, m_parent(parent)
 	{
 	}
@@ -339,7 +339,7 @@ void lua_engine::initialize_debug(sol::table &emu)
 			});
 	symbol_table_type.set_function("read_memory", &symbol_table_wrapper::read_memory);
 	symbol_table_type.set_function("write_memory", &symbol_table_wrapper::write_memory);
-	symbol_table_type["entries"] = sol::property([] (symbol_table_wrapper const &st) { return standard_tag_object_ptr_map<symbol_entry>(st.table().entries()); });
+	symbol_table_type["entries"] = sol::property([] (symbol_table_wrapper const &st) { return make_tag_object_ptr_map(st.table().entries()); });
 	symbol_table_type["parent"] = sol::property(&symbol_table_wrapper::parent);
 
 

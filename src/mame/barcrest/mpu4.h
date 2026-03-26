@@ -14,12 +14,12 @@
 #include "machine/mc68681.h"
 #include "machine/meters.h"
 #include "machine/nvram.h"
-#include "machine/roc10937.h"
 #include "machine/steppers.h"
 #include "machine/ticket.h"
-#include "machine/timer.h" //hoppers
+#include "machine/timer.h" // hoppers
 #include "sound/ay8910.h"
 #include "sound/dac.h"
+#include "video/roc10937.h"
 
 
 #define MPU4_MASTER_CLOCK           XTAL(6'880'000)
@@ -157,6 +157,7 @@ public:
 		, m_lamps(*this, "lamp%u", 0U)
 		, m_mpu4leds(*this, "mpu4led%u", 0U)
 		, m_digits(*this, "digit%u", 0U)
+		, m_digitsi(*this, "digiti%u", 0U)
 		, m_triacs(*this, "triac%u", 0U)
 		, m_flutterbox(*this, "flutterbox")
 
@@ -344,10 +345,10 @@ protected:
 
 	TIMER_CALLBACK_MEMBER(update_ic24);
 
-	void mpu4_memmap(address_map &map);
-	void mpu4_memmap_characteriser(address_map &map);
-	void mpu4_memmap_bootleg_characteriser(address_map &map);
-	void mpu4_memmap_bl_characteriser_blastbank(address_map &map);
+	void mpu4_memmap(address_map &map) ATTR_COLD;
+	void mpu4_memmap_characteriser(address_map &map) ATTR_COLD;
+	void mpu4_memmap_bootleg_characteriser(address_map &map) ATTR_COLD;
+	void mpu4_memmap_bl_characteriser_blastbank(address_map &map) ATTR_COLD;
 
 	void lamp_extend_small(uint8_t data);
 	void lamp_extend_large(uint8_t data, uint8_t column, bool active);
@@ -457,6 +458,7 @@ protected:
 	// 8-9 are mapped to lamp lines for Connect 4
 	// 0-15 are on large card B
 	output_finder<144> m_digits;
+	output_finder<144> m_digitsi; // inverted polarity (0 = on, 1 = off)
 
 	output_finder<8> m_triacs;
 

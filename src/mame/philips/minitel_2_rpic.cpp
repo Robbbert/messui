@@ -2,7 +2,7 @@
 // copyright-holders: Jean-Francois DEL NERO
 /***************************************************************************
 
-    Minitel 2
+    Minitel 2 by Philips
 
     The Minitel is a small, on-line computer/Videotex terminal with multi-services that
     can be connected to any French telephone line. This terminal was widely used in France
@@ -11,7 +11,9 @@
     There are several models and versions. Most of them are based on 8051 compatible MCUs
     and EF9345 semi graphic video chip.
 
-    The current implementation is a Minitel 2 from "La RADIOTECHNIQUE PORTENSEIGNE" / RPIC (Philips)
+    The current implementation is a Minitel 2 (NFZ 400) from "La RADIOTECHNIQUE
+    PORTENSEIGNE" (RPIC, later acquired by Philips).
+
     More Minitel hardware related informations are available on this page :
     http://hxc2001.free.fr/minitel
 
@@ -22,11 +24,7 @@
     - Keyboard
     - 24C02 EPROM
     - Modem serial interface.
-
-    What is implemented but not working :
-
-    - The rear serial port.(Prise péri-informatique)
-     (Internal 8051 serial port emulation missing).
+    - The rear serial port (prise péri-informatique).
 
     What is not yet implemented :
 
@@ -56,12 +54,18 @@
     the modem port : "-modem null_modem -bitb socket.127.0.0.1:20000"
     Once mame started you can then send vdt files with netcat to this socket.
 
+    Example 2 : Connecting the modem and periinfo ports to different TCP
+    sockets : "-modem null_modem -bitb1 socket.127.0.0.1:20000
+               -periinfo null_modem -bitb2 socket.127.0.0.1:20001"
+
 ****************************************************************************/
 
 #include "emu.h"
 
+#include "bus/generic/carts.h"
+#include "bus/generic/slot.h"
 #include "bus/rs232/rs232.h"
-#include "cpu/mcs51/mcs51.h"
+#include "cpu/mcs51/i80c52.h"
 #include "machine/clock.h"
 #include "machine/i2cmem.h"
 #include "machine/timer.h"
@@ -113,6 +117,7 @@ public:
 	minitel_state(const machine_config &mconfig, device_type type, const char *tag)
 		: driver_device(mconfig, type, tag)
 		, m_maincpu(*this, "maincpu")
+		, m_romslot(*this, "romslot")
 		, m_ts9347(*this, "ts9347")
 		, m_palette(*this, "palette")
 		, m_i2cmem(*this, "i2cmem")
@@ -125,10 +130,11 @@ public:
 	void minitel2(machine_config &config);
 
 protected:
-	virtual void machine_start() override;
+	virtual void machine_start() override ATTR_COLD;
 
 private:
 	required_device<i80c32_device> m_maincpu;
+	required_device<generic_slot_device> m_romslot;
 	required_device<ts9347_device> m_ts9347;
 	required_device<palette_device> m_palette;
 	required_device<i2cmem_device> m_i2cmem;
@@ -164,20 +170,23 @@ private:
 	uint8_t ts9347_io_r(offs_t offset);
 	void ts9347_io_w(offs_t offset, uint8_t data);
 
-	void mem_prg(address_map &map);
-	void mem_io(address_map &map);
+	void mem_prg(address_map &map) ATTR_COLD;
+	void mem_data(address_map &map) ATTR_COLD;
 };
 
 void minitel_state::machine_start()
 {
-	m_palette->set_pen_color( 0, 0, 0, 0);
-	m_palette->set_pen_color( 1, 86, 86, 86);
-	m_palette->set_pen_color( 2, 172, 172, 172);
-	m_palette->set_pen_color( 3, 255, 255, 255);
-	m_palette->set_pen_color( 4, 44, 44, 44);
-	m_palette->set_pen_color( 5, 86, 86, 86);
-	m_palette->set_pen_color( 6, 172, 172, 172);
-	m_palette->set_pen_color( 7, 255, 255, 255);
+	m_palette->set_pen_color(0, 0, 0, 0);
+	m_palette->set_pen_color(1, 80, 80, 80);
+	m_palette->set_pen_color(2, 160, 160, 160);
+	m_palette->set_pen_color(3, 230, 230, 230);
+	m_palette->set_pen_color(4, 40, 40, 40);
+	m_palette->set_pen_color(5, 120, 120, 120);
+	m_palette->set_pen_color(6, 200, 200, 200);
+	m_palette->set_pen_color(7, 255, 255, 255);
+
+	if (m_romslot->exists())
+		m_maincpu->space(AS_PROGRAM).install_read_handler(0x0000, 0xffff, emu::rw_delegate(*m_romslot, FUNC(generic_slot_device::read_rom)));
 }
 
 void minitel_state::port1_w(uint8_t data)
@@ -387,7 +396,7 @@ void minitel_state::mem_prg(address_map &map)
 	map(0x0000, 0x7fff).rom();
 }
 
-void minitel_state::mem_io(address_map &map)
+void minitel_state::mem_data(address_map &map)
 {
 	map(0x2000, 0x3fff).rw(FUNC(minitel_state::dev_keyb_ser_r), FUNC(minitel_state::dev_ctrl_reg_w));
 	/* ts9347 */
@@ -511,10 +520,10 @@ static DEVICE_INPUT_DEFAULTS_START( m_modem )
 DEVICE_INPUT_DEFAULTS_END
 
 static DEVICE_INPUT_DEFAULTS_START( m_serport )
-	DEVICE_INPUT_DEFAULTS( "RS232_TXBAUD", 0xff, RS232_BAUD_9600 )
-	DEVICE_INPUT_DEFAULTS( "RS232_RXBAUD", 0xff, RS232_BAUD_9600 )
-	DEVICE_INPUT_DEFAULTS( "RS232_DATABITS", 0xff, RS232_DATABITS_8 )
-	DEVICE_INPUT_DEFAULTS( "RS232_PARITY", 0xff, RS232_PARITY_NONE )
+	DEVICE_INPUT_DEFAULTS( "RS232_TXBAUD", 0xff, RS232_BAUD_1200 )
+	DEVICE_INPUT_DEFAULTS( "RS232_RXBAUD", 0xff, RS232_BAUD_1200 )
+	DEVICE_INPUT_DEFAULTS( "RS232_DATABITS", 0xff, RS232_DATABITS_7 )
+	DEVICE_INPUT_DEFAULTS( "RS232_PARITY", 0xff, RS232_PARITY_EVEN )
 	DEVICE_INPUT_DEFAULTS( "RS232_STOPBITS", 0xff, RS232_STOPBITS_1 )
 DEVICE_INPUT_DEFAULTS_END
 
@@ -523,11 +532,14 @@ void minitel_state::minitel2(machine_config &config)
 	/* basic machine hardware */
 	I80C32(config, m_maincpu, XTAL(14'318'181)); //verified on pcb
 	m_maincpu->set_addrmap(AS_PROGRAM, &minitel_state::mem_prg);
-	m_maincpu->set_addrmap(AS_IO, &minitel_state::mem_io);
+	m_maincpu->set_addrmap(AS_DATA, &minitel_state::mem_data);
 	m_maincpu->port_in_cb<1>().set(FUNC(minitel_state::port1_r));
 	m_maincpu->port_out_cb<1>().set(FUNC(minitel_state::port1_w));
 	m_maincpu->port_in_cb<3>().set(FUNC(minitel_state::port3_r));
 	m_maincpu->port_out_cb<3>().set(FUNC(minitel_state::port3_w));
+
+	/* if populated, this ROM slot replaces the main ROM */
+	GENERIC_SOCKET(config, m_romslot, generic_linear_slot, "minitel_rom", "bin,rom");
 
 	I2C_24C02(config, m_i2cmem);
 
@@ -538,10 +550,12 @@ void minitel_state::minitel2(machine_config &config)
 
 	RS232_PORT(config, m_modem, default_rs232_devices, nullptr);
 	m_modem->rxd_handler().set_inputline(m_maincpu, MCS51_INT1_LINE).invert();
+	m_modem->set_option_device_input_defaults("null_modem", DEVICE_INPUT_DEFAULTS_NAME(m_modem));
 	m_modem->set_option_device_input_defaults("terminal", DEVICE_INPUT_DEFAULTS_NAME(m_modem));
 
 	RS232_PORT(config, m_serport, default_rs232_devices, nullptr);
 	m_serport->rxd_handler().set(FUNC(minitel_state::serial_rxd));
+	m_serport->set_option_device_input_defaults("null_modem", DEVICE_INPUT_DEFAULTS_NAME(m_serport));
 	m_serport->set_option_device_input_defaults("terminal", DEVICE_INPUT_DEFAULTS_NAME(m_serport));
 
 	lineconnected = 0;
@@ -562,23 +576,28 @@ void minitel_state::minitel2(machine_config &config)
 }
 
 ROM_START( minitel2 )
-
 	ROM_REGION( 0x10000, "maincpu", ROMREGION_ERASEFF )
 	ROM_DEFAULT_BIOS("ft_bv4")
 
-	ROM_SYSTEM_BIOS(0, "ft_bv4", "Minitel 2 ROM BV4")
+	ROM_SYSTEM_BIOS(0, "ft_bv4", "France Telecom Bv4")
 	ROMX_LOAD( "minitel2_bv4.bin",   0x0000, 0x8000, CRC(8844a0a7) SHA1(d3e9079b080dbcee27ad870ec6c39ac42e7deacf), ROM_BIOS(0) )
 
-	ROM_SYSTEM_BIOS(1, "demov1", "Minitel 2 Demo")
-	ROMX_LOAD( "demo_minitel.bin",   0x0000, 0x8000, CRC(607f2482) SHA1(7965edbef68e45d09dc67a4684da56003eff6328), ROM_BIOS(1) )
+	ROM_SYSTEM_BIOS(1, "ft_bv6", "France Telecom Bv6")
+	ROMX_LOAD( "bv6.bin",            0x0000, 0x8000, CRC(9e162977) SHA1(e66a0951d14be4f9da693c478319d1c620878347), ROM_BIOS(1) )
 
-	ROM_SYSTEM_BIOS(2, "ft_bv9", "Minitel 2 ROM Bv9")
-	ROMX_LOAD( "bv9.1402",           0x0000, 0x8000, CRC(ace5d65e) SHA1(c8d589f8af6bd7d339964fdece937a76db972115), ROM_BIOS(2) )
+	ROM_SYSTEM_BIOS(2, "ft_bv7", "France Telecom Bv7")
+	ROMX_LOAD( "bv7.bin",            0x0000, 0x8000, CRC(2dde1628) SHA1(85500c06b93efb6e925dcb156248425fa3366ce6), ROM_BIOS(2) )
 
-	ROM_REGION( 0x4000, "ts9347", 0 )
-	ROM_LOAD( "charset.rom", 0x0000, 0x2000, BAD_DUMP CRC(b2f49eb3) SHA1(d0ef530be33bfc296314e7152302d95fdf9520fc) )            // from dcvg5k
+	ROM_SYSTEM_BIOS(3, "ft_bv9", "France Telecom Bv9")
+	ROMX_LOAD( "bv9.1402",           0x0000, 0x8000, CRC(ace5d65e) SHA1(c8d589f8af6bd7d339964fdece937a76db972115), ROM_BIOS(3) )
+
+	ROM_SYSTEM_BIOS(4, "demov1", "The Minitel Demo (jfdelnero)")
+	ROMX_LOAD( "demo_minitel.bin",   0x0000, 0x8000, CRC(607f2482) SHA1(7965edbef68e45d09dc67a4684da56003eff6328), ROM_BIOS(4) )
+
+	ROM_REGION( 0x2000, "ts9347", 0 )
+	ROM_LOAD( "ts9347.bin", 0x0000, 0x2000, CRC(acff72e7) SHA1(54c8b6f5b6407f13a933a40b5b7742ca06cdc1a3) )
 ROM_END
 
 } // anonymous namespace
 
-COMP( 1989, minitel2, 0, 0, minitel2, minitel2, minitel_state, empty_init, "Philips", "Minitel 2", MACHINE_NO_SOUND )
+COMP( 1989, minitel2, 0, 0, minitel2, minitel2, minitel_state, empty_init, "Philips", "Minitel 2 NFZ 400", MACHINE_NO_SOUND )

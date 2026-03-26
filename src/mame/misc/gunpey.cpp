@@ -256,8 +256,8 @@ public:
 	void gunpey(machine_config &config);
 
 protected:
-	virtual void machine_start() override;
-	virtual void video_start() override;
+	virtual void machine_start() override ATTR_COLD;
+	virtual void video_start() override ATTR_COLD;
 
 private:
 	// memory handlers
@@ -328,8 +328,8 @@ private:
 	required_region_ptr<u8> m_blit_rom;
 
 	// address spaces
-	void io_map(address_map &map);
-	void mem_map(address_map &map);
+	void io_map(address_map &map) ATTR_COLD;
+	void mem_map(address_map &map) ATTR_COLD;
 };
 
 
@@ -1174,16 +1174,15 @@ void gunpey_state::gunpey(machine_config &config)
 
 	PALETTE(config, m_palette, palette_device::RGB_555);
 
-	SPEAKER(config, "lspeaker").front_left();
-	SPEAKER(config, "rspeaker").front_right();
+	SPEAKER(config, "speaker", 2).front();
 
 	OKIM6295(config, m_oki, XTAL(16'934'400) / 8, okim6295_device::PIN7_LOW);
-	m_oki->add_route(ALL_OUTPUTS, "lspeaker", 0.125);
-	m_oki->add_route(ALL_OUTPUTS, "rspeaker", 0.125);
+	m_oki->add_route(ALL_OUTPUTS, "speaker", 0.125, 0);
+	m_oki->add_route(ALL_OUTPUTS, "speaker", 0.125, 1);
 
 	ymz280b_device &ymz(YMZ280B(config, "ymz", XTAL(16'934'400)));
-	ymz.add_route(0, "lspeaker", 0.25);
-	ymz.add_route(1, "rspeaker", 0.25);
+	ymz.add_route(0, "speaker", 0.25, 0);
+	ymz.add_route(1, "speaker", 0.25, 1);
 }
 
 /***************************************************************************************/

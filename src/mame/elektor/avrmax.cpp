@@ -74,13 +74,13 @@ public:
 	void atm18mcc(machine_config &config);
 
 protected:
-	virtual void machine_start() override;
+	virtual void machine_start() override ATTR_COLD;
 
 private:
 	// devices/pointers
 	required_device<atmega88_device> m_maincpu;
 	optional_device<pwm_display_device> m_digit_pwm;
-	optional_device<hd44780_device> m_lcd;
+	optional_device<hd44780u_device> m_lcd;
 	required_ioport_array<4> m_inputs;
 
 	u8 m_inp_mux = 0;
@@ -88,8 +88,8 @@ private:
 	int m_shift_clk = 0;
 
 	// address maps
-	void main_map(address_map &map);
-	void data_map(address_map &map);
+	void main_map(address_map &map) ATTR_COLD;
+	void data_map(address_map &map) ATTR_COLD;
 
 	// I/O handlers
 	void input_w(u8 data);

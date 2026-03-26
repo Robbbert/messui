@@ -15,6 +15,7 @@
 #include "divtlb.h"
 
 #include "i386dasm.h"
+#include <algorithm>
 
 #define INPUT_LINE_A20      1
 #define INPUT_LINE_SMI      2
@@ -45,14 +46,13 @@ protected:
 	i386_device(const machine_config &mconfig, device_type type, const char *tag, device_t *owner, uint32_t clock, int program_data_width, int program_addr_width, int io_data_width);
 
 	// device-level overrides
-	virtual void device_start() override;
-	virtual void device_reset() override;
+	virtual void device_start() override ATTR_COLD;
+	virtual void device_reset() override ATTR_COLD;
 	virtual void device_debug_setup() override;
 
 	// device_execute_interface overrides
 	virtual uint32_t execute_min_cycles() const noexcept override { return 1; }
 	virtual uint32_t execute_max_cycles() const noexcept override { return 40; }
-	virtual uint32_t execute_input_lines() const noexcept override { return 32; }
 	virtual bool execute_input_edge_triggered(int inputnum) const noexcept override { return inputnum == INPUT_LINE_NMI; }
 	virtual void execute_run() override;
 	virtual void execute_set_input(int inputnum, int state) override;
@@ -347,7 +347,7 @@ protected:
 	uint8_t m_irq_state;
 	address_space *m_program;
 	address_space *m_io;
-	uint32_t m_a20_mask;
+	offs_t m_a20_mask;
 	memory_access<32, 1, 0, ENDIANNESS_LITTLE>::cache macache16;
 	memory_access<32, 2, 0, ENDIANNESS_LITTLE>::cache macache32;
 
@@ -435,10 +435,10 @@ protected:
 	void register_state_i386();
 	void register_state_i386_x87();
 	void register_state_i386_x87_xmm();
-	uint32_t i386_translate(int segment, uint32_t ip, int rwn);
+	uint32_t i386_translate(int segment, uint32_t ip, int rwn, int size = 1);
 	inline vtlb_entry get_permissions(uint32_t pte, int wp);
 	bool i386_translate_address(int intention, bool debug, offs_t *address, vtlb_entry *entry);
-	bool translate_address(int pl, int type, uint32_t *address, uint32_t *error);
+	bool translate_address(int pl, int type, offs_t *address, uint32_t *error);
 	void CHANGE_PC(uint32_t pc);
 	inline void NEAR_BRANCH(int32_t offs);
 	inline uint8_t FETCH();
@@ -512,9 +512,9 @@ protected:
 	uint32_t GetEA(uint8_t modrm, int rwn);
 	uint32_t Getx87EA(uint8_t modrm, int rwn);
 	void i386_check_sreg_validity(int reg);
-	int i386_limit_check(int seg, uint32_t offset);
+	int i386_limit_check(int seg, uint32_t offset, int size = 1);
 	void i386_sreg_load(uint16_t selector, uint8_t reg, bool *fault);
-	void i386_trap(int irq, int irq_gate, int trap_level);
+	void i386_trap(int irq, int irq_gate);
 	void i386_trap_with_error(int irq, int irq_gate, int trap_level, uint32_t error);
 	void i286_task_switch(uint16_t selector, uint8_t nested);
 	void i386_task_switch(uint16_t selector, uint8_t nested);
@@ -1036,7 +1036,7 @@ protected:
 	void i386_bound_r32_m32_m32();
 	void i386_retf32();
 	void i386_retf_i32();
-	void i386_load_far_pointer32(int s);
+	bool i386_load_far_pointer32(int s);
 	void i386_lds32();
 	void i386_lss32();
 	void i386_les32();
@@ -1062,7 +1062,8 @@ protected:
 	void i486_bswap_esi();
 	void i486_bswap_edi();
 	void i486_mov_cr_r32();
-	inline void MMXPROLOG();
+	inline bool MMXPROLOG();
+	inline bool SSEPROLOG();
 	inline void READMMX(uint32_t ea,MMX_REG &r);
 	inline void WRITEMMX(uint32_t ea,MMX_REG &r);
 	inline void READXMM(uint32_t ea,XMM_REG &r);
@@ -1597,8 +1598,8 @@ public:
 protected:
 	i486_device(const machine_config &mconfig, device_type type, const char *tag, device_t *owner, uint32_t clock);
 
-	virtual void device_start() override;
-	virtual void device_reset() override;
+	virtual void device_start() override ATTR_COLD;
+	virtual void device_reset() override ATTR_COLD;
 };
 
 class i486dx4_device : public i486_device
@@ -1608,7 +1609,7 @@ public:
 	i486dx4_device(const machine_config &mconfig, const char *tag, device_t *owner, uint32_t clock);
 
 protected:
-	virtual void device_reset() override;
+	virtual void device_reset() override ATTR_COLD;
 };
 
 
@@ -1625,8 +1626,8 @@ protected:
 	virtual void execute_set_input(int inputnum, int state) override;
 	virtual uint64_t opcode_rdmsr(bool &valid_msr) override;
 	virtual void opcode_wrmsr(uint64_t data, bool &valid_msr) override;
-	virtual void device_start() override;
-	virtual void device_reset() override;
+	virtual void device_start() override ATTR_COLD;
+	virtual void device_reset() override ATTR_COLD;
 };
 
 
@@ -1637,8 +1638,8 @@ public:
 	pentium_mmx_device(const machine_config &mconfig, const char *tag, device_t *owner, uint32_t clock);
 
 protected:
-	virtual void device_start() override;
-	virtual void device_reset() override;
+	virtual void device_start() override ATTR_COLD;
+	virtual void device_reset() override ATTR_COLD;
 };
 
 
@@ -1649,8 +1650,8 @@ public:
 	mediagx_device(const machine_config &mconfig, const char *tag, device_t *owner, uint32_t clock);
 
 protected:
-	virtual void device_start() override;
-	virtual void device_reset() override;
+	virtual void device_start() override ATTR_COLD;
+	virtual void device_reset() override ATTR_COLD;
 };
 
 
@@ -1665,8 +1666,8 @@ protected:
 
 	virtual uint64_t opcode_rdmsr(bool &valid_msr) override;
 	virtual void opcode_wrmsr(uint64_t data, bool &valid_msr) override;
-	virtual void device_start() override;
-	virtual void device_reset() override;
+	virtual void device_start() override ATTR_COLD;
+	virtual void device_reset() override ATTR_COLD;
 };
 
 
@@ -1677,8 +1678,8 @@ public:
 	pentium2_device(const machine_config &mconfig, const char *tag, device_t *owner, uint32_t clock);
 
 protected:
-	virtual void device_start() override;
-	virtual void device_reset() override;
+	virtual void device_start() override ATTR_COLD;
+	virtual void device_reset() override ATTR_COLD;
 };
 
 
@@ -1689,8 +1690,8 @@ public:
 	pentium3_device(const machine_config &mconfig, const char *tag, device_t *owner, uint32_t clock);
 
 protected:
-	virtual void device_start() override;
-	virtual void device_reset() override;
+	virtual void device_start() override ATTR_COLD;
+	virtual void device_reset() override ATTR_COLD;
 
 	virtual void opcode_cpuid() override;
 };
@@ -1705,8 +1706,8 @@ public:
 protected:
 	virtual uint64_t opcode_rdmsr(bool &valid_msr) override;
 	virtual void opcode_wrmsr(uint64_t data, bool &valid_msr) override;
-	virtual void device_start() override;
-	virtual void device_reset() override;
+	virtual void device_start() override ATTR_COLD;
+	virtual void device_reset() override ATTR_COLD;
 };
 
 

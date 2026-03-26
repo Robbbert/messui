@@ -55,7 +55,7 @@ public:
 		, m_p1gear(*this, "P1gear")
 	{ }
 
-	void firetrk(machine_config &config);
+	void firetrk(machine_config &config) ATTR_COLD;
 
 	template <int P> int steer_dir_r();
 	template <int P> int steer_flag_r();
@@ -67,9 +67,9 @@ public:
 	DECLARE_INPUT_CHANGED_MEMBER(gear_changed);
 
 protected:
-	virtual void machine_start() override;
-	virtual void machine_reset() override;
-	virtual void video_start() override;
+	virtual void machine_start() override ATTR_COLD;
+	virtual void machine_reset() override ATTR_COLD;
+	virtual void video_start() override ATTR_COLD;
 
 	required_device<cpu_device> m_maincpu;
 	required_device<watchdog_timer_device> m_watchdog;
@@ -132,11 +132,11 @@ private:
 	void draw_car(bitmap_ind16 &bitmap, const rectangle &cliprect, int which, int flash);
 	void set_service_mode(int enable);
 
-	void palette(palette_device &palette);
+	void palette(palette_device &palette) ATTR_COLD;
 	TILE_GET_INFO_MEMBER(get_tile_info1);
 	TILE_GET_INFO_MEMBER(get_tile_info2);
 
-	void program_map(address_map &map);
+	void program_map(address_map &map) ATTR_COLD;
 };
 
 class montecar_state : public firetrk_state
@@ -144,10 +144,10 @@ class montecar_state : public firetrk_state
 public:
 	using firetrk_state::firetrk_state;
 
-	void montecar(machine_config &config);
+	void montecar(machine_config &config) ATTR_COLD;
 
 protected:
-	virtual void video_start() override;
+	virtual void video_start() override ATTR_COLD;
 
 private:
 	void output_1_w(uint8_t data);
@@ -160,12 +160,12 @@ private:
 	uint32_t screen_update(screen_device &screen, bitmap_ind16 &bitmap, const rectangle &cliprect);
 	void draw_car(bitmap_ind16 &bitmap, const rectangle &cliprect, int which, int is_collision_detection);
 
-	void prom_to_palette(int number, uint8_t val);
-	void palette(palette_device &palette);
+	void prom_to_palette(int number, uint8_t val) ATTR_COLD;
+	void palette(palette_device &palette) ATTR_COLD;
 	TILE_GET_INFO_MEMBER(get_tile_info1);
 	TILE_GET_INFO_MEMBER(get_tile_info2);
 
-	void program_map(address_map &map);
+	void program_map(address_map &map) ATTR_COLD;
 };
 
 class superbug_state : public firetrk_state
@@ -173,10 +173,10 @@ class superbug_state : public firetrk_state
 public:
 	using firetrk_state::firetrk_state;
 
-	void superbug(machine_config &config);
+	void superbug(machine_config &config) ATTR_COLD;
 
 protected:
-	virtual void video_start() override;
+	virtual void video_start() override ATTR_COLD;
 
 private:
 	void output_w(offs_t offset, uint8_t data);
@@ -187,7 +187,7 @@ private:
 	TILE_GET_INFO_MEMBER(get_tile_info1);
 	TILE_GET_INFO_MEMBER(get_tile_info2);
 
-	void program_map(address_map &map);
+	void program_map(address_map &map) ATTR_COLD;
 };
 
 
@@ -810,8 +810,8 @@ void firetrk_state::machine_reset()
 
 uint8_t firetrk_state::dip_r(offs_t offset)
 {
-	uint8_t val0 = m_dips[0]->read();
-	uint8_t const val1 = m_dips[1]->read();
+	uint8_t val0 = m_dips[1]->read();
+	uint8_t const val1 = m_dips[0]->read();
 
 	if (val1 & (1 << (2 * offset + 0))) val0 |= 1;
 	if (val1 & (1 << (2 * offset + 1))) val0 |= 2;
@@ -822,8 +822,8 @@ uint8_t firetrk_state::dip_r(offs_t offset)
 
 uint8_t montecar_state::dip_r(offs_t offset)
 {
-	uint8_t val0 = m_dips[0]->read();
-	uint8_t const val1 = m_dips[1]->read();
+	uint8_t val0 = m_dips[1]->read();
+	uint8_t const val1 = m_dips[0]->read();
 
 	if (val1 & (1 << (3 - offset))) val0 |= 1;
 	if (val1 & (1 << (7 - offset))) val0 |= 2;
@@ -1039,47 +1039,53 @@ static INPUT_PORTS_START( firetrk )
 	PORT_START("STEER_2")
 	PORT_BIT( 0xff, 0x00, IPT_DIAL ) PORT_SENSITIVITY(25) PORT_KEYDELTA(10) PORT_PLAYER(2)
 
-	PORT_START("DIP_0")
+	PORT_START("DIP_1") // 4-position DIP Switch SW3
 	PORT_BIT( 0x01, IP_ACTIVE_HIGH, IPT_UNUSED ) // other DIPs connect here
 	PORT_BIT( 0x02, IP_ACTIVE_HIGH, IPT_UNUSED ) // other DIPs connect here
-	PORT_DIPNAME( 0x0c, 0x08, DEF_STR( Coinage ))
+	PORT_DIPNAME( 0x0c, 0x08, DEF_STR( Coinage ))       PORT_DIPLOCATION("SW3:3,4")
 	PORT_DIPSETTING(    0x0c, DEF_STR( 2C_1C ))
 	PORT_DIPSETTING(    0x08, DEF_STR( 1C_1C ))
 	PORT_DIPSETTING(    0x04, DEF_STR( 1C_2C ))
 	PORT_DIPSETTING(    0x00, DEF_STR( Free_Play ))
-	PORT_DIPNAME( 0x10, 0x00, DEF_STR( Unused ))
+	PORT_DIPNAME( 0x10, 0x10, DEF_STR( Unused ))        PORT_DIPLOCATION("SW3:1")
 	PORT_DIPSETTING(    0x10, DEF_STR( Off ))
 	PORT_DIPSETTING(    0x00, DEF_STR( On ))
-	PORT_DIPNAME( 0x20, 0x00, DEF_STR( Unused ))
+	PORT_DIPNAME( 0x20, 0x20, DEF_STR( Unused ))        PORT_DIPLOCATION("SW3:2")
 	PORT_DIPSETTING(    0x20, DEF_STR( Off ))
 	PORT_DIPSETTING(    0x00, DEF_STR( On ))
 
-	PORT_START("DIP_1")
-	PORT_DIPNAME( 0x03, 0x00, DEF_STR( Language ) )
+	PORT_START("DIP_0") // 8-position DIP Switch SW2
+	PORT_DIPNAME( 0x03, 0x00, DEF_STR( Language ) )     PORT_DIPLOCATION("SW2:7,8")
 	PORT_DIPSETTING(    0x00, DEF_STR( English ) )
 	PORT_DIPSETTING(    0x01, DEF_STR( French ) )
 	PORT_DIPSETTING(    0x02, DEF_STR( Spanish ) )
 	PORT_DIPSETTING(    0x03, DEF_STR( German ) )
-	PORT_DIPNAME( 0x0c, 0x04, "Play Time" )
+	PORT_DIPNAME( 0x0c, 0x04, "Play Time" )             PORT_DIPLOCATION("SW2:5,6")
 	PORT_DIPSETTING(    0x00, "60 Seconds" )
 	PORT_DIPSETTING(    0x04, "90 Seconds" )
 	PORT_DIPSETTING(    0x08, "120 Seconds" )
 	PORT_DIPSETTING(    0x0c, "150 Seconds" )
-	PORT_DIPNAME( 0x30, 0x20, "Extended Play" )
+	PORT_DIPNAME( 0x30, 0x20, "Extended Play" )         PORT_DIPLOCATION("SW2:3,4")
 	PORT_DIPSETTING(    0x10, "Liberal" )
 	PORT_DIPSETTING(    0x20, DEF_STR( Medium ) )
 	PORT_DIPSETTING(    0x30, "Conservative" )
 	PORT_DIPSETTING(    0x00, "Never" )
+	PORT_DIPNAME( 0x40, 0x40, DEF_STR( Unused ))        PORT_DIPLOCATION("SW2:2")
+	PORT_DIPSETTING(    0x40, DEF_STR( Off ))
+	PORT_DIPSETTING(    0x00, DEF_STR( On ))
+	PORT_DIPNAME( 0x80, 0x80, DEF_STR( Unused ))        PORT_DIPLOCATION("SW2:1")
+	PORT_DIPSETTING(    0x80, DEF_STR( Off ))
+	PORT_DIPSETTING(    0x00, DEF_STR( On ))
 
 	PORT_START("BIT_0")
 	PORT_BIT( 0x01, IP_ACTIVE_HIGH, IPT_UNUSED )
 	PORT_BIT( 0x02, IP_ACTIVE_HIGH, IPT_BUTTON1 ) PORT_NAME("Gas") PORT_PLAYER(1)
-	PORT_BIT( 0x04, IP_ACTIVE_HIGH, IPT_CUSTOM ) PORT_READ_LINE_MEMBER(firetrk_state, steer_dir_r<0>)
-	PORT_BIT( 0x08, IP_ACTIVE_HIGH, IPT_CUSTOM ) PORT_READ_LINE_MEMBER(firetrk_state, steer_dir_r<1>)
+	PORT_BIT( 0x04, IP_ACTIVE_HIGH, IPT_CUSTOM ) PORT_READ_LINE_MEMBER(FUNC(firetrk_state::steer_dir_r<0>))
+	PORT_BIT( 0x08, IP_ACTIVE_HIGH, IPT_CUSTOM ) PORT_READ_LINE_MEMBER(FUNC(firetrk_state::steer_dir_r<1>))
 	PORT_BIT( 0x10, IP_ACTIVE_HIGH, IPT_BUTTON1 ) PORT_NAME("Bell") PORT_PLAYER(2)
 	PORT_BIT( 0x20, IP_ACTIVE_HIGH, IPT_TILT )
-	PORT_BIT( 0x40, IP_ACTIVE_HIGH, IPT_CUSTOM ) PORT_READ_LINE_MEMBER(firetrk_state, skid_r<2>)
-	PORT_SERVICE( 0x80, IP_ACTIVE_HIGH ) PORT_CHANGED_MEMBER(DEVICE_SELF, firetrk_state, service_mode_switch_changed, 0)
+	PORT_BIT( 0x40, IP_ACTIVE_HIGH, IPT_CUSTOM ) PORT_READ_LINE_MEMBER(FUNC(firetrk_state::skid_r<2>))
+	PORT_SERVICE( 0x80, IP_ACTIVE_HIGH ) PORT_CHANGED_MEMBER(DEVICE_SELF, FUNC(firetrk_state::service_mode_switch_changed), 0)
 
 	PORT_START("BIT_6")
 	PORT_BIT( 0x01, IP_ACTIVE_HIGH, IPT_START1 ) PORT_NAME("Front Player Start")
@@ -1087,7 +1093,7 @@ static INPUT_PORTS_START( firetrk )
 	PORT_BIT( 0x04, IP_ACTIVE_HIGH, IPT_START3 ) PORT_NAME("Both Players Start")
 	PORT_BIT( 0x08, IP_ACTIVE_HIGH, IPT_BUTTON3 ) PORT_NAME("Track Select") PORT_PLAYER(1)
 	PORT_BIT( 0x10, IP_ACTIVE_HIGH, IPT_UNUSED )
-	PORT_BIT( 0x20, IP_ACTIVE_LOW,  IPT_CUSTOM ) PORT_VBLANK("screen")
+	PORT_BIT( 0x20, IP_ACTIVE_LOW,  IPT_CUSTOM ) PORT_READ_LINE_DEVICE_MEMBER("screen", FUNC(screen_device::vblank))
 	PORT_DIPNAME( 0x40, 0x40, DEF_STR( Cabinet ))
 	PORT_DIPSETTING(    0x00, "Smokey Joe (1 Player)" )
 	PORT_DIPSETTING(    0x40, "Fire Truck (2 Players)" )
@@ -1096,15 +1102,15 @@ static INPUT_PORTS_START( firetrk )
 	PORT_START("BIT_7")
 	PORT_BIT( 0x01, IP_ACTIVE_HIGH, IPT_UNUSED )
 	PORT_BIT( 0x02, IP_ACTIVE_HIGH, IPT_UNUSED )
-	PORT_BIT( 0x04, IP_ACTIVE_HIGH, IPT_CUSTOM ) PORT_READ_LINE_MEMBER(firetrk_state, steer_flag_r<0>)
-	PORT_BIT( 0x08, IP_ACTIVE_HIGH, IPT_CUSTOM ) PORT_READ_LINE_MEMBER(firetrk_state, steer_flag_r<1>)
+	PORT_BIT( 0x04, IP_ACTIVE_HIGH, IPT_CUSTOM ) PORT_READ_LINE_MEMBER(FUNC(firetrk_state::steer_flag_r<0>))
+	PORT_BIT( 0x08, IP_ACTIVE_HIGH, IPT_CUSTOM ) PORT_READ_LINE_MEMBER(FUNC(firetrk_state::steer_flag_r<1>))
 	PORT_BIT( 0x10, IP_ACTIVE_HIGH, IPT_COIN1 )
 	PORT_BIT( 0x20, IP_ACTIVE_HIGH, IPT_COIN2 )
-	PORT_BIT( 0x40, IP_ACTIVE_HIGH, IPT_CUSTOM ) PORT_READ_LINE_MEMBER(firetrk_state, crash_r<2>)
+	PORT_BIT( 0x40, IP_ACTIVE_HIGH, IPT_CUSTOM ) PORT_READ_LINE_MEMBER(FUNC(firetrk_state::crash_r<2>))
 	PORT_BIT( 0x80, IP_ACTIVE_HIGH, IPT_SERVICE1 ) PORT_NAME("Diag Step")
 
 	PORT_START("HORN")
-	PORT_BIT( 0x01, IP_ACTIVE_HIGH, IPT_BUTTON2 ) PORT_NAME("Horn") PORT_PLAYER(1) PORT_CHANGED_MEMBER(DEVICE_SELF, firetrk_state, firetrk_horn_changed, 0)
+	PORT_BIT( 0x01, IP_ACTIVE_HIGH, IPT_BUTTON2 ) PORT_NAME("Horn") PORT_PLAYER(1) PORT_CHANGED_MEMBER(DEVICE_SELF, FUNC(firetrk_state::firetrk_horn_changed), 0)
 
 	PORT_START("R27")
 	PORT_ADJUSTER( 20, "R27 - Motor Frequency" )
@@ -1115,57 +1121,57 @@ static INPUT_PORTS_START( superbug )
 	PORT_START("STEER_1")
 	PORT_BIT( 0xff, 0x00, IPT_DIAL ) PORT_SENSITIVITY(25) PORT_KEYDELTA(10)
 
-	PORT_START("DIP_0")
+	PORT_START("DIP_1") // not present on PCB
 	PORT_BIT( 0x01, IP_ACTIVE_HIGH, IPT_UNUSED ) // other DIPs connect here
 	PORT_BIT( 0x02, IP_ACTIVE_HIGH, IPT_UNUSED ) // other DIPs connect here
 
-	PORT_START("DIP_1")
-	PORT_DIPNAME( 0x03, 0x02, DEF_STR( Coinage ))
+	PORT_START("DIP_0") // 8-position DIP Switch
+	PORT_DIPNAME( 0x03, 0x02, DEF_STR( Coinage ))       PORT_DIPLOCATION("SW2:7,8")
 	PORT_DIPSETTING(    0x03, DEF_STR( 2C_1C ))
 	PORT_DIPSETTING(    0x02, DEF_STR( 1C_1C ))
 	PORT_DIPSETTING(    0x01, DEF_STR( 1C_2C ))
 	PORT_DIPSETTING(    0x00, DEF_STR( Free_Play ))
-	PORT_DIPNAME( 0x0c, 0x04, "Play Time" )
+	PORT_DIPNAME( 0x0c, 0x04, "Play Time" )             PORT_DIPLOCATION("SW2:5,6")
 	PORT_DIPSETTING(    0x00, "60 seconds" )
 	PORT_DIPSETTING(    0x04, "90 seconds" )
 	PORT_DIPSETTING(    0x08, "120 seconds" )
 	PORT_DIPSETTING(    0x0c, "150 seconds" )
-	PORT_DIPNAME( 0x30, 0x20, "Extended Play" )
+	PORT_DIPNAME( 0x30, 0x20, "Extended Play" )         PORT_DIPLOCATION("SW2:3,4")
 	PORT_DIPSETTING(    0x10, "Liberal" )
 	PORT_DIPSETTING(    0x20, DEF_STR( Medium ) )
 	PORT_DIPSETTING(    0x30, "Conservative" )
 	PORT_DIPSETTING(    0x00, "Never" )
-	PORT_DIPNAME( 0xc0, 0x00, DEF_STR( Language ) )
+	PORT_DIPNAME( 0xc0, 0x00, DEF_STR( Language ) )     PORT_DIPLOCATION("SW2:1,2")
 	PORT_DIPSETTING(    0x00, DEF_STR( English ) )
 	PORT_DIPSETTING(    0x40, DEF_STR( French ) )
 	PORT_DIPSETTING(    0x80, DEF_STR( Spanish ) )
 	PORT_DIPSETTING(    0xc0, DEF_STR( German ) )
 
 	PORT_START("BIT_0")
-	PORT_BIT( 0x01, IP_ACTIVE_HIGH, IPT_CUSTOM ) PORT_READ_LINE_MEMBER(firetrk_state, gear_r<1>)
+	PORT_BIT( 0x01, IP_ACTIVE_HIGH, IPT_CUSTOM ) PORT_READ_LINE_MEMBER(FUNC(firetrk_state::gear_r<1>))
 	PORT_BIT( 0x02, IP_ACTIVE_HIGH, IPT_BUTTON1 ) PORT_NAME("Gas")
-	PORT_BIT( 0x04, IP_ACTIVE_HIGH, IPT_CUSTOM ) PORT_READ_LINE_MEMBER(firetrk_state, steer_dir_r<0>)
+	PORT_BIT( 0x04, IP_ACTIVE_HIGH, IPT_CUSTOM ) PORT_READ_LINE_MEMBER(FUNC(firetrk_state::steer_dir_r<0>))
 	PORT_BIT( 0x08, IP_ACTIVE_HIGH, IPT_MEMORY_RESET ) PORT_NAME("Hiscore Reset")
 	PORT_BIT( 0x10, IP_ACTIVE_HIGH, IPT_UNUSED )
 	PORT_SERVICE( 0x20, IP_ACTIVE_HIGH )
-	PORT_BIT( 0x40, IP_ACTIVE_HIGH, IPT_CUSTOM ) PORT_READ_LINE_MEMBER(firetrk_state, skid_r<0>)
+	PORT_BIT( 0x40, IP_ACTIVE_HIGH, IPT_CUSTOM ) PORT_READ_LINE_MEMBER(FUNC(firetrk_state::skid_r<0>))
 	PORT_BIT( 0x80, IP_ACTIVE_HIGH, IPT_TILT )
 
 	PORT_START("BIT_7")
-	PORT_BIT( 0x01, IP_ACTIVE_HIGH, IPT_CUSTOM ) PORT_READ_LINE_MEMBER(firetrk_state, gear_r<2>)
-	PORT_BIT( 0x02, IP_ACTIVE_HIGH, IPT_CUSTOM ) PORT_READ_LINE_MEMBER(firetrk_state, gear_r<0>)
-	PORT_BIT( 0x04, IP_ACTIVE_HIGH, IPT_CUSTOM ) PORT_READ_LINE_MEMBER(firetrk_state, steer_flag_r<0>)
+	PORT_BIT( 0x01, IP_ACTIVE_HIGH, IPT_CUSTOM ) PORT_READ_LINE_MEMBER(FUNC(firetrk_state::gear_r<2>))
+	PORT_BIT( 0x02, IP_ACTIVE_HIGH, IPT_CUSTOM ) PORT_READ_LINE_MEMBER(FUNC(firetrk_state::gear_r<0>))
+	PORT_BIT( 0x04, IP_ACTIVE_HIGH, IPT_CUSTOM ) PORT_READ_LINE_MEMBER(FUNC(firetrk_state::steer_flag_r<0>))
 	PORT_BIT( 0x08, IP_ACTIVE_HIGH, IPT_COIN1 )
 	PORT_BIT( 0x10, IP_ACTIVE_HIGH, IPT_COIN2 )
 	PORT_BIT( 0x20, IP_ACTIVE_HIGH, IPT_START1 )
-	PORT_BIT( 0x40, IP_ACTIVE_HIGH, IPT_CUSTOM ) PORT_READ_LINE_MEMBER(firetrk_state, crash_r<0>)
+	PORT_BIT( 0x40, IP_ACTIVE_HIGH, IPT_CUSTOM ) PORT_READ_LINE_MEMBER(FUNC(firetrk_state::crash_r<0>))
 	PORT_BIT( 0x80, IP_ACTIVE_HIGH, IPT_BUTTON6 ) PORT_NAME("Track Select")
 
 	PORT_START("GEAR")
-	PORT_BIT( 0x01, IP_ACTIVE_HIGH, IPT_BUTTON2 ) PORT_NAME("Gear 1") PORT_CHANGED_MEMBER(DEVICE_SELF, firetrk_state, gear_changed, 0)
-	PORT_BIT( 0x02, IP_ACTIVE_HIGH, IPT_BUTTON3 ) PORT_NAME("Gear 2") PORT_CHANGED_MEMBER(DEVICE_SELF, firetrk_state, gear_changed, 1)
-	PORT_BIT( 0x04, IP_ACTIVE_HIGH, IPT_BUTTON4 ) PORT_NAME("Gear 3") PORT_CHANGED_MEMBER(DEVICE_SELF, firetrk_state, gear_changed, 2)
-	PORT_BIT( 0x08, IP_ACTIVE_HIGH, IPT_BUTTON5 ) PORT_NAME("Gear 4") PORT_CHANGED_MEMBER(DEVICE_SELF, firetrk_state, gear_changed, 3)
+	PORT_BIT( 0x01, IP_ACTIVE_HIGH, IPT_BUTTON2 ) PORT_NAME("Gear 1") PORT_CHANGED_MEMBER(DEVICE_SELF, FUNC(firetrk_state::gear_changed), 0)
+	PORT_BIT( 0x02, IP_ACTIVE_HIGH, IPT_BUTTON3 ) PORT_NAME("Gear 2") PORT_CHANGED_MEMBER(DEVICE_SELF, FUNC(firetrk_state::gear_changed), 1)
+	PORT_BIT( 0x04, IP_ACTIVE_HIGH, IPT_BUTTON4 ) PORT_NAME("Gear 3") PORT_CHANGED_MEMBER(DEVICE_SELF, FUNC(firetrk_state::gear_changed), 2)
+	PORT_BIT( 0x08, IP_ACTIVE_HIGH, IPT_BUTTON5 ) PORT_NAME("Gear 4") PORT_CHANGED_MEMBER(DEVICE_SELF, FUNC(firetrk_state::gear_changed), 3)
 
 	PORT_START("R62")
 	PORT_ADJUSTER( 20, "R62 - Motor Frequency" )
@@ -1176,68 +1182,68 @@ static INPUT_PORTS_START( montecar )
 	PORT_START("STEER_1")
 	PORT_BIT( 0xff, 0x00, IPT_DIAL ) PORT_SENSITIVITY(25) PORT_KEYDELTA(10) PORT_PLAYER(1)
 
-	PORT_START("DIP_0")
+	PORT_START("DIP_1") // 4-position DIP Switch SW3
 	PORT_BIT( 0x01, IP_ACTIVE_HIGH, IPT_UNUSED ) // other DIPs connect here
 	PORT_BIT( 0x02, IP_ACTIVE_HIGH, IPT_UNUSED ) // other DIPs connect here
-	PORT_DIPNAME( 0x0c, 0x0c, "Coin 3 Multiplier" )
+	PORT_DIPNAME( 0x0c, 0x0c, "Coin 3 Multiplier" )     PORT_DIPLOCATION("SW3:1,2")
 	PORT_DIPSETTING(    0x0c, "1" )
 	PORT_DIPSETTING(    0x08, "4" )
 	PORT_DIPSETTING(    0x04, "5" )
 	PORT_DIPSETTING(    0x00, "6" )
-	PORT_DIPNAME( 0x10, 0x10, "Coin 2 Multiplier" )
+	PORT_DIPNAME( 0x10, 0x10, "Coin 2 Multiplier" )     PORT_DIPLOCATION("SW3:3")
 	PORT_DIPSETTING(    0x10, "1" )
 	PORT_DIPSETTING(    0x00, "2" )
-	PORT_DIPNAME( 0x20, 0x00, DEF_STR( Unused ))
+	PORT_DIPNAME( 0x20, 0x20, DEF_STR( Unused ))        PORT_DIPLOCATION("SW3:4")
 	PORT_DIPSETTING(    0x20, DEF_STR( Off ))
 	PORT_DIPSETTING(    0x00, DEF_STR( On ))
 
-	PORT_START("DIP_1")
-	PORT_DIPNAME( 0x03, 0x02, DEF_STR( Coinage ))
+	PORT_START("DIP_0") // 8-position DIP Switch SW2
+	PORT_DIPNAME( 0x03, 0x02, DEF_STR( Coinage ))       PORT_DIPLOCATION("SW2:1,2")
 	PORT_DIPSETTING(    0x00, DEF_STR( 2C_1C ))
 	PORT_DIPSETTING(    0x02, DEF_STR( 1C_1C ))
 	PORT_DIPSETTING(    0x01, DEF_STR( 1C_2C ))
 	PORT_DIPSETTING(    0x03, DEF_STR( Free_Play ))
-	PORT_DIPNAME( 0x0c, 0x08, "Extended Play" )
+	PORT_DIPNAME( 0x0c, 0x08, "Extended Play" )         PORT_DIPLOCATION("SW2:3,4")
 	PORT_DIPSETTING(    0x04, "Liberal" )
 	PORT_DIPSETTING(    0x08, DEF_STR( Medium ) )
 	PORT_DIPSETTING(    0x00, "Conservative" )
 	PORT_DIPSETTING(    0x0c, "Never" )
-	PORT_DIPNAME( 0x30, 0x20, "Play Time" )
+	PORT_DIPNAME( 0x30, 0x20, "Play Time" )             PORT_DIPLOCATION("SW2:5,6")
 	PORT_DIPSETTING(    0x30, "60 Seconds" )
 	PORT_DIPSETTING(    0x10, "90 Seconds" )
 	PORT_DIPSETTING(    0x20, "120 Seconds" )
 	PORT_DIPSETTING(    0x00, "150 Seconds" )
-	PORT_DIPNAME( 0xc0, 0xc0, DEF_STR( Language ) )
+	PORT_DIPNAME( 0xc0, 0xc0, DEF_STR( Language ) )     PORT_DIPLOCATION("SW2:7,8")
 	PORT_DIPSETTING(    0xc0, DEF_STR( English ) )
 	PORT_DIPSETTING(    0x80, DEF_STR( Spanish ) )
 	PORT_DIPSETTING(    0x40, DEF_STR( French ) )
 	PORT_DIPSETTING(    0x00, DEF_STR( German ) )
 
 	PORT_START("BIT_6")
-	PORT_BIT( 0x01, IP_ACTIVE_HIGH, IPT_CUSTOM ) PORT_READ_LINE_MEMBER(firetrk_state, gear_r<0>)
-	PORT_BIT( 0x02, IP_ACTIVE_HIGH, IPT_CUSTOM ) PORT_READ_LINE_MEMBER(firetrk_state, gear_r<1>)
-	PORT_BIT( 0x04, IP_ACTIVE_HIGH, IPT_CUSTOM ) PORT_READ_LINE_MEMBER(firetrk_state, gear_r<2>)
+	PORT_BIT( 0x01, IP_ACTIVE_HIGH, IPT_CUSTOM ) PORT_READ_LINE_MEMBER(FUNC(firetrk_state::gear_r<0>))
+	PORT_BIT( 0x02, IP_ACTIVE_HIGH, IPT_CUSTOM ) PORT_READ_LINE_MEMBER(FUNC(firetrk_state::gear_r<1>))
+	PORT_BIT( 0x04, IP_ACTIVE_HIGH, IPT_CUSTOM ) PORT_READ_LINE_MEMBER(FUNC(firetrk_state::gear_r<2>))
 	PORT_BIT( 0x08, IP_ACTIVE_HIGH, IPT_BUTTON6 ) PORT_NAME("Track Select")
 	PORT_BIT( 0x10, IP_ACTIVE_HIGH, IPT_BUTTON1 ) PORT_NAME("Gas")
-	PORT_BIT( 0x20, IP_ACTIVE_HIGH, IPT_CUSTOM ) PORT_VBLANK("screen")
-	PORT_BIT( 0x40, IP_ACTIVE_HIGH, IPT_CUSTOM ) PORT_READ_LINE_MEMBER(firetrk_state, steer_dir_r<0>)
-	PORT_BIT( 0x80, IP_ACTIVE_HIGH, IPT_CUSTOM ) PORT_READ_LINE_MEMBER(firetrk_state, skid_r<1>)
+	PORT_BIT( 0x20, IP_ACTIVE_HIGH, IPT_CUSTOM ) PORT_READ_LINE_DEVICE_MEMBER("screen", FUNC(screen_device::vblank))
+	PORT_BIT( 0x40, IP_ACTIVE_HIGH, IPT_CUSTOM ) PORT_READ_LINE_MEMBER(FUNC(firetrk_state::steer_dir_r<0>))
+	PORT_BIT( 0x80, IP_ACTIVE_HIGH, IPT_CUSTOM ) PORT_READ_LINE_MEMBER(FUNC(firetrk_state::skid_r<1>))
 
 	PORT_START("BIT_7")
 	PORT_BIT( 0x01, IP_ACTIVE_HIGH, IPT_START1 )
 	PORT_BIT( 0x02, IP_ACTIVE_HIGH, IPT_TILT )
-	PORT_SERVICE( 0x04, IP_ACTIVE_HIGH ) PORT_CHANGED_MEMBER(DEVICE_SELF, firetrk_state, service_mode_switch_changed, 0)
+	PORT_SERVICE( 0x04, IP_ACTIVE_HIGH ) PORT_CHANGED_MEMBER(DEVICE_SELF, FUNC(firetrk_state::service_mode_switch_changed), 0)
 	PORT_BIT( 0x08, IP_ACTIVE_HIGH, IPT_COIN1 )
 	PORT_BIT( 0x10, IP_ACTIVE_HIGH, IPT_COIN2 )
 	PORT_BIT( 0x20, IP_ACTIVE_HIGH, IPT_CUSTOM )
-	PORT_BIT( 0x40, IP_ACTIVE_HIGH, IPT_CUSTOM ) PORT_READ_LINE_MEMBER(firetrk_state, steer_flag_r<0>)
-	PORT_BIT( 0x80, IP_ACTIVE_HIGH, IPT_CUSTOM ) PORT_READ_LINE_MEMBER(firetrk_state, skid_r<0>)
+	PORT_BIT( 0x40, IP_ACTIVE_HIGH, IPT_CUSTOM ) PORT_READ_LINE_MEMBER(FUNC(firetrk_state::steer_flag_r<0>))
+	PORT_BIT( 0x80, IP_ACTIVE_HIGH, IPT_CUSTOM ) PORT_READ_LINE_MEMBER(FUNC(firetrk_state::skid_r<0>))
 
 	PORT_START("GEAR")
-	PORT_BIT( 0x01, IP_ACTIVE_HIGH, IPT_BUTTON2 ) PORT_NAME("Gear 1") PORT_CHANGED_MEMBER(DEVICE_SELF, firetrk_state, gear_changed, 0)
-	PORT_BIT( 0x02, IP_ACTIVE_HIGH, IPT_BUTTON3 ) PORT_NAME("Gear 2") PORT_CHANGED_MEMBER(DEVICE_SELF, firetrk_state, gear_changed, 1)
-	PORT_BIT( 0x04, IP_ACTIVE_HIGH, IPT_BUTTON4 ) PORT_NAME("Gear 3") PORT_CHANGED_MEMBER(DEVICE_SELF, firetrk_state, gear_changed, 2)
-	PORT_BIT( 0x08, IP_ACTIVE_HIGH, IPT_BUTTON5 ) PORT_NAME("Gear 4") PORT_CHANGED_MEMBER(DEVICE_SELF, firetrk_state, gear_changed, 3)
+	PORT_BIT( 0x01, IP_ACTIVE_HIGH, IPT_BUTTON2 ) PORT_NAME("Gear 1") PORT_CHANGED_MEMBER(DEVICE_SELF, FUNC(firetrk_state::gear_changed), 0)
+	PORT_BIT( 0x02, IP_ACTIVE_HIGH, IPT_BUTTON3 ) PORT_NAME("Gear 2") PORT_CHANGED_MEMBER(DEVICE_SELF, FUNC(firetrk_state::gear_changed), 1)
+	PORT_BIT( 0x04, IP_ACTIVE_HIGH, IPT_BUTTON4 ) PORT_NAME("Gear 3") PORT_CHANGED_MEMBER(DEVICE_SELF, FUNC(firetrk_state::gear_changed), 2)
+	PORT_BIT( 0x08, IP_ACTIVE_HIGH, IPT_BUTTON5 ) PORT_NAME("Gear 4") PORT_CHANGED_MEMBER(DEVICE_SELF, FUNC(firetrk_state::gear_changed), 3)
 
 	PORT_START("R89")
 	PORT_ADJUSTER( 20, "R89 - Motor Frequency" )
@@ -1385,7 +1391,7 @@ static const gfx_layout montecar_car_layout =
 	8,      // total
 	2,      // planes
 			// plane offsets
-	{ 1, 0 },
+	{ 0, 1 },
 	{
 		0x00, 0x02, 0x04, 0x06, 0x08, 0x0a, 0x0c, 0x0e,
 		0x10, 0x12, 0x14, 0x16, 0x18, 0x1a, 0x1c, 0x1e,

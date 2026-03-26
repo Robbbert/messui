@@ -15,6 +15,7 @@
 
 #include "bus/centronics/ctronics.h"
 #include "bus/msx/ctrl/ctrl.h"
+#include "bus/nec_fdd/pc80s31k.h"
 #include "bus/pc8801/pc8801_31.h"
 #include "bus/pc8801/pc8801_exp.h"
 #include "cpu/z80/z80.h"
@@ -25,7 +26,6 @@
 #include "machine/i8255.h"
 #include "machine/timer.h"
 #include "machine/upd1990a.h"
-#include "pc80s31k.h"
 #include "sound/beep.h"
 #include "sound/ymopn.h"
 
@@ -49,8 +49,7 @@ public:
 		, m_usart(*this, "usart")
 //      , m_cassette(*this, "cassette")
 		, m_beeper(*this, "beeper")
-		, m_lspeaker(*this, "lspeaker")
-		, m_rspeaker(*this, "rspeaker")
+		, m_speaker(*this, "speaker")
 		, m_palette(*this, "palette")
 		, m_n80rom(*this, "n80rom")
 		, m_n88rom(*this, "n88rom")
@@ -65,9 +64,9 @@ public:
 	void pc8801(machine_config &config);
 
 protected:
-	virtual void video_start() override;
-	virtual void machine_start() override;
-	virtual void machine_reset() override;
+	virtual void video_start() override ATTR_COLD;
+	virtual void machine_start() override ATTR_COLD;
+	virtual void machine_reset() override ATTR_COLD;
 
 	uint8_t mem_r(offs_t offset);
 	void mem_w(offs_t offset, uint8_t data);
@@ -75,13 +74,15 @@ protected:
 	virtual UPD3301_FETCH_ATTRIBUTE( attr_fetch ) override;
 
 	virtual uint8_t dma_mem_r(offs_t offset) override;
+	void dma_mem_w(offs_t offset, u8 data);
+	uint8_t dackv(offs_t offset);
 
 	virtual uint8_t dictionary_rom_r(offs_t offset);
 	virtual bool dictionary_rom_enable();
 
 	virtual uint8_t cdbios_rom_r(offs_t offset);
 	virtual bool cdbios_rom_enable();
-	virtual void main_io(address_map &map);
+	virtual void main_io(address_map &map) ATTR_COLD;
 
 //  required_device<cpu_device> m_maincpu;
 	required_device<screen_device> m_screen;
@@ -91,8 +92,7 @@ protected:
 	required_device<i8251_device> m_usart;
 //  required_device<cassette_image_device> m_cassette;
 	required_device<beep_device> m_beeper;
-	required_device<speaker_device> m_lspeaker;
-	required_device<speaker_device> m_rspeaker;
+	required_device<speaker_device> m_speaker;
 	required_device<palette_device> m_palette;
 	required_region_ptr<u8> m_n80rom;
 	required_region_ptr<u8> m_n88rom;
@@ -107,7 +107,7 @@ protected:
 	uint8_t m_gfx_ctrl = 0;
 
 private:
-	void main_map(address_map &map);
+	void main_map(address_map &map) ATTR_COLD;
 
 	std::unique_ptr<uint8_t[]> m_work_ram;
 	std::unique_ptr<uint8_t[]> m_hi_work_ram;
@@ -228,7 +228,7 @@ public:
 	void pc8801mk2mr(machine_config &config);
 
 protected:
-	virtual void main_io(address_map &map) override;
+	virtual void main_io(address_map &map) override ATTR_COLD;
 
 	uint8_t opn_porta_r();
 	uint8_t opn_portb_r();
@@ -250,13 +250,13 @@ public:
 	void pc8801fh(machine_config &config);
 
 protected:
-	virtual void machine_start() override;
-	virtual void machine_reset() override;
-	virtual void main_io(address_map &map) override;
+	virtual void machine_start() override ATTR_COLD;
+	virtual void machine_reset() override ATTR_COLD;
+	virtual void main_io(address_map &map) override ATTR_COLD;
 
 private:
 	required_device<ym2608_device> m_opna;
-	void opna_map(address_map &map);
+	void opna_map(address_map &map) ATTR_COLD;
 
 	uint8_t cpuclock_r();
 	uint8_t baudrate_r();
@@ -277,10 +277,10 @@ public:
 	void pc8801ma(machine_config &config);
 
 protected:
-	virtual void machine_start() override;
-	virtual void machine_reset() override;
+	virtual void machine_start() override ATTR_COLD;
+	virtual void machine_reset() override ATTR_COLD;
 
-	virtual void main_io(address_map &map) override;
+	virtual void main_io(address_map &map) override ATTR_COLD;
 
 	virtual uint8_t dictionary_rom_r(offs_t offset) override;
 	virtual bool dictionary_rom_enable() override;
@@ -306,10 +306,10 @@ public:
 	void pc8801mc(machine_config &config);
 
 protected:
-	virtual void machine_start() override;
-	virtual void machine_reset() override;
+	virtual void machine_start() override ATTR_COLD;
+	virtual void machine_reset() override ATTR_COLD;
 
-	virtual void main_io(address_map &map) override;
+	virtual void main_io(address_map &map) override ATTR_COLD;
 
 private:
 	virtual uint8_t cdbios_rom_r(offs_t offset) override;

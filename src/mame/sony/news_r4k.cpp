@@ -147,8 +147,8 @@ public:
 		m_fdc(*this, "fdc"),
 		m_hid(*this, "hid"),
 		m_dmac(*this, "dmac"),
-		m_scsi0(*this, "scsi0:7:spifi3"),
-		m_scsi1(*this, "scsi1:7:spifi3"),
+		m_scsi0(*this, "spifi3_0"),
+		m_scsi1(*this, "spifi3_1"),
 		m_scsibus0(*this, "scsi0"),
 		m_scsibus1(*this, "scsi1"),
 		m_dip_switch(*this, "FRONT_PANEL"),
@@ -304,16 +304,16 @@ protected:
 	};
 
 	// driver_device overrides
-	virtual void machine_start() override;
-	virtual void machine_reset() override;
+	virtual void machine_start() override ATTR_COLD;
+	virtual void machine_reset() override ATTR_COLD;
 
 	void machine_common(machine_config &config);
 
 	// address maps
-	void cpu_map(address_map &map);
-	void sonic3_map(address_map &map);
-	void cpu_map_main_memory(address_map &map);
-	void cpu_map_debug(address_map &map);
+	void cpu_map(address_map &map) ATTR_COLD;
+	void sonic3_map(address_map &map) ATTR_COLD;
+	void cpu_map_main_memory(address_map &map) ATTR_COLD;
+	void cpu_map_debug(address_map &map) ATTR_COLD;
 
 	// Interrupts
 	// See news5000 section of https://github.com/NetBSD/src/blob/trunk/sys/arch/newsmips/include/adrsmap.h
@@ -453,10 +453,6 @@ void news_r4k_state::machine_common(machine_config &config)
 	m_sonic->out_int_cb().set(m_sonic3, FUNC(cxd8452aq_device::irq_w));
 	m_sonic->set_bus(m_sonic3, 1);
 
-	// Use promiscuous mode to force network driver to accept all packets, since SONIC has its own filter (CAM table)
-	// Not sure if needing to use this means something else isn't set up correctly.
-	m_sonic->set_promisc(true);
-
 	// Unlike 68k and R3000 NEWS machines, the keyboard and mouse seem to share an interrupt
 	// See https://github.com/NetBSD/src/blob/trunk/sys/arch/newsmips/apbus/ms_ap.c#L103
 	// where the mouse interrupt handler is initialized using the Keyboard interrupt.
@@ -501,29 +497,22 @@ void news_r4k_state::machine_common(machine_config &config)
 	NSCSI_CONNECTOR(config, "scsi1:6", news_scsi_devices, nullptr);
 
 	// TODO: Actual SPIFI3 clock frequency
-	NSCSI_CONNECTOR(config, "scsi0:7").option_set("spifi3", SPIFI3)
-		.clock(16'000'000)
-		.machine_config(
-			[this](device_t *device)
-			{
-				spifi3_device &adapter = dynamic_cast<spifi3_device &>(*device);
-				adapter.irq_handler_cb().set(m_dmac, FUNC(dmac3_device::irq_w<dmac3_device::CTRL0>));
-				adapter.drq_handler_cb().set(m_dmac, FUNC(dmac3_device::drq_w<dmac3_device::CTRL0>));
-			});
-	NSCSI_CONNECTOR(config, "scsi1:7").option_set("spifi3", SPIFI3)
-		.clock(16'000'000)
-		.machine_config(
-			[this](device_t *device)
-			{
-				spifi3_device &adapter = dynamic_cast<spifi3_device &>(*device);
-				adapter.irq_handler_cb().set(m_dmac, FUNC(dmac3_device::irq_w<dmac3_device::CTRL1>));
-				adapter.drq_handler_cb().set(m_dmac, FUNC(dmac3_device::drq_w<dmac3_device::CTRL1>));
-			});
+	SPIFI3(config, m_scsi0, 16'000'000);
+	m_scsibus0->set_external_device(7, m_scsi0);
+	m_scsi0->irq_handler_cb().set(m_dmac, FUNC(dmac3_device::irq_w<dmac3_device::CTRL0>));
+	m_scsi0->drq_handler_cb().set(m_dmac, FUNC(dmac3_device::drq_w<dmac3_device::CTRL0>));
+
+	SPIFI3(config, m_scsi1, 16'000'000);
+	m_scsibus1->set_external_device(7, m_scsi1);
+	m_scsi1->irq_handler_cb().set(m_dmac, FUNC(dmac3_device::irq_w<dmac3_device::CTRL1>));
+	m_scsi1->drq_handler_cb().set(m_dmac, FUNC(dmac3_device::drq_w<dmac3_device::CTRL1>));
 
 	m_dmac->dma_r_cb<dmac3_device::CTRL0>().set(m_scsi0, FUNC(spifi3_device::dma_r));
 	m_dmac->dma_w_cb<dmac3_device::CTRL0>().set(m_scsi0, FUNC(spifi3_device::dma_w));
 	m_dmac->dma_r_cb<dmac3_device::CTRL1>().set(m_scsi1, FUNC(spifi3_device::dma_r));
 	m_dmac->dma_w_cb<dmac3_device::CTRL1>().set(m_scsi1, FUNC(spifi3_device::dma_w));
+
+	SOFTWARE_LIST(config, "software_list").set_original("sony_news").set_filter("RISC,NWS5000");
 }
 
 void news_r4k_state::nws5000x(machine_config &config) { machine_common(config); }

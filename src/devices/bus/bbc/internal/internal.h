@@ -50,7 +50,7 @@ protected:
 	required_memory_region m_region_swr;
 	required_memory_region m_region_mos;
 
-	bbc_internal_slot_device *m_slot;
+	bbc_internal_slot_device *const m_slot;
 };
 
 // ======================> bbc_internal_slot_device
@@ -95,7 +95,7 @@ public:
 
 protected:
 	// device-level overrides
-	virtual void device_start() override;
+	virtual void device_start() override ATTR_COLD;
 
 	devcb_write_line m_irq_handler;
 	devcb_write_line m_nmi_handler;

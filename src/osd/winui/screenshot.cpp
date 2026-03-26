@@ -436,7 +436,6 @@ static std::error_condition OpenZipDIBFile(const char *dir_name, const char *zip
 		}
 	}
 
-	// operator | unknown
 	if (filerr)
 		return filerr;
 	return ziperr;
@@ -445,6 +444,8 @@ static std::error_condition OpenZipDIBFile(const char *dir_name, const char *zip
 // display a snap, cabinet, title, flyer, marquee, pcb, control panel
 static BOOL LoadDIB(const char *filename, HGLOBAL *phDIB, HPALETTE *pPal, int pic_type)
 {
+	std::error_condition filerr = std::errc::no_such_file_or_directory;
+	util::core_file::ptr file = NULL;
 	char fullpath[2048];
 	const char* zip_name;
 	string t;
@@ -527,8 +528,6 @@ static BOOL LoadDIB(const char *filename, HGLOBAL *phDIB, HPALETTE *pPal, int pi
 			return false;
 	}
 
-	std::error_condition filerr = std::errc::no_such_file_or_directory;
-	util::core_file::ptr file = NULL;
 	string ext;
 	BOOL success;
 	void *buffer = NULL;
@@ -563,8 +562,6 @@ static BOOL LoadDIB(const char *filename, HGLOBAL *phDIB, HPALETTE *pPal, int pi
 		{
 			//Add handling for the displaying of all the different supported snapshot pattern types
 
-			file = NULL;
-
 			// Do software checks first
 			if (file_name)
 			{
@@ -596,21 +593,31 @@ static BOOL LoadDIB(const char *filename, HGLOBAL *phDIB, HPALETTE *pPal, int pi
 			// give up on software-specific.
 			// For SNAPS only, try filenames with 0000.png
 			if ((pic_type == TAB_SCREENSHOT) && (extnum == 0))
-			{
-				if (filerr)
-				{
-					//%g/%i
+			if (filerr)
+
+			{      //%g/%i              gamename/increment
 					fname = string(system_name) + PATH_SEPARATOR + "0000.png";
-					//printf("DIB: B1 = %s:%s\n",partpath,fname.c_str());fflush(stdout);
 					filerr = OpenRawDIBFile(partpath, fname.c_str(), file);
-				}
+			}
+
+			if ((pic_type == TAB_SCREENSHOT) && (extnum == 0))
+			if (filerr)
+			{       //%g/%g+0000.png    gamename/gamename+increment
+			        fname = string(system_name) + PATH_SEPARATOR + string(system_name) + "0000.png";
+			        filerr = OpenRawDIBFile(partpath, fname.c_str(), file);
+			}
+
+			if ((pic_type == TAB_SCREENSHOT) && (extnum == 0))
+			if (filerr)
+			{       //%g+0000.png       gamename + increment
+			        fname = string(system_name) + "0000.png";
+			        filerr = OpenRawDIBFile(partpath, fname.c_str(), file);
 			}
 
 			// Try dir/system.png  %g
 			if (filerr)
 			{
 				fname = string(system_name) + ext;
-				//printf("DIB: B2 = %s:%s\n",partpath,fname.c_str());fflush(stdout);
 				filerr = OpenRawDIBFile(partpath, fname.c_str(), file);
 			}
 
@@ -618,7 +625,6 @@ static BOOL LoadDIB(const char *filename, HGLOBAL *phDIB, HPALETTE *pPal, int pi
 			if (filerr)
 			{
 				fname = string(system_name) + PATH_SEPARATOR + string(system_name) + ext;
-				//printf("DIB: B3 = %s:%s\n",partpath,fname.c_str());fflush(stdout);
 				filerr = OpenRawDIBFile(partpath, fname.c_str(), file);
 			}
 
@@ -626,23 +632,18 @@ static BOOL LoadDIB(const char *filename, HGLOBAL *phDIB, HPALETTE *pPal, int pi
 			if (filerr)
 			{
 				fname = string(system_name) + ext;
-				//printf("DIB: B4 = %s:%s\n",partpath,fname.c_str());fflush(stdout);
 				filerr = OpenZipDIBFile(partpath, zip_name, fname.c_str(), file, &buffer);
 			}
 
-			//printf("DIB: B = %s:%s\n",partpath,fname.c_str());fflush(stdout);
 			partpath = strtok(NULL, ";");
 		}
 
-		//printf("DIB: C\n");fflush(stdout);
 		if (!filerr && file)
 		{
-			//printf("DIB: D = %d\n",extnum);fflush(stdout);
 			if (extnum)
 				success = jpeg_read_bitmap_gui(*file, phDIB, pPal);
 			else
 				success = png_read_bitmap_gui(*file, phDIB, pPal);
-			//printf("DIB: E = %d\n",success);fflush(stdout);
 			file.reset();
 		}
 		if (success)
@@ -695,7 +696,7 @@ HBITMAP DIBToDDB(HDC hDC, HANDLE hDIB, LPMYBITMAPINFO desc)
 
 
 // main call from winui to display a picture
-BOOL LoadScreenShot(int nGame, LPCSTR lpSoftwareName, int nType)
+BOOL LoadScreenShot(int nGame, string lpSoftwareName, int nType)
 {
 	/* Delete the last ones */
 	//printf("LoadScreenShot: A\n");fflush(stdout);
@@ -710,8 +711,8 @@ BOOL LoadScreenShot(int nGame, LPCSTR lpSoftwareName, int nType)
 
 	// If software item, see if picture exist (correct parent is passed in lpSoftwareName)
 	//printf("LoadScreenShot: C\n");fflush(stdout);
-	if (lpSoftwareName)
-		loaded = LoadDIB(lpSoftwareName, &m_hDIB, &m_hPal, nType);
+	if (!lpSoftwareName.empty())
+		loaded = LoadDIB(lpSoftwareName.c_str(), &m_hDIB, &m_hPal, nType);
 
 	// If game, see if picture exist. Or, if no picture for the software, use game's picture.
 	//printf("LoadScreenShot: D\n");fflush(stdout);

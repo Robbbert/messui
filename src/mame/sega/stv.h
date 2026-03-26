@@ -98,12 +98,12 @@ public:
 	void init_stv_us();
 
 protected:
-	virtual void machine_start() override;
-	virtual void machine_reset() override;
+	virtual void machine_start() override ATTR_COLD;
+	virtual void machine_reset() override ATTR_COLD;
 
 private:
-	uint8_t stv_ioga_r(offs_t offset);
-	void stv_ioga_w(offs_t offset, uint8_t data);
+	uint8_t ioga_r(offs_t offset);
+	void ioga_w(offs_t offset, uint8_t data);
 	uint8_t critcrsh_ioga_r(offs_t offset);
 	void critcrsh_ioga_w(offs_t offset, uint8_t data);
 	uint8_t magzun_ioga_r(offs_t offset);
@@ -141,7 +141,7 @@ private:
 	uint32_t m_abus_protkey = 0;
 
 	uint32_t decathlt_prot_r(offs_t offset, uint32_t mem_mask = ~0);
-	void sega5838_map(address_map &map);
+	void sega5838_map(address_map &map) ATTR_COLD;
 	optional_memory_bank m_protbank;
 	bool m_newprotection_element; // debug helper only, doesn't need saving
 	int m_protbankval; // debug helper only, doesn't need saving
@@ -174,14 +174,14 @@ private:
 	void stv_select_game(int gameno);
 	uint8_t     m_prev_gamebank_select = 0;
 
-	void sound_mem(address_map &map);
-	void scsp_mem(address_map &map);
-	void stv_mem(address_map &map);
-	void critcrsh_mem(address_map &map);
-	void magzun_mem(address_map &map);
-	void stvmp_mem(address_map &map);
-	void hopper_mem(address_map &map);
-	void stvcd_mem(address_map &map);
+	void sound_mem(address_map &map) ATTR_COLD;
+	void scsp_mem(address_map &map) ATTR_COLD;
+	void stv_mem(address_map &map) ATTR_COLD;
+	void critcrsh_mem(address_map &map) ATTR_COLD;
+	void magzun_mem(address_map &map) ATTR_COLD;
+	void stvmp_mem(address_map &map) ATTR_COLD;
+	void hopper_mem(address_map &map) ATTR_COLD;
+	void stvcd_mem(address_map &map) ATTR_COLD;
 };
 
 class stvpc_state : public stv_state
@@ -193,14 +193,5 @@ public:
 
 //#define MASTER_CLOCK_352 57272720
 //#define MASTER_CLOCK_320 53693174
-#define CEF_1   m_vdp1_regs[0x010/2]|=0x0002
-#define CEF_0   m_vdp1_regs[0x010/2]&=~0x0002
-#define BEF_1   m_vdp1_regs[0x010/2]|=0x0001
-#define BEF_0   m_vdp1_regs[0x010/2]&=~0x0001
-#define STV_VDP1_TVMR ((m_vdp1_regs[0x000/2])&0xffff)
-#define STV_VDP1_VBE  ((STV_VDP1_TVMR & 0x0008) >> 3)
-#define STV_VDP1_TVM  ((STV_VDP1_TVMR & 0x0007) >> 0)
-
-extern gfx_decode_entry const gfx_stv[];
 
 #endif // MAME_SEGA_STV_H

@@ -75,16 +75,16 @@ public:
 	void status_w(uint8_t data);
 	uint8_t data_r(offs_t offset);
 
-	void ssio_map(address_map &map);
-	static void ssio_input_ports(address_map &map, const char *ssio);
+	void ssio_map(address_map &map) ATTR_COLD;
+	static void ssio_input_ports(address_map &map, const char *ssio) ATTR_COLD;
 
 protected:
 	// device-level overrides
-	virtual const tiny_rom_entry *device_rom_region() const override;
-	virtual void device_add_mconfig(machine_config &config) override;
-	virtual ioport_constructor device_input_ports() const override;
-	virtual void device_start() override;
-	virtual void device_reset() override;
+	virtual const tiny_rom_entry *device_rom_region() const override ATTR_COLD;
+	virtual void device_add_mconfig(machine_config &config) override ATTR_COLD;
+	virtual ioport_constructor device_input_ports() const override ATTR_COLD;
+	virtual void device_start() override ATTR_COLD;
+	virtual void device_reset() override ATTR_COLD;
 
 	TIMER_CALLBACK_MEMBER(synced_write);
 
@@ -108,7 +108,7 @@ private:
 	uint8_t m_mute;
 	uint8_t m_overall[2];
 	uint8_t m_duty_cycle[2][3];
-	uint8_t m_ayvolume_lookup[16];
+	float m_ayvolume_lookup[16];
 
 	// I/O port overrides
 	uint8_t m_custom_input_mask[5];
@@ -138,12 +138,12 @@ public:
 	void write(uint8_t data);
 	void reset_write(int state);
 
-	void soundsgood_map(address_map &map);
+	void soundsgood_map(address_map &map) ATTR_COLD;
 protected:
 	// device-level overrides
-	virtual void device_add_mconfig(machine_config &config) override;
-	virtual void device_start() override;
-	virtual void device_reset() override;
+	virtual void device_add_mconfig(machine_config &config) override ATTR_COLD;
+	virtual void device_start() override ATTR_COLD;
+	virtual void device_reset() override ATTR_COLD;
 
 	TIMER_CALLBACK_MEMBER(synced_write);
 
@@ -179,12 +179,12 @@ public:
 	void write(uint8_t data);
 	void reset_write(int state);
 
-	void turbocs_map(address_map &map);
+	void turbocs_map(address_map &map) ATTR_COLD;
 protected:
 	// device-level overrides
-	virtual void device_add_mconfig(machine_config &config) override;
-	virtual void device_start() override;
-	virtual void device_reset() override;
+	virtual void device_add_mconfig(machine_config &config) override ATTR_COLD;
+	virtual void device_start() override ATTR_COLD;
+	virtual void device_reset() override ATTR_COLD;
 
 	TIMER_CALLBACK_MEMBER(synced_write);
 

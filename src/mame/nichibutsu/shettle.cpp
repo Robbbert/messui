@@ -4,7 +4,8 @@
 /*
 Alone Shettle Crew
 1984
-Copyright New Digimatic but almost surely developed in Japan.
+Copyright New Digimatic but developed in Japan by Graphic Research (GRC).
+Distributed in Japan by Regal.
 
 2-PCB stack
 main PCB is marked: "PC-082A" on component side
@@ -15,10 +16,10 @@ Hardware has similarities with that of various Nichibutsu games of the same era.
 
 TODO:
 - what is the 24-pin chip marked Z4? Same is present on Clash Road. Maybe some kind of protection?
-  Reads area $6000-$61ff on player life loss. Game seems to be working but left as MNW/MIP since it isn't
+  Reads area $6000-$61ff on player life loss. Game seems to be working but left as MUP since it isn't
   currently known what is affected, if anything.
 - input reading isn't correct (see weird coinage DIPs);
-- colors need checking on real hardware (available pics may have cranked up gamma);
+- colors need checking on real hardware (available pics are possibly taken with wrong RGB hookup);
 - cocktail mode sprite positioning isn't totally correct.
 */
 
@@ -57,8 +58,8 @@ public:
 	void shettle(machine_config &config);
 
 protected:
-	virtual void machine_start() override;
-	virtual void video_start() override;
+	virtual void machine_start() override ATTR_COLD;
+	virtual void video_start() override ATTR_COLD;
 
 private:
 	required_device<cpu_device> m_maincpu;
@@ -92,16 +93,10 @@ private:
 	INTERRUPT_GEN_MEMBER(vblank_irq);
 	INTERRUPT_GEN_MEMBER(sound_timer_irq);
 
-	void main_map(address_map &map);
-	void sound_map(address_map &map);
+	void main_map(address_map &map) ATTR_COLD;
+	void sound_map(address_map &map) ATTR_COLD;
 };
 
-
-/***************************************************************************
-
-  Convert the color PROMs into a more useable format.
-
-***************************************************************************/
 
 void shettle_state::palette_init(palette_device &palette) const
 {
@@ -121,19 +116,22 @@ void shettle_state::palette_init(palette_device &palette) const
 	{
 		int bit0, bit1, bit2;
 
+		// red component
 		bit0 = BIT(color_prom[i], 0);
 		bit1 = BIT(color_prom[i], 1);
 		bit2 = BIT(color_prom[i], 2);
-		int const g = combine_weights(gweights, bit0, bit1, bit2);
+		int const r = combine_weights(rweights, bit0, bit1, bit2);
 
+		// green component
 		bit0 = BIT(color_prom[i], 3);
 		bit1 = BIT(color_prom[i], 4);
-		int const b = combine_weights(bweights, bit0, bit1);
+		bit2 = BIT(color_prom[i], 5);
+		int const g = combine_weights(gweights, bit0, bit1, bit2);
 
-		bit0 = BIT(color_prom[i], 5);
-		bit1 = BIT(color_prom[i], 6);
-		bit2 = BIT(color_prom[i], 7);
-		int const r = combine_weights(rweights, bit0, bit1, bit2);
+		// blue component
+		bit0 = BIT(color_prom[i], 6);
+		bit1 = BIT(color_prom[i], 7);
+		int const b = combine_weights(bweights, bit0, bit1);
 
 		palette.set_indirect_color(i, rgb_t(r, g, b));
 	}
@@ -451,9 +449,9 @@ ROM_START( shettle )
 	ROM_LOAD( "e.bin", 0x0000, 0x2000, CRC(a3cef381) SHA1(ed511f5b695f0abdbaea8414d9de260f696f5318) )
 
 	ROM_REGION( 0x0340, "proms", 0 )
-	ROM_LOAD( "prom-4.2f",  0x0000, 0x0020, CRC(befab139) SHA1(748c49437067d2d0a99b359bb5d53841a22b4760) ) // MMI 6331 - palette. Only 16 colors?
-	ROM_LOAD( "prom-6.4h",  0x0020, 0x0100, CRC(1abbc864) SHA1(a28d35cb2492f74f847858475aef669c38c3574a) ) // char lookup table? (near 0.5d ROM)
-	ROM_LOAD( "prom-5.3r",  0x0120, 0x0100, CRC(0f64edb9) SHA1(e1bc4acc0778ca13a3a2b8caa653bbf54a3507f9) ) // sprite lookup table? (next to e.4r ROM)
+	ROM_LOAD( "prom-4.2f",  0x0000, 0x0020, CRC(befab139) SHA1(748c49437067d2d0a99b359bb5d53841a22b4760) ) // MMI 6331 - palette
+	ROM_LOAD( "prom-6.4h",  0x0020, 0x0100, CRC(1abbc864) SHA1(a28d35cb2492f74f847858475aef669c38c3574a) ) // char lookup table (near 0.5d ROM)
+	ROM_LOAD( "prom-5.3r",  0x0120, 0x0100, CRC(0f64edb9) SHA1(e1bc4acc0778ca13a3a2b8caa653bbf54a3507f9) ) // sprite lookup table (next to e.4r ROM)
 	ROM_LOAD( "prom-7.7b",  0x0220, 0x0100, CRC(9e824f74) SHA1(03fcde2546b87286038ef93a6939c1c325f74998) ) // unknown (almost identical to clshroad.g10 in clshroad.cpp)
 	ROM_LOAD( "prom-1.bin", 0x0320, 0x0020, CRC(1afc04f0) SHA1(38207cf3e15bac7034ac06469b95708d22b57da4) ) // MMI 6331 - timing? (same as clashrd.g4 in clshroad.cpp)
 
@@ -468,4 +466,4 @@ ROM_END
 } // anonymous namespace
 
 
-GAME( 1984, shettle, 0,      shettle, shettle, shettle_state, empty_init, ROT90, "New Digimatic", "Alone Shettle Crew", MACHINE_NOT_WORKING | MACHINE_UNEMULATED_PROTECTION | MACHINE_IMPERFECT_COLORS | MACHINE_NO_COCKTAIL | MACHINE_SUPPORTS_SAVE )
+GAME( 1984, shettle, 0,      shettle, shettle, shettle_state, empty_init, ROT90, "New Digimatic", "Alone Shettle Crew", MACHINE_UNEMULATED_PROTECTION | MACHINE_NO_COCKTAIL | MACHINE_SUPPORTS_SAVE )

@@ -43,8 +43,8 @@ public:
 
 protected:
 	// device-level overrides
-	virtual void device_start() override;
-	virtual void device_reset() override;
+	virtual void device_start() override ATTR_COLD;
+	virtual void device_reset() override ATTR_COLD;
 
 	TIMER_CALLBACK_MEMBER(update_seek);
 	TIMER_CALLBACK_MEMBER(delayed_drq);
@@ -86,6 +86,7 @@ private:
 	attotime get_stepping_rate();
 	void start_command();
 	void end_command();
+	bool validate_id_field();
 	int get_lbasector();
 
 	int head() { return (m_sdh >> 0) & 0x07; }

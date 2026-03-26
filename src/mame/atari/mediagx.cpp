@@ -110,9 +110,9 @@ public:
 	void mediagx(machine_config &config);
 
 protected:
-	virtual void machine_start() override;
-	virtual void machine_reset() override;
-	virtual void video_start() override;
+	virtual void machine_start() override ATTR_COLD;
+	virtual void machine_reset() override ATTR_COLD;
+	virtual void video_start() override ATTR_COLD;
 
 private:
 	struct speedup_entry
@@ -145,9 +145,9 @@ private:
 	void report_speedups();
 	void install_speedups(const speedup_entry *entries, int count);
 	void init_mediagx();
-	void mediagx_io(address_map &map);
-	void mediagx_map(address_map &map);
-	void ramdac_map(address_map &map);
+	void mediagx_io(address_map &map) ATTR_COLD;
+	void mediagx_map(address_map &map) ATTR_COLD;
+	void ramdac_map(address_map &map) ATTR_COLD;
 
 	uint32_t cx5510_pci_r(int function, int reg, uint32_t mem_mask)
 	{
@@ -912,12 +912,11 @@ void mediagx_state::mediagx(machine_config &config)
 	PALETTE(config, m_palette).set_entries(256);
 
 	/* sound hardware */
-	SPEAKER(config, "lspeaker").front_left();
-	SPEAKER(config, "rspeaker").front_right();
+	SPEAKER(config, "speaker", 2).front();
 
-	DMADAC(config, m_dmadac[0]).add_route(ALL_OUTPUTS, "lspeaker", 1.0);
+	DMADAC(config, m_dmadac[0]).add_route(ALL_OUTPUTS, "speaker", 1.0, 0);
 
-	DMADAC(config, m_dmadac[1]).add_route(ALL_OUTPUTS, "rspeaker", 1.0);
+	DMADAC(config, m_dmadac[1]).add_route(ALL_OUTPUTS, "speaker", 1.0, 1);
 }
 
 

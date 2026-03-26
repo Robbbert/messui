@@ -41,8 +41,9 @@
 #include "wavwrite.h"
 
 #include <atomic>
-#include <cstdarg>
+#include <fstream>
 #include <iostream>
+#include <locale>
 
 
 // device type definition
@@ -471,21 +472,15 @@ const double *discrete_device::node_output_ptr(int onode)
 //  discrete_log: Debug logging
 //-------------------------------------------------
 
-void CLIB_DECL discrete_device::discrete_log(const char *text, ...) const
+void discrete_device::discrete_vlog(util::format_argument_pack<char> &&args)
 {
 	if (DISCRETE_DEBUGLOG)
 	{
-		va_list arg;
-		va_start(arg, text);
-
-		if(m_disclogfile)
+		if (m_disclogfile)
 		{
-			vfprintf(m_disclogfile, text, arg);
-			fprintf(m_disclogfile, "\n");
-			fflush(m_disclogfile);
+			util::stream_format(*m_disclogfile, std::move(args));
+			*m_disclogfile << std::endl;
 		}
-
-		va_end(arg);
 	}
 }
 
@@ -825,7 +820,6 @@ discrete_device::discrete_device(const machine_config &mconfig, device_type type
 		m_sample_time(0),
 		m_neg_sample_time(0),
 		m_indexed_node(nullptr),
-		m_disclogfile(nullptr),
 		m_queue(nullptr),
 		m_profiling(0),
 		m_total_samples(0),
@@ -850,9 +844,6 @@ discrete_device::~discrete_device()
 
 void discrete_device::device_start()
 {
-	// create the stream
-	//m_stream = stream_alloc(0, 2, 22257);
-
 	const discrete_block *intf_start = m_intf;
 
 	/* If a clock is specified we will use it, otherwise run at the audio sample rate. */
@@ -861,14 +852,23 @@ void discrete_device::device_start()
 	else
 		m_sample_rate = this->machine().sample_rate();
 	m_sample_time = 1.0 / m_sample_rate;
-	m_neg_sample_time = - m_sample_time;
+	m_neg_sample_time = -m_sample_time;
 
 	m_total_samples = 0;
 	m_total_stream_updates = 0;
 
 	/* create the logfile */
 	if (DISCRETE_DEBUGLOG)
-		m_disclogfile = fopen(util::string_format("discrete%s.log", this->tag()).c_str(), "w");
+	{
+		std::string fname = util::string_format("discrete%s.log", tag());
+		for (char &ch : fname)
+		{
+			if (ch == ':')
+				ch = '_';
+		}
+		m_disclogfile = std::make_unique<std::ofstream>(fname.c_str());
+		m_disclogfile->imbue(std::locale::classic());
+	}
 
 	/* enable profiling */
 	m_profiling = 0;
@@ -936,13 +936,8 @@ void discrete_device::device_stop()
 		node->stop();
 	}
 
-	if (DISCRETE_DEBUGLOG)
-	{
-		/* close the debug log */
-		if (m_disclogfile)
-			fclose(m_disclogfile);
-		m_disclogfile = nullptr;
-	}
+	/* close the debug log */
+	m_disclogfile.reset();
 }
 
 //-------------------------------------------------
@@ -984,8 +979,6 @@ void discrete_sound_device::device_start()
 	{
 		node->stream_start();
 	}
-
-
 }
 
 //-------------------------------------------------
@@ -1050,26 +1043,28 @@ void discrete_device::process(int samples)
 //  our sound stream
 //-------------------------------------------------
 
-void discrete_sound_device::sound_stream_update(sound_stream &stream, std::vector<read_stream_view> const &inputs, std::vector<write_stream_view> &outputs)
+void discrete_sound_device::sound_stream_update(sound_stream &stream)
 {
 	int outputnum = 0;
 
 	/* Setup any output streams */
 	for (discrete_sound_output_interface *node : m_output_list)
 	{
-		node->set_output_ptr(outputs[outputnum]);
+		node->set_output_ptr(stream, outputnum);
 		outputnum++;
 	}
+
+	int inputnum = 0;
 
 	/* Setup any input streams */
 	for (discrete_dss_input_stream_node *node : m_input_stream_list)
 	{
-		node->m_inview = &inputs[node->m_stream_in_number];
-		node->m_inview_sample = 0;
+		node->set_input_ptr(stream, inputnum);
+		inputnum++;
 	}
 
 	/* just process it */
-	process(outputs[0].samples());
+	process(stream.samples());
 }
 
 //-------------------------------------------------

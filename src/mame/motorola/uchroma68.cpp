@@ -125,7 +125,6 @@ expansion.
 #include "machine/timer.h"
 #include "video/mc6847.h"
 #include "imagedev/cassette.h"
-#include "sound/wave.h"
 #include "speaker.h"
 
 #include "machine/terminal.h"
@@ -157,10 +156,10 @@ public:
 	void uchroma68(machine_config &config);
 
 private:
-	virtual void machine_start() override;
-	virtual void machine_reset() override;
+	virtual void machine_start() override ATTR_COLD;
+	virtual void machine_reset() override ATTR_COLD;
 
-	void uchroma68_mem(address_map &map);
+	void uchroma68_mem(address_map &map) ATTR_COLD;
 
 	TIMER_CALLBACK_MEMBER(kbd_strobe);
 
@@ -179,7 +178,7 @@ private:
 
 	required_device<cpu_device> m_maincpu;
 	required_device<mc6846_device> m_mc6846;
-	required_device<mc6847_ntsc_device> m_mc6847;
+	required_device<mc6847_device> m_mc6847;
 	required_device<pia6821_device> m_pia;
 	required_device<acia6850_device> m_acia;
 	required_device<clock_device> m_acia_tx_clock;
@@ -453,7 +452,7 @@ void uchroma68_state::uchroma68(machine_config &config)
 
 	SCREEN(config, m_screen, SCREEN_TYPE_RASTER);
 
-	MC6847_NTSC(config, m_mc6847, XTAL_UCHROMA68);
+	MC6847(config, m_mc6847, XTAL_UCHROMA68);
 	m_mc6847->set_screen(m_screen);
 	m_mc6847->input_callback().set(FUNC(uchroma68_state::mc6847_videoram_r));
 

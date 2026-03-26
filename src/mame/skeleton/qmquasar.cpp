@@ -7,7 +7,7 @@
 ***************************************************************************/
 
 #include "emu.h"
-#include "cpu/mcs51/mcs51.h"
+#include "cpu/mcs51/i8052.h"
 #include "machine/6850acia.h"
 #include "video/hd44780.h"
 #include "emupal.h"
@@ -34,8 +34,8 @@ private:
 	HD44780_PIXEL_UPDATE(quasar_pixel_update);
 	HD44780_PIXEL_UPDATE(technox_pixel_update);
 
-	void prog_map(address_map &map);
-	void ext_map(address_map &map);
+	void prog_map(address_map &map) ATTR_COLD;
+	void ext_map(address_map &map) ATTR_COLD;
 
 	required_device<mcs51_cpu_device> m_maincpu;
 };
@@ -81,7 +81,7 @@ void qmquasar_state::quasar(machine_config &config)
 {
 	I8032(config, m_maincpu, 12'000'000); // exact type and clock unknown
 	m_maincpu->set_addrmap(AS_PROGRAM, &qmquasar_state::prog_map);
-	m_maincpu->set_addrmap(AS_IO, &qmquasar_state::ext_map);
+	m_maincpu->set_addrmap(AS_DATA, &qmquasar_state::ext_map);
 
 	acia6850_device &acia(ACIA6850(config, "acia"));
 	acia.irq_handler().set_inputline(m_maincpu, MCS51_INT1_LINE);
@@ -146,5 +146,5 @@ void qmquasar_state::driver_start()
 
 } // anonymous namespace
 
-SYST(1993, qmquasar, 0, 0, quasar,  qmquasar, qmquasar_state, empty_init, "Quasimidi Musikelektronik GmbH", "Quasimidi Quasar", MACHINE_IS_SKELETON)
-SYST(1995, technox,  0, 0, technox, qmquasar, qmquasar_state, empty_init, "Quasimidi Musikelektronik GmbH", "TechnoX",          MACHINE_IS_SKELETON)
+SYST(1993, qmquasar, 0, 0, quasar,  qmquasar, qmquasar_state, empty_init, "Quasimidi Musikelektronik GmbH", "Quasimidi Quasar", MACHINE_NO_SOUND | MACHINE_NOT_WORKING)
+SYST(1995, technox,  0, 0, technox, qmquasar, qmquasar_state, empty_init, "Quasimidi Musikelektronik GmbH", "TechnoX",          MACHINE_NO_SOUND | MACHINE_NOT_WORKING)

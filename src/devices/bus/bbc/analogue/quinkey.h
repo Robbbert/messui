@@ -30,12 +30,12 @@ public:
 
 protected:
 	// device_t overrides
-	virtual void device_start() override;
+	virtual void device_start() override ATTR_COLD;
 
 	// optional information overrides
-	virtual void device_add_mconfig(machine_config &config) override;
+	virtual void device_add_mconfig(machine_config &config) override ATTR_COLD;
 
-	virtual uint8_t ch_r(int channel) override;
+	virtual uint16_t ch_r(offs_t channel) override;
 
 private:
 	required_device_array<bbc_quinkey_slot_device, 4> m_quinkey;
@@ -54,10 +54,7 @@ public:
 	bbc_quinkey_slot_device(machine_config const &mconfig, char const *tag, device_t *owner, T &&slot_options, const char *default_option)
 		: bbc_quinkey_slot_device(mconfig, tag, owner)
 	{
-		option_reset();
-		slot_options(*this);
-		set_default_option(default_option);
-		set_fixed(false);
+		set_options(std::forward<T>(slot_options), default_option, false);
 	}
 
 	bbc_quinkey_slot_device(machine_config const &mconfig, char const *tag, device_t *owner, uint32_t clock = 0);
@@ -67,7 +64,7 @@ public:
 
 protected:
 	// device_t overrides
-	virtual void device_start() override;
+	virtual void device_start() override ATTR_COLD;
 
 	device_bbc_quinkey_interface *m_card;
 };
@@ -97,10 +94,10 @@ public:
 
 protected:
 	// device_t overrides
-	virtual void device_start() override;
+	virtual void device_start() override ATTR_COLD;
 
 	// optional information overrides
-	virtual ioport_constructor device_input_ports() const override;
+	virtual ioport_constructor device_input_ports() const override ATTR_COLD;
 
 	virtual uint8_t read() override;
 

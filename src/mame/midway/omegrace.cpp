@@ -249,8 +249,8 @@ public:
 	void init_omegrace();
 
 protected:
-	virtual void machine_start() override;
-	virtual void machine_reset() override;
+	virtual void machine_start() override ATTR_COLD;
+	virtual void machine_reset() override ATTR_COLD;
 
 private:
 	required_device<cpu_device> m_maincpu;
@@ -260,10 +260,10 @@ private:
 	output_finder<4> m_leds;
 	required_ioport_array<2> m_spinner;
 
-	void main_map(address_map &map);
-	void port_map(address_map &map);
-	void sound_map(address_map &map);
-	void sound_port(address_map &map);
+	void main_map(address_map &map) ATTR_COLD;
+	void port_map(address_map &map) ATTR_COLD;
+	void sound_map(address_map &map) ATTR_COLD;
+	void sound_port(address_map &map) ATTR_COLD;
 
 	TIMER_CALLBACK_MEMBER(periodic_int);
 	uint8_t vg_go_r();
@@ -362,7 +362,10 @@ void omegrace_state::outputs_w(uint8_t data)
 	m_leds[2] = BIT(~data, 4);
 	m_leds[3] = BIT(~data, 5);
 
-	/* bit 6 flips screen (not supported) */
+	/* bit 6 flips screen */
+	int flip = BIT(~data, 6);
+	m_dvg->set_flip_x(flip);
+	m_dvg->set_flip_y(flip);
 }
 
 
@@ -507,7 +510,7 @@ static INPUT_PORTS_START( omegrace )
 	PORT_BIT( 0x3f, 0x00, IPT_DIAL ) PORT_SENSITIVITY(12) PORT_KEYDELTA(10) PORT_COCKTAIL
 
 	PORT_START("AVGDVG")    /* port 0x0b */
-	PORT_BIT( 0x80, IP_ACTIVE_LOW, IPT_CUSTOM ) PORT_READ_LINE_DEVICE_MEMBER("dvg", dvg_device, done_r)
+	PORT_BIT( 0x80, IP_ACTIVE_LOW, IPT_CUSTOM ) PORT_READ_LINE_DEVICE_MEMBER("dvg", FUNC(dvg_device::done_r))
 INPUT_PORTS_END
 
 
@@ -677,7 +680,7 @@ void omegrace_state::init_omegrace()
  *
  *************************************/
 
-GAMEL(1981, omegrace,  0,        omegrace, omegrace, omegrace_state, init_omegrace, ROT0, "Midway", "Omega Race (set 1)", MACHINE_NO_COCKTAIL | MACHINE_SUPPORTS_SAVE, layout_omegrace )
-GAMEL(1981, omegrace2, omegrace, omegrace, omegrace, omegrace_state, init_omegrace, ROT0, "Midway", "Omega Race (set 2)", MACHINE_NO_COCKTAIL | MACHINE_SUPPORTS_SAVE, layout_omegrace )
-GAMEL(1981, omegrace3, omegrace, omegrace, omegrace, omegrace_state, init_omegrace, ROT0, "Midway", "Omega Race (set 3, 7/27)", MACHINE_NO_COCKTAIL | MACHINE_SUPPORTS_SAVE, layout_omegrace )
-GAMEL(1981, deltrace,  omegrace, omegrace, omegrace, omegrace_state, init_omegrace, ROT0, "bootleg (Allied Leisure)", "Delta Race", MACHINE_NO_COCKTAIL | MACHINE_SUPPORTS_SAVE, layout_omegrace )
+GAMEL(1981, omegrace,  0,        omegrace, omegrace, omegrace_state, init_omegrace, ROT0, "Midway", "Omega Race (set 1)", MACHINE_SUPPORTS_SAVE, layout_omegrace )
+GAMEL(1981, omegrace2, omegrace, omegrace, omegrace, omegrace_state, init_omegrace, ROT0, "Midway", "Omega Race (set 2)", MACHINE_SUPPORTS_SAVE, layout_omegrace )
+GAMEL(1981, omegrace3, omegrace, omegrace, omegrace, omegrace_state, init_omegrace, ROT0, "Midway", "Omega Race (set 3, 7/27)", MACHINE_SUPPORTS_SAVE, layout_omegrace )
+GAMEL(1981, deltrace,  omegrace, omegrace, omegrace, omegrace_state, init_omegrace, ROT0, "bootleg (Allied Leisure)", "Delta Race", MACHINE_SUPPORTS_SAVE, layout_omegrace )

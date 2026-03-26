@@ -16,8 +16,8 @@ protected:
 	ns32081_device_base(machine_config const &mconfig, device_type type, char const *tag, device_t *owner, u32 clock);
 
 	// device_t implementation
-	virtual void device_start() override;
-	virtual void device_reset() override;
+	virtual void device_start() override ATTR_COLD;
+	virtual void device_reset() override ATTR_COLD;
 
 	// ns32000_slave_interface implementation
 	virtual void state_add(device_state_interface &parent, int &index) override;
@@ -67,14 +67,14 @@ public:
 	virtual void state_add(device_state_interface &parent, int &index) override;
 
 	// ns32000_slow_slave_interface implementation
-	virtual u16 slow_status(int *icount = nullptr) override { return status(icount); }
-	virtual u16 slow_read() override { return read<u16>(); }
-	virtual void slow_write(u16 data) override { write<u16>(data); }
+	virtual u16 slow_status(int *icount = nullptr) override;
+	virtual u16 slow_read() override;
+	virtual void slow_write(u16 data) override;
 
 protected:
 	// device_t implementation
-	virtual void device_start() override;
-	virtual void device_reset() override;
+	virtual void device_start() override ATTR_COLD;
+	virtual void device_reset() override ATTR_COLD;
 
 	// register helpers
 	virtual void reg_get(unsigned const op_size, u64 &op_value, unsigned const reg) const override;
@@ -97,19 +97,19 @@ public:
 	virtual void state_add(device_state_interface &parent, int &index) override;
 
 	// ns32000_slow_slave_interface implementation
-	virtual u16 slow_status(int *icount = nullptr) override { return status(icount); }
-	virtual u16 slow_read() override { return read<u16>(); }
-	virtual void slow_write(u16 data) override { write<u16>(data); }
+	virtual u16 slow_status(int *icount = nullptr) override;
+	virtual u16 slow_read() override;
+	virtual void slow_write(u16 data) override;
 
 	// ns32000_fast_slave_interface implementation
-	virtual u32 fast_status(int *icount = nullptr) override { return status(icount); }
-	virtual u32 fast_read() override { return read<u32>(); }
-	virtual void fast_write(u32 data) override { write<u32>(data); }
+	virtual u32 fast_status(int *icount = nullptr) override;
+	virtual u32 fast_read() override;
+	virtual void fast_write(u32 data) override;
 
 protected:
 	// device_t implementation
-	virtual void device_start() override;
-	virtual void device_reset() override;
+	virtual void device_start() override ATTR_COLD;
+	virtual void device_reset() override ATTR_COLD;
 
 	// register helpers
 	virtual void reg_get(unsigned const op_size, u64 &op_value, unsigned const reg) const override;

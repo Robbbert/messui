@@ -59,7 +59,7 @@ ToDo:
 #include "emu.h"
 #include "genpin.h"
 
-#include "cpu/mcs51/mcs51.h"
+#include "cpu/mcs51/i8051.h"
 #include "cpu/z80/z80.h"
 #include "machine/74157.h"
 #include "machine/7474.h"
@@ -113,8 +113,8 @@ public:
 	void init_3() { m_game = 3; }
 
 private:
-	virtual void machine_reset() override;
-	virtual void machine_start() override;
+	virtual void machine_reset() override ATTR_COLD;
+	virtual void machine_start() override ATTR_COLD;
 	void p1_w(u8 data);
 	u8 p3_r();
 	void p3_w(u8 data);
@@ -157,12 +157,12 @@ private:
 
 	u32 screen_update(screen_device &screen, bitmap_ind16 &bitmap, const rectangle &cliprect);
 
-	void dmd_io(address_map &map);
-	void dmd_mem(address_map &map);
-	void audio_map(address_map &map);
-	void spinb_map(address_map &map);
-	void music_map(address_map &map);
-	void vrnwrld_map(address_map &map);
+	void dmd_data(address_map &map) ATTR_COLD;
+	void dmd_mem(address_map &map) ATTR_COLD;
+	void audio_map(address_map &map) ATTR_COLD;
+	void spinb_map(address_map &map) ATTR_COLD;
+	void music_map(address_map &map) ATTR_COLD;
+	void vrnwrld_map(address_map &map) ATTR_COLD;
 
 	bool m_pc0a = false;
 	bool m_pc0m = false;
@@ -256,7 +256,7 @@ void spinb_state::dmd_mem(address_map &map)
 	map(0x0000, 0xffff).rom();
 }
 
-void spinb_state::dmd_io(address_map &map)
+void spinb_state::dmd_data(address_map &map)
 {
 	map(0x0000, 0x1fff).w(FUNC(spinb_state::dmdram_w));
 	map(0x0000, 0xffff).r(FUNC(spinb_state::dmdram_r));
@@ -861,7 +861,7 @@ void spinb_state::ppia_c_w(u8 data)
 	if (m_6585a)
 	{
 		//m_6585a->playmode_w(15);
-		m_6585a->playmode_w(BIT(data, 5) ? 14 : 12);
+		m_6585a->playmode_w(BIT(data, 5) ? 12 : 14);
 		m_6585a->reset_w(BIT(data, 6));
 	}
 	m_ic5a->clear_w(!BIT(data, 6));
@@ -880,7 +880,7 @@ void spinb_state::ppim_c_w(u8 data)
 	if (m_6585m)
 	{
 		//m_6585m->playmode_w(15);
-		m_6585m->playmode_w(BIT(data, 5) ? 14 : 12);
+		m_6585m->playmode_w(BIT(data, 5) ? 12 : 14);
 		m_6585m->reset_w(BIT(data, 6));
 	}
 	m_ic5m->clear_w(!BIT(data, 6));
@@ -1003,7 +1003,7 @@ void spinb_state::dmd(machine_config &config)
 {
 	I8031(config, m_dmdcpu, XTAL(16'000'000));
 	m_dmdcpu->set_addrmap(AS_PROGRAM, &spinb_state::dmd_mem);
-	m_dmdcpu->set_addrmap(AS_IO, &spinb_state::dmd_io);
+	m_dmdcpu->set_addrmap(AS_DATA, &spinb_state::dmd_data);
 	m_dmdcpu->port_out_cb<1>().set(FUNC(spinb_state::p1_w));
 	m_dmdcpu->port_in_cb<3>().set(FUNC(spinb_state::p3_r));
 	m_dmdcpu->port_out_cb<3>().set(FUNC(spinb_state::p3_w));
@@ -1414,12 +1414,12 @@ ROM_END
 
 } // Anonymous namespace
 
-GAME(1992, metalman, 0,       metalman, metalman, spinb_state, init_3,     ROT0, "Inder",    "Metal Man",       MACHINE_IS_SKELETON_MECHANICAL | MACHINE_SUPPORTS_SAVE )
-GAME(1993, bushido,  0,       mach2,    bushido,  spinb_state, empty_init, ROT0, "Inder",    "Bushido (set 1)", MACHINE_IS_SKELETON_MECHANICAL | MACHINE_SUPPORTS_SAVE )
-GAME(1993, bushidoa, bushido, mach2,    bushido,  spinb_state, empty_init, ROT0, "Inder",    "Bushido (set 2)", MACHINE_IS_SKELETON_MECHANICAL | MACHINE_SUPPORTS_SAVE )
-GAME(1993, bushidob, bushido, mach2,    bushido,  spinb_state, empty_init, ROT0, "Inder",    "Bushido (set 3)", MACHINE_IS_SKELETON_MECHANICAL | MACHINE_SUPPORTS_SAVE )
-GAME(1995, mach2,    0,       mach2,    mach2,    spinb_state, empty_init, ROT0, "Spinball", "Mach 2 (set 1)",  MACHINE_IS_SKELETON_MECHANICAL | MACHINE_SUPPORTS_SAVE )
-GAME(1995, mach2a,   mach2,   mach2,    mach2,    spinb_state, empty_init, ROT0, "Spinball", "Mach 2 (set 2)",  MACHINE_IS_SKELETON_MECHANICAL | MACHINE_SUPPORTS_SAVE )
-GAME(1996, jolypark, 0,       jolypark, spinb,    spinb_state, init_1,     ROT0, "Spinball", "Jolly Park",      MACHINE_IS_SKELETON_MECHANICAL | MACHINE_SUPPORTS_SAVE )
-GAME(1996, vrnwrld,  0,       vrnwrld,  vrnwrld,  spinb_state, init_2,     ROT0, "Spinball", "Verne's World",   MACHINE_IS_SKELETON_MECHANICAL | MACHINE_SUPPORTS_SAVE )
-GAME(1996, gunshot,  0,       gunshot,  spinb,    spinb_state, empty_init, ROT0, "Spinball", "Gun Shot",        MACHINE_IS_SKELETON_MECHANICAL | MACHINE_SUPPORTS_SAVE | MACHINE_REQUIRES_ARTWORK )
+GAME(1992, metalman, 0,       metalman, metalman, spinb_state, init_3,     ROT0, "Inder",    "Metal Man",       MACHINE_NO_SOUND | MACHINE_NOT_WORKING | MACHINE_MECHANICAL | MACHINE_REQUIRES_ARTWORK | MACHINE_SUPPORTS_SAVE )
+GAME(1993, bushido,  0,       mach2,    bushido,  spinb_state, empty_init, ROT0, "Inder",    "Bushido (set 1)", MACHINE_NO_SOUND | MACHINE_NOT_WORKING | MACHINE_MECHANICAL | MACHINE_REQUIRES_ARTWORK | MACHINE_SUPPORTS_SAVE )
+GAME(1993, bushidoa, bushido, mach2,    bushido,  spinb_state, empty_init, ROT0, "Inder",    "Bushido (set 2)", MACHINE_NO_SOUND | MACHINE_NOT_WORKING | MACHINE_MECHANICAL | MACHINE_REQUIRES_ARTWORK | MACHINE_SUPPORTS_SAVE )
+GAME(1993, bushidob, bushido, mach2,    bushido,  spinb_state, empty_init, ROT0, "Inder",    "Bushido (set 3)", MACHINE_NO_SOUND | MACHINE_NOT_WORKING | MACHINE_MECHANICAL | MACHINE_REQUIRES_ARTWORK | MACHINE_SUPPORTS_SAVE )
+GAME(1995, mach2,    0,       mach2,    mach2,    spinb_state, empty_init, ROT0, "Spinball", "Mach 2 (set 1)",  MACHINE_NO_SOUND | MACHINE_NOT_WORKING | MACHINE_MECHANICAL | MACHINE_REQUIRES_ARTWORK | MACHINE_SUPPORTS_SAVE )
+GAME(1995, mach2a,   mach2,   mach2,    mach2,    spinb_state, empty_init, ROT0, "Spinball", "Mach 2 (set 2)",  MACHINE_NO_SOUND | MACHINE_NOT_WORKING | MACHINE_MECHANICAL | MACHINE_REQUIRES_ARTWORK | MACHINE_SUPPORTS_SAVE )
+GAME(1996, jolypark, 0,       jolypark, spinb,    spinb_state, init_1,     ROT0, "Spinball", "Jolly Park",      MACHINE_NO_SOUND | MACHINE_NOT_WORKING | MACHINE_MECHANICAL | MACHINE_REQUIRES_ARTWORK | MACHINE_SUPPORTS_SAVE )
+GAME(1996, vrnwrld,  0,       vrnwrld,  vrnwrld,  spinb_state, init_2,     ROT0, "Spinball", "Verne's World",   MACHINE_NO_SOUND | MACHINE_NOT_WORKING | MACHINE_MECHANICAL | MACHINE_REQUIRES_ARTWORK | MACHINE_SUPPORTS_SAVE )
+GAME(1996, gunshot,  0,       gunshot,  spinb,    spinb_state, empty_init, ROT0, "Spinball", "Gun Shot",        MACHINE_NO_SOUND | MACHINE_NOT_WORKING | MACHINE_MECHANICAL | MACHINE_REQUIRES_ARTWORK | MACHINE_SUPPORTS_SAVE | MACHINE_REQUIRES_ARTWORK )

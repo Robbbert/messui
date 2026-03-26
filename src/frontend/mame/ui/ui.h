@@ -204,11 +204,11 @@ public:
 	void show_menu();
 	virtual bool is_menu_active() override;
 	bool can_paste();
-	bool found_machine_warnings() const { return m_has_warnings; }
 	void image_handler_ingame();
 	void request_quit();
 	void set_pointer_activity_timeout(int target, std::chrono::steady_clock::duration timeout) noexcept;
 	void set_hide_inactive_pointers(int target, bool hide) noexcept;
+	void restore_initial_pointer_options(int target) noexcept;
 	std::chrono::steady_clock::duration pointer_activity_timeout(int target) const noexcept;
 	bool hide_inactive_pointers(int target) const noexcept;
 
@@ -282,7 +282,7 @@ private:
 	enum class ui_callback_type : int;
 
 	struct active_pointer;
-	struct pointer_options;
+	class pointer_options;
 
 	using handler_callback_func = delegate<uint32_t (render_container &)>;
 	using device_feature_set = std::set<std::pair<std::string, std::string> >;
@@ -301,6 +301,7 @@ private:
 	osd_ticks_t             m_showfps_end;
 	bool                    m_show_profiler;
 	osd_ticks_t             m_popup_text_end;
+	osd_ticks_t             m_last_frame_update;
 	std::unique_ptr<uint8_t []> m_non_char_keys_down;
 
 	pointer_options_vector  m_pointer_options;
@@ -313,7 +314,6 @@ private:
 	ui_options              m_ui_options;
 	ui_colors               m_ui_colors;
 	float                   m_target_font_height;
-	bool                    m_has_warnings;
 	bool                    m_unthrottle_mute;
 	bool                    m_image_display_enabled;
 
@@ -348,9 +348,10 @@ private:
 
 	// slider controls
 	int32_t slider_volume(std::string *str, int32_t newval);
-	int32_t slider_mixervol(int item, std::string *str, int32_t newval);
-	int32_t slider_panning(speaker_device &speaker, std::string *str, int32_t newval);
+	int32_t slider_devvol(device_sound_interface *snd, std::string *str, int32_t newval);
+	int32_t slider_devvol_chan(device_sound_interface *snd, int channel, std::string *str, int32_t newval);
 	int32_t slider_adjuster(ioport_field &field, std::string *str, int32_t newval);
+	int32_t slider_speed(std::string *str, int32_t newval);
 	int32_t slider_overclock(device_t &device, std::string *str, int32_t newval);
 	int32_t slider_refresh(screen_device &screen, std::string *str, int32_t newval);
 	int32_t slider_brightness(screen_device &screen, std::string *str, int32_t newval);

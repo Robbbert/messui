@@ -60,10 +60,7 @@ public:
 	jakks_gamekey_slot_device(const machine_config &mconfig, const char *tag, device_t *owner, uint32_t clock, T &&opts, const char *dflt)
 		: jakks_gamekey_slot_device(mconfig, tag, owner, clock)
 	{
-		option_reset();
-		opts(*this);
-		set_default_option(dflt);
-		set_fixed(false);
+		set_options(std::forward<T>(opts), dflt, false);
 	}
 
 	virtual ~jakks_gamekey_slot_device();
@@ -93,7 +90,7 @@ public:
 
 protected:
 	// device_t implementation
-	virtual void device_start() override;
+	virtual void device_start() override ATTR_COLD;
 
 	int m_type;
 	device_jakks_gamekey_interface *m_cart;

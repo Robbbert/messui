@@ -103,7 +103,7 @@ public:
 	void init_groundfx();
 
 protected:
-	virtual void video_start() override;
+	virtual void video_start() override ATTR_COLD;
 
 private:
 	required_shared_ptr<u32> m_ram;
@@ -141,7 +141,7 @@ private:
 	INTERRUPT_GEN_MEMBER(interrupt);
 	void draw_sprites(screen_device &screen, bitmap_ind16 &bitmap, const rectangle &cliprect, int do_hack, int x_offs, int y_offs);
 
-	void prg_map(address_map &map);
+	void prg_map(address_map &map) ATTR_COLD;
 };
 
 
@@ -587,12 +587,11 @@ void groundfx_state::groundfx(machine_config &config)
 	m_tc0480scp->set_offsets_tx(-1, 0);
 
 	// sound hardware
-	SPEAKER(config, "lspeaker").front_left();
-	SPEAKER(config, "rspeaker").front_right();
+	SPEAKER(config, "speaker", 2).front();
 
 	taito_en_device &taito_en(TAITO_EN(config, "taito_en", 0));
-	taito_en.add_route(0, "lspeaker", 1.0);
-	taito_en.add_route(1, "rspeaker", 1.0);
+	taito_en.add_route(0, "speaker", 1.0, 0);
+	taito_en.add_route(1, "speaker", 1.0, 1);
 }
 
 /***************************************************************************

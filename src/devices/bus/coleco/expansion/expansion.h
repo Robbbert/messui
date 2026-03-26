@@ -39,8 +39,8 @@
 
 ***************************************************************************/
 
-#ifndef MAME_BUS_COlECO_EXPANSION_EXPANSION_H
-#define MAME_BUS_COlECO_EXPANSION_EXPANSION_H
+#ifndef MAME_BUS_COLECO_EXPANSION_EXPANSION_H
+#define MAME_BUS_COLECO_EXPANSION_EXPANSION_H
 
 #pragma once
 
@@ -65,10 +65,7 @@ public:
 	coleco_expansion_device(machine_config const &mconfig, char const *tag, device_t *owner, const char *dflt) :
 		coleco_expansion_device(mconfig, tag, owner, uint32_t(0))
 	{
-		option_reset();
-		coleco_expansion_cards(*this);
-		set_default_option(dflt);
-		set_fixed(false);
+		set_options(coleco_expansion_cards, dflt, false);
 	}
 
 	coleco_expansion_device(const machine_config &mconfig, const char *tag, device_t *owner, uint32_t clock);
@@ -90,7 +87,7 @@ public:
 
 protected:
 	// device-level overrides
-	virtual void device_start() override;
+	virtual void device_start() override ATTR_COLD;
 
 private:
 	required_address_space m_program;
@@ -123,4 +120,4 @@ protected:
 DECLARE_DEVICE_TYPE(COLECO_EXPANSION, coleco_expansion_device)
 
 
-#endif // MAME_BUS_COlECO_EXPANSION_EXPANSION_H
+#endif // MAME_BUS_COLECO_EXPANSION_EXPANSION_H

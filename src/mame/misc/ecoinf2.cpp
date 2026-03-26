@@ -206,8 +206,8 @@ private:
 		m_coinlamp_outputs.resolve();
 	}
 
-	void oxo_memmap(address_map &map);
-	void oxo_portmap(address_map &map);
+	void oxo_memmap(address_map &map) ATTR_COLD;
+	void oxo_portmap(address_map &map) ATTR_COLD;
 
 	required_device<cpu_device> m_maincpu;
 	required_device_array<stepper_device, 4> m_reels;
@@ -265,7 +265,7 @@ static INPUT_PORTS_START( ecoinf2 )
 	PORT_BIT(0x04, IP_ACTIVE_HIGH, IPT_COIN3) PORT_NAME("50p")//PORT_IMPULSE(5)
 	PORT_BIT(0x08, IP_ACTIVE_HIGH, IPT_COIN4) PORT_NAME("100p")//PORT_IMPULSE(5)
 	PORT_BIT(0x10, IP_ACTIVE_HIGH, IPT_COIN5) PORT_NAME("200p?")//PORT_IMPULSE(5)
-	PORT_BIT(0x20, IP_ACTIVE_HIGH, IPT_INTERLOCK) PORT_NAME("Cashbox (Back) Door")  PORT_CODE(KEYCODE_Q) PORT_TOGGLE
+	PORT_BIT(0x20, IP_ACTIVE_HIGH, IPT_DOOR) PORT_NAME("Cashbox (Back) Door") PORT_CODE(KEYCODE_Q) PORT_TOGGLE
 	PORT_BIT(0x40, IP_ACTIVE_HIGH, IPT_SERVICE) PORT_NAME("Test Button") PORT_CODE(KEYCODE_W)
 	PORT_BIT(0x80, IP_ACTIVE_HIGH, IPT_SERVICE) PORT_NAME("Refill Key") PORT_CODE(KEYCODE_R) PORT_TOGGLE
 

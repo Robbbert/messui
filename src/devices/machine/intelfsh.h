@@ -22,7 +22,7 @@ protected:
 	intelfsh_device(const machine_config &mconfig, device_type type, const char *tag, device_t *owner, uint32_t clock, uint8_t bits, uint32_t size, uint8_t maker_id, uint16_t device_id);
 
 	// device-level overrides
-	virtual void device_start() override;
+	virtual void device_start() override ATTR_COLD;
 
 	// device_nvram_interface overrides
 	virtual void nvram_default() override;
@@ -42,12 +42,14 @@ protected:
 	uint8_t                  m_bits;
 	uint32_t                 m_addrmask;
 	uint16_t                 m_device_id;
+	uint16_t                 m_device_id2;
+	uint16_t                 m_device_id3;
 	uint8_t                  m_maker_id;
 	bool                     m_sector_is_4k;
 	bool                     m_sector_is_16k;
 	bool                     m_top_boot_sector;
 	bool                     m_bot_boot_sector;
-	uint8_t                  m_page_size;
+	uint16_t                 m_page_size;
 
 	// internal state
 	std::unique_ptr<uint8_t[]> m_data;
@@ -57,7 +59,8 @@ protected:
 	bool                     m_flash_master_lock;
 	emu_timer *              m_timer;
 	int32_t                  m_bank;
-	uint8_t                  m_byte_count;
+	uint16_t                 m_byte_count;
+	bool                     m_sdp;
 
 	uint8_t                  m_write_buffer[32];
 	uint32_t                 m_write_buffer_start_address;
@@ -178,6 +181,12 @@ public:
 	amd_29lv200t_device(const machine_config &mconfig, const char *tag, device_t *owner, uint32_t clock = 0);
 };
 
+class atmel_29c020_device : public intelfsh8_device
+{
+public:
+	atmel_29c020_device(const machine_config &mconfig, const char *tag, device_t *owner, uint32_t clock = 0);
+};
+
 class sharp_lh28f016s_device : public intelfsh8_device
 {
 public:
@@ -214,6 +223,19 @@ public:
 	macronix_29lv160tmc_device(const machine_config &mconfig, const char *tag, device_t *owner, uint32_t clock = 0);
 };
 
+// TODO: both m29w640 can be either 8 or 16 bit interface
+class st_m29w640gb_device : public intelfsh8_device
+{
+public:
+	st_m29w640gb_device(const machine_config &mconfig, const char *tag, device_t *owner, uint32_t clock = 0);
+};
+
+class st_m29w640ft_device : public intelfsh16_device
+{
+public:
+	st_m29w640ft_device(const machine_config &mconfig, const char *tag, device_t *owner, uint32_t clock = 0);
+};
+
 class panasonic_mn63f805mnp_device : public intelfsh8_device
 {
 public:
@@ -230,6 +252,18 @@ class sst_28sf040_device : public intelfsh8_device
 {
 public:
 	sst_28sf040_device(const machine_config &mconfig, const char *tag, device_t *owner, uint32_t clock = 0);
+};
+
+class sst_39sf010_device : public intelfsh8_device
+{
+public:
+	sst_39sf010_device(const machine_config &mconfig, const char *tag, device_t *owner, uint32_t clock = 0);
+};
+
+class sst_39sf020_device : public intelfsh8_device
+{
+public:
+	sst_39sf020_device(const machine_config &mconfig, const char *tag, device_t *owner, uint32_t clock = 0);
 };
 
 class sst_39sf040_device : public intelfsh8_device
@@ -371,12 +405,20 @@ public:
 	macronix_29f1610mc_16bit_device(const machine_config &mconfig, const char *tag, device_t *owner, uint32_t clock = 0);
 };
 
+class winbond_w29c020c_device : public intelfsh16_device
+{
+public:
+	winbond_w29c020c_device(const machine_config &mconfig, const char *tag, device_t *owner, uint32_t clock = 0);
+};
+
+
 
 // device type definition
 DECLARE_DEVICE_TYPE(INTEL_28F016S5,          intel_28f016s5_device)
 DECLARE_DEVICE_TYPE(SHARP_LH28F016S,         sharp_lh28f016s_device)
 DECLARE_DEVICE_TYPE(SHARP_LH28F016S_16BIT,   sharp_lh28f016s_16bit_device)
 DECLARE_DEVICE_TYPE(ATMEL_29C010,            atmel_29c010_device)
+DECLARE_DEVICE_TYPE(ATMEL_29C020,            atmel_29c020_device)
 DECLARE_DEVICE_TYPE(AMD_29F010,              amd_29f010_device)
 DECLARE_DEVICE_TYPE(AMD_29F040,              amd_29f040_device)
 DECLARE_DEVICE_TYPE(AMD_29F080,              amd_29f080_device)
@@ -396,11 +438,15 @@ DECLARE_DEVICE_TYPE(MACRONIX_29F1610MC,      macronix_29f1610mc_device)
 DECLARE_DEVICE_TYPE(MACRONIX_29F1610MC_16BIT,macronix_29f1610mc_16bit_device)
 DECLARE_DEVICE_TYPE(MACRONIX_29L001MC,       macronix_29l001mc_device)
 DECLARE_DEVICE_TYPE(MACRONIX_29LV160TMC,     macronix_29lv160tmc_device)
+DECLARE_DEVICE_TYPE(ST_M29W640GB,            st_m29w640gb_device)
+DECLARE_DEVICE_TYPE(ST_M29W640FT,            st_m29w640ft_device)
 DECLARE_DEVICE_TYPE(TMS_29F040,              tms_29f040_device)
 
 DECLARE_DEVICE_TYPE(PANASONIC_MN63F805MNP,   panasonic_mn63f805mnp_device)
 DECLARE_DEVICE_TYPE(SANYO_LE26FV10N1TS,      sanyo_le26fv10n1ts_device)
 DECLARE_DEVICE_TYPE(SST_28SF040,             sst_28sf040_device)
+DECLARE_DEVICE_TYPE(SST_39SF010,             sst_39sf010_device)
+DECLARE_DEVICE_TYPE(SST_39SF020,             sst_39sf020_device)
 DECLARE_DEVICE_TYPE(SST_39SF040,             sst_39sf040_device)
 DECLARE_DEVICE_TYPE(SST_39VF020,             sst_39vf020_device)
 DECLARE_DEVICE_TYPE(SST_49LF020,             sst_49lf020_device)
@@ -419,5 +465,6 @@ DECLARE_DEVICE_TYPE(SST_39VF400A,            sst_39vf400a_device)
 DECLARE_DEVICE_TYPE(ATMEL_49F4096,           atmel_49f4096_device)
 DECLARE_DEVICE_TYPE(CAT28F020,               cat28f020_device)
 DECLARE_DEVICE_TYPE(TC58FVT800,              tc58fvt800_device)
+DECLARE_DEVICE_TYPE(WINBOND_W29C020C,        winbond_w29c020c_device)
 
 #endif // MAME_MACHINE_INTELFSH_H

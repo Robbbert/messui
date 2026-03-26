@@ -45,7 +45,7 @@ public:
 	auto irq() { return m_irq_handler.bind(); }
 	auto mem_read() { return m_mem_read_cb.bind(); }
 
-	virtual void device_reset() override;
+	virtual void device_reset() override ATTR_COLD;
 	virtual void device_clock_changed() override;
 
 	u8 status_r();
@@ -55,10 +55,10 @@ protected:
 	nesapu_device(const machine_config &mconfig, device_type type, const char *tag, device_t *owner, u32 clock);
 
 	// device-level overrides
-	virtual void device_start() override;
+	virtual void device_start() override ATTR_COLD;
 
 	// sound stream update overrides
-	virtual void sound_stream_update(sound_stream &stream, std::vector<read_stream_view> const &inputs, std::vector<write_stream_view> &outputs) override;
+	virtual void sound_stream_update(sound_stream &stream) override;
 
 	virtual void update_lfsr(apu_t::noise_t &chan);
 
@@ -76,8 +76,8 @@ private:
 	u32     m_vbl_times[SYNCS_MAX1];   /* VBL durations in samples */
 	u32     m_sync_times1[SYNCS_MAX1]; /* Samples per sync table */
 	u32     m_sync_times2[SYNCS_MAX2]; /* Samples per sync table */
-	stream_buffer::sample_t m_square_lut[31];       // Non-linear Square wave output LUT
-	stream_buffer::sample_t m_tnd_lut[16][16][128]; // Non-linear Triangle, Noise, DMC output LUT
+	sound_stream::sample_t m_square_lut[31];       // Non-linear Square wave output LUT
+	sound_stream::sample_t m_tnd_lut[16][16][128]; // Non-linear Triangle, Noise, DMC output LUT
 
 	sound_stream *m_stream;
 	devcb_write_line m_irq_handler;

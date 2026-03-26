@@ -27,10 +27,10 @@ public:
 
 protected:
 	// device-level overrides
-	virtual void device_start() override;
-	virtual void device_reset() override;
-	virtual void device_add_mconfig(machine_config &config) override;
-	virtual ioport_constructor device_input_ports() const override;
+	virtual void device_start() override ATTR_COLD;
+	virtual void device_reset() override ATTR_COLD;
+	virtual void device_add_mconfig(machine_config &config) override ATTR_COLD;
+	virtual ioport_constructor device_input_ports() const override ATTR_COLD;
 private:
 	void control_w(offs_t offset, uint8_t data);
 
@@ -123,9 +123,9 @@ static INPUT_PORTS_START( rc2014_fdc9266_jumpers )
 	PORT_CONFSETTING( 0x0, "GND" )
 	PORT_CONFSETTING( 0x1, "+5V" )
 	PORT_START("JP4")
-	PORT_CONFNAME( 0x1, 0x4, "RDY" )
+	PORT_CONFNAME( 0x1, 0x1, "RDY" )
 	PORT_CONFSETTING( 0x0, "GND" )
-	PORT_CONFSETTING( 0x4, "DC/RDY" )
+	PORT_CONFSETTING( 0x1, "DC/RDY" )
 INPUT_PORTS_END
 
 ioport_constructor rc2014_fdc9266_device::device_input_ports() const
@@ -146,10 +146,10 @@ public:
 
 protected:
 	// device-level overrides
-	virtual void device_start() override;
-	virtual void device_reset() override;
-	virtual void device_add_mconfig(machine_config &config) override;
-	virtual ioport_constructor device_input_ports() const override;
+	virtual void device_start() override ATTR_COLD;
+	virtual void device_reset() override ATTR_COLD;
+	virtual void device_add_mconfig(machine_config &config) override ATTR_COLD;
+	virtual ioport_constructor device_input_ports() const override ATTR_COLD;
 
 	// DACK confirmation is same as pulsing TC
 	uint8_t dack_r(address_space &space, offs_t) { m_fdc->tc_w(true);  m_fdc->tc_w(false); return space.unmap(); }

@@ -835,7 +835,7 @@ void captflag_state::motor_move(int side, uint16_t data)
 }
 
 template <int N>
-CUSTOM_INPUT_MEMBER(captflag_state::motor_pos_r)
+ioport_value captflag_state::motor_pos_r()
 {
 	const uint8_t pos[4] = {1,0,2,3}; // -> 2,3,1,0 offsets -> 0123
 	return ~pos[m_motor_pos[N]];
@@ -1668,19 +1668,19 @@ INPUT_PORTS_END
                             Arm Champs II
 **************************************************************************/
 
-CUSTOM_INPUT_MEMBER(armchamp2_state::left_sensor_r)
+ioport_value armchamp2_state::left_sensor_r()
 {
 	int arm_x = ioport("ARM")->read();
 	return (arm_x < 0x40);
 }
 
-CUSTOM_INPUT_MEMBER(armchamp2_state::right_sensor_r)
+ioport_value armchamp2_state::right_sensor_r()
 {
 	int arm_x = ioport("ARM")->read();
 	return (arm_x > 0xc0);
 }
 
-CUSTOM_INPUT_MEMBER(armchamp2_state::center_sensor_r)
+ioport_value armchamp2_state::center_sensor_r()
 {
 	int arm_x = ioport("ARM")->read();
 	return ((arm_x > 0x60) && (arm_x < 0xa0));
@@ -1689,9 +1689,9 @@ CUSTOM_INPUT_MEMBER(armchamp2_state::center_sensor_r)
 
 static INPUT_PORTS_START( armchmp2 )
 	PORT_START("IN0")   // Buttons + Sensors
-	PORT_BIT( 0x0001, IP_ACTIVE_LOW, IPT_CUSTOM ) PORT_CUSTOM_MEMBER(armchamp2_state, left_sensor_r)
-	PORT_BIT( 0x0002, IP_ACTIVE_LOW, IPT_CUSTOM ) PORT_CUSTOM_MEMBER(armchamp2_state, right_sensor_r)
-	PORT_BIT( 0x0004, IP_ACTIVE_LOW, IPT_CUSTOM ) PORT_CUSTOM_MEMBER(armchamp2_state, center_sensor_r)
+	PORT_BIT( 0x0001, IP_ACTIVE_LOW, IPT_CUSTOM ) PORT_CUSTOM_MEMBER(FUNC(armchamp2_state::left_sensor_r))
+	PORT_BIT( 0x0002, IP_ACTIVE_LOW, IPT_CUSTOM ) PORT_CUSTOM_MEMBER(FUNC(armchamp2_state::right_sensor_r))
+	PORT_BIT( 0x0004, IP_ACTIVE_LOW, IPT_CUSTOM ) PORT_CUSTOM_MEMBER(FUNC(armchamp2_state::center_sensor_r))
 	PORT_BIT( 0x0008, IP_ACTIVE_LOW, IPT_SERVICE1 )
 	PORT_SERVICE_NO_TOGGLE( 0x0010, IP_ACTIVE_LOW )
 	PORT_BIT( 0x0020, IP_ACTIVE_LOW, IPT_COIN1 )
@@ -1776,7 +1776,7 @@ static INPUT_PORTS_START( captflag )
 	PORT_BIT( 0x0800, IP_ACTIVE_LOW, IPT_SERVICE1 ) // service
 	PORT_BIT( 0x1000, IP_ACTIVE_LOW, IPT_SERVICE  ) // test
 	PORT_BIT( 0x2000, IP_ACTIVE_LOW, IPT_BUTTON1  ) PORT_NAME("Select Button") // select
-	PORT_BIT( 0x4000, IP_ACTIVE_HIGH,IPT_OUTPUT   ) PORT_READ_LINE_DEVICE_MEMBER("hopper", ticket_dispenser_device, line_r) // prize sensor
+	PORT_BIT( 0x4000, IP_ACTIVE_HIGH,IPT_OUTPUT   ) PORT_READ_LINE_DEVICE_MEMBER("hopper", FUNC(ticket_dispenser_device::line_r)) // prize sensor
 	PORT_BIT( 0x8000, IP_ACTIVE_LOW, IPT_UNKNOWN  ) // potery on schems?
 
 	PORT_START("SW1_2")
@@ -1814,11 +1814,11 @@ static INPUT_PORTS_START( captflag )
 	PORT_DIPUNKNOWN_DIPLOC( 0x8000, 0x8000, "SW2:8" )
 
 	PORT_START("SW01")
-	PORT_BIT( 0x0003, IP_ACTIVE_LOW, IPT_CUSTOM) PORT_CUSTOM_MEMBER(captflag_state, motor_pos_r<LEFT>)
-	PORT_BIT( 0x000c, IP_ACTIVE_LOW, IPT_CUSTOM) PORT_CUSTOM_MEMBER(captflag_state, motor_pos_r<RIGHT>)
+	PORT_BIT( 0x0003, IP_ACTIVE_LOW, IPT_CUSTOM) PORT_CUSTOM_MEMBER(FUNC(captflag_state::motor_pos_r<LEFT>))
+	PORT_BIT( 0x000c, IP_ACTIVE_LOW, IPT_CUSTOM) PORT_CUSTOM_MEMBER(FUNC(captflag_state::motor_pos_r<RIGHT>))
 
-	PORT_BIT( 0x0040, IP_ACTIVE_HIGH, IPT_CUSTOM) PORT_READ_LINE_MEMBER(captflag_state, motor_busy_r<LEFT>)
-	PORT_BIT( 0x0080, IP_ACTIVE_HIGH, IPT_CUSTOM) PORT_READ_LINE_MEMBER(captflag_state, motor_busy_r<RIGHT>)
+	PORT_BIT( 0x0040, IP_ACTIVE_HIGH, IPT_CUSTOM) PORT_READ_LINE_MEMBER(FUNC(captflag_state::motor_busy_r<LEFT>))
+	PORT_BIT( 0x0080, IP_ACTIVE_HIGH, IPT_CUSTOM) PORT_READ_LINE_MEMBER(FUNC(captflag_state::motor_busy_r<RIGHT>))
 
 	PORT_DIPNAME( 0x0300, 0x0300, DEF_STR( Difficulty ) ) PORT_DIPLOCATION("SW01:1,2")
 	PORT_DIPSETTING(      0x0000, DEF_STR( Easy ) )
@@ -1862,14 +1862,14 @@ static INPUT_PORTS_START( vscaptfl )
 	PORT_BIT( 0x0800, IP_ACTIVE_LOW, IPT_SERVICE1 ) // service
 	PORT_BIT( 0x1000, IP_ACTIVE_LOW, IPT_SERVICE  ) // test
 	PORT_BIT( 0x2000, IP_ACTIVE_LOW, IPT_BUTTON1  ) PORT_NAME("Select Button") // select
-	PORT_BIT( 0x4000, IP_ACTIVE_HIGH,IPT_OUTPUT   ) PORT_READ_LINE_DEVICE_MEMBER("hopper", ticket_dispenser_device, line_r) // prize sensor
+	PORT_BIT( 0x4000, IP_ACTIVE_HIGH,IPT_OUTPUT   ) PORT_READ_LINE_DEVICE_MEMBER("hopper", FUNC(ticket_dispenser_device::line_r)) // prize sensor
 	PORT_BIT( 0x8000, IP_ACTIVE_LOW, IPT_UNKNOWN  ) // potery on schems?
 
 	PORT_START("Buttons2")
-	PORT_BIT( 0x0003, IP_ACTIVE_LOW, IPT_CUSTOM) PORT_CUSTOM_MEMBER(captflag_state, motor_pos_r<LEFT>)
-	PORT_BIT( 0x000c, IP_ACTIVE_LOW, IPT_CUSTOM) PORT_CUSTOM_MEMBER(captflag_state, motor_pos_r<RIGHT>)
-	PORT_BIT( 0x0040, IP_ACTIVE_HIGH, IPT_CUSTOM) PORT_READ_LINE_MEMBER(captflag_state, motor_busy_r<LEFT>)
-	PORT_BIT( 0x0080, IP_ACTIVE_HIGH, IPT_CUSTOM) PORT_READ_LINE_MEMBER(captflag_state, motor_busy_r<RIGHT>)
+	PORT_BIT( 0x0003, IP_ACTIVE_LOW, IPT_CUSTOM) PORT_CUSTOM_MEMBER(FUNC(captflag_state::motor_pos_r<LEFT>))
+	PORT_BIT( 0x000c, IP_ACTIVE_LOW, IPT_CUSTOM) PORT_CUSTOM_MEMBER(FUNC(captflag_state::motor_pos_r<RIGHT>))
+	PORT_BIT( 0x0040, IP_ACTIVE_HIGH, IPT_CUSTOM) PORT_READ_LINE_MEMBER(FUNC(captflag_state::motor_busy_r<LEFT>))
+	PORT_BIT( 0x0080, IP_ACTIVE_HIGH, IPT_CUSTOM) PORT_READ_LINE_MEMBER(FUNC(captflag_state::motor_busy_r<RIGHT>))
 	PORT_BIT( 0x0100, IP_ACTIVE_LOW, IPT_JOYSTICKLEFT_UP ) PORT_NAME("P2 Left Red Stick Up") PORT_PLAYER(2)
 	PORT_BIT( 0x0200, IP_ACTIVE_LOW, IPT_JOYSTICKLEFT_DOWN ) PORT_NAME("P2 Left Red Stick Down") PORT_PLAYER(2)
 	PORT_BIT( 0x0400, IP_ACTIVE_LOW, IPT_JOYSTICKRIGHT_UP ) PORT_NAME("P2 Right White Stick Up") PORT_PLAYER(2)
@@ -2116,8 +2116,7 @@ void cischeat_state::bigrun(machine_config &config)
 	MEGASYS1_TILEMAP(config, m_tmap[2], m_palette, 0x3600/2);
 
 	/* sound hardware */
-	SPEAKER(config, "lspeaker").front_left();
-	SPEAKER(config, "rspeaker").front_right();
+	SPEAKER(config, "speaker", 2).front();
 
 	GENERIC_LATCH_16(config, m_soundlatch);
 	GENERIC_LATCH_16(config, m_soundlatch2);
@@ -2125,16 +2124,16 @@ void cischeat_state::bigrun(machine_config &config)
 	// TODO: all sound frequencies unverified (assume same as Mega System 1)
 	ym2151_device &ymsnd(YM2151(config, "ymsnd", 7000000/2));
 	ymsnd.irq_handler().set(FUNC(cischeat_state::sound_irq));
-	ymsnd.add_route(0, "lspeaker", 0.50);
-	ymsnd.add_route(1, "rspeaker", 0.50);
+	ymsnd.add_route(0, "speaker", 0.50, 0);
+	ymsnd.add_route(1, "speaker", 0.50, 1);
 
 	OKIM6295(config, m_oki1, 4000000, okim6295_device::PIN7_HIGH); // clock frequency & pin 7 not verified
-	m_oki1->add_route(ALL_OUTPUTS, "lspeaker", 0.25);
-	m_oki1->add_route(ALL_OUTPUTS, "rspeaker", 0.25);
+	m_oki1->add_route(ALL_OUTPUTS, "speaker", 0.25, 0);
+	m_oki1->add_route(ALL_OUTPUTS, "speaker", 0.25, 1);
 
 	OKIM6295(config, m_oki2, 4000000, okim6295_device::PIN7_HIGH); // clock frequency & pin 7 not verified
-	m_oki2->add_route(ALL_OUTPUTS, "lspeaker", 0.25);
-	m_oki2->add_route(ALL_OUTPUTS, "rspeaker", 0.25);
+	m_oki2->add_route(ALL_OUTPUTS, "speaker", 0.25, 0);
+	m_oki2->add_route(ALL_OUTPUTS, "speaker", 0.25, 1);
 }
 
 void cischeat_state::bigrun_d65006(machine_config &config)
@@ -2295,16 +2294,15 @@ void cischeat_state::scudhamm(machine_config &config)
 	MEGASYS1_TILEMAP(config, m_tmap[2], m_palette, 0x4e00/2);
 
 	/* sound hardware */
-	SPEAKER(config, "lspeaker").front_left();
-	SPEAKER(config, "rspeaker").front_right();
+	SPEAKER(config, "speaker", 2).front();
 
 	OKIM6295(config, m_oki1, 4000000/2, okim6295_device::PIN7_HIGH); // pin 7 not verified
-	m_oki1->add_route(ALL_OUTPUTS, "lspeaker", 0.5);
-	m_oki1->add_route(ALL_OUTPUTS, "rspeaker", 0.5);
+	m_oki1->add_route(ALL_OUTPUTS, "speaker", 0.5, 0);
+	m_oki1->add_route(ALL_OUTPUTS, "speaker", 0.5, 1);
 
 	OKIM6295(config, m_oki2, 4000000/2, okim6295_device::PIN7_HIGH); // pin 7 not verified
-	m_oki2->add_route(ALL_OUTPUTS, "lspeaker", 0.5);
-	m_oki2->add_route(ALL_OUTPUTS, "rspeaker", 0.5);
+	m_oki2->add_route(ALL_OUTPUTS, "speaker", 0.5, 0);
+	m_oki2->add_route(ALL_OUTPUTS, "speaker", 0.5, 1);
 }
 
 
@@ -2369,7 +2367,7 @@ void captflag_state::captflag(machine_config &config)
 	m_maincpu->set_addrmap(AS_PROGRAM, &captflag_state::captflag_map);
 	TIMER(config, "scantimer").configure_scanline(FUNC(captflag_state::captflag_scanline), "screen", 0, 1);
 
-	TICKET_DISPENSER(config, m_hopper, attotime::from_msec(2000), TICKET_MOTOR_ACTIVE_HIGH, TICKET_STATUS_ACTIVE_HIGH );
+	TICKET_DISPENSER(config, m_hopper, attotime::from_msec(2000));
 
 	WATCHDOG_TIMER(config, m_watchdog);
 	NVRAM(config, "nvram", nvram_device::DEFAULT_ALL_0);
@@ -2399,18 +2397,17 @@ void captflag_state::captflag(machine_config &config)
 	config.set_default_layout(layout_captflag);
 
 	/* sound hardware */
-	SPEAKER(config, "lspeaker").front_left();
-	SPEAKER(config, "rspeaker").front_right();
+	SPEAKER(config, "speaker", 2).front();
 
 	OKIM6295(config, m_oki1, 4000000/2, okim6295_device::PIN7_HIGH); // pin 7 not verified
 	m_oki1->set_addrmap(0, &captflag_state::oki1_map);
-	m_oki1->add_route(ALL_OUTPUTS, "lspeaker", 0.5);
-	m_oki1->add_route(ALL_OUTPUTS, "rspeaker", 0.5);
+	m_oki1->add_route(ALL_OUTPUTS, "speaker", 0.5, 0);
+	m_oki1->add_route(ALL_OUTPUTS, "speaker", 0.5, 1);
 
 	OKIM6295(config, m_oki2, 4000000/2, okim6295_device::PIN7_HIGH); // pin 7 not verified
 	m_oki2->set_addrmap(0, &captflag_state::oki2_map);
-	m_oki2->add_route(ALL_OUTPUTS, "lspeaker", 0.5);
-	m_oki2->add_route(ALL_OUTPUTS, "rspeaker", 0.5);
+	m_oki2->add_route(ALL_OUTPUTS, "speaker", 0.5, 0);
+	m_oki2->add_route(ALL_OUTPUTS, "speaker", 0.5, 1);
 }
 
 

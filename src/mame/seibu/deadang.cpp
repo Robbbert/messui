@@ -46,6 +46,8 @@ Dip locations and factory settings verified with US manual
 
 #include "emu.h"
 
+#include "sei80bu.h"
+
 #include "seibusound.h"
 
 #include "cpu/nec/nec.h"
@@ -90,7 +92,7 @@ public:
 	void init_ghunter();
 
 protected:
-	virtual void video_start() override;
+	virtual void video_start() override ATTR_COLD;
 
 	required_shared_ptr<uint16_t> m_scroll_ram;
 	required_shared_ptr<uint16_t> m_videoram;
@@ -133,11 +135,11 @@ protected:
 	TIMER_DEVICE_CALLBACK_MEMBER(main_scanline);
 	TIMER_DEVICE_CALLBACK_MEMBER(sub_scanline);
 
-	void main_map(address_map &map);
-	void ghunter_main_map(address_map &map);
-	void sound_decrypted_opcodes_map(address_map &map);
-	void sound_map(address_map &map);
-	void sub_map(address_map &map);
+	void main_map(address_map &map) ATTR_COLD;
+	void ghunter_main_map(address_map &map) ATTR_COLD;
+	void sound_decrypted_opcodes_map(address_map &map) ATTR_COLD;
+	void sound_map(address_map &map) ATTR_COLD;
+	void sub_map(address_map &map) ATTR_COLD;
 };
 
 class popnrun_state : public deadang_state
@@ -150,14 +152,14 @@ public:
 	void popnrun(machine_config &config);
 
 protected:
-	virtual void video_start() override;
+	virtual void video_start() override ATTR_COLD;
 
 private:
 	TILE_GET_INFO_MEMBER(get_text_tile_info);
 	void text_w(offs_t offset, uint16_t data, uint16_t mem_mask = ~0);
-	void main_map(address_map &map);
-	void sub_map(address_map &map);
-	void sound_map(address_map &map);
+	void main_map(address_map &map) ATTR_COLD;
+	void sub_map(address_map &map) ATTR_COLD;
+	void sound_map(address_map &map) ATTR_COLD;
 
 	uint32_t screen_update(screen_device &screen, bitmap_ind16 &bitmap, const rectangle &cliprect);
 	void draw_sprites(screen_device &screen, bitmap_ind16 &bitmap, const rectangle &cliprect);
@@ -338,7 +340,7 @@ uint32_t deadang_state::screen_update(screen_device &screen, bitmap_ind16 &bitma
 	    0x01: Background playfield disable
 	    0x02: Middle playfield disable
 	    0x04: Top playfield disable
-	    0x08: ?  Toggles at start of game
+	    0x08: Text layer disable
 	    0x10: Sprite disable
 	    0x20: Unused?
 	    0x40: Flipscreen
@@ -347,6 +349,7 @@ uint32_t deadang_state::screen_update(screen_device &screen, bitmap_ind16 &bitma
 	m_pf_layer[2]->enable(!(m_scroll_ram[0x34] & 1));
 	m_pf_layer[0]->enable(!(m_scroll_ram[0x34] & 2));
 	m_pf_layer[1]->enable(!(m_scroll_ram[0x34] & 4));
+	m_text_layer->enable(!(m_scroll_ram[0x34] & 8));
 	flip_screen_set(m_scroll_ram[0x34] & 0x40);
 
 	bitmap.fill(m_palette->black_pen(), cliprect);
@@ -561,14 +564,14 @@ void deadang_state::sound_map(address_map &map)
 	map(0x4008, 0x4009).rw(m_seibu_sound, FUNC(seibu_sound_device::ym_r), FUNC(seibu_sound_device::ym_w));
 	map(0x4010, 0x4011).r(m_seibu_sound, FUNC(seibu_sound_device::soundlatch_r));
 	map(0x4012, 0x4012).r(m_seibu_sound, FUNC(seibu_sound_device::main_data_pending_r));
-	map(0x4013, 0x4013).portr("COIN");
+	map(0x4013, 0x4013).r(m_seibu_sound, FUNC(seibu_sound_device::coin_r));
 	map(0x4018, 0x4019).w(m_seibu_sound, FUNC(seibu_sound_device::main_data_w));
 	map(0x401a, 0x401a).w(m_adpcm[0], FUNC(seibu_adpcm_device::ctl_w));
 	map(0x401b, 0x401b).w(m_seibu_sound, FUNC(seibu_sound_device::coin_w));
 	map(0x6005, 0x6006).w(m_adpcm[1], FUNC(seibu_adpcm_device::adr_w));
 	map(0x6008, 0x6009).rw("ym2", FUNC(ym2203_device::read), FUNC(ym2203_device::write));
 	map(0x601a, 0x601a).w(m_adpcm[1], FUNC(seibu_adpcm_device::ctl_w));
-	map(0x8000, 0xffff).bankr("seibu_bank1");
+	map(0x8000, 0xffff).bankr("seibu_bank");
 }
 
 // Air Raid sound config with extra ROM bank
@@ -584,16 +587,16 @@ void popnrun_state::sound_map(address_map &map)
 	map(0x4008, 0x4009).rw(m_seibu_sound, FUNC(seibu_sound_device::ym_r), FUNC(seibu_sound_device::ym_w));
 	map(0x4010, 0x4011).r(m_seibu_sound, FUNC(seibu_sound_device::soundlatch_r));
 	map(0x4012, 0x4012).r(m_seibu_sound, FUNC(seibu_sound_device::main_data_pending_r));
-	map(0x4013, 0x4013).portr("COIN");
+	map(0x4013, 0x4013).r(m_seibu_sound, FUNC(seibu_sound_device::coin_r));
 	map(0x4018, 0x4019).w(m_seibu_sound, FUNC(seibu_sound_device::main_data_w));
 	map(0x401b, 0x401b).w(m_seibu_sound, FUNC(seibu_sound_device::coin_w));
-	map(0x8000, 0xffff).bankr("seibu_bank1");
+	map(0x8000, 0xffff).bankr("seibu_bank");
 }
 
 void deadang_state::sound_decrypted_opcodes_map(address_map &map)
 {
 	map(0x0000, 0x1fff).r("sei80bu", FUNC(sei80bu_device::opcode_r));
-	map(0x8000, 0xffff).bankr("seibu_bank1");
+	map(0x8000, 0xffff).bankr("seibu_bank");
 }
 
 
@@ -798,7 +801,7 @@ void deadang_state::deadang(machine_config &config)
 	m_audiocpu->set_addrmap(AS_OPCODES, &deadang_state::sound_decrypted_opcodes_map);
 	m_audiocpu->set_irq_acknowledge_callback("seibu_sound", FUNC(seibu_sound_device::im0_vector_cb));
 
-	SEI80BU(config, "sei80bu", 0).set_device_rom_tag("audiocpu");
+	SEI80BU(config, "sei80bu", XTAL(14'318'181) / 4).set_device_rom_tag("audiocpu");
 
 	config.set_maximum_quantum(attotime::from_hz(60)); // the game stops working with higher interleave rates..
 
@@ -821,8 +824,9 @@ void deadang_state::deadang(machine_config &config)
 
 	SEIBU_SOUND(config, m_seibu_sound, 0);
 	m_seibu_sound->int_callback().set_inputline(m_audiocpu, 0);
+	m_seibu_sound->coin_io_callback().set_ioport("COIN");
 	m_seibu_sound->set_rom_tag("audiocpu");
-	m_seibu_sound->set_rombank_tag("seibu_bank1");
+	m_seibu_sound->set_rombank_tag("seibu_bank");
 	m_seibu_sound->ym_read_callback().set("ym1", FUNC(ym2203_device::read));
 	m_seibu_sound->ym_write_callback().set("ym1", FUNC(ym2203_device::write));
 

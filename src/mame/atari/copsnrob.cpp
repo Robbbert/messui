@@ -96,8 +96,8 @@ public:
 	void copsnrob(machine_config &config);
 
 protected:
-	virtual void machine_start() override;
-	virtual void machine_reset() override;
+	virtual void machine_start() override ATTR_COLD;
+	virtual void machine_reset() override ATTR_COLD;
 
 private:
 	required_shared_ptr<uint8_t> m_trucky;
@@ -117,7 +117,7 @@ private:
 
 	uint8_t m_misc = 0U;
 
-	void main_map(address_map &map);
+	void main_map(address_map &map) ATTR_COLD;
 
 	uint8_t misc_r();
 	void misc2_w(uint8_t data);
@@ -440,12 +440,11 @@ void copsnrob_state::copsnrob(machine_config &config)
 	PALETTE(config, m_palette, palette_device::MONOCHROME);
 
 	// sound hardware
-	SPEAKER(config, "lspeaker").front_left();
-	SPEAKER(config, "rspeaker").front_right();
+	SPEAKER(config, "speaker", 2).front();
 
 	discrete_sound_device &discrete(DISCRETE(config, "discrete", copsnrob_discrete));
-	discrete.add_route(0, "lspeaker", 1.0);
-	discrete.add_route(1, "rspeaker", 1.0);
+	discrete.add_route(0, "speaker", 1.0, 0);
+	discrete.add_route(1, "speaker", 1.0, 1);
 
 	f9334_device &latch(F9334(config, "latch")); // H3 on audio board
 	latch.q_out_cb<0>().set("discrete", FUNC(discrete_device::write_line<COPSNROB_MOTOR3_INV>));

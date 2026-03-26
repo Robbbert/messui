@@ -34,7 +34,35 @@ Manual, pics and some more info can be found at https://www.recreativas.org/cobr
  |____________________________________________________________________________________|
 
 There's another PCB (same connectors, fully compatible) with almost the same layout
-and components, but replacing the sound OKI M6376 with a Winbond WF19054 (AY-3-8910A clone).
+and components, but replacing the sound OKI M6376 with a Winbond WF19054 (AY-3-8910A clone):
+
+ FLE/V25-2
+  ________________________________________________________________________________
+ |  ······  ·····  ······   ··········                                           |
+ |                                                                               |
+ | __________    __________   __________   __________                            |
+ ||MAX232CPE|   |4116R-001|  |ULN2803A_|  |4116R-001|           TDA2003          |
+ |                                                      __________               |__
+ |                            ___________              |ULN2803A_|                __|
+ |                           |DM74LS273N|               __________                __|
+ |               ___________  ___________  __________  |SN74LS273N                __|
+ |              |SN74LS244N| |PALCE16V8H| |SN74LS244N|  __________   __________   __|
+ | ___________   ___________         _______________   |SN74LS244N  |4116R-001|   __|
+ ||SN74LS14N_|  |PALCE16V8H|        | EPROM        |    __________                __|
+ | ___________                      |______________|   |SN74LS244N                __|
+ ||CD4011BCN_|    ______________     _______________    __________   __________   __|
+ | ____          | NEC V25     |     |CY62256L-70PC|   |DM74LS273N| |4116R-001|   __|
+ |PCF8583P       | D70320L-8   |     |_____________|    __________   __________   __|
+ |  Xtal         |             |                       |DM74LS273N| |ULN2803A_|   __|
+ |  S833         |             |                                     __________   __|
+ |               |_____________|                                    |ULN2803A_|   __|
+ |                        Xtal   _________  _________   _______________     ____  __|
+ |                   16.000 MHz  |_DIPSx8_| |_DIPSx8_| |WF19054       |    |RESET __|
+ |    BATT        __________    __________             |______________|     ____  __|
+ |               74HCT7007B1   74HCT7007B1                                 |TEST |
+ |   __________                                                                  |
+ |  |MAX691CPE|                    ::::::::::::        :::::::::::::::::::       |
+ |_______________________________________________________________________________|
 
 */
 
@@ -58,17 +86,17 @@ public:
 		m_maincpu(*this, "maincpu")
 	{ }
 
-	void cobrasdoki(machine_config &config);
-	void cobrasday(machine_config &config);
+	void cobrasd_oki(machine_config &config) ATTR_COLD;
+	void cobrasd_ay(machine_config &config) ATTR_COLD;
 
 private:
 	required_device<v25_device> m_maincpu;
 
-	void cobrasd(machine_config &config);
+	void cobrasd(machine_config &config) ATTR_COLD;
 
-	void program_map(address_map &map);
-	void io_map(address_map &map);
-	void data_map(address_map &map);
+	void program_map(address_map &map) ATTR_COLD;
+	void io_map(address_map &map) ATTR_COLD;
+	void data_map(address_map &map) ATTR_COLD;
 };
 
 
@@ -131,7 +159,7 @@ void cobrasd_state::cobrasd(machine_config &config)
 	PCF8583(config, "rtc", 32.768_kHz_XTAL); // External xtal labeled "S833", unknown frequency
 }
 
-void cobrasd_state::cobrasdoki(machine_config &config)
+void cobrasd_state::cobrasd_oki(machine_config &config)
 {
 	// Basic machine hardware
 
@@ -144,7 +172,7 @@ void cobrasd_state::cobrasdoki(machine_config &config)
 	OKIM6376(config, "oki", 4_MHz_XTAL / 8).add_route(ALL_OUTPUTS, "mono", 0.5); // Divider not verified
 }
 
-void cobrasd_state::cobrasday(machine_config &config)
+void cobrasd_state::cobrasd_ay(machine_config &config)
 {
 	// Basic machine hardware
 
@@ -182,6 +210,6 @@ ROM_END
 } // anonymous namespace
 
 
-//   YEAR  NAME      PARENT   MACHINE     INPUT    CLASS          INIT        ROT   COMPANY         FULLNAME                                                FLAGS
-GAME(1998, cobrasd,  0,       cobrasdoki, cobrasd, cobrasd_state, empty_init, ROT0, u8"TourVisión", "Cobra Sport Dart / Tour Sport Dart (OKI M6376 sound)", MACHINE_IS_SKELETON_MECHANICAL)
-GAME(1997, cobrasda, cobrasd, cobrasday,  cobrasd, cobrasd_state, empty_init, ROT0, u8"TourVisión", "Cobra Sport Dart / Tour Sport Dart (AY-8910 sound)",   MACHINE_IS_SKELETON_MECHANICAL)
+//   YEAR  NAME      PARENT   MACHINE      INPUT    CLASS          INIT        ROT   COMPANY         FULLNAME                                                  FLAGS
+GAME(1998, cobrasd,  0,       cobrasd_oki, cobrasd, cobrasd_state, empty_init, ROT0, u8"TourVisión", "Cobra Sport Dart / Tour Sport Dart (Oki MSM6376 sound)", MACHINE_NO_SOUND | MACHINE_NOT_WORKING | MACHINE_MECHANICAL | MACHINE_REQUIRES_ARTWORK)
+GAME(1997, cobrasda, cobrasd, cobrasd_ay,  cobrasd, cobrasd_state, empty_init, ROT0, u8"TourVisión", "Cobra Sport Dart / Tour Sport Dart (AY-8910 sound)",     MACHINE_NO_SOUND | MACHINE_NOT_WORKING | MACHINE_MECHANICAL | MACHINE_REQUIRES_ARTWORK)

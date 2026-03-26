@@ -228,7 +228,7 @@
 #define IDC_SLEEP                       1022
 #define IDC_GAMMA                       1023
 #define IDC_BRIGHTCORRECT               1024
-#define IDC_USE_DEFAULT                 1025
+//#define IDC_USE_DEFAULT                 1025
 #define IDC_CONTRAST                    1026
 #define IDC_SAMPLERATE                  1027
 #define IDC_NUMSCREENS                  1028
@@ -290,7 +290,7 @@
 #define IDC_AUTOFRAMESKIP               1097
 #define IDC_TREE                        1098
 #define IDC_WINDOWED                    1099
-#define IDC_PROP_RESET                  1101
+//#define IDC_PROP_RESET                  1101
 #define IDC_SPLITTER                    1102
 #define IDC_SPLITTER2                   1103
 #define IDC_DIVIDER                     1104
@@ -377,7 +377,6 @@
 #define IDC_RESET_PLAYSTATS             1194
 #define IDC_INHERITED                   1196
 #define IDC_KEY_GUI                     1197
-#define IDC_RELOAD                      1198
 #define IDC_DUAL_LIGHTGUN               1199
 #define IDC_NOOFFSET_CLONES             1200
 #define IDC_BIOS                        1201
@@ -430,8 +429,7 @@
 #define IDC_SPLASH                      1266
 #define IDC_HLSL_ON                     1279
 #define IDC_SNAPBURNIN                  1280
-#define IDC_PORTAUDIO_LATENCY           1281
-#define IDC_PORTAUDIO_LATENCY_DISP      1282
+#define IDC_DRC_CORE                    1281
 #define IDC_GLSLPOW                     1300
 #define IDC_GLSLTEXTURE                 1301
 #define IDC_GLSLVBO                     1302
@@ -525,7 +523,7 @@
 #define IDC_SPLITTER3                   2000
 #define IDC_SWTAB                       2001
 #define IDC_SWLIST                      2002
-#define IDC_SWDEVVIEW                   2003
+#define IDC_MEDIAVIEW                   2003
 #define IDC_FILTER_MODIFIED             2006
 #define IDC_RAM_COMBOBOX                2008
 #define IDC_RAM_CAPTION                 2009

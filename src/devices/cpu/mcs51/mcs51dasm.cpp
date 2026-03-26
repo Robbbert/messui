@@ -2,25 +2,12 @@
 // copyright-holders:Steve Ellenoff
 /*****************************************************************************
  *
- *   i8051dasm.c
- *   Portable MCS-51 Family Emulator
+ * Portable MCS-51 Family Disassembler
+ * Copyright Steve Ellenoff
  *
- *   Chips in the family:
- *   8051 Product Line (8031,8051,8751)
- *   8052 Product Line (8032,8052,8752)
- *   8054 Product Line (8054)
- *   8058 Product Line (8058)
- *
- *   Copyright Steve Ellenoff, all rights reserved.
- *
- *  This work is based on:
- *  #1) 'Intel(tm) MC51 Microcontroller Family Users Manual' and
- *  #2) 8051 simulator by Travis Marlatte
- *  #3) Portable UPI-41/8041/8741/8042/8742 emulator V0.1 by Juergen Buchmueller (MAME CORE)
- *
- *****************************************************************************
  * Symbol Memory Name Tables borrowed from:
  * D52 8052 Disassembler - Copyright Jeffery L. Post
+ *
  *****************************************************************************/
 
 #include "emu.h"
@@ -112,8 +99,7 @@ const mcs51_disassembler::mem_info mcs51_disassembler::default_names[] = {
 	{ 0x1ae, "ie.6"  },
 	{ 0x1af, "ea"    },
 
-	/* FIXME: port 3 - depends on external circuits and not really
-	 * implemented in the core. TBD */
+	// FIXME: port 3 - depends on external circuits and not really implemented in the core. TBD
 	{ 0x1b0, "rxd"   },
 	{ 0x1b1, "txd"   },
 	{ 0x1b2, "int0"  },
@@ -320,16 +306,16 @@ const mcs51_disassembler::mem_info mcs51_disassembler::i8xc751_names[] = {
 	{  0x98, "i2con"   },
 	{  0x99, "i2dat"   },
 	{  0xd8, "i2cfg"   },
-	{  0xf8, "i2sta"   },  /* read only */
+	{  0xf8, "i2sta"   }, // read only
 
-	{ 0x198, "xstp"    }, /* read: no function */
-	{ 0x199, "xstr"    }, /* read: MASTER */
-	{ 0x19a, "cstp"    }, /* read: STP */
-	{ 0x19b, "cstr"    }, /* read: STR */
-	{ 0x19c, "carl"    }, /* read: ARL */
-	{ 0x19d, "cdr"     }, /* read: DRDY */
-	{ 0x19e, "idle"    }, /* read: ATN */
-	{ 0x19f, "cxa"     }, /* read: RDAT */
+	{ 0x198, "xstp"    }, // read: no function
+	{ 0x199, "xstr"    }, // read: MASTER
+	{ 0x19a, "cstp"    }, // read: STP
+	{ 0x19b, "cstr"    }, // read: STR
+	{ 0x19c, "carl"    }, // read: ARL
+	{ 0x19d, "cdr"     }, // read: DRDY
+	{ 0x19e, "idle"    }, // read: ATN
+	{ 0x19f, "cxa"     }, // read: RDAT
 
 	{ 0x1ac, "ei2"     },
 
@@ -770,7 +756,7 @@ mcs51_disassembler::mcs51_disassembler()
 
 void mcs51_disassembler::add_names(const mem_info *info)
 {
-	for(unsigned int i=0; info[i].addr >= 0; i++)
+	for (unsigned int i = 0; info[i].addr >= 0; i++)
 		m_names[info[i].addr] = info[i].name;
 }
 
@@ -780,7 +766,7 @@ u32 mcs51_disassembler::opcode_alignment() const
 }
 
 
-std::string mcs51_disassembler::get_data_address( uint8_t arg ) const
+std::string mcs51_disassembler::get_data_address(uint8_t arg) const
 {
 	auto i = m_names.find(arg);
 	if (i == m_names.end())
@@ -789,11 +775,11 @@ std::string mcs51_disassembler::get_data_address( uint8_t arg ) const
 		return i->second;
 }
 
-std::string mcs51_disassembler::get_bit_address( uint8_t arg ) const
+std::string mcs51_disassembler::get_bit_address(uint8_t arg) const
 {
-	if(arg < 0x80)
+	if (arg < 0x80)
 	{
-		//Bit address 0-7F can be referred to as 20.0, 20.1, to 20.7 for address 0, and 2f.0,2f.1 to 2f.7 for address 7f
+		// Bit address 0-7F can be referred to as 20.0, 20.1, to 20.7 for address 0, and 2f.0,2f.1 to 2f.7 for address 7f
 		return util::string_format("$%02X.%d", (arg >> 3) | 0x20, arg & 0x07);
 	}
 	else

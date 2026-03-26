@@ -54,10 +54,7 @@ public:
 	nes_aladdin_slot_device(const machine_config &mconfig, const char *tag, device_t *owner, T &&opts)
 		: nes_aladdin_slot_device(mconfig, tag, owner, (uint32_t)0)
 	{
-		option_reset();
-		opts(*this);
-		set_default_option(nullptr);
-		set_fixed(false);
+		set_options(std::forward<T>(opts), nullptr, false);
 	}
 
 	nes_aladdin_slot_device(const machine_config &mconfig, const char *tag, device_t *owner, uint32_t clock);
@@ -78,7 +75,7 @@ public:
 
 protected:
 	// device_t implementation
-	virtual void device_start() override;
+	virtual void device_start() override ATTR_COLD;
 
 	aladdin_cart_interface *m_cart;
 };
@@ -103,7 +100,7 @@ public:
 	nes_algn_rom_device(const machine_config &mconfig, const char *tag, device_t *owner, uint32_t clock);
 
 	// optional information overrides
-	virtual const tiny_rom_entry *device_rom_region() const override;
+	virtual const tiny_rom_entry *device_rom_region() const override ATTR_COLD;
 	virtual uint8_t* get_cart_base();
 	virtual void write_prg(uint32_t offset, uint8_t data) override;
 
@@ -111,8 +108,8 @@ protected:
 	nes_algn_rom_device(const machine_config &mconfig, device_type type, const char *tag, device_t *owner, uint32_t clock);
 
 	// device-level overrides
-	virtual void device_start() override;
-	virtual void device_reset() override;
+	virtual void device_start() override ATTR_COLD;
+	virtual void device_reset() override ATTR_COLD;
 };
 
 
@@ -129,8 +126,8 @@ public:
 
 protected:
 	// device-level overrides
-	virtual void device_start() override;
-	virtual void device_reset() override;
+	virtual void device_start() override ATTR_COLD;
+	virtual void device_reset() override ATTR_COLD;
 
 	uint8_t m_bank_base;
 };
@@ -161,8 +158,8 @@ public:
 
 protected:
 	// device_t implementation
-	virtual void device_start() override;
-	virtual void device_add_mconfig(machine_config &config) override;
+	virtual void device_start() override ATTR_COLD;
+	virtual void device_add_mconfig(machine_config &config) override ATTR_COLD;
 
 	required_device<nes_aladdin_slot_device> m_subslot;
 };

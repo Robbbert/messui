@@ -8,15 +8,15 @@
 
 #include "machine/6522via.h"
 #include "machine/applefdintf.h"
+#include "machine/pseudovia.h"
 #include "machine/swim2.h"
 #include "sound/asc.h"
-#include "emupal.h"
-#include "speaker.h"
+#include "video/ariel.h"
 #include "screen.h"
 
 // ======================> v8_device
 
-class v8_device :  public device_t
+class v8_device : public device_t, public device_sound_interface
 {
 public:
 	// construction/destruction
@@ -30,7 +30,7 @@ public:
 	auto hmmu_enable_callback() { return write_hmmu_enable.bind(); }
 	auto pb3_callback() { return read_pb3.bind(); }
 
-	virtual void map(address_map &map);
+	virtual void map(address_map &map) ATTR_COLD;
 
 	template <typename... T> void set_maincpu_tag(T &&... args) { m_maincpu.set_tag(std::forward<T>(args)...); }
 	template <typename... T> void set_rom_tag(T &&... args) { m_rom.set_tag(std::forward<T>(args)...); }
@@ -41,31 +41,31 @@ public:
 	void cb2_w(int state);
 	template <u8 mask> void slot_irq_w(int state);
 	void scc_irq_w(int state);
+	void slot2_irq_w(int state);
 
 protected:
 	required_device<cpu_device> m_maincpu;
 	required_device<screen_device> m_screen;
-	required_device<palette_device> m_palette;
+	required_device<ariel_device> m_ariel;
 	required_device<asc_device> m_asc;
+	required_device<pseudovia_device> m_pseudovia;
 
 	std::unique_ptr<u32 []> m_vram;
 
-	u8 m_pseudovia_regs[256];
 	u32 *m_ram_ptr;
 	u32 m_ram_size;
 	bool m_overlay;
+	u8 m_video_config;
 
 	v8_device(const machine_config &mconfig, device_type type, const char *tag, device_t *owner, u32 clock);
 
 	// device-level overrides
-	virtual void device_start() override;
-	virtual void device_reset() override;
-	virtual void device_add_mconfig(machine_config &config) override;
-	virtual ioport_constructor device_input_ports() const override;
+	virtual void device_start() override ATTR_COLD;
+	virtual void device_reset() override ATTR_COLD;
+	virtual void device_add_mconfig(machine_config &config) override ATTR_COLD;
+	virtual ioport_constructor device_input_ports() const override ATTR_COLD;
 
-	virtual u8 pseudovia_r(offs_t offset);
-
-	void asc_irq(int state);
+	virtual void sound_stream_update(sound_stream &stream) override;
 
 	virtual void ram_size(u8 config);
 
@@ -77,17 +77,19 @@ private:
 	required_device<via6522_device> m_via1;
 	required_region_ptr<u32> m_rom;
 
+	sound_stream *m_stream;
 	emu_timer *m_6015_timer;
+	u8 m_config;
 	int m_via_interrupt, m_via2_interrupt, m_scc_interrupt, m_last_taken_interrupt;
-	u8 m_pseudovia_ier, m_pseudovia_ifr;
-	u8 m_pal_address, m_pal_idx, m_pal_control, m_pal_colkey;
-
 	bool m_baseIs4M;
 
 	u32 rom_switch_r(offs_t offset);
 
-	void pseudovia_w(offs_t offset, u8 data);
-	void pseudovia_recalc_irqs();
+	void via2_pb_w(u8 data);
+	u8 via2_config_r();
+	void via2_config_w(u8 data);
+	u8 via2_video_config_r();
+	void via2_video_config_w(u8 data);
 
 	u16 mac_via_r(offs_t offset);
 	void mac_via_w(offs_t offset, u16 data, u16 mem_mask);
@@ -105,8 +107,6 @@ private:
 
 	u32 vram_r(offs_t offset);
 	void vram_w(offs_t offset, u32 data, u32 mem_mask);
-	u8 dac_r(offs_t offset);
-	void dac_w(offs_t offset, u8 data);
 
 	virtual u32 screen_update(screen_device &screen, bitmap_rgb32 &bitmap, const rectangle &cliprect);
 };
@@ -119,12 +119,12 @@ public:
 	eagle_device(const machine_config &mconfig, const char *tag, device_t *owner, u32 clock);
 
 protected:
-	virtual void device_add_mconfig(machine_config &config) override;
-	virtual ioport_constructor device_input_ports() const override;
+	virtual void device_add_mconfig(machine_config &config) override ATTR_COLD;
+	virtual ioport_constructor device_input_ports() const override ATTR_COLD;
 
 private:
 	u8 via_in_a() override;
-	u8 pseudovia_r(offs_t offset) override;
+	u8 via2_video_config_r();
 	virtual u32 screen_update(screen_device &screen, bitmap_rgb32 &bitmap, const rectangle &cliprect) override;
 };
 
@@ -135,7 +135,7 @@ class spice_device : public v8_device
 public:
 	spice_device(const machine_config &mconfig, const char *tag, device_t *owner, u32 clock);
 
-	virtual void map(address_map &map) override;
+	virtual void map(address_map &map) override ATTR_COLD;
 
 	required_device<applefdintf_device> m_fdc;
 	required_device_array<floppy_connector, 2> m_floppy;
@@ -143,9 +143,9 @@ public:
 protected:
 	spice_device(const machine_config &mconfig, device_type type, const char *tag, device_t *owner, u32 clock);
 
-	virtual void device_start() override;
-	virtual void device_add_mconfig(machine_config &config) override;
-	virtual ioport_constructor device_input_ports() const override;
+	virtual void device_start() override ATTR_COLD;
+	virtual void device_add_mconfig(machine_config &config) override ATTR_COLD;
+	virtual ioport_constructor device_input_ports() const override ATTR_COLD;
 
 	void phases_w(u8 phases);
 	void devsel_w(u8 devsel);
@@ -156,7 +156,7 @@ private:
 
 	virtual u8 via_in_a() override;
 	virtual void via_out_a(u8 data) override;
-	virtual u8 pseudovia_r(offs_t offset) override;
+	u8 via2_video_config_r();
 	virtual u32 screen_update(screen_device &screen, bitmap_rgb32 &bitmap, const rectangle &cliprect) override;
 
 	u16 swim_r(offs_t offset, u16 mem_mask);
@@ -173,13 +173,13 @@ public:
 	tinkerbell_device(const machine_config &mconfig, const char *tag, device_t *owner, u32 clock);
 
 protected:
-	virtual void device_add_mconfig(machine_config &config) override;
+	virtual void device_add_mconfig(machine_config &config) override ATTR_COLD;
 
 	virtual void ram_size(u8 config) override;
 
 private:
 	virtual u8 via_in_a() override;
-	virtual u8 pseudovia_r(offs_t offset) override;
+	u8 via2_video_config_r();
 	virtual u32 screen_update(screen_device &screen, bitmap_rgb32 &bitmap, const rectangle &cliprect) override;
 };
 

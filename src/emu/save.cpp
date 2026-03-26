@@ -29,6 +29,7 @@
 
 #include "util/ioprocs.h"
 #include "util/ioprocsfilter.h"
+#include "util/multibyte.h"
 
 
 //**************************************************************************
@@ -67,6 +68,7 @@ enum
 save_manager::save_manager(running_machine &machine)
 	: m_machine(machine)
 	, m_reg_allowed(true)
+	, m_supported(false)
 {
 	m_rewind = std::make_unique<rewinder>(*this);
 }
@@ -99,6 +101,16 @@ void save_manager::allow_registration(bool allowed)
 
 		if (dupes_found)
 			fatalerror("%d duplicate save state entries found.\n", dupes_found);
+
+		m_supported = true;
+		for (device_t &device : device_enumerator(machine().root_device()))
+		{
+			if (device.type().emulation_flags() & device_t::flags::SAVE_UNSUPPORTED)
+			{
+				m_supported = false;
+				break;
+			}
+		}
 
 		dump_registry();
 
@@ -416,7 +428,7 @@ inline save_error save_manager::do_write(T check_space, U write_block, V start_h
 	header[9] = NATIVE_ENDIAN_VALUE_LE_BE(0, SS_MSB_FIRST);
 	strncpy((char *)&header[0x0a], machine().system().name, 0x1c - 0x0a);
 	u32 sig = signature();
-	*(u32 *)&header[0x1c] = little_endianize_int32(sig);
+	put_u32le(&header[0x1c], sig);
 
 	// write the header and turn on compression for the rest of the file
 	if (!start_header() || !write_block(header, sizeof(header)) || !start_data())
@@ -459,7 +471,7 @@ inline save_error save_manager::do_read(T check_length, U read_block, V start_he
 
 	// verify the header and report an error if it doesn't match
 	u32 sig = signature();
-	if (validate_header(header, machine().system().name, sig, nullptr, "Error: ")  != STATERR_NONE)
+	if (validate_header(header, machine().system().name, sig, nullptr, "Error: ") != STATERR_NONE)
 		return STATERR_INVALID_HEADER;
 
 	// determine whether or not to flip the data when done
@@ -505,7 +517,7 @@ u32 save_manager::signature() const
 		temp[0] = little_endianize_int32(entry->m_typesize);
 		temp[1] = little_endianize_int32(entry->m_typecount);
 		temp[2] = little_endianize_int32(entry->m_blockcount);
-		temp[3] = little_endianize_int32(entry->m_stride);
+		temp[3] = 0;
 		crc.append(&temp[0], sizeof(temp));
 	}
 	return crc.finish();
@@ -559,11 +571,11 @@ save_error save_manager::validate_header(const u8 *header, const char *gamename,
 	// check signature, if we were asked to
 	if (signature != 0)
 	{
-		u32 rawsig = *(u32 *)&header[0x1c];
-		if (signature != little_endianize_int32(rawsig))
+		u32 rawsig = get_u32le(&header[0x1c]);
+		if (signature != rawsig)
 		{
 			if (errormsg != nullptr)
-				(*errormsg)("%sIncompatible save file (signature %08x, expected %08x)", error_prefix, little_endianize_int32(rawsig), signature);
+				(*errormsg)("%sIncompatible save file (signature %08x, expected %08x)", error_prefix, rawsig, signature);
 			return STATERR_INVALID_HEADER;
 		}
 	}
@@ -934,7 +946,7 @@ void rewinder::report_error(save_error error, rewind_operation operation)
 	// success
 	case STATERR_NONE:
 		{
-			const u64 supported = m_save.machine().system().flags & MACHINE_SUPPORTS_SAVE;
+			const u64 supported = m_save.supported();
 			const char *const warning = supported || !m_first_time_warning ? "" :
 				"Rewind warning: Save states are not officially supported for this machine.\n";
 			const char *const opnamed = (operation == rewind_operation::LOAD) ? "loaded" : "captured";

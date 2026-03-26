@@ -49,9 +49,9 @@ public:
 	void superdq(machine_config &config);
 
 protected:
-	virtual void machine_start() override;
-	virtual void machine_reset() override;
-	virtual void video_start() override;
+	virtual void machine_start() override ATTR_COLD;
+	virtual void machine_reset() override ATTR_COLD;
+	virtual void video_start() override ATTR_COLD;
 
 private:
 	required_device<pioneer_ldv1000_device> m_laserdisc;
@@ -74,8 +74,8 @@ private:
 	void superdq_palette(palette_device &palette) const;
 	uint32_t screen_update_superdq(screen_device &screen, bitmap_rgb32 &bitmap, const rectangle &cliprect);
 	INTERRUPT_GEN_MEMBER(superdq_vblank);
-	void superdq_io(address_map &map);
-	void superdq_map(address_map &map);
+	void superdq_io(address_map &map) ATTR_COLD;
+	void superdq_map(address_map &map) ATTR_COLD;
 };
 
 TILE_GET_INFO_MEMBER(superdq_state::get_tile_info)
@@ -348,8 +348,8 @@ void superdq_state::superdq(machine_config &config)
 
 	PIONEER_LDV1000(config, m_laserdisc, 0);
 	m_laserdisc->set_overlay(256, 256, FUNC(superdq_state::screen_update_superdq));
-	m_laserdisc->add_route(0, "lspeaker", 1.0);
-	m_laserdisc->add_route(1, "rspeaker", 1.0);
+	m_laserdisc->add_route(0, "speaker", 1.0, 0);
+	m_laserdisc->add_route(1, "speaker", 1.0, 1);
 
 	/* video hardware */
 	m_laserdisc->add_ntsc_screen(config, "screen");
@@ -358,10 +358,9 @@ void superdq_state::superdq(machine_config &config)
 	PALETTE(config, m_palette, FUNC(superdq_state::superdq_palette), 32);
 
 	/* sound hardware */
-	SPEAKER(config, "lspeaker").front_left();
-	SPEAKER(config, "rspeaker").front_right();
+	SPEAKER(config, "speaker", 2).front();
 
-	SN76496(config, "snsnd", MASTER_CLOCK/8).add_route(ALL_OUTPUTS, "lspeaker", 0.8);
+	SN76496(config, "snsnd", MASTER_CLOCK/8).add_route(ALL_OUTPUTS, "speaker", 0.8, 0);
 }
 
 

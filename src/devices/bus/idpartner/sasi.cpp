@@ -25,9 +25,9 @@ public:
 
 protected:
 	// device_t implementation
-	virtual void device_start() override;
-	virtual void device_reset() override;
-	virtual void device_add_mconfig(machine_config &config) override;
+	virtual void device_start() override ATTR_COLD;
+	virtual void device_reset() override ATTR_COLD;
+	virtual void device_add_mconfig(machine_config &config) override ATTR_COLD;
 
 	u8 stat_r();
 	u8 data_r();
@@ -159,7 +159,7 @@ void idpartner_sasi_device::req_w(int state)
 void idpartner_sasi_device::io_w(int state)
 {
 	if (state)
-		m_sasi->write(0); // clears lateched data
+		m_sasi->write(0); // clears latched data
 }
 
 void idpartner_sasi_device::device_add_mconfig(machine_config &config)

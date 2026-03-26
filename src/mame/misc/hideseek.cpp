@@ -49,13 +49,13 @@ public:
 	void init_hideseek();
 
 protected:
-	virtual void video_start() override;
+	virtual void video_start() override ATTR_COLD;
 
 private:
 	void hideseek_palette(palette_device &palette) const;
 	uint32_t screen_update_hideseek(screen_device &screen, bitmap_ind16 &bitmap, const rectangle &cliprect);
 
-	void mem_map(address_map &map);
+	void mem_map(address_map &map) ATTR_COLD;
 
 	required_device<cpu_device> m_maincpu;
 };
@@ -124,8 +124,7 @@ void hideseek_state::hideseek(machine_config &config)
 	PALETTE(config, "palette", FUNC(hideseek_state::hideseek_palette), 0x10000);
 	GFXDECODE(config, "gfxdecode", "palette", gfx_hideseek);
 
-	SPEAKER(config, "lspeaker").front_left();
-	SPEAKER(config, "rspeaker").front_right();
+	SPEAKER(config, "speaker", 2).front();
 
 	/* sound : M9810 */
 }

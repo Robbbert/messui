@@ -50,11 +50,11 @@ public:
 	virtual int t0_read() override;
 
 protected:
-	virtual void device_start() override;
-	virtual void device_reset() override;
+	virtual void device_start() override ATTR_COLD;
+	virtual void device_reset() override ATTR_COLD;
 
-	virtual void device_add_mconfig(machine_config &config) override;
-	virtual const tiny_rom_entry *device_rom_region() const override;
+	virtual void device_add_mconfig(machine_config &config) override ATTR_COLD;
+	virtual const tiny_rom_entry *device_rom_region() const override ATTR_COLD;
 
 private:
 	required_device<sp0256_device> m_speech;
@@ -139,7 +139,7 @@ void o2_voice_device::device_add_mconfig(machine_config &config)
 	// The Voice uses a speaker with its own volume control so the relative volumes to use are subjective, these sound good
 	m_speech->add_route(ALL_OUTPUTS, "mono", 1.00);
 
-	O2_CART_SLOT(config, m_subslot, o2_cart, nullptr);
+	O2_CART_SLOT(config, m_subslot, o2_cart, nullptr).set_must_be_loaded(true);
 }
 
 ROM_START( o2voice )

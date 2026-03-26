@@ -99,7 +99,7 @@ public:
 
 protected:
 	// device-level overrides
-	virtual void device_start() override;
+	virtual void device_start() override ATTR_COLD;
 
 private:
 	device_svi_expander_interface *m_module;
@@ -112,8 +112,6 @@ private:
 
 	devcb_read8 m_excsr_handler;
 	devcb_write8 m_excsw_handler;
-
-	uint8_t m_dummy; // needed for save-state support
 };
 
 

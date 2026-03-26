@@ -28,6 +28,15 @@ namespace util {
 
 namespace {
 
+// this gets around tautological comparison warnings when std::uint64_t is at least as large as long
+
+template <typename T, typename U>
+constexpr bool is_in_range(U value)
+{
+	return std::numeric_limits<T>::max() >= value;
+}
+
+
 // helper for holding a block of memory and deallocating it (or not) as necessary
 
 template <typename T, bool Owned>
@@ -198,7 +207,7 @@ public:
 		std::error_condition err;
 		if (0 > endpos)
 			err.assign(errno, std::generic_category());
-		else if (std::numeric_limits<std::uint64_t>::max() < static_cast<unsigned long>(endpos))
+		else if (!is_in_range<std::uint64_t>(static_cast<unsigned long>(endpos)))
 			err = std::errc::file_too_large;
 		else
 			result = static_cast<unsigned long>(endpos);
@@ -795,7 +804,8 @@ std::pair<std::error_condition, std::size_t> write(write_stream &stream, void co
 	do
 	{
 		std::size_t written;
-		std::error_condition err = stream.write_some(buffer, length, written);
+		std::error_condition const err = stream.write_some(buffer, length, written);
+		assert(written || err || !length);
 		actual += written;
 		if (err && (std::errc::interrupted != err))
 			return std::make_pair(err, actual);
@@ -812,7 +822,8 @@ std::pair<std::error_condition, std::size_t> write_at(random_write &stream, std:
 	do
 	{
 		std::size_t written;
-		std::error_condition err = stream.write_some_at(offset, buffer, length, written);
+		std::error_condition const err = stream.write_some_at(offset, buffer, length, written);
+		assert(written || err || !length);
 		actual += written;
 		if (err && (std::errc::interrupted != err))
 			return std::make_pair(err, actual);

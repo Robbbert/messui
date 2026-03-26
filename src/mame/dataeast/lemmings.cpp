@@ -62,7 +62,7 @@ public:
 	void lemmings(machine_config &config);
 
 protected:
-	virtual void video_start() override;
+	virtual void video_start() override ATTR_COLD;
 
 private:
 	// video-related
@@ -100,8 +100,8 @@ private:
 
 	uint16_t protection_region_0_146_r(offs_t offset);
 	void protection_region_0_146_w(offs_t offset, uint16_t data, uint16_t mem_mask = ~0);
-	void main_map(address_map &map);
-	void sound_map(address_map &map);
+	void main_map(address_map &map) ATTR_COLD;
+	void sound_map(address_map &map) ATTR_COLD;
 };
 
 
@@ -119,7 +119,7 @@ TILE_GET_INFO_MEMBER(lemmings_state::get_tile_info)
 {
 	uint16_t const tile = m_vram_data[tile_index];
 
-	tileinfo.set(2,
+	tileinfo.set(0,
 			tile & 0x7ff,
 			(tile >> 12) & 0xf,
 			0);
@@ -133,7 +133,7 @@ void lemmings_state::video_start()
 	m_bitmap0.fill(0x100);
 
 	m_vram_buffer = make_unique_clear<uint8_t[]>(2048 * 64); // 64 bytes per VRAM character
-	m_gfxdecode->gfx(2)->set_source(m_vram_buffer.get());
+	m_gfxdecode->gfx(0)->set_source(m_vram_buffer.get());
 
 	m_sprgen[0]->alloc_sprite_bitmap();
 	m_sprgen[1]->alloc_sprite_bitmap();
@@ -189,7 +189,7 @@ void lemmings_state::pixel_1_w(offs_t offset, uint16_t data, uint16_t mem_mask)
 
 	// Copy pixel to buffer for easier decoding later
 	int const tile = ((sx / 8) * 32) + (sy / 8);
-	m_gfxdecode->gfx(2)->mark_dirty(tile);
+	m_gfxdecode->gfx(0)->mark_dirty(tile);
 	m_vram_buffer[(tile * 64) + ((sx & 7)) + ((sy & 7) * 8)] = (src >> 8) & 0xf;
 
 	sx += 1; // Update both pixels in the word
@@ -279,7 +279,7 @@ uint16_t lemmings_state::protection_region_0_146_r(offs_t offset)
 	int const real_address = 0 + (offset *2);
 	int const deco146_addr = bitswap<32>(real_address, /* NC */31,30,29,28,27,26,25,24,23,22,21,20,19,18, 13,12,11,/**/      17,16,15,14,    10,9,8, 7,6,5,4, 3,2,1,0) & 0x7fff;
 	uint8_t cs = 0;
-	uint16_t data = m_deco146->read_data(deco146_addr, cs);
+	uint16_t const data = m_deco146->read_data(deco146_addr, cs);
 	return data;
 }
 
@@ -348,7 +348,7 @@ static INPUT_PORTS_START( lemmings )
 	PORT_BIT( 0x0001, IP_ACTIVE_LOW, IPT_COIN2 )
 	PORT_BIT( 0x0002, IP_ACTIVE_LOW, IPT_COIN1 )
 	PORT_SERVICE_NO_TOGGLE(0x0004, IP_ACTIVE_LOW)
-	PORT_BIT( 0x0008, IP_ACTIVE_HIGH, IPT_CUSTOM ) PORT_VBLANK("screen")
+	PORT_BIT( 0x0008, IP_ACTIVE_HIGH, IPT_CUSTOM ) PORT_READ_LINE_DEVICE_MEMBER("screen", FUNC(screen_device::vblank))
 
 
 	PORT_START("DSW")
@@ -433,9 +433,15 @@ static const gfx_layout sprite_layout =
 };
 
 static GFXDECODE_START( gfx_lemmings )
+	GFXDECODE_RAM(   nullptr,    0, charlayout,     0,   16 ) // Dynamically modified
+GFXDECODE_END
+
+static GFXDECODE_START( gfx_lemmings_spr1 )
 	GFXDECODE_ENTRY( "sprites1", 0, sprite_layout,  512, 16 ) // Sprites 16x16
+GFXDECODE_END
+
+static GFXDECODE_START( gfx_lemmings_spr2 )
 	GFXDECODE_ENTRY( "sprites2", 0, sprite_layout,  768, 16 ) // Sprites 16x16
-	GFXDECODE_ENTRY( nullptr,    0, charlayout,     0,   16 ) // Dynamically modified
 GFXDECODE_END
 
 /******************************************************************************/
@@ -465,13 +471,8 @@ void lemmings_state::lemmings(machine_config &config)
 	GFXDECODE(config, m_gfxdecode, m_palette, gfx_lemmings);
 	PALETTE(config, m_palette).set_format(palette_device::xBGR_888, 1024);
 
-	DECO_SPRITE(config, m_sprgen[0], 0);
-	m_sprgen[0]->set_gfx_region(1);
-	m_sprgen[0]->set_gfxdecode_tag(m_gfxdecode);
-
-	DECO_SPRITE(config, m_sprgen[1], 0);
-	m_sprgen[1]->set_gfx_region(0);
-	m_sprgen[1]->set_gfxdecode_tag(m_gfxdecode);
+	DECO_SPRITE(config, m_sprgen[0], 0, m_palette, gfx_lemmings_spr2);
+	DECO_SPRITE(config, m_sprgen[1], 0, m_palette, gfx_lemmings_spr1);
 
 	DECO146PROT(config, m_deco146, 0);
 	m_deco146->port_a_cb().set_ioport("INPUTS");
@@ -481,19 +482,18 @@ void lemmings_state::lemmings(machine_config &config)
 	m_deco146->soundlatch_irq_cb().set_inputline(m_audiocpu, M6809_FIRQ_LINE);
 
 	// sound hardware
-	SPEAKER(config, "lspeaker").front_left();
-	SPEAKER(config, "rspeaker").front_right();
+	SPEAKER(config, "speaker", 2).front();
 
 	GENERIC_LATCH_8(config, m_soundlatch);
 
 	ym2151_device &ymsnd(YM2151(config, "ymsnd", 32.22_MHz_XTAL / 9)); // clock likely wrong
 	ymsnd.irq_handler().set_inputline(m_audiocpu, M6809_IRQ_LINE);
-	ymsnd.add_route(0, "lspeaker", 0.45);
-	ymsnd.add_route(1, "rspeaker", 0.45);
+	ymsnd.add_route(0, "speaker", 0.45, 0);
+	ymsnd.add_route(1, "speaker", 0.45, 1);
 
 	okim6295_device &oki(OKIM6295(config, "oki", 1023924, okim6295_device::PIN7_HIGH)); // clock frequency & pin 7 not verified
-	oki.add_route(ALL_OUTPUTS, "lspeaker", 0.50);
-	oki.add_route(ALL_OUTPUTS, "rspeaker", 0.50);
+	oki.add_route(ALL_OUTPUTS, "speaker", 0.50, 0);
+	oki.add_route(ALL_OUTPUTS, "speaker", 0.50, 1);
 }
 
 /******************************************************************************/

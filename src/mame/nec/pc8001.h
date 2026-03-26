@@ -5,11 +5,11 @@
 
 #pragma once
 
-#include "pc80s31k.h"
-
 #include "bus/centronics/ctronics.h"
+#include "bus/nec_fdd/pc80s31k.h"
 #include "cpu/z80/z80.h"
 #include "imagedev/cassette.h"
+#include "imagedev/snapquik.h"
 #include "machine/buffer.h"
 #include "machine/i8251.h"
 #include "machine/i8255.h"
@@ -66,7 +66,7 @@ protected:
 	void port10_w(uint8_t data);
 
 	void port30_w(u8 data);
-	virtual void machine_start() override;
+	virtual void machine_start() override ATTR_COLD;
 	void set_screen_frequency(bool is_24KHz) { m_screen_is_24KHz = is_24KHz; }
 	bool get_screen_frequency() { return m_screen_is_24KHz; }
 
@@ -106,11 +106,11 @@ public:
 	void pc8001(machine_config &config);
 
 protected:
-	void pc8001_io(address_map &map);
-	void pc8001_map(address_map &map);
+	void pc8001_io(address_map &map) ATTR_COLD;
+	void pc8001_map(address_map &map) ATTR_COLD;
 
-	virtual void machine_start() override;
-	virtual void machine_reset() override;
+	virtual void machine_start() override ATTR_COLD;
+	virtual void machine_reset() override ATTR_COLD;
 
 	uint32_t screen_update(screen_device &screen, bitmap_rgb32 &bitmap, const rectangle &cliprect);
 
@@ -119,6 +119,8 @@ protected:
 	required_device<beep_device> m_beep;
 	required_device<ram_device> m_ram;
 	required_memory_region m_rom;
+
+	DECLARE_SNAPSHOT_LOAD_MEMBER(snapshot_cb);
 
 private:
 	uint8_t port40_r();
@@ -137,8 +139,8 @@ public:
 	void pc8001mk2(machine_config &config);
 
 protected:
-	void pc8001mk2_io(address_map &map);
-	void pc8001mk2_map(address_map &map);
+	void pc8001mk2_io(address_map &map) ATTR_COLD;
+	void pc8001mk2_map(address_map &map) ATTR_COLD;
 
 	required_memory_region m_kanji_rom;
 	required_ioport_array<2> m_dsw;
@@ -157,9 +159,9 @@ public:
 	void pc8001mk2sr(machine_config &config);
 
 private:
-	virtual void machine_start() override;
-	virtual void machine_reset() override;
-	void pc8001mk2sr_io(address_map &map);
+	virtual void machine_start() override ATTR_COLD;
+	virtual void machine_reset() override ATTR_COLD;
+	void pc8001mk2sr_io(address_map &map) ATTR_COLD;
 
 	required_memory_region m_n80sr_rom;
 

@@ -7,8 +7,8 @@
  *
  */
 
-#ifndef MAME_BUS_ISA_S3VIRGE_H
-#define MAME_BUS_ISA_S3VIRGE_H
+#ifndef MAME_VIDEO_S3VIRGE_H
+#define MAME_VIDEO_S3VIRGE_H
 
 #pragma once
 
@@ -19,13 +19,23 @@
 class s3virge_vga_device :  public s3trio64_vga_device
 {
 public:
+	// S3D not emulated, BitBlt not completely emulated, DirectDraw games don't run too well
+	static constexpr feature_type imperfect_features() { return feature::GRAPHICS; }
+
 	// construction/destruction
 	s3virge_vga_device(const machine_config &mconfig, const char *tag, device_t *owner, uint32_t clock);
 
 	auto linear_config_changed() { return m_linear_config_changed_cb.bind(); }
 
+	bool read_pd25_strapping() { return !!BIT(s3.strapping, 25); }
+	bool read_pd26_strapping() { return !!BIT(s3.strapping, 26); }
+
 	virtual uint8_t mem_r(offs_t offset) override;
 	virtual void mem_w(offs_t offset, uint8_t data) override;
+
+	// port $e2 / $e8 / MMFF20
+	u8 serial_port_r(offs_t offset);
+	void serial_port_w(offs_t offset, u8 data);
 
 	uint8_t fb_r(offs_t offset);
 	void fb_w(offs_t offset, uint8_t data);
@@ -34,9 +44,9 @@ public:
 	uint32_t s3d_func_ctrl_r();
 //  void s3d_func_ctrl_w(offs_t offset, uint32_t data, u32 mem_mask = ~0);
 
-	void s3d_register_map(address_map &map);
+	void s3d_register_map(address_map &map) ATTR_COLD;
 
-	void streams_control_map(address_map &map);
+	void streams_control_map(address_map &map) ATTR_COLD;
 
 	void image_xfer(offs_t offset, uint32_t data, uint32_t mem_mask)
 	{
@@ -62,11 +72,11 @@ protected:
 	s3virge_vga_device(const machine_config &mconfig, device_type type, const char *tag, device_t *owner, uint32_t clock);
 
 	// device-level overrides
-	virtual void device_start() override;
-	virtual void device_reset() override;
+	virtual void device_start() override ATTR_COLD;
+	virtual void device_reset() override ATTR_COLD;
 	virtual uint16_t offset() override;
 
-	virtual void crtc_map(address_map &map) override;
+	virtual void crtc_map(address_map &map) override ATTR_COLD;
 
 	enum
 	{
@@ -192,6 +202,23 @@ private:
 	void command_finish();
 
 	void s3d_reset();
+
+	bool m_serial_enable;
+};
+
+
+// ======================> s3virgevx_vga_device
+
+class s3virgevx_vga_device :  public s3virge_vga_device
+{
+public:
+	s3virgevx_vga_device(const machine_config &mconfig, const char *tag, device_t *owner, uint32_t clock);
+
+protected:
+//  s3virgevx_vga_device(const machine_config &mconfig, device_type type, const char *tag, device_t *owner, uint32_t clock);
+
+	virtual void device_start() override ATTR_COLD;
+	virtual void device_reset() override ATTR_COLD;
 };
 
 
@@ -207,27 +234,13 @@ protected:
 	s3virgedx_vga_device(const machine_config &mconfig, device_type type, const char *tag, device_t *owner, uint32_t clock);
 
 	// device-level overrides
-	virtual void device_start() override;
-	virtual void device_reset() override;
-};
-
-// ======================> s3virgedx_vga_device
-
-class s3virgedx_rev1_vga_device :  public s3virgedx_vga_device
-{
-public:
-	// construction/destruction
-	s3virgedx_rev1_vga_device(const machine_config &mconfig, const char *tag, device_t *owner, uint32_t clock);
-
-protected:
-	// device-level overrides
-	virtual void device_start() override;
-	virtual void device_reset() override;
+	virtual void device_start() override ATTR_COLD;
+	virtual void device_reset() override ATTR_COLD;
 };
 
 // device type definition
 DECLARE_DEVICE_TYPE(S3VIRGE,    s3virge_vga_device)
+DECLARE_DEVICE_TYPE(S3VIRGEVX,  s3virgevx_vga_device)
 DECLARE_DEVICE_TYPE(S3VIRGEDX,  s3virgedx_vga_device)
-DECLARE_DEVICE_TYPE(S3VIRGEDX1, s3virgedx_rev1_vga_device)
 
-#endif // MAME_BUS_ISA_S3VIRGE_H
+#endif // MAME_VIDEO_S3VIRGE_H

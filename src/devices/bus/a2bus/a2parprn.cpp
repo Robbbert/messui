@@ -20,17 +20,17 @@ public:
 	virtual u8 read_c0nx(u8 offset) override;
 	virtual void write_c0nx(u8 offset, u8 data) override;
 	virtual u8 read_cnxx(u8 offset) override;
-	virtual bool take_c800() override { return false; }
+	virtual void reset_from_bus() override;
 
 protected:
 	a2bus_parprn_device(machine_config const &mconfig, device_type type, char const *tag, device_t *owner, u32 clock);
 
 	// device_t implementation
-	virtual tiny_rom_entry const *device_rom_region() const override;
-	virtual void device_add_mconfig(machine_config &config) override;
-	virtual ioport_constructor device_input_ports() const override;
-	virtual void device_start() override;
-	virtual void device_reset() override;
+	virtual tiny_rom_entry const *device_rom_region() const override ATTR_COLD;
+	virtual void device_add_mconfig(machine_config &config) override ATTR_COLD;
+	virtual ioport_constructor device_input_ports() const override ATTR_COLD;
+	virtual void device_start() override ATTR_COLD;
+	virtual void device_reset() override ATTR_COLD;
 
 private:
 	// printer status inputs
@@ -62,8 +62,8 @@ public:
 
 protected:
 	// device_t implementation
-	virtual tiny_rom_entry const *device_rom_region() const override;
-	virtual void device_start() override;
+	virtual tiny_rom_entry const *device_rom_region() const override ATTR_COLD;
+	virtual void device_start() override ATTR_COLD;
 };
 
 
@@ -273,6 +273,11 @@ void a2bus_4dparprn_device::device_start()
 
 
 void a2bus_parprn_device::device_reset()
+{
+	reset_from_bus();
+}
+
+void a2bus_parprn_device::reset_from_bus()
 {
 	m_ack_latch = 1U;
 }

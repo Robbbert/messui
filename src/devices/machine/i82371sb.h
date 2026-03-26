@@ -7,11 +7,11 @@
 #pragma once
 
 #include "pci.h"
-#include "machine/pci-ide.h"
 
 #include "bus/ata/ataintf.h"
 #include "bus/isa/isa.h"
 
+#include "machine/idectrl.h"
 #include "machine/ins8250.h"
 #include "machine/ds128x.h"
 #include "machine/pic8259.h"
@@ -70,8 +70,8 @@ protected:
 
 	virtual void device_add_mconfig(machine_config & config) override;
 	virtual void device_config_complete() override;
-	virtual void device_start() override;
-	virtual void device_reset() override;
+	virtual void device_start() override ATTR_COLD;
+	virtual void device_reset() override ATTR_COLD;
 
 	virtual void reset_all_mappings() override;
 	virtual void map_extra(uint64_t memory_window_start, uint64_t memory_window_end, uint64_t memory_offset, address_space *memory_space,
@@ -79,7 +79,9 @@ protected:
 
 	virtual bool map_first() const override { return true; }
 
-	virtual void config_map(address_map &map) override;
+	virtual void config_map(address_map &map) override ATTR_COLD;
+
+	virtual void internal_io_map(address_map &map) ATTR_COLD;
 
 private:
 	void at_pit8254_out0_changed(int state);
@@ -114,8 +116,6 @@ private:
 	uint8_t pc_dma_read_word(offs_t offset);
 	void pc_dma_write_word(offs_t offset, uint8_t data);
 	uint8_t get_slave_ack(offs_t offset);
-
-	void internal_io_map(address_map &map);
 
 	void boot_state_w(uint8_t data);
 	void nop_w(uint8_t data);
@@ -190,7 +190,10 @@ private:
 	// southbridge
 	required_device<cpu_device> m_maincpu;
 	required_device<pic8259_device> m_pic8259_master;
+	// protected because needed by EB
+protected:
 	required_device<pic8259_device> m_pic8259_slave;
+private:
 	required_device<am9517a_device> m_dma8237_1;
 	required_device<am9517a_device> m_dma8237_2;
 	required_device<pit8254_device> m_pit8254;
@@ -210,7 +213,9 @@ private:
 	void at_speaker_set_spkrdata(uint8_t data);
 
 	uint8_t m_channel_check;
+protected:
 	uint8_t m_nmi_enabled;
+private:
 
 	void pc_select_dma_channel(int channel, bool state);
 	void redirect_irq(int irq, int state);
@@ -242,16 +247,16 @@ public:
 protected:
 	i82371sb_ide_device(const machine_config &mconfig, device_type type, const char *tag, device_t *owner, uint32_t clock);
 
-	virtual void device_add_mconfig(machine_config &config) override;
+	virtual void device_add_mconfig(machine_config &config) override ATTR_COLD;
 	virtual void device_config_complete() override;
-	virtual void device_start() override;
-	virtual void device_reset() override;
+	virtual void device_start() override ATTR_COLD;
+	virtual void device_reset() override ATTR_COLD;
 
 	virtual void reset_all_mappings() override;
 	virtual void map_extra(uint64_t memory_window_start, uint64_t memory_window_end, uint64_t memory_offset, address_space *memory_space,
 						   uint64_t io_window_start, uint64_t io_window_end, uint64_t io_offset, address_space *io_space) override;
 
-	virtual void config_map(address_map &map) override;
+	virtual void config_map(address_map &map) override ATTR_COLD;
 
 	void primary_int(int state);
 	void secondary_int(int state);
@@ -278,7 +283,7 @@ private:
 	uint8_t ide2_read_cs1_r();
 	void ide2_write_cs1_w(uint8_t data);
 
-	void internal_io_map(address_map &map);
+	void internal_io_map(address_map &map) ATTR_COLD;
 
 	uint8_t latency_timer;
 	uint32_t bmiba;

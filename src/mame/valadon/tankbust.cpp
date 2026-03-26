@@ -2,7 +2,8 @@
 // copyright-holders:Jarek Burczynski
 /***************************************************************************
 
-Tank Busters memory map
+Tank Busters
+6009-A + 6009-B PCBs
 
 driver by Jarek Burczynski
 
@@ -64,9 +65,9 @@ public:
 	void tankbust(machine_config &config);
 
 protected:
-	virtual void machine_start() override;
-	virtual void machine_reset() override;
-	virtual void video_start() override;
+	virtual void machine_start() override ATTR_COLD;
+	virtual void machine_reset() override ATTR_COLD;
+	virtual void video_start() override ATTR_COLD;
 
 private:
 	required_device<cpu_device> m_maincpu;
@@ -115,9 +116,9 @@ private:
 	TIMER_CALLBACK_MEMBER(soundlatch_callback);
 	TIMER_CALLBACK_MEMBER(soundirqline_callback);
 
-	void main_map(address_map &map);
-	void map_cpu2(address_map &map);
-	void port_map_cpu2(address_map &map);
+	void main_map(address_map &map) ATTR_COLD;
+	void map_cpu2(address_map &map) ATTR_COLD;
+	void port_map_cpu2(address_map &map) ATTR_COLD;
 };
 
 

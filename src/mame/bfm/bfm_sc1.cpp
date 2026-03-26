@@ -184,15 +184,15 @@ protected:
 	void save_state();
 
 	virtual void machine_start() override { m_lamps.resolve(); }
-	virtual void machine_reset() override;
+	virtual void machine_reset() override ATTR_COLD;
 	INTERRUPT_GEN_MEMBER(timer_irq);
 	void sc1_common_init(int reels, int decrypt, int defaultbank);
 	void Scorpion1_SetSwitchState(int strobe, int data, int state);
 	int sc1_find_project_string();
 
-	void sc1_adder2(address_map &map);
-	void sc1_base(address_map &map);
-	void sc1_viper(address_map &map);
+	void sc1_adder2(address_map &map) ATTR_COLD;
+	void sc1_base(address_map &map) ATTR_COLD;
+	void sc1_viper(address_map &map) ATTR_COLD;
 
 private:
 	int m_mmtr_latch = 0;
@@ -873,11 +873,11 @@ static INPUT_PORTS_START( clatt )
 	PORT_BIT( 0x80, IP_ACTIVE_HIGH, IPT_UNKNOWN )
 
 	PORT_START("STROBE2")
-	PORT_BIT( 0x01, IP_ACTIVE_HIGH, IPT_BUTTON7 )   PORT_NAME("Stop/Gamble")
-	PORT_BIT( 0x02, IP_ACTIVE_HIGH, IPT_START1  )   PORT_NAME("Start")
-	PORT_BIT( 0x04, IP_ACTIVE_LOW,  IPT_INTERLOCK ) PORT_NAME("Cashbox Door") PORT_CODE(KEYCODE_Q) PORT_TOGGLE
-	PORT_BIT( 0x08, IP_ACTIVE_HIGH, IPT_SERVICE )   PORT_NAME("Refill Key")   PORT_CODE(KEYCODE_R) PORT_TOGGLE
-	PORT_BIT( 0x10, IP_ACTIVE_HIGH, IPT_INTERLOCK ) PORT_NAME("Front Door")   PORT_CODE(KEYCODE_W) PORT_TOGGLE
+	PORT_BIT( 0x01, IP_ACTIVE_HIGH, IPT_BUTTON7 ) PORT_NAME("Stop/Gamble")
+	PORT_BIT( 0x02, IP_ACTIVE_HIGH, IPT_START1  ) PORT_NAME("Start")
+	PORT_BIT( 0x04, IP_ACTIVE_LOW,  IPT_DOOR )    PORT_NAME("Cashbox Door") PORT_CODE(KEYCODE_Q) PORT_TOGGLE
+	PORT_BIT( 0x08, IP_ACTIVE_HIGH, IPT_SERVICE ) PORT_NAME("Refill Key")   PORT_CODE(KEYCODE_R) PORT_TOGGLE
+	PORT_BIT( 0x10, IP_ACTIVE_HIGH, IPT_DOOR )    PORT_NAME("Front Door")   PORT_CODE(KEYCODE_W) PORT_TOGGLE
 	PORT_BIT( 0x20, IP_ACTIVE_HIGH, IPT_UNKNOWN )
 	PORT_BIT( 0x40, IP_ACTIVE_HIGH, IPT_UNKNOWN )
 	PORT_BIT( 0x80, IP_ACTIVE_HIGH, IPT_UNKNOWN )
@@ -995,7 +995,7 @@ static INPUT_PORTS_START( toppoker )
 	PORT_BIT( 0x80, IP_ACTIVE_HIGH, IPT_UNUSED )
 
 	PORT_START("STROBE3")
-	PORT_BIT( 0x01, IP_ACTIVE_HIGH, IPT_INTERLOCK)PORT_NAME("Back Door") PORT_CODE(KEYCODE_Q) PORT_TOGGLE
+	PORT_BIT( 0x01, IP_ACTIVE_HIGH, IPT_DOOR)    PORT_NAME("Back Door") PORT_CODE(KEYCODE_Q) PORT_TOGGLE
 	PORT_BIT( 0x02, IP_ACTIVE_HIGH, IPT_SERVICE) PORT_NAME("Slide Dump") PORT_CODE(KEYCODE_W) PORT_TOGGLE
 	PORT_BIT( 0x04, IP_ACTIVE_HIGH, IPT_SERVICE) PORT_NAME("Refill Key") PORT_CODE(KEYCODE_R) PORT_TOGGLE
 	PORT_BIT( 0x08, IP_ACTIVE_HIGH, IPT_SERVICE) PORT_NAME("Meter Key") PORT_CODE(KEYCODE_E) PORT_TOGGLE
@@ -1009,7 +1009,7 @@ static INPUT_PORTS_START( toppoker )
 	PORT_BIT( 0x02, IP_ACTIVE_HIGH, IPT_BUTTON13) PORT_NAME("Vast Monitor 2")
 	PORT_BIT( 0x04, IP_ACTIVE_HIGH, IPT_BUTTON14) PORT_NAME("Vast Monitor 3")
 	PORT_BIT( 0x08, IP_ACTIVE_HIGH, IPT_BUTTON15) PORT_NAME("Vast Monitor 4")
-	PORT_BIT( 0x10, IP_ACTIVE_HIGH, IPT_INTERLOCK)PORT_NAME("Cashbox Door") PORT_CODE(KEYCODE_W) PORT_TOGGLE
+	PORT_BIT( 0x10, IP_ACTIVE_HIGH, IPT_DOOR)     PORT_NAME("Cashbox Door") PORT_CODE(KEYCODE_W) PORT_TOGGLE
 	PORT_BIT( 0x20, IP_ACTIVE_HIGH, IPT_BUTTON16) PORT_NAME("Vast Monitor 5")
 	PORT_BIT( 0x40, IP_ACTIVE_HIGH, IPT_UNUSED )
 	PORT_BIT( 0x80, IP_ACTIVE_HIGH, IPT_UNUSED )
@@ -3173,7 +3173,7 @@ GAME( 198?, sc1fruit, 0,        scorpion1, scorpion1, bfm_sc1_state, init_lotse,
 GAME( 198?, sc1frtln, sc1fruit, scorpion1, scorpion1, bfm_sc1_state, init_lotse, 0, "BFM/ELAM", "Fruit Lines (Dutch) (Bellfruit) (set 2) (Scorpion 1)", GAME_FLAGS )
 
 // PROJECT NUMBER 6048  GRAND PRIX  GAME No 39-370-805 - 26-MAR-1993 11:26:08
-GAME( 198?, sc1gprix, 0, scorpion1, scorpion1, bfm_sc1_state, init_nocrypt, 0, "BFM/ELAM", "Grand Prix (Dutch) (Dutch) (Bellfruit) (Scorpion 1)", GAME_FLAGS )
+GAME( 198?, sc1gprix, 0, scorpion1, scorpion1, bfm_sc1_state, init_nocrypt, 0, "BFM/ELAM", "Grand Prix (Dutch) (Bellfruit) (Scorpion 1)", GAME_FLAGS )
 
 // PROJECT NUMBER 5957  Impact  GAME No 95-750-769 - 02-JUL-1996 12:10:32
 GAME( 198?, sc1impc, 0, scorpion1, scorpion1, bfm_sc1_state, init_lotse, 0, "BFM/ELAM", "Impact (Dutch) (Bellfruit) (Scorpion 1)", GAME_FLAGS )

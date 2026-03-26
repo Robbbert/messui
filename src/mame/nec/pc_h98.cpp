@@ -2,11 +2,12 @@
 // copyright-holders:Angelo Salese
 /**************************************************************************************************
 
-    NEC PC-H[yper] 98
+NEC PC-H[yper] 98
 
-    TODO:
-    - NESA bus in place of C-Bus plus a billion of overrides from the base PC-98 ...
-    - needs a specific chargen "FONT24.ROM" for anything that isn't a H98S;
+TODO:
+- NESA bus in place of C-Bus plus a billion overrides from the base PC-98 ...
+- needs a specific chargen "FONT24.ROM" for anything that isn't a H98S;
+- Hookup AGDC upd72120_device;
 
 **************************************************************************************************/
 
@@ -26,8 +27,8 @@ protected:
 	DECLARE_MACHINE_START(pc_h98);
 	DECLARE_MACHINE_RESET(pc_h98);
 
-	void pc_h98_map(address_map &map);
-	void pc_h98_io(address_map &map);
+	void pc_h98_map(address_map &map) ATTR_COLD;
+	void pc_h98_io(address_map &map) ATTR_COLD;
 };
 
 void pc_hyper98_state::pc_h98_map(address_map &map)
@@ -44,6 +45,7 @@ void pc_hyper98_state::pc_h98_io(address_map &map)
 {
 	pc_hyper98_state::pc9801bx2_io(map);
 	// ...
+//  map(0x4*a*, 0x4*a*) μPD72120 "AGDC"
 }
 
 // TODO: backported from pc9801_epson.cpp, needs mods
@@ -139,9 +141,9 @@ static INPUT_PORTS_START( pc_h98 )
 	PORT_BIT(0x40, IP_ACTIVE_LOW, IPT_BUTTON3 ) PORT_CODE(MOUSECODE_BUTTON3) PORT_NAME("Mouse Middle Button")
 	PORT_BIT(0x80, IP_ACTIVE_LOW, IPT_BUTTON1 ) PORT_CODE(MOUSECODE_BUTTON1) PORT_NAME("Mouse Left Button")
 
-	PORT_START("ROM_LOAD")
+	PORT_START("BIOS_LOAD")
 	PORT_BIT( 0x03, IP_ACTIVE_LOW, IPT_UNUSED )
-	PORT_CONFNAME( 0x04, 0x04, "Load IDE BIOS" )
+	PORT_CONFNAME( 0x04, 0x00, "Load IDE BIOS" )
 	PORT_CONFSETTING(    0x00, DEF_STR( Yes ) )
 	PORT_CONFSETTING(    0x04, DEF_STR( No ) )
 INPUT_PORTS_END
@@ -171,8 +173,9 @@ void pc_hyper98_state::pc_h98s(machine_config &config)
 	MCFG_MACHINE_START_OVERRIDE(pc_hyper98_state, pc_h98)
 	MCFG_MACHINE_RESET_OVERRIDE(pc_hyper98_state, pc_h98)
 
-	m_ram->set_default_size("14M");
-	// TODO: extra options, 1.6MB up to 45.6MB
+	// RAM 1.6 MB ~ 45.6 MB
+//  m_ram->set_default_size("14M");
+//  m_ram->set_extra_options("2M,4M,8M,16M,32M,46M");
 }
 
 // Stolen from pc9821
@@ -194,7 +197,7 @@ ROM_START( pc_h98s )
 	ROM_LOAD( "hcz7k_01.bin", 0x000000, 0x020000, CRC(e68834e8) SHA1(f57dfd67915715168e46907fd535277e30357742) )
 	ROM_LOAD( "hcz8k_01.bin", 0x020000, 0x020000, CRC(39f82b02) SHA1(52e950f10faa0bedca3d6ea2ba6caceaeff66fc9) )
 
-	// unconfirmed
+	// TODO: needs override around itf_43d_bank_w
 	ROM_REGION16_LE( 0x30000, "ipl", ROMREGION_ERASEFF )
 	ROM_COPY( "biosrom", 0x20000, 0x08000, 0x10000 )
 	ROM_COPY( "biosrom", 0x00000, 0x18000, 0x18000 )
@@ -207,4 +210,4 @@ ROM_START( pc_h98s )
 //  LOAD_IDE_ROM
 ROM_END
 
-COMP( 1991, pc_h98s, 0,   0, pc_h98s, pc_h98,   pc_hyper98_state, init_pc9801_kanji,   "NEC",   "PC-H98S model 8/U8", MACHINE_IS_SKELETON )
+COMP( 1991, pc_h98s, 0,   0, pc_h98s, pc_h98,   pc_hyper98_state, init_pc9801_kanji,   "NEC",   "PC-H98S model 8/U8", MACHINE_NO_SOUND | MACHINE_NOT_WORKING )

@@ -36,6 +36,7 @@ public:
 
 	// rsc_cpu_interface overrides
 	virtual bool fetch(u32 address, u16 &data, rsc_mode const mode) override;
+	virtual bool translate(u32 &address) const override;
 
 	// rsc_bus_interface overrides
 	virtual bool mem_load(u32 address, u8 &data, rsc_mode const mode, bool sp) override { return load<u8>(address, data, mode, sp); }
@@ -61,8 +62,8 @@ public:
 protected:
 	// device_t overrides
 	virtual void device_validity_check(validity_checker &valid) const override;
-	virtual void device_start() override;
-	virtual void device_reset() override;
+	virtual void device_start() override ATTR_COLD;
+	virtual void device_reset() override ATTR_COLD;
 	virtual void device_post_load() override;
 
 	// virtual address translation

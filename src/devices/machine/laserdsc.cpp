@@ -2,8 +2,6 @@
 // copyright-holders:Aaron Giles
 /*************************************************************************
 
-    laserdsc.c
-
     Core laserdisc player implementation.
 
 *************************************************************************/
@@ -321,15 +319,15 @@ void laserdisc_device::device_start()
 void laserdisc_device::device_stop()
 {
 	// make sure all async operations have completed
-	if (m_disc != nullptr)
+	if (m_disc)
 		osd_work_queue_wait(m_work_queue, osd_ticks_per_second() * 10);
 
 	// free any textures and palettes
-	if (m_videotex != nullptr)
+	if (m_videotex)
 		machine().render().texture_free(m_videotex);
-	if (m_videopalette != nullptr)
+	if (m_videopalette)
 		m_videopalette->deref();
-	if (m_overtex != nullptr)
+	if (m_overtex)
 		machine().render().texture_free(m_overtex);
 }
 
@@ -343,7 +341,7 @@ void laserdisc_device::device_reset()
 	// attempt to wire up the audio
 	m_stream->set_sample_rate(m_samplerate);
 
-	// set up the general ld
+	// set up the general LD
 	m_audiosquelch = 3;
 	m_videosquelch = 1;
 	m_fieldnum = 0;
@@ -394,7 +392,7 @@ TIMER_CALLBACK_MEMBER(laserdisc_device::fetch_vbi_data)
 //  laserdiscs
 //-------------------------------------------------
 
-void laserdisc_device::sound_stream_update(sound_stream &stream, std::vector<read_stream_view> const &inputs, std::vector<write_stream_view> &outputs)
+void laserdisc_device::sound_stream_update(sound_stream &stream)
 {
 	// compute AND values based on the squelch
 	int16_t leftand = (m_audiosquelch & 1) ? 0x0000 : 0xffff;
@@ -405,17 +403,7 @@ void laserdisc_device::sound_stream_update(sound_stream &stream, std::vector<rea
 	if (samples_avail < 0)
 		samples_avail += m_audiobufsize;
 
-	// if no attached ld, just clear the buffers
-	auto &dst0 = outputs[0];
-	auto &dst1 = outputs[1];
-	if (samples_avail < outputs[0].samples())
-	{
-		dst0.fill(0);
-		dst1.fill(0);
-	}
-
-	// otherwise, stream from our buffer
-	else
+	if (samples_avail >= stream.samples())
 	{
 		int16_t *buffer0 = &m_audiobuffer[0][0];
 		int16_t *buffer1 = &m_audiobuffer[1][0];
@@ -423,10 +411,10 @@ void laserdisc_device::sound_stream_update(sound_stream &stream, std::vector<rea
 
 		// copy samples, clearing behind us as we go
 		int sampindex;
-		for (sampindex = 0; sampout != m_audiobufin && sampindex < outputs[0].samples(); sampindex++)
+		for (sampindex = 0; sampout != m_audiobufin && sampindex < stream.samples(); sampindex++)
 		{
-			dst0.put_int(sampindex, buffer0[sampout] & leftand, 32768);
-			dst1.put_int(sampindex, buffer1[sampout] & rightand, 32768);
+			stream.put_int(0, sampindex, buffer0[sampout] & leftand, 32768);
+			stream.put_int(1, sampindex, buffer1[sampout] & rightand, 32768);
 			buffer0[sampout] = 0;
 			buffer1[sampout] = 0;
 			sampout++;
@@ -436,16 +424,16 @@ void laserdisc_device::sound_stream_update(sound_stream &stream, std::vector<rea
 		m_audiobufout = sampout;
 
 		// clear out the rest of the buffer
-		if (sampindex < outputs[0].samples())
+		if (sampindex < stream.samples())
 		{
 			sampout = (m_audiobufout == 0) ? m_audiobufsize - 1 : m_audiobufout - 1;
 			s32 fill0 = buffer0[sampout] & leftand;
 			s32 fill1 = buffer1[sampout] & rightand;
 
-			for ( ; sampindex < outputs[0].samples(); sampindex++)
+			for ( ; sampindex < stream.samples(); sampindex++)
 			{
-				dst0.put_int(sampindex, fill0, 32768);
-				dst1.put_int(sampindex, fill1, 32768);
+				stream.put_int(0, sampindex, fill0, 32768);
+				stream.put_int(1, sampindex, fill1, 32768);
 			}
 		}
 	}
@@ -729,10 +717,10 @@ void laserdisc_device::init_disc()
 	m_fps_times_1million = 59940000;
 	m_samplerate = 48000;
 
-	// get the disc metadata and extract the ld
+	// get the disc metadata and extract the LD
 	m_chdtracks = 0;
 	m_maxtrack = VIRTUAL_LEAD_IN_TRACKS + MAX_TOTAL_TRACKS + VIRTUAL_LEAD_OUT_TRACKS;
-	if (m_disc != nullptr)
+	if (m_disc)
 	{
 		// require the A/V codec and nothing else
 		if (m_disc->compression(0) != CHD_CODEC_AVHUFF || m_disc->compression(1) != CHD_CODEC_NONE)
@@ -1078,7 +1066,7 @@ void laserdisc_device::read_track_data()
 void *laserdisc_device::read_async_static(void *param, int threadid)
 {
 	laserdisc_device &ld = *reinterpret_cast<laserdisc_device *>(param);
-	ld.m_readresult = ld.m_disc->read_hunk(ld.m_queued_hunknum, nullptr);
+	ld.m_readresult = ld.m_disc->codec_process_hunk(ld.m_queued_hunknum);
 	return nullptr;
 }
 

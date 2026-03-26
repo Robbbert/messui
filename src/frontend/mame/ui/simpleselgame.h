@@ -32,7 +32,7 @@ public:
 
 protected:
 	virtual void recompute_metrics(uint32_t width, uint32_t height, float aspect) override;
-	virtual void custom_render(uint32_t flags, void *selectedref, float top, float bottom, float x, float y, float x2, float y2) override;
+	virtual void custom_render(uint32_t flags, void *selectedref, float top, float bottom, float origx1, float origy1, float origx2, float origy2) override;
 	virtual bool custom_ui_back() override { return !m_search.empty(); }
 	virtual std::tuple<int, bool, bool> custom_pointer_updated(bool changed, ui_event const &uievt) override;
 
@@ -59,7 +59,8 @@ private:
 
 	// cached driver flags
 	const game_driver *     m_cached_driver;
-	machine_flags::type     m_cached_flags;
+	machine_flags::type     m_cached_machine_flags;
+	device_t::flags_type    m_cached_emulation_flags;
 	device_t::feature_type  m_cached_unemulated;
 	device_t::feature_type  m_cached_imperfect;
 	rgb_t                   m_cached_color;

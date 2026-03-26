@@ -28,7 +28,7 @@
 #include "artmagic.h"
 
 #include "cpu/m68000/m68000.h"
-#include "cpu/mcs51/mcs51.h"
+#include "cpu/mcs51/i80c51.h"
 #include "cpu/tms34010/tms34010.h"
 #include "machine/eeprompar.h"
 #include "machine/mc68681.h"
@@ -508,7 +508,7 @@ void artmagic_state::shtstar_guncpu_map(address_map &map)
 	map(0x0000, 0x7fff).rom();
 }
 
-void artmagic_state::shtstar_guncpu_io_map(address_map &map)
+void artmagic_state::shtstar_guncpu_data_map(address_map &map)
 {
 	map(0xc000, 0xcfff).ram();
 }
@@ -599,7 +599,7 @@ static INPUT_PORTS_START( cheesech )
 	PORT_BIT( 0xff00, IP_ACTIVE_LOW, IPT_UNUSED )
 
 	PORT_START("30000a")
-	PORT_BIT( 0x0001, IP_ACTIVE_HIGH, IPT_CUSTOM ) PORT_READ_LINE_MEMBER(artmagic_state, prot_r)    // protection data
+	PORT_BIT( 0x0001, IP_ACTIVE_HIGH, IPT_CUSTOM ) PORT_READ_LINE_MEMBER(FUNC(artmagic_state::prot_r))    // protection data
 	PORT_BIT( 0x0002, IP_ACTIVE_HIGH, IPT_CUSTOM )     // protection ready
 	PORT_BIT( 0x00fc, IP_ACTIVE_LOW, IPT_UNKNOWN )
 	PORT_BIT( 0xff00, IP_ACTIVE_LOW, IPT_UNUSED )
@@ -791,7 +791,7 @@ static INPUT_PORTS_START( shtstar )
 	PORT_BIT( 0xff00, IP_ACTIVE_LOW, IPT_UNUSED )
 
 	PORT_START("3c000a")
-	PORT_BIT( 0x0001, IP_ACTIVE_HIGH, IPT_CUSTOM ) PORT_READ_LINE_MEMBER(artmagic_state, prot_r)    // protection data
+	PORT_BIT( 0x0001, IP_ACTIVE_HIGH, IPT_CUSTOM ) PORT_READ_LINE_MEMBER(FUNC(artmagic_state::prot_r))    // protection data
 	PORT_BIT( 0x0002, IP_ACTIVE_HIGH, IPT_CUSTOM )     // protection ready
 	PORT_BIT( 0x00fc, IP_ACTIVE_LOW, IPT_UNKNOWN )
 	PORT_BIT( 0xff00, IP_ACTIVE_LOW, IPT_UNUSED )
@@ -884,7 +884,7 @@ void artmagic_state::shtstar(machine_config &config)
 	/*gun board cpu*/
 	i80c31_device &guncpu(I80C31(config, "guncpu", 6000000));
 	guncpu.set_addrmap(AS_PROGRAM, &artmagic_state::shtstar_guncpu_map);
-	guncpu.set_addrmap(AS_IO, &artmagic_state::shtstar_guncpu_io_map);
+	guncpu.set_addrmap(AS_DATA, &artmagic_state::shtstar_guncpu_data_map);
 	guncpu.port_in_cb<1>().set_constant(0); // ?
 }
 

@@ -6,7 +6,7 @@
  The machines need an online server to work, they won't boot up the games without it.
  More info: https://www.recreativas.org/onliner-6342-comatel
 
- -Gigabyte GA-7VKMP Rev 3.4 motherboard (VIA KM266, VIA T8235, IT8705F, RTL8100BL, ALC650, etc.).
+ -Gigabyte GA-7VKMP Rev 3.4 motherboard (VIA VT8375 KM266, VIA VT8235, IT8705F, RTL8100BL, ALC650, etc.).
  -256MB RAM PC2700 DDR
  -AMD Athlon AXDA1800DLT3C processor.
  -ATI Rage 128 Pro 32MB AGP video.
@@ -37,7 +37,7 @@
 
 The I/O board is connected to the internal COMB port of the Gigabyte motherboard using
 the COM RS-232 port of the I/O PCB.
- 
+
 **************************************************************************************************/
 
 #include "emu.h"
@@ -58,7 +58,7 @@ public:
 	void conliner(machine_config &config);
 
 private:
-	void mem_map(address_map &map);
+	void mem_map(address_map &map) ATTR_COLD;
 
 	required_device<cpu_device> m_maincpu;
 };
@@ -75,6 +75,7 @@ INPUT_PORTS_END
 
 void conliner_state::conliner(machine_config &config)
 {
+	// Socket A PGA462
 	PENTIUM(config, m_maincpu, 166'000'000); // Actually an AMD Athlon AXDA1800DLT3C
 	m_maincpu->set_addrmap(AS_PROGRAM, &conliner_state::mem_map);
 
@@ -102,4 +103,4 @@ ROM_END
 } // Anonymous namespace
 
 //   YEAR  NAME       PARENT  MACHINE   INPUT     CLASS           INIT        ROT   COMPANY                    FULLNAME               FLAGS
-GAME(200?, onlinertp, 0,      conliner, conliner, conliner_state, empty_init, ROT0, "Comatel / Atata Systems", "Onliner Touch Party", MACHINE_IS_SKELETON) // v4.222.493, with v4.44.450 update
+GAME(200?, onlinertp, 0,      conliner, conliner, conliner_state, empty_init, ROT0, "Comatel / Atata Systems", "Onliner Touch Party", MACHINE_NO_SOUND | MACHINE_NOT_WORKING) // v4.222.493, with v4.44.450 update

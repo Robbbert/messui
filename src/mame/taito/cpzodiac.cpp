@@ -52,15 +52,15 @@ public:
 	void cpzodiac(machine_config &config);
 
 private:
-	virtual void machine_start() override;
+	virtual void machine_start() override ATTR_COLD;
 
 	required_device<z80_device> m_maincpu;
 	required_device<cpu_device> m_audiocpu;
 	required_memory_bank m_bank;
 
-	void main_map(address_map &map);
-	void main_io_map(address_map &map);
-	void sound_map(address_map &map);
+	void main_map(address_map &map) ATTR_COLD;
+	void main_io_map(address_map &map) ATTR_COLD;
+	void sound_map(address_map &map) ATTR_COLD;
 };
 
 
@@ -190,15 +190,14 @@ void cpzodiac_state::cpzodiac(machine_config &config)
 	// TODO
 
 	/* sound hardware */
-	SPEAKER(config, "lspeaker").front_left();
-	SPEAKER(config, "rspeaker").front_right();
+	SPEAKER(config, "speaker", 2).front();
 
 	ym2610b_device &ymsnd(YM2610B(config, "ymsnd", 16_MHz_XTAL/2));
 	ymsnd.irq_handler().set_inputline(m_audiocpu, 0);
-	ymsnd.add_route(0, "lspeaker", 0.25);
-	ymsnd.add_route(0, "rspeaker", 0.25);
-	ymsnd.add_route(1, "lspeaker", 1.0);
-	ymsnd.add_route(2, "rspeaker", 1.0);
+	ymsnd.add_route(0, "speaker", 0.75, 0);
+	ymsnd.add_route(0, "speaker", 0.75, 1);
+	ymsnd.add_route(1, "speaker", 1.0, 0);
+	ymsnd.add_route(2, "speaker", 1.0, 1);
 
 	tc0140syt_device &syt(TC0140SYT(config, "syt", 0));
 	syt.nmi_callback().set_inputline(m_audiocpu, INPUT_LINE_NMI);

@@ -2,14 +2,73 @@
 // copyright-holders:Patrick Mackinlay
 
 /*
- * Sony NEWS M68K systems.
- *
- * Sources:
- *   - http://wiki.netbsd.org/ports/news68k/
- *
- * TODO:
- *   - mouse/keyboard
- *   - graphics/slots
+   Sony NEWS M68K systems.
+
+   Sources:
+     - http://wiki.netbsd.org/ports/news68k/
+
+   TODO:
+     - mouse/keyboard
+     - graphics/slots
+
+   The Sony NEWS Portable Workstation NWS-1250 is a "laptop" (weight of more than 8 Kg) with a black-and-white LCD (1120×780),
+   a keyboard, a 3.5″ floppy disk drive, a (SCSI) harddisk, and interfaces for mouse, audio (phones, line in, mic in), SCSI,
+   Ethernet (AUI), serial (DB9), and parallel (proprietary).
+
+   This is its main PCB layout:
+   _____________________________________________________________________________________________________________________________________________
+  |               __________   _____________________   _______  _______               ____________________________    _____                    |
+  |              |MB834200A|  | EPROM AM27C1024    |  |HC257_| |HC257_|              |||||||||||||||||||||||||||||   |·····|                   |
+  |              |         |  |                    |   _______  _______            __________       _________       _________                  |
+  |              |_________|  |____________________|  |HC257_| |HC257_|           |         | Xtal | Sony   | Xtal | Sony   |  ___             |
+  |                            _______                                            |HD64646FS|  19  |WSC-AIF2|  741 |CDX1123 | |  |<-74HC244A   |__
+  |               __________  |74HC32A  __________   _______                      |_________|      |        |      |        | |__|              __|_
+  |              |MB834200A|   _______ |Intel    |  ACT11004                     ___ ___           |________|      |________|                  |____|
+__|              |         |  |ALS05A| |N82077   |   __             6 x 74F00J->|  | |  |   _________________________________________          __ |
+|   ________     |_________|   _______ |         |  |-|                         |__| |__|   |_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|         | | |
+|  |74ACT139                  |74LS14| |_________|  |-| __________  __________   ___ ___    _________________________________________ DIPSx8->| | |
+|   ________                                        |-||HM62256LFP |HM62256LFP  |  | |  |   |_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|         |_| |
+|  74ACT11244               ____________   ___      |-||_________| |_________|  |__| |__|   _________________________________________        ___  |
+|   ________               | Sony      |  |  |      |-|                          ___ ___    |_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|       T7705 |
+|  74ACT11244              |WSC-MEMPAK |  |  |      |-|    ____________         |  | |  |   _________________________________________         __  |
+|   ________               |9030EK712  |  |__|      |_|   | Sony      |         |__| |__|   |_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_| Switch->__| |
+|  74ACT11244       Xtal   |           | SG51KH           |WSC-LCMC   |               __    _________________________________________         __  |
+|                 4915.2   |___________| 50 MHz           |9025EK442  |              |..|   |_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_| Switch->__| |
+|   ________                    ________                  |           |              |..|   _________________________________________         __  |
+|  |74ACT139                   |ACT11244   ________       |___________|              |..|   |_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_| Switch->__| |
+|   ________                              |ACT11245                    :|            |..|   _________________________________________        ___  |
+|  |ACT1124             ________________   ________                 :| :|            |..|   |_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|      74AS00 |
+|   ________           | MK48T02B-25   |  |ACT11245                 :| :|            |..|   _________________________________________             |
+|  |AM27S21PC                                                                        |__|   |_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|_|             |
+|  _____________________________________       ________  ________  ________            ________   ________   ________   ________   ______________ |
+|_|                                    |____  |ACT11353 |ACT11353 |ACT11020           |AC11004|  |AC11004|  |AC11004|  |AC11004|  |o o o o o o o ||
+  |____________________________________|    |  ________  ________                ___    ___    ___    ___    ___    _________     ________        |
+                                            | |ACT11353 |ACT11353               |  |   |  |   |  |   |  |   |  |   |Sony    |    |AC11004|        |
+                                            |  ________  ________  ________    BCT245 BCT245 BCT245 BCT245 BCT245  |WSC-LANCE   __________        |
+                                            | |ACT11353 |ACT11353 |ACT11027     |__|   |__|   |__|   |__|   |__|   |________| HM6264ALFP-12T      |
+                                            |                                                                                   __________    ___ |
+                                            | _____________       _____________      _____________                            HM6264ALFP-12T |__<-SG51KH 32 MHz
+                                            || Motorola   |      | Motorola   |     | Sony       |                  __________________________    |
+                                            ||MC68882FN25A|      |XC68030FE25B|     |L7A0266     |                 | AMD                     |    |
+                                            ||            |      |            |     |WSC-ICKDMAC |                 | AM7990PC                |    |
+                                            ||            |      |            |     |9019        |                 |_________________________|    |
+                                            ||____________|      |____________|     |____________|          ___________    ___________            |
+                                            |  ___________   ________   ________                           |Sony      |   |AM7992BDC_|            |
+                                            | | Zilog    |  |74HC374|  74HCT244A       ________   ________ |CXD1185Q  |    _________              |
+                                            | |Z85C3008VSC                ________    |74ACT139  |ACT11002 |__________|   SG51K 20 MHz            |
+                                            |                            |MC1489A|                                                                |
+                                            |             ________        _____________________________________                                   |
+                                            |            |MC145406       |::::::::::::::::::::::::::::::::::::|                                   |
+                                            |  __________   __________   _______________________                 __________________               |
+                                            |_|         |__|         |__|                      |________________|                 |_______________|
+                                              |_________|  |_________|  |______________________|                |_________________|
+
+ On the other side of the PCB there are a few components too:
+  - 3 x HM62256LFP-12T
+  - 1 x DS1000S-50
+
+ NWS-1250 came bundled with a Sony mouse based on a Fujitsu MB88201H MCU (undumped mask ROM 512 x 8 bits).
+
  */
 
 #include "emu.h"
@@ -61,7 +120,7 @@ public:
 		, m_scc(*this, "scc")
 		, m_net(*this, "net")
 		, m_fdc(*this, "fdc")
-		, m_scsi(*this, "scsi:7:cxd1180")
+		, m_scsi(*this, "cxd1180")
 		, m_hid(*this, "hid")
 		, m_serial(*this, "serial%u", 0U)
 		, m_irq5(*this, "irq5")
@@ -82,12 +141,12 @@ public:
 
 protected:
 	// driver_device overrides
-	virtual void machine_start() override;
-	virtual void machine_reset() override;
+	virtual void machine_start() override ATTR_COLD;
+	virtual void machine_reset() override ATTR_COLD;
 
 	// address maps
-	void cpu_map(address_map &map);
-	void cpu_autovector_map(address_map &map);
+	void cpu_map(address_map &map) ATTR_COLD;
+	void cpu_autovector_map(address_map &map) ATTR_COLD;
 
 	// machine config
 	void common(machine_config &config);
@@ -376,7 +435,7 @@ void news_68k_state::common(machine_config &config)
 	FLOPPY_CONNECTOR(config, "fdc:0", "35hd", FLOPPY_35_HD, true, floppy_image_device::default_pc_floppy_formats).enable_sound(false);
 
 	// scsi bus and devices
-	NSCSI_BUS(config, "scsi");
+	auto &scsi(NSCSI_BUS(config, "scsi"));
 
 	/*
 	 * CDC WREN V HH 94221-5 (5.25" half-height SCSI-1 single-ended)
@@ -394,18 +453,13 @@ void news_68k_state::common(machine_config &config)
 	NSCSI_CONNECTOR(config, "scsi:6", news_scsi_devices, nullptr);
 
 	// scsi host adapter
-	NSCSI_CONNECTOR(config, "scsi:7").option_set("cxd1180", CXD1180).machine_config(
-		[this](device_t *device)
-		{
-			cxd1180_device &adapter = downcast<cxd1180_device &>(*device);
-
-			adapter.irq_handler().set(*this, FUNC(news_68k_state::irq_w<SCSI>));
-			adapter.irq_handler().append(m_dma, FUNC(dmac_0266_device::eop_w));
-			adapter.drq_handler().set(m_dma, FUNC(dmac_0266_device::req_w));
-
-			subdevice<dmac_0266_device>(":dma")->dma_r_cb().set(adapter, FUNC(cxd1180_device::dma_r));
-			subdevice<dmac_0266_device>(":dma")->dma_w_cb().set(adapter, FUNC(cxd1180_device::dma_w));
-		});
+	CXD1180(config, m_scsi);
+	scsi.set_external_device(7, m_scsi);
+	m_scsi->irq_handler().set(DEVICE_SELF, FUNC(news_68k_state::irq_w<SCSI>));
+	m_scsi->irq_handler().append(m_dma, FUNC(dmac_0266_device::eop_w));
+	m_scsi->drq_handler().set(m_dma, FUNC(dmac_0266_device::req_w));
+	m_dma->dma_r_cb().set(m_scsi, FUNC(cxd1180_device::dma_r));
+	m_dma->dma_w_cb().set(m_scsi, FUNC(cxd1180_device::dma_w));
 
 	NEWS_HID_HLE(config, m_hid);
 
@@ -425,6 +479,8 @@ void news_68k_state::common(machine_config &config)
 	m_vram->set_default_size("1MiB");
 	m_vram->set_default_value(0);
 #endif
+
+	SOFTWARE_LIST(config, "software_list").set_original("sony_news").set_filter("CISC");
 }
 
 void news_68k_state::nws1580(machine_config &config)
@@ -455,6 +511,21 @@ static INPUT_PORTS_START(nws15x0)
 	PORT_DIPUNUSED_DIPLOC(0xc0, 0xc0, "SW1:7,8")
 INPUT_PORTS_END
 
+ROM_START(nws1250)
+	ROM_REGION32_BE(0x20000, "eprom", 0)
+	ROM_SYSTEM_BIOS(0, "nws1580", "NWS-1250 v2.0a")
+	ROMX_LOAD("nws-1200_ver_2.0a_9010.ic2", 0x00000, 0x20000, CRC(87eca9d2) SHA1(235585a55bc2b3206cfec532852526a638eccad2), ROM_BIOS(0))
+
+	// AM27S21PC PROM
+	ROM_REGION32_BE(0x100, "idrom", 0)
+	ROM_LOAD("n1250_50292_am27s21pc.ic36", 0x000, 0x100, NO_DUMP)
+
+	// 2 x MB834200A (mask ROM)
+	ROM_REGION32_BE(0x100000, "krom", ROMREGION_ERASEFF)
+	ROM_LOAD64_BYTE("mb834200a-20_051_aa_9020_g07.ic1",  0x00000, 0x20000, NO_DUMP)
+	ROM_LOAD64_BYTE("mb834200a-20_052_aa_9002_g02.ic13", 0x00001, 0x20000, NO_DUMP)
+ROM_END
+
 ROM_START(nws1580)
 	ROM_REGION32_BE(0x10000, "eprom", 0)
 	ROM_SYSTEM_BIOS(0, "nws1580", "NWS-1580 v1.3")
@@ -473,5 +544,6 @@ ROM_END
 } // anonymous namespace
 
 
-/*   YEAR  NAME     PARENT  COMPAT  MACHINE  INPUT    CLASS           INIT         COMPANY  FULLNAME    FLAGS */
+//   YEAR  NAME     PARENT  COMPAT  MACHINE  INPUT    CLASS           INIT         COMPANY  FULLNAME    FLAGS
 COMP(1988, nws1580, 0,      0,      nws1580, nws15x0, news_68k_state, init_common, "Sony",  "NWS-1580", MACHINE_NOT_WORKING)
+COMP(1990, nws1250, 0,      0,      nws1580, nws15x0, news_68k_state, init_common, "Sony",  "NWS-1250", MACHINE_NOT_WORKING)

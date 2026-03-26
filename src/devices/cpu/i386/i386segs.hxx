@@ -80,7 +80,7 @@ void i386_device::i386_load_call_gate(I386_CALL_GATE *gate)
 void i386_device::i386_set_descriptor_accessed(uint16_t selector)
 {
 	// assume the selector is valid, we don't need to check it again
-	uint32_t base, addr;
+	offs_t base, addr;
 	uint8_t rights;
 	if(!(selector & ~3))
 		return;
@@ -216,7 +216,7 @@ void i386_device::i386_check_sreg_validity(int reg)
 	}
 }
 
-int i386_device::i386_limit_check(int seg, uint32_t offset)
+int i386_device::i386_limit_check(int seg, uint32_t offset, int size)
 {
 	if(PROTECTED_MODE && !V8086_MODE)
 	{
@@ -231,7 +231,7 @@ int i386_device::i386_limit_check(int seg, uint32_t offset)
 		}
 		else
 		{
-			if(offset > m_sreg[seg].limit)
+			if((offset + size - 1) > m_sreg[seg].limit)
 			{
 				LOGMASKED(LOG_LIMIT_CHECK, "Limit check at 0x%08x failed. Segment %04x, limit %08x, offset %08x\n",m_pc,m_sreg[seg].selector,m_sreg[seg].limit,offset);
 				//machine().debug_break();
@@ -372,7 +372,7 @@ void i386_device::i386_sreg_load(uint16_t selector, uint8_t reg, bool *fault)
 	if(fault) *fault = false;
 }
 
-void i386_device::i386_trap(int irq, int irq_gate, int trap_level)
+void i386_device::i386_trap(int irq, int irq_gate)
 {
 	/*  I386 Interrupts/Traps/Faults:
 	 *
@@ -768,7 +768,7 @@ void i386_device::i386_trap_with_error(int irq, int irq_gate, int trap_level, ui
 {
 	try
 	{
-		i386_trap(irq,irq_gate,trap_level);
+		i386_trap(irq,irq_gate);
 		if(irq == 8 || irq == 10 || irq == 11 || irq == 12 || irq == 13 || irq == 14)
 		{
 			// for these exceptions, an error code is pushed onto the stack by the processor.
@@ -794,7 +794,7 @@ void i386_device::i386_trap_with_error(int irq, int irq_gate, int trap_level, ui
 				PUSH16(error);
 		}
 	}
-	catch(uint64_t e)
+	catch([[maybe_unused]] uint64_t e)
 	{
 		trap_level++;
 		if(trap_level == 1)
@@ -1037,10 +1037,10 @@ void i386_device::i386_task_switch(uint16_t selector, uint8_t nested)
 
 	CHANGE_PC(m_eip);
 
-	m_CPL = (m_sreg[SS].flags >> 5) & 3;
 
 	int t_bit = READ32(tss+0x64) & 1;
 	if(t_bit) m_dr[6] |= (1 << 15); //If the T bit of the new TSS is set, set the BT bit of DR6.
+	m_CPL = (m_sreg[SS].flags >> 5) & 3;
 
 	m_dr[7] &= ~(0x155); //Clear all of the local enable bits from DR7.
 
@@ -2500,7 +2500,7 @@ inline void i386_device::dri_changed()
 		{
 			int breakpoint_type = (m_dr[7] >> ((dr << 2) + 16)) & 3;
 			int breakpoint_length = (m_dr[7] >> ((dr << 2) + 16 + 2)) & 3;
-			uint32_t phys_addr = m_dr[dr];
+			offs_t phys_addr = m_dr[dr];
 			uint32_t error;
 			if(translate_address(m_CPL, TR_READ, &phys_addr, &error))
 			{
@@ -2528,7 +2528,7 @@ inline void i386_device::dri_changed()
 								if(true_mask & mem_mask)
 								{
 									m_dr[6] |= 1 << dr;
-									i386_trap(1,1,0);
+									i386_trap(1,1);
 								}
 							},
 							&m_dr_breakpoints[dr]);
@@ -2544,7 +2544,7 @@ inline void i386_device::dri_changed()
 								if(true_mask & mem_mask)
 								{
 									m_dr[6] |= 1 << dr;
-									i386_trap(1,1,0);
+									i386_trap(1,1);
 								}
 							},
 							[this, dr, true_mask](offs_t offset, u32& data, u32 mem_mask)
@@ -2552,7 +2552,7 @@ inline void i386_device::dri_changed()
 								if(true_mask & mem_mask)
 								{
 									m_dr[6] |= 1 << dr;
-									i386_trap(1,1,0);
+									i386_trap(1,1);
 								}
 							},
 							&m_dr_breakpoints[dr]);

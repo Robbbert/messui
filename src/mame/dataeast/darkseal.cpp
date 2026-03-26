@@ -66,8 +66,8 @@ private:
 
 	uint32_t screen_update(screen_device &screen, bitmap_ind16 &bitmap, const rectangle &cliprect);
 	void update_palette(int offset);
-	void main_map(address_map &map);
-	void sound_map(address_map &map);
+	void main_map(address_map &map) ATTR_COLD;
+	void sound_map(address_map &map) ATTR_COLD;
 
 	required_device<cpu_device> m_maincpu;
 	required_device<h6280_device> m_audiocpu;
@@ -129,7 +129,7 @@ void darkseal_state::palette_ext_w(offs_t offset, uint16_t data, uint16_t mem_ma
 
 uint32_t darkseal_state::screen_update(screen_device &screen, bitmap_ind16 &bitmap, const rectangle &cliprect)
 {
-	uint16_t flip = m_deco_tilegen[1]->pf_control_r(0);
+	uint16_t const flip = m_deco_tilegen[1]->pf_control_r(0);
 	flip_screen_set(!BIT(flip, 7));
 	m_sprgen->set_flip_screen(!BIT(flip, 7));
 
@@ -178,9 +178,9 @@ void darkseal_state::main_map(address_map &map)
 	map(0x202000, 0x203fff).rw(m_deco_tilegen[1], FUNC(deco16ic_device::pf2_data_r), FUNC(deco16ic_device::pf2_data_w));
 	map(0x240000, 0x24000f).w(m_deco_tilegen[1], FUNC(deco16ic_device::pf_control_w));
 
-	map(0x220000, 0x220fff).ram().share("pf1_rowscroll");
+	map(0x220000, 0x220fff).ram().share(m_pf1_rowscroll);
 	// pf2 & 4 rowscrolls are where? (maybe don't exist?)
-	map(0x222000, 0x222fff).ram().share("pf3_rowscroll");
+	map(0x222000, 0x222fff).ram().share(m_pf3_rowscroll);
 
 	map(0x260000, 0x261fff).rw(m_deco_tilegen[0], FUNC(deco16ic_device::pf1_data_r), FUNC(deco16ic_device::pf1_data_w));
 	map(0x262000, 0x263fff).rw(m_deco_tilegen[0], FUNC(deco16ic_device::pf2_data_r), FUNC(deco16ic_device::pf2_data_w));
@@ -226,7 +226,7 @@ static INPUT_PORTS_START( darkseal )
 	PORT_BIT( 0x01, IP_ACTIVE_LOW, IPT_COIN1 )
 	PORT_BIT( 0x02, IP_ACTIVE_LOW, IPT_COIN2 )
 	PORT_BIT( 0x04, IP_ACTIVE_LOW, IPT_COIN3 )
-	PORT_BIT( 0x08, IP_ACTIVE_HIGH, IPT_CUSTOM ) PORT_VBLANK("screen")
+	PORT_BIT( 0x08, IP_ACTIVE_HIGH, IPT_CUSTOM ) PORT_READ_LINE_DEVICE_MEMBER("screen", FUNC(screen_device::vblank))
 	PORT_BIT( 0x10, IP_ACTIVE_LOW, IPT_UNKNOWN )
 	PORT_BIT( 0x20, IP_ACTIVE_LOW, IPT_UNKNOWN )
 	PORT_BIT( 0x40, IP_ACTIVE_LOW, IPT_UNKNOWN )
@@ -307,6 +307,9 @@ static GFXDECODE_START( gfx_darkseal )
 	GFXDECODE_ENTRY( "chars",   0, charlayout,    0, 16 )  // 8x8
 	GFXDECODE_ENTRY( "tiles1",  0, seallayout,  768, 16 )  // 16x16
 	GFXDECODE_ENTRY( "tiles2",  0, seallayout, 1024, 16 )  // 16x16
+GFXDECODE_END
+
+static GFXDECODE_START( gfx_darkseal_spr )
 	GFXDECODE_ENTRY( "sprites", 0, seallayout,  256, 32 )  // 16x16
 GFXDECODE_END
 
@@ -360,9 +363,7 @@ void darkseal_state::darkseal(machine_config &config)
 	m_deco_tilegen[1]->set_pf12_16x16_bank(2);
 	m_deco_tilegen[1]->set_gfxdecode_tag("gfxdecode");
 
-	DECO_SPRITE(config, m_sprgen, 0);
-	m_sprgen->set_gfx_region(3);
-	m_sprgen->set_gfxdecode_tag("gfxdecode");
+	DECO_SPRITE(config, m_sprgen, 0, m_palette, gfx_darkseal_spr);
 
 	// sound hardware
 	SPEAKER(config, "mono").front_center();

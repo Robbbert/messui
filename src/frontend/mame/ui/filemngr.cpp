@@ -38,9 +38,9 @@ namespace ui {
 //  ctor
 //-------------------------------------------------
 
-menu_file_manager::menu_file_manager(mame_ui_manager &mui, render_container &container, const char *warnings)
+menu_file_manager::menu_file_manager(mame_ui_manager &mui, render_container &container, std::string &&warnings)
 	: menu(mui, container)
-	, m_warnings(warnings ? warnings : "")
+	, m_warnings(std::move(warnings))
 	, m_selected_device(nullptr)
 {
 	// The warning string is used when accessing from the force_file_manager call, i.e.
@@ -66,7 +66,20 @@ void menu_file_manager::recompute_metrics(uint32_t width, uint32_t height, float
 {
 	menu::recompute_metrics(width, height, aspect);
 
-	set_custom_space(0.0F, line_height() + 3.0F * tb_border());
+	if (!m_warnings.empty())
+	{
+		m_warnings_layout.reset();
+
+		float const max_width(1.0F - (4.0F * lr_border()));
+		m_warnings_layout.emplace(create_layout(max_width, text_layout::text_justify::LEFT));
+		m_warnings_layout->add_text(m_warnings, ui().colors().text_color());
+
+		set_custom_space(0.0F, (float(m_warnings_layout->lines() + 1) * line_height()) + (6.0F * tb_border()));
+	}
+	else
+	{
+		set_custom_space(0.0F, line_height() + (3.0F * tb_border()));
+	}
 }
 
 
@@ -77,8 +90,23 @@ void menu_file_manager::recompute_metrics(uint32_t width, uint32_t height, float
 void menu_file_manager::custom_render(uint32_t flags, void *selectedref, float top, float bottom, float origx1, float origy1, float origx2, float origy2)
 {
 	// access the path
-	std::string_view path = m_selected_device && m_selected_device->exists() ? m_selected_device->filename() : std::string_view();
-	extra_text_render(top, bottom, origx1, origy1, origx2, origy2, std::string_view(), path);
+	if (m_selected_device && m_selected_device->exists())
+		extra_text_render(top, (3.0F * tb_border()) + line_height(), origx1, origy1, origx2, origy2, std::string_view(), m_selected_device->filename());
+
+	// show the warnings if any
+	if (m_warnings_layout)
+	{
+		ui().draw_outlined_box(
+				container(),
+				((1.0F + m_warnings_layout->actual_width()) * 0.5F) + lr_border(), origy2 + (4.0F * tb_border()) + line_height(),
+				((1.0F - m_warnings_layout->actual_width()) * 0.5F) - lr_border(), origy2 + bottom,
+				ui().colors().background_color());
+		m_warnings_layout->emit(
+				container(),
+				(1.0F - m_warnings_layout->actual_width()) * 0.5F,
+				origy2 + (5.0F * tb_border()) + line_height());
+	}
+
 }
 
 
@@ -87,31 +115,25 @@ void menu_file_manager::fill_image_line(device_image_interface &img, std::string
 	// get the image type/id
 	instance = string_format("%s (%s)", img.instance_name(), img.brief_instance_name());
 
-	// get the base name
-	if (img.basename())
+	if (!img.basename())
 	{
-		filename.assign(img.basename());
-
-		// if the image has been loaded through softlist, also show the loaded part
-		if (img.loaded_through_softlist())
-		{
-			const software_part *tmp = img.part_entry();
-			if (!tmp->name().empty())
-			{
-				filename.append(" (");
-				filename.append(tmp->name());
-				// also check if this part has a specific part_id (e.g. "Map Disc", "Bonus Disc", etc.), and in case display it
-				if (img.get_feature("part_id") != nullptr)
-				{
-					filename.append(": ");
-					filename.append(img.get_feature("part_id"));
-				}
-				filename.append(")");
-			}
-		}
+		filename = "---";
+	}
+	else if (!img.loaded_through_softlist())
+	{
+		filename = img.basename();
 	}
 	else
-		filename.assign("---");
+	{
+		// if the image has been loaded through softlist, also show the loaded part
+		// also check if this part has a specific part_id (e.g. "Map Disc", "Bonus Disc", etc.)
+		software_part const *const part = img.part_entry();
+		auto const partid = img.get_feature("part_id");
+		if (partid)
+			filename = string_format(_("%1$s (%2$s: %3$s)"), img.basename(), part->name(), partid);
+		else
+			filename = string_format(_("%1$s (%2$s)"), img.basename(), part->name());
+	}
 }
 
 //-------------------------------------------------
@@ -121,9 +143,6 @@ void menu_file_manager::fill_image_line(device_image_interface &img, std::string
 void menu_file_manager::populate()
 {
 	m_notifiers.clear();
-
-	if (!m_warnings.empty())
-		item_append(m_warnings, FLAG_DISABLE, nullptr);
 
 	// cycle through all devices for this system
 	bool missing_mandatory = false;
@@ -205,7 +224,7 @@ bool menu_file_manager::handle(event const *ev)
 
 	if (ev)
 	{
-		if ((uintptr_t)ev->itemref == 1)
+		if (uintptr_t(ev->itemref) == 1)
 		{
 			if (m_selected_device)
 			{
@@ -241,16 +260,25 @@ bool menu_file_manager::handle(event const *ev)
 			}
 		}
 	}
+	else
+	{
+		auto const selected = get_selection_ref();
+		if (selected && (uintptr_t(selected) != 1) && (selected != m_selected_device))
+		{
+			m_selected_device = (device_image_interface *)selected;
+			result = true;
+		}
+	}
 
 	return result;
 }
 
 // force file manager menu
-void menu_file_manager::force_file_manager(mame_ui_manager &mui, render_container &container, const char *warnings)
+void menu_file_manager::force_file_manager(mame_ui_manager &mui, render_container &container, std::string &&warnings)
 {
 	// drop any existing menus and start the file manager
 	menu::stack_reset(mui);
-	menu::stack_push_special_main<menu_file_manager>(mui, container, warnings);
+	menu::stack_push_special_main<menu_file_manager>(mui, container, std::move(warnings));
 	mui.show_menu();
 
 	// make sure MAME is paused

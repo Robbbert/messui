@@ -99,10 +99,10 @@ public:
 	void init_gunbustr();
 
 protected:
-	virtual void video_start() override;
+	virtual void video_start() override ATTR_COLD;
 
 private:
-	void prg_map(address_map &map);
+	void prg_map(address_map &map) ATTR_COLD;
 
 	TIMER_CALLBACK_MEMBER(trigger_irq5);
 
@@ -457,7 +457,7 @@ static INPUT_PORTS_START( gunbustr )
 	PORT_BIT( 0x10, IP_ACTIVE_LOW, IPT_UNKNOWN )
 	PORT_BIT( 0x20, IP_ACTIVE_LOW, IPT_UNKNOWN )
 	PORT_BIT( 0x40, IP_ACTIVE_LOW, IPT_UNKNOWN )
-	PORT_BIT( 0x80, IP_ACTIVE_HIGH, IPT_CUSTOM ) PORT_READ_LINE_DEVICE_MEMBER("eeprom", eeprom_serial_93cxx_device, do_read)
+	PORT_BIT( 0x80, IP_ACTIVE_HIGH, IPT_CUSTOM ) PORT_READ_LINE_DEVICE_MEMBER("eeprom", FUNC(eeprom_serial_93cxx_device::do_read))
 
 	PORT_START("INPUTS")
 	PORT_BIT( 0x01, IP_ACTIVE_LOW, IPT_JOYSTICK_UP ) PORT_8WAY PORT_PLAYER(1)
@@ -567,12 +567,11 @@ void gunbustr_state::gunbustr(machine_config &config)
 	m_tc0480scp->set_offsets_flip(-1, 0);
 
 	// sound hardware
-	SPEAKER(config, "lspeaker").front_left();
-	SPEAKER(config, "rspeaker").front_right();
+	SPEAKER(config, "speaker", 2).front();
 
 	taito_en_device &taito_en(TAITO_EN(config, "taito_en", 0));
-	taito_en.add_route(0, "lspeaker", 1.0);
-	taito_en.add_route(1, "rspeaker", 1.0);
+	taito_en.add_route(0, "speaker", 1.0, 0);
+	taito_en.add_route(1, "speaker", 1.0, 1);
 }
 
 /***************************************************************************/

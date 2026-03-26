@@ -12,6 +12,7 @@
 
 #include "s11c_bg.h"
 #include "williamssound.h"
+#include "williamsblitter.h"
 
 #include "cpu/m6800/m6800.h"
 #include "cpu/m6809/m6809.h"
@@ -39,6 +40,7 @@ public:
 		m_screen(*this, "screen"),
 		m_palette(*this, "palette"),
 		m_paletteram(*this, "paletteram"),
+		m_blitter(*this, "blitter"),
 		m_pia(*this, "pia_%u", 0U),
 		m_nvram(*this, "nvram"),
 		m_videoram(*this, "videoram"),
@@ -47,19 +49,18 @@ public:
 		m_49way_y(*this, "49WAYY")
 	{ }
 
-	void williams_b0(machine_config &config);
-	void williams_b1(machine_config &config);
-	void williams_b2(machine_config &config);
+	void williams_base(machine_config &config) ATTR_COLD;
+	void williams_b1(machine_config &config) ATTR_COLD;
 
-	void joust(machine_config &config);
-	void bubbles(machine_config &config);
-	void sinistar_upright(machine_config &config);
-	void sinistar_cockpit(machine_config &config);
-	void splat(machine_config &config);
-	void playball(machine_config &config);
-	void spdball(machine_config &config);
-	void alienar(machine_config &config);
-	void lottofun(machine_config &config);
+	void joust(machine_config &config) ATTR_COLD;
+	void bubbles(machine_config &config) ATTR_COLD;
+	void sinistar_upright(machine_config &config) ATTR_COLD;
+	void sinistar_cockpit(machine_config &config) ATTR_COLD;
+	void splat(machine_config &config) ATTR_COLD;
+	void playball(machine_config &config) ATTR_COLD;
+	void spdball(machine_config &config) ATTR_COLD;
+	void alienar(machine_config &config) ATTR_COLD;
+	void lottofun(machine_config &config) ATTR_COLD;
 
 	virtual u8 video_counter_r();
 	virtual void watchdog_reset_w(u8 data);
@@ -68,36 +69,16 @@ public:
 	TIMER_DEVICE_CALLBACK_MEMBER(count240_callback);
 
 	virtual uint32_t screen_update(screen_device &screen, bitmap_rgb32 &bitmap, const rectangle &cliprect);
-	void palette_init(palette_device &palette) const;
+	void palette_init(palette_device &palette) const ATTR_COLD;
 
 protected:
-	// blitter type
-	enum
-	{
-		WILLIAMS_BLITTER_NONE = 0, // no blitter
-		WILLIAMS_BLITTER_SC1 = 1,  // Special Chip 1 blitter
-		WILLIAMS_BLITTER_SC2 = 2   // Special Chip 2 "bugfixed" blitter
-	};
-
-	// controlbyte (0xCA00) bit definitions
-	enum
-	{
-		WMS_BLITTER_CONTROLBYTE_NO_EVEN = 0x80,
-		WMS_BLITTER_CONTROLBYTE_NO_ODD = 0x40,
-		WMS_BLITTER_CONTROLBYTE_SHIFT = 0x20,
-		WMS_BLITTER_CONTROLBYTE_SOLID = 0x10,
-		WMS_BLITTER_CONTROLBYTE_FOREGROUND_ONLY = 0x08,
-		WMS_BLITTER_CONTROLBYTE_SLOW = 0x04, // 2us blits instead of 1us
-		WMS_BLITTER_CONTROLBYTE_DST_STRIDE_256 = 0x02,
-		WMS_BLITTER_CONTROLBYTE_SRC_STRIDE_256 = 0x01
-	};
-
 	required_device<cpu_device> m_maincpu;
 	required_device<cpu_device> m_soundcpu;
 	required_device<watchdog_timer_device> m_watchdog;
 	required_device<screen_device> m_screen;
-	optional_device<palette_device> m_palette;
-	optional_shared_ptr<uint8_t> m_paletteram;
+	required_device<palette_device> m_palette;
+	required_shared_ptr<uint8_t> m_paletteram;
+	optional_device<williams_blitter_device> m_blitter;
 	optional_device_array<pia6821_device, 4> m_pia;
 
 	required_shared_ptr<uint8_t> m_nvram;
@@ -108,25 +89,16 @@ protected:
 	optional_ioport m_49way_x;
 	optional_ioport m_49way_y;
 
-	uint8_t m_blitter_config;
-	uint16_t m_blitter_clip_address;
-	uint8_t m_blitter_window_enable;
 	uint8_t m_cocktail;
 	std::unique_ptr<rgb_t[]> m_palette_lookup;
-	uint8_t m_blitterram[8];
-	uint8_t m_blitter_xor;
-	uint8_t m_blitter_remap_index;
-	const uint8_t *m_blitter_remap;
-	std::unique_ptr<uint8_t[]> m_blitter_remap_lookup;
 
-	virtual void machine_reset() override;
-	virtual void video_start() override;
+	virtual void machine_reset() override ATTR_COLD;
+	virtual void video_start() override ATTR_COLD;
 
 	u8 port_0_49way_r();
 	void vram_select_w(u8 data);
 	void sinistar_vram_select_w(u8 data);
 	void cmos_4bit_w(offs_t offset, u8 data);
-	void blitter_w(address_space &space, offs_t offset, u8 data);
 
 	template <unsigned A, unsigned... B>
 	TIMER_CALLBACK_MEMBER(deferred_snd_cmd_w);
@@ -134,21 +106,16 @@ protected:
 	void playball_snd_cmd_w(u8 data);
 	void cockpit_snd_cmd_w(u8 data);
 
-	void state_save_register();
-	void blitter_init(int blitter_config, const uint8_t *remap_prom);
-	inline void blit_pixel(address_space &space, int dstaddr, int srcdata, int controlbyte);
-	int blitter_core(address_space &space, int sstart, int dstart, int w, int h, int data);
+	void williams_muxed(machine_config &config) ATTR_COLD;
 
-	void williams_base(machine_config &config);
-	void williams_muxed(machine_config &config);
-
-	void main_map(address_map &map);
-	void bubbles_main_map(address_map &map);
-	void sinistar_main_map(address_map &map);
-	void spdball_main_map(address_map &map);
-	void alienar_main_map(address_map &map);
-	virtual void sound_map(address_map &map);
-	void sound2_map(address_map &map); // for Blaster and Sinistar cockpit
+	void main_map(address_map &map) ATTR_COLD;
+	void main_map_blitter(address_map &map) ATTR_COLD;
+	void bubbles_main_map(address_map &map) ATTR_COLD;
+	void sinistar_main_map(address_map &map) ATTR_COLD;
+	void spdball_main_map(address_map &map) ATTR_COLD;
+	void alienar_main_map(address_map &map) ATTR_COLD;
+	virtual void sound_map(address_map &map) ATTR_COLD;
+	void sound2_map(address_map &map) ATTR_COLD; // for Blaster and Sinistar cockpit
 };
 
 // Defender
@@ -159,19 +126,20 @@ public:
 		williams_state(mconfig, type, tag)
 	{ }
 
-	void defender(machine_config &config);
-	void defender_6802snd(machine_config &config);
-	void jin(machine_config &config);
+	void defender(machine_config &config) ATTR_COLD;
+	void defender_6802snd(machine_config &config) ATTR_COLD;
+	void jin(machine_config &config) ATTR_COLD;
+	void nextcent(machine_config &config) ATTR_COLD;
 
-	void init_defndjeu();
+	void init_defndjeu() ATTR_COLD;
 
 protected:
-	virtual void machine_start() override;
-	virtual void machine_reset() override;
+	virtual void machine_start() override ATTR_COLD;
+	virtual void machine_reset() override ATTR_COLD;
 
-	void defender_main_map(address_map &map);
-	void defender_sound_map(address_map &map);
-	void defender_sound_map_6802(address_map &map);
+	void defender_main_map(address_map &map) ATTR_COLD;
+	void defender_sound_map(address_map &map) ATTR_COLD;
+	void defender_sound_map_6802(address_map &map) ATTR_COLD;
 
 private:
 	void video_control_w(u8 data);
@@ -186,10 +154,10 @@ public:
 		defender_state(mconfig, type, tag)
 	{ }
 
-	void mayday(machine_config &config);
+	void mayday(machine_config &config) ATTR_COLD;
 
 private:
-	void mayday_main_map(address_map &map);
+	void mayday_main_map(address_map &map) ATTR_COLD;
 
 	u8 protection_r(offs_t offset);
 };
@@ -203,8 +171,8 @@ public:
 		m_dial(*this, "DIAL")
 	{ }
 
-	DECLARE_CUSTOM_INPUT_MEMBER(dial0_r) { return m_dial->read() & 3; }
-	DECLARE_CUSTOM_INPUT_MEMBER(dial1_r) { return m_dial->read() >> 2 & 3; }
+	ioport_value dial0_r() { return m_dial->read() & 3; }
+	ioport_value dial1_r() { return m_dial->read() >> 2 & 3; }
 
 private:
 	required_ioport m_dial;
@@ -220,13 +188,13 @@ public:
 		m_mainbank(*this, "mainbank")
 	{ }
 
-	void blastkit(machine_config &config);
-	void blaster(machine_config &config);
+	void blastkit(machine_config &config) ATTR_COLD;
+	void blaster(machine_config &config) ATTR_COLD;
 
 protected:
-	virtual void machine_start() override;
-	virtual void machine_reset() override;
-	virtual void video_start() override;
+	virtual void machine_start() override ATTR_COLD;
+	virtual void machine_reset() override ATTR_COLD;
+	virtual void video_start() override ATTR_COLD;
 
 private:
 	required_device<ls157_x2_device> m_muxa;
@@ -237,14 +205,13 @@ private:
 
 	void blaster_vram_select_w(u8 data);
 	void bank_select_w(u8 data);
-	void remap_select_w(u8 data);
 	void video_control_w(u8 data);
 	TIMER_CALLBACK_MEMBER(deferred_snd_cmd_w);
 	void blaster_snd_cmd_w(u8 data);
 
 	virtual uint32_t screen_update(screen_device &screen, bitmap_rgb32 &bitmap, const rectangle &cliprect) override;
 
-	void blaster_main_map(address_map &map);
+	void blaster_main_map(address_map &map) ATTR_COLD;
 };
 
 // base Williams 2nd gen hardware
@@ -261,7 +228,7 @@ public:
 		m_offset({ 0.00f, 0.00f, 0.00f })
 	{ }
 
-	void inferno(machine_config &config);
+	void inferno(machine_config &config) ATTR_COLD;
 
 	INPUT_CHANGED_MEMBER(rgb_gain)
 	{
@@ -285,11 +252,11 @@ protected:
 	std::array<float, 3> m_gain;
 	std::array<float, 3> m_offset;
 
-	void williams2_base(machine_config &config);
+	void williams2_base(machine_config &config) ATTR_COLD;
 
-	virtual void machine_start() override;
-	virtual void machine_reset() override;
-	virtual void video_start() override;
+	virtual void machine_start() override ATTR_COLD;
+	virtual void machine_reset() override ATTR_COLD;
+	virtual void video_start() override ATTR_COLD;
 
 	virtual u8 video_counter_r() override;
 
@@ -314,10 +281,10 @@ protected:
 
 	virtual uint32_t screen_update(screen_device &screen, bitmap_rgb32 &bitmap, const rectangle &cliprect) override;
 
-	void common_map(address_map &map);
-	void d000_rom_map(address_map &map);
-	void d000_ram_map(address_map &map);
-	virtual void sound_map(address_map &map) override;
+	void common_map(address_map &map) ATTR_COLD;
+	void d000_rom_map(address_map &map) ATTR_COLD;
+	void d000_ram_map(address_map &map) ATTR_COLD;
+	virtual void sound_map(address_map &map) override ATTR_COLD;
 
 	void video_control_w(u8 data);
 };
@@ -334,10 +301,10 @@ public:
 		m_offset = { -0.27f, 0.00f, -0.22f };
 	}
 
-	void mysticm(machine_config &config);
+	void mysticm(machine_config &config) ATTR_COLD;
 
 protected:
-	virtual void machine_start() override;
+	virtual void machine_start() override ATTR_COLD;
 
 	virtual uint32_t screen_update(screen_device &screen, bitmap_rgb32 &bitmap, const rectangle &cliprect) override;
 
@@ -364,12 +331,12 @@ public:
 		m_feather_blower(*this, "Feather_Blower")
 	{ }
 
-	void tshoot(machine_config &config);
+	void tshoot(machine_config &config) ATTR_COLD;
 
-	template <int P> DECLARE_CUSTOM_INPUT_MEMBER(gun_r);
+	template <int P> ioport_value gun_r();
 
 private:
-	virtual void machine_start() override;
+	virtual void machine_start() override ATTR_COLD;
 
 	void maxvol_w(int state);
 	void lamp_w(u8 data);
@@ -392,10 +359,10 @@ public:
 		m_bg(*this, "bg")
 	{ }
 
-	void joust2(machine_config &config);
+	void joust2(machine_config &config) ATTR_COLD;
 
 private:
-	virtual void machine_start() override;
+	virtual void machine_start() override ATTR_COLD;
 
 	required_device<ls157_device> m_mux;
 	required_device<s11_obg_device> m_bg;

@@ -107590,6 +107590,7 @@ void m68000_device::stop_i16u_ip() // 4e72 ffff
 	m_icount -= 2;
 	m_inst_state = m_next_state ? m_next_state : m_decode_table[m_ird];
 	m_inst_substate = 0;
+	debugger_wait_hook();
 	return;
 	}
 }

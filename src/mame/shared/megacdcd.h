@@ -150,10 +150,10 @@ protected:
 	void CDD_Resume();
 	void CDD_FF();
 	void CDD_RW();
-	void CDD_Open(void);
-	void CDD_Close(void);
+	void CDD_OpenTray(void);
+	void CDD_CloseTray(void);
 	void CDD_Init(void);
-	void CDD_Default(void);
+	void CDD_Unknown(u8 which);
 	void CDD_Reset(void);
 	void CDC_Reset(void);
 	void lc89510_Reset(void);
@@ -184,9 +184,9 @@ protected:
 	void LC8951UpdateHeader();
 
 
-	virtual void device_start() override;
-	virtual void device_reset() override;
-	virtual void device_add_mconfig(machine_config &config) override;
+	virtual void device_start() override ATTR_COLD;
+	virtual void device_reset() override ATTR_COLD;
+	virtual void device_add_mconfig(machine_config &config) override ATTR_COLD;
 
 	TIMER_DEVICE_CALLBACK_MEMBER( segacd_access_timer_callback );
 };

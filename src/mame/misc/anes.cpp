@@ -53,8 +53,8 @@ public:
 	void anes(machine_config &config);
 
 protected:
-	virtual void machine_start() override;
-	virtual void video_start() override;
+	virtual void machine_start() override ATTR_COLD;
+	virtual void video_start() override ATTR_COLD;
 
 private:
 	void vram_offset_w(offs_t offset, uint8_t data);
@@ -108,9 +108,9 @@ private:
 
 	uint32_t screen_update(screen_device &screen, bitmap_ind16 &bitmap, const rectangle &cliprect);
 
-	void io_map(address_map &map);
-	void prg_map(address_map &map);
-	void opcodes_map(address_map &map);
+	void io_map(address_map &map) ATTR_COLD;
+	void prg_map(address_map &map) ATTR_COLD;
+	void opcodes_map(address_map &map) ATTR_COLD;
 
 	INTERRUPT_GEN_MEMBER(interrupt);
 };
@@ -509,14 +509,14 @@ static INPUT_PORTS_START( anes )
 
 	PORT_START("SW3") // port 0x12
 	PORT_DIPNAME( 0x07, 0x07, DEF_STR( Coinage ) )      PORT_DIPLOCATION("SW3:1,2,3")
-	PORT_DIPSETTING(    0x00, "10 Coins/1 Credit" )
+	PORT_DIPSETTING(    0x00, DEF_STR( 10C_1C ) )
 	PORT_DIPSETTING(    0x04, DEF_STR( 5C_1C ) )
 	PORT_DIPSETTING(    0x02, DEF_STR( 3C_1C ) )
 	PORT_DIPSETTING(    0x06, DEF_STR( 2C_1C ) )
 	PORT_DIPSETTING(    0x07, DEF_STR( 1C_1C ) )
 	PORT_DIPSETTING(    0x03, DEF_STR( 1C_2C ) )
 	PORT_DIPSETTING(    0x05, DEF_STR( 1C_5C ) )
-	PORT_DIPSETTING(    0x01, "1 Coin/10 Credits" )
+	PORT_DIPSETTING(    0x01, DEF_STR( 1C_10C ) )
 	PORT_DIPNAME( 0x38, 0x38, "Bonus Chance" )          PORT_DIPLOCATION("SW3:4,5,6")
 	PORT_DIPSETTING(    0x38, "10" )
 	PORT_DIPSETTING(    0x18, "5" )
@@ -637,14 +637,14 @@ static INPUT_PORTS_START( sanma )
 
 	PORT_MODIFY("SW3") // port 0x12
 	PORT_DIPNAME( 0x07, 0x07, DEF_STR( Coinage ) )      PORT_DIPLOCATION("SW3:1,2,3")
-	PORT_DIPSETTING(    0x00, "10 Coins/1 Credit" )
+	PORT_DIPSETTING(    0x00, DEF_STR( 10C_1C ) )
 	PORT_DIPSETTING(    0x04, DEF_STR( 5C_1C ) )
 	PORT_DIPSETTING(    0x02, DEF_STR( 3C_1C ) )
 	PORT_DIPSETTING(    0x06, DEF_STR( 2C_1C ) )
 	PORT_DIPSETTING(    0x07, DEF_STR( 1C_1C ) )
 	PORT_DIPSETTING(    0x03, DEF_STR( 1C_2C ) )
 	PORT_DIPSETTING(    0x05, DEF_STR( 1C_5C ) )
-	PORT_DIPSETTING(    0x01, "1 Coin/10 Credits" )
+	PORT_DIPSETTING(    0x01, DEF_STR( 1C_10C ) )
 	PORT_DIPNAME( 0x38, 0x38, "Notes" )          PORT_DIPLOCATION("SW3:4,5,6")
 	PORT_DIPSETTING(    0x00, "10 Notes/1 Credit" )
 	PORT_DIPSETTING(    0x20, "5 Notes/1 Credit" )

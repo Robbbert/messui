@@ -76,13 +76,13 @@ protected:
 		, m_dcs(*this, "dcs")
 		, m_paletteram(*this, "paletteram")
 		, m_ram_base(*this, "ram_base")
-		, m_tms32031_control(*this, "32031_control")
+		, m_tms320c31_control(*this, "320c31_control")
 	{ }
 
 	virtual void device_post_load() override;
-	virtual void machine_start() override;
-	virtual void machine_reset() override;
-	virtual void video_start() override;
+	virtual void machine_start() override ATTR_COLD;
+	virtual void machine_reset() override ATTR_COLD;
+	virtual void video_start() override ATTR_COLD;
 
 	void cmos_protect_w(uint32_t data);
 	void dma_queue_w(uint32_t data);
@@ -99,8 +99,8 @@ protected:
 	uint32_t textureram_r(offs_t offset);
 	void control_w(offs_t offset, uint32_t data, uint32_t mem_mask = ~0);
 	void sound_w(uint32_t data);
-	uint32_t tms32031_control_r(offs_t offset);
-	void tms32031_control_w(offs_t offset, uint32_t data, uint32_t mem_mask = ~0);
+	uint32_t tms320c31_control_r(offs_t offset);
+	void tms320c31_control_w(offs_t offset, uint32_t data, uint32_t mem_mask = ~0);
 	uint32_t generic_speedup_r(offs_t offset);
 
 	uint32_t screen_update(screen_device &screen, bitmap_ind16 &bitmap, const rectangle &cliprect);
@@ -110,14 +110,14 @@ protected:
 
 	void midvcommon(machine_config &config);
 
-	required_device<tms32031_device> m_maincpu;
+	required_device<tms320c31_device> m_maincpu;
 	required_device<watchdog_timer_device> m_watchdog;
 	required_device<palette_device> m_palette;
 	required_device_array<timer_device, 2> m_timer;
 	required_device<dcs_audio_device> m_dcs;
 	required_shared_ptr<uint32_t> m_paletteram;
 	required_shared_ptr<uint32_t> m_ram_base;
-	required_shared_ptr<uint32_t> m_tms32031_control;
+	required_shared_ptr<uint32_t> m_tms320c31_control;
 
 	uint8_t m_cmos_protected = 0;
 	uint16_t m_control_data = 0;
@@ -135,6 +135,9 @@ class midvunit_state : public midvunit_base_state
 public:
 	void midvunit(machine_config &config);
 
+	DECLARE_INPUT_CHANGED_MEMBER(gear_button);
+	DECLARE_INPUT_CHANGED_MEMBER(shift_button);
+
 protected:
 	midvunit_state(const machine_config &mconfig, device_type type, const char *tag)
 		: midvunit_base_state(mconfig, type, tag)
@@ -145,9 +148,10 @@ protected:
 		, m_in0(*this, "IN0")
 		, m_in1(*this, "IN1")
 		, m_dsw(*this, "DSW")
+		, m_conf(*this, "CONF")
 	{ }
 
-	virtual void machine_start() override;
+	virtual void machine_start() override ATTR_COLD;
 
 	uint32_t port0_r();
 	uint32_t adc_r();
@@ -164,7 +168,7 @@ protected:
 	uint16_t comm_bus_out();
 	uint16_t comm_bus_in();
 
-	void midvunit_map(address_map &map);
+	void midvunit_map(address_map &map) ATTR_COLD;
 
 	required_device<adc0844_device> m_adc;
 
@@ -175,14 +179,15 @@ protected:
 	required_ioport m_in0;
 	required_ioport m_in1;
 	required_ioport m_dsw;
+	required_ioport m_conf;
 
 	uint8_t m_adc_shift = 0;
 	uint16_t m_last_port0 = 0;
-	uint8_t m_shifter_state = 0;
+	uint16_t m_shifter_state = 0;
 	uint8_t m_galil_input_index = 0;
 	uint8_t m_galil_input_length = 0;
 	const char *m_galil_input = nullptr;
-	uint8_t m_galil_output_index = 0;
+	uint16_t m_galil_output_index = 0;
 	char m_galil_output[450]{};
 	uint8_t m_wheel_board_output = 0;
 	uint32_t m_wheel_board_last = 0;
@@ -203,7 +208,7 @@ public:
 	void init_crusnu21();
 	void init_crusnusa();
 
-	DECLARE_CUSTOM_INPUT_MEMBER(motion_r);
+	ioport_value motion_r();
 
 protected:
 	void init_crusnusa_common(offs_t speedup);
@@ -226,7 +231,7 @@ public:
 	void init_offroadc();
 
 protected:
-	virtual void machine_start() override;
+	virtual void machine_start() override ATTR_COLD;
 
 	void crusnwld_control_w(offs_t offset, uint32_t data, uint32_t mem_mask = ~0);
 	uint32_t crusnwld_serial_status_r();
@@ -236,8 +241,8 @@ protected:
 	void bit_reset_w(uint32_t data);
 	void init_crusnwld_common(offs_t speedup);
 
-	void crusnwld_map(address_map &map);
-	void offroadc_map(address_map &map);
+	void crusnwld_map(address_map &map) ATTR_COLD;
+	void offroadc_map(address_map &map) ATTR_COLD;
 
 	required_device<midway_serial_pic2_device> m_midway_serial_pic2;
 
@@ -260,15 +265,15 @@ public:
 	void init_wargods();
 
 protected:
-	virtual void machine_start() override;
-	virtual void machine_reset() override;
+	virtual void machine_start() override ATTR_COLD;
+	virtual void machine_reset() override ATTR_COLD;
 
 private:
 	uint32_t midvplus_misc_r(offs_t offset);
 	void midvplus_misc_w(offs_t offset, uint32_t data, uint32_t mem_mask = ~0);
 	void midvplus_xf1_w(uint8_t data);
 
-	void midvplus_map(address_map &map);
+	void midvplus_map(address_map &map) ATTR_COLD;
 
 	required_device<midway_ioasic_device> m_midway_ioasic;
 	required_device<ata_interface_device> m_ata;

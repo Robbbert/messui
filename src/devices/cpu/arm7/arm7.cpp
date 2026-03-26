@@ -2,10 +2,10 @@
 // copyright-holders:Steve Ellenoff,R. Belmont,Ryan Holtz
 /*****************************************************************************
  *
- *   arm7.c
+ *   arm7.cpp
  *   Portable CPU Emulator for 32-bit ARM v3/4/5/6
  *
- *   Copyright Steve Ellenoff, all rights reserved.
+ *   Copyright Steve Ellenoff
  *   Thumb, DSP, and MMU support and many bugfixes by R. Belmont and Ryan Holtz.
  *
  *  This work is based on:
@@ -31,11 +31,15 @@ TODO:
 *****************************************************************************/
 
 #include "emu.h"
-#include "debug/debugcon.h"
-#include "debugger.h"
 #include "arm7.h"
+
 #include "arm7core.h"   //include arm7 core
 #include "arm7help.h"
+
+#include "debug/debugcon.h"
+#include "debugger.h"
+
+#include <cassert>
 
 #define LOG_MMU             (1U << 1)
 #define LOG_DSP             (1U << 2)
@@ -75,6 +79,7 @@ DEFINE_DEVICE_TYPE(ARM1176JZF_S, arm1176jzf_s_cpu_device, "arm1176jzf_s", "ARM11
 DEFINE_DEVICE_TYPE(PXA250,       pxa250_cpu_device,       "pxa250",       "Intel XScale PXA250")
 DEFINE_DEVICE_TYPE(PXA255,       pxa255_cpu_device,       "pxa255",       "Intel XScale PXA255")
 DEFINE_DEVICE_TYPE(PXA270,       pxa270_cpu_device,       "pxa270",       "Intel XScale PXA270")
+DEFINE_DEVICE_TYPE(SA1100,       sa1100_cpu_device,       "sa1100",       "Intel StrongARM SA-1100")
 DEFINE_DEVICE_TYPE(SA1110,       sa1110_cpu_device,       "sa1110",       "Intel StrongARM SA-1110")
 DEFINE_DEVICE_TYPE(IGS036,       igs036_cpu_device,       "igs036",       "IGS036")
 
@@ -83,9 +88,17 @@ arm7_cpu_device::arm7_cpu_device(const machine_config &mconfig, const char *tag,
 {
 }
 
-arm7_cpu_device::arm7_cpu_device(const machine_config &mconfig, device_type type, const char *tag, device_t *owner, uint32_t clock, uint8_t archRev, uint32_t archFlags, endianness_t endianness)
+arm7_cpu_device::arm7_cpu_device(
+		const machine_config &mconfig,
+		device_type type,
+		const char *tag, device_t *owner,
+		uint32_t clock,
+		uint8_t archRev,
+		uint32_t archFlags,
+		endianness_t endianness,
+		address_map_constructor internal_map)
 	: cpu_device(mconfig, type, tag, owner, clock)
-	, m_program_config("program", endianness, 32, 32, 0)
+	, m_program_config("program", endianness, 32, 32, 0, internal_map)
 	, m_prefetch_word0_shift(endianness == ENDIANNESS_LITTLE ? 0 : 16)
 	, m_prefetch_word1_shift(endianness == ENDIANNESS_LITTLE ? 16 : 0)
 	, m_endian(endianness)
@@ -111,6 +124,10 @@ arm7_cpu_device::arm7_cpu_device(const machine_config &mconfig, device_type type
 	m_insn_prefetch_index = 0;
 	m_tlb_log = 0;
 	m_actual_log = 0;
+}
+
+arm7_cpu_device::~arm7_cpu_device()
+{
 }
 
 
@@ -272,6 +289,16 @@ pxa270_cpu_device::pxa270_cpu_device(const machine_config &mconfig, const char *
 			   | ARM9_COPRO_ID_ARCH_V5TE
 			   | ARM9_COPRO_ID_PART_PXA270
 			   | ARM9_COPRO_ID_STEP_PXA255_A0;
+}
+
+sa1100_cpu_device::sa1100_cpu_device(const machine_config &mconfig, const char *tag, device_t *owner, uint32_t clock)
+	: arm7_cpu_device(mconfig, SA1100, tag, owner, clock, 4, ARCHFLAG_SA, ENDIANNESS_LITTLE)
+	// has StrongARM, no Thumb, no Enhanced DSP
+{
+	m_copro_id = ARM9_COPRO_ID_MFR_DEC
+			   | ARM9_COPRO_ID_ARCH_V4
+			   | ARM9_COPRO_ID_PART_SA1100
+			   | ARM9_COPRO_ID_STEP_SA1100_A;
 }
 
 sa1110_cpu_device::sa1110_cpu_device(const machine_config &mconfig, const char *tag, device_t *owner, uint32_t clock)
@@ -1041,7 +1068,7 @@ void arm7_cpu_device::device_start()
 
 	state_add(STATE_GENFLAGS, "GENFLAGS", m_r[eCPSR]).formatstr("%13s").noshow();
 
-	if (machine().debug_flags & DEBUG_FLAG_ENABLED)
+	if (debugger_enabled())
 	{
 		using namespace std::placeholders;
 		machine().debugger().console().register_command("translate_insn", CMDFLAG_NONE, 1, 1, std::bind(&arm7_cpu_device::translate_insn_command, this, _1));
@@ -1124,8 +1151,6 @@ void arm7_cpu_device::device_reset()
 	SwitchMode(eARM7_MODE_SVC);
 	m_r[eR15] = 0 | m_vectorbase;
 
-	m_impstate.cache_dirty = true;
-
 	for (auto &entry : m_dtlb_entries)
 	{
 		entry.valid = false;
@@ -1153,10 +1178,6 @@ void arm1176jzf_s_cpu_device::device_reset()
 	arm7_cpu_device::device_reset();
 	m_control = 0x00050078;
 }
-
-#define UNEXECUTED() \
-	m_r[eR15] += 4; \
-	m_icount +=2; /* Any unexecuted instruction only takes 1 cycle (page 193) */
 
 void arm7_cpu_device::update_insn_prefetch(uint32_t curr_pc)
 {
@@ -1237,6 +1258,8 @@ void arm7_cpu_device::add_ce_kernel_addr(offs_t addr, std::string value)
 
 void arm7_cpu_device::execute_run()
 {
+	auto const UNEXECUTED = [this] { m_r[eR15] += 4; m_icount += 2; }; // Any unexecuted instruction only takes 1 cycle (page 193)
+
 	m_tlb_log = m_actual_log;
 
 	uint32_t insn;
@@ -1446,12 +1469,10 @@ void arm7_cpu_device::execute_run()
 		/* handle Thumb instructions if active */
 		if (T_IS_SET(m_r[eCPSR]))
 		{
-			offs_t raddr;
-
 			pc = m_r[eR15];
 
 			// "In Thumb state, bit [0] is undefined and must be ignored. Bits [31:1] contain the PC."
-			raddr = pc & (~1);
+			offs_t const raddr = pc & ~uint32_t(1);
 
 			if (!insn_fetch_thumb(raddr, insn))
 			{
@@ -1463,12 +1484,10 @@ void arm7_cpu_device::execute_run()
 		}
 		else
 		{
-			offs_t raddr;
-
 			/* load 32 bit instruction */
 
 			// "In ARM state, bits [1:0] of r15 are undefined and must be ignored. Bits [31:2] contain the PC."
-			raddr = pc & (~3);
+			offs_t const raddr = pc & ~uint32_t(3);
 
 			if (!insn_fetch_arm(raddr, insn))
 			{
@@ -1573,27 +1592,46 @@ skip_exec:
 
 void arm7_cpu_device::execute_set_input(int irqline, int state)
 {
-	switch (irqline) {
-	case ARM7_IRQ_LINE: /* IRQ */
-		m_pendingIrq = state ? true : false;
+	switch (irqline)
+	{
+	case ARM7_IRQ_LINE: // IRQ
+		m_pendingIrq = state != 0;
 		break;
 
-	case ARM7_FIRQ_LINE: /* FIRQ */
-		m_pendingFiq = state ? true : false;
+	case ARM7_FIRQ_LINE: // FIQ
+		m_pendingFiq = state != 0;
 		break;
 
 	case ARM7_ABORT_EXCEPTION:
-		m_pendingAbtD = state ? true : false;
+		m_pendingAbtD = state != 0;
 		break;
 	case ARM7_ABORT_PREFETCH_EXCEPTION:
-		m_pendingAbtP = state ? true : false;
+		m_pendingAbtP = state != 0;
 		break;
 
 	case ARM7_UNDEFINE_EXCEPTION:
-		m_pendingUnd = state ? true : false;
+		m_pendingUnd = state != 0;
 		break;
 	}
 
+	update_irq_state();
+	arm7_check_irq_state();
+}
+
+
+void arm7_cpu_device::set_irq(int state)
+{
+	assert((machine().scheduler().currently_executing() == static_cast<device_execute_interface *>(this)) || !machine().scheduler().currently_executing());
+	m_pendingIrq = state != 0;
+	update_irq_state();
+	arm7_check_irq_state();
+}
+
+
+void arm7_cpu_device::set_fiq(int state)
+{
+	assert((machine().scheduler().currently_executing() == static_cast<device_execute_interface *>(this)) || !machine().scheduler().currently_executing());
+	m_pendingFiq = state != 0;
 	update_irq_state();
 	arm7_check_irq_state();
 }
@@ -2066,7 +2104,7 @@ void arm946es_cpu_device::RefreshITCM()
 	}
 }
 
-void arm946es_cpu_device::arm7_cpu_write32(uint32_t addr, uint32_t data)
+void arm946es_cpu_device::arm7_cpu_write32(offs_t addr, uint32_t data)
 {
 	addr &= ~3;
 
@@ -2087,7 +2125,7 @@ void arm946es_cpu_device::arm7_cpu_write32(uint32_t addr, uint32_t data)
 }
 
 
-void arm946es_cpu_device::arm7_cpu_write16(uint32_t addr, uint16_t data)
+void arm946es_cpu_device::arm7_cpu_write16(offs_t addr, uint16_t data)
 {
 	addr &= ~1;
 	if ((addr >= cp15_itcm_base) && (addr <= cp15_itcm_end))
@@ -2106,7 +2144,7 @@ void arm946es_cpu_device::arm7_cpu_write16(uint32_t addr, uint16_t data)
 	m_program->write_word(addr, data);
 }
 
-void arm946es_cpu_device::arm7_cpu_write8(uint32_t addr, uint8_t data)
+void arm946es_cpu_device::arm7_cpu_write8(offs_t addr, uint8_t data)
 {
 	if ((addr >= cp15_itcm_base) && (addr <= cp15_itcm_end))
 	{
@@ -2122,7 +2160,7 @@ void arm946es_cpu_device::arm7_cpu_write8(uint32_t addr, uint8_t data)
 	m_program->write_byte(addr, data);
 }
 
-uint32_t arm946es_cpu_device::arm7_cpu_read32(uint32_t addr)
+uint32_t arm946es_cpu_device::arm7_cpu_read32(offs_t addr)
 {
 	uint32_t result;
 
@@ -2166,7 +2204,7 @@ uint32_t arm946es_cpu_device::arm7_cpu_read32(uint32_t addr)
 	return result;
 }
 
-uint32_t arm946es_cpu_device::arm7_cpu_read16(uint32_t addr)
+uint32_t arm946es_cpu_device::arm7_cpu_read16(offs_t addr)
 {
 	addr &= ~1;
 
@@ -2184,7 +2222,7 @@ uint32_t arm946es_cpu_device::arm7_cpu_read16(uint32_t addr)
 	return m_program->read_word(addr);
 }
 
-uint8_t arm946es_cpu_device::arm7_cpu_read8(uint32_t addr)
+uint8_t arm946es_cpu_device::arm7_cpu_read8(offs_t addr)
 {
 	if ((addr >= cp15_itcm_base) && (addr <= cp15_itcm_end))
 	{
@@ -2270,7 +2308,7 @@ void arm1176jzf_s_cpu_device::arm7_rt_w_callback(offs_t offset, uint32_t data)
 /***************************************************************************
  * Default Memory Handlers
  ***************************************************************************/
-void arm7_cpu_device::arm7_cpu_write32(uint32_t addr, uint32_t data)
+void arm7_cpu_device::arm7_cpu_write32(offs_t addr, uint32_t data)
 {
 	if( COPRO_CTRL & COPRO_CTRL_MMU_EN )
 	{
@@ -2285,7 +2323,7 @@ void arm7_cpu_device::arm7_cpu_write32(uint32_t addr, uint32_t data)
 }
 
 
-void arm7_cpu_device::arm7_cpu_write16(uint32_t addr, uint16_t data)
+void arm7_cpu_device::arm7_cpu_write16(offs_t addr, uint16_t data)
 {
 	if( COPRO_CTRL & COPRO_CTRL_MMU_EN )
 	{
@@ -2299,7 +2337,7 @@ void arm7_cpu_device::arm7_cpu_write16(uint32_t addr, uint16_t data)
 	m_program->write_word(addr, data);
 }
 
-void arm7_cpu_device::arm7_cpu_write8(uint32_t addr, uint8_t data)
+void arm7_cpu_device::arm7_cpu_write8(offs_t addr, uint8_t data)
 {
 	if( COPRO_CTRL & COPRO_CTRL_MMU_EN )
 	{
@@ -2312,7 +2350,7 @@ void arm7_cpu_device::arm7_cpu_write8(uint32_t addr, uint8_t data)
 	m_program->write_byte(addr, data);
 }
 
-uint32_t arm7_cpu_device::arm7_cpu_read32(uint32_t addr)
+uint32_t arm7_cpu_device::arm7_cpu_read32(offs_t addr)
 {
 	uint32_t result;
 
@@ -2336,7 +2374,7 @@ uint32_t arm7_cpu_device::arm7_cpu_read32(uint32_t addr)
 	return result;
 }
 
-uint32_t arm7_cpu_device::arm7_cpu_read16(uint32_t addr)
+uint32_t arm7_cpu_device::arm7_cpu_read16(offs_t addr)
 {
 	uint32_t result;
 
@@ -2358,7 +2396,7 @@ uint32_t arm7_cpu_device::arm7_cpu_read16(uint32_t addr)
 	return result;
 }
 
-uint8_t arm7_cpu_device::arm7_cpu_read8(uint32_t addr)
+uint8_t arm7_cpu_device::arm7_cpu_read8(offs_t addr)
 {
 	if( COPRO_CTRL & COPRO_CTRL_MMU_EN )
 	{
@@ -2371,5 +2409,3 @@ uint8_t arm7_cpu_device::arm7_cpu_read8(uint32_t addr)
 	// Handle through normal 8 bit handler (for 32 bit cpu)
 	return m_program->read_byte(addr);
 }
-
-#include "arm7drc.hxx"

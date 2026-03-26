@@ -44,16 +44,16 @@ public:
 	void gs471(machine_config &config);
 
 protected:
-	virtual void machine_start() override;
-	virtual void machine_reset() override;
-	virtual void video_start() override;
+	virtual void machine_start() override ATTR_COLD;
+	virtual void machine_reset() override ATTR_COLD;
+	virtual void video_start() override ATTR_COLD;
 
 	required_device<cpu_device> m_maincpu;
 	required_device<oak_oti111_vga_device> m_vga;
 	required_device<ymz280b_device> m_ymz;
 
 private:
-	void gs471_main(address_map &map);
+	void gs471_main(address_map &map) ATTR_COLD;
 };
 
 void konmedal020_state::video_start()
@@ -107,12 +107,11 @@ void konmedal020_state::gs471(machine_config &config)
 	m_vga->set_vram_size(0x100000);
 
 	/* sound hardware */
-	SPEAKER(config, "lspeaker").front_left();
-	SPEAKER(config, "rspeaker").front_right();
+	SPEAKER(config, "speaker", 2).front();
 
 	YMZ280B(config, m_ymz, XTAL(16'934'400)); // 16.9344 MHz xtal verified on PCB
-	m_ymz->add_route(0, "lspeaker", 0.75);
-	m_ymz->add_route(1, "rspeaker", 0.75);
+	m_ymz->add_route(0, "speaker", 0.75, 0);
+	m_ymz->add_route(1, "speaker", 0.75, 1);
 }
 
 ROM_START( gs471 )

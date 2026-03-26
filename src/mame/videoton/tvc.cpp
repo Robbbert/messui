@@ -63,8 +63,8 @@ public:
 	void tvc(machine_config &config);
 
 protected:
-	virtual void machine_start() override;
-	virtual void machine_reset() override;
+	virtual void machine_start() override ATTR_COLD;
+	virtual void machine_reset() override ATTR_COLD;
 
 	required_device<cpu_device> m_maincpu;
 	required_device<address_map_bank_device> m_bank1;
@@ -114,11 +114,11 @@ protected:
 
 	void tvc_palette(palette_device &palette) const;
 
-	void tvc_mem(address_map &map);
-	void tvc_bank1(address_map &map);
-	void tvc_bank3(address_map &map);
-	void tvc_bank4(address_map &map);
-	void tvc_io(address_map &map);
+	void tvc_mem(address_map &map) ATTR_COLD;
+	void tvc_bank1(address_map &map) ATTR_COLD;
+	void tvc_bank3(address_map &map) ATTR_COLD;
+	void tvc_bank4(address_map &map) ATTR_COLD;
+	void tvc_io(address_map &map) ATTR_COLD;
 };
 
 class tvc64p_state : public tvc_state
@@ -133,15 +133,15 @@ public:
 	void tvc64p(machine_config &config);
 
 protected:
-	virtual void machine_start() override;
-	virtual void machine_reset() override;
+	virtual void machine_start() override ATTR_COLD;
+	virtual void machine_reset() override ATTR_COLD;
 
 private:
 	void vram_bank_w(uint8_t data);
 
-	void bank1_64p(address_map &map);
-	void bank3_64p(address_map &map);
-	void io_64p(address_map &map);
+	void bank1_64p(address_map &map) ATTR_COLD;
+	void bank3_64p(address_map &map) ATTR_COLD;
+	void io_64p(address_map &map) ATTR_COLD;
 
 	required_memory_bank m_vram_bank1;
 	required_memory_bank m_vram_bank3;
@@ -902,6 +902,6 @@ ROM_END
 /* Driver */
 
 //    YEAR  NAME      PARENT  COMPAT  MACHINE  INPUT     CLASS         INIT        COMPANY       FULLNAME             FLAGS
-COMP( 1985, tvc64,    0,      0,      tvc,     tvc,      tvc_state,    empty_init, "Videoton",   "TVC 64",            MACHINE_NOT_WORKING | MACHINE_NO_SOUND )
-COMP( 1985, tvc64p,   tvc64,  0,      tvc64p,  tvc,      tvc64p_state, empty_init, "Videoton",   "TVC 64+",           MACHINE_NOT_WORKING | MACHINE_NO_SOUND )
-COMP( 1985, tvc64pru, tvc64,  0,      tvc64p,  tvc64pru, tvc64p_state, empty_init, "Videoton",   "TVC 64+ (Russian)", MACHINE_NOT_WORKING | MACHINE_NO_SOUND )
+COMP( 1985, tvc64,    0,      0,      tvc,     tvc,      tvc_state,    empty_init, "Videoton",   "TVC 64",            MACHINE_NOT_WORKING | MACHINE_IMPERFECT_SOUND )
+COMP( 1985, tvc64p,   tvc64,  0,      tvc64p,  tvc,      tvc64p_state, empty_init, "Videoton",   "TVC 64+",           MACHINE_NOT_WORKING | MACHINE_IMPERFECT_SOUND )
+COMP( 1985, tvc64pru, tvc64,  0,      tvc64p,  tvc64pru, tvc64p_state, empty_init, "Videoton",   "TVC 64+ (Russian)", MACHINE_NOT_WORKING | MACHINE_IMPERFECT_SOUND )

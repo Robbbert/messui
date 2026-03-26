@@ -13,8 +13,12 @@
 
 #include "ui/filecreate.h"
 #include "ui/filesel.h"
+#include "ui/midiinout.h"
 #include "ui/swlist.h"
 #include "ui/ui.h"
+
+#include "bus/midi/midiinport.h"
+#include "bus/midi/midioutport.h"
 
 #include "audit.h"
 #include "drivenum.h"
@@ -193,7 +197,7 @@ void menu_control_device_image::load_software_part()
 	}
 	else
 	{
-		machine().popmessage(_("The software selected is missing one or more required ROM or CHD images.\nPlease acquire the correct files or select a different one."));
+		machine().popmessage(_("Files required for the selected software are missing or incorrect."));
 		m_state = SELECT_SOFTLIST;
 		menu_activated();
 	}
@@ -274,6 +278,10 @@ void menu_control_device_image::menu_activated()
 						m_state = START_SOFTLIST;
 						break;
 
+					case menu_file_selector::result::MIDI:
+						m_state = START_MIDI;
+						break;
+
 					default: // return to system
 						stack_pop();
 						break;
@@ -285,6 +293,22 @@ void menu_control_device_image::menu_activated()
 		m_sld = nullptr;
 		menu::stack_push<menu_software>(ui(), container(), m_image.image_interface(), &m_sld);
 		m_state = SELECT_SOFTLIST;
+		break;
+
+	case START_MIDI:
+		m_midi = "";
+		menu::stack_push<menu_midi_inout>(ui(), container(), m_image.device().type() == MIDIIN, &m_midi);
+		m_state = SELECT_MIDI;
+		break;
+
+	case SELECT_MIDI:
+		if(!m_midi.empty())
+		{
+			auto [err, msg] = m_image.load(m_midi);
+			if (err)
+				machine().popmessage(_("Error connecting to midi port: %1$s"), !msg.empty() ? msg : err.message());
+		}
+		stack_pop();
 		break;
 
 	case START_OTHER_PART:

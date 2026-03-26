@@ -28,25 +28,28 @@ Driver's Eyes works,
 */
 
 #include "emu.h"
+
+#include "namco68.h"
+#include "namco_c139.h"
+#include "namco_c148.h"
 #include "namcoio_gearbox.h"
-#include "screen.h"
-#include "emupal.h"
-#include "speaker.h"
+#include "namcos21_3d.h"
+#include "namcos21_dsp.h"
+
+#include "namco_c355spr.h"
+
 #include "cpu/m68000/m68000.h"
 #include "cpu/m6805/m6805.h"
 #include "cpu/m6809/m6809.h"
-#include "cpu/tms32025/tms32025.h"
+#include "cpu/tms320c2x/tms320c2x.h"
 #include "machine/nvram.h"
 #include "machine/timer.h"
-#include "namco_c139.h"
-#include "namco_c148.h"
-#include "namco68.h"
-#include "namcos21_dsp.h"
-#include "namco_c355spr.h"
-#include "namcos21_3d.h"
 #include "sound/c140.h"
 #include "sound/ymopm.h"
+
 #include "emupal.h"
+#include "screen.h"
+#include "speaker.h"
 
 
 #define ENABLE_LOGGING      0
@@ -58,14 +61,14 @@ class namco_de_pcbstack_device : public device_t
 {
 public:
 	// construction/destruction
-	namco_de_pcbstack_device(const machine_config &mconfig, const char *tag, device_t *owner, uint32_t clock);
+	namco_de_pcbstack_device(const machine_config &mconfig, const char *tag, device_t *owner, u32 clock);
 
 	void configure_c148_standard(machine_config &config);
 
 protected:
-	virtual void device_add_mconfig(machine_config &config) override;
-	virtual void device_start() override;
-	virtual void device_reset() override;
+	virtual void device_add_mconfig(machine_config &config) override ATTR_COLD;
+	virtual void device_start() override ATTR_COLD;
+	virtual void device_reset() override ATTR_COLD;
 
 private:
 
@@ -85,50 +88,51 @@ private:
 	required_device<screen_device> m_screen;
 	required_memory_bank m_audiobank;
 	required_region_ptr<u16> m_c140_region;
-	required_shared_ptr<uint8_t> m_dpram;
+	required_shared_ptr<u8> m_dpram;
 	required_device<namcos21_3d_device> m_namcos21_3d;
 	required_device<namcos21_dsp_device> m_namcos21_dsp;
 
-	uint16_t m_video_enable;
+	u16 m_video_enable = 0;
 
-	uint16_t video_enable_r();
-	void video_enable_w(offs_t offset, uint16_t data, uint16_t mem_mask = ~0);
+	u16 video_enable_r();
+	void video_enable_w(offs_t offset, u16 data, u16 mem_mask = ~0);
 
-	uint16_t dpram_word_r(offs_t offset);
-	void dpram_word_w(offs_t offset, uint16_t data, uint16_t mem_mask = ~0);
-	uint8_t dpram_byte_r(offs_t offset);
-	void dpram_byte_w(offs_t offset, uint8_t data);
+	u16 dpram_word_r(offs_t offset);
+	void dpram_word_w(offs_t offset, u16 data, u16 mem_mask = ~0);
+	u8 dpram_byte_r(offs_t offset);
+	void dpram_byte_w(offs_t offset, u8 data);
 
-	void eeprom_w(offs_t offset, uint8_t data);
-	uint8_t eeprom_r(offs_t offset);
+	void eeprom_w(offs_t offset, u8 data);
+	u8 eeprom_r(offs_t offset);
 
-	void sound_bankselect_w(uint8_t data);
+	void sound_bankselect_w(u8 data);
 
-	void sound_reset_w(uint8_t data);
-	void system_reset_w(uint8_t data);
+	void sound_reset_w(u8 data);
+	void system_reset_w(u8 data);
 	void reset_all_subcpus(int state);
 
-	std::unique_ptr<uint8_t[]> m_eeprom;
+	std::unique_ptr<u8[]> m_eeprom;
 
 	TIMER_DEVICE_CALLBACK_MEMBER(screen_scanline);
 
-	uint32_t screen_update(screen_device &screen, bitmap_ind16 &bitmap, const rectangle &cliprect);
+	bool sprite_mix_callback(u16 &dest, u8 &destpri, u16 colbase, u16 src, int srcpri, int pri);
+	u32 screen_update(screen_device &screen, bitmap_ind16 &bitmap, const rectangle &cliprect);
 
 	void configure_c68_namcos21(machine_config &config);
 
-	void driveyes_common_map(address_map &map);
-	void driveyes_master_map(address_map &map);
-	void driveyes_slave_map(address_map &map);
+	void driveyes_common_map(address_map &map) ATTR_COLD;
+	void driveyes_master_map(address_map &map) ATTR_COLD;
+	void driveyes_slave_map(address_map &map) ATTR_COLD;
 
-	void sound_map(address_map &map);
-	void c140_map(address_map &map);
+	void sound_map(address_map &map) ATTR_COLD;
+	void c140_map(address_map &map) ATTR_COLD;
 };
 
 
 DEFINE_DEVICE_TYPE(NAMCO_DE_PCB, namco_de_pcbstack_device, "namco_de_pcb", "Namco Driver's Eyes PCB stack")
 
 
-namco_de_pcbstack_device::namco_de_pcbstack_device(const machine_config &mconfig, const char *tag, device_t *owner, uint32_t clock) :
+namco_de_pcbstack_device::namco_de_pcbstack_device(const machine_config &mconfig, const char *tag, device_t *owner, u32 clock) :
 	device_t(mconfig, NAMCO_DE_PCB, tag, owner, clock),
 	m_maincpu(*this, "maincpu"),
 	m_audiocpu(*this, "audiocpu"),
@@ -197,64 +201,86 @@ void namco_de_pcbstack_device::device_add_mconfig(machine_config &config)
 	m_c355spr->set_palette(m_palette);
 	m_c355spr->set_scroll_offsets(0x26, 0x19);
 	m_c355spr->set_tile_callback(namco_c355spr_device::c355_obj_code2tile_delegate());
-	m_c355spr->set_palxor(0xf); // reverse mapping
+	m_c355spr->set_mix_callback(FUNC(namco_de_pcbstack_device::sprite_mix_callback));
 	m_c355spr->set_color_base(0x1000);
 	m_c355spr->set_external_prifill(true);
 
-	SPEAKER(config, "lspeaker").front_left();
-	SPEAKER(config, "rspeaker").front_right();
+	SPEAKER(config, "speaker", 2).front();
 
 	C140(config, m_c140, 49.152_MHz_XTAL / 2304);
 	m_c140->set_addrmap(0, &namco_de_pcbstack_device::c140_map);
 	m_c140->int1_callback().set_inputline(m_audiocpu, M6809_FIRQ_LINE);
-	m_c140->add_route(0, "lspeaker", 0.50);
-	m_c140->add_route(1, "rspeaker", 0.50);
+	m_c140->add_route(0, "speaker", 0.50, 0);
+	m_c140->add_route(1, "speaker", 0.50, 1);
 
-	YM2151(config, "ymsnd", 3.579545_MHz_XTAL).add_route(0, "lspeaker", 0.30).add_route(1, "rspeaker", 0.30);
+	YM2151(config, "ymsnd", 3.579545_MHz_XTAL).add_route(0, "speaker", 0.30, 0).add_route(1, "speaker", 0.30, 1);
 }
 
 
-uint32_t namco_de_pcbstack_device::screen_update(screen_device &screen, bitmap_ind16 &bitmap, const rectangle &cliprect)
+bool namco_de_pcbstack_device::sprite_mix_callback(u16 &dest, u8 &destpri, u16 colbase, u16 src, int srcpri, int pri)
 {
-	//uint8_t *videoram = m_gpu_videoram.get();
+	if (srcpri == pri)
+	{
+		if ((src & 0xff) != 0xff)
+		{
+			switch (src & 0xff)
+			{
+			case 0:
+				dest = 0x4000 | (dest & 0x1fff);
+				break;
+			case 1:
+				dest = 0x6000 | (dest & 0x1fff);
+				break;
+			default:
+				dest = colbase + (src ^ 0xf00);
+				break;
+			}
+			return true;
+		}
+	}
+	return false;
+}
+
+u32 namco_de_pcbstack_device::screen_update(screen_device &screen, bitmap_ind16 &bitmap, const rectangle &cliprect)
+{
+	//u8 *videoram = m_gpu_videoram.get();
 	int pivot = 3;
-	int pri;
-	bitmap.fill(0xff, cliprect );
+	bitmap.fill(0xff, cliprect);
 	screen.priority().fill(0, cliprect);
 	m_c355spr->build_sprite_list_and_render_sprites(cliprect); // TODO : buffered?
 
-	m_c355spr->draw(screen, bitmap, cliprect, 2 );
-	m_c355spr->draw(screen, bitmap, cliprect, 14 );   //driver's eyes
+	m_c355spr->draw(screen, bitmap, cliprect, 2);
+	m_c355spr->draw(screen, bitmap, cliprect, 14);   //driver's eyes
 
 	m_namcos21_3d->copy_visible_poly_framebuffer(bitmap, cliprect, 0x7fc0, 0x7ffe);
 
-	m_c355spr->draw(screen, bitmap, cliprect, 0 );
-	m_c355spr->draw(screen, bitmap, cliprect, 1 );
+	m_c355spr->draw(screen, bitmap, cliprect, 0);
+	m_c355spr->draw(screen, bitmap, cliprect, 1);
 
 	m_namcos21_3d->copy_visible_poly_framebuffer(bitmap, cliprect, 0, 0x7fbf);
 
-	for (pri = pivot; pri < 8; pri++)
+	for (int pri = pivot; pri < 8; pri++)
 	{
 		m_c355spr->draw(screen, bitmap, cliprect, pri);
 	}
 
-	m_c355spr->draw(screen, bitmap, cliprect, 15 );   //driver's eyes
+	m_c355spr->draw(screen, bitmap, cliprect, 15);   //driver's eyes
 
 	return 0;
 
 }
 
-uint16_t namco_de_pcbstack_device::video_enable_r()
+u16 namco_de_pcbstack_device::video_enable_r()
 {
 	return m_video_enable;
 }
 
-void namco_de_pcbstack_device::video_enable_w(offs_t offset, uint16_t data, uint16_t mem_mask)
+void namco_de_pcbstack_device::video_enable_w(offs_t offset, u16 data, u16 mem_mask)
 {
 	COMBINE_DATA( &m_video_enable ); /* 0x40 = enable */
-	if( m_video_enable!=0 && m_video_enable!=0x40 )
+	if (m_video_enable != 0 && m_video_enable != 0x40 )
 	{
-		logerror( "unexpected video_enable_w=0x%x\n", m_video_enable );
+		logerror("%s: unexpected video_enable_w=0x%x\n", machine().describe_context(), m_video_enable);
 	}
 }
 
@@ -262,25 +288,25 @@ void namco_de_pcbstack_device::video_enable_w(offs_t offset, uint16_t data, uint
 
 /* dual port ram memory handlers */
 
-uint16_t namco_de_pcbstack_device::dpram_word_r(offs_t offset)
+u16 namco_de_pcbstack_device::dpram_word_r(offs_t offset)
 {
 	return m_dpram[offset];
 }
 
-void namco_de_pcbstack_device::dpram_word_w(offs_t offset, uint16_t data, uint16_t mem_mask)
+void namco_de_pcbstack_device::dpram_word_w(offs_t offset, u16 data, u16 mem_mask)
 {
-	if( ACCESSING_BITS_0_7 )
+	if (ACCESSING_BITS_0_7)
 	{
 		m_dpram[offset] = data&0xff;
 	}
 }
 
-uint8_t namco_de_pcbstack_device::dpram_byte_r(offs_t offset)
+u8 namco_de_pcbstack_device::dpram_byte_r(offs_t offset)
 {
 	return m_dpram[offset];
 }
 
-void namco_de_pcbstack_device::dpram_byte_w(offs_t offset, uint8_t data)
+void namco_de_pcbstack_device::dpram_byte_w(offs_t offset, u8 data)
 {
 	m_dpram[offset] = data;
 }
@@ -383,12 +409,12 @@ void namco_de_pcbstack_device::driveyes_slave_map(address_map &map)
 	map(0x1c0000, 0x1fffff).m(m_slave_intc, FUNC(namco_c148_device::map));
 }
 
-void namco_de_pcbstack_device::sound_bankselect_w(uint8_t data)
+void namco_de_pcbstack_device::sound_bankselect_w(u8 data)
 {
 	m_audiobank->set_entry(data>>4);
 }
 
-void namco_de_pcbstack_device::sound_reset_w(uint8_t data)
+void namco_de_pcbstack_device::sound_reset_w(u8 data)
 {
 	if (data & 0x01)
 	{
@@ -403,7 +429,7 @@ void namco_de_pcbstack_device::sound_reset_w(uint8_t data)
 	}
 }
 
-void namco_de_pcbstack_device::system_reset_w(uint8_t data)
+void namco_de_pcbstack_device::system_reset_w(u8 data)
 {
 	reset_all_subcpus(data & 1 ? CLEAR_LINE : ASSERT_LINE);
 
@@ -417,12 +443,12 @@ void namco_de_pcbstack_device::reset_all_subcpus(int state)
 	m_c68->ext_reset(state);
 }
 
-void namco_de_pcbstack_device::eeprom_w(offs_t offset, uint8_t data)
+void namco_de_pcbstack_device::eeprom_w(offs_t offset, u8 data)
 {
 	m_eeprom[offset] = data;
 }
 
-uint8_t namco_de_pcbstack_device::eeprom_r(offs_t offset)
+u8 namco_de_pcbstack_device::eeprom_r(offs_t offset)
 {
 	return m_eeprom[offset];
 }
@@ -433,7 +459,7 @@ TIMER_DEVICE_CALLBACK_MEMBER(namco_de_pcbstack_device::screen_scanline)
 	int scanline = param;
 //  int cur_posirq = get_posirq_scanline()*2;
 
-	if(scanline == 240*2)
+	if (scanline == 240*2)
 	{
 		m_master_intc->vblank_irq_trigger();
 		m_slave_intc->vblank_irq_trigger();
@@ -454,10 +480,10 @@ void namco_de_pcbstack_device::configure_c148_standard(machine_config &config)
 
 void namco_de_pcbstack_device::device_start()
 {
-	m_eeprom = std::make_unique<uint8_t[]>(0x2000);
+	m_eeprom = std::make_unique<u8[]>(0x2000);
 	subdevice<nvram_device>("nvram")->set_base(m_eeprom.get(), 0x2000);
 
-	uint32_t max = memregion("audiocpu")->bytes() / 0x4000;
+	u32 max = memregion("audiocpu")->bytes() / 0x4000;
 	for (int i = 0; i < 0x10; i++)
 		m_audiobank->configure_entry(i, memregion("audiocpu")->base() + (i % max) * 0x4000);
 
@@ -513,7 +539,7 @@ static INPUT_PORTS_START( driveyes )
 	PORT_BIT( 0x80, IP_ACTIVE_LOW, IPT_SERVICE1 )
 
 	PORT_START("pcb_1:MCUB")
-	PORT_BIT( 0x08, IP_ACTIVE_HIGH, IPT_CUSTOM ) PORT_READ_LINE_DEVICE_MEMBER("gearbox", namcoio_gearbox_device, clutch_r )
+	PORT_BIT( 0x08, IP_ACTIVE_HIGH, IPT_CUSTOM ) PORT_READ_LINE_DEVICE_MEMBER("gearbox", FUNC(namcoio_gearbox_device::clutch_r))
 	PORT_BIT( 0x37, IP_ACTIVE_LOW, IPT_UNUSED )
 	PORT_BIT( 0x40, IP_ACTIVE_LOW, IPT_UNUSED ) /* ? */
 	PORT_BIT( 0x80, IP_ACTIVE_LOW, IPT_UNUSED ) /* ? */
@@ -540,7 +566,7 @@ static INPUT_PORTS_START( driveyes )
 	PORT_DIPNAME( 0x10, 0x10, "DSW5")
 	PORT_DIPSETTING(    0x10, DEF_STR( Off ) )
 	PORT_DIPSETTING(    0x00, DEF_STR( On ) )
-	PORT_DIPNAME( 0x20, 0x00, "PCM ROM")
+	PORT_DIPNAME( 0x20, 0x20, "PCM ROM")
 	PORT_DIPSETTING(    0x20, "2M" )
 	PORT_DIPSETTING(    0x00, "4M" )
 	PORT_DIPNAME( 0x40, 0x40, "DSW7")
@@ -568,7 +594,7 @@ static INPUT_PORTS_START( driveyes )
 	PORT_BIT( 0xff, IP_ACTIVE_LOW, IPT_UNUSED )
 
 	PORT_START("pcb_1:MCUDI0")
-	PORT_BIT( 0x0f, IP_ACTIVE_HIGH, IPT_CUSTOM ) PORT_CUSTOM_DEVICE_MEMBER("gearbox", namcoio_gearbox_device, in_r)
+	PORT_BIT( 0x0f, IP_ACTIVE_HIGH, IPT_CUSTOM ) PORT_CUSTOM_DEVICE_MEMBER("gearbox", FUNC(namcoio_gearbox_device::in_r))
 	PORT_BIT( 0xf0, IP_ACTIVE_LOW, IPT_UNUSED )
 
 	PORT_START("pcb_1:MCUDI1")     /* 63B05Z0 - $3001 */
@@ -645,7 +671,7 @@ static INPUT_PORTS_START( driveyes )
 	PORT_DIPNAME( 0x10, 0x10, "DSW5")
 	PORT_DIPSETTING(    0x10, DEF_STR( Off ) )
 	PORT_DIPSETTING(    0x00, DEF_STR( On ) )
-	PORT_DIPNAME( 0x20, 0x00, "PCM ROM")
+	PORT_DIPNAME( 0x20, 0x20, "PCM ROM")
 	PORT_DIPSETTING(    0x20, "2M" )
 	PORT_DIPSETTING(    0x00, "4M" )
 	PORT_DIPNAME( 0x40, 0x40, "DSW7")
@@ -823,7 +849,6 @@ ROM_START( driveyes )
 	ROM_LOAD16_BYTE( "de1-pt1-l.8e",  0x40001, 0x20000, CRC(a05ee081) SHA1(1be4c61ad716abb809856e04d4bb450943706a55) )
 	ROM_LOAD16_BYTE( "de1-pt2-u.5n",  0x80000, 0x20000, CRC(10e83d81) SHA1(446fedc3b1e258a39fb9467e5327c9f9a9f1ac3f) )
 	ROM_LOAD16_BYTE( "de1-pt2-l.7n",  0x80001, 0x20000, CRC(3339a976) SHA1(c9eb9c04f7b3f2a85e5ab64ffb2fe4fcfb6c494b) )
-
 
 	ROM_REGION( 0x2000, "pcb_2:nvram", 0 ) /* default settings, including calibration */
 	ROM_LOAD( "nvram", 0x0000, 0x2000, CRC(fa6623e9) SHA1(8c313f136724eb6c829261b223a2ac1fc08d00c2) )

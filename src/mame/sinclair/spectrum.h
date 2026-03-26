@@ -12,6 +12,7 @@
 #pragma once
 
 #include "spec_snqk.h"
+#include "spectrum_ula.h"
 #include "machine/bankdev.h"
 #include "bus/spectrum/exp.h"
 #include "imagedev/cassette.h"
@@ -54,7 +55,9 @@ public:
 		m_video_ram(*this, "video_ram"),
 		m_maincpu(*this, "maincpu"),
 		m_screen(*this, "screen"),
+		m_ula(*this, "ula"),
 		m_cassette(*this, "cassette"),
+		m_rom(*this, "maincpu"),
 		m_ram(*this, RAM_TAG),
 		m_specmem(*this, "specmem"),
 		m_speaker(*this, "speaker"),
@@ -85,11 +88,15 @@ public:
 	void init_spectrum();
 
 protected:
-	virtual void machine_start() override;
-	virtual void machine_reset() override;
-	virtual void video_start() override;
+	memory_access<16, 0, 0, ENDIANNESS_LITTLE>::specific m_program;
+	memory_access<16, 0, 0, ENDIANNESS_LITTLE>::specific m_io;
+
+	virtual void machine_start() override ATTR_COLD;
+	virtual void machine_reset() override ATTR_COLD;
+	virtual void video_start() override ATTR_COLD;
 
 	// until machine/spec_snqk.cpp gets somehow disentangled
+	virtual void bank3_set_page(u8 page) { }
 	virtual void plus3_update_memory() { }
 	virtual void spectrum_128_update_memory() { }
 	virtual void ts2068_update_memory() { }
@@ -113,24 +120,15 @@ protected:
 	optional_shared_ptr<uint8_t> m_video_ram;
 	uint8_t *m_screen_location;
 
-	std::vector<u8> m_contention_pattern;
-	/* Pixel offset in 8px chunk (4T) when current chunk is rendered. */
-	u8 m_border4t_render_at = 0;
-	/* Defines offset in CPU cycles from screen left side. Early model (48/128/+2) typically use -1, later (+2A/+3) +1 */
-	s8 m_contention_offset = -1;
-	u64 m_int_at;
-
 	uint8_t pre_opcode_fetch_r(offs_t offset);
 	void spectrum_rom_w(offs_t offset, uint8_t data);
-	uint8_t spectrum_rom_r(offs_t offset);
+	virtual uint8_t spectrum_rom_r(offs_t offset);
 	uint8_t spectrum_data_r(offs_t offset);
 	void spectrum_data_w(offs_t offset, uint8_t data);
-	virtual bool is_contended(offs_t offset);
 	virtual bool is_vram_write(offs_t offset);
-	void content_early(s8 shift = 0);
-	void content_late();
+	virtual u8 *snow_pattern1_base(u8 i_reg);
 
-	void spectrum_nomreq(offs_t offset, uint8_t data);
+	void spectrum_refresh_w(offs_t offset, uint8_t data);
 	void spectrum_ula_w(offs_t offset, uint8_t data);
 	uint8_t spectrum_ula_r(offs_t offset);
 	void spectrum_port_w(offs_t offset, uint8_t data);
@@ -147,14 +145,16 @@ protected:
 
 	required_device<z80_device> m_maincpu;
 	required_device<screen_device> m_screen;
+	required_device<spectrum_ula_device> m_ula;
 
-	void spectrum_io(address_map &map);
-	void spectrum_clone_io(address_map &map);
-	void spectrum_opcodes(address_map &map);
-	void spectrum_map(address_map &map);
-	void spectrum_data(address_map &map);
+	void spectrum_io(address_map &map) ATTR_COLD;
+	void spectrum_clone_io(address_map &map) ATTR_COLD;
+	void spectrum_opcodes(address_map &map) ATTR_COLD;
+	void spectrum_map(address_map &map) ATTR_COLD;
+	void spectrum_data(address_map &map) ATTR_COLD;
 
 	required_device<cassette_image_device> m_cassette;
+	required_region_ptr<u8> m_rom;
 	required_device<ram_device> m_ram;
 	optional_device<address_map_bank_device> m_specmem;
 	required_device<speaker_sound_device> m_speaker;
@@ -193,25 +193,25 @@ protected:
 	void update_paging();
 	void page_basicrom();
 	void border_update(int data);
-	void setup_sp(uint8_t *snapdata, uint32_t snapsize);
-	void setup_sna(uint8_t *snapdata, uint32_t snapsize);
-	void setup_ach(uint8_t *snapdata, uint32_t snapsize);
-	void setup_prg(uint8_t *snapdata, uint32_t snapsize);
-	void setup_plusd(uint8_t *snapdata, uint32_t snapsize);
-	void setup_sem(uint8_t *snapdata, uint32_t snapsize);
-	void setup_sit(uint8_t *snapdata, uint32_t snapsize);
-	void setup_zx(uint8_t *snapdata, uint32_t snapsize);
-	void setup_snp(uint8_t *snapdata, uint32_t snapsize);
-	void snx_decompress_block(address_space &space, uint8_t *source, uint16_t dest, uint16_t size);
-	void setup_snx(uint8_t *snapdata, uint32_t snapsize);
-	void setup_frz(uint8_t *snapdata, uint32_t snapsize);
-	void z80_decompress_block(address_space &space, uint8_t *source, uint16_t dest, uint16_t size);
-	void setup_z80(uint8_t *snapdata, uint32_t snapsize);
-
+	void setup_sp(const uint8_t *snapdata, uint32_t snapsize);
+	void setup_sna(const uint8_t *snapdata, uint32_t snapsize);
+	void setup_ach(const uint8_t *snapdata, uint32_t snapsize);
+	void setup_prg(const uint8_t *snapdata, uint32_t snapsize);
+	void setup_plusd(const uint8_t *snapdata, uint32_t snapsize);
+	void setup_sem(const uint8_t *snapdata, uint32_t snapsize);
+	void setup_sit(const uint8_t *snapdata, uint32_t snapsize);
+	void setup_zx(const uint8_t *snapdata, uint32_t snapsize);
+	void setup_snp(const uint8_t *snapdata, uint32_t snapsize);
+	void snx_decompress_block(address_space &space, const uint8_t *source, uint16_t dest, uint16_t size);
+	void setup_snx(const uint8_t *snapdata, uint32_t snapsize);
+	void setup_frz(const uint8_t *snapdata, uint32_t snapsize);
+	void z80_decompress_block(address_space &space, const uint8_t *source, uint16_t dest, uint16_t size);
+	void setup_z80(const uint8_t *snapdata, uint32_t snapsize);
+	void setup_spg(const u8 *snapdata, u32 snapsize);
 	// quickload helpers
 	void log_quickload(const char *type, uint32_t start, uint32_t length, uint32_t exec, const char *exec_format);
-	void setup_scr(uint8_t *quickdata, uint32_t quicksize);
-	void setup_raw(uint8_t *quickdata, uint32_t quicksize);
+	void setup_scr(const uint8_t *quickdata, uint32_t quicksize);
+	void setup_raw(const uint8_t *quickdata, uint32_t quicksize);
 };
 
 /*----------- defined in drivers/spectrum.cpp -----------*/
@@ -219,5 +219,6 @@ protected:
 INPUT_PORTS_EXTERN( spectrum );
 INPUT_PORTS_EXTERN( spec128 );
 INPUT_PORTS_EXTERN( spec_plus );
+INPUT_PORTS_EXTERN( spec_plus2a );
 
 #endif // MAME_SINCLAIR_SPECTRUM_H

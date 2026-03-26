@@ -16,8 +16,10 @@
    - pocketrc locks up if you try to exit testmode (note: it is not related to
      unimplemented C76 internal watchdog timer or software reset)
      Update: now it always locks up in test mode, regression?
+
+  Notes:
    - pocketrc long samples and drum loops go out of sync, it sounds better when
-     the C352 is underclocked to match the one in namcos22. It's possibly a BTANB,
+     the C352 is underclocked to match the one in namcos22. It's a BTANB, however,
      since current C352 frequency is the same as Tekken/Tekken 2 real PCB.
 
 Known Dumps
@@ -503,11 +505,11 @@ private:
 	TIMER_DEVICE_CALLBACK_MEMBER(mcu_irq0_cb);
 	TIMER_DEVICE_CALLBACK_MEMBER(mcu_irq2_cb);
 
-	void c76_map(address_map &map);
-	void namcos11_map(address_map &map);
-	void ptblank2ua_map(address_map &map);
-	void rom8_64_map(address_map &map);
-	void rom8_map(address_map &map);
+	void c76_map(address_map &map) ATTR_COLD;
+	void namcos11_map(address_map &map) ATTR_COLD;
+	void ptblank2ua_map(address_map &map) ATTR_COLD;
+	void rom8_64_map(address_map &map) ATTR_COLD;
+	void rom8_map(address_map &map) ATTR_COLD;
 
 	virtual void driver_start() override;
 
@@ -775,14 +777,13 @@ void namcos11_state::coh110(machine_config &config)
 
 	SCREEN(config, "screen", SCREEN_TYPE_RASTER);
 
-	SPEAKER(config, "lspeaker").front_left();
-	SPEAKER(config, "rspeaker").front_right();
+	SPEAKER(config, "speaker", 2).front();
 
 	c352_device &c352(C352(config, "c352", 25401600, 288));
-	c352.add_route(0, "lspeaker", 1.00);
-	c352.add_route(1, "rspeaker", 1.00);
-	//c352.add_route(2, "lspeaker", 1.00); // Second DAC not present.
-	//c352.add_route(3, "rspeaker", 1.00);
+	c352.add_route(0, "speaker", 1.00, 0);
+	c352.add_route(1, "speaker", 1.00, 1);
+	//c352.add_route(2, "speaker", 1.00); // Second DAC not present.
+	//c352.add_route(3, "speaker", 1.00);
 
 	AT28C16(config, "at28c16", 0);
 }
@@ -2052,8 +2053,8 @@ ROM_END
 */
 
 GAME( 1994, tekken,     0,        tekken,     tekken,     namcos11_state, empty_init, ROT0, "Namco",         "Tekken (World, TE2/VER.C)",                    0 )
-GAME( 1994, tekkenac,   tekken,   tekken,     tekken,     namcos11_state, empty_init, ROT0, "Namco",         "Tekken (Asia, TE4/VER.C)",                     0 )
 GAME( 1994, tekkenb,    tekken,   tekken,     tekken,     namcos11_state, empty_init, ROT0, "Namco",         "Tekken (World, TE2/VER.B)",                    0 )
+GAME( 1994, tekkenac,   tekken,   tekken,     tekken,     namcos11_state, empty_init, ROT0, "Namco",         "Tekken (Asia, TE4/VER.C)",                     0 )
 GAME( 1994, tekkenjb,   tekken,   tekken,     tekken,     namcos11_state, empty_init, ROT0, "Namco",         "Tekken (Japan, TE1/VER.B)",                    0 )
 GAME( 1996, tekken2,    0,        tekken2,    tekken,     namcos11_state, empty_init, ROT0, "Namco",         "Tekken 2 Ver.B (World, TES2/VER.D)",           0 )
 GAME( 1995, tekken2b,   tekken2,  tekken2o,   tekken,     namcos11_state, empty_init, ROT0, "Namco",         "Tekken 2 Ver.B (World, TES2/VER.B)",           0 )

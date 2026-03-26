@@ -94,41 +94,42 @@ namespace {
 class konamigq_state : public driver_device
 {
 public:
-	konamigq_state(const machine_config &mconfig, device_type type, const char *tag)
-		: driver_device(mconfig, type, tag),
+	konamigq_state(const machine_config &mconfig, device_type type, const char *tag) :
+		driver_device(mconfig, type, tag),
 		m_maincpu(*this, "maincpu"),
 		m_soundcpu(*this, "soundcpu"),
 		m_dasp(*this, "dasp"),
-		m_ncr53cf96(*this, "scsi:7:ncr53cf96"),
+		m_ncr53cf96(*this, "ncr53cf96"),
 		m_k056800(*this, "k056800"),
-		m_pcmram(*this, "pcmram")
+		m_pcmram(*this, "pcmram"),
+		m_duart(*this, "duart")
 	{
 	}
 
 	void konamigq(machine_config &config);
 
 protected:
-	virtual void machine_start() override;
-	virtual void machine_reset() override;
+	virtual void machine_start() override ATTR_COLD;
+	virtual void machine_reset() override ATTR_COLD;
 
 private:
-	emu_timer *m_dma_timer;
-
 	required_device<cpu_device> m_maincpu;
 	required_device<cpu_device> m_soundcpu;
 	required_device<tms57002_device> m_dasp;
 	required_device<ncr53cf96_device> m_ncr53cf96;
 	required_device<k056800_device> m_k056800;
 	required_shared_ptr<uint8_t> m_pcmram;
+	required_device<mb89371_device> m_duart;
 
-	uint8_t m_sound_ctrl;
-	uint8_t m_sound_intck;
+	uint8_t m_sound_ctrl = 0;
+	uint8_t m_sound_intck = 0;
 
-	uint32_t *m_dma_data_ptr;
-	uint32_t m_dma_offset;
-	int32_t m_dma_size;
-	bool m_dma_is_write;
-	bool m_dma_requested;
+	emu_timer *m_dma_timer = nullptr;
+	uint32_t *m_dma_data_ptr = nullptr;
+	uint32_t m_dma_offset = 0;
+	int32_t m_dma_size = 0;
+	bool m_dma_is_write = false;
+	bool m_dma_requested = false;
 
 	void eeprom_w(uint16_t data);
 	void pcmram_w(offs_t offset, uint8_t data);
@@ -140,14 +141,14 @@ private:
 
 	TIMER_CALLBACK_MEMBER(scsi_dma_transfer);
 
-	void scsi_dma_read( uint32_t *p_n_psxram, uint32_t n_address, int32_t n_size );
-	void scsi_dma_write( uint32_t *p_n_psxram, uint32_t n_address, int32_t n_size );
+	void scsi_dma_read(uint32_t *p_n_psxram, uint32_t n_address, int32_t n_size);
+	void scsi_dma_write(uint32_t *p_n_psxram, uint32_t n_address, int32_t n_size);
 	void scsi_drq(int state);
 
-	void konamigq_dasp_map(address_map &map);
-	void konamigq_k054539_map(address_map &map);
-	void konamigq_map(address_map &map);
-	void konamigq_sound_map(address_map &map);
+	void konamigq_dasp_map(address_map &map) ATTR_COLD;
+	void konamigq_k054539_map(address_map &map) ATTR_COLD;
+	void konamigq_map(address_map &map) ATTR_COLD;
+	void konamigq_sound_map(address_map &map) ATTR_COLD;
 };
 
 /* EEPROM */
@@ -167,7 +168,7 @@ static const uint16_t konamigq_def_eeprom[64] =
 void konamigq_state::eeprom_w(uint16_t data)
 {
 	ioport("EEPROMOUT")->write(data & 0x07, 0xff);
-	m_soundcpu->set_input_line(INPUT_LINE_RESET, ( data & 0x40 ) ? CLEAR_LINE : ASSERT_LINE );
+	m_soundcpu->set_input_line(INPUT_LINE_RESET, (data & 0x40) ? CLEAR_LINE : ASSERT_LINE);
 }
 
 
@@ -175,12 +176,12 @@ void konamigq_state::eeprom_w(uint16_t data)
 
 void konamigq_state::pcmram_w(offs_t offset, uint8_t data)
 {
-	m_pcmram[ offset ] = data;
+	m_pcmram[offset] = data;
 }
 
 uint8_t konamigq_state::pcmram_r(offs_t offset)
 {
-	return m_pcmram[ offset ];
+	return m_pcmram[offset];
 }
 
 /* Video */
@@ -190,8 +191,8 @@ void konamigq_state::konamigq_map(address_map &map)
 	map(0x1f000000, 0x1f00001f).m(m_ncr53cf96, FUNC(ncr53cf96_device::map)).umask16(0x00ff);
 	map(0x1f100000, 0x1f10001f).rw(m_k056800, FUNC(k056800_device::host_r), FUNC(k056800_device::host_w)).umask32(0x00ff00ff);
 	map(0x1f180000, 0x1f180001).w(FUNC(konamigq_state::eeprom_w));
-	map(0x1f198000, 0x1f198003).nopw();            /* cabinet lamps? */
-	map(0x1f1a0000, 0x1f1a0003).nopw();            /* indicates gun trigger */
+	map(0x1f198000, 0x1f198003).nopw(); /* cabinet lamps? */
+	map(0x1f1a0000, 0x1f1a0003).nopw(); /* indicates gun trigger */
 	map(0x1f200000, 0x1f200003).portr("GUNX1");
 	map(0x1f208000, 0x1f208003).portr("GUNY1");
 	map(0x1f210000, 0x1f210003).portr("GUNX2");
@@ -202,7 +203,8 @@ void konamigq_state::konamigq_map(address_map &map)
 	map(0x1f230004, 0x1f230007).portr("P3_SERVICE");
 	map(0x1f238000, 0x1f238003).portr("DSW");
 	map(0x1f300000, 0x1f5fffff).rw(FUNC(konamigq_state::pcmram_r), FUNC(konamigq_state::pcmram_w)).umask32(0x00ff00ff);
-	map(0x1f680000, 0x1f68001f).rw("mb89371", FUNC(mb89371_device::read), FUNC(mb89371_device::write)).umask32(0x00ff00ff);
+	map(0x1f680000, 0x1f680007).rw(m_duart, FUNC(mb89371_device::read<0>), FUNC(mb89371_device::write<0>)).umask32(0x00ff00ff);
+	map(0x1f680008, 0x1f68000f).rw(m_duart, FUNC(mb89371_device::read<1>), FUNC(mb89371_device::write<1>)).umask32(0x00ff00ff);
 	map(0x1f780000, 0x1f780003).nopw(); /* watchdog? */
 }
 
@@ -281,27 +283,28 @@ void konamigq_state::k054539_irq_gen(int state)
 
 /* SCSI */
 
-void konamigq_state::scsi_dma_read( uint32_t *p_n_psxram, uint32_t n_address, int32_t n_size )
+void konamigq_state::scsi_dma_read(uint32_t *p_n_psxram, uint32_t n_address, int32_t n_size)
 {
 	m_dma_data_ptr = p_n_psxram;
 	m_dma_offset = n_address;
 	m_dma_size = n_size * 4;
 	m_dma_is_write = false;
-	m_dma_timer->adjust(attotime::from_usec(10));
+	m_dma_timer->adjust(attotime::zero);
 }
 
-void konamigq_state::scsi_dma_write( uint32_t *p_n_psxram, uint32_t n_address, int32_t n_size )
+void konamigq_state::scsi_dma_write(uint32_t *p_n_psxram, uint32_t n_address, int32_t n_size)
 {
 	m_dma_data_ptr = p_n_psxram;
 	m_dma_offset = n_address;
 	m_dma_size = n_size * 4;
 	m_dma_is_write = true;
-	m_dma_timer->adjust(attotime::from_usec(10));
+	m_dma_timer->adjust(attotime::zero);
 }
 
 TIMER_CALLBACK_MEMBER(konamigq_state::scsi_dma_transfer)
 {
-	if (m_dma_requested && m_dma_data_ptr != nullptr && m_dma_size > 0)
+	// TODO: Figure out proper DMA timings
+	while (m_dma_requested && m_dma_data_ptr != nullptr && m_dma_size > 0)
 	{
 		if (m_dma_is_write)
 			m_ncr53cf96->dma_w(util::little_endian_cast<const uint8_t>(m_dma_data_ptr)[m_dma_offset]);
@@ -311,15 +314,12 @@ TIMER_CALLBACK_MEMBER(konamigq_state::scsi_dma_transfer)
 		m_dma_offset++;
 		m_dma_size--;
 	}
-
-	if (m_dma_requested && m_dma_size > 0)
-		m_dma_timer->adjust(attotime::from_usec(10));
 }
 
 void konamigq_state::scsi_drq(int state)
 {
 	if (!m_dma_requested && state)
-		m_dma_timer->adjust(attotime::from_usec(10));
+		m_dma_timer->adjust(attotime::zero);
 
 	m_dma_requested = state;
 }
@@ -342,6 +342,8 @@ void konamigq_state::machine_reset()
 	m_dma_offset = 0;
 	m_dma_size = 0;
 	m_dma_requested = m_dma_is_write = false;
+
+	m_duart->write_cts<0>(CLEAR_LINE);
 }
 
 void konamigq_state::konamigq(machine_config &config)
@@ -360,19 +362,18 @@ void konamigq_state::konamigq(machine_config &config)
 	m_dasp->set_addrmap(AS_DATA, &konamigq_state::konamigq_dasp_map);
 	m_dasp->set_periodic_int(FUNC(konamigq_state::tms_sync), attotime::from_hz(48000));
 
-	MB89371(config, "mb89371", 0);
+	MB89371(config, m_duart, 4_MHz_XTAL);
 
 	EEPROM_93C46_16BIT(config, "eeprom").default_data(konamigq_def_eeprom, 128);
 
-	NSCSI_BUS(config, "scsi");
-	NSCSI_CONNECTOR(config, "scsi:0").option_set("harddisk", NSCSI_HARDDISK);
-	NSCSI_CONNECTOR(config, "scsi:7").option_set("ncr53cf96", NCR53CF96).clock(32_MHz_XTAL/2).machine_config(
-			[this] (device_t *device)
-			{
-				ncr53cf96_device &adapter = downcast<ncr53cf96_device &>(*device);
-				adapter.irq_handler_cb().set(":maincpu:irq", FUNC(psxirq_device::intin10));
-				adapter.drq_handler_cb().set(*this, FUNC(konamigq_state::scsi_drq));
-			});
+	auto &scsi(NSCSI_BUS(config, "scsi"));
+	auto &hd(NSCSI_HARDDISK(config, "harddisk"));
+	scsi.set_external_device(0, hd);
+
+	NCR53CF96(config, m_ncr53cf96, 32_MHz_XTAL/2);
+	scsi.set_external_device(7, m_ncr53cf96);
+	m_ncr53cf96->irq_handler_cb().set(":maincpu:irq", FUNC(psxirq_device::intin10));
+	m_ncr53cf96->drq_handler_cb().set(DEVICE_SELF, FUNC(konamigq_state::scsi_drq));
 
 	/* video hardware */
 	CXD8538Q(config, "gpu", XTAL(53'693'175), 0x200000, subdevice<psxcpu_device>("maincpu")).set_screen("screen");
@@ -380,8 +381,7 @@ void konamigq_state::konamigq(machine_config &config)
 	SCREEN(config, "screen", SCREEN_TYPE_RASTER);
 
 	/* sound hardware */
-	SPEAKER(config, "lspeaker").front_left();
-	SPEAKER(config, "rspeaker").front_right();
+	SPEAKER(config, "speaker", 2).front();
 
 	K056800(config, m_k056800, XTAL(18'432'000));
 	m_k056800->int_callback().set_inputline(m_soundcpu, M68K_IRQ_1);
@@ -389,13 +389,13 @@ void konamigq_state::konamigq(machine_config &config)
 	k054539_device &k054539_1(K054539(config, "k054539_1", XTAL(18'432'000)));
 	k054539_1.set_addrmap(0, &konamigq_state::konamigq_k054539_map);
 	k054539_1.timer_handler().set(FUNC(konamigq_state::k054539_irq_gen));
-	k054539_1.add_route(0, "lspeaker", 1.0);
-	k054539_1.add_route(1, "rspeaker", 1.0);
+	k054539_1.add_route(0, "speaker", 1.0, 0);
+	k054539_1.add_route(1, "speaker", 1.0, 1);
 
 	k054539_device &k054539_2(K054539(config, "k054539_2", XTAL(18'432'000)));
 	k054539_2.set_addrmap(0, &konamigq_state::konamigq_k054539_map);
-	k054539_2.add_route(0, "lspeaker", 1.0);
-	k054539_2.add_route(1, "rspeaker", 1.0);
+	k054539_2.add_route(0, "speaker", 1.0, 0);
+	k054539_2.add_route(1, "speaker", 1.0, 1);
 }
 
 static INPUT_PORTS_START( konamigq )
@@ -474,12 +474,12 @@ static INPUT_PORTS_START( konamigq )
 	PORT_DIPSETTING(    0x00, "Independent" )
 	PORT_BIT( 0x00000040, IP_ACTIVE_LOW, IPT_UNKNOWN )
 	PORT_BIT( 0x00000080, IP_ACTIVE_LOW, IPT_UNKNOWN )
-	PORT_BIT( 0x00010000, IP_ACTIVE_HIGH, IPT_CUSTOM ) PORT_READ_LINE_DEVICE_MEMBER("eeprom", eeprom_serial_93cxx_device, do_read)
+	PORT_BIT( 0x00010000, IP_ACTIVE_HIGH, IPT_CUSTOM ) PORT_READ_LINE_DEVICE_MEMBER("eeprom", FUNC(eeprom_serial_93cxx_device::do_read))
 
 	PORT_START( "EEPROMOUT" )
-	PORT_BIT( 0x01, IP_ACTIVE_HIGH, IPT_OUTPUT ) PORT_WRITE_LINE_DEVICE_MEMBER("eeprom", eeprom_serial_93cxx_device, di_write)
-	PORT_BIT( 0x02, IP_ACTIVE_HIGH, IPT_OUTPUT ) PORT_WRITE_LINE_DEVICE_MEMBER("eeprom", eeprom_serial_93cxx_device, cs_write)
-	PORT_BIT( 0x04, IP_ACTIVE_HIGH, IPT_OUTPUT ) PORT_WRITE_LINE_DEVICE_MEMBER("eeprom", eeprom_serial_93cxx_device, clk_write)
+	PORT_BIT( 0x01, IP_ACTIVE_HIGH, IPT_OUTPUT ) PORT_WRITE_LINE_DEVICE_MEMBER("eeprom", FUNC(eeprom_serial_93cxx_device::di_write))
+	PORT_BIT( 0x02, IP_ACTIVE_HIGH, IPT_OUTPUT ) PORT_WRITE_LINE_DEVICE_MEMBER("eeprom", FUNC(eeprom_serial_93cxx_device::cs_write))
+	PORT_BIT( 0x04, IP_ACTIVE_HIGH, IPT_OUTPUT ) PORT_WRITE_LINE_DEVICE_MEMBER("eeprom", FUNC(eeprom_serial_93cxx_device::clk_write))
 INPUT_PORTS_END
 
 ROM_START( cryptklr )
@@ -492,7 +492,7 @@ ROM_START( cryptklr )
 	ROM_REGION32_LE( 0x080000, "maincpu:rom", 0 ) /* bios */
 	ROM_LOAD( "420b03.27p",   0x0000000, 0x080000, CRC(aab391b1) SHA1(bf9dc7c0c8168c22a4be266fe6a66d3738df916b) )
 
-	DISK_REGION( "scsi:0:harddisk" )
+	DISK_REGION( "harddisk" )
 	DISK_IMAGE( "420uaa04", 0, SHA1(67cb1418fc0de2a89fc61847dc9efb9f1bebb347) )
 ROM_END
 

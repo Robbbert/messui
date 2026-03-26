@@ -1,5 +1,5 @@
-// license:BSD-3-Clause
 // copyright-holders:R. Belmont
+// license:BSD-3-Clause
 /****************************************************************************
 
     drivers/macquadra605.cpp
@@ -18,6 +18,7 @@
 #include "emu.h"
 
 #include "cuda.h"
+#include "dfac2.h"
 #include "djmemc.h"
 #include "iosb.h"
 #include "macadb.h"
@@ -53,10 +54,11 @@ public:
 		m_primetime(*this, "primetime"),
 		m_macadb(*this, "macadb"),
 		m_cuda(*this, "cuda"),
+		m_dfac2(*this, "dfac2"),
 		m_scc(*this, "scc"),
 		m_ram(*this, RAM_TAG),
 		m_scsibus(*this, "scsi"),
-		m_ncr1(*this, "scsi:7:ncr53c96")
+		m_ncr1(*this, "ncr53c96")
 	{
 	}
 
@@ -64,9 +66,9 @@ public:
 	void maclc475(machine_config &config);
 	void maclc575(machine_config &config);
 
-	void quadra605_map(address_map &map);
-	void lc475_map(address_map &map);
-	void lc575_map(address_map &map);
+	void quadra605_map(address_map &map) ATTR_COLD;
+	void lc475_map(address_map &map) ATTR_COLD;
+	void lc575_map(address_map &map) ATTR_COLD;
 
 	void init_macqd605();
 
@@ -76,13 +78,14 @@ private:
 	required_device<primetime_device> m_primetime;
 	required_device<macadb_device> m_macadb;
 	required_device<cuda_device> m_cuda;
+	required_device<dfac2_device> m_dfac2;
 	required_device<z80scc_device> m_scc;
 	required_device<ram_device> m_ram;
 	required_device<nscsi_bus_device> m_scsibus;
 	required_device<ncr53c96_device> m_ncr1;
 
-	virtual void machine_start() override;
-	virtual void machine_reset() override;
+	virtual void machine_start() override ATTR_COLD;
+	virtual void machine_reset() override ATTR_COLD;
 
 	u16 mac_scc_r(offs_t offset)
 	{
@@ -102,7 +105,7 @@ private:
 
 void quadra605_state::machine_start()
 {
-	m_memcjr->set_ram_info((u32 *) m_ram->pointer(), m_ram->size());
+	m_memcjr->set_ram_info(m_ram->pointer<u32>(), m_ram->size());
 }
 
 void quadra605_state::machine_reset()
@@ -163,7 +166,7 @@ void quadra605_state::macqd605(machine_config &config)
 
 	PRIMETIME(config, m_primetime, 25_MHz_XTAL);
 	m_primetime->set_maincpu_tag("maincpu");
-	m_primetime->set_scsi_tag("scsi:7:ncr53c96");
+	m_primetime->set_scsi_tag(m_ncr1);
 
 	SCC85C30(config, m_scc, C7M);
 	m_scc->configure_channels(3'686'400, 3'686'400, 3'686'400, 3'686'400);
@@ -189,21 +192,18 @@ void quadra605_state::macqd605(machine_config &config)
 	NSCSI_CONNECTOR(config, "scsi:3").option_set("cdrom", NSCSI_CDROM_APPLE).machine_config(
 		[](device_t *device)
 		{
-			device->subdevice<cdda_device>("cdda")->add_route(0, "^^primetime:lspeaker", 1.0);
-			device->subdevice<cdda_device>("cdda")->add_route(1, "^^primetime:rspeaker", 1.0);
+			device->subdevice<cdda_device>("cdda")->add_route(0, "^^primetime:speaker", 1.0, 0);
+			device->subdevice<cdda_device>("cdda")->add_route(1, "^^primetime:speaker", 1.0, 1);
 		});
 	NSCSI_CONNECTOR(config, "scsi:4", mac_scsi_devices, nullptr);
 	NSCSI_CONNECTOR(config, "scsi:5", mac_scsi_devices, nullptr);
 	NSCSI_CONNECTOR(config, "scsi:6", mac_scsi_devices, "harddisk");
-	NSCSI_CONNECTOR(config, "scsi:7").option_set("ncr53c96", NCR53C96).clock(40_MHz_XTAL).machine_config(
-		[this] (device_t *device)
-		{
-			ncr53c96_device &adapter = downcast<ncr53c96_device &>(*device);
 
-			adapter.set_busmd(ncr53c96_device::BUSMD_1);
-			adapter.irq_handler_cb().set(m_primetime, FUNC(primetime_device::scsi_irq_w));
-			adapter.drq_handler_cb().set(m_primetime, FUNC(primetime_device::scsi_drq_w));
-		});
+	NCR53C96(config, m_ncr1, 40_MHz_XTAL);
+	m_scsibus->set_external_device(7, m_ncr1);
+	m_ncr1->set_busmd(ncr53c96_device::BUSMD_1);
+	m_ncr1->irq_handler_cb().set(m_primetime, FUNC(primetime_device::scsi_irq_w));
+	m_ncr1->drq_handler_cb().set(m_primetime, FUNC(primetime_device::scsi_drq_w));
 
 	MACADB(config, m_macadb, C15M);
 
@@ -213,8 +213,15 @@ void quadra605_state::macqd605(machine_config &config)
 	m_cuda->linechange_callback().set(m_macadb, FUNC(macadb_device::adb_linechange_w));
 	m_cuda->via_clock_callback().set(m_primetime, FUNC(primetime_device::cb1_w));
 	m_cuda->via_data_callback().set(m_primetime, FUNC(primetime_device::cb2_w));
+	m_cuda->nmi_callback().set_inputline(m_maincpu, M68K_IRQ_7);
 	m_macadb->adb_data_callback().set(m_cuda, FUNC(cuda_device::set_adb_line));
+	m_macadb->adb_power_callback().set(m_cuda, FUNC(cuda_device::set_adb_power));
 	config.set_perfect_quantum(m_maincpu);
+
+	APPLE_DFAC2(config, m_dfac2, 22257);
+	m_dfac2->sda_callback().set(m_cuda, FUNC(cuda_device::set_iic_sda));
+	m_cuda->iic_scl_callback().set(m_dfac2, FUNC(dfac2_device::scl_write));
+	m_cuda->iic_sda_callback().set(m_dfac2, FUNC(dfac2_device::sda_write));
 
 	m_primetime->pb3_callback().set(m_cuda, FUNC(cuda_device::get_treq));
 	m_primetime->pb4_callback().set(m_cuda, FUNC(cuda_device::set_byteack));
@@ -223,6 +230,7 @@ void quadra605_state::macqd605(machine_config &config)
 
 	nubus_device &nubus(NUBUS(config, "pds", 0));
 	nubus.set_space(m_maincpu, AS_PROGRAM);
+	nubus.set_bus_mode(nubus_device::nubus_mode_t::QUADRA_DAFB);
 	nubus.out_irqe_callback().set(m_primetime, FUNC(primetime_device::via2_irq_w<0x20>));
 	NUBUS_SLOT(config, "lcpds", "pds", mac_pdslc_cards, nullptr);
 
@@ -263,6 +271,6 @@ ROM_END
 
 } // anonymous namespace
 
-COMP( 1993, macqd605, 0, 0, macqd605, macadb, quadra605_state, init_macqd605,  "Apple Computer", "Macintosh Quadra 605", MACHINE_SUPPORTS_SAVE)
+COMP( 1993, macqd605, 0,        0, macqd605, macadb, quadra605_state, init_macqd605,  "Apple Computer", "Macintosh Quadra 605", MACHINE_SUPPORTS_SAVE)
 COMP( 1993, maclc475, macqd605, 0, maclc475, macadb, quadra605_state, init_macqd605,  "Apple Computer", "Macintosh LC/Performa 475", MACHINE_SUPPORTS_SAVE)
 COMP( 1994, maclc575, macqd605, 0, maclc575, macadb, quadra605_state, init_macqd605,  "Apple Computer", "Macintosh LC/Performa 575", MACHINE_SUPPORTS_SAVE)

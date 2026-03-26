@@ -33,17 +33,14 @@ public:
 	a2eauxslot_slot_device(machine_config const &mconfig, char const *tag, device_t *owner, T &&slottag, U &&opts, char const *dflt)
 		: a2eauxslot_slot_device(mconfig, tag, owner, 0)
 	{
-		option_reset();
-		opts(*this);
-		set_default_option(dflt);
-		set_fixed(false);
+		set_options(std::forward<U>(opts), dflt, false);
 		m_a2eauxslot.set_tag(std::forward<T>(slottag));
 	}
 
 	a2eauxslot_slot_device(const machine_config &mconfig, const char *tag, device_t *owner, uint32_t clock = 0);
 
 	// device_t implementation
-	virtual void device_resolve_objects() override;
+	virtual void device_resolve_objects() override ATTR_COLD;
 	virtual void device_start() override { }
 
 protected:
@@ -82,7 +79,7 @@ protected:
 	a2eauxslot_device(const machine_config &mconfig, device_type type, const char *tag, device_t *owner, uint32_t clock);
 
 	// device_t implementation
-	virtual void device_start() override;
+	virtual void device_start() override ATTR_COLD;
 
 	// internal state
 	required_address_space m_space;

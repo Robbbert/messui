@@ -7,7 +7,7 @@
 ***************************************************************************/
 
 #include "emu.h"
-#include "cpu/mcs51/mcs51.h"
+#include "cpu/mcs51/i80c51.h"
 #include "video/hd44780.h"
 #include "emupal.h"
 #include "screen.h"
@@ -28,8 +28,8 @@ public:
 private:
 	HD44780_PIXEL_UPDATE(lcd_pixel_update);
 
-	void prog_map(address_map &map);
-	void ext_map(address_map &map);
+	void prog_map(address_map &map) ATTR_COLD;
+	void ext_map(address_map &map) ATTR_COLD;
 
 	required_device<cpu_device> m_maincpu;
 };
@@ -58,7 +58,7 @@ void qmsirius_state::qmsirius(machine_config &config)
 {
 	P80C552(config, m_maincpu, 12_MHz_XTAL); // PCB80C552-5 16WP
 	m_maincpu->set_addrmap(AS_PROGRAM, &qmsirius_state::prog_map);
-	m_maincpu->set_addrmap(AS_IO, &qmsirius_state::ext_map);
+	m_maincpu->set_addrmap(AS_DATA, &qmsirius_state::ext_map);
 
 	screen_device &screen(SCREEN(config, "screen", SCREEN_TYPE_LCD));
 	screen.set_refresh_hz(60);
@@ -91,5 +91,5 @@ ROM_END
 
 } // anonymous namespace
 
-SYST(1998, qmsirius, 0, 0, qmsirius, qmsirius, qmsirius_state, empty_init, "Quasimidi Musikelektronik GmbH", "Quasimidi Sirius",  MACHINE_IS_SKELETON)
-SYST(1996, qmrave,   0, 0, qmsirius, qmsirius, qmsirius_state, empty_init, "Quasimidi Musikelektronik GmbH", "Rave-O-Lution 309", MACHINE_IS_SKELETON)
+SYST(1998, qmsirius, 0, 0, qmsirius, qmsirius, qmsirius_state, empty_init, "Quasimidi Musikelektronik GmbH", "Quasimidi Sirius",  MACHINE_NO_SOUND | MACHINE_NOT_WORKING)
+SYST(1996, qmrave,   0, 0, qmsirius, qmsirius, qmsirius_state, empty_init, "Quasimidi Musikelektronik GmbH", "Rave-O-Lution 309", MACHINE_NO_SOUND | MACHINE_NOT_WORKING)

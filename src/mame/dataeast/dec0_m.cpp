@@ -13,7 +13,7 @@ Data East machine functions - Bryan McPhail, mish@tendril.co.uk
 
 #include "cpu/h6280/h6280.h"
 #include "cpu/m68000/m68000.h"
-#include "cpu/mcs51/mcs51.h"
+#include "cpu/mcs51/i8051.h"
 
 
 /******************************************************************************/
@@ -258,11 +258,10 @@ void dec0_state::sprite_mirror_w(offs_t offset, uint16_t data, uint16_t mem_mask
 
 void dec0_state::h6280_decrypt(const char *cputag)
 {
-	int i;
 	uint8_t *RAM = memregion(cputag)->base();
 
 	/* Read each byte, decrypt it */
-	for (i = 0x00000; i < 0x10000; i++)
+	for (int i = 0x00000; i < 0x10000; i++)
 		RAM[i] = (RAM[i] & 0x7e) | ((RAM[i] & 0x1) << 7) | ((RAM[i] & 0x80) >> 7);
 }
 

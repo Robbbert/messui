@@ -14,8 +14,8 @@
 
   TODO: Actual raster parameters are unknown.  We've gone with the Apple 19"
   1024x768 monitor's htotal/vtotal but this used a custom monitor.  There are
-  no register writes other than the IRQ enable/ack so tracing, the CRTC is
-  pure TTL.
+  no register writes other than the IRQ enable/ack so the CRTC is a fixed
+  state machine.
 
 ***************************************************************************/
 
@@ -39,12 +39,12 @@ protected:
 	nubus_vikbw_device(const machine_config &mconfig, device_type type, const char *tag, device_t *owner, u32 clock);
 
 	// device-level overrides
-	virtual void device_start() override;
-	virtual void device_reset() override;
+	virtual void device_start() override ATTR_COLD;
+	virtual void device_reset() override ATTR_COLD;
 
 	// optional information overrides
-	virtual void device_add_mconfig(machine_config &config) override;
-	virtual const tiny_rom_entry *device_rom_region() const override;
+	virtual void device_add_mconfig(machine_config &config) override ATTR_COLD;
+	virtual const tiny_rom_entry *device_rom_region() const override ATTR_COLD;
 
 private:
 	u32 viking_ack_r();

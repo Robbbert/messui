@@ -1,12 +1,21 @@
 // license:BSD-3-Clause
-// copyright-holders:
+// copyright-holders: Angelo Salese
+/**************************************************************************************************
 
-/*
 Irem M78
 
 Black Jack (1992)
 Flyers show this game has a main screen and 5 user screens.
 Is this the main unit or the satellite one?
+
+TODO:
+- I/O section;
+- video registers;
+- Undumped sound ROMs. The sound program is almost identical to the one of irem/shisen.cpp games.
+  Copied over sound handling from there for now;
+- comms;
+
+===================================================================================================
 
 2-PCB stack with IREM markings
 
@@ -26,14 +35,7 @@ on sub PCB:
 6x 27512 GFX ROM
 6x TMM2064P-10 RAM
 
-TODO:
-- I/O section;
-- video registers;
-- Undumped sound ROMs. The sound program is almost identical to the one of irem/shisen.cpp games.
-  Copied over sound handling from there for now;
-- comms;
-
-*/
+**************************************************************************************************/
 
 #include "emu.h"
 
@@ -57,13 +59,13 @@ class m78_state : public driver_device
 {
 public:
 	m78_state(const machine_config &mconfig, device_type type, const char *tag)
-		: driver_device(mconfig, type, tag),
-		m_maincpu(*this, "maincpu"),
-		m_audiocpu(*this, "audiocpu"),
-		m_gfxdecode(*this, "gfxdecode"),
-		m_tileram(*this, "tileram%u", 0),
-		m_attrram(*this, "attrram%u", 0),
-		m_colorram(*this, "colorram%u", 0)
+		: driver_device(mconfig, type, tag)
+		, m_maincpu(*this, "maincpu")
+		, m_audiocpu(*this, "audiocpu")
+		, m_gfxdecode(*this, "gfxdecode")
+		, m_tileram(*this, "tileram%u", 0)
+		, m_attrram(*this, "attrram%u", 0)
+		, m_colorram(*this, "colorram%u", 0)
 	{}
 
 	void bj92(machine_config &config) ATTR_COLD;
@@ -175,7 +177,6 @@ uint32_t m78_state::screen_update(screen_device &screen, bitmap_ind16 &bitmap, c
 	//bitmap.fill(0, cliprect);
 	m_tilemap[1]->draw(screen, bitmap, cliprect, 0, 0);
 	m_tilemap[0]->draw(screen, bitmap, cliprect, 0, 0);
-
 	return 0;
 }
 
@@ -200,11 +201,11 @@ void m78_state::main_io_map(address_map &map)
 	map(0x8000, 0x8fff).ram().w(FUNC(m78_state::tileram_w<1>)).share(m_tileram[1]);
 	map(0x9000, 0x9fff).ram().w(FUNC(m78_state::attrram_w<1>)).share(m_attrram[1]);
 	map(0xa000, 0xafff).ram().w(FUNC(m78_state::colorram_w<1>)).share(m_colorram[1]);
-//	map(0xb000, 0xbfff).ram(); // vregs, $b000, $b400, $b800, $bc00
+	//map(0xb000, 0xbfff).ram(); // vregs, $b000, $b400, $b800, $bc00
 	map(0xc000, 0xcfff).ram().w(FUNC(m78_state::tileram_w<0>)).share(m_tileram[0]);
 	map(0xd000, 0xdfff).ram().w(FUNC(m78_state::attrram_w<0>)).share(m_attrram[0]);
 	map(0xe000, 0xefff).ram().w(FUNC(m78_state::colorram_w<0>)).share(m_colorram[0]);
-//	map(0xf000, 0xffff).ram(); // layer control at $f000?
+	//map(0xf000, 0xffff).ram(); // layer control at $f000?
 }
 
 void m78_state::audio_program_map(address_map &map)
@@ -342,18 +343,17 @@ void m78_state::bj92(machine_config &config)
 
 	RST_NEG_BUFFER(config, "soundirq").int_callback().set_inputline("audiocpu", 0);
 
-	SPEAKER(config, "lspeaker").front_left();
-	SPEAKER(config, "rspeaker").front_right();
+	SPEAKER(config, "speaker", 2).front();
 
 	m72_audio_device &m72_audio(IREM_M72_AUDIO(config, "m72_audio"));
 	m72_audio.set_dac_tag("dac");
 
 	ym2151_device &ymsnd(YM2151(config, "ymsnd", 3.579545_MHz_XTAL ));   // Verified on PCB
 	ymsnd.irq_handler().set("soundirq", FUNC(rst_neg_buffer_device::rst28_w));
-	ymsnd.add_route(0, "lspeaker", 0.5);
-	ymsnd.add_route(1, "rspeaker", 0.5);
+	ymsnd.add_route(0, "speaker", 0.5, 0);
+	ymsnd.add_route(1, "speaker", 0.5, 1);
 
-	DAC_8BIT_R2R(config, "dac", 0).add_route(ALL_OUTPUTS, "lspeaker", 0.25).add_route(ALL_OUTPUTS, "rspeaker", 0.25); // unknown DAC
+	DAC_8BIT_R2R(config, "dac", 0).add_route(ALL_OUTPUTS, "speaker", 0.25, 0).add_route(ALL_OUTPUTS, "speaker", 0.25, 1); // unknown DAC
 }
 
 

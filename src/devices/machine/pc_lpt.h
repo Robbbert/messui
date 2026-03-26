@@ -29,17 +29,20 @@ public:
 	uint8_t read(offs_t offset);
 	void write(offs_t offset, uint8_t data);
 
+	// alias of above for ISA PnP targets (where $279 writes are really routed there)
+	void isa_map(address_map &map);
+
 	uint8_t data_r();
 	void data_w(uint8_t data);
 	uint8_t status_r();
-	uint8_t control_r( );
+	uint8_t control_r();
 	void control_w(uint8_t data);
 
 protected:
 	// device-level overrides
-	virtual void device_start() override;
-	virtual void device_reset() override;
-	virtual void device_add_mconfig(machine_config &config) override;
+	virtual void device_start() override ATTR_COLD;
+	virtual void device_reset() override ATTR_COLD;
+	virtual void device_add_mconfig(machine_config &config) override ATTR_COLD;
 
 private:
 	void update_irq();

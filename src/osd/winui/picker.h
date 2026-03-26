@@ -53,6 +53,7 @@ enum
 };
 
 
+
 BOOL SetupPicker(HWND hwndPicker, const struct PickerOptions *pOptions);
 
 int Picker_GetViewID(HWND hwndPicker);

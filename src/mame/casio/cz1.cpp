@@ -85,17 +85,17 @@ public:
 	int sync49_r();
 
 protected:
-	virtual void machine_start() override;
-	virtual void machine_reset() override;
+	virtual void machine_start() override ATTR_COLD;
+	virtual void machine_reset() override ATTR_COLD;
 
 private:
 	void cz1_palette(palette_device &palette) const;
 	HD44780_PIXEL_UPDATE(lcd_pixel_update);
 
-	void mz1_main_map(address_map &map);
-	void cz1_main_map(address_map &map);
-	void sub_map(address_map &map);
-	void mcu_map(address_map &map);
+	void mz1_main_map(address_map &map) ATTR_COLD;
+	void cz1_main_map(address_map &map) ATTR_COLD;
+	void sub_map(address_map &map) ATTR_COLD;
+	void mcu_map(address_map &map) ATTR_COLD;
 
 	// main CPU r/w methods
 	u8 keys_r();
@@ -328,23 +328,23 @@ static INPUT_PORTS_START( mz1 )
 	PORT_BIT(0xe0, IP_ACTIVE_LOW, IPT_UNUSED)
 
 	PORT_START("KC12")
-	PORT_BIT(0x01, IP_ACTIVE_LOW,  IPT_CUSTOM) PORT_READ_LINE_DEVICE_MEMBER("cart", casio_ram_cart_device, exists)
+	PORT_BIT(0x01, IP_ACTIVE_HIGH, IPT_CUSTOM) PORT_READ_LINE_DEVICE_MEMBER("cart", FUNC(casio_ram_cart_device::sense))
 	PORT_BIT(0x02, IP_ACTIVE_HIGH, IPT_CUSTOM) // low = MZ-1, high = CZ-1
 	PORT_BIT(0xfc, IP_ACTIVE_LOW,  IPT_UNUSED)
 
 	PORT_START("MAIN_PB")
-	PORT_BIT(0x01, IP_ACTIVE_HIGH, IPT_CUSTOM) PORT_READ_LINE_MEMBER(cz1_state, sync_r)
+	PORT_BIT(0x01, IP_ACTIVE_HIGH, IPT_CUSTOM) PORT_READ_LINE_MEMBER(FUNC(cz1_state::sync_r))
 	PORT_BIT(0xfe, IP_ACTIVE_LOW,  IPT_UNUSED)
 
 	PORT_START("SUB_PB")
-	PORT_BIT(0x01, IP_ACTIVE_LOW,  IPT_CUSTOM) PORT_READ_LINE_DEVICE_MEMBER("upd933_0", upd933_device, rq_r)
-	PORT_BIT(0x02, IP_ACTIVE_LOW,  IPT_CUSTOM) PORT_READ_LINE_DEVICE_MEMBER("upd933_1", upd933_device, rq_r)
+	PORT_BIT(0x01, IP_ACTIVE_LOW,  IPT_CUSTOM) PORT_READ_LINE_DEVICE_MEMBER("upd933_0", FUNC(upd933_device::rq_r))
+	PORT_BIT(0x02, IP_ACTIVE_LOW,  IPT_CUSTOM) PORT_READ_LINE_DEVICE_MEMBER("upd933_1", FUNC(upd933_device::rq_r))
 	PORT_BIT(0xfc, IP_ACTIVE_LOW,  IPT_UNUSED)
 
 	PORT_START("SUB_PC")
 	PORT_BIT(0x01, IP_ACTIVE_LOW,  IPT_UNUSED)
-	PORT_BIT(0x02, IP_ACTIVE_HIGH, IPT_CUSTOM) PORT_READ_LINE_MEMBER(cz1_state, sync_r)
-	PORT_BIT(0x04, IP_ACTIVE_HIGH, IPT_CUSTOM) PORT_READ_LINE_MEMBER(cz1_state, cont_r)
+	PORT_BIT(0x02, IP_ACTIVE_HIGH, IPT_CUSTOM) PORT_READ_LINE_MEMBER(FUNC(cz1_state::sync_r))
+	PORT_BIT(0x04, IP_ACTIVE_HIGH, IPT_CUSTOM) PORT_READ_LINE_MEMBER(FUNC(cz1_state::cont_r))
 	PORT_BIT(0xf8, IP_ACTIVE_LOW,  IPT_UNUSED)
 INPUT_PORTS_END
 
@@ -496,8 +496,8 @@ static INPUT_PORTS_START( cz1 )
 
 	PORT_START("MAIN_PC")
 	PORT_BIT(0x0f, IP_ACTIVE_LOW,  IPT_UNUSED)
-	PORT_BIT(0x10, IP_ACTIVE_HIGH, IPT_CUSTOM) PORT_READ_LINE_MEMBER(cz1_state, cont49_r)
-	PORT_BIT(0x20, IP_ACTIVE_HIGH, IPT_CUSTOM) PORT_READ_LINE_MEMBER(cz1_state, sync49_r)
+	PORT_BIT(0x10, IP_ACTIVE_HIGH, IPT_CUSTOM) PORT_READ_LINE_MEMBER(FUNC(cz1_state::cont49_r))
+	PORT_BIT(0x20, IP_ACTIVE_HIGH, IPT_CUSTOM) PORT_READ_LINE_MEMBER(FUNC(cz1_state::sync49_r))
 	PORT_BIT(0xc0, IP_ACTIVE_LOW,  IPT_UNUSED)
 INPUT_PORTS_END
 
@@ -877,21 +877,20 @@ void cz1_state::mz1(machine_config &config)
 	config.set_default_layout(layout_mz1);
 
 	// sound hardware
-	SPEAKER(config, "lspeaker").front_left();
-	SPEAKER(config, "rspeaker").front_right();
+	SPEAKER(config, "speaker", 2).front();
 
-	MIXER(config, m_mixer[0]).add_route(0, "lspeaker", 1.0);
-	MIXER(config, m_mixer[1]).add_route(0, "rspeaker", 1.0);
+	MIXER(config, m_mixer[0]).add_route(ALL_OUTPUTS, "speaker", 1.0, 0);
+	MIXER(config, m_mixer[1]).add_route(ALL_OUTPUTS, "speaker", 1.0, 1);
 
 	UPD933(config, m_upd933[0], 8.96_MHz_XTAL / 2);
 	m_upd933[0]->irq_cb().set("irq",  FUNC(input_merger_any_high_device::in_w<0>));
-	m_upd933[0]->add_route(0, m_mixer[0], 1.0);
-	m_upd933[0]->add_route(0, m_mixer[1], 1.0);
+	m_upd933[0]->add_route(0, m_mixer[0], 1.0, 0);
+	m_upd933[0]->add_route(0, m_mixer[1], 1.0, 0);
 
 	UPD933(config, m_upd933[1], 8.96_MHz_XTAL / 2);
 	m_upd933[1]->irq_cb().set("irq",  FUNC(input_merger_any_high_device::in_w<1>));
-	m_upd933[1]->add_route(0, m_mixer[0], 1.0);
-	m_upd933[1]->add_route(0, m_mixer[1], 1.0);
+	m_upd933[1]->add_route(0, m_mixer[0], 1.0, 1);
+	m_upd933[1]->add_route(0, m_mixer[1], 1.0, 1);
 }
 
 /**************************************************************************/
@@ -910,7 +909,7 @@ void cz1_state::cz1(machine_config &config)
 	m_mcu->t0_in_cb().set(FUNC(cz1_state::sync49_r));
 	m_mcu->t1_in_cb().set([this] () { return BIT(m_main_port[2], 7); });
 
-	MSM6200(config, "kbd").irq_cb().set_inputline(m_mcu, MCS48_INPUT_IRQ);
+	MSM6200(config, "kbd", 2.47_MHz_XTAL).irq_cb().set_inputline(m_mcu, MCS48_INPUT_IRQ); // CSA2.47MG ceramic oscillator
 
 	config.set_default_layout(layout_cz1);
 }

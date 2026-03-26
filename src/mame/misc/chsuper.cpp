@@ -59,7 +59,7 @@ public:
 
 protected:
 	virtual void machine_start() override { m_lamps.resolve(); }
-	virtual void video_start() override;
+	virtual void video_start() override ATTR_COLD;
 
 private:
 	int m_tilexor = 0;
@@ -78,10 +78,10 @@ private:
 
 	uint32_t screen_update(screen_device &screen, bitmap_ind16 &bitmap, const rectangle &cliprect);
 
-	void losttrea_portmap(address_map &map);
-	void portmap(address_map &map);
-	void prg_map(address_map &map);
-	void ramdac_map(address_map &map);
+	void losttrea_portmap(address_map &map) ATTR_COLD;
+	void portmap(address_map &map) ATTR_COLD;
+	void prg_map(address_map &map) ATTR_COLD;
+	void ramdac_map(address_map &map) ATTR_COLD;
 };
 
 
@@ -340,7 +340,7 @@ static INPUT_PORTS_START( chsuper )
 	PORT_DIPSETTING(    0x08, "Sensa Abilita" )
 	PORT_DIPSETTING(    0x00, "Con Abilita" )
 	PORT_DIPNAME( 0x30, 0x30, DEF_STR( Coinage ) )  PORT_DIPLOCATION("DSW:5,6")
-	PORT_DIPSETTING(    0x00, "1 Coin/10 Credits" )
+	PORT_DIPSETTING(    0x00, DEF_STR( 1C_10C ) )
 	PORT_DIPSETTING(    0x10, DEF_STR( 1C_5C ) )
 	PORT_DIPSETTING(    0x20, DEF_STR( 1C_2C ) )
 	PORT_DIPSETTING(    0x30, DEF_STR( 1C_1C ) )

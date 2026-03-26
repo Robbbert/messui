@@ -41,8 +41,8 @@
 #include "machine/nscsi_bus.h"
 
 class ncr5385_device
-	: public nscsi_device
-	, public nscsi_slot_card_interface
+	: public device_t
+	, public nscsi_device_interface
 {
 public:
 	auto irq() { return m_int.bind(); }
@@ -52,15 +52,15 @@ public:
 
 	ncr5385_device(machine_config const &mconfig, char const *tag, device_t *owner, u32 clock);
 
-	void map(address_map &map);
+	void map(address_map &map) ATTR_COLD;
 
 	u8 dma_r();
 	void dma_w(u8 data);
 
 protected:
 	// device_t implementation
-	virtual void device_start() override;
-	virtual void device_reset() override;
+	virtual void device_start() override ATTR_COLD;
+	virtual void device_reset() override ATTR_COLD;
 
 	// ncsci_device implementation
 	virtual void scsi_ctrl_changed() override;

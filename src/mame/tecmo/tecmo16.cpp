@@ -76,7 +76,7 @@ public:
 	void riot(machine_config &config);
 
 protected:
-	virtual void video_start() override;
+	virtual void video_start() override ATTR_COLD;
 
 private:
 	required_device<cpu_device> m_maincpu;
@@ -128,10 +128,10 @@ private:
 	void screen_vblank(int state);
 
 	void save_state();
-	void common_map(address_map& map);
-	void fstarfrc_map(address_map &map);
-	void ginkun_map(address_map &map);
-	void sound_map(address_map &map);
+	void common_map(address_map &map) ATTR_COLD;
+	void fstarfrc_map(address_map &map) ATTR_COLD;
+	void ginkun_map(address_map &map) ATTR_COLD;
+	void sound_map(address_map &map) ATTR_COLD;
 };
 
 
@@ -698,19 +698,18 @@ void tecmo16_state::base(machine_config &config)
 	m_mixer->set_bgpen(0x000 + 0x300, 0x400 + 0x300);
 
 	// sound hardware
-	SPEAKER(config, "lspeaker").front_left();
-	SPEAKER(config, "rspeaker").front_right();
+	SPEAKER(config, "speaker", 2).front();
 
 	GENERIC_LATCH_8(config, "soundlatch").data_pending_callback().set_inputline(m_audiocpu, INPUT_LINE_NMI);
 
 	ym2151_device &ymsnd(YM2151(config, "ymsnd", MASTER_CLOCK/6)); // 4 MHz
 	ymsnd.irq_handler().set_inputline(m_audiocpu, 0);
-	ymsnd.add_route(0, "lspeaker", 0.60);
-	ymsnd.add_route(1, "rspeaker", 0.60);
+	ymsnd.add_route(0, "speaker", 0.60, 0);
+	ymsnd.add_route(1, "speaker", 0.60, 1);
 
 	okim6295_device &oki(OKIM6295(config, "oki", OKI_CLOCK / 8, okim6295_device::PIN7_HIGH)); // sample rate 1 MHz / 132
-	oki.add_route(ALL_OUTPUTS, "lspeaker", 0.40);
-	oki.add_route(ALL_OUTPUTS, "rspeaker", 0.40);
+	oki.add_route(ALL_OUTPUTS, "speaker", 0.40, 0);
+	oki.add_route(ALL_OUTPUTS, "speaker", 0.40, 1);
 }
 
 void tecmo16_state::ginkun(machine_config &config)
@@ -1004,10 +1003,12 @@ ROM_END
 
 /******************************************************************************/
 
-GAME( 1992, fstarfrc,   0,        base,     fstarfrc, tecmo16_state, empty_init, ROT90, "Tecmo",    "Final Star Force (US)",           MACHINE_SUPPORTS_SAVE ) // Has 'Recycle it, don't trash it"  and 'Winners don't use drugs' screens after first attract cycle
-GAME( 1992, fstarfrcj,  fstarfrc, base,     fstarfrc, tecmo16_state, empty_init, ROT90, "Tecmo",    "Final Star Force (Japan, set 1)", MACHINE_SUPPORTS_SAVE )
-GAME( 1992, fstarfrcja, fstarfrc, base,     fstarfrc, tecmo16_state, empty_init, ROT90, "Tecmo",    "Final Star Force (Japan, set 2)", MACHINE_SUPPORTS_SAVE )
-GAME( 1992, fstarfrcw,  fstarfrc, base,     fstarfrc, tecmo16_state, empty_init, ROT90, "Tecmo",    "Final Star Force (World?)",       MACHINE_SUPPORTS_SAVE ) // more similar the to the Japanese version than to the US one, not the parent because not sure it's the world version
-GAME( 1992, riot,       0,        riot,     riot,     tecmo16_state, empty_init, ROT0,  "NMK",      "Riot",                            MACHINE_SUPPORTS_SAVE )
-GAME( 1992, riotw,      riot,     riot,     riot,     tecmo16_state, empty_init, ROT0,  "Woong Bi", "Riot (Woong Bi license)",         MACHINE_SUPPORTS_SAVE )
-GAME( 1995, ginkun,     0,        ginkun,   ginkun,   tecmo16_state, empty_init, ROT0,  "Tecmo",    "Ganbare Ginkun",                  MACHINE_SUPPORTS_SAVE )
+GAME( 1992, fstarfrc,   0,        base,     fstarfrc, tecmo16_state, empty_init, ROT90, "Tecmo", "Final Star Force (US)",           MACHINE_SUPPORTS_SAVE ) // Has 'Recycle it, don't trash it"  and 'Winners don't use drugs' screens after first attract cycle
+GAME( 1992, fstarfrcj,  fstarfrc, base,     fstarfrc, tecmo16_state, empty_init, ROT90, "Tecmo", "Final Star Force (Japan, set 1)", MACHINE_SUPPORTS_SAVE )
+GAME( 1992, fstarfrcja, fstarfrc, base,     fstarfrc, tecmo16_state, empty_init, ROT90, "Tecmo", "Final Star Force (Japan, set 2)", MACHINE_SUPPORTS_SAVE )
+GAME( 1992, fstarfrcw,  fstarfrc, base,     fstarfrc, tecmo16_state, empty_init, ROT90, "Tecmo", "Final Star Force (World?)",       MACHINE_SUPPORTS_SAVE ) // more similar the to the Japanese version than to the US one, not the parent because not sure it's the world version
+
+GAME( 1992, riot,       0,        riot,     riot,     tecmo16_state, empty_init, ROT0,  "Tecmo (NMK license)",      "Riot (NMK)",      MACHINE_SUPPORTS_SAVE )
+GAME( 1992, riotw,      riot,     riot,     riot,     tecmo16_state, empty_init, ROT0,  "Tecmo (Woong Bi license)", "Riot (Woong Bi)", MACHINE_SUPPORTS_SAVE )
+
+GAME( 1995, ginkun,     0,        ginkun,   ginkun,   tecmo16_state, empty_init, ROT0,  "Tecmo", "Ganbare Ginkun", MACHINE_SUPPORTS_SAVE )

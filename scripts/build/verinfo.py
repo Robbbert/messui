@@ -51,7 +51,7 @@ def parse_args():
 
 
 def extract_version(input):
-    pattern = re.compile('\s+BARE_BUILD_VERSION\s+"(([^."]+)\.([^."]+)\.([^."]+))"')
+    pattern = re.compile(r'\s+LONG_BUILD_VERSION\s+"(([^."]+)\.([^."]+)\.([^."]+))"')
     for line in input.readlines():
         match = pattern.search(line)
         if match:
@@ -86,9 +86,9 @@ else:
 
 if build == "mess":
     # MESS
-    author = "MESS Team"
+    author = "Robbbert and the MAME Team"
     comments = "Multi Emulation Super System"
-    company_name = "MESS Team"
+    company_name = "MAME Team"
     file_description = "MESS"
     internal_name = "MESS"
     original_filename = "MESS"

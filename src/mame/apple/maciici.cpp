@@ -17,6 +17,7 @@
 
 #include "emu.h"
 
+#include "adbmodem.h"
 #include "egret.h"
 #include "macadb.h"
 #include "macrtc.h"
@@ -45,8 +46,8 @@
 
 namespace {
 
-static constexpr u32 C7M = 7833600;
-static constexpr u32 C15M = (C7M * 2);
+static constexpr XTAL C15M = 31.3344_MHz_XTAL / 2;
+static constexpr XTAL C7M = 31.3344_MHz_XTAL / 4;
 
 class maciici_state : public driver_device
 {
@@ -58,24 +59,27 @@ public:
 		m_rbv(*this, "rbv"),
 		m_macadb(*this, "macadb"),
 		m_ram(*this, RAM_TAG),
+		m_adbmodem(*this, "adbmodem"),
 		m_asc(*this, "asc"),
 		m_scsibus1(*this, "scsi"),
-		m_ncr5380(*this, "scsi:7:ncr5380"),
+		m_ncr5380(*this, "ncr5380"),
 		m_scsihelp(*this, "scsihelp"),
 		m_fdc(*this, "fdc"),
 		m_floppy(*this, "fdc:%d", 0U),
 		m_scc(*this, "scc"),
 		m_rtc(*this, "rtc"),
-		m_egret(*this, "egret")
+		m_egret(*this, "egret"),
+		m_config(*this, "config")
 	{
 	}
 
+	void maciixi_base(machine_config &config);
 	void maciici(machine_config &config);
 	void maciisi(machine_config &config);
 
 protected:
-	virtual void machine_start() override;
-	virtual void machine_reset() override;
+	virtual void machine_start() override ATTR_COLD;
+	virtual void machine_reset() override ATTR_COLD;
 
 private:
 	required_device<m68030_device> m_maincpu;
@@ -83,6 +87,7 @@ private:
 	required_device<rbv_device> m_rbv;
 	required_device<macadb_device> m_macadb;
 	required_device<ram_device> m_ram;
+	optional_device<adbmodem_device> m_adbmodem;
 	required_device<asc_device> m_asc;
 	required_device<nscsi_bus_device> m_scsibus1;
 	required_device<ncr5380_device> m_ncr5380;
@@ -92,6 +97,7 @@ private:
 	required_device<z80scc_device> m_scc;
 	optional_device<rtc3430042_device> m_rtc;
 	optional_device<egret_device> m_egret;
+	optional_ioport m_config;
 
 	void set_via2_interrupt(int value);
 	void field_interrupts();
@@ -120,7 +126,7 @@ private:
 
 	uint32_t rom_switch_r(offs_t offset);
 
-	void maciici_map(address_map &map);
+	void maciici_map(address_map &map) ATTR_COLD;
 
 	u16 scc_r(offs_t offset)
 	{
@@ -170,22 +176,17 @@ private:
 			m_fdc->write((offset >> 8) & 0xf, data & 0xff);
 		else
 			m_fdc->write((offset >> 8) & 0xf, data >> 8);
-	}
 
-	void write_6015(int state)
-	{
-		if (state)
-		{
-			m_macadb->adb_vblank();
-		}
+		if (!machine().side_effects_disabled())
+			m_maincpu->adjust_icount(-5);
 	}
 };
 
 void maciici_state::machine_start()
 {
-	m_rbv->set_ram_info((u32 *)m_ram->pointer(), m_ram->size());
+	m_rbv->set_ram_info(m_ram->pointer<u32>(), m_ram->size());
 
-	m_rom_ptr = (u32 *)memregion("bootrom")->base();
+	m_rom_ptr = &memregion("bootrom")->as_u32();
 	m_rom_size = memregion("bootrom")->bytes();
 
 	m_last_taken_interrupt = -1;
@@ -193,10 +194,15 @@ void maciici_state::machine_start()
 
 void maciici_state::machine_reset()
 {
-	// main cpu shouldn't start until Egret wakes it up
+	// main CPU shouldn't start until Egret wakes it up
 	if (m_egret)
 	{
 		m_maincpu->set_input_line(INPUT_LINE_HALT, ASSERT_LINE);
+	}
+
+	if (m_config)
+	{
+		m_maincpu->set_fpu_enable(BIT(m_config->read(), 0));
 	}
 
 	// put ROM mirror at 0
@@ -340,14 +346,12 @@ uint8_t maciici_state::via_in_a_iisi()
 
 uint8_t maciici_state::via_in_b()
 {
-	u8 val = m_macadb->get_adb_state() << 4;
+	u8 val = m_rtc->data_r();
 
 	if (!m_adb_irq_pending)
 	{
 		val |= 0x08;
 	}
-
-	val |= m_rtc->data_r();
 
 	return val;
 }
@@ -373,9 +377,9 @@ void maciici_state::via_out_a(uint8_t data)
 void maciici_state::via_out_b(uint8_t data)
 {
 	//  printf("%s VIA1 OUT B: %02x\n", machine().describe_context().c_str(), data);
-	m_macadb->mac_adb_newaction((data & 0x30) >> 4);
+	m_adbmodem->set_via_state((data & 0x30) >> 4);
 
-	m_rtc->ce_w(BIT(data, 2));
+m_rtc->ce_w(BIT(data, 2));
 	m_rtc->data_w(BIT(data, 0));
 	m_rtc->clk_w(BIT(data, 1));
 }
@@ -388,7 +392,7 @@ void maciici_state::via_out_b_iisi(uint8_t data)
 
 void maciici_state::via_out_cb2(int state)
 {
-	m_macadb->adb_data_w(state);
+//  m_macadb->adb_data_w(state);
 }
 
 void maciici_state::via_out_cb2_iisi(int state)
@@ -500,10 +504,17 @@ void maciici_state::devsel_w(uint8_t devsel)
 static INPUT_PORTS_START(maciici)
 INPUT_PORTS_END
 
+static INPUT_PORTS_START(maciisi)
+	PORT_START("config")
+	PORT_CONFNAME(0x01, 0x00, "FPU")
+	PORT_CONFSETTING(0x00, "No FPU")
+	PORT_CONFSETTING(0x01, "FPU Present")
+INPUT_PORTS_END
+
 /***************************************************************************
     MACHINE DRIVERS
 ***************************************************************************/
-void maciici_state::maciici(machine_config &config)
+void maciici_state::maciixi_base(machine_config &config)
 {
 	M68030(config, m_maincpu, 25000000);
 	m_maincpu->set_addrmap(AS_PROGRAM, &maciici_state::maciici_map);
@@ -537,12 +548,11 @@ void maciici_state::maciici(machine_config &config)
 	rs232b.dcd_handler().set(m_scc, FUNC(z80scc_device::dcdb_w));
 	rs232b.cts_handler().set(m_scc, FUNC(z80scc_device::ctsb_w));
 
-	SPEAKER(config, "lspeaker").front_left();
-	SPEAKER(config, "rspeaker").front_right();
+	SPEAKER(config, "speaker", 2).front();
 	ASC(config, m_asc, C15M, asc_device::asc_type::ASC);
 	m_asc->irqf_callback().set(m_rbv, FUNC(rbv_device::asc_irq_w));
-	m_asc->add_route(0, "lspeaker", 1.0);
-	m_asc->add_route(1, "rspeaker", 1.0);
+	m_asc->add_route(0, "speaker", 1.0, 0);
+	m_asc->add_route(1, "speaker", 1.0, 1);
 
 	R65NC22(config, m_via1, C7M / 10);
 	m_via1->readpa_handler().set(FUNC(maciici_state::via_in_a));
@@ -552,23 +562,22 @@ void maciici_state::maciici(machine_config &config)
 	m_via1->cb2_handler().set(FUNC(maciici_state::via_out_cb2));
 	m_via1->irq_handler().set(FUNC(maciici_state::via_irq));
 
-	NSCSI_BUS(config, "scsi");
+	NSCSI_BUS(config, m_scsibus1);
 	NSCSI_CONNECTOR(config, "scsi:0", mac_scsi_devices, nullptr);
 	NSCSI_CONNECTOR(config, "scsi:1", mac_scsi_devices, nullptr);
 	NSCSI_CONNECTOR(config, "scsi:2", mac_scsi_devices, nullptr);
 	NSCSI_CONNECTOR(config, "scsi:3").option_set("cdrom", NSCSI_CDROM_APPLE).machine_config(
 		[](device_t *device)
 		{
-			device->subdevice<cdda_device>("cdda")->add_route(0, "^^lspeaker", 1.0);
-			device->subdevice<cdda_device>("cdda")->add_route(1, "^^rspeaker", 1.0);
+			device->subdevice<cdda_device>("cdda")->add_route(0, "^^speaker", 1.0, 0);
+			device->subdevice<cdda_device>("cdda")->add_route(1, "^^speaker", 1.0, 1);
 		});
 	NSCSI_CONNECTOR(config, "scsi:4", mac_scsi_devices, nullptr);
 	NSCSI_CONNECTOR(config, "scsi:5", mac_scsi_devices, nullptr);
 	NSCSI_CONNECTOR(config, "scsi:6", mac_scsi_devices, "harddisk");
-	NSCSI_CONNECTOR(config, "scsi:7").option_set("ncr5380", NCR53C80).machine_config([this](device_t *device)
-																					 {
-		ncr53c80_device &adapter = downcast<ncr53c80_device &>(*device);
-		adapter.drq_handler().set(m_scsihelp, FUNC(mac_scsi_helper_device::drq_w)); });
+	NCR53C80(config, m_ncr5380);
+	m_scsibus1->set_external_device(7, m_ncr5380);
+	m_ncr5380->drq_handler().set(m_scsihelp, FUNC(mac_scsi_helper_device::drq_w));
 
 	MAC_SCSI_HELPER(config, m_scsihelp);
 	m_scsihelp->scsi_read_callback().set(m_ncr5380, FUNC(ncr53c80_device::read));
@@ -589,9 +598,8 @@ void maciici_state::maciici(machine_config &config)
 	SOFTWARE_LIST(config, "flop_mac35_clean").set_original("mac_flop_clcracked");
 	SOFTWARE_LIST(config, "flop35_list").set_original("mac_flop");
 
-	RBV(config, m_rbv, C15M);
+	RBV(config, m_rbv, 31.3344_MHz_XTAL); // main clock input - additional 30.24MHz and 57.2832MHz pixel clock inputs
 	m_rbv->via6015_callback().set(m_via1, FUNC(via6522_device::write_ca1));
-	m_rbv->via6015_callback().append(FUNC(maciici_state::write_6015));
 	m_rbv->irq_callback().set(FUNC(maciici_state::set_via2_interrupt));
 
 	/* internal ram */
@@ -610,28 +618,38 @@ void maciici_state::maciici(machine_config &config)
 	NUBUS_SLOT(config, "nbc", "nubus", mac_nubus_cards, nullptr);
 	NUBUS_SLOT(config, "nbd", "nubus", mac_nubus_cards, nullptr);
 	NUBUS_SLOT(config, "nbe", "nubus", mac_nubus_cards, nullptr);
+}
+
+void maciici_state::maciici(machine_config &config)
+{
+	maciixi_base(config);
+
+	ADBMODEM(config, m_adbmodem, C7M);
+	m_adbmodem->via_clock_callback().set(m_via1, FUNC(via6522_device::write_cb1));
+	m_adbmodem->via_data_callback().set(m_via1, FUNC(via6522_device::write_cb2));
+	m_adbmodem->linechange_callback().set(m_macadb, FUNC(macadb_device::adb_linechange_w));
+	m_adbmodem->irq_callback().set(FUNC(maciici_state::adb_irq_w));
+	m_via1->cb2_handler().set(m_adbmodem, FUNC(adbmodem_device::set_via_data));
+	config.set_perfect_quantum(m_maincpu);
 
 	MACADB(config, m_macadb, C15M);
-	m_macadb->set_mcu_mode(false);
-	m_macadb->via_clock_callback().set(m_via1, FUNC(via6522_device::write_cb1));
-	m_macadb->via_data_callback().set(m_via1, FUNC(via6522_device::write_cb2));
-	m_macadb->adb_irq_callback().set(FUNC(maciici_state::adb_irq_w));
+	m_macadb->adb_data_callback().set(m_adbmodem, FUNC(adbmodem_device::set_adb_line));
 }
 
 void maciici_state::maciisi(machine_config &config)
 {
-	maciici(config);
+	maciixi_base(config);
 
 	M68030(config.replace(), m_maincpu, 20000000);
 	m_maincpu->set_addrmap(AS_PROGRAM, &maciici_state::maciici_map);
 	m_maincpu->set_dasm_override(std::function(&mac68k_dasm_override), "mac68k_dasm_override");
 
-	MACADB(config.replace(), m_macadb, C15M);
-
 	m_via1->readpa_handler().set(FUNC(maciici_state::via_in_a_iisi));
 	m_via1->readpb_handler().set(FUNC(maciici_state::via_in_b_iisi));
 	m_via1->writepb_handler().set(FUNC(maciici_state::via_out_b_iisi));
 	m_via1->cb2_handler().set(FUNC(maciici_state::via_out_cb2_iisi));
+
+	MACADB(config, m_macadb, C15M);
 
 	EGRET(config, m_egret, XTAL(32'768));
 	m_egret->set_default_bios_tag("344s0100");
@@ -675,4 +693,4 @@ ROM_END
 } // anonymous namespace
 
 COMP(1989, maciici, 0, 0, maciici, maciici, maciici_state, empty_init, "Apple Computer", "Macintosh IIci", MACHINE_SUPPORTS_SAVE)
-COMP(1990, maciisi, 0, 0, maciisi, maciici, maciici_state, empty_init, "Apple Computer", "Macintosh IIsi", MACHINE_SUPPORTS_SAVE)
+COMP(1990, maciisi, 0, 0, maciisi, maciisi, maciici_state, empty_init, "Apple Computer", "Macintosh IIsi", MACHINE_SUPPORTS_SAVE)

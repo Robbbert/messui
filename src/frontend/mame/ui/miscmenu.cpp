@@ -20,7 +20,6 @@
 #include "infoxml.h"
 #include "mame.h"
 
-#include "osdnet.h"
 #include "mameopts.h"
 #include "pluginopts.h"
 #include "dinetwork.h"
@@ -28,6 +27,8 @@
 #include "fileio.h"
 #include "romload.h"
 #include "uiinput.h"
+
+#include "osdepend.h"
 
 #include "path.h"
 
@@ -168,21 +169,23 @@ menu_network_devices::~menu_network_devices()
 
 void menu_network_devices::populate()
 {
-	/* cycle through all devices for this system */
+	// cycle through all devices for this system
+	auto const interfaces = machine().osd().list_network_devices();
+	auto const flags = !interfaces.empty() ? (FLAG_LEFT_ARROW | FLAG_RIGHT_ARROW) : 0;
 	for (device_network_interface &network : network_interface_enumerator(machine().root_device()))
 	{
 		int curr = network.get_interface();
-		const char *title = nullptr;
-		for (auto &entry : get_netdev_list())
+		std::string_view title;
+		for (auto &entry : interfaces)
 		{
-			if (entry->id == curr)
+			if (entry.id == curr)
 			{
-				title = entry->description;
+				title = entry.description;
 				break;
 			}
 		}
 
-		item_append(network.device().tag(), title ? title : "------", FLAG_LEFT_ARROW | FLAG_RIGHT_ARROW, (void *)&network);
+		item_append(network.device().tag(), std::string(!title.empty() ? title : "------"), flags, (void *)&network);
 	}
 
 	item_append(menu_item_type::SEPARATOR);
@@ -200,30 +203,37 @@ bool menu_network_devices::handle(event const *ev)
 	}
 	else if (ev->iptkey == IPT_UI_LEFT || ev->iptkey == IPT_UI_RIGHT)
 	{
-		// FIXME: this conflates presumably arbitrary interface ID numbers with 0-based indices
 		device_network_interface *const network = (device_network_interface *)ev->itemref;
-		auto const &interfaces = get_netdev_list();
+		auto const interfaces = machine().osd().list_network_devices();
+		if (interfaces.empty())
+			return false;
+
 		int curr = network->get_interface();
+		auto const found = std::find_if(
+				std::begin(interfaces),
+				std::end(interfaces),
+				[curr] (osd::network_device_info const &info) { return info.id == curr; });
+		auto index = std::distance(interfaces.begin(), found);
 		if (ev->iptkey == IPT_UI_LEFT)
-			curr--;
-		else
-			curr++;
-		if (curr == -2)
-			curr = interfaces.size() - 1;
-		network->set_interface(curr);
+			--index;
+		else if (std::end(interfaces) == found)
+			index = 0;
+		else if (std::size(interfaces) <= ++index)
+			index = -1;
+		network->set_interface((0 <= index) ? interfaces[index].id : -1);
 
 		curr = network->get_interface();
-		const char *title = nullptr;
+		std::string_view title;
 		for (auto &entry : interfaces)
 		{
-			if (entry->id == curr)
+			if (entry.id == curr)
 			{
-				title = entry->description;
+				title = entry.description;
 				break;
 			}
 		}
 
-		ev->item->set_subtext(title ? title : "------");
+		ev->item->set_subtext(!title.empty() ? title : "------");
 		return true;
 	}
 	else
@@ -263,14 +273,14 @@ void menu_bookkeeping::populate_text(std::optional<text_layout> &layout, float &
 		// show total time first
 		prevtime = machine().time();
 		if (prevtime.seconds() >= (60 * 60))
-			layout->add_text(util::string_format(_("Uptime: %1$d:%2$02d:%3$02d\n\n"), prevtime.seconds() / (60 * 60), (prevtime.seconds() / 60) % 60, prevtime.seconds() % 60), color);
+			layout->add_text(util::string_format(_("menu-bookkeeping", "Uptime: %1$d:%2$02d:%3$02d\n\n"), prevtime.seconds() / (60 * 60), (prevtime.seconds() / 60) % 60, prevtime.seconds() % 60), color);
 		else
-			layout->add_text(util::string_format(_("Uptime: %1$d:%2$02d\n\n"), (prevtime.seconds() / 60) % 60, prevtime.seconds() % 60), color);
+			layout->add_text(util::string_format(_("menu-bookkeeping", "Uptime: %1$d:%2$02d\n\n"), (prevtime.seconds() / 60) % 60, prevtime.seconds() % 60), color);
 
 		// show tickets at the top
 		int const tickets = machine().bookkeeping().get_dispensed_tickets();
 		if (tickets > 0)
-			layout->add_text(util::string_format(_("Tickets dispensed: %1$d\n\n"), tickets), color);
+			layout->add_text(util::string_format(_("menu-bookkeeping", "Tickets dispensed: %1$d\n\n"), tickets), color);
 
 		// loop over coin counters
 		for (int ctrnum = 0; ctrnum < bookkeeping_manager::COIN_COUNTERS; ctrnum++)
@@ -281,13 +291,10 @@ void menu_bookkeeping::populate_text(std::optional<text_layout> &layout, float &
 			// display the coin counter number
 			// display how many coins
 			// display whether or not we are locked out
-			layout->add_text(
-					util::string_format(
-						(count == 0) ? _("Coin %1$c: NA%3$s\n") : _("Coin %1$c: %2$d%3$s\n"),
-						ctrnum + 'A',
-						count,
-						locked ? _(" (locked)") : ""),
-					color);
+			auto const format = !count
+					? (locked ? _("menu-bookkeeping", "Coin %1$c: NA (locked)\n") : _("menu-bookkeeping", "Coin %1$c: NA\n"))
+					: (locked ? _("menu-bookkeeping", "Coin %1$c: %2$d (locked)\n") : _("menu-bookkeeping", "Coin %1$c: %2$d\n"));
+			layout->add_text(util::string_format(format, ctrnum + 'A', count), color);
 		}
 
 		lines = layout->lines();
@@ -925,7 +932,7 @@ void menu_machine_configure::setup_bios()
 menu_plugins_configure::menu_plugins_configure(mame_ui_manager &mui, render_container &container)
 	: menu(mui, container)
 {
-	set_heading(_("Plugins"));
+	set_heading(_("menu-plugins", "Plugins"));
 }
 
 menu_plugins_configure::~menu_plugins_configure()
@@ -985,7 +992,7 @@ void menu_plugins_configure::populate()
 		}
 	}
 	if (first)
-		item_append(_("No plugins found"), FLAG_DISABLE, nullptr);
+		item_append(_("menu-plugins", "No plugins found"), FLAG_DISABLE, nullptr);
 	item_append(menu_item_type::SEPARATOR);
 }
 

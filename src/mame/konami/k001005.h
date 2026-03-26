@@ -59,12 +59,12 @@ public:
 	static constexpr int POLY_A = 9;
 
 private:
-	std::unique_ptr<bitmap_rgb32> m_fb[2];
-	std::unique_ptr<bitmap_ind32> m_zb;
+	bitmap_rgb32 m_fb[2];
+	bitmap_ind32 m_zb;
 	rectangle m_cliprect;
 	int m_fb_page;
 
-	std::unique_ptr<uint32_t[]> m_3dfifo;
+	std::unique_ptr<uint32_t []> m_3dfifo;
 	int m_3dfifo_ptr;
 
 	vertex_t m_vertexb[4];
@@ -119,9 +119,9 @@ public:
 
 protected:
 	// device-level overrides
-	virtual void device_start() override;
-	virtual void device_stop() override;
-	virtual void device_reset() override;
+	virtual void device_start() override ATTR_COLD;
+	virtual void device_stop() override ATTR_COLD;
+	virtual void device_reset() override ATTR_COLD;
 
 private:
 	// internal state

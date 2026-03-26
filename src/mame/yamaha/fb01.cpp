@@ -41,8 +41,8 @@ public:
 	void fb01(machine_config &config);
 
 protected:
-	virtual void machine_start() override;
-	virtual void machine_reset() override;
+	virtual void machine_start() override ATTR_COLD;
+	virtual void machine_reset() override ATTR_COLD;
 
 private:
 	void ym2164_irq_w(int state);
@@ -52,8 +52,8 @@ private:
 	void fb01_palette(palette_device &palette) const;
 	HD44780_PIXEL_UPDATE(fb01_pixel_update);
 
-	void fb01_io(address_map &map);
-	void fb01_mem(address_map &map);
+	void fb01_io(address_map &map) ATTR_COLD;
+	void fb01_mem(address_map &map) ATTR_COLD;
 
 	void update_int();
 
@@ -203,12 +203,11 @@ void fb01_state::fb01(machine_config &config)
 
 	MIDI_PORT(config, "mdthru", midiout_slot, "midiout");
 
-	SPEAKER(config, "lspeaker").front_left();
-	SPEAKER(config, "rspeaker").front_right();
+	SPEAKER(config, "speaker", 2).front();
 	ym2164_device &ym2164(YM2164(config, "ym2164", XTAL(4'000'000)));
 	ym2164.irq_handler().set(FUNC(fb01_state::ym2164_irq_w));
-	ym2164.add_route(0, "lspeaker", 1.00);
-	ym2164.add_route(1, "rspeaker", 1.00);
+	ym2164.add_route(0, "speaker", 1.00, 0);
+	ym2164.add_route(1, "speaker", 1.00, 1);
 
 	NVRAM(config, "nvram", nvram_device::DEFAULT_ALL_0);
 }

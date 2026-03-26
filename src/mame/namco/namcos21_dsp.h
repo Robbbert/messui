@@ -5,8 +5,10 @@
 
 #pragma once
 
-#include "cpu/tms32025/tms32025.h"
 #include "namcos21_3d.h"
+
+#include "cpu/tms320c2x/tms320c2x.h"
+
 
 #define WINRUN_MAX_POLY_PARAM (1+256*3)
 
@@ -32,14 +34,14 @@ public:
 
 protected:
 	// device-level overrides
-	virtual void device_start() override;
-	virtual void device_reset() override;
+	virtual void device_start() override ATTR_COLD;
+	virtual void device_reset() override ATTR_COLD;
 
-	virtual void device_add_mconfig(machine_config &config) override;
+	virtual void device_add_mconfig(machine_config &config) override ATTR_COLD;
 
-	void winrun_dsp_data(address_map &map);
-	void winrun_dsp_io(address_map &map);
-	void winrun_dsp_program(address_map &map);
+	void winrun_dsp_data(address_map &map) ATTR_COLD;
+	void winrun_dsp_io(address_map &map) ATTR_COLD;
+	void winrun_dsp_program(address_map &map) ATTR_COLD;
 private:
 
 	required_device<cpu_device> m_dsp;

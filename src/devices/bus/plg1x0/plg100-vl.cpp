@@ -24,16 +24,16 @@ public:
 	virtual void midi_rx(int state) override;
 
 protected:
-	virtual void device_start() override;
-	virtual void device_reset() override;
+	virtual void device_start() override ATTR_COLD;
+	virtual void device_reset() override ATTR_COLD;
 	const tiny_rom_entry *device_rom_region() const override;
-	virtual void device_add_mconfig(machine_config &config) override;
+	virtual void device_add_mconfig(machine_config &config) override ATTR_COLD;
 
 private:
 	required_device<h83002_device> m_cpu;
 	required_device<dspv_device> m_dspv;
 
-	void map(address_map &map);
+	void map(address_map &map) ATTR_COLD;
 };
 
 plg100_vl_device::plg100_vl_device(const machine_config &mconfig, const char *tag, device_t *owner, uint32_t clock) :
@@ -67,8 +67,8 @@ void plg100_vl_device::device_add_mconfig(machine_config &config)
 	m_cpu->write_sci_tx<1>().set([this] (int state) { m_connector->do_midi_tx(state); });
 
 	DSPV(config, m_dspv, 22.5792_MHz_XTAL);
-	m_dspv->add_route(0, DEVICE_SELF_OWNER, 1.0, AUTO_ALLOC_INPUT, 0);
-	m_dspv->add_route(1, DEVICE_SELF_OWNER, 1.0, AUTO_ALLOC_INPUT, 1);
+	//  m_dspv->add_route(0, DEVICE_SELF_OWNER, 1.0, 0);
+	//  m_dspv->add_route(1, DEVICE_SELF_OWNER, 1.0, 1);
 }
 
 ROM_START( plg100_vl )

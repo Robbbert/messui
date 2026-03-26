@@ -81,13 +81,13 @@ void iosb_base::device_add_mconfig(machine_config &config)
 
 	R65NC22(config, m_via2, C7M / 10);
 	m_via2->readpa_handler().set(FUNC(iosb_base::via2_in_a));
+	m_via2->writepb_handler().set(FUNC(iosb_base::via2_out_b));
 	m_via2->irq_handler().set(FUNC(iosb_base::via2_irq));
 
-	SPEAKER(config, "lspeaker").front_left();
-	SPEAKER(config, "rspeaker").front_right();
+	SPEAKER(config, "speaker", 2).front();
 	ASC(config, m_asc, C15M, asc_device::asc_type::SONORA);
-	m_asc->add_route(0, "lspeaker", 1.0);
-	m_asc->add_route(1, "rspeaker", 1.0);
+	m_asc->add_route(0, "speaker", 1.0, 0);
+	m_asc->add_route(1, "speaker", 1.0, 1);
 	m_asc->irqf_callback().set(FUNC(iosb_base::asc_irq));
 
 	SWIM2(config, m_fdc, C15M);
@@ -115,6 +115,9 @@ iosb_base::iosb_base(const machine_config &mconfig, device_type type, const char
 	m_adb_st(*this),
 	m_cb1(*this),
 	m_cb2(*this),
+	m_dfac_clock_w(*this),
+	m_dfac_data_w(*this),
+	m_dfac_latch_w(*this),
 	m_pa1(*this, 0),
 	m_pa2(*this, 0),
 	m_pa4(*this, 0),
@@ -266,6 +269,13 @@ void iosb_base::via1_irq(int state)
 {
 	m_via_interrupt = state;
 	field_interrupts();
+}
+
+void iosb_base::via2_out_b(uint8_t data)
+{
+	m_dfac_latch_w(BIT(data, 0));
+	m_dfac_data_w(BIT(data, 3));
+	m_dfac_clock_w(BIT(data, 4));
 }
 
 void iosb_base::via2_irq(int state)
@@ -499,6 +509,9 @@ void iosb_base::swim_w(offs_t offset, u16 data, u16 mem_mask)
 		m_fdc->write((offset >> 8) & 0xf, data & 0xff);
 	else
 		m_fdc->write((offset >> 8) & 0xf, data >> 8);
+
+	if (!machine().side_effects_disabled())
+		m_maincpu->adjust_icount(-5);
 }
 
 void iosb_base::phases_w(uint8_t phases)

@@ -52,15 +52,12 @@ public:
 
 private:
 	required_device<cpu_device> m_maincpu;
-	void bntyhunt_map(address_map &map);
+	void bntyhunt_map(address_map &map) ATTR_COLD;
 };
 
 void bntyhunt_state::bntyhunt_map(address_map &map)
 {
 }
-
-static INPUT_PORTS_START( bntyhunt )
-INPUT_PORTS_END
 
 
 void bntyhunt_state::bntyhunt(machine_config &config)
@@ -85,4 +82,4 @@ ROM_END
 } // anonymous namespace
 
 
-GAME( 2002?, bntyhunt, 0, bntyhunt, bntyhunt, bntyhunt_state, empty_init, ROT0, "GC-Tech Co., LTD", "Bounty Hunter (GC-Tech Co., LTD)", MACHINE_IS_SKELETON )
+GAME( 2002?, bntyhunt, 0, bntyhunt, 0, bntyhunt_state, empty_init, ROT0, "GC-Tech Co., LTD", "Bounty Hunter (GC-Tech Co., LTD)", MACHINE_NO_SOUND | MACHINE_NOT_WORKING )

@@ -347,14 +347,14 @@ private:
 
 	uint32_t screen_update(screen_device &screen, bitmap_rgb32 &bitmap, const rectangle &cliprect);
 
-	void banked_decrypted_opcodes_map(address_map &map);
-	void decrypted_opcodes_map(address_map &map);
-	void io_map(address_map &map);
-	void systeme_map(address_map &map);
-	void vdp1_map(address_map &map);
-	void vdp2_map(address_map &map);
+	void banked_decrypted_opcodes_map(address_map &map) ATTR_COLD;
+	void decrypted_opcodes_map(address_map &map) ATTR_COLD;
+	void io_map(address_map &map) ATTR_COLD;
+	void systeme_map(address_map &map) ATTR_COLD;
+	void vdp1_map(address_map &map) ATTR_COLD;
+	void vdp2_map(address_map &map) ATTR_COLD;
 
-	virtual void machine_start() override;
+	virtual void machine_start() override ATTR_COLD;
 
 	// Devices
 	required_device<cpu_device>          m_maincpu;
@@ -701,9 +701,9 @@ static INPUT_PORTS_START( segae_ridleofp_generic )
 	PORT_BIT( 0xfff, 0x000, IPT_DIAL ) PORT_SENSITIVITY(60) PORT_KEYDELTA(125) PORT_COCKTAIL
 
 	PORT_START("BUTTONS")
-	PORT_BIT( 0x1, IP_ACTIVE_LOW,  IPT_BUTTON2 ) PORT_WRITE_LINE_DEVICE_MEMBER("upd4701", upd4701_device, middle_w) // is this used in the game?
-	PORT_BIT( 0x2, IP_ACTIVE_LOW,  IPT_UNKNOWN ) PORT_WRITE_LINE_DEVICE_MEMBER("upd4701", upd4701_device, right_w)
-	PORT_BIT( 0x4, IP_ACTIVE_LOW,  IPT_BUTTON1 ) PORT_WRITE_LINE_DEVICE_MEMBER("upd4701", upd4701_device, left_w)
+	PORT_BIT( 0x1, IP_ACTIVE_LOW,  IPT_BUTTON2 ) PORT_WRITE_LINE_DEVICE_MEMBER("upd4701", FUNC(upd4701_device::middle_w)) // is this used in the game?
+	PORT_BIT( 0x2, IP_ACTIVE_LOW,  IPT_UNKNOWN ) PORT_WRITE_LINE_DEVICE_MEMBER("upd4701", FUNC(upd4701_device::right_w))
+	PORT_BIT( 0x4, IP_ACTIVE_LOW,  IPT_BUTTON1 ) PORT_WRITE_LINE_DEVICE_MEMBER("upd4701", FUNC(upd4701_device::left_w))
 INPUT_PORTS_END
 
 static INPUT_PORTS_START( transfrm ) /* Used By Transformer */
@@ -999,6 +999,8 @@ void systeme_state::init_fantzn2()
 
 //*************************************************************************************************************************
 //  Fantasy Zone II - The Tears of Opa-Opa (MC-8123, 317-0057), Sega System E
+//   Game ID# 833-6591-01 FANTAZY ZONE 2 (also stickered as 833-6591-01 FANTSAY ZONE II)  [The spelling mistakes are as found on actual labels]
+//   ROM BD # 834-6592-01
 //
 ROM_START( fantzn2 )
 	ROM_REGION( 0x50000, "maincpu", 0 )

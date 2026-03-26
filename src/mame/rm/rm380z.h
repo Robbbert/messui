@@ -22,6 +22,7 @@ Research Machines RM 380Z
 #include "video/sn74s262.h"
 
 #include "emupal.h"
+#include "screen.h"
 
 //
 //
@@ -52,9 +53,10 @@ protected:
 	static inline constexpr int RM380Z_SCREENROWS = 24;
 	static inline constexpr int RM380Z_SCREENCOLS = 40;
 
-	void configure(machine_config &config);
+	void base_configure(machine_config &config);
+	void fds_configure();
 
-	void machine_reset() override;
+	void machine_reset() override ATTR_COLD;
 
 	bool ports_enabled_high() const { return bool(m_port0 & 0x80); }
 	bool ports_enabled_low() const { return !(m_port0 & 0x80); }
@@ -82,8 +84,8 @@ protected:
 	virtual void update_screen(bitmap_ind16 &bitmap) const = 0;
 	uint32_t screen_update_rm380z(screen_device &screen, bitmap_ind16 &bitmap, const rectangle &cliprect);
 
-	void rm380z_io(address_map &map);
-	void rm380z_mem(address_map &map);
+	void rm380z_io(address_map &map) ATTR_COLD;
+	void rm380z_mem(address_map &map) ATTR_COLD;
 
 	uint8_t m_port0 = 0;
 	uint8_t m_port0_kbd = 0;
@@ -91,12 +93,12 @@ protected:
 	uint8_t m_fbfe = 0;
 
 	required_device<cpu_device> m_maincpu;
-	optional_device<screen_device> m_screen;
-	optional_device<palette_device> m_palette;
-	optional_device<ram_device> m_messram;
-	optional_device<fd1771_device> m_fdc;
-	optional_device<floppy_connector> m_floppy0;
-	optional_device<floppy_connector> m_floppy1;
+	required_device<screen_device> m_screen;
+	required_device<palette_device> m_palette;
+	required_device<ram_device> m_messram;
+	required_device<fd1771_device> m_fdc;
+	required_device<floppy_connector> m_floppy0;
+	required_device<floppy_connector> m_floppy1;
 };
 
 // COS 3.4 machine with cassette and VDU-40 display
@@ -110,11 +112,11 @@ public:
 	{
 	}
 
-	void configure(machine_config &config);
-	void configure_fds(machine_config &config);
+	void rm380z34e(machine_config &config);
+	void rm380z34d(machine_config &config) { rm380z34e(config); fds_configure(); }
 
 protected:
-	void machine_reset() override;
+	void machine_reset() override ATTR_COLD;
 
 	void port_write(offs_t offset, uint8_t data) override;
 	uint8_t port_read(offs_t offset) override;
@@ -155,7 +157,8 @@ public:
 	{
 	}
 
-	void configure(machine_config &config);
+	void rm380z(machine_config &config);
+	void rm380zf(machine_config &config) { rm380z(config); fds_configure(); }
 
 protected:
 	template <int ROWS, int COLS>
@@ -182,7 +185,7 @@ protected:
 	static inline constexpr int RM380Z_VIDEOMODE_40COL = 0x01;
 	static inline constexpr int RM380Z_VIDEOMODE_80COL = 0x02;
 
-	void machine_reset() override;
+	void machine_reset() override ATTR_COLD;
 
 	void port_write(offs_t offset, uint8_t data) override;
 	uint8_t port_read(offs_t offset) override;
@@ -196,7 +199,7 @@ protected:
 	uint8_t m_fbfd = 0;
 
 	required_region_ptr<u8> m_chargen;
-	optional_device<speaker_sound_device> m_speaker;
+	required_device<speaker_sound_device> m_speaker;
 
 private:
 	void config_videomode();
@@ -219,12 +222,13 @@ public:
 	{
 	}
 
-	void configure(machine_config &config);
+	void rm380zhrg(machine_config &config);
+	void rm380zfhrg(machine_config &config) { rm380zhrg(config); fds_configure(); }
 
 	DECLARE_INPUT_CHANGED_MEMBER(monitor_changed);
 
 protected:
-	void machine_reset() override;
+	void machine_reset() override ATTR_COLD;
 
 	void port_write(offs_t offset, uint8_t data) override;
 	uint8_t port_read(offs_t offset) override;
@@ -259,27 +263,6 @@ private:
 	hrg_display_mode m_hrg_display_mode = hrg_display_mode::none;
 
 	required_ioport m_io_display_type;
-};
-
-// partially implemented non working RM480z
-class rm480z_state : public rm380z_state_cos40
-{
-public:
-	rm480z_state(const machine_config &mconfig, device_type type, const char *tag) :
-		rm380z_state_cos40(mconfig, type, tag)
-	{
-	}
-
-	void configure(machine_config &config);
-
-protected:
-	void machine_reset() override;
-
-	void update_screen(bitmap_ind16 &bitmap) const override;
-
-private:
-	void rm480z_io(address_map &map);
-	void rm480z_mem(address_map &map);
 };
 
 #endif // MAME_RM_RM380Z_H

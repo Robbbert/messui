@@ -71,15 +71,15 @@ Super System Card:
 
 static constexpr XTAL MAIN_CLOCK = XTAL(21'477'272);
 
-static constexpr uint8_t TG_16_JOY_SIG = 0x00;
-static constexpr uint8_t PCE_JOY_SIG   = 0x40;
-//static constexpr uint8_t NO_CD_SIG     = 0x80;
-//static constexpr uint8_t CD_SIG        = 0x00;
+static constexpr u8 TG_16_JOY_SIG = 0x00;
+static constexpr u8 PCE_JOY_SIG   = 0x40;
+//static constexpr u8 NO_CD_SIG     = 0x80;
+//static constexpr u8 CD_SIG        = 0x00;
 /* these might be used to indicate something, but they always seem to return 1 */
-static constexpr uint8_t CONST_SIG     = 0x30;
+static constexpr u8 CONST_SIG     = 0x30;
 
 // hucard pachikun gives you option to select pachinko controller after pressing start, likely because it doesn't have a true header id
-static INPUT_PORTS_START( pce )
+static INPUT_PORTS_START(pce)
 INPUT_PORTS_END
 
 void pce_state::controller_w(u8 data)
@@ -117,14 +117,14 @@ void pce_state::pce_mem(address_map &map)
 	map(0x1ee000, 0x1ee7ff).rw(m_cd, FUNC(pce_cd_device::bram_r), FUNC(pce_cd_device::bram_w));
 	map(0x1ee800, 0x1effff).noprw();
 	map(0x1f0000, 0x1f1fff).ram().mirror(0x6000);
-	map(0x1fe000, 0x1fe3ff).rw("huc6270", FUNC(huc6270_device::read), FUNC(huc6270_device::write));
+	map(0x1fe000, 0x1fe3ff).rw("huc6270", FUNC(huc6270_device::read8), FUNC(huc6270_device::write8));
 	map(0x1fe400, 0x1fe7ff).rw(m_huc6260, FUNC(huc6260_device::read), FUNC(huc6260_device::write));
 	map(0x1ff800, 0x1ffbff).rw(FUNC(pce_state::cd_intf_r), FUNC(pce_state::cd_intf_w));
 }
 
 void pce_state::pce_io(address_map &map)
 {
-	map(0x00, 0x03).rw("huc6270", FUNC(huc6270_device::read), FUNC(huc6270_device::write));
+	map(0x00, 0x03).rw("huc6270", FUNC(huc6270_device::read8), FUNC(huc6270_device::write8));
 }
 
 
@@ -135,9 +135,9 @@ void pce_state::sgx_mem(address_map &map)
 	map(0x1ee000, 0x1ee7ff).rw(m_cd, FUNC(pce_cd_device::bram_r), FUNC(pce_cd_device::bram_w));
 	map(0x1ee800, 0x1effff).noprw();
 	map(0x1f0000, 0x1f7fff).ram();
-	map(0x1fe000, 0x1fe007).rw("huc6270_0", FUNC(huc6270_device::read), FUNC(huc6270_device::write)).mirror(0x03e0);
+	map(0x1fe000, 0x1fe007).rw("huc6270_0", FUNC(huc6270_device::read8), FUNC(huc6270_device::write8)).mirror(0x03e0);
 	map(0x1fe008, 0x1fe00f).rw("huc6202", FUNC(huc6202_device::read), FUNC(huc6202_device::write)).mirror(0x03e0);
-	map(0x1fe010, 0x1fe017).rw("huc6270_1", FUNC(huc6270_device::read), FUNC(huc6270_device::write)).mirror(0x03e0);
+	map(0x1fe010, 0x1fe017).rw("huc6270_1", FUNC(huc6270_device::read8), FUNC(huc6270_device::write8)).mirror(0x03e0);
 	map(0x1fe400, 0x1fe7ff).rw(m_huc6260, FUNC(huc6260_device::read), FUNC(huc6260_device::write));
 	map(0x1ff800, 0x1ffbff).rw(FUNC(pce_state::cd_intf_r), FUNC(pce_state::cd_intf_w));
 }
@@ -146,13 +146,6 @@ void pce_state::sgx_mem(address_map &map)
 void pce_state::sgx_io(address_map &map)
 {
 	map(0x00, 0x03).rw("huc6202", FUNC(huc6202_device::io_read), FUNC(huc6202_device::io_write));
-}
-
-
-uint32_t pce_state::screen_update(screen_device &screen, bitmap_ind16 &bitmap, const rectangle &cliprect)
-{
-	m_huc6260->video_update(bitmap, cliprect);
-	return 0;
 }
 
 
@@ -190,15 +183,15 @@ void pce_state::pce_common(machine_config &config)
 	m_maincpu->set_addrmap(AS_IO, &pce_state::pce_io);
 	m_maincpu->port_in_cb().set(FUNC(pce_state::controller_r));
 	m_maincpu->port_out_cb().set(FUNC(pce_state::controller_w));
-	m_maincpu->add_route(0, "lspeaker", 1.00);
-	m_maincpu->add_route(1, "rspeaker", 1.00);
+	m_maincpu->add_route(0, "speaker", 1.00, 0);
+	m_maincpu->add_route(1, "speaker", 1.00, 1);
 
 	config.set_maximum_quantum(attotime::from_hz(60));
 
 	// video hardware
 	screen_device &screen(SCREEN(config, "screen", SCREEN_TYPE_RASTER));
 	screen.set_raw(MAIN_CLOCK, huc6260_device::WPF, 64, 64 + 1024 + 64, huc6260_device::LPF, 18, 18 + 242);
-	screen.set_screen_update(FUNC(pce_state::screen_update));
+	screen.set_screen_update(m_huc6260, FUNC(huc6260_device::screen_update));
 	screen.set_palette(m_huc6260);
 
 	HUC6260(config, m_huc6260, MAIN_CLOCK);
@@ -207,12 +200,11 @@ void pce_state::pce_common(machine_config &config)
 	m_huc6260->vsync_changed().set("huc6270", FUNC(huc6270_device::vsync_changed));
 	m_huc6260->hsync_changed().set("huc6270", FUNC(huc6270_device::hsync_changed));
 
-	huc6270_device &huc6270(HUC6270(config, "huc6270", 0));
+	huc6270_device &huc6270(HUC6270(config, "huc6270", MAIN_CLOCK));
 	huc6270.set_vram_size(0x10000);
 	huc6270.irq().set_inputline(m_maincpu, 0);
 
-	SPEAKER(config, "lspeaker").front_left();
-	SPEAKER(config, "rspeaker").front_right();
+	SPEAKER(config, "speaker", 2).front();
 
 	PCE_CONTROL_PORT(config, m_port_ctrl, pce_control_port_devices, "joypad2");
 
@@ -220,8 +212,8 @@ void pce_state::pce_common(machine_config &config)
 	PCE_CD(config, m_cd, 0);
 	m_cd->irq().set_inputline(m_maincpu, 1);
 	m_cd->set_maincpu(m_maincpu);
-	m_cd->add_route(0, "lspeaker", 1.0);
-	m_cd->add_route(1, "rspeaker", 1.0);
+	m_cd->add_route(0, "speaker", 1.0, 0);
+	m_cd->add_route(1, "speaker", 1.0, 1);
 
 	SOFTWARE_LIST(config, "cd_list").set_original("pcecd");
 }
@@ -258,47 +250,44 @@ void pce_state::sgx(machine_config &config)
 	m_maincpu->set_addrmap(AS_IO, &pce_state::sgx_io);
 	m_maincpu->port_in_cb().set(FUNC(pce_state::controller_r));
 	m_maincpu->port_out_cb().set(FUNC(pce_state::controller_w));
-	m_maincpu->add_route(0, "lspeaker", 1.00);
-	m_maincpu->add_route(1, "rspeaker", 1.00);
+	m_maincpu->add_route(0, "speaker", 1.00, 0);
+	m_maincpu->add_route(1, "speaker", 1.00, 1);
 
 	config.set_maximum_quantum(attotime::from_hz(60));
 
 	// video hardware
 	screen_device &screen(SCREEN(config, "screen", SCREEN_TYPE_RASTER));
 	screen.set_raw(MAIN_CLOCK, huc6260_device::WPF, 64, 64 + 1024 + 64, huc6260_device::LPF, 18, 18 + 242);
-	screen.set_screen_update(FUNC(pce_state::screen_update));
+	screen.set_screen_update(m_huc6260, FUNC(huc6260_device::screen_update));
 	screen.set_palette(m_huc6260);
 
 	HUC6260(config, m_huc6260, MAIN_CLOCK);
 	m_huc6260->next_pixel_data().set("huc6202", FUNC(huc6202_device::next_pixel));
 	m_huc6260->time_til_next_event().set("huc6202", FUNC(huc6202_device::time_until_next_event));
-	m_huc6260->vsync_changed().set("huc6202", FUNC(huc6202_device::vsync_changed));
-	m_huc6260->hsync_changed().set("huc6202", FUNC(huc6202_device::hsync_changed));
+	m_huc6260->vsync_changed().set("huc6270_0", FUNC(huc6270_device::vsync_changed));
+	m_huc6260->vsync_changed().append("huc6270_1", FUNC(huc6270_device::vsync_changed));
+	m_huc6260->hsync_changed().set("huc6270_0", FUNC(huc6270_device::hsync_changed));
+	m_huc6260->hsync_changed().append("huc6270_1", FUNC(huc6270_device::hsync_changed));
 
-	huc6270_device &huc6270_0(HUC6270(config, "huc6270_0", 0));
+	huc6270_device &huc6270_0(HUC6270(config, "huc6270_0", MAIN_CLOCK));
 	huc6270_0.set_vram_size(0x10000);
 	huc6270_0.irq().set_inputline(m_maincpu, 0); // needs input merger?
 
-	huc6270_device &huc6270_1(HUC6270(config, "huc6270_1", 0));
+	huc6270_device &huc6270_1(HUC6270(config, "huc6270_1", MAIN_CLOCK));
 	huc6270_1.set_vram_size(0x10000);
 	huc6270_1.irq().set_inputline(m_maincpu, 0); // needs input merger?
 
-	huc6202_device &huc6202(HUC6202(config, "huc6202", 0 ));
+	huc6202_device &huc6202(HUC6202(config, "huc6202", MAIN_CLOCK));
 	huc6202.next_pixel_0_callback().set("huc6270_0", FUNC(huc6270_device::next_pixel));
 	huc6202.time_til_next_event_0_callback().set("huc6270_0", FUNC(huc6270_device::time_until_next_event));
-	huc6202.vsync_changed_0_callback().set("huc6270_0", FUNC(huc6270_device::vsync_changed));
-	huc6202.hsync_changed_0_callback().set("huc6270_0", FUNC(huc6270_device::hsync_changed));
-	huc6202.read_0_callback().set("huc6270_0", FUNC(huc6270_device::read));
-	huc6202.write_0_callback().set("huc6270_0", FUNC(huc6270_device::write));
+	huc6202.read_0_callback().set("huc6270_0", FUNC(huc6270_device::read8));
+	huc6202.write_0_callback().set("huc6270_0", FUNC(huc6270_device::write8));
 	huc6202.next_pixel_1_callback().set("huc6270_1", FUNC(huc6270_device::next_pixel));
 	huc6202.time_til_next_event_1_callback().set("huc6270_1", FUNC(huc6270_device::time_until_next_event));
-	huc6202.vsync_changed_1_callback().set("huc6270_1", FUNC(huc6270_device::vsync_changed));
-	huc6202.hsync_changed_1_callback().set("huc6270_1", FUNC(huc6270_device::hsync_changed));
-	huc6202.read_1_callback().set("huc6270_1", FUNC(huc6270_device::read));
-	huc6202.write_1_callback().set("huc6270_1", FUNC(huc6270_device::write));
+	huc6202.read_1_callback().set("huc6270_1", FUNC(huc6270_device::read8));
+	huc6202.write_1_callback().set("huc6270_1", FUNC(huc6270_device::write8));
 
-	SPEAKER(config, "lspeaker").front_left();
-	SPEAKER(config, "rspeaker").front_right();
+	SPEAKER(config, "speaker", 2).front();
 
 	// turbo pad bundled
 	PCE_CONTROL_PORT(config, m_port_ctrl, pce_control_port_devices, "joypad2_turbo");
@@ -312,8 +301,8 @@ void pce_state::sgx(machine_config &config)
 	PCE_CD(config, m_cd, 0);
 	m_cd->irq().set_inputline(m_maincpu, 1);
 	m_cd->set_maincpu(m_maincpu);
-	m_cd->add_route(0, "lspeaker", 1.0);
-	m_cd->add_route(1, "rspeaker", 1.0);
+	m_cd->add_route(0, "speaker", 1.0, 0);
+	m_cd->add_route(1, "speaker", 1.0, 1);
 
 	SOFTWARE_LIST(config, "cd_list").set_original("pcecd");
 }

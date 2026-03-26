@@ -11,16 +11,15 @@
 #include "drivenum.h"
 #include "romload.h"
 
-// Make sure all MESS features are included, and include software panes
+// Make sure all MESS features are included
 #define MESS
 
-#define MAMENAME "MAME"
-#define MUI_INI_FILENAME "MAMEUI.ini"
+#define MAMENAME "MESS"
 
-#ifdef PTR64
-#define MAMEUINAME MAMENAME "UI64 exp"
+#ifdef _M_X64
+#define MAMEUINAME MAMENAME "UI64"
 #else
-#define MAMEUINAME MAMENAME "UI32 exp"
+#define MAMEUINAME MAMENAME "UI32"
 #endif
 
 #define SEARCH_PROMPT "<search here>"
@@ -54,14 +53,16 @@ typedef struct
 	const char *icon_name;
 } ICONDATA;
 
-typedef std::string string;
+typedef std::basic_string<char> string;
+typedef std::basic_string<wchar_t> wstring;
 
 typedef BOOL (WINAPI *common_file_dialog_proc)(LPOPENFILENAME lpofn);
 BOOL CommonFileDialog(common_file_dialog_proc cfd,char *filename, int filetype);
 
 HWND GetMainWindow();
 HWND GetTreeView();
-HWND GetProgressBar();
+HWND GetToolbar();
+HBITMAP GetBackground();
 HIMAGELIST GetLargeImageList();
 HIMAGELIST GetSmallImageList();
 void SetNumOptionFolders(int count);

@@ -3,18 +3,19 @@
 #ifndef WINUI_MESSUI_H
 #define WINUI_MESSUI_H
 
-extern char g_szSelectedItem[MAX_PATH];
+extern string g_szSelectedItem;
 
-void InitMessPicker(void);
-void MessUpdateSoftwareList(void);
-BOOL MyFillSoftwareList(int nGame, BOOL bForce);
-BOOL MessCommand(HWND hwnd,int id, HWND hwndCtl, UINT codeNotify);
-void MessReadMountedSoftware(int nGame);
-void SoftwareTabView_OnSelectionChanged(void);
-BOOL CreateMessIcons(void);
-void MySoftwareListClose(void);
-void MView_RegisterClass(void);
-void MView_Refresh(HWND hwndDevView);
+void InitMessPicker();
+void MessUpdateSoftwareList();
+BOOL MyFillSoftwareList(int, BOOL);
+BOOL MessCommand(HWND hwnd,int, HWND, UINT);
+void MessReadMountedSoftware(int);
+void SoftwareTabView_OnSelectionChanged();
+BOOL CreateMessIcons();
+void ShowHideSoftwareArea();
+void MySoftwareListClose();
+void MView_RegisterClass();
+void MView_Refresh(HWND);
 
 #endif // __MESSUI_H__
 

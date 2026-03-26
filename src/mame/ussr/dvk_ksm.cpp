@@ -113,8 +113,8 @@ public:
 private:
 	TIMER_DEVICE_CALLBACK_MEMBER(scanline_callback);
 
-	virtual void machine_reset() override;
-	virtual void machine_start() override;
+	virtual void machine_reset() override ATTR_COLD;
+	virtual void machine_start() override ATTR_COLD;
 	uint32_t screen_update(screen_device &screen, bitmap_ind16 &bitmap, const rectangle &cliprect);
 
 	TIMER_CALLBACK_MEMBER(clock_brg);
@@ -128,8 +128,8 @@ private:
 	void ksm_ppi_porta_w(uint8_t data);
 	void ksm_ppi_portc_w(uint8_t data);
 
-	void ksm_io(address_map &map);
-	void ksm_mem(address_map &map);
+	void ksm_io(address_map &map) ATTR_COLD;
+	void ksm_mem(address_map &map) ATTR_COLD;
 
 	uint32_t draw_scanline(uint16_t *p, uint16_t offset, uint8_t scanline);
 	rectangle m_tmpclip;
@@ -453,8 +453,7 @@ void ksm_state::ksm(machine_config &config)
 	MS7004(config, m_ms7004, 0);
 	m_ms7004->tx_handler().set(m_i8251kbd, FUNC(i8251_device::write_rxd));
 
-	// baud rate is supposed to be 4800 but keyboard is slightly faster
-	clock_device &keyboard_clock(CLOCK(config, "keyboard_clock", 4960 * 16));
+	clock_device &keyboard_clock(CLOCK(config, "keyboard_clock", 4800 * 16));
 	keyboard_clock.signal_handler().set(FUNC(ksm_state::write_keyboard_clock));
 }
 

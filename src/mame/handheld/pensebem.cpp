@@ -128,8 +128,8 @@ public:
 	void pensebem2017(machine_config &config);
 
 private:
-	void prg_map(address_map &map);
-	void data_map(address_map &map);
+	void prg_map(address_map &map) ATTR_COLD;
+	void data_map(address_map &map) ATTR_COLD;
 
 	uint8_t port_b_r();
 	void port_b_w(uint8_t data);
@@ -150,8 +150,8 @@ private:
 	required_ioport_array<4> m_keyb_rows;
 
 protected:
-	virtual void machine_start() override;
-	virtual void machine_reset() override;
+	virtual void machine_start() override ATTR_COLD;
+	virtual void machine_reset() override ATTR_COLD;
 };
 
 void pensebem2017_state::machine_start()
@@ -301,7 +301,7 @@ void pensebem2017_state::pensebem2017(machine_config &config)
 }
 
 ROM_START( pbem2017 )
-	ROM_REGION(0x20000, "maincpu", 0)
+	ROM_REGION(0x4000, "maincpu", 0)
 	ROM_DEFAULT_BIOS("sept2017")
 
 	/* September 2017 release */

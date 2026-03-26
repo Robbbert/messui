@@ -14,7 +14,6 @@ namespace fs {
 const char *meta_data::entry_name(meta_name name)
 {
 	switch(name) {
-	case meta_name::basic: return "basic";
 	case meta_name::creation_date: return "creation_date";
 	case meta_name::length: return "length";
 	case meta_name::loading_address: return "loading_address";
@@ -31,6 +30,7 @@ const char *meta_data::entry_name(meta_name name)
 	case meta_name::owner_id: return "owner_id";
 	case meta_name::attributes: return "attributes";
 	case meta_name::oem_name: return "oem_name";
+	case meta_name::disk_id: return "disk_id";
 	}
 	return "";
 }

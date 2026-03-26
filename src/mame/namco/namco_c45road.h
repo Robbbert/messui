@@ -1,10 +1,11 @@
 // license:BSD-3-Clause
 // copyright-holders:Phil Stroffolino, Aaron Giles, Alex W. Jackson
-#ifndef MAME_NAMCO_C45_H
-#define MAME_NAMCO_C45_H
+#ifndef MAME_NAMCO_NAMCO_C45ROAD_H
+#define MAME_NAMCO_NAMCO_C45ROAD_H
 
 #pragma once
 
+#include "screen.h"
 #include "tilemap.h"
 
 
@@ -21,7 +22,7 @@ public:
 	// construction/destruction
 	namco_c45_road_device(const machine_config &mconfig, const char *tag, device_t *owner, uint32_t clock = 0);
 
-	void map(address_map &map);
+	void map(address_map &map) ATTR_COLD;
 
 	// read/write handlers
 	uint16_t read(offs_t offset);
@@ -31,11 +32,11 @@ public:
 	void set_transparent_color(pen_t pen) { m_transparent_color = pen; }
 	void set_xoffset(int xoffset) { m_xoffset = xoffset; }
 
-	void draw(bitmap_ind16 &bitmap, const rectangle &cliprect, int pri);
+	void draw(screen_device &screen, bitmap_ind16 &bitmap, const rectangle &cliprect, int pri, uint8_t prival = 0, uint8_t primask = uint8_t(~0));
 
 protected:
 	// device-level overrides
-	virtual void device_start() override;
+	virtual void device_start() override ATTR_COLD;
 	virtual space_config_vector memory_space_config() const override;
 
 private:
@@ -69,4 +70,4 @@ private:
 // device type definition
 DECLARE_DEVICE_TYPE(NAMCO_C45_ROAD, namco_c45_road_device)
 
-#endif // MAME_NAMCO_C45_H
+#endif // MAME_NAMCO_NAMCO_C45ROAD_H

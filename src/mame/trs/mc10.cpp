@@ -79,7 +79,7 @@ protected:
 	mc10cart_slot_device &mc10cart() { return *m_mc10cart; }
 
 private:
-	void mc10_mem(address_map &map);
+	void mc10_mem(address_map &map) ATTR_COLD;
 
 	optional_device<mc6847_base_device> m_mc6847;
 	required_device<dac_bit_interface> m_dac;
@@ -109,8 +109,8 @@ protected:
 	required_device<ef9345_device> m_ef9345;
 
 private:
-	void alice32_mem(address_map &map);
-	void alice90_mem(address_map &map);
+	void alice32_mem(address_map &map) ATTR_COLD;
+	void alice90_mem(address_map &map) ATTR_COLD;
 };
 
 /***************************************************************************
@@ -511,7 +511,7 @@ void mc10_state::mc10_video(machine_config &config)
 	/* video hardware */
 	SCREEN(config, "screen", SCREEN_TYPE_RASTER);
 
-	mc6847_ntsc_device &vdg(MC6847_NTSC(config, "mc6847", XTAL(3'579'545)));
+	mc6847_device &vdg(MC6847(config, "mc6847", XTAL(3'579'545)));
 	vdg.set_screen("screen");
 	vdg.input_callback().set(FUNC(mc10_state::mc6847_videoram_r));
 }

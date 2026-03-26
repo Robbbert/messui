@@ -78,8 +78,8 @@ public:
 	void vboy(machine_config &config);
 
 protected:
-	virtual void machine_reset() override;
-	virtual void video_start() override;
+	virtual void machine_reset() override ATTR_COLD;
+	virtual void video_start() override ATTR_COLD;
 
 private:
 	// FIXME: most if not all of these must be uint8_t
@@ -139,13 +139,13 @@ private:
 	uint8_t m_row_num = 0;
 	attotime m_input_latch_time;
 
-	void io_map(address_map &map);
+	void io_map(address_map &map) ATTR_COLD;
 	u8 timer_control_r();
 	void timer_control_w(offs_t offset, u8 data);
 	u8 keypad_control_r();
 	void keypad_control_w(offs_t offset, u8 data);
 
-	void vip_map(address_map &map);
+	void vip_map(address_map &map) ATTR_COLD;
 	uint16_t vip_io_r(offs_t offset);
 	void vip_io_w(offs_t offset, uint16_t data, uint16_t mem_mask = ~0);
 	void font0_w(offs_t offset, uint16_t data, uint16_t mem_mask = ~0);
@@ -186,7 +186,7 @@ private:
 	TIMER_DEVICE_CALLBACK_MEMBER(timer_pad_tick);
 	TIMER_DEVICE_CALLBACK_MEMBER(vboy_scanlineL);
 
-	void vboy_map(address_map &map);
+	void vboy_map(address_map &map) ATTR_COLD;
 };
 
 
@@ -1273,11 +1273,10 @@ void vboy_state::vboy(machine_config &config)
 	SOFTWARE_LIST(config, "cart_list").set_original("vboy");
 
 	/* sound hardware */
-	SPEAKER(config, "lspeaker").front_left();
-	SPEAKER(config, "rspeaker").front_right();
+	SPEAKER(config, "speaker", 2).front();
 	vboysnd_device &vbsnd(VBOYSND(config, "vbsnd"));
-	vbsnd.add_route(0, "lspeaker", 1.0);
-	vbsnd.add_route(1, "rspeaker", 1.0);
+	vbsnd.add_route(0, "speaker", 1.0, 0);
+	vbsnd.add_route(1, "speaker", 1.0, 1);
 }
 
 /* ROM definition */

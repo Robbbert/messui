@@ -3,11 +3,15 @@
 #include "mfi_dsk.h"
 
 #include "ioprocs.h"
+#include "strformat.h"
 
 #include <zlib.h>
 
 #include <cstring>
 #include <functional>
+#include <iostream>
+#include <map>
+#include <sstream>
 #include <tuple>
 
 
@@ -42,8 +46,10 @@
   - 2, MG_D -> Damaged zone, reads as neutral but cannot be changed by writing
   - 3, MG_E -> End of zone
 
-  Tracks data is aligned so that the index pulse is at the start,
-  whether the disk is hard-sectored or not.
+  Tracks data is aligned so that the index pulse is at the start for soft-
+  sectored disks. For hard-sectored disks, the sector hole for the first
+  sector is at the start and the index hole is half a sector from the end
+  of the track.
 
   The position is the angular position in units of 1/200,000,000th of
   a turn.  A size in such units, not coincidentally at all, is also
@@ -59,7 +65,9 @@
   if you try to rewrite a physical disk with the data.  Some
   preservation formats encode that information, it is guessed for
   others.  The write track function of fdcs should set it.  The
-  representation is the angular position relative to the index.
+  representation is the angular position relative to the index, for
+  soft-sectored disks, and the first sector hole for hard-sectored
+  disks.
 
   The media type is divided in two parts.  The first half
   indicate the physical form factor, i.e. all medias with that
@@ -208,6 +216,20 @@ bool mfi_format::load(util::random_read &io, uint32_t form_factor, const std::ve
 			ent++;
 		}
 
+	for(int side=0; side != 2; side++)
+		for(int track=0; track!=46; track++) {
+			std::map<int, int> lengths;
+			const std::vector<uint32_t> &trackbuf = image.get_buffer(track, side, 0);
+			uint32_t cpos = 0;
+			for(uint32_t p : trackbuf) {
+				lengths[p-cpos] ++;
+				cpos = p;
+			}
+			std::ostringstream s;
+			for(const auto &e : lengths)
+				util::stream_format(s, " %d:%d", e.first, e.second);
+			util::stream_format(std::cerr, "%d.%2d:%s\n", side, track, std::move(s).str());
+		}
 	return true;
 }
 

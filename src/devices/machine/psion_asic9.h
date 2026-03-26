@@ -62,19 +62,22 @@ public:
 protected:
 	psion_asic9_device(const machine_config &mconfig, device_type type, const char *tag, device_t *owner, uint32_t clock);
 
-	virtual void device_add_mconfig(machine_config &config) override;
-	virtual void device_start() override;
-	virtual void device_reset() override;
+	virtual void device_add_mconfig(machine_config &config) override ATTR_COLD;
+	virtual void device_start() override ATTR_COLD;
+	virtual void device_reset() override ATTR_COLD;
 
 	virtual space_config_vector memory_space_config() const override;
+
+	virtual uint32_t ram_device_size(uint8_t device_type);
+	virtual uint8_t get_ram_type(uint32_t ram_size);
 
 private:
 	required_device<cpu_device> m_v30;
 	required_device<ram_device> m_ram;
 	required_memory_region m_rom;
 
-	void mem_map(address_map &map);
-	void io_map(address_map &map);
+	void mem_map(address_map &map) ATTR_COLD;
+	void io_map(address_map &map) ATTR_COLD;
 
 	static constexpr int AS_A9_RAM = AS_OPCODES + 1;
 	static constexpr int AS_A9_ROM = AS_OPCODES + 2;
@@ -104,7 +107,6 @@ private:
 	offs_t translate_address(offs_t offset);
 
 	uint8_t m_ram_type;
-	uint32_t ram_device_size(uint8_t device_type);
 	void configure_ram(uint8_t device_type = 0);
 	void configure_rom();
 
@@ -169,6 +171,10 @@ class psion_asic9mx_device : public psion_asic9_device
 public:
 	// construction/destruction
 	psion_asic9mx_device(const machine_config &mconfig, const char *tag, device_t *owner, uint32_t clock);
+
+protected:
+	virtual uint32_t ram_device_size(uint8_t device_type) override;
+	virtual uint8_t get_ram_type(uint32_t ram_size) override;
 };
 
 

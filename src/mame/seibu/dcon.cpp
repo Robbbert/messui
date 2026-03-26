@@ -53,7 +53,7 @@ public:
 	void sdgndmps(machine_config &config);
 
 protected:
-	virtual void video_start() override;
+	virtual void video_start() override ATTR_COLD;
 
 private:
 	required_device<cpu_device> m_maincpu;
@@ -96,8 +96,8 @@ private:
 	uint32_t screen_update_dcon(screen_device &screen, bitmap_ind16 &bitmap, const rectangle &cliprect);
 	uint32_t screen_update_sdgndmps(screen_device &screen, bitmap_ind16 &bitmap, const rectangle &cliprect);
 	uint32_t pri_cb(uint8_t pri, uint8_t ext);
-	void dcon_map(address_map &map);
-	void sdgndmps_map(address_map &map);
+	void dcon_map(address_map &map) ATTR_COLD;
+	void sdgndmps_map(address_map &map) ATTR_COLD;
 };
 
 
@@ -573,8 +573,9 @@ void dcon_state::dcon(machine_config &config)
 
 	SEIBU_SOUND(config, m_seibu_sound, 0);
 	m_seibu_sound->int_callback().set_inputline("audiocpu", 0);
+	m_seibu_sound->coin_io_callback().set_ioport("COIN");
 	m_seibu_sound->set_rom_tag("audiocpu");
-	m_seibu_sound->set_rombank_tag("seibu_bank1");
+	m_seibu_sound->set_rombank_tag("seibu_bank");
 	m_seibu_sound->ym_read_callback().set("ymsnd", FUNC(ym3812_device::read));
 	m_seibu_sound->ym_write_callback().set("ymsnd", FUNC(ym3812_device::write));
 }
@@ -622,8 +623,9 @@ void dcon_state::sdgndmps(machine_config &config) // PCB number is PB91008
 
 	SEIBU_SOUND(config, m_seibu_sound, 0);
 	m_seibu_sound->int_callback().set_inputline("audiocpu", 0);
+	m_seibu_sound->coin_io_callback().set_ioport("COIN");
 	m_seibu_sound->set_rom_tag("audiocpu");
-	m_seibu_sound->set_rombank_tag("seibu_bank1");
+	m_seibu_sound->set_rombank_tag("seibu_bank");
 	m_seibu_sound->ym_read_callback().set("ymsnd", FUNC(ym2151_device::read));
 	m_seibu_sound->ym_write_callback().set("ymsnd", FUNC(ym2151_device::write));
 }

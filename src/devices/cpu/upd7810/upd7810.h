@@ -15,7 +15,7 @@
 
 enum
 {
-	UPD7810_PC=1, UPD7810_SP, UPD7810_PSW,
+	UPD7810_PC=1, UPD7810_SP, UPD7810_PSW, UPD7810_IFF,
 	UPD7810_EA, UPD7810_V, UPD7810_A, UPD7810_VA,
 	UPD7810_BC, UPD7810_B, UPD7810_C, UPD7810_DE, UPD7810_D, UPD7810_E, UPD7810_HL, UPD7810_H, UPD7810_L,
 	UPD7810_EA2, UPD7810_V2, UPD7810_A2, UPD7810_VA2,
@@ -86,10 +86,11 @@ public:
 	void sck_w(int state);
 
 protected:
-	void upd_internal_128_ram_map(address_map &map);
-	void upd_internal_256_ram_map(address_map &map);
-	void upd_internal_4096_rom_128_ram_map(address_map &map);
-	void upd_internal_4096_rom_256_ram_map(address_map &map);
+	void upd_internal_128_ram_map(address_map &map) ATTR_COLD;
+	void upd_internal_256_ram_map(address_map &map) ATTR_COLD;
+	void upd_internal_4096_rom_128_ram_map(address_map &map) ATTR_COLD;
+	void upd_internal_4096_rom_256_ram_map(address_map &map) ATTR_COLD;
+	void upd_internal_16k_rom_256_ram_map(address_map &map) ATTR_COLD;
 
 	// flags
 	enum
@@ -136,15 +137,14 @@ protected:
 	upd7810_device(const machine_config &mconfig, device_type type, const char *tag, device_t *owner, uint32_t clock, address_map_constructor internal_map);
 
 	// device-level overrides
-	virtual void device_start() override;
-	virtual void device_reset() override;
+	virtual void device_start() override ATTR_COLD;
+	virtual void device_reset() override ATTR_COLD;
 
 	// device_execute_interface overrides
 	virtual uint64_t execute_clocks_to_cycles(uint64_t clocks) const noexcept override { return (clocks + 3 - 1) / 3; }
 	virtual uint64_t execute_cycles_to_clocks(uint64_t cycles) const noexcept override { return (cycles * 3); }
 	virtual uint32_t execute_min_cycles() const noexcept override { return 1; }
 	virtual uint32_t execute_max_cycles() const noexcept override { return 40; }
-	virtual uint32_t execute_input_lines() const noexcept override { return 2; }
 	virtual bool execute_input_edge_triggered(int inputnum) const noexcept override { return true; }
 	virtual void execute_run() override;
 	virtual void execute_set_input(int inputnum, int state) override;
@@ -200,6 +200,9 @@ protected:
 	};
 
 	virtual void configure_ops();
+	virtual uint8_t read_pc();
+	virtual void write_pc(uint8_t data);
+	void write_smh(uint8_t data);
 
 	static const struct opcode_s s_op48[256];
 	static const struct opcode_s s_op4C[256];
@@ -1383,6 +1386,14 @@ public:
 };
 
 
+class upd78c14_device : public upd78c10_device
+{
+public:
+	// construction/destruction
+	upd78c14_device(const machine_config &mconfig, const char *tag, device_t *owner, uint32_t clock);
+};
+
+
 class upd7807_device : public upd7810_device
 {
 public:
@@ -1402,8 +1413,8 @@ public:
 	upd7801_device(const machine_config &mconfig, const char *tag, device_t *owner, uint32_t clock);
 
 protected:
-	virtual void device_start() override;
-	virtual void device_reset() override;
+	virtual void device_start() override ATTR_COLD;
+	virtual void device_reset() override ATTR_COLD;
 	virtual uint64_t execute_clocks_to_cycles(uint64_t clocks) const noexcept override { return (clocks + 2 - 1) / 2; }
 	virtual uint64_t execute_cycles_to_clocks(uint64_t cycles) const noexcept override { return (cycles * 2); }
 	virtual void execute_set_input(int inputnum, int state) override;
@@ -1411,6 +1422,8 @@ protected:
 	virtual void handle_timers(int cycles) override;
 	virtual void upd7810_take_irq() override;
 	virtual void configure_ops() override;
+	virtual uint8_t read_pc() override;
+	virtual void write_pc(uint8_t data) override;
 };
 
 
@@ -1423,8 +1436,8 @@ public:
 protected:
 	upd78c05_device(const machine_config &mconfig, device_type type, const char *tag, device_t *owner, uint32_t clock, address_map_constructor internal_map);
 
-	virtual void device_start() override;
-	virtual void device_reset() override;
+	virtual void device_start() override ATTR_COLD;
+	virtual void device_reset() override ATTR_COLD;
 	virtual uint64_t execute_clocks_to_cycles(uint64_t clocks) const noexcept override { return (clocks + 4 - 1) / 4; }
 	virtual uint64_t execute_cycles_to_clocks(uint64_t cycles) const noexcept override { return (cycles * 4); }
 	virtual std::unique_ptr<util::disasm_interface> create_disassembler() override;
@@ -1446,6 +1459,7 @@ DECLARE_DEVICE_TYPE(UPD7810,  upd7810_device)
 DECLARE_DEVICE_TYPE(UPD78C10, upd78c10_device)
 DECLARE_DEVICE_TYPE(UPD7811,  upd7811_device)
 DECLARE_DEVICE_TYPE(UPD78C11, upd78c11_device)
+DECLARE_DEVICE_TYPE(UPD78C14, upd78c14_device)
 DECLARE_DEVICE_TYPE(UPD7807,  upd7807_device)
 DECLARE_DEVICE_TYPE(UPD7801,  upd7801_device)
 DECLARE_DEVICE_TYPE(UPD78C05, upd78c05_device)

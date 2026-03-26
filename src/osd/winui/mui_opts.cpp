@@ -63,7 +63,7 @@ static void ColumnDecodeStringWithCount(string ss, int *value, int count);
     Internal defines
  ***************************************************************************/
 
-#define GAMEINFO_INI_FILENAME                    MAMENAME "_g.ini"
+static string gameinfo_ini_filename, mui_ini_filename;
 
 
 /***************************************************************************
@@ -129,10 +129,10 @@ static const char *const image_tabs_short_name[MAX_TAB_TYPES] =
 /***************************************************************************
     External functions
  ***************************************************************************/
-string GetGameName(uint32_t driver_index)
+string GetGameName(int drvindex)
 {
-	if (driver_index < driver_list::total())
-		return driver_list::driver(driver_index).name;
+	if ((drvindex >= 0) && (drvindex < driver_list::total()))
+		return driver_list::driver(drvindex).name;
 	else
 		return "0";
 }
@@ -140,10 +140,12 @@ string GetGameName(uint32_t driver_index)
 void OptionsInit()
 {
 	// set up global options
-	printf("OptionsInit: About to load %s\n",MUI_INI_FILENAME);fflush(stdout);
-	settings.load_file(MUI_INI_FILENAME);                    // parse MAMEUI.ini
-	printf("OptionsInit: About to load %s\n",GAMEINFO_INI_FILENAME);fflush(stdout);
-	game_opts.load_file(GAMEINFO_INI_FILENAME);             // parse MAME_g.ini
+	gameinfo_ini_filename = GetEmuPath() + PATH_SEPARATOR + "MAME_g.ini";
+	mui_ini_filename = GetEmuPath() + PATH_SEPARATOR + "MAMEUI.ini";
+	printf("OptionsInit: About to load %s\n",mui_ini_filename.c_str());fflush(stdout);
+	settings.load_file(mui_ini_filename.c_str());                    // parse MAMEUI.ini
+	printf("OptionsInit: About to load %s\n",gameinfo_ini_filename.c_str());fflush(stdout);
+	game_opts.load_file(gameinfo_ini_filename.c_str());             // parse MAME_g.ini
 	printf("OptionsInit: Finished\n");fflush(stdout);
 	return;
 }
@@ -151,7 +153,7 @@ void OptionsInit()
 // Restore ui settings to factory
 void ResetGUI()
 {
-	settings.reset_and_save(MUI_INI_FILENAME);
+	settings.reset_and_save(mui_ini_filename.c_str());
 }
 
 const char * GetImageTabLongName(int tab_index)
@@ -232,19 +234,9 @@ void SetViewMode(int val)
 	settings.setter(MUIOPTION_LIST_MODE, val);
 }
 
-int  GetViewMode()
+int GetViewMode()
 {
 	return settings.int_value(MUIOPTION_LIST_MODE);
-}
-
-void SetEnableIndent(bool value)
-{
-	settings.setter(MUIOPTION_VIEW_INDENT, value);
-}
-
-bool GetEnableIndent()
-{
-	return settings.bool_value(MUIOPTION_VIEW_INDENT);
 }
 
 void SetGameCheck(BOOL game_check)
@@ -255,6 +247,16 @@ void SetGameCheck(BOOL game_check)
 BOOL GetGameCheck()
 {
 	return settings.bool_value(MUIOPTION_CHECK_GAME);
+}
+
+void SetEnableIndent(bool value)
+{
+	settings.setter(MUIOPTION_VIEW_INDENT, value);
+}
+
+bool GetEnableIndent()
+{
+	return settings.bool_value(MUIOPTION_VIEW_INDENT);
 }
 
 void SetJoyGUI(BOOL use_joygui)
@@ -750,90 +752,105 @@ void SetManualsDir(const char *path)
 }
 
 // ***************************************************************** MAME_g.INI settings **************************************************************************
-int GetRomAuditResults(uint32_t driver_index)
+int GetRomAuditResults(int drvindex)
 {
-	return game_opts.rom(driver_index);
-}
-
-void SetRomAuditResults(uint32_t driver_index, int audit_results)
-{
-	game_opts.rom(driver_index, audit_results);
-}
-
-int GetSampleAuditResults(uint32_t driver_index)
-{
-	return game_opts.sample(driver_index);
-}
-
-void SetSampleAuditResults(uint32_t driver_index, int audit_results)
-{
-	game_opts.sample(driver_index, audit_results);
-}
-
-static void IncrementPlayVariable(uint32_t driver_index, const char *play_variable, uint32_t increment)
-{
-	if (strcmp(play_variable, "count") == 0)
-		game_opts.play_count(driver_index, game_opts.play_count(driver_index) + increment);
+	if (drvindex < 0)
+		return 0;
 	else
-	if (strcmp(play_variable, "time") == 0)
-		game_opts.play_time(driver_index, game_opts.play_time(driver_index) + increment);
+		return game_opts.rom(drvindex);
 }
 
-void IncrementPlayCount(uint32_t driver_index)
+void SetRomAuditResults(int drvindex, int audit_results)
 {
-	IncrementPlayVariable(driver_index, "count", 1);
+	if (drvindex >= 0)
+		game_opts.rom(drvindex, audit_results);
 }
 
-uint32_t GetPlayCount(uint32_t driver_index)
+int GetSampleAuditResults(int drvindex)
 {
-	return game_opts.play_count(driver_index);
+	if (drvindex < 0)
+		return 0;
+	else
+		return game_opts.sample(drvindex);
 }
 
-// int needed here so we can reset all games
-static void ResetPlayVariable(int driver_index, const char *play_variable)
+void SetSampleAuditResults(int drvindex, int audit_results)
 {
-	if (driver_index < 0)
+	if (drvindex >= 0)
+		game_opts.sample(drvindex, audit_results);
+}
+
+static void IncrementPlayVariable(int drvindex, const char *play_variable, uint32_t increment)
+{
+	if (drvindex >= 0)
+	{
+		if (strcmp(play_variable, "count") == 0)
+			game_opts.play_count(drvindex, game_opts.play_count(drvindex) + increment);
+		else
+		if (strcmp(play_variable, "time") == 0)
+			game_opts.play_time(drvindex, game_opts.play_time(drvindex) + increment);
+	}
+}
+
+void IncrementPlayCount(int drvindex)
+{
+	if (drvindex > 0)
+		IncrementPlayVariable(drvindex, "count", 1);
+}
+
+uint32_t GetPlayCount(int drvindex)
+{
+	if (drvindex < 0)
+		return 0;
+	else
+		return game_opts.play_count(drvindex);
+}
+
+static void ResetPlayVariable(int drvindex, const char *play_variable)
+{
+	if (drvindex < 0)
 		/* all games */
 		for (uint32_t i = 0; i < driver_list::total(); i++)
 			ResetPlayVariable(i, play_variable);
 	else
 	{
 		if (strcmp(play_variable, "count") == 0)
-			game_opts.play_count(driver_index, 0);
+			game_opts.play_count(drvindex, 0);
 		else
 		if (strcmp(play_variable, "time") == 0)
-			game_opts.play_time(driver_index, 0);
+			game_opts.play_time(drvindex, 0);
 	}
 }
 
-// int needed here so we can reset all games
-void ResetPlayCount(int driver_index)
+void ResetPlayCount(int drvindex)
 {
-	ResetPlayVariable(driver_index, "count");
+	ResetPlayVariable(drvindex, "count");
 }
 
-// int needed here so we can reset all games
-void ResetPlayTime(int driver_index)
+void ResetPlayTime(int drvindex)
 {
-	ResetPlayVariable(driver_index, "time");
+	ResetPlayVariable(drvindex, "time");
 }
 
-uint32_t GetPlayTime(uint32_t driver_index)
+uint32_t GetPlayTime(int drvindex)
 {
-	return game_opts.play_time(driver_index);
+	if (drvindex < 0)
+		return 0;
+	else
+		return game_opts.play_time(drvindex);
 }
 
-void IncrementPlayTime(uint32_t driver_index, uint32_t playtime)
+void IncrementPlayTime(int drvindex, uint32_t playtime)
 {
-	IncrementPlayVariable(driver_index, "time", playtime);
+	if (drvindex >= 0)
+		IncrementPlayVariable(drvindex, "time", playtime);
 }
 
-void GetTextPlayTime(uint32_t driver_index, char *buf)
+void GetTextPlayTime(int drvindex, char *buf)
 {
-
-	if (driver_index < driver_list::total())
+	if ((drvindex >= 0) && (drvindex < driver_list::total()))
 	{
-		uint32_t second = GetPlayTime(driver_index);
+		uint32_t second = GetPlayTime(drvindex);
 		uint32_t hour = second / 3600;
 		second -= 3600*hour;
 		uint8_t minute = second / 60; //Calc Minutes
@@ -1563,13 +1580,13 @@ void mui_save_ini()
 {
 	// Add the folder flag to settings.
 	AddFolderFlags();
-	settings.save_file(MUI_INI_FILENAME);
+	settings.save_file(mui_ini_filename.c_str());
 }
 
 void SaveGameListOptions()
 {
 	// Save GameInfo.ini - game options.
-	game_opts.save_file(GAMEINFO_INI_FILENAME);
+	game_opts.save_file(gameinfo_ini_filename.c_str());
 }
 
 const char * GetVersionString()
@@ -1577,19 +1594,26 @@ const char * GetVersionString()
 	return emulator_info::get_build_version();
 }
 
-uint32_t GetDriverCacheLower(uint32_t driver_index)
+uint32_t GetDriverCacheLower(int drvindex)
 {
-	return game_opts.cache_lower(driver_index);
+	if (drvindex < 0)
+		return 0;
+	else
+		return game_opts.cache_lower(drvindex);
 }
 
-uint32_t GetDriverCacheUpper(uint32_t driver_index)
+uint32_t GetDriverCacheUpper(int drvindex)
 {
-	return game_opts.cache_upper(driver_index);
+	if (drvindex < 0)
+		return 0;
+	else
+		return game_opts.cache_upper(drvindex);
 }
 
-void SetDriverCache(uint32_t driver_index, uint32_t val)
+void SetDriverCache(int drvindex, uint32_t val)
 {
-	game_opts.cache_upper(driver_index, val);
+	if (drvindex >= 0)
+		game_opts.cache_upper(drvindex, val);
 }
 
 BOOL RequiredDriverCache()
@@ -1602,26 +1626,20 @@ void ForceRebuild()
 	game_opts.force_rebuild();
 }
 
-BOOL DriverIsComputer(uint32_t driver_index)
+BOOL DriverIsModified(int drvindex)
 {
-	uint32_t cache = game_opts.cache_lower(driver_index) & 3;
-	return (cache == 2) ? true : false;
+	if (drvindex < 0)
+		return 0;
+	else
+		return BIT(game_opts.cache_lower(drvindex), 12);
 }
 
-BOOL DriverIsConsole(uint32_t driver_index)
+BOOL DriverIsImperfect(int drvindex)
 {
-	uint32_t cache = game_opts.cache_lower(driver_index) & 3;
-	return (cache == 1) ? true : false;
-}
-
-BOOL DriverIsModified(uint32_t driver_index)
-{
-	return BIT(game_opts.cache_lower(driver_index), 12);
-}
-
-BOOL DriverIsImperfect(uint32_t driver_index)
-{
-	return (game_opts.cache_lower(driver_index) & 0xff0000) ? true : false; // (NO|IMPERFECT) (CONTROLS|PALETTE|SOUND|GRAPHICS)
+	if (drvindex < 0)
+		return 0;
+	else
+		return (game_opts.cache_lower(drvindex) & 0xff0000) ? true : false; // (NO|IMPERFECT) (CONTROLS|PALETTE|SOUND|GRAPHICS)
 }
 
 // from optionsms.cpp (MESSUI)

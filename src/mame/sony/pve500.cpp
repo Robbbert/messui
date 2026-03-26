@@ -2,7 +2,7 @@
 // copyright-holders: Felipe Sanches
 /***************************************************************************
 
-  SONY PVE-500 Editing Control Unit
+  Sony PVE-500 Editing Control Unit
   "A/B roll edit controller for professional video editing applications"
 
   Driver by Felipe Correa da Silva Sanches <juca@members.fsf.org>
@@ -102,13 +102,13 @@ private:
 	void io_sel_w(uint8_t data);
 	void eeprom_w(uint8_t data);
 	uint8_t eeprom_r();
-	void maincpu_io(address_map &map);
-	void maincpu_prg(address_map &map);
-	void subcpu_io(address_map &map);
-	void subcpu_prg(address_map &map);
+	void maincpu_io(address_map &map) ATTR_COLD;
+	void maincpu_prg(address_map &map) ATTR_COLD;
+	void subcpu_io(address_map &map) ATTR_COLD;
+	void subcpu_prg(address_map &map) ATTR_COLD;
 
-	virtual void machine_start() override;
-	virtual void machine_reset() override;
+	virtual void machine_start() override ATTR_COLD;
+	virtual void machine_reset() override ATTR_COLD;
 	required_device<tmpz84c015_device> m_maincpu;
 	required_device<tmpz84c015_device> m_subcpu;
 	required_device<cxd1095_device> m_cxdio;
@@ -472,4 +472,4 @@ ROM_END
 
 
 //    YEAR  NAME    PARENT  COMPAT  MACHINE  INPUT   CLASS         INIT         COMPANY  FULLNAME   FLAGS
-COMP( 1995, pve500, 0,      0,      pve500,  pve500, pve500_state, init_pve500, "SONY",  "PVE-500", MACHINE_NOT_WORKING | MACHINE_IMPERFECT_GRAPHICS)
+COMP( 1995, pve500, 0,      0,      pve500,  pve500, pve500_state, init_pve500, "Sony",  "PVE-500", MACHINE_NOT_WORKING | MACHINE_IMPERFECT_GRAPHICS)

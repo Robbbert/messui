@@ -31,7 +31,7 @@ public:
 	fdc37c665gt_device(const machine_config &mconfig, const char *tag, device_t *owner, uint32_t clock, upd765_family_device::mode_t floppy_mode);
 
 	// optional information overrides
-	virtual void device_add_mconfig(machine_config &config) override;
+	virtual void device_add_mconfig(machine_config &config) override ATTR_COLD;
 
 	// to access io ports
 	uint8_t read(offs_t offset);
@@ -60,7 +60,7 @@ public:
 
 protected:
 	// device-level overrides
-	virtual void device_start() override;
+	virtual void device_start() override ATTR_COLD;
 
 	// for the internal floppy controller
 	void irq_floppy_w(int state);
@@ -110,8 +110,8 @@ private:
 	devcb_write_line m_fintr_callback;
 	devcb_write_line m_fdrq_callback;
 	devcb_write_line m_pintr1_callback; // Parallel
-	devcb_write_line m_irq3_callback; // Serial Port COM1/COM3
-	devcb_write_line m_irq4_callback; // Serial Port COM2/COM4
+	devcb_write_line m_irq3_callback; // Serial Port COM2/COM4
+	devcb_write_line m_irq4_callback; // Serial Port COM1/COM3
 
 	devcb_write_line m_txd1_callback;
 	devcb_write_line m_ndtr1_callback;

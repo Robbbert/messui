@@ -67,13 +67,13 @@ protected:
 	required_ioport m_monitor_config;
 
 	// device-level overrides
-	virtual void device_start() override;
-	virtual void device_reset() override;
+	virtual void device_start() override ATTR_COLD;
+	virtual void device_reset() override ATTR_COLD;
 
 	// optional information overrides
-	virtual void device_add_mconfig(machine_config &config) override;
-	virtual const tiny_rom_entry *device_rom_region() const override;
-	virtual ioport_constructor device_input_ports() const override;
+	virtual void device_add_mconfig(machine_config &config) override ATTR_COLD;
+	virtual const tiny_rom_entry *device_rom_region() const override ATTR_COLD;
+	virtual ioport_constructor device_input_ports() const override ATTR_COLD;
 
 	u32 registers_r(offs_t offset, u32 mem_mask);
 	void registers_w(offs_t offset, u32 data, u32 mem_mask);
@@ -133,12 +133,12 @@ ioport_constructor lcpds_cv8lc_device::device_input_ports() const
 //  LIVE DEVICE
 //**************************************************************************
 
-lcpds_cv8lc_device::lcpds_cv8lc_device(const machine_config &mconfig, const char *tag, device_t *owner, uint32_t clock) :
+lcpds_cv8lc_device::lcpds_cv8lc_device(const machine_config &mconfig, const char *tag, device_t *owner, u32 clock) :
 	lcpds_cv8lc_device(mconfig, PDSLC_COLORVUE8LC, tag, owner, clock)
 {
 }
 
-lcpds_cv8lc_device::lcpds_cv8lc_device(const machine_config &mconfig, device_type type, const char *tag, device_t *owner, uint32_t clock) :
+lcpds_cv8lc_device::lcpds_cv8lc_device(const machine_config &mconfig, device_type type, const char *tag, device_t *owner, u32 clock) :
 	device_t(mconfig, type, tag, owner, clock),
 	device_nubus_card_interface(mconfig, *this),
 	m_tms34061(*this, "tms34061"),
@@ -194,9 +194,9 @@ void lcpds_cv8lc_device::device_reset()
 	m_display_enable = 0;
 }
 
-uint32_t lcpds_cv8lc_device::screen_update(screen_device &screen, bitmap_rgb32 &bitmap, const rectangle &cliprect)
+u32 lcpds_cv8lc_device::screen_update(screen_device &screen, bitmap_rgb32 &bitmap, const rectangle &cliprect)
 {
-	auto const vram8 = util::big_endian_cast<uint8_t const>(&m_vram[0]);
+	auto const vram8 = util::big_endian_cast<u8 const>(&m_vram[0]);
 	const pen_t *pens = m_palette->pens();
 
 	m_tms34061->get_display_state();

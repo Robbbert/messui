@@ -65,9 +65,9 @@ public:
 	void gs761(machine_config &config);
 
 protected:
-	virtual void machine_start() override;
-	virtual void machine_reset() override;
-	virtual void video_start() override;
+	virtual void machine_start() override ATTR_COLD;
+	virtual void machine_reset() override ATTR_COLD;
+	virtual void video_start() override ATTR_COLD;
 
 	virtual void tilemap_draw(screen_device &screen, bitmap_rgb32 &bitmap, const rectangle &cliprect, int layer, int i);
 
@@ -97,7 +97,7 @@ private:
 	K053246_CB_MEMBER(sprite_callback);
 	TIMER_DEVICE_CALLBACK_MEMBER(scanline);
 
-	void gs761_map(address_map &map);
+	void gs761_map(address_map &map) ATTR_COLD;
 
 	static constexpr int NUM_LAYERS = 4;
 };
@@ -306,12 +306,11 @@ void gs761_state::gs761(machine_config &config)
 	K055555(config, m_k055555, 0);
 
 	/* sound hardware */
-	SPEAKER(config, "lspeaker").front_left();
-	SPEAKER(config, "rspeaker").front_right();
+	SPEAKER(config, "speaker", 2).front();
 
 	YMZ280B(config, m_ymz, XTAL(33'868'800)/2); // 33.8688 MHz xtal verified on PCB
-	m_ymz->add_route(0, "lspeaker", 0.75);
-	m_ymz->add_route(1, "rspeaker", 0.75);
+	m_ymz->add_route(0, "speaker", 0.75, 0);
+	m_ymz->add_route(1, "speaker", 0.75, 1);
 }
 
 ROM_START( glregion )

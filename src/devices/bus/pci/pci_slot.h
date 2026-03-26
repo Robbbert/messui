@@ -22,10 +22,7 @@ public:
 	pci_slot_device(const machine_config &mconfig, const char *tag, device_t *owner, T &&opts, u8 slot, u8 irqa, u8 irqb, u8 irqc, u8 irqd, const char *dflt)
 		: pci_slot_device(mconfig, tag, owner, (uint32_t)0)
 	{
-		option_reset();
-		opts(*this);
-		set_default_option(dflt);
-		set_fixed(false);
+		set_options(std::forward<T>(opts), dflt, false);
 		m_slot = slot;
 		m_irq[0] = irqa;
 		m_irq[1] = irqb;
@@ -43,7 +40,7 @@ public:
 	void get_irq_map(std::array<u8, 4> &map) const { map = m_irq; }
 
 protected:
-	virtual void device_start() override;
+	virtual void device_start() override ATTR_COLD;
 
 private:
 	std::array<u8, 4> m_irq;
@@ -76,8 +73,8 @@ protected:
 	u8 m_pin_state;
 	std::array<u8, 4> m_irq_map;
 
-	virtual void device_start() override;
-	virtual void device_reset() override;
+	virtual void device_start() override ATTR_COLD;
+	virtual void device_reset() override ATTR_COLD;
 
 	pci_card_device(const machine_config &mconfig, device_type type, const char *tag, device_t *owner, uint32_t clock);
 

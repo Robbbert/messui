@@ -67,18 +67,18 @@ public:
 
 protected:
 	required_device<cpu_device> m_maincpu;
-	required_device<hd44780_device> m_lcdc0;
-	required_device<hd44780_device> m_lcdc1;
+	required_device<ks0066_device> m_lcdc0;
+	required_device<ks0066_device> m_lcdc1;
 	required_device<ram_device> m_ram;
 	required_region_ptr<u16> m_ipl;
 
 	std::unique_ptr<bitmap_ind16> m_tmp_bitmap;
 
-	virtual void machine_start() override;
-	virtual void machine_reset() override;
+	virtual void machine_start() override ATTR_COLD;
+	virtual void machine_reset() override ATTR_COLD;
 
 private:
-	void main_map(address_map &map);
+	void main_map(address_map &map) ATTR_COLD;
 };
 
 void alphasmart3k_state::machine_start()
@@ -135,4 +135,4 @@ ROM_END
 } // anonymous namespace
 
 //    YEAR  NAME    PARENT COMPAT MACHINE       INPUT         CLASS               INIT        COMPANY             FULLNAME           FLAGS
-COMP( 2000, asma3k, 0,     0,     alphasmart3k, alphasmart3k, alphasmart3k_state, empty_init, "AlphaSmart, Inc.", "AlphaSmart 3000", MACHINE_IS_SKELETON )
+COMP( 2000, asma3k, 0,     0,     alphasmart3k, alphasmart3k, alphasmart3k_state, empty_init, "AlphaSmart, Inc.", "AlphaSmart 3000", MACHINE_NO_SOUND | MACHINE_NOT_WORKING )

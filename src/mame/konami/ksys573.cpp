@@ -91,7 +91,7 @@ N drummania 10thMIX                                   2004.04
 P Fisherman's Bait                                    1998.06    GE765 UA          765 UA B02
 P Fisherman's Bait 2                                  1998       GC865 UA          865 UA B02
 P Fisherman's Bait Marlin Challenge                   1999       GX889             889 AA/EA/JA/UA(needs redump)
-P Gachagachamp                                        1999.01    GQ877 JA          GE877-JA(PCMCIA card)
+P Gacha Gachamp                                       1999.01    GQ877 JA          GE877-JA(PCMCIA card)
 P Great Bishi Bashi Champ                             2002.??    GBA48 JA          (no CD)
 A GUITARFREAKS                                        1999.02    GQ886 EA/JA/UA/AA 886 ** A02/C02/D02
 A GUITARFREAKS 2ndMIX                                 1999.07    GQ883 JA          883 ** A02
@@ -287,7 +287,7 @@ K: uses karaoke I/O board GX921-PWB(B)
 |                          |
 |         JAMMA IN         |
 |--------------------------|
- Notes: This PCB is used for Gachagachamp. No ICs.
+ Notes: This PCB is used for Gacha Gachamp. No ICs.
 
         CN5 - To control lever unit (1P). uses 9 pins out of 15 pins of B15P-SHF-1AA
         CN6 - To control lever unit (2P). uses 9 pins out of 14 pins of B14P-SHF-1AA
@@ -334,60 +334,7 @@ Notes: (all ICs shown)
         U20        - (unpopulated SOIC16)
         U21        - (unpopulated SOIC16)
 
-
-  PCMCIA Flash Card
-  -----------------
-
-  Front
-
-  |----PCMCIA CONNECTOR-----|
-  |                         |
-  | HT04A MB624018 MB624019 |
-  | AT28C16                 |
-  |                         |
-  | 29F017A.1L   29F017A.1U |
-  | 90PFTR       90PFTN     |
-  |                         |
-  | 29F017A.2L   29F017A.2U |
-  | 90PFTN       90PFTR     |
-  |                         |
-  | 29F017A.3L   29F017A.3U |
-  | 90PFTR       90PFTN     |
-  |                         |
-  | 29F017A.4L   29F017A.4U |
-  | 90PFTN       90PFTR     |
-  |                         |
-  |------------------SWITCH-|
-
-  Back
-
-  |----PCMCIA CONNECTOR-----|
-  |                         |
-  |                         |
-  |                         |
-  |                         |
-  | 29F017A.5U   29F017A.5L |
-  | 90PFTR       90PFTN     |
-  |                         |
-  | 29F017A.6U   29F017A.6L |
-  | 90PFTN       90PFTR     |
-  |                         |
-  | 29F017A.7U   29F017A.7L |
-  | 90PFTR       90PFTN     |
-  |                         |
-  | 29F017A.8U   29F017A.8L |
-  | 90PFTN       90PFTR     |
-  |                         |
-  |-SWITCH------------------|
-
-  Texas Instruments HT04A
-  Fujitsu MB624018 CMOS GATE ARRAY
-  Fujitsu MB624019 CMOS GATE ARRAY
-  Atmel AT28C16 16K (2K x 8) Parallel EEPROM
-  Fujitsu 29F017A-90PFTR 16M (2M x 8) BIT Flash Memory Reverse Pinout (Gachaga Champ card used 29F017-12PFTR instead)
-  Fujitsu 29F017A-90PFTN 16M (2M x 8) BIT Flash Memory Standard Pinout
-
-  */
+*/
 
 #include "emu.h"
 
@@ -397,16 +344,17 @@ Notes: (all ICs shown)
 #include "k573mcal.h"
 #include "k573mcr.h"
 #include "k573msu.h"
-#include "k573npu.h"
 
 #include "cpu/psx/psx.h"
 #include "bus/ata/ataintf.h"
 #include "bus/ata/cr589.h"
+#include "bus/pccard/k573npu.h"
+#include "bus/pccard/konami_dual.h"
+#include "bus/pccard/linflash.h"
 #include "machine/adc083x.h"
 #include "machine/bankdev.h"
 #include "machine/ds2401.h"
 #include "machine/jvshost.h"
-#include "machine/linflash.h"
 #include "machine/mb89371.h"
 #include "machine/ram.h"
 #include "machine/timekpr.h"
@@ -541,6 +489,7 @@ public:
 		m_image(*this, "ata:0:cr589"),
 		m_pccard1(*this, "pccard1"),
 		m_pccard2(*this, "pccard2"),
+		m_pccard_cd{ 1, 1 },
 		m_h8_response(*this, "h8_response"),
 		m_ram(*this, "maincpu:ram"),
 		m_flashbank(*this, "flashbank"),
@@ -654,13 +603,13 @@ public:
 protected:
 	using gx700pwfbf_output_delegate = delegate<void (offs_t, uint8_t)>;
 
-	virtual void machine_start() override;
-	virtual void machine_reset() override;
+	virtual void machine_start() override ATTR_COLD;
+	virtual void machine_reset() override ATTR_COLD;
 	virtual void driver_start() override;
 
 	void gx700pwfbf_init(gx700pwfbf_output_delegate &&output_callback_func);
 
-	void konami573a_map(address_map &map);
+	void konami573a_map(address_map &map) ATTR_COLD;
 
 	required_device<psxcpu_device> m_maincpu;
 	required_device<sys573_jvs_host> m_sys573_jvs_host;
@@ -708,14 +657,14 @@ private:
 	void hyprbbc2_cassette_install(device_t *device);
 	void hypbbc2p_cassette_install(device_t *device);
 	static void cr589_config(device_t *device);
-	void fbaitbc_map(address_map &map);
-	void flashbank_map(address_map &map);
-	void gunmania_map(address_map &map);
-	void gbbchmp_map(address_map &map);
-	void konami573_map(address_map &map);
-	void konami573ak_map(address_map &map);
-	void konami573d_map(address_map &map);
-	void konami573k_map(address_map &map);
+	void fbaitbc_map(address_map &map) ATTR_COLD;
+	void flashbank_map(address_map &map) ATTR_COLD;
+	void gunmania_map(address_map &map) ATTR_COLD;
+	void gbbchmp_map(address_map &map) ATTR_COLD;
+	void konami573_map(address_map &map) ATTR_COLD;
+	void konami573ak_map(address_map &map) ATTR_COLD;
+	void konami573d_map(address_map &map) ATTR_COLD;
+	void konami573k_map(address_map &map) ATTR_COLD;
 
 	required_ioport m_analog0;
 	required_ioport m_analog1;
@@ -818,12 +767,12 @@ public:
 	void dsem(machine_config &config);
 	void dsem2(machine_config &config);
 
-	DECLARE_CUSTOM_INPUT_MEMBER( gn845pwbb_read );
+	ioport_value gn845pwbb_read();
 
 	void init_ddr();
 
 protected:
-	virtual void machine_start() override;
+	virtual void machine_start() override ATTR_COLD;
 
 private:
 	struct stage_state
@@ -861,19 +810,19 @@ public:
 
 	void init_pnchmn();
 
-	// FIXME: leaking because a konami573_cassette_xi_device member uses it
-	double m_pad_position[6] = { };
-	int m_pad_motor_direction[6] = { };
-	attotime m_last_pad_update;
-	required_ioport m_pads;
-
 protected:
-	virtual void machine_start() override;
-	virtual void machine_reset() override;
+	virtual void machine_start() override ATTR_COLD;
+	virtual void machine_reset() override ATTR_COLD;
 
 private:
 	void punchmania_cassette_install(device_t *device);
 	void punchmania_output_callback(offs_t offset, uint8_t data);
+	double punchmania_inputs_callback(uint8_t input);
+
+	double m_pad_position[6] = { };
+	int m_pad_motor_direction[6] = { };
+	attotime m_last_pad_update;
+	required_ioport m_pads;
 };
 
 
@@ -949,7 +898,7 @@ void ksys573_state::gbbchmp_map(address_map &map)
 {
 	konami573_map(map);
 	// The game waits until transmit is ready, but the chip may not actually be present.
-	map(0x1f640000, 0x1f640007).rw(m_duart, FUNC(mb89371_device::read), FUNC(mb89371_device::write)).umask32(0x00ff00ff);
+	map(0x1f640000, 0x1f640007).m(m_duart, FUNC(mb89371_device::map<0>)).umask32(0x00ff00ff);
 }
 
 bool ksys573_state::jvs_is_valid_packet()
@@ -1171,6 +1120,11 @@ void ksys573_state::machine_reset()
 
 	std::fill_n( m_jvs_input_buffer, sizeof( m_jvs_input_buffer ), 0 );
 	std::fill_n( m_jvs_output_buffer, sizeof( m_jvs_output_buffer ), 0 );
+
+	if (m_duart.found())
+	{
+		m_duart->write_cts<0>(CLEAR_LINE);
+	}
 }
 
 // H8 check at startup (JVS related)
@@ -1476,7 +1430,7 @@ void ddr_state::gn845pwbb_clk_w( int offset, int data )
 		m_stage_state[ offset ].state, m_stage_state[ offset ].DO, m_stage_state[ offset ].shift, m_stage_state[ offset ].bit, m_stage_mask );
 }
 
-CUSTOM_INPUT_MEMBER( ddr_state::gn845pwbb_read )
+ioport_value ddr_state::gn845pwbb_read()
 {
 	return m_stage->read() & m_stage_mask;
 }
@@ -2196,9 +2150,8 @@ void ksys573_state::mamboagg_lamps_b5(int state)
 
 void pnchmn_state::punchmania_cassette_install(device_t *device)
 {
-	auto game = downcast<konami573_cassette_xi_device *>(device);
 	auto adc0838 = device->subdevice<adc083x_device>("adc0838");
-	adc0838->set_input_callback(*game, FUNC(konami573_cassette_xi_device::punchmania_inputs_callback));
+	adc0838->set_input_callback(*this, FUNC(pnchmn_state::punchmania_inputs_callback));
 }
 
 void pnchmn_state::punchmania_output_callback(offs_t offset, uint8_t data)
@@ -2446,8 +2399,8 @@ double ksys573_state::analogue_inputs_callback(uint8_t input)
 void ksys573_state::cr589_config(device_t *device)
 {
 	auto cdda = device->subdevice<cdda_device>("cdda");
-	cdda->add_route(0, "^^lspeaker", 1.0);
-	cdda->add_route(1, "^^rspeaker", 1.0);
+	cdda->add_route(0, "^^speaker", 1.0, 0);
+	cdda->add_route(1, "^^speaker", 1.0, 1);
 
 	auto cdrom = device->subdevice<cdrom_image_device>("image");
 	cdrom->add_region("install");
@@ -2488,10 +2441,10 @@ void ksys573_state::konami573(machine_config &config, bool no_cdrom)
 	FUJITSU_29F016A(config, "29f016a.27h");
 
 	PCCARD_SLOT(config, m_pccard1, 0);
-	m_pccard1->card_detect_cb().set([this](int state) { m_pccard_cd[0] = state; });
+	m_pccard1->cd1().set([this](int state) { m_pccard_cd[0] = state; });
 
 	PCCARD_SLOT(config, m_pccard2, 0);
-	m_pccard2->card_detect_cb().set([this](int state) { m_pccard_cd[1] = state; });
+	m_pccard2->cd1().set([this](int state) { m_pccard_cd[1] = state; });
 
 	ADDRESS_MAP_BANK(config, m_flashbank ).set_map( &ksys573_state::flashbank_map ).set_options( ENDIANNESS_LITTLE, 16, 32, 0x400000);
 
@@ -2501,12 +2454,11 @@ void ksys573_state::konami573(machine_config &config, bool no_cdrom)
 	SCREEN(config, "screen", SCREEN_TYPE_RASTER);
 
 	/* sound hardware */
-	SPEAKER(config, "lspeaker").front_left();
-	SPEAKER(config, "rspeaker").front_right();
+	SPEAKER(config, "speaker", 2).front();
 
 	spu_device &spu(SPU(config, "spu", XTAL(67'737'600)/2, m_maincpu.target()));
-	spu.add_route(0, "lspeaker", 1.0);
-	spu.add_route(1, "rspeaker", 1.0);
+	spu.add_route(0, "speaker", 1.0, 0);
+	spu.add_route(1, "speaker", 1.0, 1);
 
 	M48T58(config, "m48t58", 0);
 
@@ -2546,31 +2498,33 @@ void ksys573_state::k573a(machine_config &config)
 void ksys573_state::k573ak(machine_config &config)
 {
 	konami573(config, true);
-   m_maincpu->set_addrmap(AS_PROGRAM, &ksys573_state::konami573ak_map);
+	m_maincpu->set_addrmap(AS_PROGRAM, &ksys573_state::konami573ak_map);
 }
 
 void ksys573_state::pccard1_16mb(machine_config &config)
 {
-	m_pccard1->option_add("16mb", LINEAR_FLASH_PCCARD_16MB);
+	m_pccard1->option_add("16mb", FUJITSU_16MB_FLASH_CARD);
 	m_pccard1->set_default_option("16mb");
 }
 
 void ksys573_state::pccard1_32mb(machine_config &config)
 {
-	m_pccard1->option_add("32mb", LINEAR_FLASH_PCCARD_32MB);
+	m_pccard1->option_add("32mb", FUJITSU_32MB_FLASH_CARD);
+	m_pccard1->option_add("id245p01", ID245P01);
 	m_pccard1->set_default_option("32mb");
 }
 
 void ksys573_state::pccard2_32mb(machine_config &config)
 {
-	m_pccard2->option_add("32mb", LINEAR_FLASH_PCCARD_32MB);
+	m_pccard2->option_add("32mb", FUJITSU_32MB_FLASH_CARD);
+	m_pccard2->option_add("id245p01", ID245P01);
 	m_pccard2->set_default_option("32mb");
 }
 
 void ksys573_state::pccard2_64mb(machine_config &config)
 {
-	m_pccard2->option_add("64mb", LINEAR_FLASH_PCCARD_64MB);
-	m_pccard2->set_default_option("64mb");
+	m_pccard2->option_add("konami_dual", KONAMI_DUAL_PCCARD);
+	m_pccard2->set_default_option("konami_dual");
 }
 
 // Security eeprom variants
@@ -2980,7 +2934,7 @@ void ksys573_state::salarymc(machine_config &config)
 void ksys573_state::gbbchmp(machine_config &config)
 {
 	animechmp(config);
-	MB89371(config, m_duart, 0);
+	MB89371(config, m_duart, 4_MHz_XTAL);
 
 	m_maincpu->set_addrmap(AS_PROGRAM, &ksys573_state::gbbchmp_map);
 }
@@ -3053,10 +3007,10 @@ static INPUT_PORTS_START( konami573 )
 	PORT_BIT( 0xffffffff, IP_ACTIVE_LOW, IPT_UNKNOWN )
 
 	PORT_START( "OUT0" )
-	PORT_BIT( 0x00000002, IP_ACTIVE_HIGH, IPT_OUTPUT ) PORT_WRITE_LINE_DEVICE_MEMBER( "adc0834", adc083x_device, cs_write )
-	PORT_BIT( 0x00000004, IP_ACTIVE_HIGH, IPT_OUTPUT ) PORT_WRITE_LINE_DEVICE_MEMBER( "adc0834", adc083x_device, clk_write )
-	PORT_BIT( 0x00000001, IP_ACTIVE_HIGH, IPT_OUTPUT ) PORT_WRITE_LINE_DEVICE_MEMBER( "adc0834", adc083x_device, di_write )
-	PORT_BIT( 0x00000100, IP_ACTIVE_HIGH, IPT_OUTPUT ) PORT_WRITE_LINE_DEVICE_MEMBER( DEVICE_SELF, ksys573_state, h8_clk_w )
+	PORT_BIT( 0x00000002, IP_ACTIVE_HIGH, IPT_OUTPUT ) PORT_WRITE_LINE_DEVICE_MEMBER("adc0834", FUNC(adc083x_device::cs_write))
+	PORT_BIT( 0x00000004, IP_ACTIVE_HIGH, IPT_OUTPUT ) PORT_WRITE_LINE_DEVICE_MEMBER("adc0834", FUNC(adc083x_device::clk_write))
+	PORT_BIT( 0x00000001, IP_ACTIVE_HIGH, IPT_OUTPUT ) PORT_WRITE_LINE_DEVICE_MEMBER("adc0834", FUNC(adc083x_device::di_write))
+	PORT_BIT( 0x00000100, IP_ACTIVE_HIGH, IPT_OUTPUT ) PORT_WRITE_LINE_MEMBER(FUNC(ksys573_state::h8_clk_w))
 
 	PORT_START( "IN1" )
 	PORT_DIPNAME( 0x00000001, 0x00000001, "Unused 1" ) PORT_DIPLOCATION( "DIP SW:1" )
@@ -3071,32 +3025,32 @@ static INPUT_PORTS_START( konami573 )
 	PORT_DIPNAME( 0x00000008, 0x00000000, "Start Up Device" ) PORT_DIPLOCATION( "DIP SW:4" )
 	PORT_DIPSETTING(          0x00000008, "CD-ROM Drive" )
 	PORT_DIPSETTING(          0x00000000, "Flash ROM" )
-	PORT_BIT( 0x00000010, IP_ACTIVE_HIGH, IPT_CUSTOM ) PORT_READ_LINE_DEVICE_MEMBER( DEVICE_SELF, ksys573_state, h8_d0_r )
-	PORT_BIT( 0x00000020, IP_ACTIVE_HIGH, IPT_CUSTOM ) PORT_READ_LINE_DEVICE_MEMBER( DEVICE_SELF, ksys573_state, h8_d1_r )
-	PORT_BIT( 0x00000040, IP_ACTIVE_HIGH, IPT_CUSTOM ) PORT_READ_LINE_DEVICE_MEMBER( DEVICE_SELF, ksys573_state, h8_d2_r )
-	PORT_BIT( 0x00000080, IP_ACTIVE_HIGH, IPT_CUSTOM ) PORT_READ_LINE_DEVICE_MEMBER( DEVICE_SELF, ksys573_state, h8_d3_r )
-	PORT_BIT( 0x00000100, IP_ACTIVE_HIGH, IPT_CUSTOM ) PORT_READ_LINE_DEVICE_MEMBER( "cassette", konami573_cassette_slot_device, read_line_adc083x_do )
-	PORT_BIT( 0x00000200, IP_ACTIVE_HIGH, IPT_CUSTOM ) PORT_READ_LINE_DEVICE_MEMBER( "cassette", konami573_cassette_slot_device, read_line_adc083x_sars )
+	PORT_BIT( 0x00000010, IP_ACTIVE_HIGH, IPT_CUSTOM ) PORT_READ_LINE_MEMBER(FUNC(ksys573_state::h8_d0_r))
+	PORT_BIT( 0x00000020, IP_ACTIVE_HIGH, IPT_CUSTOM ) PORT_READ_LINE_MEMBER(FUNC(ksys573_state::h8_d1_r))
+	PORT_BIT( 0x00000040, IP_ACTIVE_HIGH, IPT_CUSTOM ) PORT_READ_LINE_MEMBER(FUNC(ksys573_state::h8_d2_r))
+	PORT_BIT( 0x00000080, IP_ACTIVE_HIGH, IPT_CUSTOM ) PORT_READ_LINE_MEMBER(FUNC(ksys573_state::h8_d3_r))
+	PORT_BIT( 0x00000100, IP_ACTIVE_HIGH, IPT_CUSTOM ) PORT_READ_LINE_DEVICE_MEMBER("cassette", FUNC(konami573_cassette_slot_device::read_line_adc083x_do))
+	PORT_BIT( 0x00000200, IP_ACTIVE_HIGH, IPT_CUSTOM ) PORT_READ_LINE_DEVICE_MEMBER("cassette", FUNC(konami573_cassette_slot_device::read_line_adc083x_sars))
 //  PORT_BIT( 0x00000400, IP_ACTIVE_LOW, IPT_UNKNOWN )
 //  PORT_BIT( 0x00000800, IP_ACTIVE_LOW, IPT_UNKNOWN )
 	PORT_CONFNAME( 0x00001000, 0x00001000, "Network?" )
 	PORT_CONFSETTING(          0x00001000, DEF_STR( Off ) )
 	PORT_CONFSETTING(          0x00000000, DEF_STR( On ) )
 //  PORT_BIT( 0x00002000, IP_ACTIVE_LOW, IPT_UNKNOWN )
-	PORT_BIT( 0x00004000, IP_ACTIVE_HIGH, IPT_CUSTOM ) PORT_READ_LINE_DEVICE_MEMBER( "cassette", konami573_cassette_slot_device, read_line_ds2401 )
+	PORT_BIT( 0x00004000, IP_ACTIVE_HIGH, IPT_CUSTOM ) PORT_READ_LINE_DEVICE_MEMBER("cassette", FUNC(konami573_cassette_slot_device::read_line_ds2401))
 //  PORT_BIT( 0x00008000, IP_ACTIVE_LOW, IPT_UNKNOWN )
-	PORT_BIT( 0x00010000, IP_ACTIVE_HIGH, IPT_CUSTOM ) PORT_READ_LINE_DEVICE_MEMBER( "adc0834", adc083x_device, do_read )
+	PORT_BIT( 0x00010000, IP_ACTIVE_HIGH, IPT_CUSTOM ) PORT_READ_LINE_DEVICE_MEMBER("adc0834", FUNC(adc083x_device::do_read))
 //  PORT_BIT( 0x00020000, IP_ACTIVE_LOW, IPT_UNKNOWN )
-	PORT_BIT( 0x00040000, IP_ACTIVE_HIGH, IPT_CUSTOM ) PORT_READ_LINE_DEVICE_MEMBER( "cassette", konami573_cassette_slot_device, read_line_secflash_sda )
-	PORT_BIT( 0x00080000, IP_ACTIVE_HIGH, IPT_CUSTOM ) PORT_READ_LINE_DEVICE_MEMBER( "sys573_jvs_host", sys573_jvs_host, jvs_sense_r )
-	PORT_BIT( 0x00100000, IP_ACTIVE_HIGH, IPT_CUSTOM ) PORT_READ_LINE_DEVICE_MEMBER( DEVICE_SELF, ksys573_state, jvs_rx_r )
+	PORT_BIT( 0x00040000, IP_ACTIVE_HIGH, IPT_CUSTOM ) PORT_READ_LINE_DEVICE_MEMBER("cassette", FUNC(konami573_cassette_slot_device::read_line_secflash_sda))
+	PORT_BIT( 0x00080000, IP_ACTIVE_HIGH, IPT_CUSTOM ) PORT_READ_LINE_DEVICE_MEMBER("sys573_jvs_host", FUNC(sys573_jvs_host::jvs_sense_r))
+	PORT_BIT( 0x00100000, IP_ACTIVE_HIGH, IPT_CUSTOM ) PORT_READ_LINE_MEMBER(FUNC(ksys573_state::jvs_rx_r))
 	PORT_BIT( 0x00200000, IP_ACTIVE_HIGH, IPT_UNKNOWN ) // JVS-related
 //  PORT_BIT( 0x00400000, IP_ACTIVE_LOW, IPT_UNKNOWN )
 //  PORT_BIT( 0x00800000, IP_ACTIVE_LOW, IPT_UNKNOWN )
 	PORT_BIT( 0x01000000, IP_ACTIVE_LOW, IPT_COIN1 )
 	PORT_BIT( 0x02000000, IP_ACTIVE_LOW, IPT_COIN2 )
-	PORT_BIT( 0x04000000, IP_ACTIVE_LOW, IPT_CUSTOM ) PORT_READ_LINE_DEVICE_MEMBER( DEVICE_SELF, ksys573_state, pccard_cd_r<0> )
-	PORT_BIT( 0x08000000, IP_ACTIVE_LOW, IPT_CUSTOM ) PORT_READ_LINE_DEVICE_MEMBER( DEVICE_SELF, ksys573_state, pccard_cd_r<1> )
+	PORT_BIT( 0x04000000, IP_ACTIVE_HIGH, IPT_CUSTOM ) PORT_READ_LINE_MEMBER(FUNC(ksys573_state::pccard_cd_r<0>))
+	PORT_BIT( 0x08000000, IP_ACTIVE_HIGH, IPT_CUSTOM ) PORT_READ_LINE_MEMBER(FUNC(ksys573_state::pccard_cd_r<1>))
 	PORT_BIT( 0x10000000, IP_ACTIVE_LOW, IPT_SERVICE1 )
 //  PORT_BIT( 0x20000000, IP_ACTIVE_LOW, IPT_UNKNOWN )
 //  PORT_BIT( 0x40000000, IP_ACTIVE_LOW, IPT_UNKNOWN )
@@ -3104,17 +3058,17 @@ static INPUT_PORTS_START( konami573 )
 
 	PORT_START( "OUT1" ) // security_w
 	PORT_BIT( 0xffffff00, IP_ACTIVE_HIGH, IPT_OUTPUT )
-	PORT_BIT( 0x00000001, IP_ACTIVE_HIGH, IPT_OUTPUT ) PORT_WRITE_LINE_DEVICE_MEMBER( "cassette", konami573_cassette_slot_device, write_line_d0 )
-	PORT_BIT( 0x00000002, IP_ACTIVE_HIGH, IPT_OUTPUT ) PORT_WRITE_LINE_DEVICE_MEMBER( "cassette", konami573_cassette_slot_device, write_line_d1 )
-	PORT_BIT( 0x00000004, IP_ACTIVE_HIGH, IPT_OUTPUT ) PORT_WRITE_LINE_DEVICE_MEMBER( "cassette", konami573_cassette_slot_device, write_line_d2 )
-	PORT_BIT( 0x00000008, IP_ACTIVE_HIGH, IPT_OUTPUT ) PORT_WRITE_LINE_DEVICE_MEMBER( "cassette", konami573_cassette_slot_device, write_line_d3 )
-	PORT_BIT( 0x00000010, IP_ACTIVE_HIGH, IPT_OUTPUT ) PORT_WRITE_LINE_DEVICE_MEMBER( "cassette", konami573_cassette_slot_device, write_line_d4 )
-	PORT_BIT( 0x00000020, IP_ACTIVE_HIGH, IPT_OUTPUT ) PORT_WRITE_LINE_DEVICE_MEMBER( "cassette", konami573_cassette_slot_device, write_line_d5 )
-	PORT_BIT( 0x00000040, IP_ACTIVE_HIGH, IPT_OUTPUT ) PORT_WRITE_LINE_DEVICE_MEMBER( "cassette", konami573_cassette_slot_device, write_line_d6 )
-	PORT_BIT( 0x00000080, IP_ACTIVE_HIGH, IPT_OUTPUT ) PORT_WRITE_LINE_DEVICE_MEMBER( "cassette", konami573_cassette_slot_device, write_line_d7 )
+	PORT_BIT( 0x00000001, IP_ACTIVE_HIGH, IPT_OUTPUT ) PORT_WRITE_LINE_DEVICE_MEMBER("cassette", FUNC(konami573_cassette_slot_device::write_line_d0))
+	PORT_BIT( 0x00000002, IP_ACTIVE_HIGH, IPT_OUTPUT ) PORT_WRITE_LINE_DEVICE_MEMBER("cassette", FUNC(konami573_cassette_slot_device::write_line_d1))
+	PORT_BIT( 0x00000004, IP_ACTIVE_HIGH, IPT_OUTPUT ) PORT_WRITE_LINE_DEVICE_MEMBER("cassette", FUNC(konami573_cassette_slot_device::write_line_d2))
+	PORT_BIT( 0x00000008, IP_ACTIVE_HIGH, IPT_OUTPUT ) PORT_WRITE_LINE_DEVICE_MEMBER("cassette", FUNC(konami573_cassette_slot_device::write_line_d3))
+	PORT_BIT( 0x00000010, IP_ACTIVE_HIGH, IPT_OUTPUT ) PORT_WRITE_LINE_DEVICE_MEMBER("cassette", FUNC(konami573_cassette_slot_device::write_line_d4))
+	PORT_BIT( 0x00000020, IP_ACTIVE_HIGH, IPT_OUTPUT ) PORT_WRITE_LINE_DEVICE_MEMBER("cassette", FUNC(konami573_cassette_slot_device::write_line_d5))
+	PORT_BIT( 0x00000040, IP_ACTIVE_HIGH, IPT_OUTPUT ) PORT_WRITE_LINE_DEVICE_MEMBER("cassette", FUNC(konami573_cassette_slot_device::write_line_d6))
+	PORT_BIT( 0x00000080, IP_ACTIVE_HIGH, IPT_OUTPUT ) PORT_WRITE_LINE_DEVICE_MEMBER("cassette", FUNC(konami573_cassette_slot_device::write_line_d7))
 
 	PORT_START( "OUT2" ) // control_w
-	PORT_BIT( 0x00000040, IP_ACTIVE_LOW, IPT_OUTPUT ) PORT_WRITE_LINE_DEVICE_MEMBER( "cassette", konami573_cassette_slot_device, write_line_zs01_sda )
+	PORT_BIT( 0x00000040, IP_ACTIVE_LOW, IPT_OUTPUT ) PORT_WRITE_LINE_DEVICE_MEMBER("cassette", FUNC(konami573_cassette_slot_device::write_line_zs01_sda))
 
 	PORT_START( "IN2" )
 	PORT_BIT( 0x00000100, IP_ACTIVE_LOW, IPT_JOYSTICK_LEFT ) PORT_8WAY PORT_PLAYER( 1 )
@@ -3168,9 +3122,9 @@ static INPUT_PORTS_START( fbaitbc )
 	PORT_BIT( 0x0fff, 0, IPT_MOUSE_Y ) PORT_MINMAX( 0, 0xfff ) PORT_SENSITIVITY( 15 ) PORT_KEYDELTA( 8 )
 
 	PORT_START( "uPD4701_switches" )
-	PORT_BIT( 0x1, IP_ACTIVE_LOW, IPT_UNUSED ) PORT_PLAYER(1) PORT_WRITE_LINE_DEVICE_MEMBER("upd4701", upd4701_device, middle_w)
-	PORT_BIT( 0x2, IP_ACTIVE_LOW, IPT_BUTTON7 ) PORT_PLAYER(1) PORT_WRITE_LINE_DEVICE_MEMBER("upd4701", upd4701_device, right_w)
-	PORT_BIT( 0x4, IP_ACTIVE_LOW, IPT_UNUSED ) PORT_PLAYER(1) PORT_WRITE_LINE_DEVICE_MEMBER("upd4701", upd4701_device, left_w)
+	PORT_BIT( 0x1, IP_ACTIVE_LOW, IPT_UNUSED ) PORT_PLAYER(1) PORT_WRITE_LINE_DEVICE_MEMBER("upd4701", FUNC(upd4701_device::middle_w))
+	PORT_BIT( 0x2, IP_ACTIVE_LOW, IPT_BUTTON7 ) PORT_PLAYER(1) PORT_WRITE_LINE_DEVICE_MEMBER("upd4701", FUNC(upd4701_device::right_w))
+	PORT_BIT( 0x4, IP_ACTIVE_LOW, IPT_UNUSED ) PORT_PLAYER(1) PORT_WRITE_LINE_DEVICE_MEMBER("upd4701", FUNC(upd4701_device::left_w))
 INPUT_PORTS_END
 
 static INPUT_PORTS_START( fbaitmc )
@@ -3187,7 +3141,7 @@ static INPUT_PORTS_START( ddr )
 	PORT_INCLUDE( konami573 )
 
 	PORT_MODIFY( "IN2" )
-	PORT_BIT( 0x00000f0f, IP_ACTIVE_HIGH, IPT_CUSTOM ) PORT_CUSTOM_MEMBER( ddr_state, gn845pwbb_read )
+	PORT_BIT( 0x00000f0f, IP_ACTIVE_HIGH, IPT_CUSTOM ) PORT_CUSTOM_MEMBER(FUNC(ddr_state::gn845pwbb_read))
 
 	/* IN3 bit 0x02000000 is used by ddr4mp and ddr4mps to specify that it's a rental cabinet type which requires a rental security cartridge to boot, unused by other DDR games */
 
@@ -3239,7 +3193,7 @@ static INPUT_PORTS_START( ddrkara )
 
 	PORT_MODIFY("IN2")
 	PORT_BIT(0xffff6000, IP_ACTIVE_LOW, IPT_UNKNOWN)
-	PORT_BIT(0x00000f0f, IP_ACTIVE_HIGH, IPT_CUSTOM) PORT_CUSTOM_MEMBER(ddr_state, gn845pwbb_read)
+	PORT_BIT(0x00000f0f, IP_ACTIVE_HIGH, IPT_CUSTOM) PORT_CUSTOM_MEMBER(FUNC(ddr_state::gn845pwbb_read))
 	PORT_BIT(0x00000010, IP_ACTIVE_LOW, IPT_JOYSTICK_DOWN) PORT_16WAY PORT_PLAYER(1) PORT_NAME("P1 Down 2")
 	PORT_BIT(0x00000020, IP_ACTIVE_LOW, IPT_JOYSTICK_LEFT) PORT_16WAY PORT_PLAYER(1) PORT_NAME("P1 Left 2")
 	PORT_BIT(0x00000040, IP_ACTIVE_LOW, IPT_BUTTON1) PORT_NAME("Telop")
@@ -3289,10 +3243,10 @@ static INPUT_PORTS_START( gtrfrks )
 	PORT_BIT( 0x08000000, IP_ACTIVE_LOW, IPT_UNUSED ) /* P1 BUTTON6 */
 
 	PORT_MODIFY( "LAMPS" )
-	PORT_BIT( 0x00000080, IP_ACTIVE_LOW, IPT_OUTPUT ) PORT_WRITE_LINE_DEVICE_MEMBER( DEVICE_SELF, ksys573_state, gtrfrks_lamps_b7 )
-	PORT_BIT( 0x00000040, IP_ACTIVE_LOW, IPT_OUTPUT ) PORT_WRITE_LINE_DEVICE_MEMBER( DEVICE_SELF, ksys573_state, gtrfrks_lamps_b6 )
-	PORT_BIT( 0x00000020, IP_ACTIVE_LOW, IPT_OUTPUT ) PORT_WRITE_LINE_DEVICE_MEMBER( DEVICE_SELF, ksys573_state, gtrfrks_lamps_b5 )
-	PORT_BIT( 0x00000010, IP_ACTIVE_LOW, IPT_OUTPUT ) PORT_WRITE_LINE_DEVICE_MEMBER( DEVICE_SELF, ksys573_state, gtrfrks_lamps_b4 )
+	PORT_BIT( 0x00000080, IP_ACTIVE_LOW, IPT_OUTPUT ) PORT_WRITE_LINE_MEMBER(FUNC(ksys573_state::gtrfrks_lamps_b7))
+	PORT_BIT( 0x00000040, IP_ACTIVE_LOW, IPT_OUTPUT ) PORT_WRITE_LINE_MEMBER(FUNC(ksys573_state::gtrfrks_lamps_b6))
+	PORT_BIT( 0x00000020, IP_ACTIVE_LOW, IPT_OUTPUT ) PORT_WRITE_LINE_MEMBER(FUNC(ksys573_state::gtrfrks_lamps_b5))
+	PORT_BIT( 0x00000010, IP_ACTIVE_LOW, IPT_OUTPUT ) PORT_WRITE_LINE_MEMBER(FUNC(ksys573_state::gtrfrks_lamps_b4))
 INPUT_PORTS_END
 
 static INPUT_PORTS_START( dmx )
@@ -3323,12 +3277,12 @@ static INPUT_PORTS_START( dmx )
 	PORT_BIT( 0x08000000, IP_ACTIVE_LOW, IPT_UNUSED ) /* P2 BUTTON6 */
 
 	PORT_MODIFY( "LAMPS" )
-	PORT_BIT( 0x00000001, IP_ACTIVE_LOW, IPT_OUTPUT ) PORT_WRITE_LINE_DEVICE_MEMBER( DEVICE_SELF, ksys573_state, dmx_lamps_b0 )
-	PORT_BIT( 0x00000002, IP_ACTIVE_LOW, IPT_OUTPUT ) PORT_WRITE_LINE_DEVICE_MEMBER( DEVICE_SELF, ksys573_state, dmx_lamps_b1 )
-	PORT_BIT( 0x00000004, IP_ACTIVE_LOW, IPT_OUTPUT ) PORT_WRITE_LINE_DEVICE_MEMBER( DEVICE_SELF, ksys573_state, dmx_lamps_b2 )
-	PORT_BIT( 0x00000008, IP_ACTIVE_LOW, IPT_OUTPUT ) PORT_WRITE_LINE_DEVICE_MEMBER( DEVICE_SELF, ksys573_state, dmx_lamps_b3 )
-	PORT_BIT( 0x00000010, IP_ACTIVE_LOW, IPT_OUTPUT ) PORT_WRITE_LINE_DEVICE_MEMBER( DEVICE_SELF, ksys573_state, dmx_lamps_b4 )
-	PORT_BIT( 0x00000020, IP_ACTIVE_LOW, IPT_OUTPUT ) PORT_WRITE_LINE_DEVICE_MEMBER( DEVICE_SELF, ksys573_state, dmx_lamps_b5 )
+	PORT_BIT( 0x00000001, IP_ACTIVE_LOW, IPT_OUTPUT ) PORT_WRITE_LINE_MEMBER(FUNC(ksys573_state::dmx_lamps_b0))
+	PORT_BIT( 0x00000002, IP_ACTIVE_LOW, IPT_OUTPUT ) PORT_WRITE_LINE_MEMBER(FUNC(ksys573_state::dmx_lamps_b1))
+	PORT_BIT( 0x00000004, IP_ACTIVE_LOW, IPT_OUTPUT ) PORT_WRITE_LINE_MEMBER(FUNC(ksys573_state::dmx_lamps_b2))
+	PORT_BIT( 0x00000008, IP_ACTIVE_LOW, IPT_OUTPUT ) PORT_WRITE_LINE_MEMBER(FUNC(ksys573_state::dmx_lamps_b3))
+	PORT_BIT( 0x00000010, IP_ACTIVE_LOW, IPT_OUTPUT ) PORT_WRITE_LINE_MEMBER(FUNC(ksys573_state::dmx_lamps_b4))
+	PORT_BIT( 0x00000020, IP_ACTIVE_LOW, IPT_OUTPUT ) PORT_WRITE_LINE_MEMBER(FUNC(ksys573_state::dmx_lamps_b5))
 INPUT_PORTS_END
 
 static INPUT_PORTS_START( drmn )
@@ -3374,15 +3328,15 @@ static INPUT_PORTS_START( gunmania )
 	PORT_BIT( 0x00000800, IP_ACTIVE_LOW, IPT_BUTTON7 ) PORT_PLAYER( 1 ) PORT_NAME( "Bullet Tube-1 Sensor" )
 	PORT_BIT( 0x00000400, IP_ACTIVE_LOW, IPT_BUTTON6 ) PORT_PLAYER( 1 ) PORT_NAME( "Bullet Tube-2 Sensor" )
 	PORT_BIT( 0x00000200, IP_ACTIVE_LOW, IPT_BUTTON5 ) PORT_PLAYER( 1 ) PORT_NAME( "Safety Sensor Under" )
-	PORT_BIT( 0x00000100, IP_ACTIVE_HIGH, IPT_CUSTOM ) PORT_READ_LINE_MEMBER(ksys573_state, gunmania_tank_shutter_sensor)
+	PORT_BIT( 0x00000100, IP_ACTIVE_HIGH, IPT_CUSTOM ) PORT_READ_LINE_MEMBER(FUNC(ksys573_state::gunmania_tank_shutter_sensor))
 
 	PORT_MODIFY( "IN3" )
 	PORT_BIT( 0x0d000b00, IP_ACTIVE_LOW, IPT_UNUSED )
-	PORT_BIT( 0x02000000, IP_ACTIVE_HIGH, IPT_CUSTOM ) PORT_READ_LINE_MEMBER(ksys573_state, gunmania_cable_holder_sensor)
+	PORT_BIT( 0x02000000, IP_ACTIVE_HIGH, IPT_CUSTOM ) PORT_READ_LINE_MEMBER(FUNC(ksys573_state::gunmania_cable_holder_sensor))
 
 	PORT_START( "GUNX" )
 	PORT_BIT( 0x7f, 0x2f, IPT_LIGHTGUN_X ) PORT_CROSSHAIR( X, 1.0, 0.0, 0 ) PORT_MINMAX( 0x00,0x5f ) PORT_SENSITIVITY( 100 ) PORT_KEYDELTA( 15 ) PORT_PLAYER( 1 )
-	PORT_BIT( 0x00000080, IP_ACTIVE_HIGH, IPT_CUSTOM ) PORT_READ_LINE_DEVICE_MEMBER( "ds2401_id", ds2401_device, read )
+	PORT_BIT( 0x00000080, IP_ACTIVE_HIGH, IPT_CUSTOM ) PORT_READ_LINE_DEVICE_MEMBER("ds2401_id", FUNC(ds2401_device::read))
 
 	PORT_START( "GUNY" )
 	PORT_BIT( 0x7f, 0x1f, IPT_LIGHTGUN_Y ) PORT_CROSSHAIR( Y, 1.0, 0.0, 0 ) PORT_MINMAX( 0x00,0x3f ) PORT_SENSITIVITY( 100 ) PORT_KEYDELTA( 15 ) PORT_PLAYER( 1 )
@@ -3505,9 +3459,9 @@ static INPUT_PORTS_START( mamboagg )
 	PORT_BIT( 0x08000000, IP_ACTIVE_LOW, IPT_UNUSED ) /* P2 BUTTON6 */
 
 	PORT_MODIFY( "LAMPS" )
-	PORT_BIT( 0x00000008, IP_ACTIVE_LOW, IPT_OUTPUT ) PORT_WRITE_LINE_DEVICE_MEMBER( DEVICE_SELF, ksys573_state, mamboagg_lamps_b3 )
-	PORT_BIT( 0x00000010, IP_ACTIVE_LOW, IPT_OUTPUT ) PORT_WRITE_LINE_DEVICE_MEMBER( DEVICE_SELF, ksys573_state, mamboagg_lamps_b4 )
-	PORT_BIT( 0x00000020, IP_ACTIVE_LOW, IPT_OUTPUT ) PORT_WRITE_LINE_DEVICE_MEMBER( DEVICE_SELF, ksys573_state, mamboagg_lamps_b5 )
+	PORT_BIT( 0x00000008, IP_ACTIVE_LOW, IPT_OUTPUT ) PORT_WRITE_LINE_MEMBER(FUNC(ksys573_state::mamboagg_lamps_b3))
+	PORT_BIT( 0x00000010, IP_ACTIVE_LOW, IPT_OUTPUT ) PORT_WRITE_LINE_MEMBER(FUNC(ksys573_state::mamboagg_lamps_b4))
+	PORT_BIT( 0x00000020, IP_ACTIVE_LOW, IPT_OUTPUT ) PORT_WRITE_LINE_MEMBER(FUNC(ksys573_state::mamboagg_lamps_b5))
 INPUT_PORTS_END
 
 static INPUT_PORTS_START( pnchmn )
@@ -3587,7 +3541,7 @@ static INPUT_PORTS_START( kicknkick )
 	PORT_BIT( 0x00001000, IP_ACTIVE_LOW, IPT_BUTTON4 ) PORT_PLAYER( 1 ) PORT_NAME( "F4" )
 	PORT_BIT( 0x00000800, IP_ACTIVE_LOW, IPT_BUTTON10 ) PORT_PLAYER( 1 ) PORT_NAME( "H10" )
 	PORT_BIT( 0x00000400, IP_ACTIVE_LOW, IPT_BUTTON9 ) PORT_PLAYER( 1 ) PORT_NAME( "H9" )
-	PORT_BIT( 0x00000100, IP_ACTIVE_HIGH, IPT_CUSTOM ) PORT_READ_LINE_DEVICE_MEMBER( "ds2401_id", ds2401_device, read )
+	PORT_BIT( 0x00000100, IP_ACTIVE_HIGH, IPT_CUSTOM ) PORT_READ_LINE_DEVICE_MEMBER("ds2401_id", FUNC(ds2401_device::read))
 
 	PORT_START( "KICK_SENSOR2" )
 	PORT_BIT( 0xffff00ff, IP_ACTIVE_LOW, IPT_UNUSED )
@@ -3614,7 +3568,7 @@ INPUT_PORTS_END
 
 #define SYS573_BIOS_A \
 	ROM_SYSTEM_BIOS( 0, "std",        "Standard" ) \
-	ROM_SYSTEM_BIOS( 1, "gchgchmp",   "Found on Gachagachamp" ) \
+	ROM_SYSTEM_BIOS( 1, "gchgchmp",   "Found on Gacha Gachamp" ) \
 	ROM_SYSTEM_BIOS( 2, "dsem2",      "Found on Dancing Stage Euro Mix 2" ) \
 	ROM_REGION32_LE( 0x080000, "maincpu:rom", 0 ) \
 	ROMX_LOAD( "700a01.22g",           0x0000000, 0x080000, CRC(11812ef8) SHA1(e1284add4aaddd5337bd7f4e27614460d52b5b48), ROM_BIOS(0) ) \
@@ -6277,7 +6231,7 @@ ROM_END
 
 // FIXME: dependency hell strikes again
 // this shouldn't be here at all, but the spaghetti is so tangled
-double konami573_cassette_xi_device::punchmania_inputs_callback(uint8_t input)
+double pnchmn_state::punchmania_inputs_callback(uint8_t input)
 {
 	// The values 50 and 150 come from the game's internal I/O simulation mode.
 	// Set DIPSW 2 ("Screen Flip") to ON and press select left + start on the I/O test screen to see the simulated I/O in action.
@@ -6286,12 +6240,11 @@ double konami573_cassette_xi_device::punchmania_inputs_callback(uint8_t input)
 	constexpr double POT_RANGE = POT_MAX - POT_MIN;
 	constexpr int MOTOR_SPEED_MUL = 2;
 
-	pnchmn_state *state = machine().driver_data<pnchmn_state>();
-	double *pad_position = state->m_pad_position;
-	int *pad_motor_direction = state->m_pad_motor_direction;
-	int pads = state->m_pads->read();
+	double *pad_position = m_pad_position;
+	int *pad_motor_direction = m_pad_motor_direction;
+	int pads = m_pads->read();
 	attotime curtime = machine().time();
-	double elapsed = ( curtime - state->m_last_pad_update ).as_double();
+	double elapsed = ( curtime - m_last_pad_update ).as_double();
 	double diff = POT_RANGE * elapsed * MOTOR_SPEED_MUL;
 
 	for( int i = 0; i < 6; i++ )
@@ -6313,7 +6266,7 @@ double konami573_cassette_xi_device::punchmania_inputs_callback(uint8_t input)
 	machine().output().set_value( "right middle pad", pad_position[ 4 ] );
 	machine().output().set_value( "right bottom pad", pad_position[ 5 ] );
 
-	state->m_last_pad_update = curtime;
+	m_last_pad_update = curtime;
 
 	switch( input )
 	{
@@ -6361,7 +6314,7 @@ GAME( 1998, bassang2,  fbait2bc, fbaitbc,    fbaitbc,   ksys573_state, empty_ini
 GAME( 1998, hyperbbc,  sys573,   hyperbbc,   hyperbbc,  ksys573_state, init_hyperbbc, ROT0,  "Konami", "Hyper Bishi Bashi Champ (GQ876 VER. EAA)", MACHINE_IMPERFECT_SOUND )
 GAME( 1998, hyperbbca, hyperbbc, hyperbbc,   hyperbbc,  ksys573_state, init_hyperbbc, ROT0,  "Konami", "Hyper Bishi Bashi Champ (GQ876 VER. AAA)", MACHINE_IMPERFECT_SOUND )
 GAME( 1998, hyperbbck, hyperbbc, hyperbbc,   hyperbbc,  ksys573_state, init_hyperbbc, ROT0,  "Konami", "Hyper Bishi Bashi Champ (GE876 VER. KAA)", MACHINE_IMPERFECT_SOUND )
-GAME( 1999, gchgchmp,  sys573,   gchgchmp,   gchgchmp,  ksys573_state, empty_init,    ROT0,  "Konami", "Gachaga Champ (GE877 VER. JAB)", MACHINE_IMPERFECT_SOUND )
+GAME( 1999, gchgchmp,  sys573,   gchgchmp,   gchgchmp,  ksys573_state, empty_init,    ROT0,  "Konami", "Gacha Gachamp (GE877 VER. JAB)", MACHINE_IMPERFECT_SOUND )
 GAME( 1999, gtrfrks,   sys573,   gtrfrks,    gtrfrks,   ksys573_state, empty_init,    ROT0,  "Konami", "Guitar Freaks Ver 1.01 (GQ886 VER. EAD)", MACHINE_IMPERFECT_SOUND )
 GAME( 1999, gtrfrksu,  gtrfrks,  gtrfrks,    gtrfrks,   ksys573_state, empty_init,    ROT0,  "Konami", "Guitar Freaks Ver 1.01 (GQ886 VER. UAD)", MACHINE_IMPERFECT_SOUND )
 GAME( 1999, gtrfrksj,  gtrfrks,  gtrfrks,    gtrfrks,   ksys573_state, empty_init,    ROT0,  "Konami", "Guitar Freaks Ver 1.01 (GQ886 VER. JAD)", MACHINE_IMPERFECT_SOUND )
@@ -6435,7 +6388,7 @@ GAME( 2000, gtfrk3ma,  gtrfrk3m, gtrfrk3m,   gtrfrks,   ksys573_state, empty_ini
 GAME( 2000, gtfrk3mb,  gtrfrk3m, gtrfrk5m,   gtrfrks,   ksys573_state, empty_init,    ROT0,  "Konami", "Guitar Freaks 3rd Mix - security cassette versionup (949JAZ02)", MACHINE_IMPERFECT_SOUND | MACHINE_NOT_WORKING ) /* BOOT VER 1.4 */
 GAMEL(2000, pnchmn2,   sys573,   pnchmn2,    pnchmn,    pnchmn_state,  init_pnchmn,   ROT0,  "Konami", "Punch Mania 2: Hokuto no Ken (GQA09 JAA)", MACHINE_IMPERFECT_SOUND | MACHINE_NOT_WORKING, layout_pnchmn ) /* artwork/network */
 GAME( 2000, animechmp, sys573,   animechmp,  hyperbbc,  ksys573_state, init_serlamp,  ROT0,  "Konami", "Anime Champ (GCA07 VER. JAA)", MACHINE_IMPERFECT_SOUND )
-GAME( 2000, salarymc,  sys573,   salarymc,   hypbbc2p,  ksys573_state, init_serlamp,  ROT0,  "Konami", "Salary Man Champ (GCA18 VER. JAA)", MACHINE_IMPERFECT_SOUND )
+GAME( 2000, salarymc,  sys573,   salarymc,   hypbbc2p,  ksys573_state, init_serlamp,  ROT0,  "Success / Konami", "Salary Man Champ - Tatakau Salary Man (GCA18 VER. JAA)", MACHINE_IMPERFECT_SOUND ) // Co-developed? with Praime (sic) Systems https://gdri.smspower.org/wiki/index.php/Prime_System_Development
 GAME( 2000, ddr3mp,    sys573,   ddr3mp,     ddr,       ddr_state,     empty_init,    ROT0,  "Konami", "Dance Dance Revolution 3rd Mix Plus (G*A22 VER. JAA)", MACHINE_IMPERFECT_SOUND | MACHINE_NOT_WORKING ) /* BOOT VER 1.6 */
 GAME( 2000, pcnfrk3m,  sys573,   drmn2m,     drmn,      ksys573_state, empty_init,    ROT0,  "Konami", "Percussion Freaks 3rd Mix (G*A23 VER. AAA)", MACHINE_IMPERFECT_SOUND | MACHINE_NOT_WORKING ) /* BOOT VER 1.8 */
 GAME( 2000, pcnfrk3mk, pcnfrk3m, drmn2m,     drmn,      ksys573_state, empty_init,    ROT0,  "Konami", "Percussion Freaks 3rd Mix (G*A23 VER. KAA)", MACHINE_IMPERFECT_SOUND | MACHINE_NOT_WORKING ) /* BOOT VER 1.8 */

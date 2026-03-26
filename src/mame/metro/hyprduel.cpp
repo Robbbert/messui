@@ -72,8 +72,8 @@ public:
 	void init_hyprduel();
 
 protected:
-	virtual void machine_start() override;
-	virtual void machine_reset() override;
+	virtual void machine_start() override ATTR_COLD;
+	virtual void machine_reset() override ATTR_COLD;
 
 private:
 	void subcpu_control_w(uint16_t data);
@@ -88,18 +88,18 @@ private:
 
 	void i4220_config(machine_config &config);
 
-	void hyprduel_map(address_map &map);
-	void hyprduel_map2(address_map &map);
-	void magerror_map(address_map &map);
-	void magerror_map2(address_map &map);
+	void hyprduel_map(address_map &map) ATTR_COLD;
+	void hyprduel_map2(address_map &map) ATTR_COLD;
+	void magerror_map(address_map &map) ATTR_COLD;
+	void magerror_map2(address_map &map) ATTR_COLD;
 
 	/* memory pointers */
 	required_shared_ptr_array<uint16_t, 3> m_sharedram;
 
 	/* misc */
 	emu_timer *m_vblank_end_timer = nullptr;
-	int       m_subcpu_resetline = 0;
-	int       m_cpu_trigger = 0;
+	bool      m_subcpu_resetline = false;
+	int32_t   m_cpu_trigger = 0;
 
 	/* devices */
 	required_device<cpu_device> m_maincpu;
@@ -157,7 +157,7 @@ void hyprduel_state::subcpu_control_w(uint16_t data)
 			if (!m_subcpu_resetline)
 			{
 				m_subcpu->set_input_line(INPUT_LINE_RESET, ASSERT_LINE);
-				m_subcpu_resetline = 1;
+				m_subcpu_resetline = true;
 			}
 			break;
 
@@ -165,7 +165,7 @@ void hyprduel_state::subcpu_control_w(uint16_t data)
 			if (m_subcpu_resetline)
 			{
 				m_subcpu->set_input_line(INPUT_LINE_RESET, CLEAR_LINE);
-				m_subcpu_resetline = 0;
+				m_subcpu_resetline = false;
 			}
 			m_maincpu->spin_until_interrupt();
 			break;
@@ -390,7 +390,7 @@ void hyprduel_state::machine_reset()
 {
 	/* start with cpu2 halted */
 	m_subcpu->set_input_line(INPUT_LINE_RESET, ASSERT_LINE);
-	m_subcpu_resetline = 1;
+	m_subcpu_resetline = true;
 	m_cpu_trigger = 0;
 }
 

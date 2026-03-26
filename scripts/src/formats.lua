@@ -36,6 +36,8 @@ project "formats"
 		MAME_DIR .. "src/lib/formats/imageutl.cpp",
 		MAME_DIR .. "src/lib/formats/imageutl.h",
 
+		MAME_DIR .. "src/lib/formats/aiffile.cpp",
+		MAME_DIR .. "src/lib/formats/aiffile.h",
 		MAME_DIR .. "src/lib/formats/cassimg.cpp",
 		MAME_DIR .. "src/lib/formats/cassimg.h",
 		MAME_DIR .. "src/lib/formats/flacfile.cpp",
@@ -75,6 +77,8 @@ project "formats"
 		MAME_DIR .. "src/lib/formats/fdi_dsk.cpp",
 		MAME_DIR .. "src/lib/formats/rpk.cpp",
 		MAME_DIR .. "src/lib/formats/rpk.h",
+		MAME_DIR .. "src/lib/formats/86f_dsk.cpp",
+		MAME_DIR .. "src/lib/formats/86f_dsk.h",
 
 		MAME_DIR .. "src/lib/formats/fsmgr.h",
 		MAME_DIR .. "src/lib/formats/fsmgr.cpp",
@@ -325,6 +329,18 @@ if opt_tool(FORMATS, "APPLIX_DSK") then
 	files {
 		MAME_DIR.. "src/lib/formats/applix_dsk.cpp",
 		MAME_DIR.. "src/lib/formats/applix_dsk.h",
+	}
+end
+
+--------------------------------------------------
+--
+--@src/lib/formats/apricotpc_dsk.h,FORMATS["APRICOTPC_DSK"] = true
+--------------------------------------------------
+
+if opt_tool(FORMATS, "APRICOTPC_DSK") then
+	files {
+		MAME_DIR.. "src/lib/formats/apricotpc_dsk.cpp",
+		MAME_DIR.. "src/lib/formats/apricotpc_dsk.h",
 	}
 end
 
@@ -1014,6 +1030,18 @@ end
 
 --------------------------------------------------
 --
+--@src/lib/formats/fz1_dsk.h,FORMATS["FZ1_DSK"] = true
+--------------------------------------------------
+
+if opt_tool(FORMATS, "FZ1_DSK") then
+	files {
+		MAME_DIR.. "src/lib/formats/fz1_dsk.cpp",
+		MAME_DIR.. "src/lib/formats/fz1_dsk.h",
+	}
+end
+
+--------------------------------------------------
+--
 --@src/lib/formats/g64_dsk.h,FORMATS["G64_DSK"] = true
 --------------------------------------------------
 
@@ -1045,6 +1073,18 @@ if opt_tool(FORMATS, "GUAB_DSK") then
 	files {
 		MAME_DIR.. "src/lib/formats/guab_dsk.cpp",
 		MAME_DIR.. "src/lib/formats/guab_dsk.h",
+	}
+end
+
+--------------------------------------------------
+--
+--@src/lib/formats/h17disk.h,FORMATS["H17D_DSK"] = true
+--------------------------------------------------
+
+if opt_tool(FORMATS, "H17D_DSK") then
+	files {
+		MAME_DIR.. "src/lib/formats/h17disk.cpp",
+		MAME_DIR.. "src/lib/formats/h17disk.h",
 	}
 end
 
@@ -1759,6 +1799,18 @@ end
 
 --------------------------------------------------
 --
+--@src/lib/formats/rx01_dsk.h,FORMATS["RX01_DSK"] = true
+--------------------------------------------------
+
+if opt_tool(FORMATS, "RX01_DSK") then
+	files {
+		MAME_DIR.. "src/lib/formats/rx01_dsk.cpp",
+		MAME_DIR.. "src/lib/formats/rx01_dsk.h",
+	}
+end
+
+--------------------------------------------------
+--
 --@src/lib/formats/rx50_dsk.h,FORMATS["RX50_DSK"] = true
 --------------------------------------------------
 
@@ -1766,6 +1818,18 @@ if opt_tool(FORMATS, "RX50_DSK") then
 	files {
 		MAME_DIR.. "src/lib/formats/rx50_dsk.cpp",
 		MAME_DIR.. "src/lib/formats/rx50_dsk.h",
+	}
+end
+
+--------------------------------------------------
+--
+--@src/lib/formats/sap_dsk.h,FORMATS["SAP_DSK"] = true
+--------------------------------------------------
+
+if opt_tool(FORMATS, "SAP_DSK") then
+	files {
+		MAME_DIR.. "src/lib/formats/sap_dsk.cpp",
+		MAME_DIR.. "src/lib/formats/sap_dsk.h",
 	}
 end
 
@@ -2198,6 +2262,18 @@ if opt_tool(FORMATS, "WD177X_DSK") then
 	files {
 		MAME_DIR.. "src/lib/formats/wd177x_dsk.cpp",
 		MAME_DIR.. "src/lib/formats/wd177x_dsk.h",
+	}
+end
+
+--------------------------------------------------
+--
+--@src/lib/formats/wren_dsk.h,FORMATS["WREN_DSK"] = true
+--------------------------------------------------
+
+if opt_tool(FORMATS, "WREN_DSK") then
+	files {
+		MAME_DIR.. "src/lib/formats/wren_dsk.cpp",
+		MAME_DIR.. "src/lib/formats/wren_dsk.h",
 	}
 end
 

@@ -75,6 +75,7 @@ menu_confswitch::menu_confswitch(mame_ui_manager &mui, render_container &contain
 	, m_switch_groups()
 	, m_active_switch_groups(0U)
 	, m_type(type)
+	, m_changed(false)
 {
 }
 
@@ -168,6 +169,10 @@ void menu_confswitch::populate()
 		}
 	}
 
+	// menu can be empty if all fields were masked by PORT_CONDITION
+	if (!prev_owner)
+		item_append(_("[currently n/a]"), FLAG_DISABLE, nullptr);
+
 	item_append(menu_item_type::SEPARATOR);
 	item_append(_("Reset System"), 0, (void *)1);
 }
@@ -175,17 +180,18 @@ void menu_confswitch::populate()
 
 bool menu_confswitch::handle(event const *ev)
 {
-	if (!ev || !ev->itemref)
-		return false;
-
-	if (IPT_CUSTOM == ev->iptkey)
+	bool const was_changed(std::exchange(m_changed, false));
+	bool need_update(false);
+	if (ev && (IPT_CUSTOM == ev->iptkey))
 	{
 		// clicked a switch
-		reset(reset_options::REMEMBER_REF);
-		return true;
+		m_changed = true;
 	}
-
-	if (uintptr_t(ev->itemref) == 1U)
+	else if (!ev || !ev->itemref)
+	{
+		// no user input
+	}
+	else if (uintptr_t(ev->itemref) == 1U)
 	{
 		// reset
 		if (ev->iptkey == IPT_UI_SELECT)
@@ -195,21 +201,20 @@ bool menu_confswitch::handle(event const *ev)
 	{
 		// actual settings
 		ioport_field &field(*reinterpret_cast<ioport_field *>(ev->itemref));
-		bool changed(false);
 
 		switch (ev->iptkey)
 		{
 		// left goes to previous setting
 		case IPT_UI_LEFT:
 			field.select_previous_setting();
-			changed = true;
+			m_changed = true;
 			break;
 
 		// right goes to next setting
 		case IPT_UI_SELECT:
 		case IPT_UI_RIGHT:
 			field.select_next_setting();
-			changed = true;
+			m_changed = true;
 			break;
 
 		// if cleared, reset to default value
@@ -221,7 +226,7 @@ bool menu_confswitch::handle(event const *ev)
 				{
 					settings.value = field.defvalue();
 					field.set_user_settings(settings);
-					changed = true;
+					m_changed = true;
 				}
 			}
 			break;
@@ -242,7 +247,8 @@ bool menu_confswitch::handle(event const *ev)
 					{
 						set_selected_index(current);
 						set_top_line(current - 1);
-						return true;
+						need_update = true;
+						break;
 					}
 					else
 					{
@@ -264,7 +270,7 @@ bool menu_confswitch::handle(event const *ev)
 						{
 							set_selected_index(current + 1);
 							set_top_line(current);
-							return true;
+							need_update = true;
 						}
 						break;
 					}
@@ -272,14 +278,12 @@ bool menu_confswitch::handle(event const *ev)
 			}
 			break;
 		}
-
-		// if anything changed, rebuild the menu, trying to stay on the same field
-		if (changed)
-			reset(reset_options::REMEMBER_REF);
 	}
 
 	// changing settings triggers an item rebuild because it can affect whether things are enabled
-	return false;
+	if (m_changed || was_changed)
+		reset(reset_options::REMEMBER_REF);
+	return need_update;
 }
 
 
@@ -348,7 +352,7 @@ void menu_settings_dip_switches::recompute_metrics(uint32_t width, uint32_t heig
 }
 
 
-void menu_settings_dip_switches::custom_render(uint32_t flags, void *selectedref, float top, float bottom, float x1, float y1, float x2, float y2)
+void menu_settings_dip_switches::custom_render(uint32_t flags, void *selectedref, float top, float bottom, float origx1, float origy1, float origx2, float origy2)
 {
 	// catch if no DIP locations have to be drawn
 	if (!m_visible_switch_groups)
@@ -356,29 +360,29 @@ void menu_settings_dip_switches::custom_render(uint32_t flags, void *selectedref
 
 	// calculate optimal width
 	float const maxwidth(1.0f - (lr_border() * 2.0f));
+	float const separation(0.5F * line_height() * x_aspect());
 	m_single_width = (line_height() * SINGLE_TOGGLE_SWITCH_FIELD_WIDTH * x_aspect());
-	float width(0.0f);
 	unsigned maxswitches(0U);
+	float maxnamewidth(0.0f);
 	for (switch_group_descriptor const &group : switch_groups())
 	{
 		if (group.mask)
 		{
 			maxswitches = (std::max)(group.switch_count(), maxswitches);
-			float const namewidth(get_string_width(group.name));
-			float const switchwidth(m_single_width * maxswitches);
-			width = (std::min)((std::max)(namewidth + switchwidth + (line_height() * x_aspect()), width), maxwidth);
+			maxnamewidth = (std::max)(get_string_width(group.name), maxnamewidth);
 		}
 	}
+	float const width((std::min)(maxnamewidth + (m_single_width * maxswitches) + separation, maxwidth));
 
 	// draw extra menu area
-	float const boxwidth((std::max)(width + (lr_border() * 2.0f), x2 - x1));
+	float const boxwidth((std::max)(width + (lr_border() * 2.0f), origx2 - origx1));
 	float const boxleft((1.0f - boxwidth) * 0.5f);
-	ui().draw_outlined_box(container(), boxleft, y2 + tb_border(), boxleft + boxwidth, y2 + bottom, ui().colors().background_color());
+	ui().draw_outlined_box(container(), boxleft, origy2 + tb_border(), boxleft + boxwidth, origy2 + bottom, ui().colors().background_color());
 
 	// calculate centred layout
 	float const nameleft((1.0f - width) * 0.5f);
 	float const switchleft(nameleft + width - (m_single_width * maxswitches));
-	float const namewidth(width - (m_single_width * maxswitches) - (line_height() * x_aspect()));
+	float const namewidth(width - (m_single_width * maxswitches) - separation);
 
 	// iterate over switch groups
 	ioport_field *const field((uintptr_t(selectedref) != 1U) ? reinterpret_cast<ioport_field *>(selectedref) : nullptr);
@@ -404,7 +408,7 @@ void menu_settings_dip_switches::custom_render(uint32_t flags, void *selectedref
 			}
 
 			// draw the name
-			float const liney(y2 + (tb_border() * 2.0f) + (line_height() * (DIP_SWITCH_HEIGHT + DIP_SWITCH_SPACING) * line));
+			float const liney(origy2 + (tb_border() * 2.0f) + (line_height() * (DIP_SWITCH_HEIGHT + DIP_SWITCH_SPACING) * line));
 			draw_text_normal(
 					group.name,
 					nameleft, liney + (line_height() * (DIP_SWITCH_HEIGHT - 1.0f) / 2.0f), namewidth,

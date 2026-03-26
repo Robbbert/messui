@@ -505,11 +505,11 @@ public:
 		m_lamps(*this, "lamp%u", 0U)
 	{ }
 
-	void majorpkr(machine_config &config);
+	void majorpkr(machine_config &config) ATTR_COLD;
 
 protected:
-	virtual void machine_start() override;
-	virtual void video_start() override;
+	virtual void machine_start() override ATTR_COLD;
+	virtual void video_start() override ATTR_COLD;
 
 private:
 	required_device<gfxdecode_device> m_gfxdecode;
@@ -545,8 +545,8 @@ private:
 	TILE_GET_INFO_MEMBER(bg_get_tile_info);
 	TILE_GET_INFO_MEMBER(fg_get_tile_info);
 	uint32_t screen_update(screen_device &screen, bitmap_rgb32 &bitmap, const rectangle &cliprect);
-	void map(address_map &map);
-	void portmap(address_map &map);
+	void map(address_map &map) ATTR_COLD;
+	void portmap(address_map &map) ATTR_COLD;
 };
 
 
@@ -947,11 +947,11 @@ static INPUT_PORTS_START( majorpkr )
 	PORT_DIPSETTING(    0x08, DEF_STR( 1C_1C ) )
 	PORT_DIPSETTING(    0x10, DEF_STR( 1C_2C ) )
 	PORT_DIPSETTING(    0x00, DEF_STR( 1C_5C ) )
-	PORT_DIPSETTING(    0x18, "1 Coin/10 Credits" )
-	PORT_DIPSETTING(    0x20, "1 Coin/20 Credits" )
-	PORT_DIPSETTING(    0x28, "1 Coin/25 Credits" )
+	PORT_DIPSETTING(    0x18, DEF_STR( 1C_10C ) )
+	PORT_DIPSETTING(    0x20, DEF_STR( 1C_20C ) )
+	PORT_DIPSETTING(    0x28, DEF_STR( 1C_25C ) )
 	PORT_DIPSETTING(    0x30, "1 Coin/40 Credits" )
-	PORT_DIPSETTING(    0x38, "1 Coin/50 Credits" )
+	PORT_DIPSETTING(    0x38, DEF_STR( 1C_50C ) )
 	PORT_DIPNAME( 0xc0, 0x00, "Credit Limit" )          PORT_DIPLOCATION("DSW3:7,8")
 	PORT_DIPSETTING(    0x00, "5000" )
 	PORT_DIPSETTING(    0x40, "10000" )
@@ -961,21 +961,21 @@ static INPUT_PORTS_START( majorpkr )
 	PORT_START("DSW4")  // multiplexed x4 & inverted
 	PORT_DIPNAME( 0x0f, 0x00, DEF_STR( Coin_B ) )       PORT_DIPLOCATION("DSW4:1,2,3,4")
 	PORT_DIPSETTING(    0x0f, "20 Coins/1 Credit" )
-	PORT_DIPSETTING(    0x0e, "10 Coins/1 Credit" )
+	PORT_DIPSETTING(    0x0e, DEF_STR( 10C_1C ) )
 	PORT_DIPSETTING(    0x0c, DEF_STR( 5C_1C ) )
 	PORT_DIPSETTING(    0x0b, DEF_STR( 4C_1C ) )
-	PORT_DIPSETTING(    0x0d, "5 Coins/2 Credits" )
+	PORT_DIPSETTING(    0x0d, DEF_STR( 5C_2C ) )
 	PORT_DIPSETTING(    0x09, DEF_STR( 2C_1C ) )
 	PORT_DIPSETTING(    0x01, DEF_STR( 1C_1C ) )
 	PORT_DIPSETTING(    0x02, DEF_STR( 1C_2C ) )
 	PORT_DIPSETTING(    0x0a, DEF_STR( 2C_5C ) )
 	PORT_DIPSETTING(    0x03, DEF_STR( 1C_4C ) )
 	PORT_DIPSETTING(    0x04, DEF_STR( 1C_5C ) )
-	PORT_DIPSETTING(    0x05, "1 Coin/10 Credits" )
-	PORT_DIPSETTING(    0x06, "1 Coin/20 Credits" )
-	PORT_DIPSETTING(    0x07, "1 Coin/25 Credits" )
-	PORT_DIPSETTING(    0x00, "1 Coin/50 Credits" )
-	PORT_DIPSETTING(    0x08, "1 Coin/100 Credits" )
+	PORT_DIPSETTING(    0x05, DEF_STR( 1C_10C ) )
+	PORT_DIPSETTING(    0x06, DEF_STR( 1C_20C ) )
+	PORT_DIPSETTING(    0x07, DEF_STR( 1C_25C ) )
+	PORT_DIPSETTING(    0x00, DEF_STR( 1C_50C ) )
+	PORT_DIPSETTING(    0x08, DEF_STR( 1C_100C ) )
 	PORT_DIPNAME( 0x30, 0x00, "Max Bet" )               PORT_DIPLOCATION("DSW4:5,6")
 	PORT_DIPSETTING(    0x10, "10" )
 	PORT_DIPSETTING(    0x00, "20" )
@@ -1068,11 +1068,47 @@ void majorpkr_state::majorpkr(machine_config &config)
 *        Rom Load        *
 *************************/
 
+// Original MAJOR POKER (C) 1994 PCB
+ROM_START( majorpkr )
+	ROM_REGION( 0x10000, "maincpu", 0 )
+	ROM_LOAD( "512.rom6", 0x00000, 0x10000, CRC(19ab8508) SHA1(5105622c1de97f7cca7d6b8a6a033d61b1d510ea) )
+
+	ROM_REGION( 0x100000, "bg_gfx", 0 )
+	ROM_LOAD( "040.rom1", 0x00000, 0x80000, CRC(93ae22b9) SHA1(30152e1d9729160fbd99341cf3bc10781e6cc48a) )
+	ROM_LOAD( "040.rom2", 0x80000, 0x80000, CRC(8e104119) SHA1(ab0bba5312ae0dc5571aca9db9d18695b0ecc619) )
+
+	ROM_REGION( 0x40000, "fg_gfx", 0 )
+	ROM_LOAD( "010.rom3", 0x00000, 0x20000, CRC(101609df) SHA1(76ce10c416eb5fbb342f67c7fbe23aed7f782403) )
+	ROM_LOAD( "010.rom4", 0x20000, 0x20000, CRC(6ddc1586) SHA1(b8e78cf5d30b58ae4b063f46266653bac9117dae) )
+
+	ROM_REGION( 0x40000, "oki", 0 )
+	ROM_LOAD( "020.rom5", 0x00000, 0x40000, CRC(4843858e) SHA1(27629829cf7753d7801a6eb42bb77ca2a467bebd) )
+
+	ROM_REGION( 0x1000, "plds1", 0 )  // from protection box.
+	ROM_LOAD( "u1_box_palce16v8h.bin",  0x0000, 0x0117, NO_DUMP )  // need to be extracted from the box and cracked...
+	ROM_LOAD( "u2_box_palce16v8h.bin",  0x0200, 0x0117, NO_DUMP )  // need to be extracted from the box and cracked...
+	ROM_LOAD( "u3_box_palce16v8h.bin",  0x0400, 0x0117, NO_DUMP )  // need to be extracted from the box and cracked...
+	ROM_LOAD( "u4_box_palce16v8h.bin",  0x0600, 0x0117, NO_DUMP )  // need to be extracted from the box and cracked...
+	ROM_LOAD( "u5_box_palce20v8h.bin",  0x0800, 0x0157, NO_DUMP )  // need to be extracted from the box and cracked...
+
+	ROM_REGION( 0x2000, "plds2", 0 )  // from PCB
+	ROM_LOAD( "g1_gal16v8d.bin",  0x0000, 0x0117, CRC(5ec2527a) SHA1(af9832a75efc25578ca79a08fae4bb169d4eb5ec) )
+	ROM_LOAD( "g2_gal16v8d.bin",  0x0200, 0x0117, CRC(f6a04079) SHA1(fd9e7fac2867de9746138e5aa22fdac10c370d65) )
+	ROM_LOAD( "g3_gal16v8d.bin",  0x0400, 0x0117, CRC(8b36df82) SHA1(b629557a8ebc88edd9e13372906f393f9fbc0669) )
+	ROM_LOAD( "g4_gal16v8d.bin",  0x0600, 0x0117, CRC(8b36df82) SHA1(b629557a8ebc88edd9e13372906f393f9fbc0669) )
+	ROM_LOAD( "g5_gal16v8d.bin",  0x0800, 0x0117, CRC(8b36df82) SHA1(b629557a8ebc88edd9e13372906f393f9fbc0669) )
+	ROM_LOAD( "g6_gal16v8d.bin",  0x0a00, 0x0117, CRC(5ec2527a) SHA1(af9832a75efc25578ca79a08fae4bb169d4eb5ec) )
+	ROM_LOAD( "g7_gal20v8b.bin",  0x0c00, 0x0157, CRC(9f45d431) SHA1(c3c9e6ed25a7cd7536974b906c993f5d7a58e65d) )
+	ROM_LOAD( "g8_gal20v8b.bin",  0x0e00, 0x0157, CRC(9f45d431) SHA1(c3c9e6ed25a7cd7536974b906c993f5d7a58e65d) )
+	ROM_LOAD( "g9_gal16v8d.bin",  0x1000, 0x0117, CRC(5ec2527a) SHA1(af9832a75efc25578ca79a08fae4bb169d4eb5ec) )
+	ROM_LOAD( "g10_gal16v8d.bin", 0x1200, 0x0117, CRC(5bdfd9f3) SHA1(5bca47c1fa4b1a6b7d1041a12f98153fc1b23065) )
+ROM_END
+
 /*
   Major Poker.
   Original PAL System game.
 */
-ROM_START( majorpkr )
+ROM_START( majorpkr20 )
 	ROM_REGION( 0x10000, "maincpu", 0 )
 	ROM_LOAD( "6_pp_27c512_823b.bin", 0x00000, 0x10000, CRC(a3d5475e) SHA1(cb41508b55da8b8c658a2f2ccc6ebda09db29040) )
 
@@ -1245,10 +1281,11 @@ ROM_END
 *      Game Drivers      *
 *************************/
 
-//     YEAR  NAME       PARENT    MACHINE   INPUT     CLASS           INIT        ROT   COMPANY                             FULLNAME                                          FLAGS                  LAYOUT
-GAMEL( 1994, majorpkr,  0,        majorpkr, majorpkr, majorpkr_state, empty_init, ROT0, "PAL System",                       "Major Poker (set 1, v2.0)",                      MACHINE_SUPPORTS_SAVE, layout_majorpkr )
-GAMEL( 1994, majorpkra, majorpkr, majorpkr, majorpkr, majorpkr_state, empty_init, ROT0, "PAL System / Micro Manufacturing", "Major Poker (set 2, Micro Manufacturing intro)", MACHINE_SUPPORTS_SAVE, layout_majorpkr )
-GAMEL( 1994, majorpkrb, majorpkr, majorpkr, majorpkr, majorpkr_state, empty_init, ROT0, "PAL System / Micro Manufacturing", "Major Poker (set 3, Micro Manufacturing intro)", MACHINE_SUPPORTS_SAVE, layout_majorpkr )
-GAMEL( 1994, majorpkrc, majorpkr, majorpkr, majorpkr, majorpkr_state, empty_init, ROT0, "PAL System / Micro Manufacturing", "Major Poker (set 4, Micro Manufacturing intro)", MACHINE_SUPPORTS_SAVE, layout_majorpkr )
-GAMEL( 1994, luckypkr,  majorpkr, majorpkr, majorpkr, majorpkr_state, empty_init, ROT0, "bootleg",                          "Lucky Poker (bootleg/hack of Major Poker)",      MACHINE_SUPPORTS_SAVE, layout_majorpkr )
-GAMEL( 1994, syutnori,  majorpkr, majorpkr, majorpkr, majorpkr_state, empty_init, ROT0, "bootleg",                          "Super Yutnori (bootleg of Major Poker)",         MACHINE_SUPPORTS_SAVE, layout_majorpkr ) // 슈퍼 윷놀이
+//     YEAR  NAME        PARENT    MACHINE   INPUT     CLASS           INIT        ROT   COMPANY                             FULLNAME                                          FLAGS                  LAYOUT
+GAMEL( 1994, majorpkr,   0,        majorpkr, majorpkr, majorpkr_state, empty_init, ROT0, "PAL System",                       "Major Poker (set 1, v2.2)",                      MACHINE_SUPPORTS_SAVE, layout_majorpkr )
+GAMEL( 1994, majorpkr20, majorpkr, majorpkr, majorpkr, majorpkr_state, empty_init, ROT0, "PAL System",                       "Major Poker (set 2, v2.0)",                      MACHINE_SUPPORTS_SAVE, layout_majorpkr )
+GAMEL( 1994, majorpkra,  majorpkr, majorpkr, majorpkr, majorpkr_state, empty_init, ROT0, "PAL System / Micro Manufacturing", "Major Poker (set 3, Micro Manufacturing intro)", MACHINE_SUPPORTS_SAVE, layout_majorpkr )
+GAMEL( 1994, majorpkrb,  majorpkr, majorpkr, majorpkr, majorpkr_state, empty_init, ROT0, "PAL System / Micro Manufacturing", "Major Poker (set 4, Micro Manufacturing intro)", MACHINE_SUPPORTS_SAVE, layout_majorpkr )
+GAMEL( 1994, majorpkrc,  majorpkr, majorpkr, majorpkr, majorpkr_state, empty_init, ROT0, "PAL System / Micro Manufacturing", "Major Poker (set 5, Micro Manufacturing intro)", MACHINE_SUPPORTS_SAVE, layout_majorpkr )
+GAMEL( 1994, luckypkr,   majorpkr, majorpkr, majorpkr, majorpkr_state, empty_init, ROT0, "bootleg",                          "Lucky Poker (bootleg/hack of Major Poker)",      MACHINE_SUPPORTS_SAVE, layout_majorpkr )
+GAMEL( 1994, syutnori,   majorpkr, majorpkr, majorpkr, majorpkr_state, empty_init, ROT0, "bootleg",                          "Super Yutnori (bootleg of Major Poker)",         MACHINE_SUPPORTS_SAVE, layout_majorpkr ) // 슈퍼 윷놀이

@@ -427,7 +427,7 @@ public:
 
 protected:
 	// device_t implementation
-	virtual void device_start() override;
+	virtual void device_start() override ATTR_COLD;
 
 	TIMER_CALLBACK_MEMBER(rs232_input_tick);
 
@@ -474,11 +474,10 @@ void tm990_189_rs232_image_device::call_unload()
 }
 
 
-/* static TMS9902_RTS_CALLBACK( rts_callback )
+/* void tm990189_state::rts_callback(int state)
 {
-    tm990189 *state = device->machine().driver_data<tm990189>();
-    state->m_rs232_rts = RTS;
-    tms9902->set_cts(RTS);
+    m_rs232_rts = state;
+    m_tms9918->set_cts(state);
 } */
 
 void tm990189_state::xmit_callback(uint8_t data)
@@ -884,7 +883,7 @@ ROM_END
 static INPUT_PORTS_START(tm990_189)
 
 	PORT_START( "LOADINT")
-		PORT_BIT(0x01, IP_ACTIVE_LOW, IPT_KEYBOARD) PORT_NAME("Load interrupt") PORT_CODE(KEYCODE_PRTSCR) PORT_CHANGED_MEMBER(DEVICE_SELF, tm990189_state, load_interrupt, 1)
+		PORT_BIT(0x01, IP_ACTIVE_LOW, IPT_KEYBOARD) PORT_NAME("Load interrupt") PORT_CODE(KEYCODE_PRTSCR) PORT_CHANGED_MEMBER(DEVICE_SELF, FUNC(tm990189_state::load_interrupt), 1)
 
 	/* 45-key calculator-like alphanumeric keyboard... */
 	PORT_START("LINE0")    /* row 0 */

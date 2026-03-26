@@ -62,7 +62,7 @@ NOTE: There is manual for Run Deep which is (c) 1988 by World Games. Is Cream Co
 #include "decmxc06.h"
 
 #include "cpu/m6502/r65c02.h"
-#include "cpu/mcs51/mcs51.h"
+#include "cpu/mcs51/i8051.h"
 #include "cpu/z80/z80.h"
 #include "machine/gen_latch.h"
 #include "machine/timer.h"
@@ -96,8 +96,8 @@ public:
 	void thedeep(machine_config &config);
 
 protected:
-	virtual void machine_start() override;
-	virtual void video_start() override;
+	virtual void machine_start() override ATTR_COLD;
+	virtual void video_start() override ATTR_COLD;
 
 private:
 	required_device<cpu_device> m_maincpu;
@@ -144,8 +144,8 @@ private:
 
 	TIMER_DEVICE_CALLBACK_MEMBER(interrupt);
 
-	void audio_map(address_map &map);
-	void main_map(address_map &map);
+	void audio_map(address_map &map) ATTR_COLD;
+	void main_map(address_map &map) ATTR_COLD;
 };
 
 /***************************************************************************

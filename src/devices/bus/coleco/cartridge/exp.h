@@ -25,8 +25,8 @@
 
 **********************************************************************/
 
-#ifndef MAME_BUS_COLECO_EXP_H
-#define MAME_BUS_COLECO_EXP_H
+#ifndef MAME_BUS_COLECO_CARTRIDGE_EXP_H
+#define MAME_BUS_COLECO_CARTRIDGE_EXP_H
 
 #pragma once
 
@@ -57,10 +57,7 @@ public:
 	colecovision_cartridge_slot_device(machine_config const &mconfig, char const *tag, device_t *owner, T &&opts, char const *dflt)
 		: colecovision_cartridge_slot_device(mconfig, tag, owner, (uint32_t)0)
 	{
-		option_reset();
-		opts(*this);
-		set_default_option(dflt);
-		set_fixed(false);
+		set_options(std::forward<T>(opts), dflt, false);
 	}
 	colecovision_cartridge_slot_device(const machine_config &mconfig, const char *tag, device_t *owner, uint32_t clock);
 
@@ -70,7 +67,7 @@ public:
 
 protected:
 	// device_t implementation
-	virtual void device_start() override;
+	virtual void device_start() override ATTR_COLD;
 
 	// device_image_interface implementation
 	virtual std::pair<std::error_condition, std::string> call_load() override;
@@ -93,6 +90,7 @@ class device_colecovision_cartridge_interface : public device_interface
 	friend class colecovision_cartridge_slot_device;
 
 public:
+	virtual void load_done() { };
 	virtual uint8_t read(offs_t offset, int _8000, int _a000, int _c000, int _e000) { return 0xff; }
 	virtual void write(offs_t offset, uint8_t data, int _8000, int _a000, int _c000, int _e000) { }
 
@@ -113,4 +111,4 @@ DECLARE_DEVICE_TYPE(COLECOVISION_CARTRIDGE_SLOT, colecovision_cartridge_slot_dev
 
 void colecovision_cartridges(device_slot_interface &device);
 
-#endif // MAME_BUS_COLECO_EXP_H
+#endif // MAME_BUS_COLECO_CARTRIDGE_EXP_H

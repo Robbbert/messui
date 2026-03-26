@@ -45,19 +45,17 @@
 #if defined(SDLMAME_WIN32) || defined(OSD_WINDOWS)
 // standard windows headers
 #include <windows.h>
-#if defined(SDLMAME_WIN32)
+#if defined(SDLMAME_WIN32) && !defined(SDLMAME_SDL3)
 #include <SDL2/SDL_syswm.h>
 #endif
 #else
 #if defined(OSD_MAC)
 extern void *GetOSWindow(void *wincontroller);
 #else
+#ifndef SDLMAME_SDL3
 #include <SDL2/SDL_syswm.h>
 #endif
 #endif
-
-#if defined(SDLMAME_USE_WAYLAND)
-#include <wayland-egl.h>
 #endif
 
 #include <bgfx/bgfx.h>
@@ -330,7 +328,7 @@ void video_bgfx::save_config(config_type cfg_type, util::xml::data_node *parentn
 
 bool video_bgfx::init_bgfx_library(osd_window &window)
 {
-	osd_dim const wdim = window.get_size();
+	osd_dim const wdim = window.get_size_pixels();
 
 	bgfx::Init init;
 	init.type = bgfx::RendererType::Count;
@@ -387,39 +385,9 @@ bool video_bgfx::init_bgfx_library(osd_window &window)
 
 
 //============================================================
-//  Helper for creating a wayland window
-//============================================================
-
-#if defined(SDLMAME_USE_WAYLAND)
-wl_egl_window *create_wl_egl_window(SDL_Window *window, struct wl_surface *surface)
-{
-	if (!surface)
-	{
-		osd_printf_error("Wayland surface missing, aborting\n");
-		return nullptr;
-	}
-	wl_egl_window *win_impl = (wl_egl_window *)SDL_GetWindowData(window, "wl_egl_window");
-	if (!win_impl)
-	{
-		int width, height;
-		SDL_GetWindowSize(window, &width, &height);
-		win_impl = wl_egl_window_create(surface, width, height);
-		if (!win_impl)
-		{
-			osd_printf_error("Creating wayland window failed\n");
-			return nullptr;
-		}
-		SDL_SetWindowData(window, "wl_egl_window", win_impl);
-	}
-	return win_impl;
-}
-#endif
-
-
-//============================================================
 //  Utility for setting up window handle
 //============================================================
-
+#ifdef SDLMAME_SDL3
 bool video_bgfx::set_platform_data(bgfx::PlatformData &platform_data, osd_window const &window)
 {
 #if defined(OSD_WINDOWS)
@@ -428,6 +396,62 @@ bool video_bgfx::set_platform_data(bgfx::PlatformData &platform_data, osd_window
 #elif defined(OSD_MAC)
 	platform_data.ndt = nullptr;
 	platform_data.nwh = GetOSWindow(dynamic_cast<mac_window_info const &>(window).platform_window());
+#elif defined(SDLMAME_EMSCRIPTEN)
+	platform_data.ndt = nullptr;
+	platform_data.nwh = (void *)"#canvas"; // HTML5 target selector
+#else // defined(OSD_*)
+	const auto winProps = SDL_GetWindowProperties(dynamic_cast<sdl_window_info const &>(window).platform_window());
+#if defined(SDL_PLATFORM_WINDOWS)
+							  platform_data.ndt = nullptr;
+	platform_data.nwh = (HWND)SDL_GetPointerProperty(winProps, SDL_PROP_WINDOW_WIN32_HWND_POINTER, NULL);
+#endif
+#if defined(SDL_PLATFORM_MACOS)
+	platform_data.ndt = nullptr;
+	platform_data.nwh = SDL_GetPointerProperty(winProps, SDL_PROP_WINDOW_COCOA_WINDOW_POINTER, NULL);
+#endif
+#if defined(SDL_PLATFORM_LINUX)
+	if (SDL_strcmp(SDL_GetCurrentVideoDriver(), "x11") == 0)
+	{
+		platform_data.ndt = (void *)SDL_GetPointerProperty(winProps, SDL_PROP_WINDOW_X11_DISPLAY_POINTER, NULL);
+		platform_data.nwh = (void *)SDL_GetNumberProperty(winProps, SDL_PROP_WINDOW_X11_WINDOW_NUMBER, 0);
+	}
+	else if (SDL_strcmp(SDL_GetCurrentVideoDriver(), "wayland") == 0)
+	{
+		platform_data.ndt = (struct wl_display *)SDL_GetPointerProperty(winProps, SDL_PROP_WINDOW_WAYLAND_DISPLAY_POINTER, NULL);
+		platform_data.nwh = (struct wl_surface *)SDL_GetPointerProperty(winProps, SDL_PROP_WINDOW_WAYLAND_SURFACE_POINTER, NULL);
+		if (!platform_data.nwh)
+		{
+			osd_printf_error("BGFX: Error creating a Wayland window\n");
+			return false;
+		}
+		platform_data.type = bgfx::NativeWindowHandleType::Wayland;
+	}
+#endif
+#if defined(SDL_PLATFORM_ANDROID)
+	platform_data.ndt = nullptr;
+	platform_data.nwh = SDL_GetPointerProperty(winProps, SDL_PROP_WINDOW_ANDROID_WINDOW_POINTER, NULL);
+#endif
+#endif // defined(OSD_*)
+
+	platform_data.context = nullptr;
+	platform_data.backBuffer = nullptr;
+	platform_data.backBufferDS = nullptr;
+	bgfx::setPlatformData(platform_data);
+
+	return true;
+}
+#else
+bool video_bgfx::set_platform_data(bgfx::PlatformData &platform_data, osd_window const &window)
+{
+#if defined(OSD_WINDOWS)
+	platform_data.ndt = nullptr;
+	platform_data.nwh = dynamic_cast<win_window_info const &>(window).platform_window();
+#elif defined(OSD_MAC)
+	platform_data.ndt = nullptr;
+	platform_data.nwh = GetOSWindow(dynamic_cast<mac_window_info const &>(window).platform_window());
+#elif defined(SDLMAME_EMSCRIPTEN)
+	platform_data.ndt = nullptr;
+	platform_data.nwh = (void *)"#canvas"; // HTML5 target selector
 #else // defined(OSD_*)
 	SDL_SysWMinfo wmi;
 	SDL_VERSION(&wmi.version);
@@ -457,10 +481,10 @@ bool video_bgfx::set_platform_data(bgfx::PlatformData &platform_data, osd_window
 		platform_data.nwh = wmi.info.cocoa.window;
 		break;
 #endif
-#if defined(SDL_VIDEO_DRIVER_WAYLAND) && SDL_VERSION_ATLEAST(2, 0, 16) && defined(SDLMAME_USE_WAYLAND)
+#if defined(SDL_VIDEO_DRIVER_WAYLAND) && SDL_VERSION_ATLEAST(2, 0, 16)
 	case SDL_SYSWM_WAYLAND:
 		platform_data.ndt = wmi.info.wl.display;
-		platform_data.nwh = create_wl_egl_window(dynamic_cast<sdl_window_info const &>(window).platform_window(), wmi.info.wl.surface);
+		platform_data.nwh = wmi.info.wl.surface;
 		if (!platform_data.nwh)
 		{
 			osd_printf_error("BGFX: Error creating a Wayland window\n");
@@ -488,6 +512,7 @@ bool video_bgfx::set_platform_data(bgfx::PlatformData &platform_data, osd_window
 
 	return true;
 }
+#endif
 
 } // anonymous namespace
 
@@ -532,6 +557,31 @@ uint32_t renderer_bgfx::s_height[16] = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 
 //============================================================
 
 #ifdef OSD_SDL
+#ifdef SDLMAME_SDL3
+static std::pair<void *, bool> sdlNativeWindowHandle(SDL_Window *window)
+{
+#if defined(SDL_PLATFORM_WIN32)
+	return std::make_pair((HWND)SDL_GetPointerProperty(SDL_GetWindowProperties(window), SDL_PROP_WINDOW_WIN32_HWND_POINTER, NULL), true);
+#endif
+#if defined(SDLMAME_MACOSX)
+	return std::make_pair(SDL_GetPointerProperty(SDL_GetWindowProperties(window), SDL_PROP_WINDOW_COCOA_WINDOW_POINTER, NULL), true);
+#endif
+#if defined(SDL_PLATFORM_LINUX)
+	if (SDL_strcmp(SDL_GetCurrentVideoDriver(), "x11") == 0)
+	{
+		return std::make_pair((void *)uintptr_t(SDL_GetNumberProperty(SDL_GetWindowProperties(window), SDL_PROP_WINDOW_X11_WINDOW_NUMBER, 0)), true);
+	}
+	else if (SDL_strcmp(SDL_GetCurrentVideoDriver(), "wayland") == 0)
+	{
+		return std::make_pair((struct wl_surface *)SDL_GetPointerProperty(SDL_GetWindowProperties(window), SDL_PROP_WINDOW_WAYLAND_SURFACE_POINTER, NULL), true);
+	}
+#endif
+#if defined(SDL_PLATFORM_ANDROID)
+		return std::make_pair(SDL_GetPointerProperty(SDL_GetWindowProperties(window), SDL_PROP_WINDOW_ANDROID_WINDOW_POINTER, NULL), true);
+#endif
+		return std::make_pair(nullptr, false);
+}
+#else
 static std::pair<void *, bool> sdlNativeWindowHandle(SDL_Window *window)
 {
 	SDL_SysWMinfo wmi;
@@ -553,12 +603,9 @@ static std::pair<void *, bool> sdlNativeWindowHandle(SDL_Window *window)
 	case SDL_SYSWM_COCOA:
 		return std::make_pair(wmi.info.cocoa.window, true);
 #endif
-#if defined(SDL_VIDEO_DRIVER_WAYLAND) && SDL_VERSION_ATLEAST(2, 0, 16) && defined(SDLMAME_USE_WAYLAND)
+#if defined(SDL_VIDEO_DRIVER_WAYLAND) && SDL_VERSION_ATLEAST(2, 0, 16)
 	case SDL_SYSWM_WAYLAND:
-		{
-			void *const platform_window = osd::create_wl_egl_window(window, wmi.info.wl.surface);
-			return std::make_pair(platform_window, platform_window != nullptr);
-		}
+		return std::make_pair(wmi.info.wl.surface, true);
 #endif
 #if defined(SDL_VIDEO_DRIVER_ANDROID)
 	case SDL_SYSWM_ANDROID:
@@ -568,6 +615,7 @@ static std::pair<void *, bool> sdlNativeWindowHandle(SDL_Window *window)
 		return std::make_pair(nullptr, false);
 	}
 }
+#endif
 #endif // OSD_SDL
 
 
@@ -648,7 +696,7 @@ renderer_bgfx::~renderer_bgfx()
 
 int renderer_bgfx::create()
 {
-	const osd_dim wdim = window().get_size();
+	const osd_dim wdim = window().get_size_pixels();
 	s_width[window().index()] = wdim.width();
 	s_height[window().index()] = wdim.height();
 	m_dimensions = wdim;
@@ -1190,7 +1238,7 @@ int renderer_bgfx::draw(int update)
 	if (m_ortho_view)
 		m_ortho_view->set_index(UINT_MAX);
 
-	osd_dim wdim = window().get_size();
+	osd_dim wdim = window().get_size_pixels();
 	s_width[window_index] = wdim.width();
 	s_height[window_index] = wdim.height();
 
@@ -1410,7 +1458,7 @@ render_primitive_list *renderer_bgfx::get_primitives()
 		chain_transform = chain->transform();
 	}
 
-	osd_dim wdim = window().get_size();
+	osd_dim wdim = window().get_size_pixels();
 	if (wdim.width() > 0 && wdim.height() > 0)
 		window().target()->set_bounds(wdim.width(), wdim.height(), window().pixel_aspect());
 
