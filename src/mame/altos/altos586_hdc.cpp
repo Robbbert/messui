@@ -186,7 +186,7 @@ void altos586_hdc_device::head_select_w(offs_t offset, uint16_t data)
 		logerror("unsupported drive select\n");
 		return;
 	}
-
+printf("drive = %X\n",m_drive);fflush(stdout);
 	if (m_geom[m_drive] == nullptr) {
 		logerror("drive %d not present\n", m_drive);
 		return;
