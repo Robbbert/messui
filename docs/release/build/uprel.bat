@@ -1,1 +1,0 @@
-call x:\uprel.bat

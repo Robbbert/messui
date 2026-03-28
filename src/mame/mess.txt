@@ -93,6 +93,7 @@ ampro/lb186.cpp
 ampro/lbpc.cpp
 
 amstrad/amstrad.cpp
+-al520ex
 
 amstrad/amstr_pc.cpp
 
@@ -185,6 +186,25 @@ atari/atari400.cpp
 atari/atarist.cpp
 
 atari/jaguar.cpp
+-a51mxr3k
+-a51mxr3ka
+-area51
+-area51a
+-area51mx
+-area51t
+-area51ta
+-fishfren
+-freezeat
+-freezeat2
+-freezeat3
+-freezeat4
+-freezeat5
+-freezeat6
+-freezeatjp
+-maxf_102
+-maxf_ng
+-maxforce
+-vcircle
 
 atari/lynx.cpp
 
@@ -298,7 +318,7 @@ canon/x07.cpp
 
 cantab/jupace.cpp
 
-capcom/cps1.cpp
+//capcom/cps1.cpp             // arcade
 
 casio/casio_rompack.cpp
 
@@ -1354,7 +1374,7 @@ nec/piet1.cpp
 
 nec/tk80bs.cpp
 
-neogeo/neogeo.cpp
+//neogeo/neogeo.cpp           // arcade
 
 neogeo/neogeocd.cpp
 
@@ -1591,6 +1611,22 @@ pc/teradrive.cpp
 pc/tosh1000.cpp
 
 philips/cdi.cpp
+-quizard
+-quizard_10
+-quizard_12
+-quizard_17
+-quizard2
+-quizard2_22
+-quizard3
+-quizard3a
+-quizard3_32
+-quizard4
+-quizard4cz
+-quizard4_40
+-quizard4_41
+-quizardi
+-quizardi_12
+-quizardi_17
 
 philips/minitel_2_rpic.cpp
 
@@ -2968,7 +3004,7 @@ virtual/ldplayer.cpp
 
 virtual/utdsp563xx.cpp
 
-virtual/utm6502.cpp
+//virtual/utm6502.cpp          // fatal error
 
 virtual/vgmplay.cpp
 
@@ -3084,7 +3120,7 @@ wyse/wy85.cpp
 
 xerox/alto1.cpp
 
-xerox/alto2.cpp
+//xerox/alto2.cpp           // useless
 
 xerox/bigbord2.cpp
 
@@ -4481,7 +4517,6 @@ zvt/pp01.cpp
 -itt3030
 -itt9216
 -jade
--jaguar
 -jaguarcd
 -d2k300axp
 -d2k500axp
@@ -4613,11 +4648,6 @@ zvt/pp01.cpp
 -apvm110a
 -max80
 -mbc020
--mbee128p
--mbee128
--mbee256
--mbee56
--mbeepp
 -mbeett
 -mbs1
 -pk88
