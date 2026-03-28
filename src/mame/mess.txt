@@ -15,6 +15,7 @@ acorn/bbcb.cpp
 acorn/bbcbp.cpp
 
 acorn/bbcm.cpp
+-bbcmet                // hang at start
 
 acorn/bbcmc.cpp
 
@@ -329,10 +330,13 @@ casio/cfx9850.cpp
 casio/cps2000.cpp
 
 casio/ct8000.cpp
+-ct8000                 // inputs
+-ctfk1                  // inputs
 
 casio/ctk2000.cpp
 
 casio/ctk551.cpp
+-ap10
 
 casio/cz1.cpp
 
@@ -403,6 +407,8 @@ chessking/triomphe.cpp
 chromatics/cgc7900.cpp
 
 citoh/cit101.cpp
+-cit101               // terminal
+-cit101e              // terminal
 
 citoh/cit101xl.cpp
 
@@ -753,6 +759,8 @@ handheld/hh_sm510.cpp
 handheld/hh_smc1k.cpp
 
 handheld/hh_tms1k.cpp
+-bankshot                // inputs
+-cchime                  // no screen
 
 handheld/hh_ucom4.cpp
 
@@ -2065,6 +2073,7 @@ skeleton/basf7100.cpp
 skeleton/bert.cpp
 
 skeleton/bitgraph.cpp
+-bitgrpha                // useless
 
 skeleton/blaucds32.cpp
 
@@ -2687,6 +2696,7 @@ ti/tipc.cpp
 ti/tm990189.cpp
 
 tiger/bingobear.cpp
+-bbear                // no screen
 
 tiger/gamecom.cpp
 
