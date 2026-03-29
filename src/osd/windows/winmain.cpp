@@ -94,7 +94,7 @@ public:
 			util::stream_format(buffer, args);
 			win_message_box_utf8(!osd_common_t::window_list().empty() ?
 				dynamic_cast<win_window_info &>(*osd_common_t::window_list().front()).platform_window() :
-					nullptr, buffer.str().c_str(), "MAMEUI", MB_OK);
+					nullptr, buffer.str().c_str(), "MESSUI", MB_OK);
 // MAMEUI end
 		}
 		else

@@ -278,6 +278,7 @@ bandai/wswan.cpp
 be/bebox.cpp
 
 beehive/microb.cpp
+-dm3270            // terminal
 
 benesse/challenge_gear.cpp
 
@@ -335,8 +336,12 @@ casio/ct8000.cpp
 
 casio/ctk2000.cpp
 
-casio/ctk551.cpp
+casio/ctk551.cpp  // inputs
 -ap10
+-ct65
+-ctk530
+-ctk551
+-ctk601
 
 casio/cz1.cpp
 
@@ -453,6 +458,7 @@ compugraphic/pwrview.cpp
 comx/comx35.cpp
 
 concept/concept.cpp
+-concept                // no sw exist
 
 conitec/prof180x.cpp
 
@@ -463,6 +469,9 @@ cromemco/c10.cpp
 cromemco/mcb216.cpp
 
 cybiko/cybiko.cpp
+-cybikov1
+-cybikov2
+-cybikoxt
 
 dai/dai.cpp
 
@@ -713,6 +722,7 @@ gamepark/gp2x.cpp
 gamepark/gp32.cpp
 
 gridcomp/gridcomp.cpp
+-grid1101                // fatal error
 
 grundy/newbrain.cpp
 
@@ -761,6 +771,8 @@ handheld/hh_smc1k.cpp
 handheld/hh_tms1k.cpp
 -bankshot                // inputs
 -cchime                  // no screen
+-copycat                 // inputs
+-copycata                // inputs
 
 handheld/hh_ucom4.cpp
 
@@ -1205,6 +1217,7 @@ misc/daphor32.cpp
 misc/deecoseal.cpp
 
 misc/ds2000.cpp
+-ds2000          // useless
 
 misc/eva.cpp
 
@@ -1577,6 +1590,7 @@ pc/compc.cpp
 pc/ct486.cpp
 
 pc/ec184x.cpp
+-ec1840         // text missing
 
 pc/europc.cpp
 
@@ -2116,6 +2130,7 @@ skeleton/controlid.cpp
 skeleton/cortex.cpp
 
 skeleton/cosmicos.cpp
+-cosmicos               // freezes
 
 skeleton/cp1.cpp
 
@@ -2434,6 +2449,7 @@ skeleton/tavernie.cpp
 skeleton/tc_manhattan.cpp
 
 skeleton/tecnbras.cpp
+-tecnbras             // useless
 
 skeleton/teleray10.cpp
 
@@ -2771,6 +2787,7 @@ trs/coco12.cpp
 trs/coco3.cpp
 
 trs/dgnalpha.cpp
+-dgnalpha
 
 trs/dgn_beta.cpp
 
@@ -2941,6 +2958,7 @@ ussr/debut.cpp
 ussr/dvk_kcgd.cpp
 
 ussr/dvk_ksm.cpp
+-dvk_ksm              // terminal
 
 ussr/ie15.cpp
 
@@ -3013,6 +3031,7 @@ videoton/tvc.cpp
 virtual/ldplayer.cpp
 
 virtual/utdsp563xx.cpp
+-utdsp563xx             // not a system
 
 //virtual/utm6502.cpp          // fatal error
 
@@ -3130,7 +3149,7 @@ wyse/wy85.cpp
 
 xerox/alto1.cpp
 
-//xerox/alto2.cpp           // useless
+//xerox/alto2.cpp           // no sw exist
 
 xerox/bigbord2.cpp
 
@@ -3145,6 +3164,7 @@ yamaha/tg100.cpp
 yamaha/yman1x.cpp
 
 yamaha/ymdx100.cpp
+-dx100                 // no sound
 
 yamaha/ymdx11.cpp
 
@@ -6242,9 +6262,6 @@ zvt/pp01.cpp
 -zt8802
 -zunknecta
 -zvenezia
--lambda
--pc8300
--pow3000
 -zx97
 
 -bk001001
