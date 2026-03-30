@@ -660,6 +660,7 @@ falco/falco500.cpp
 falco/falcots.cpp
 
 falco/falcots28.cpp
+-ts28                // terminal
 
 fidelity/bridgeb.cpp
 
@@ -743,6 +744,8 @@ handheld/gmaster.cpp
 handheld/gw35th.cpp
 
 handheld/hh_cop400.cpp
+-ctstein
+-lightfgt
 
 handheld/hh_cops1.cpp
 
@@ -1286,6 +1289,7 @@ motorola/assist05.cpp
 motorola/exorciser.cpp
 
 motorola/exorterm.cpp
+-exorterm155             // terminal
 
 motorola/m6805evs.cpp
 
@@ -1603,6 +1607,7 @@ pc/ibmpcjr.cpp
 pc/iskr103x.cpp
 
 pc/mc1502.cpp
+-mc1502       // doesnt read boot disk
 
 pc/megapc.cpp
 
