@@ -1122,6 +1122,8 @@ learsiegler/adm36.cpp
 liberty/freedom120.cpp
 
 liberty/freedom200.cpp
+-free200             // terminal
+-free220             // terminal
 
 linn/linndrum.cpp
 
@@ -3163,6 +3165,7 @@ xerox/notetaker.cpp
 xerox/xerox820.cpp
 
 yamaha/fb01.cpp
+-fb01                  // no sound
 
 yamaha/tg100.cpp
 
