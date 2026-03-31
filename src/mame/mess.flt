@@ -342,6 +342,7 @@ casio/ctk551.cpp  // inputs
 -ctk530
 -ctk551
 -ctk601
+-gz70sp          // no screen
 
 casio/cz1.cpp
 
@@ -514,6 +515,7 @@ ddr/sc2.cpp
 ddr/slc1.cpp
 
 ddr/sprachmg.cpp
+-sprachmg         // useless
 
 ddr/vcs80.cpp
 
@@ -2687,6 +2689,8 @@ ti/evmbug.cpp
 ti/exelv.cpp
 
 ti/geneve.cpp
+-geneve        // cannot boot floppy
+-genmod        // cannot boot floppy
 
 ti/snspell.cpp
 
