@@ -778,6 +778,8 @@ handheld/hh_tms1k.cpp
 -cchime                  // no screen
 -copycat                 // inputs
 -copycata                // inputs
+-h2hbaskb
+-h2hhockey
 
 handheld/hh_ucom4.cpp
 
@@ -898,6 +900,7 @@ homebrew/gsz80.cpp
 homebrew/homez80.cpp
 
 homebrew/lft_chiptune.cpp
+-hwchiptn                // no screen
 
 homebrew/lft_craft.cpp
 
@@ -2234,6 +2237,7 @@ skeleton/hazl1420.cpp
 skeleton/hohnadam.cpp
 
 skeleton/hprot1.cpp
+-hprot1             // printer
 
 skeleton/ht68k.cpp
 
