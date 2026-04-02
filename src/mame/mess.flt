@@ -778,8 +778,8 @@ handheld/hh_tms1k.cpp
 -cchime                  // no screen
 -copycat                 // inputs
 -copycata                // inputs
--h2hbaskb
--h2hhockey
+//-h2hbaskb        // nw, needed by clone
+//-h2hhockey       // nw, needed by clone
 
 handheld/hh_ucom4.cpp
 
@@ -955,12 +955,14 @@ hp/hp2640.cpp
 hp/hp3478a.cpp
 
 hp/hp48.cpp
+-hp49g
 
 hp/hp49gp.cpp
 
 hp/hp620lx.cpp
 
 hp/hp64k.cpp
+-hp64k
 
 hp/hp700.cpp
 
@@ -971,6 +973,9 @@ hp/hp80.cpp
 hp/hp95lx.cpp
 
 hp/hp9825.cpp
+-hp9825a       // white screen
+-hp9825b       // white screen
+-hp9825t       // white screen
 
 hp/hp9845.cpp
 
