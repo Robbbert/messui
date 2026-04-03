@@ -329,19 +329,19 @@ casio/casloopy.cpp
 casio/cfx9850.cpp
 
 casio/cps2000.cpp
+-cps2000         // no screen
 
 casio/ct8000.cpp
--ct8000                 // inputs
--ctfk1                  // inputs
+-ct8000          // inputs
+-ctfk1           // inputs
+-ctmb1           // no screen
 
 casio/ctk2000.cpp
+-ctk2100
 
-casio/ctk551.cpp  // inputs
--ap10
--ct65
--ctk530
--ctk551
--ctk601
+casio/ctk551.cpp
+-ctk551          // mouse nw
+-ctk601          // mouse nw
 -gz70sp          // no screen
 
 casio/cz1.cpp
@@ -1241,6 +1241,7 @@ misc/ez2d.cpp
 misc/h01x.cpp
 
 misc/jaminator.cpp
+-jaminator               // no screen
 
 misc/macbug.cpp
 
@@ -1613,6 +1614,7 @@ pc/europc.cpp
 pc/genpc.cpp
 
 pc/ibmpc.cpp
+-ibm5155         // no kbd
 
 pc/ibmpcjr.cpp
 
@@ -1972,10 +1974,16 @@ sfrj/tim100.cpp
 sgi/crimson.cpp
 
 sgi/indy_indigo2.cpp
+-indy_4610        // panic
+-indy_4613        // useless
+-indy_5015        // crashes when demo asked for
 
 sgi/ip12.cpp
+-indigo           // no sw
 
 sgi/ip20.cpp
+-indigo_r4000     // no sw
+-indigo_r4400     // black screen, no sw
 
 sgi/ip6.cpp
 
@@ -2894,6 +2902,7 @@ tvgames/spg2xx_digimake.cpp
 tvgames/spg2xx_dreamlife.cpp
 
 tvgames/spg2xx_ican.cpp
+-icanpian                 // black screen
 
 tvgames/spg2xx_jakks.cpp
 
