@@ -606,6 +606,7 @@ ensoniq/esq5505.cpp
 ensoniq/esqasr.cpp
 
 ensoniq/esqkt.cpp
+-kt76             // no sound
 
 ensoniq/esqmr.cpp
 
