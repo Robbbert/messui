@@ -68,6 +68,7 @@ akai/s3000.cpp
 alesis/alesis.cpp
 
 alesis/midiverb.cpp
+-midifex         // useless?
 
 altos/altos2.cpp
 
@@ -158,6 +159,7 @@ apple/macpwrbk030.cpp
 apple/macpwrbkmsc.cpp
 
 apple/macquadra605.cpp
+-maclc575                // black screen
 
 apple/macquadra630.cpp
 
@@ -351,6 +353,7 @@ casio/ctk551.cpp
 -gz70sp          // no screen
 
 casio/cz1.cpp
+-mz1            // no sound
 
 casio/cz101.cpp
 
@@ -564,6 +567,7 @@ dec/vt100.cpp
 dec/vt220.cpp
 
 dec/vt240.cpp
+-mc7105          // nw terminal
 
 dec/vt320.cpp
 
@@ -732,7 +736,7 @@ gamepark/gp2x.cpp
 gamepark/gp32.cpp
 
 gridcomp/gridcomp.cpp
--grid1101                // fatal error
+-grid1101                // no sw,fatal error
 
 grundy/newbrain.cpp
 
@@ -753,7 +757,6 @@ handheld/gmaster.cpp
 handheld/gw35th.cpp
 
 handheld/hh_cop400.cpp
--ctstein
 -lightfgt
 
 handheld/hh_cops1.cpp
@@ -781,12 +784,9 @@ handheld/hh_sm510.cpp
 handheld/hh_smc1k.cpp
 
 handheld/hh_tms1k.cpp
--bankshot                // inputs
 -cchime                  // no screen
--copycat                 // inputs
--copycata                // inputs
-//-h2hbaskb        // nw, needed by clone
-//-h2hhockey       // nw, needed by clone
+-mathmarv                // nothing?
+-mathmagi                // nothing?
 
 handheld/hh_ucom4.cpp
 
@@ -1179,6 +1179,7 @@ mattel/juicebox.cpp
 mattel/pixtermu.cpp
 
 mc/mc68000.cpp
+-mc68000           // no sw
 
 mc/mccpm.cpp
 
@@ -1203,6 +1204,8 @@ microcraft/dim68k.cpp
 microkey/primo.cpp
 
 microsoft/jazz.cpp
+-mmr4000be             //black screen
+-mmr4000le             //black screen
 
 microsoft/xbox.cpp
 
@@ -1314,6 +1317,10 @@ motorola/exorterm.cpp
 motorola/m6805evs.cpp
 
 motorola/m68705prg.cpp
+-705p3prg               // mech
+-705p5prg               // mech
+-705r3prg               // mech
+-705u3prg               // mech
 
 motorola/m8120.cpp
 
@@ -1326,6 +1333,7 @@ motorola/mekd3.cpp
 motorola/mekd4.cpp
 
 motorola/mekd5.cpp
+-mekd5                 // inputs
 
 motorola/mex68kecb.cpp
 
@@ -1498,6 +1506,8 @@ nintendo/vt1682.cpp
 nokia/dbox.cpp
 
 nokia/mikromik.cpp
+-mm1m7             // cannot boot disk
+-mm1m7g            // cannot boot disk
 
 nokia/mikromikko2.cpp
 
@@ -1598,6 +1608,8 @@ osi/osi.cpp
 paia/fatman.cpp
 
 paia/midi2cv8.cpp
+-midi2cv8             // useless?
+-midi2cv8_vhz         // useless?
 
 palm/palm.cpp
 
@@ -1677,6 +1689,7 @@ philips/cdi.cpp
 -quizardi_17
 
 philips/minitel_2_rpic.cpp
+-minitel2            // black screen, no sw
 
 philips/odyssey2.cpp
 
@@ -1697,6 +1710,7 @@ poly88/poly88.cpp
 positron/positron.cpp
 
 psion/mc400.cpp
+-mc200               // grey screen
 
 psion/mc600.cpp
 
@@ -2589,6 +2603,7 @@ sony/umatic.cpp
 sord/future32.cpp
 
 sord/m5.cpp
+-m5p_brno            // need roms
 
 stm/pp.cpp
 
@@ -2703,6 +2718,7 @@ tesla/pmi80.cpp
 tesla/sapi1.cpp
 
 thomson/thomson.cpp
+-mo5nr              // blank screen
 
 ti/avigo.cpp
 
@@ -2749,6 +2765,7 @@ ti/tm990189.cpp
 
 tiger/bingobear.cpp
 -bbear                // no screen
+-monkmonk             // no screen
 
 tiger/gamecom.cpp
 
@@ -2910,7 +2927,6 @@ tvgames/spg2xx_digimake.cpp
 tvgames/spg2xx_dreamlife.cpp
 
 tvgames/spg2xx_ican.cpp
--icanpian                 // black screen
 
 tvgames/spg2xx_jakks.cpp
 
@@ -3070,7 +3086,7 @@ virtual/ldplayer.cpp
 virtual/utdsp563xx.cpp
 -utdsp563xx             // not a system
 
-//virtual/utm6502.cpp          // fatal error
+//virtual/utm6502.cpp          // not a system
 
 virtual/vgmplay.cpp
 
@@ -3186,7 +3202,7 @@ wyse/wy85.cpp
 
 xerox/alto1.cpp
 
-//xerox/alto2.cpp           // no sw exist
+//xerox/alto2.cpp           // no sw
 
 xerox/bigbord2.cpp
 
