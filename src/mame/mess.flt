@@ -1715,6 +1715,13 @@ psion/mc400.cpp
 psion/mc600.cpp
 
 psion/psion.cpp
+-psionp200           // wont run any sw
+-psionp200a          // wont run any sw
+-psionp250           // wont run any sw
+-psionp350           // wont run any sw
+-psionp432           // wont run any sw
+-psionp464           // wont run any sw
+-psionxp             // wont run any sw
 
 psion/psion3.cpp
 
@@ -2585,6 +2592,9 @@ sony/news_68k.cpp
 sony/news_68k_iop.cpp
 
 sony/news_r3k.cpp
+-nws3260                // dup save item
+-nws3410                // dup save item
+-nws3720                // dup save item
 
 sony/news_r4k.cpp
 
@@ -2660,6 +2670,7 @@ tangerine/hhtiger.cpp
 tangerine/microtan.cpp
 
 tangerine/oric.cpp
+-telstrat            // can't boot disk
 
 tatung/einstein.cpp
 
