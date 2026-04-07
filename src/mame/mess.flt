@@ -103,6 +103,8 @@ amstrad/amstr_pc.cpp
 amstrad/nc.cpp
 
 amstrad/pc1512.cpp
+-pc1512hd10         // won't boot floppy
+-pc1512hd20         // won't boot floppy
 
 amstrad/pcw.cpp
 
@@ -281,6 +283,7 @@ bandai/rx78.cpp
 bandai/sv8000.cpp
 
 bandai/wswan.cpp
+-pockchv2           // start button nw
 
 be/bebox.cpp
 
@@ -758,6 +761,7 @@ handheld/gw35th.cpp
 
 handheld/hh_cop400.cpp
 -lightfgt
+-plus1                // no screen
 
 handheld/hh_cops1.cpp
 
@@ -908,6 +912,7 @@ homebrew/homez80.cpp
 
 homebrew/lft_chiptune.cpp
 -hwchiptn                // no screen
+-powernin                // no screen
 
 homebrew/lft_craft.cpp
 
@@ -1612,6 +1617,11 @@ paia/midi2cv8.cpp
 -midi2cv8_vhz         // useless?
 
 palm/palm.cpp
+-palmiii        // noise
+-palmiiic       // can't pass stylus check
+-palmpers       // can't leave setup, runs slow
+-palmpro        // can't leave setup, runs slow
+-palmz22        // no crosshair, runs slow
 
 palm/palmz22.cpp
 
@@ -1624,6 +1634,7 @@ pc/atpci.cpp
 pc/compc.cpp
 
 pc/ct486.cpp
+-ct486          // can't boot floppy
 
 pc/ec184x.cpp
 -ec1840         // text missing
@@ -1740,6 +1751,8 @@ quantel/dpb7000.cpp
 quantel/harriet.cpp
 
 qume/qvt102.cpp
+-qvt102         // terminal
+-qvt102a        // terminal
 
 qume/qvt103.cpp
 
@@ -2008,12 +2021,16 @@ sgi/indy_indigo2.cpp
 
 sgi/ip12.cpp
 -indigo           // no sw
+-pi4d30           // black screen, no sw
+-pi4d35           // no sw
 
 sgi/ip20.cpp
 -indigo_r4000     // no sw
 -indigo_r4400     // black screen, no sw
 
 sgi/ip6.cpp
+-pi4d20           // can't boot sw
+-pi4d25           // can't boot sw
 
 sgi/iris.cpp
 
@@ -2592,9 +2609,6 @@ sony/news_68k.cpp
 sony/news_68k_iop.cpp
 
 sony/news_r3k.cpp
--nws3260                // dup save item
--nws3410                // dup save item
--nws3720                // dup save item
 
 sony/news_r4k.cpp
 
@@ -3093,6 +3107,8 @@ vidbrain/vidbrain.cpp
 videoton/tvc.cpp
 
 virtual/ldplayer.cpp
+-simldv1000              // not a system
+-simpr8210               // not a system
 
 virtual/utdsp563xx.cpp
 -utdsp563xx             // not a system
@@ -3118,6 +3134,7 @@ visual/xds.cpp
 votrax/votrhv.cpp
 
 votrax/votrpss.cpp
+-votrpss              // ignores user input
 
 votrax/votrtnt.cpp
 
@@ -3262,6 +3279,12 @@ yamaha/ymps400.cpp
 yamaha/ympsr11.cpp
 
 yamaha/ympsr150.cpp
+-psr75             // freeze at start
+-psr76             // freeze at start
+-psr78             // freeze at start
+-pss11             // freeze at start
+-pss12             // freeze at start
+-pss6              // freeze at start
 
 yamaha/ympsr16.cpp
 
@@ -3280,6 +3303,7 @@ yamaha/ympsr540.cpp
 yamaha/ympsr60.cpp
 
 yamaha/ympss170.cpp
+-pss170           // does nothing
 
 yamaha/ymqs300.cpp
 
