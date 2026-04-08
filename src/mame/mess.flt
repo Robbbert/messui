@@ -780,6 +780,7 @@ handheld/hh_melps4.cpp
 handheld/hh_mn1400.cpp
 
 handheld/hh_pic16.cpp
+-sfxphasor             // no screen
 
 handheld/hh_pps41.cpp
 
@@ -941,10 +942,16 @@ homebrew/rc2014.cpp
 -rc2014bppro           // no screen
 -rc2014bp5           // no screen
 -rc2014bp8           // no screen
+-sc105               // no screen
+-sc112               // no screen
+-sc116               // no screen
+-sc133               // no screen
 
 homebrew/sbc6510.cpp
 
 homebrew/sitcom.cpp
+-sitcom            // useless
+-sitcomtmr         // useless
 
 homebrew/test_t400.cpp
 
@@ -2487,6 +2494,7 @@ skeleton/sansa_fuze.cpp
 skeleton/sartorius.cpp
 
 skeleton/sb180.cpp
+-sb180               // no sw
 
 skeleton/sb8085.cpp
 
@@ -2794,6 +2802,7 @@ ti/ti990_4.cpp
 ti/ti99_2.cpp
 
 ti/ti99_4p.cpp
+-ti99_4p       // black screen
 
 ti/ti99_4x.cpp
 
@@ -3107,6 +3116,7 @@ ussr/radio86.cpp
 ussr/sm1800.cpp
 
 ussr/sm7238.cpp
+-sm7238           // terminal
 
 ussr/special.cpp
 
