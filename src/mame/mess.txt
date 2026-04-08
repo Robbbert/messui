@@ -752,12 +752,14 @@ handheld/evolution_handheld.cpp
 handheld/gameking.cpp
 
 handheld/generalplus_gpce4.cpp
+-digicolr              // need roms
 
 handheld/generalplus_gpel31xx.cpp
 
 handheld/gmaster.cpp
 
 handheld/gw35th.cpp
+-gwzeldan              // need roms
 
 handheld/hh_cop400.cpp
 -lightfgt
@@ -897,6 +899,7 @@ homebrew/chaos.cpp
 homebrew/d6809.cpp
 
 homebrew/dcebridge.cpp
+-dcebridge             // useless
 
 homebrew/gigatron.cpp
 
@@ -935,6 +938,9 @@ homebrew/pimps.cpp
 homebrew/ravens.cpp
 
 homebrew/rc2014.cpp
+-rc2014bppro           // no screen
+-rc2014bp5           // no screen
+-rc2014bp8           // no screen
 
 homebrew/sbc6510.cpp
 
@@ -1483,6 +1489,7 @@ nintendo/nds.cpp
 nintendo/nes.cpp
 
 nintendo/nes_clone.cpp
+-pv95in1            // need roms
 
 nintendo/nes_m8.cpp
 
@@ -1495,8 +1502,14 @@ nintendo/nes_vt02_vt03.cpp
 nintendo/nes_vt09.cpp
 
 nintendo/nes_vt32.cpp
+-lxpcfz             // need roms
+-lxpcfzcz           // need roms
 
 nintendo/nes_vt369_vtunknown.cpp
+-orb240            // need roms
+-pixel246          // need roms
+-rsps300           // need roms
+-unk198vt          // need roms
 
 nintendo/nes_vt42xx.cpp
 
@@ -1621,9 +1634,9 @@ palm/palm.cpp
 -palmiiic       // can't pass stylus check
 -palmpers       // can't leave setup, runs slow
 -palmpro        // can't leave setup, runs slow
--palmz22        // no crosshair, runs slow
 
 palm/palmz22.cpp
+-palmz22        // no crosshair, runs slow
 
 pc/asst128.cpp
 
@@ -1957,6 +1970,8 @@ sega/magistr16.cpp
 sega/mdconsole.cpp
 
 sega/megadriv_firecore.cpp
+-mygalagb               // need roms
+-mysinva                // need roms
 
 sega/megadriv_rad.cpp
 
@@ -2908,6 +2923,7 @@ tvgames/elan_eu3a05.cpp
 tvgames/elan_eu3a14.cpp
 
 tvgames/generalplus_gp327902.cpp
+-tomyeggb                       // need roms
 
 tvgames/generalplus_gpl16250_mobigo.cpp
 
@@ -2922,12 +2938,18 @@ tvgames/generalplus_gpl16250_spi.cpp
 tvgames/generalplus_gpl162xx_lcdtype.cpp
 
 tvgames/generalplus_gpl32612.cpp
+-anp2020t                       // need roms
+-disbestf                       // need roms
+-displpc                        // need roms
+-doralpc                        // need roms
 
 tvgames/generalplus_gpl951xx.cpp
 
 tvgames/generalplus_gpm453x_nand.cpp
 
 tvgames/generalplus_gpm453x_sdcard.cpp
+-bodygun                        // need roms
+-kaximond                       // need roms
 
 tvgames/magiceyes_pollux_vr3520f.cpp
 
@@ -3279,12 +3301,6 @@ yamaha/ymps400.cpp
 yamaha/ympsr11.cpp
 
 yamaha/ympsr150.cpp
--psr75             // freeze at start
--psr76             // freeze at start
--psr78             // freeze at start
--pss11             // freeze at start
--pss12             // freeze at start
--pss6              // freeze at start
 
 yamaha/ympsr16.cpp
 
