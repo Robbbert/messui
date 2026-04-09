@@ -196,25 +196,25 @@ atari/atari400.cpp
 atari/atarist.cpp
 
 atari/jaguar.cpp
--a51mxr3k
--a51mxr3ka
--area51
--area51a
--area51mx
--area51t
--area51ta
--fishfren
--freezeat
--freezeat2
--freezeat3
--freezeat4
--freezeat5
--freezeat6
--freezeatjp
--maxf_102
--maxf_ng
--maxforce
--vcircle
+-a51mxr3k           // U:arcade
+-a51mxr3ka           // U:arcade
+-area51           // U:arcade
+-area51a           // U:arcade
+-area51mx           // U:arcade
+-area51t           // U:arcade
+-area51ta           // U:arcade
+-fishfren           // U:arcade
+-freezeat           // U:arcade
+-freezeat2           // U:arcade
+-freezeat3           // U:arcade
+-freezeat4           // U:arcade
+-freezeat5           // U:arcade
+-freezeat6           // U:arcade
+-freezeatjp           // U:arcade
+-maxf_102           // U:arcade
+-maxf_ng           // U:arcade
+-maxforce           // U:arcade
+-vcircle           // U:arcade
 
 atari/lynx.cpp
 
@@ -331,7 +331,7 @@ canon/x07.cpp
 
 cantab/jupace.cpp
 
-//capcom/cps1.cpp             // arcade
+//capcom/cps1.cpp             // U:arcade
 
 casio/casio_rompack.cpp
 
@@ -954,6 +954,8 @@ homebrew/sitcom.cpp
 -sitcomtmr         // useless
 
 homebrew/test_t400.cpp
+-test410           // useless
+-test420           // useless
 
 homebrew/ultim809.cpp
 
@@ -1445,7 +1447,7 @@ nec/piet1.cpp
 
 nec/tk80bs.cpp
 
-//neogeo/neogeo.cpp           // arcade
+//neogeo/neogeo.cpp           // U:arcade
 
 neogeo/neogeocd.cpp
 
@@ -1516,6 +1518,7 @@ nintendo/nes_vt369_vtunknown.cpp
 -orb240            // need roms
 -pixel246          // need roms
 -rsps300           // need roms
+-tiger108          // need roms
 -unk198vt          // need roms
 
 nintendo/nes_vt42xx.cpp
@@ -1702,22 +1705,22 @@ pc/teradrive.cpp
 pc/tosh1000.cpp
 
 philips/cdi.cpp
--quizard
--quizard_10
--quizard_12
--quizard_17
--quizard2
--quizard2_22
--quizard3
--quizard3a
--quizard3_32
--quizard4
--quizard4cz
--quizard4_40
--quizard4_41
--quizardi
--quizardi_12
--quizardi_17
+-quizard           // U:arcade
+-quizard_10           // U:arcade
+-quizard_12           // U:arcade
+-quizard_17           // U:arcade
+-quizard2           // U:arcade
+-quizard2_22           // U:arcade
+-quizard3           // U:arcade
+-quizard3a           // U:arcade
+-quizard3_32           // U:arcade
+-quizard4           // U:arcade
+-quizard4cz           // U:arcade
+-quizard4_40           // U:arcade
+-quizard4_41           // U:arcade
+-quizardi           // U:arcade
+-quizardi_12           // U:arcade
+-quizardi_17           // U:arcade
 
 philips/minitel_2_rpic.cpp
 -minitel2            // black screen, no sw
@@ -2127,6 +2130,7 @@ sinclair/specpls3.cpp
 sinclair/spectrum.cpp
 
 sinclair/sprinter.cpp
+-sprinter             // no boot sw
 
 sinclair/timex.cpp
 
@@ -2784,6 +2788,9 @@ ti/snspell.cpp
 
 ti/snspellc.cpp
 -mathsmag       // no screen
+-snspellc       // no screen
+-snspellca      // no screen
+-snwrite        // no screen
 
 ti/spellb.cpp
 
@@ -2943,6 +2950,7 @@ tvgames/generalplus_gpl16250_rom.cpp
 tvgames/generalplus_gpl16250_romram.cpp
 
 tvgames/generalplus_gpl16250_spi.cpp
+-starbuck                       // need roms
 
 tvgames/generalplus_gpl162xx_lcdtype.cpp
 
@@ -3139,13 +3147,13 @@ vidbrain/vidbrain.cpp
 videoton/tvc.cpp
 
 virtual/ldplayer.cpp
--simldv1000              // not a system
--simpr8210               // not a system
+-simldv1000              // U:not a system
+-simpr8210               // U:not a system
 
 virtual/utdsp563xx.cpp
--utdsp563xx             // not a system
+-utdsp563xx             // U:not a system
 
-//virtual/utm6502.cpp          // not a system
+//virtual/utm6502.cpp          // U:not a system
 
 virtual/vgmplay.cpp
 
