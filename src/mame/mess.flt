@@ -15,7 +15,6 @@ acorn/bbcb.cpp
 acorn/bbcbp.cpp
 
 acorn/bbcm.cpp
--bbcmet                // hang at start
 
 acorn/bbcmc.cpp
 
@@ -658,6 +657,7 @@ excalibur/ivant.cpp
 excalibur/ivanto.cpp
 
 excalibur/mirage.cpp
+-emirage              // stops when it loses a piece
 
 exidy/sorcerer.cpp
 
@@ -711,6 +711,8 @@ fidelity/excel.cpp
 fidelity/msc.cpp
 
 fidelity/phantom.cpp
+-cphantom              // stops when it loses a piece
+-fphantom              // stops when it loses a piece
 
 fidelity/sc12.cpp
 
@@ -739,7 +741,12 @@ gamepark/gp2x.cpp
 gamepark/gp32.cpp
 
 gridcomp/gridcomp.cpp
--grid1101                // no sw,fatal error
+-grid1101                // no sw
+-grid1109                // no sw
+-grid1121                // no sw
+-grid1129                // no sw
+-grid1131                // no sw
+-grid1139                // no sw
 
 grundy/newbrain.cpp
 
@@ -1000,9 +1007,6 @@ hp/hp80.cpp
 hp/hp95lx.cpp
 
 hp/hp9825.cpp
--hp9825a       // white screen
--hp9825b       // white screen
--hp9825t       // white screen
 
 hp/hp9845.cpp
 
@@ -1434,6 +1438,18 @@ nec/pc9801.cpp
 nec/pc9801_epson.cpp
 
 nec/pc9821.cpp
+-pc9821ap2              // pc9821as nw
+-pc9821as               // mnw
+-pc9821ce               // asks for floppy but can't boot
+-pc9821cx3              // mnw
+-pc9821nr15             // mnw
+-pc9821nr166            // mnw
+-pc9821nw150            // mnw
+-pc9821ra20             // mnw
+-pc9821ra266            // mnw
+-pc9821ra333            // mnw
+-pc9821xa16             // mnw
+-pc9821xv13             // mnw
 
 nec/pc98ha.cpp
 
@@ -2226,7 +2242,7 @@ skeleton/controlid.cpp
 skeleton/cortex.cpp
 
 skeleton/cosmicos.cpp
--cosmicos               // freezes
+-cosmicos               // MT09423
 
 skeleton/cp1.cpp
 
@@ -4511,9 +4527,6 @@ zvt/pp01.cpp
 -gp2x
 -gp32
 -grfd2301
--grid1109
--grid1121
--grid1131
 -gwsmb35
 -harriet
 -hawk
@@ -5418,18 +5431,6 @@ zvt/pp01.cpp
 -pc386m
 -pc486mu
 -pc486se
--pc9821
--pc9821as
--pc9821ce
--pc9821cx3
--pc9821nr15
--pc9821nr166
--pc9821nw150
--pc9821ra20
--pc9821ra266
--pc9821ra333
--pc9821xa16
--pc9821xv13
 -pc98ha
 -pc98lt
 -pc_h98s
@@ -5490,8 +5491,6 @@ zvt/pp01.cpp
 -pg675
 -pg685
 -pg685oua12
--cphantom
--fphantom
 -map1010
 -pbo
 -phunsy
@@ -6388,10 +6387,7 @@ zvt/pp01.cpp
 -zx97
 
 -bk001001
--grid1129
--grid1139
 -itunlim
 -kaypro2x
 -orao103
--pc9821ap2
 -x820
