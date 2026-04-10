@@ -360,6 +360,7 @@ casio/cz1.cpp
 casio/cz101.cpp
 
 casio/cz230s.cpp
+-sz1              // no sound
 
 casio/dg20.cpp
 
@@ -758,15 +759,17 @@ handheld/evolution_handheld.cpp
 
 handheld/gameking.cpp
 
+//handheld/generalplus_gp3x_unknown.cpp     // black screen
+
 handheld/generalplus_gpce4.cpp
--digicolr              // need roms
+-digicolr              // fatal err
 
 handheld/generalplus_gpel31xx.cpp
 
 handheld/gmaster.cpp
 
 handheld/gw35th.cpp
--gwzeldan              // need roms
+-gwzeldan              // black screen
 
 handheld/hh_cop400.cpp
 -lightfgt
@@ -821,6 +824,7 @@ handheld/st2302u_bbl_spi.cpp
 handheld/talkingbb.cpp
 
 handheld/talkingfb.cpp
+-talkingfb             // no screen
 
 handheld/teammate.cpp
 
@@ -1514,7 +1518,7 @@ nintendo/nds.cpp
 nintendo/nes.cpp
 
 nintendo/nes_clone.cpp
--pv95in1            // need roms
+-pv95in1            // mnw
 
 nintendo/nes_m8.cpp
 
@@ -1527,15 +1531,13 @@ nintendo/nes_vt02_vt03.cpp
 nintendo/nes_vt09.cpp
 
 nintendo/nes_vt32.cpp
--lxpcfz             // need roms
--lxpcfzcz           // need roms
+-lxpcfz             // mnw
+-lxpcfzcz           // mnw
 
 nintendo/nes_vt369_vtunknown.cpp
--orb240            // need roms
--pixel246          // need roms
--rsps300           // need roms
--tiger108          // need roms
--unk198vt          // need roms
+-pixel246          // bad gfx
+-rsps300           // mnw
+-unk198vt          // mnw
 
 nintendo/nes_vt42xx.cpp
 
@@ -1996,8 +1998,7 @@ sega/magistr16.cpp
 sega/mdconsole.cpp
 
 sega/megadriv_firecore.cpp
--mygalagb               // need roms
--mysinva                // need roms
+-mygalagb               // mnw
 
 sega/megadriv_rad.cpp
 
@@ -2129,17 +2130,19 @@ sinclair/chloe.cpp
 
 sinclair/elwro800.cpp
 
-sinclair/pentagon.cpp
+sinclair/evo/pentevo.cpp
 
-sinclair/pentevo.cpp
+sinclair/evo/tsconf.cpp
+
+sinclair/next/specnext.cpp
+
+sinclair/pentagon.cpp
 
 sinclair/ql.cpp
 
 sinclair/scorpion.cpp
 
 sinclair/spec128.cpp
-
-sinclair/specnext.cpp
 
 sinclair/specpls3.cpp
 
@@ -2149,8 +2152,6 @@ sinclair/sprinter.cpp
 -sprinter             // no boot sw
 
 sinclair/timex.cpp
-
-sinclair/tsconf.cpp
 
 sinclair/z88.cpp
 
@@ -2697,6 +2698,7 @@ svision/svision.cpp
 swtpc/swtpc.cpp
 
 swtpc/swtpc09.cpp
+-swtpc09o          // no sw
 
 swtpc/swtpc8212.cpp
 
@@ -2955,7 +2957,7 @@ tvgames/elan_eu3a05.cpp
 tvgames/elan_eu3a14.cpp
 
 tvgames/generalplus_gp327902.cpp
--tomyeggb                       // need roms
+-tomyeggb                       // black screen
 
 tvgames/generalplus_gpl16250_mobigo.cpp
 
@@ -2966,22 +2968,22 @@ tvgames/generalplus_gpl16250_rom.cpp
 tvgames/generalplus_gpl16250_romram.cpp
 
 tvgames/generalplus_gpl16250_spi.cpp
--starbuck                       // need roms
+-starbuck                       // black screen
 
 tvgames/generalplus_gpl162xx_lcdtype.cpp
 
 tvgames/generalplus_gpl32612.cpp
--anp2020t                       // need roms
--disbestf                       // need roms
--displpc                        // need roms
--doralpc                        // need roms
+-anp2020t                       // black screen
+-disbestf                       // black screen
+-displpc                        // black screen
+-doralpc                        // black screen
 
 tvgames/generalplus_gpl951xx.cpp
 
 tvgames/generalplus_gpm453x_nand.cpp
 
 tvgames/generalplus_gpm453x_sdcard.cpp
--bodygun                        // need roms
+-bodygun                        // black screen
 -kaximond                       // need roms
 
 tvgames/magiceyes_pollux_vr3520f.cpp
@@ -4854,7 +4856,6 @@ zvt/pp01.cpp
 -mypaca
 -mypac
 -mypacgld
--mysinv
 -mysf2
 -mateta
 -matet
@@ -5174,7 +5175,6 @@ zvt/pp01.cpp
 -h12p1000
 -hkb502
 -hkb502a
--lpgm240
 -red5mam
 -240in1ar
 -rd5_240
