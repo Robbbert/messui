@@ -1249,9 +1249,9 @@ microterm/mt5510.cpp
 
 midway/astrohome.cpp
 
-miltonbradley/microvsn.cpp
+miltonbradley/microvision.cpp
 
-miltonbradley/milton6805.cpp
+miltonbradley/milton.cpp
 
 miltonbradley/vectrex.cpp
 
@@ -1535,9 +1535,12 @@ nintendo/nes_vt32.cpp
 -lxpcfzcz           // mnw
 
 nintendo/nes_vt369_vtunknown.cpp
--pixel246          // bad gfx
--rsps300           // mnw
--unk198vt          // mnw
+-lpgm240            // regressed
+-orb240             // regressed
+-pixel246           // bad gfx
+-rsps300            // mnw
+-unk198vt           // mnw
+-vibes240a          // need roms
 
 nintendo/nes_vt42xx.cpp
 
@@ -1719,6 +1722,8 @@ pc/sis630.cpp
 pc/tandy1t.cpp
 
 pc/teradrive.cpp
+-teradrive          // multiple issues
+-teradrive3         // multiple issues
 
 pc/tosh1000.cpp
 
@@ -2752,8 +2757,13 @@ tektronix/xd88.cpp
 telenova/compis.cpp
 
 telercas/tmc1800.cpp
+-nano              // no sw
+-osc1000b          // no sw
+-tmc1800           // no sw
+-tmc2000           // no sw
 
 telercas/tmc2000e.cpp
+-tmc2000e          // no sw
 
 telercas/tmc600.cpp
 
@@ -2778,6 +2788,8 @@ televideo/tv955.cpp
 televideo/tv965.cpp
 
 televideo/tv990.cpp
+-tv990             // terminal
+-tv995             // terminal
 
 tesla/ondra.cpp
 
@@ -2910,6 +2922,7 @@ trainer/zapcomputer.cpp
 trs/agvision.cpp
 
 trs/coco12.cpp
+-t4426              // useless
 
 trs/coco3.cpp
 
@@ -3055,6 +3068,7 @@ tvgames/trkfldch.cpp
 tvgames/tvgame.cpp
 
 tvgames/xavix.cpp
+-taikodp             // nothing?
 
 tvgames/xavix2.cpp
 
@@ -5205,7 +5219,6 @@ zvt/pp01.cpp
 -tup240
 -unk128vt
 -nesvt270
--vibes240
 -zl383
 -zonefusn
 -g3_800
@@ -6021,9 +6034,6 @@ zvt/pp01.cpp
 -tk635
 -ics8080
 -tk80bs
--osc1000b
--tmc1800
--tmc2000e
 -tnshc08
 -tosh1000
 -tr175
