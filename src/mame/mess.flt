@@ -11,6 +11,7 @@ acorn/acrnsys1.cpp
 acorn/atom.cpp
 
 acorn/bbcb.cpp
+-torchf           // can't read disk or crashes
 
 acorn/bbcbp.cpp
 
@@ -393,6 +394,8 @@ casio/superjr.cpp
 casio/sx1000.cpp
 
 casio/wk1800.cpp
+-wk1600           // no sound
+-wk1800           // no sound
 
 casio/zoomer.cpp
 
@@ -571,6 +574,7 @@ dec/vt220.cpp
 
 dec/vt240.cpp
 -mc7105          // nw terminal
+-vt240           // nw terminal
 
 dec/vt320.cpp
 
@@ -804,6 +808,7 @@ handheld/hh_tms1k.cpp
 -cchime                  // no screen
 -mathmarv                // nothing?
 -mathmagi                // nothing?
+-wtalker                 // no screen
 
 handheld/hh_ucom4.cpp
 
@@ -977,6 +982,7 @@ homebrew/z80clock.cpp
 homebrew/z80dev.cpp
 
 homebrew/zexall.cpp
+-zexall
 
 homelab/braiplus.cpp
 
@@ -1262,6 +1268,7 @@ mips/mips_r3030.cpp
 misc/3do.cpp
 
 misc/adi_vt52.cpp
+-adi_vt52           // mnw
 
 misc/ctvboy.cpp
 
@@ -1374,6 +1381,9 @@ motorola/sys1121.cpp
 motorola/uchroma68.cpp
 
 msx/msx1.cpp
+-cpc50a               // black screen
+-cpc50b               // black screen
+-cpc51                // black screen
 
 msx/msx1_bruc100.cpp
 
@@ -2352,6 +2362,7 @@ skeleton/hudson_poems.cpp
 skeleton/i7000.cpp
 
 skeleton/icatel.cpp
+-icatel            // useless
 
 skeleton/icebox.cpp
 
@@ -2484,6 +2495,7 @@ skeleton/pencil2.cpp
 skeleton/perq.cpp
 
 skeleton/pes.cpp
+-pes               // serial comms broken
 
 skeleton/picno.cpp
 
@@ -2586,10 +2598,12 @@ skeleton/terco.cpp
 skeleton/terminal.cpp
 
 skeleton/testpat.cpp
+-tp1985             // useless
 
 skeleton/textelcomp.cpp
 
 skeleton/ti630.cpp
+-ti630              // useless
 
 skeleton/tk635.cpp
 
@@ -2821,6 +2835,7 @@ ti/snspellc.cpp
 -snspellc       // no screen
 -snspellca      // no screen
 -snwrite        // no screen
+-vocaid         // nothing?
 
 ti/spellb.cpp
 
@@ -2952,6 +2967,7 @@ trs/trs80dt1.cpp
 trs/trs80m2.cpp
 
 trs/trs80m3.cpp
+-trs80m4p          // can't boot disk
 
 trs/vis.cpp
 
@@ -3171,8 +3187,10 @@ ussr/vector06.cpp
 ussr/vta2000.cpp
 
 vectorgraphic/vector4.cpp
+-vector4            // no sw
 
 verifone/tranz330.cpp
+-tranz330           // useless
 
 vidbrain/vidbrain.cpp
 
@@ -3190,6 +3208,7 @@ virtual/utdsp563xx.cpp
 virtual/vgmplay.cpp
 
 virtual/wavesynth.cpp
+-wavesynth            // no screen
 
 visual/v100.cpp
 
@@ -3198,6 +3217,7 @@ visual/v102.cpp
 visual/v1050.cpp
 
 visual/v50.cpp
+-visual50                 // terminal
 
 visual/v550.cpp
 
@@ -3275,6 +3295,7 @@ vtech/vtech_eu3a12.cpp
 vtech/vtech_innotab.cpp
 
 wang/wangpc.cpp
+-wangpc             // can't boot disk
 
 wavemate/bullet.cpp
 
@@ -3380,6 +3401,7 @@ yamaha/ymrx15.cpp
 yamaha/ymsy35.cpp
 
 yamaha/ymtx81z.cpp
+-tx81z           // no sound
 
 yamaha/ymvl1.cpp
 
