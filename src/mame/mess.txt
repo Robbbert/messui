@@ -83,6 +83,7 @@ altos/altos8600.cpp
 amiga/amiga.cpp
 
 amirix/wxstar4000.cpp
+-wxstar4k        // black screen
 
 ampex/ampex.cpp
 
@@ -571,18 +572,25 @@ dec/vk100.cpp
 dec/vt100.cpp
 
 dec/vt220.cpp
+-vt220a           // black screen
+-vt220           // black screen
 
 dec/vt240.cpp
 -mc7105          // nw terminal
 -vt240           // nw terminal
 
 dec/vt320.cpp
+-vt320           // black screen
+-vt330           // black screen
 
 dec/vt52.cpp
 
 dec/vt520.cpp
+-vt420           // black screen
+-vt520           // black screen
 
 dec/vt62.cpp
+-vt62           // black screen
 
 dg/aviion88k.cpp
 
@@ -850,10 +858,13 @@ heathzenith/h89.cpp
 heathzenith/mdt60.cpp
 
 heathzenith/z100.cpp
+-z100            // mnw
 
 heathzenith/z22.cpp
+-z22             // mnw
 
 heathzenith/z29.cpp
+-z29             // black screen
 
 hec2hrp/hec2hrp.cpp
 
@@ -1189,6 +1200,7 @@ luxor/abc80.cpp
 luxor/abc80x.cpp
 
 luxor/x37.cpp
+-x37             // does nothing
 
 makerbot/replicator.cpp
 
@@ -1242,6 +1254,7 @@ microsoft/jazz.cpp
 -mmr4000le             //black screen
 
 microsoft/xbox.cpp
+-xbox        // mnw
 
 microterm/ergo201.cpp
 
@@ -1254,6 +1267,8 @@ microterm/mt440.cpp
 microterm/mt5510.cpp
 
 midway/astrohome.cpp
+
+//miltonbradley/grandmaster.cpp   // no screen
 
 miltonbradley/microvision.cpp
 
@@ -1625,6 +1640,7 @@ oberheim/dmx.cpp
 oberheim/ob8.cpp
 
 oberheim/xpander.cpp
+-xpander        // mnw
 
 olivetti/att6300p.cpp
 
@@ -1655,6 +1671,7 @@ openuni/hektor.cpp
 orla/hk1000.cpp
 
 orla/xm200.cpp
+-xm200           // no screen
 
 osborne/osbexec.cpp
 
@@ -1769,6 +1786,7 @@ philips/philipsbo.cpp
 philips/vg5k.cpp
 
 philips/yes.cpp
+-yes             // black screen
 
 pitronics/beta.cpp
 
@@ -1847,8 +1865,17 @@ robotron/k8915.cpp
 robotron/rt1715.cpp
 
 robotron/z1013.cpp
+-z1013s60        // inputs
+-z1013k76        // inputs
+-z1013k69        // inputs
 
 robotron/z9001.cpp
+-kc85_111        // no sw
+-kc87_10         // no sw
+-kc87_11         // no sw
+-kc87_20         // no sw
+-kc87_21         // no sw
+-z9001           // no sw
 
 rockwell/aim65.cpp
 
@@ -2124,10 +2151,18 @@ sharp/wizard.cpp
 sharp/x1.cpp
 
 sharp/x1twin.cpp
+-x1twin          // can't boot disk
 
 sharp/x68k.cpp
 
 sharp/zaurus.cpp
+-zsl5500         // no screen
+-zsl5600         // black screen
+-zslc1000        // black screen
+-zslc3000        // black screen
+-zslc500         // black screen
+-zslc750         // black screen
+-zslc760         // black screen
 
 siemens/bitel.cpp
 
@@ -2171,6 +2206,7 @@ sinclair/timex.cpp
 sinclair/z88.cpp
 
 sinclair/zx.cpp
+-zx97
 
 skeleton/600cat.cpp
 
@@ -2632,22 +2668,31 @@ skeleton/vectrix.cpp
 skeleton/vp415.cpp
 
 skeleton/webtouchone.cpp
+-wto2840sp       // crash at start
 
 skeleton/xbase09.cpp
+-xbase09         // no screen
 
 skeleton/xor100.cpp
 
 skeleton/zeebo_qualcomm_adreno130.cpp
+-zeebo           // black screen
 
 skeleton/zfirenze.cpp
+-zfirenze        // no screen
 
 skeleton/zms8085.cpp
+-zephyr          // bad kbd
 
 skeleton/zorba.cpp
+-zorba           // MT09435
 
 skeleton/zt8802.cpp
+-zt8802          // no screen
 
 skeleton/zvenezia.cpp
+-zunknecta       // no screen
+-zvenezia        // no screen
 
 slicer/slicer.cpp
 
@@ -2767,6 +2812,7 @@ tektronix/tekigw.cpp
 tektronix/tekxp33x.cpp
 
 tektronix/xd88.cpp
+-xd88_01         // no screen
 
 telenova/compis.cpp
 
@@ -3084,19 +3130,160 @@ tvgames/trkfldch.cpp
 tvgames/tvgame.cpp
 
 tvgames/xavix.cpp
+-bistro          // mnw
 -taikodp             // nothing?
+-ekara          // mnw
+-ekaraa          // mnw
+-ekarag          // mnw
+-ekaraj          // mnw
+-ekaramix          // mnw
+-ekaraphs          // mnw
+-ekaras          // mnw
+-epitch          // mnw
+-epo_crok          // mnw
+-epo_dmon          // mnw
+-epo_efdx          // mnw
+-epo_epp3          // mnw
+-epo_esht          // mnw
+-epo_fish          // mnw
+-epo_hamd          // mnw
+-epo_stad          // mnw
+-epo_strk          // mnw
+-epo_strkp          // mnw
+-epo_tenn          // mnw
+-evio          // mnw
+-gcslottv          // mnw
+-gungunad          // mnw
+-gungunrv          // mnw
+-hikara          // mnw
+-hippofr          // mnw
+-isinger          // mnw
+-jarajal          // mnw
+-ltv_tam          // mnw
+-tak_daig          // mnw
+-tak_beyu          // mnw
+-tak_beyb          // mnw
+-tak_comt          // mnw
+-rad_bassp          // mnw
+-rad_boxp          // mnw
+-rad_mtrkp          // mnw
+-rad_pingp          // mnw
+-rad_madf          // mnw
+-tomshoot          // mnw
+-rad_bb          // mnw
+-rad_bb2          // mnw
+-rad_bass          // mnw
+-rad_box          // mnw
+-rad_hnt          // mnw
+-rad_hnt2          // mnw
+-rad_fb          // mnw
+-rad_mtrk          // mnw
+-rad_ping          // mnw
+-rad_rh          // mnw
+-rad_socr          // mnw
+-epo_eppk          // mnw
+-epo_epps          // mnw
+-epo_esdx          // mnw
+-epo_epp          // mnw
+-epo_epp2          // mnw
+-tom_tvho          // mnw
+-epo_mj          // mnw
+-epo_mail          // mnw
+-has_wamg          // mnw
+-tvpc_dor          // mnw
+-tvpc_hk          // mnw
+-tvpc_tom          // mnw
+-tvpc_ham          // mnw
+-tak_zuba          // mnw
+-dombikec          // mnw
+-domfitad          // mnw
+-epo_dtcj          // mnw
+-epo_dab2j          // mnw
+-epo_ssk2          // mnw
+-ban_dbz          // mnw
+-ban_db2j          // mnw
+-ban_bldj          // mnw
+-ban_naru          // mnw
+-epo_sskj          // mnw
+-epo_dabj          // mnw
+-epo_pabj          // mnw
 
 tvgames/xavix2.cpp
 
 tvgames/xavix_2000.cpp
+-ban_omt          // mnw
+-ban_onep          // mnw
+-drgqst          // mnw
+-duelmast          // mnw
+-epo_bowl          // mnw
+-epo_ebox          // mnw
+-epo_es2j          // mnw
+-epo_golf          // mnw
+-epo_hamc          // mnw
+-epo_mini          // mnw
+-tak_chq          // mnw
+-tom_dpgm          // mnw
+-ttv_lotr          // mnw
+-ttv_sw          // mnw
+-ttv_swj          // mnw
 
 tvgames/xavix_2002.cpp
+-anpanmdx        // mnw
+-apmj2009        // mnw
+-ban_bkgj        // mnw
+-ban_dn1j        // mnw
+-ban_gkrj        // mnw
+-ban_kksj        // mnw
+-ban_ordj        // mnw
+-ban_pr2j        // mnw
+-ban_ult        // mnw
+-ban_um2j        // mnw
+-ban_utmj        // mnw
+-domdance        // mnw
+-domfitch        // mnw
+-domfitex        // mnw
+-domstepc        // mnw
+-doradraw        // mnw
+-epo_doka        // mnw
+-epo_kabj        // mnw
+-epo_ntpj        // mnw
+-epo_rgfj        // mnw
+-epo_tfit        // mnw
+-maxheart        // mnw
+-ndpbj        // mnw
+-ndpmj        // mnw
+-suprtvpc        // mnw
+-suprtvpcdo        // mnw
+-suprtvpchk        // mnw
+-suprtvpcln        // mnw
+-tmy_rkmj        // mnw
+-tmy_thom        // mnw
+-udance        // mnw
+-xavaero        // mnw
+-xavbaseb        // mnw
+-xavbasebj        // mnw
+-xavbassf        // mnw
+-xavbowl        // mnw
+-xavbowlj        // mnw
+-xavbox        // mnw
+-xavboxj        // mnw
+-xavcheck        // mnw
+-xavgolf        // mnw
+-xavgolfj        // mnw
+-xavjmat        // mnw
+-xavmusic        // mnw
+-xavmusicj        // mnw
+-xavpowrk        // mnw
+-xavpkjr        // mnw
+-xavtenni        // mnw
+-xavtennij        // mnw
 
 ultimachine/rambo.cpp
 
 ultratec/minicom.cpp
 
 umc/pc486vl.cpp
+-md4duv               // need roms
 
 umc/supracan.cpp
 
@@ -3310,14 +3497,25 @@ wicat/wicat.cpp
 wyse/wy100.cpp
 
 wyse/wy150.cpp
+-wy120           // black screen
+-wy150           // black screen
+-wy160           // black screen
+-wy325           // black screen
 
 wyse/wy30p.cpp
+-wy30p           // black screen
 
 wyse/wy50.cpp
+-wy50            // mnw
 
 wyse/wy55.cpp
+-wy185es         // black screen
+-wy55           // black screen
+-wy65           // black screen
 
 wyse/wy60.cpp
+-wy60a           // mnw
+-wy60            // mnw
 
 wyse/wy85.cpp
 
@@ -3337,55 +3535,85 @@ yamaha/fb01.cpp
 yamaha/tg100.cpp
 
 yamaha/yman1x.cpp
+-an1x            // mnw
 
 yamaha/ymdx100.cpp
 -dx100                 // no sound
 
 yamaha/ymdx11.cpp
+-dx11            // mnw
 
 yamaha/ymdx7.cpp
+-dx7             // mnw
 
 yamaha/ymdx9.cpp
+-dx9             // mnw
 
 yamaha/ymmu10.cpp
+-mu10             // no screen
 
 yamaha/ymmu100.cpp
+-mu100           // mnw
+-mu100r          // mnw
+-mu100b          // no screen
 
 yamaha/ymmu128.cpp
+-mu128           // mnw
 
 yamaha/ymmu15.cpp
 
 yamaha/ymmu2000.cpp
+-mu1000          // mnw
+-mu2000          // mnw
+-mu500           // mnw
 
 yamaha/ymmu5.cpp
 
 yamaha/ymmu50.cpp
 
 yamaha/ymmu80.cpp
+-mu80            // mnw
 
 yamaha/ymmu90.cpp
+-mu90            // mnw
+-mu90b           // no screen
 
 yamaha/ympcs30.cpp
+-pcs30           // no screen
 
 yamaha/ymps400.cpp
+-ps400           // no screen
 
 yamaha/ympsr11.cpp
 
 yamaha/ympsr150.cpp
 
 yamaha/ympsr16.cpp
+-psr16           // no screen
+-psr36           // no screen
+-pss480          // no screen
+-pss680          // no screen
+-pss780          // no screen
 
 yamaha/ympsr2000.cpp
+-psr2000         // mnw
 
 yamaha/ympsr260.cpp
+-psr160          // mnw
+-psr260          // mnw
+-psr79           // mnw
 
 yamaha/ympsr340.cpp
+-psr340          // mnw
 
 yamaha/ympsr40.cpp
+-psr40           // no screen
 
 yamaha/ympsr400.cpp
+-psr500          // no screen
 
 yamaha/ympsr540.cpp
+-psr540          // mnw
 
 yamaha/ympsr60.cpp
 
@@ -3393,19 +3621,26 @@ yamaha/ympss170.cpp
 -pss170           // does nothing
 
 yamaha/ymqs300.cpp
+-eosb900         // mnw
+-qs300           // mnw
 
 yamaha/ymqy70.cpp
+-qy70            // mnw
 
 yamaha/ymrx15.cpp
+-rx15            // mnw
 
 yamaha/ymsy35.cpp
+-sy35            // no screen
 
 yamaha/ymtx81z.cpp
 -tx81z           // no sound
 
 yamaha/ymvl1.cpp
+-vl1             // mnw
 
 yamaha/ymvl70.cpp
+-vl70            // mnw
 
 yeno/301xl.cpp
 
@@ -5873,6 +6108,7 @@ zvt/pp01.cpp
 -virtbb
 -virtten
 -abltenni
+
 -wordlnch
 -rad_digi
 -icanguit
@@ -5930,8 +6166,7 @@ zvt/pp01.cpp
 -vreadercaen
 -vreadercafr
 -vreader
--stvdev
--sun1
+-stvdev          // no screen
 -sun2_120
 -sun2_50
 -sun3_110
@@ -5940,40 +6175,36 @@ zvt/pp01.cpp
 -sun3_60
 -sun3_150
 -sun3_e
--sun3_460
--sun3_80
--sun4_60
+-sun3_460      // no screen
+-sun4_60         // no screen
 -sun4_65
--sun_s10
--sun4_75
--sun_s20
+-sun_s10         // MT09256
+-sun4_75         // no screen
+-sun_s20         // MT09256
 -sun4_25
 -sun4_40
 -sun4_50
--sun4_20
--sun4_110
--sun4_300
--sun4_400
--super6
+-sun4_110        // no screen
+-sun4_300        // no screen
+-sun4_20         // sun4_300
+-sun4_400        // no screen
 -jd5000
 -jd367
 -jd362
 -jd320
 -jd361
 -jd360
--superslv
 -svmu
 -swyft
 -sx1010
--sx240
--s3670
--synthex
+-sx240           // no screen
+-s3670           // no screen
+-synthex         // no screen
 -sys1121
--sys16
 -sys2900
 -sys9002
 -systec
--systel100
+-systel100       // no sw
 -t7000
 -tabe22
 -p5txla
@@ -5981,16 +6212,8 @@ zvt/pp01.cpp
 -precur2w
 -tamapix
 -t1000rl
--t1000sl2
--t1000tl
--t1000tl2
--t1000tx
--tandy2k
--tandy2khd
--cpu09
--ivg09
--triplec
--td831
+-triplec         // no screen
+-td831           // no screen
 -tdv2324
 -tek4051
 -tek4052a
@@ -6001,71 +6224,49 @@ zvt/pp01.cpp
 -tek4132
 -tek6130
 -tekxp330
--teleray10
--telex1192
--telex274
--telex277d
+-telex1192       // no screen
+-telex274        // no screen
+-telex277d       // no screen
 -terak
--t4490
--7951om
--loewe715
--loewed
--teleguide
--alcat258
+-t4490           // no screen
+-7951om          // no screen
+-loewe715        // no screen
+-loewed          // no screen
+-teleguide       // no screen
+-alcat258        // no screen
 -tp1983
--a1010
--tg100
--tpad600
--tpad600e
--tpad600x
--tpad760xd
--tpad770z
--tpad850
--ti84pov2
--ti84pov3
--ti84pob
+-tg100           // no screen
+-tpad600         // no screen
+-tpad600e        // no screen
+-tpad600x        // no screen
+-tpad760xd       // no screen
+-tpad770z        // no screen
+-tpad850         // no screen
 -ti73b
 -ti83
--ti83p
 -ti83pb
--ti83pse
 -ti83pseb
 -ti83pcev15
--ti84p
--ti84pv2
--ti84pv3
--ti84pb
 -ti84pcse
 -ti84pcsev2
 -ti84pce
 -ti84pcev15
 -ti84pcev30
--ti84pse
--ti84psev3
--ti84pseb
 -ti931
 -ti990_10
 -ti990_4
 -ti990_4v
--tim011
--tim100
 -tipc
 -colecofl
--megadri4
--megadri4a
+-megadri4        // black screen
+-megadri4a       // black screen
 -tk635
--ics8080
--tk80bs
--tnshc08
--tosh1000
+-tnshc08         // no screen
 -tr175
 -tricep
--triplex
--triton41
--triton51
--triton52
--triton72
--triumec
+-triplex         // no sw
+//-triton72      // nw parent
+-triumec         // no screen
 -abl4play
 -senspid
 -trkfldchj
@@ -6075,351 +6276,71 @@ zvt/pp01.cpp
 -teleship
 -trkfldch
 -lexitvsprt
--ts3000
+-ts3000        // no screen
 -ts802
--ts802h
+-ts802h          // ts802 nw
 -ts803h
--ts816
 -prose2ko
 -prose2k
--tulip1
--tv912b
--tv912c
--tv924
+-tulip1          // no sw
+-tv924           // black screen
 -tv950
--tv955
 -tv965
--tvc64
--tvc64p
--tvc64pru
--tvdear
+-tvdear          // no screen
 -tx0_64kw
 -tx0_8kw
 -tx0_8kwo
--uknc
+-uknc            // black screen
 -ultim809
--ultra45
--vo5850pm
+-ultra45         // no screen
+-vo5850pm        // no screen
 -unistar
--uts10
--uts20
 -3b1
--uvax1
--uvax2
--mv3400
--mv3500
+-uvax1           // no screen
+-uvax2           // no screen
+-mv3400          // no screen
+-mv3500          // no screen
 -mv3100m10
--uzebox
--v100
--v102
--v550
--v6809
--vngrdmk1
+-v100            // black screen
+-v102            // black screen
+-v550            // black screen
+-vngrdmk1        // no screen
 -vax785
--vboy
--vd56sp
--vdm79322
--krista2
--pk6128c
--vec1200
--vector3
--raaspec
--vectrix
--vegaplus
--vg5k
--vidbrain
--vk100
--vocalizer
--hc120
--vp415
--vp60
--vsmilebfp
--vsmilebf
--vsmilebg
--vsmilebs
--vsmilebsw
--vsmileb
--vsmilpro
--vt100
--vt100ac
--vt101
--vt102
--vt105
--vt131
--vt180
--anpncpc
--intg5410
--anpnvt12
--gm235upc
--wowwg
--vt220a
--vt220
--vt320
--vt330
--vt420
--vt520
--vt62
--vta2000
--vz200de
--pawmoviesp
--vreadere
--innotab2
--wto2840sp
--wicat
--iq7000
--wrinkles
--wxstar4k
--wy120
--wy150
--wy160
--wy325
--wy30p
--wy50
--wy75
--wy185es
--wy55
--wy65
--wy60a
--wy60
--wy85
--x1turbo
--x1twin
--x37
--x68ksupr
--x68kxvi
--x68030
--epo_tenn
--epo_epp3
--tak_daig
--tak_beyu
--tak_beyb
--bistro
--epo_fish
--tak_comt
--rad_bassp
--rad_boxp
--rad_mtrkp
--rad_pingp
--epo_crok
--epo_efdx
--epo_dmon
--ekarag
--ekaraj
--ekaras
--ekara
--ekaraa
--ekaramix
--ekaraphs
--epitch
--rad_madf
--evio
--gcslottv
--epo_strk
--gungunad
--gungunrv
--epo_hamd
--epo_esht
--hikara
--hippofr
--epo_stad
--isinger
--jarajal
--tomshoot
--epo_strkp
--ltv_tam
--rad_bb
--rad_bb2
--rad_bass
--rad_box
--rad_hnt
--rad_hnt2
--rad_fb
--rad_mtrk
--rad_ping
--rad_rh
--rad_socr
--epo_eppk
--epo_epps
--epo_esdx
--epo_epp
--epo_epp2
--tom_tvho
--epo_mj
--epo_mail
--has_wamg
--tvpc_dor
--tvpc_hk
--tvpc_tom
--tvpc_ham
--tak_zuba
--dombikec
--domfitad
--epo_dtcj
--epo_dab2j
--epo_ssk2
--ban_dbz
--ban_db2j
--ban_bldj
--ban_naru
--epo_sskj
--epo_dabj
--epo_pabj
--epo_es2j
--tak_chq
--tom_dpgm
--duelmast
--epo_bowl
--epo_ebox
--drgqst
--ban_onep
--ban_omt
--ttv_lotr
--epo_mini
--ttv_sw
--ttv_swj
--epo_golf
--epo_hamc
--anpanmdx
--apmj2009
--epo_doka
--domfitch
--domdance
--domfitex
--domstepc
--ndpbj
--ndpmj
--doradraw
--epo_tfit
--epo_ntpj
--epo_kabj
--epo_rgfj
--xavjmat
--ban_dn1j
--maxheart
--ban_gkrj
--ban_ult
--ban_bkgj
--ban_ordj
--ban_utmj
--ban_um2j
--ban_kksj
--xavpowrk
--xavpkjr
--tmy_rkmj
--tmy_thom
--suprtvpc
--suprtvpcdo
--suprtvpchk
--suprtvpcln
--udance
--xavcheck
--xavaero
--xavmusicj
--xavbaseb
--xavbasebj
--xavbassf
--xavbowl
--xavbowlj
--xavbox
--xavboxj
--xavgolf
--xavgolfj
--xavmusic
--xavtenni
--xavtennij
--ban_pr2j
--xbase09
--xbox
--xd88_01
--bigboard
--mk82
--mk83
--mojmikro
--x168
--x820ii
--xm200
--xor100
--xpander
--yes
--an1x
--dx11
--dx7
--dx9
--mu100
--mu100r
--mu100b
--mu128
--mu15
--mu1000
--mu2000
--mu500
--mu5
--mu80
--mu90
--mu90b
--pcs30
--ps400
--psr16
--psr36
--pss480
--pss680
--pss780
--psr2000
--psr160
--psr260
--psr79
--psr340
--psr40
--psr500
--psr540
--eosb900
--qs300
--qy70
--rx15
--sy35
--vl1
--vl70
--z100
--z1013s60
--z1013k76
--z1013k69
--z22
--z29
--z88
--z88dk
--z88fi
--z88fr
--z88de
--z88it
--z88no
--z88es
--z88se
--z88ch
--z88tr
--kc85_111
--kc87_10
--kc87_11
--kc87_20
--kc87_21
--z9001
--zsl5500
--zsl5600
--zslc1000
--zslc3000
--zslc500
--zslc750
--zslc760
--zeebo
--zfirenze
--zephyr
--zorba
--zt8802
--zunknecta
--zvenezia
--zx97
+-vd56sp          // no screen
+-vdm79322        // no screen
+-krista2         // black screen
+-pk6128c         // black screen
+-vec1200         // black screen
+-vectrix         // no screen
+-vegaplus        // black screen
+-vocalizer       // no sound
+-hc120           // no screen
+-vp415           // MT09024
+-vp60            // black screen
+-vsmilebfp       // mnw
+-vsmilebf        // mnw
+-vsmilebg        // mnw
+-vsmilebs        // mnw
+-vsmilebsw       // mnw
+-vsmileb         // mnw
+-vsmilpro        // no screen
+-anpncpc         // mnw
+-intg5410        // mnw
+-anpnvt12        // mnw
+-gm235upc        // mnw
+-wowwg           // mnw
+-vta2000         // mnw, regressed
+-vz200de         // roms missing
+-pawmoviesp      // black screen
+-vreadere        // grey screen
+-innotab2           // black screen
+-wicat           // can't boot disk
+-iq7000          // black screen
+-wrinkles        // no screen
 
 -bk001001
 -itunlim
 -kaypro2x
 -orao103
--x820
+
++neogeo
