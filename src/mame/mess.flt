@@ -475,7 +475,7 @@ compugraphic/pwrview.cpp
 comx/comx35.cpp
 
 concept/concept.cpp
--concept                // no sw exist
+-concept                // no sw
 
 conitec/prof180x.cpp
 
@@ -1565,7 +1565,6 @@ nintendo/nes_vt369_vtunknown.cpp
 -pixel246           // bad gfx
 -rsps300            // mnw
 -unk198vt           // mnw
--vibes240a          // need roms
 
 nintendo/nes_vt42xx.cpp
 
@@ -3059,7 +3058,7 @@ tvgames/generalplus_gpm453x_nand.cpp
 
 tvgames/generalplus_gpm453x_sdcard.cpp
 -bodygun                        // black screen
--kaximond                       // need roms
+-kaximond                       // need chd
 
 tvgames/magiceyes_pollux_vr3520f.cpp
 
@@ -3283,7 +3282,6 @@ ultimachine/rambo.cpp
 ultratec/minicom.cpp
 
 umc/pc486vl.cpp
--md4duv               // need roms
 
 umc/supracan.cpp
 
@@ -4206,7 +4204,6 @@ zvt/pp01.cpp
 -st_se
 -st_sg
 -st_uk
--st
 -ste_fr
 -ste_de
 -ste_it
@@ -4289,9 +4286,6 @@ zvt/pp01.cpp
 -bk0011m
 -blaucds32
 -blit
--bml3
--bml3mk5
--bml3mk2
 -se70
 -gx700
 -sx700
