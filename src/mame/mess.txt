@@ -46,31 +46,65 @@ acorn/atom.cpp
 -atomes
 
 acorn/bbcb.cpp
+-torch725
+-torch301
+-sist1
 -torchf           // can't read disk or crashes
 
 acorn/bbcbp.cpp
+-cfa3000bp
+-econx25
+-abc310
+-acw443
+-abc110
 
 acorn/bbcm.cpp
+-se3010
+-mpc900gx
+-mpc900
+-mpc800
+-cfa3000
+-ht280
+-daisy
+-bbcmaiv
+-bbcmarm
+-discmon
+-discmate
 
 acorn/bbcmc.cpp
+-autoc15
 
 acorn/cms.cpp
 
 acorn/electron.cpp
+-btm2105
 
 acorn/eurocube.cpp
 
 acorn/reutapm.cpp
+-reutapm
 
 acorn/riscpc.cpp
+-sarpc
+-rpc700
+-rpc600
+-sarpc_j233
+-a7000p
+-a7000
 
 act/apricot.cpp
 
 act/apricotf.cpp
+-f2
+-f1e
+-f10
+-f1
 
 act/apricotp.cpp
+-fp
 
 act/apxen.cpp
+-apxen
 
 act/victor9k.cpp
 
@@ -79,39 +113,62 @@ adc/super6.cpp
 adc/superslave.cpp
 
 adds/4000_260.cpp
+-4000_260
 
 adds/adds2020.cpp
+-adds2020
 
 adds/multivision.cpp
+-multivision
 
 adds/vp60.cpp
+-vp60
 
 agat/agat.cpp
+-agat9
 
 akai/akaiax80.cpp
+-ax80
 
 akai/akaivx600.cpp
+-vx600
 
 akai/mpc2000.cpp
+-mpc2000xl
 
 akai/mpc3000.cpp
+-mpc3000
 
 akai/mpc60.cpp
+-mpc60
 
 akai/s3000.cpp
+-s3000xl
+-s3000
+-s2000
+-cd3000xl
+-cd3000i
 
 alesis/alesis.cpp
+-sr16
+-mmt8
+-hr16b
+-hr16
 
 alesis/midiverb.cpp
 -midifex         // useless?
 
 altos/altos2.cpp
+-altos2
 
 altos/altos486.cpp
+-altos486
 
 altos/altos5.cpp
+-altos5
 
 altos/altos586.cpp
+-altos586
 
 altos/altos8600.cpp
 
@@ -145,8 +202,11 @@ amirix/wxstar4000.cpp
 -wxstar4k        // black screen
 
 ampex/ampex.cpp
+-dialog80
 
 ampex/ampex210.cpp
+-ampex230p
+-ampex210p
 
 ampro/ampro.cpp
 
@@ -154,11 +214,19 @@ ampro/lb186.cpp
 -lb186           // no sw, shows nothing
 
 ampro/lbpc.cpp
+-lbpc
 
 amstrad/amstrad.cpp
 -al520ex
 
 amstrad/amstr_pc.cpp
+-pc200
+-ppc640
+-ppc512
+-pc5086
+-pc3086
+-pc2086
+-pc20
 
 amstrad/nc.cpp
 
@@ -167,28 +235,45 @@ amstrad/pc1512.cpp
 -pc1512hd20         // won't boot floppy
 
 amstrad/pcw.cpp
+-pcw9512p
+-pcw9512
+-pcw9256
+-pcw8512
+-pcw8256
+-pcw10
 
 amstrad/pcw16.cpp
+-pcw16
 
 amstrad/pda600.cpp
+-pda600
 
 apf/apf.cpp
 
 apollo/apollo.cpp
+-dsp5500
+-dn5500_19i
+-dn5500
 
 apple/apple1.cpp
 
 apple/apple2.cpp
+-basis108
 
 apple/apple2e.cpp
+-mprof3
 
 apple/apple2gs.cpp
+-apple2gsr3p
+-apple2gsmt
 
 apple/apple3.cpp
 
 apple/imacg3.cpp
+-imac
 
 apple/iphone2g.cpp
+-iphone2g
 
 apple/lisa.cpp
 -lisa               // crashes
@@ -197,6 +282,9 @@ apple/lisa.cpp
 -macxl              // no sw
 
 apple/lwriter.cpp
+-lwriterplus
+-lwriter2nt
+-lwriter
 
 apple/mac128.cpp
 
@@ -213,6 +301,7 @@ apple/maclc.cpp
 apple/maclc3.cpp
 
 apple/macpdm.cpp
+-pmac6100
 
 apple/macprtb.cpp
 
@@ -230,10 +319,22 @@ apple/macquadra700.cpp
 apple/macquadra800.cpp
 
 apple/newton.cpp
+-newtnotp
+-mp2100
+-mp2000
+-mp130
+-mp120
+-mp110
+-newtonmp
+-motmarco
+-spi7000
+-emate
 
 apple/pippin.cpp
+-pippin
 
 apple/powermacg3.cpp
+-pwrmacg3
 
 apple/tk2000.cpp
 
@@ -246,12 +347,20 @@ appliedconcepts/ggm.cpp
 appliedconcepts/prodigy.cpp
 
 arcadia/arcadia.cpp
+-trakcvg
+-polyvcg
+-plldium
+-mratlus
 
 atari/a2600.cpp
+-a2600_pop
 
 atari/a7800.cpp
 
 atari/atari400.cpp
+-a65xea
+-a130xe
+-a1200xl
 
 atari/atarist.cpp
 -falcon30
@@ -291,6 +400,7 @@ atari/atarist.cpp
 -tt030
 
 atari/jaguar.cpp
+-jaguarcd
 -a51mxr3k           // U:arcade
 -a51mxr3ka           // U:arcade
 -area51           // U:arcade
@@ -316,18 +426,30 @@ atari/lynx.cpp
 atari/pofo.cpp
 
 att/att3b2.cpp
+-3b2_600
+-3b2_400
+-3b2_310
+-3b2_300
 
 att/att4425.cpp
+-att4425
 
 att/att610.cpp
+-att615
+-att610
 
 att/att630.cpp
+-att730x
+-att630
 
 att/blit.cpp
+-blit
 
 att/unixpc.cpp
+-3b1
 
 ausnz/amust.cpp
+-amust
 
 ausnz/applix.cpp
 
@@ -342,6 +464,7 @@ ausnz/datum.cpp
 ausnz/dg680.cpp
 
 ausnz/dmax8000.cpp
+-dmax8000
 
 ausnz/eacc.cpp
 
@@ -350,28 +473,38 @@ ausnz/eti660.cpp
 ausnz/excali64.cpp
 
 ausnz/labtam.cpp
+-labtam
 
 ausnz/magnum.cpp
 
 ausnz/mbee.cpp
+-mbeett
 
 ausnz/pegasus.cpp
 
 ausnz/pipbug.cpp
 
 ausnz/poly.cpp
+-polydev
+-poly2
+-poly1e
+-poly1
 
 ausnz/proteus.cpp
+-proteus
 
 ausnz/pulsar.cpp
+-pulsarlb
 
 ausnz/super80.cpp
 
 ausnz/tec1.cpp
 
 banctec/banctec.cpp
+-banctec
 
 bandai/design_master.cpp
+-bdesignm
 
 bandai/rx78.cpp
 
@@ -381,13 +514,17 @@ bandai/wswan.cpp
 -pockchv2           // start button nw
 
 be/bebox.cpp
+-bebox
+-bebox2
 
 beehive/microb.cpp
 -dm3270            // terminal
 
 benesse/challenge_gear.cpp
+-chalgear
 
 benesse/pockchal.cpp
+-pockchal
 
 bitcorp/gamate.cpp
 
@@ -400,12 +537,14 @@ booth/apexc.cpp
 brainchild/pls1000.cpp
 
 brother/ax145.cpp
+-ax145
 
 brother/lw30.cpp
 
 brother/lw350.cpp
 
 brother/lw700i.cpp
+-lw700i
 
 brother/lw840.cpp
 -lw840               // white screen
@@ -413,14 +552,19 @@ brother/lw840.cpp
 brother/pn8800fxb.cpp
 
 burroughs/anzterm.cpp
+-anzterm
 
 burroughs/td831.cpp
+-td831
 
 camputers/camplynx.cpp
 
 canon/canon_s80.cpp
+-canonts3
+-canons80
 
 canon/cat.cpp
+-cat
 
 canon/x07.cpp
 
@@ -429,18 +573,21 @@ cantab/jupace.cpp
 //capcom/cps1.cpp             // U:arcade
 
 casio/casio_rompack.cpp
+-casiorom
 
 casio/casloopy.cpp
 
 casio/cfx9850.cpp
+-cfx9850gb
+-cfx9850
 
 casio/cps2000.cpp
--cps2000         // no screen
+-cps2000
 
 casio/ct8000.cpp
+-ctmb1
 -ct8000          // inputs
 -ctfk1           // inputs
--ctmb1           // no screen
 
 casio/ctk2000.cpp
 -ctk2100
@@ -459,34 +606,70 @@ casio/cz230s.cpp
 -sz1              // no sound
 
 casio/dg20.cpp
+-dg20
+-dg10
 
 casio/fp1100.cpp
+-fp1100
+-fp1000
 
 casio/fp200.cpp
+-fp200
 
 casio/fp6000.cpp
+-fp6000
 
 casio/fz1.cpp
+-fz20m
+-fz10m
+-fz1
 
 casio/ht6000.cpp
+-ht6000
 
 casio/ld50.cpp
+-ld50
 
 casio/pb1000.cpp
+-pb2000c
+-pb1000
+-ai1000
 
 casio/pickytlk.cpp
+-jd366
+-pickytlk
+-jd368
+-plets350
+-plets300
+-jd363
+-rx850
+-pickydis
+-jd364
+-csf5550
 
 casio/pv1000.cpp
 
 casio/pv2000.cpp
+-pv2000
 
 casio/rz1.cpp
 
 casio/sk1.cpp
+-sk5
+-sk2
+-sk10
+-sk1
 
 casio/superjr.cpp
+-jd360
+-jd361
+-jd320
+-jd362
+-jd367
+-jd5000
 
 casio/sx1000.cpp
+-sx1010
 
 casio/wk1800.cpp
 -wk1600           // no sound
@@ -497,8 +680,11 @@ casio/zoomer.cpp
 cce/mc1000.cpp
 
 ccs/ccs2810.cpp
+-ccs300
+-ccs2422
 
 ceres/ceres.cpp
+-ceres1
 
 chess/ave_arb.cpp
 
@@ -509,6 +695,7 @@ chess/conchess.cpp
 chess/conic_cchess2.cpp
 
 chess/conic_cchess3.cpp
+-cncchess3
 
 chess/regence.cpp
 
@@ -521,32 +708,45 @@ chessking/pmicrodx.cpp
 chessking/triomphe.cpp
 
 chromatics/cgc7900.cpp
+-cgc7900
 
 citoh/cit101.cpp
 -cit101               // terminal
 -cit101e              // terminal
 
 citoh/cit101xl.cpp
+-cit101xl
 
 citoh/cit220.cpp
+-vp122
+-cit220p
 
 coleco/adam.cpp
 
 coleco/coleco.cpp
 
 coleco/wrinkles.cpp
+-wrinkles
 
 commodore/c128.cpp
 
 commodore/c64.cpp
+-clipper
 
 commodore/c64dtv.cpp
+-c64dtv
 
 commodore/c65.cpp
+-c65
+-c64dx
 
 commodore/c900.cpp
+-c900
 
 commodore/cbm2.cpp
+-cbm730
+-cbm720_de
+-bx256hp
 
 commodore/chessmate.cpp
 
@@ -555,8 +755,13 @@ commodore/clcd.cpp
 commodore/kim1.cpp
 
 commodore/mps1230.cpp
+-mps1230
+-mps1000
 
 commodore/pet.cpp
+-superpet
+-mmf9000_se
+-mmf9000
 
 commodore/plus4.cpp
 
@@ -565,6 +770,7 @@ commodore/vic10.cpp
 commodore/vic20.cpp
 
 compugraphic/pwrview.cpp
+-pwrview
 
 comx/comx35.cpp
 
@@ -572,10 +778,14 @@ concept/concept.cpp
 -concept                // no sw
 
 conitec/prof180x.cpp
+-prof181x
+-prof180x
 
 conitec/prof80.cpp
+-prof80
 
 cromemco/c10.cpp
+-c10
 
 cromemco/mcb216.cpp
 
@@ -587,8 +797,13 @@ cybiko/cybiko.cpp
 dai/dai.cpp
 
 ddr/ac1.cpp
+-ac1scch
 
 ddr/bcs3.cpp
+-bcs3d
+-bcs3c
+-bcs3b
+-bcs3a
 
 ddr/c80.cpp
 
@@ -601,6 +816,10 @@ ddr/huebler.cpp
 ddr/jtc.cpp
 
 ddr/kc.cpp
+-kc85_5
+-kc85_4
+-kc85_3
+-kc85_2
 
 ddr/kramermc.cpp
 
@@ -613,10 +832,13 @@ ddr/llc2.cpp
 ddr/mc8020.cpp
 
 ddr/mc8030.cpp
+-mc8030
 
 ddr/nanos.cpp
+-nanos
 
 ddr/pcm.cpp
+-pcm
 
 ddr/poly880.cpp
 
@@ -630,36 +852,60 @@ ddr/sprachmg.cpp
 ddr/vcs80.cpp
 
 dec/dct11em.cpp
+-dct11em
 
 dec/decmate2.cpp
+-decmate3
+-decmate2
 
 dec/dectalk.cpp
+-dectalk
 
 dec/decwritr.cpp
+-la120
 
 dec/dtc03.cpp
+-dtc03
 
 dec/jensen.cpp
+-dpcaxp150
+-d2k500axp
+-d2k300axp
 
 dec/kn01.cpp
+-ds3100
+-ds2100
 
 dec/kn02.cpp
+-ds5k133
 
 dec/pdp1.cpp
 
 dec/pdp11.cpp
+-sms1000
+-pdp11ub2
+-pdp11ub
+-pdp11qb
 
 dec/rainbow.cpp
+-rainbow190
+-rainbow100a
 
 dec/uvax1.cpp
+-uvax1
 
 dec/uvax2.cpp
+-uvax2
 
 dec/uvax3.cpp
+-mv3500
+-mv3400
 
 dec/uvax3100.cpp
+-mv3100m10
 
 dec/vax11.cpp
+-vax785
 
 dec/vk100.cpp
 
@@ -687,10 +933,13 @@ dec/vt62.cpp
 -vt62           // black screen
 
 dg/aviion88k.cpp
+-aviion_4600
 
 dms/dms5000.cpp
+-dms5000
 
 dms/dms86.cpp
+-dms86
 
 dms/zsbc3.cpp
 
@@ -701,33 +950,65 @@ eaca/cgenie.cpp
 elektor/avrmax.cpp
 
 elektor/ec65.cpp
+-ec65k
+-ec65
 
 elektor/elekscmp.cpp
 
 elektor/junior.cpp
 
 elektron/elektronmono.cpp
+-monomach
+-machdrum
 
 emusys/emax.cpp
+-emaxp
+-emax2
+-emax
 
 emusys/emu2.cpp
+-emu2
 
 emusys/emu3.cpp
+-emu3
 
 emusys/emu68k.cpp
+-vintkeys
+-proteusxr
+-proteus1
+-procuss
+-phatt
+-orbit9090
+-carnaval
 
 ensoniq/enmirage.cpp
+-enmirage
 
 ensoniq/esq1.cpp
+-sq80
+-esqm
+-esq1
 
 ensoniq/esq5505.cpp
+-sqrack
+-sq2
+-sq1
+-ks32
+-eps16p
+-eps
 
 ensoniq/esqasr.cpp
+-asrx
+-asr10
 
 ensoniq/esqkt.cpp
+-ts12
+-ts10
 -kt76             // no sound
 
 ensoniq/esqmr.cpp
+-mrrack
+-mr61
 
 enterprise/ep64.cpp
 
@@ -736,51 +1017,73 @@ entex/advision.cpp
 entex/sag.cpp
 
 epoch/cassvisn.cpp
+-cassvisn
 
 epoch/gamepock.cpp
 
 epoch/scv.cpp
 
 epson/hx20.cpp
+-ehx20e
+-ehx20
+-ecm6127
+-ecm6032
 
 epson/px4.cpp
 
 epson/px8.cpp
+-px8
 
 epson/qx10.cpp
+-qx10
 
 ericsson/alfaskop41xx.cpp
+-alfaskop4120
+-alfaskop4110
+-alfaskop4101
 
 ericsson/e9161.cpp
+-e9161
 
 ericsson/eispc.cpp
 
 esprit/esp250c.cpp
+-esp250c
 
 esprit/executive10.cpp
+-exe10102
 
 excalibur/ivant.cpp
 
 excalibur/ivanto.cpp
 
 excalibur/mirage.cpp
--emirage              // stops when it loses a piece
+-emirage
 
 exidy/sorcerer.cpp
 
 facit/f4431.cpp
+-f4431
 
 facit/facit4440.cpp
+-facit4440
 
 fairchild/channelf.cpp
 
 fairchild/f387x.cpp
+-f387x
 
 fairlight/cmi.cpp
+-cmi2x
 
 falco/falco500.cpp
+-falco5220s
+-falco5220e
+-falco500e
 
 falco/falcots.cpp
+-ts2624
+-ts1
 
 falco/falcots28.cpp
 -ts28                // terminal
@@ -834,18 +1137,36 @@ fidelity/vcc.cpp
 fidelity/vsc.cpp
 
 force/miniforce.cpp
+-miniforce
 
 fujitsu/fm7.cpp
+-fm7740sx
+-fm16beta
+-fm11
 
 fujitsu/fmtowns.cpp
+-fmtmarty2
+-fmtmarty
+-fmtownsux
+-fmtownssj
+-fmtownsmx
+-fmtownshr
+-fmtownsftv
+-carmarty
+-fmtownsv03
+-fmtowns
 
 fujitsu/secoinsa20.cpp
+-secoinsa20
 
 gaelco/ds5002fp_programmer.cpp
+-gaelcods
 
 gamepark/gp2x.cpp
+-gp2x
 
 gamepark/gp32.cpp
+-gp32
 
 gridcomp/gridcomp.cpp
 -grid1101                // no sw
@@ -856,12 +1177,23 @@ gridcomp/gridcomp.cpp
 -grid1139                // no sw
 
 grundy/newbrain.cpp
+-newbrainmd
+-newbrain
+-newbraina
 
 handheld/chessking.cpp
 
 handheld/dbridgec.cpp
 
 handheld/evolution_handheld.cpp
+-yuleyuan
+-smkatsum
+-pokesmqz
+-tomyspt
+-pokexyqz
+-buttdtct
+-hoppech
+-evolhh
 
 handheld/gameking.cpp
 
@@ -882,9 +1214,12 @@ handheld/generalplus_gpel31xx.cpp
 handheld/gmaster.cpp
 
 handheld/gw35th.cpp
+-gwsmb35
 -gwzeldan              // black screen
 
 handheld/hh_cop400.cpp
+-vidchal
+-lchicken
 -lightfgt
 -plus1                // no screen
 
@@ -893,16 +1228,26 @@ handheld/hh_cops1.cpp
 handheld/hh_e0c6200.cpp
 
 handheld/hh_hmcs40.cpp
+-wantgman
+-tkjmaru
+-puckimon
+-ktparman
+-ggdman
+-gdefender
+-bombman
 
 handheld/hh_ht11xx.cpp
 
 handheld/hh_mediatek_mt6260a.cpp
+-sonicwtc
 
 handheld/hh_melps4.cpp
 
 handheld/hh_mn1400.cpp
 
 handheld/hh_pic16.cpp
+-uspbball
+-pabball
 -sfxphasor             // no screen
 
 handheld/hh_pps41.cpp
@@ -912,8 +1257,16 @@ handheld/hh_rw5000.cpp
 handheld/hh_sm510.cpp
 
 handheld/hh_smc1k.cpp
+-tlluke2
+-tkkongq
 
 handheld/hh_tms1k.cpp
+-bcheetah
+-tithermos
+-elecbowl
+-bshipb
+-mbdtower
+-bigtrak
 -cchime                  // no screen
 -mathmarv                // nothing?
 -mathmagi                // nothing?
@@ -926,14 +1279,32 @@ handheld/lk3000.cpp
 handheld/monty.cpp
 
 handheld/pensebem.cpp
+-pbem2017
 
 handheld/rzone.cpp
 
 handheld/scrablex.cpp
 
 handheld/st2302u_bbl_rom.cpp
+-bbl338
+-dphh8213
+-cutepet
+-class200
 
 handheld/st2302u_bbl_spi.cpp
+-touma568
+-touma560
+-toumapet
+-table108
+-retro150a
+-retro150
+-qpet
+-ppg118
+-pg118
+-dphh8661
+-dphh8633
+-mc_cb203
+-bbl380
 
 handheld/talkingbb.cpp
 
@@ -943,10 +1314,12 @@ handheld/talkingfb.cpp
 handheld/teammate.cpp
 
 handheld/vegaplus.cpp
+-vegaplus
 
 handheld/wildfire.cpp
 
 hds/hds200.cpp
+-hds200
 
 heathzenith/et3400.cpp
 
@@ -1012,12 +1385,15 @@ hegenerglaser/roma2.cpp
 hegenerglaser/smondial.cpp
 
 hitachi/b16.cpp
+-b16ex2
+-b16
 
 hitachi/bmjr.cpp
 
 hitachi/bml3.cpp
 
 hitachi/mbs1.cpp
+-mbs1
 
 homebrew/4004clk.cpp
 
@@ -1026,6 +1402,7 @@ homebrew/68ksbc.cpp
 homebrew/chaos.cpp
 
 homebrew/d6809.cpp
+-d6809
 
 homebrew/dcebridge.cpp
 -dcebridge             // useless
@@ -1053,18 +1430,23 @@ homebrew/lft_phasor.cpp
 homebrew/linux4004.cpp
 
 homebrew/minib.cpp
+-minib
 
 homebrew/mk1forth.cpp
 
 homebrew/p112.cpp
+-p112
 
 homebrew/pc532.cpp
+-pc532
 
 homebrew/phunsy.cpp
 
 homebrew/pimps.cpp
 
 homebrew/ravens.cpp
+-ravens2
+-ravens
 
 homebrew/rc2014.cpp
 -rc2014bppro           // no screen
@@ -1076,6 +1458,7 @@ homebrew/rc2014.cpp
 -sc133               // no screen
 
 homebrew/sbc6510.cpp
+-sbc6510
 
 homebrew/sitcom.cpp
 -sitcom            // useless
@@ -1086,6 +1469,7 @@ homebrew/test_t400.cpp
 -test420           // useless
 
 homebrew/ultim809.cpp
+-ultim809
 
 homebrew/uzebox.cpp
 
@@ -1097,112 +1481,191 @@ homebrew/zexall.cpp
 -zexall
 
 homelab/braiplus.cpp
+-braiplus
 
 homelab/homelab.cpp
+-homelab4
+-homelab3
+-brailab4
 
 hp/hp16500.cpp
+-hp1651b
+-hp1650b
+-hp16500b
+-hp165ka0
 
 hp/hp2100.cpp
+-hp2100
 
 hp/hp2620.cpp
+-hp2622a
 
 hp/hp2640.cpp
 
 hp/hp3478a.cpp
+-hp3478a
 
 hp/hp48.cpp
+-hp39g
 -hp49g
 
 hp/hp49gp.cpp
+-hp49gp
 
 hp/hp620lx.cpp
+-hp620lx
 
 hp/hp64k.cpp
 -hp64k
 
 hp/hp700.cpp
+-hp700_92
+-hp700_70
 
 hp/hp7596a.cpp
+-hp7596a
 
 hp/hp80.cpp
 
 hp/hp95lx.cpp
+-hp95lx
 
 hp/hp9825.cpp
 
 hp/hp9845.cpp
+-hp9845s
+-hp9845a
+-hp9835b
+-hp9835a
 
 hp/hp98x6.cpp
 
 hp/hp9k.cpp
+-hp9816
 
 hp/hp9k_3xx.cpp
+-hp9k382
+-hp9k380
+-hp9k370
+-hp9k360
+-hp9k340
+-hp9k332
+-hp9k330
+-hp9k320
+-hp9k310
 
 hp/hpz80unk.cpp
+-hpz80unk
 
 hp/hp_ipc.cpp
+-hp9808a
 
 hp/jornada.cpp
+-jorn720
 
 husky/hawk.cpp
+-hawk
 
 husky/hunter16.cpp
+-hunter216
+-hunter1680
+-hunter16
 
 husky/hunter2.cpp
+-hunter2
+-hunter
 
 husky/husky.cpp
 
 ibm/ibm3153.cpp
+-ibm3153
 
 ibm/ibm3477.cpp
+-ibm3477
 
 ibm/ibm5100.cpp
 
 ibm/ibm5550.cpp
+-ibm5550
 
 ibm/ibm6580.cpp
+-ibm6580
 
 ibm/ptpc110.cpp
+-ptpc110
 
 ibm/rs6000_type7xxx.cpp
+-rs6k7009
 
 ibm/rtpc.cpp
+-rtpca25
+-rtpc025
+-rtpc020
+-rtpc015
+-rtpc010
 
 ibm/thinkpad600.cpp
+-tpad770z
+-tpad760xd
+-tpad600x
+-tpad600e
+-tpad600
 
 ibm/thinkpad8xx.cpp
+-tpad850
 
 informer/informer_207_100.cpp
+-in207100
 
 informer/informer_207_376.cpp
+-in207376
 
 informer/informer_213.cpp
+-in213ae
+-in213
 
 intel/basic52.cpp
 
 intel/i420ex.cpp
+-a486ap4
+-entrada
 
 intel/imds2.cpp
 
 intel/intellec4.cpp
 
 intel/intellec8.cpp
+-intlc8m80
+-intlc8
 
 intel/ipc.cpp
+-ipc
 
 intel/ipds.cpp
+-ipds
 
 intel/isbc.cpp
+-sm1810
+-rpc86
+-isbc8630
+-isbc86
+-isbc8605
+-isbc286
 
 intel/isbc660.cpp
+-isbc660
 
 intel/isbc8010.cpp
 
 intel/isbc8030.cpp
 
 intel/rex6000.cpp
+-oz750
+-rex6000
+-ds2
 
 intel/sdk51.cpp
+-sdk51
 
 intel/sdk80.cpp
 
@@ -1211,78 +1674,165 @@ intel/sdk85.cpp
 intel/sdk86.cpp
 
 intergraph/interpro.cpp
+-ip6800
+-ip6700
+-ip6400
+-ip6000
+-ip2800
+-ip2700
+-ip2500
+-ip2400
+-ip2000
 
 interton/vc4000.cpp
 
 isc/compucolor.cpp
+-compclr2
 
 kawai/acr20.cpp
+-acr20
 
 kawai/k1.cpp
+-k1rii
+-k1r
+-k1m
+-k1
 
 kawai/k4.cpp
+-k4r
+-k4
 
 kawai/k5.cpp
+-k5m
+-k5
 
 kawai/ksp10.cpp
+-ksp10
 
 kawai/r100.cpp
+-r100
 
 kawai/sx240.cpp
+-sx240
 
 kaypro/kaypro.cpp
+-kaypro2x
+-omni2
+-omni4
+-robie
+-kaypronew2
+-kaypro4x
+-kaypro484p88
+-kaypro484
+-kayproiip88
+-kaypro284
+-kaypro1084
+-kaypro1
 
 koei/pasogo.cpp
+-pasogo
 
 kontron/kdt6.cpp
 
 korg/korgds8.cpp
+-ds8
+-korg707
 
 korg/korgdss1.cpp
+-dssmsrk
+-dss1
 
 korg/korgdvp1.cpp
+-dvp1
 
 korg/korgdw8k.cpp
+-ex8000
+-dw8000ex
+-dw8000
 
 korg/korgm1.cpp
+-korgm1r
+-korgm1rex
+-korgm1p1
+-korgm1
+-korgm1ex
 
 korg/korgtriton.cpp
+-korgtriton
+-korgtritona
+-korgtritonb
 
 korg/korgws.cpp
+-korgwssr
+-korgwsex
+-korgwsad
 
 korg/korgz3.cpp
+-korgz3
 
 korg/microkorg.cpp
+-microkorg
 
 korg/poly61.cpp
+-poly61
 
 korg/poly800.cpp
+-poly800ii
+-poly800mdk
+-poly800
 
 korg/polysix.cpp
+-polysix
 
 kurzweil/krz2000.cpp
+-k2000
 
 kyber/kminus.cpp
+-kminus
 
 kyocera/kyocera.cpp
+-npc8300
+-pc8201a
+-pc8201
 
 leapfrog/iquest.cpp
+-ttwistvc
+-ttwistsp
+-ttwistm
+-ttwistfb
+-ttwistbq
+-turboex
+-iquest
 
 leapfrog/leappad.cpp
+-mfleappad
+-ltleappad
+-leappadmic
+-leappad
 
 leapfrog/leapster.cpp
+-leapstertv
+-leapsterlmx
+-leapster2
+-leapster
 
 leapfrog/leapster_explorer.cpp
+-leapexpr
 
 learsiegler/adm11.cpp
+-adm12
 
 learsiegler/adm23.cpp
+-adm23
 
 learsiegler/adm31.cpp
+-adm31
 
 learsiegler/adm36.cpp
+-adm36
 
 liberty/freedom120.cpp
+-free120
 
 liberty/freedom200.cpp
 -free200             // terminal
@@ -1291,8 +1841,10 @@ liberty/freedom200.cpp
 linn/linndrum.cpp
 
 lsi/m3.cpp
+-m3
 
 lsi/octopus.cpp
+-octopus
 
 luxor/abc1600.cpp
 
@@ -1304,14 +1856,21 @@ luxor/x37.cpp
 -x37             // does nothing
 
 makerbot/replicator.cpp
+-replica1
 
 matsushita/duet16.cpp
+-duet16
 
 matsushita/jr100.cpp
+-jr100u
+-jr100
 
 matsushita/jr200.cpp
+-jr200u
+-jr200
 
 matsushita/kn5000.cpp
+-kn5000
 
 matsushita/myb3k.cpp
 
@@ -1320,35 +1879,51 @@ mattel/aquarius.cpp
 mattel/chess.cpp
 
 mattel/intv.cpp
+-intvkbd
 
 mattel/juicebox.cpp
 
 mattel/pixtermu.cpp
+-pixtermu
 
 mc/mc68000.cpp
 -mc68000           // no sw
 
 mc/mccpm.cpp
+-mccpm
 
 mchester/ssem.cpp
 
 memotech/mtx.cpp
 
 mera/ec7915.cpp
+-ec7915
 
 mera/konin.cpp
+-konin
 
 mera/m79152pc.cpp
+-m79152pc
 
 mera/vdm7932x.cpp
+-vdm79322
 
 merit/mtouchxl.cpp
+-mtchxlti
+-mtchxl5k
+-mtchxl5ko2
+-mtchxl5ko
+-mtchxlgld
+-mtchxlgldo
 
 mg1/mg1.cpp
+-mg1
 
 microcraft/dim68k.cpp
+-dim68k
 
 microkey/primo.cpp
+-primoc64
 
 microsoft/jazz.cpp
 -mmr4000be             //black screen
@@ -1358,14 +1933,19 @@ microsoft/xbox.cpp
 -xbox        // mnw
 
 microterm/ergo201.cpp
+-ergo201
 
 microterm/microterm_f8.cpp
+-act5a
 
 microterm/mt420.cpp
+-mt420
 
 microterm/mt440.cpp
+-mt440
 
 microterm/mt5510.cpp
+-mt5510
 
 midway/astrohome.cpp
 
@@ -1380,6 +1960,8 @@ miltonbradley/vectrex.cpp
 mips/mips_i2000.cpp
 
 mips/mips_r3030.cpp
+-rc3230
+-rs3230
 
 misc/3do.cpp
 -3dobios
@@ -1405,15 +1987,21 @@ misc/adi_vt52.cpp
 misc/ctvboy.cpp
 
 misc/daphor32.cpp
+-daphor32
 
 misc/deecoseal.cpp
+-deecoseal
 
 misc/ds2000.cpp
 -ds2000          // useless
 
 misc/eva.cpp
+-eva24
+-eva11
 
 misc/ez2d.cpp
+-ez2d2m
+-asuscubx
 
 misc/h01x.cpp
 
@@ -1423,12 +2011,22 @@ misc/jaminator.cpp
 misc/macbug.cpp
 
 misc/mcm70.cpp
+-mcm70
 
 misc/microbox2.cpp
+-microbx2
 
 misc/mindset.cpp
 
 misc/miuchiz.cpp
+-miuchiz
+-mcp_spike
+-mcp_dash
+-mcm_roc
+-mcm_inferno
+-mcm_creeper
+-mcb_yasmin
+-mcb_cloe
 
 misc/monon_color.cpp
 
@@ -1437,44 +2035,64 @@ misc/mtu130.cpp
 misc/nabupc.cpp
 
 misc/stc3910.cpp
+-executel
 
 misc/triton.cpp
+//-triton72      // nw parent
 
 misc/videoart.cpp
 
 misc/vocalizer.cpp
+-vocalizer
 
 misc/wren.cpp
 
 misc/z80ne.cpp
 
 mit/tx0.cpp
+-tx0_8kwo
+-tx0_8kw
+-tx0_64kw
 
 mits/al8800b.cpp
+-al8800b
 
 mits/altair.cpp
+-al8800bt
 
 mits/mits680b.cpp
+-mits680b
 
 mitsubishi/multi16.cpp
+-multi16
 
 mitsubishi/multi8.cpp
+-multi8
 
 mitsubishi/trium.cpp
+-triumec
 
 moog/memorymoog.cpp
+-memorymoog
 
 moog/source.cpp
+-moogsource
 
 morrow/microdec.cpp
+-md3
+-md2
 
 morrow/mpz80.cpp
+-mpz80
 
 morrow/tricep.cpp
+-tricep
 
 motorola/ampscarp.cpp
+-ampscarp
 
 motorola/assist05.cpp
+-assist05
 
 motorola/exorciser.cpp
 
@@ -1482,6 +2100,7 @@ motorola/exorterm.cpp
 -exorterm155             // terminal
 
 motorola/m6805evs.cpp
+-m6805evs
 
 motorola/m68705prg.cpp
 -705p3prg               // mech
@@ -1490,6 +2109,7 @@ motorola/m68705prg.cpp
 -705u3prg               // mech
 
 motorola/m8120.cpp
+-m8120
 
 motorola/mekd1.cpp
 
@@ -1505,10 +2125,13 @@ motorola/mekd5.cpp
 motorola/mex68kecb.cpp
 
 motorola/mvme162.cpp
+-mvme162
 
 motorola/powerstack.cpp
+-powerstk
 
 motorola/sys1121.cpp
+-sys1121
 
 motorola/uchroma68.cpp
 
@@ -1522,66 +2145,151 @@ msx/msx1_bruc100.cpp
 msx/msx1_v9938.cpp
 
 msx/msx2.cpp
+-y805256
+-y805128r2
+-y805128r2e
+-y805128
+-y503iiir
+-y503iiire
+-nms8260
+-mpc27
+-mbh70
+-hx33
+-hx23f
+-hx23
+-victhc95a
+-victhc95
+-victhc90a
+-victhc90
+-hbg900p
+-hbg900ap
+-fsa1fm
 
 msx/msx2p.cpp
+-expertdx
+-expertac
+-expert3t
+-expert3i
 
 msx/msxtr.cpp
+-fsa1st
+-fsa1gt
 
 multitech/mkit09.cpp
+-mkit09a
 
 multitech/mpf1.cpp
+-cs113
 
 multitech/mpf1p.cpp
 
 multitech/mpf1_88.cpp
 
 mupid/mdisk.cpp
+-mdisk
+-fl100
 
 mupid/mupid2.cpp
+-ptc100
+-mupid2
+-mupid2i
 
 nakajima/nakajies.cpp
+-es210_es
+-wales210
+-drwrt400
+-drwrt200
+-drwrt100
+-drwrt450
+-dator3k
 
 nascom/nascom1.cpp
 
 natsemi/icm3216.cpp
+-icm3216
 
 natsemi/ns32kdb.cpp
 
 natsemi/ns5652.cpp
+-ns5652
 
 natsemi/sys16.cpp
 
 ncd/ncd68k.cpp
+-ncd19
+-ncd17c
+-ncd16
 
 ncd/ncd88k.cpp
+-ncdmcx
+-ncd19c
 
 ncd/ncdmips.cpp
+-hmxpro
 
 ncd/ncdppc.cpp
+-explorapro
 
 ncr/dmv.cpp
 
 nec/apc.cpp
+-apc
 
 nec/bungo.cpp
+-mini5sx
 
 nec/ews4800.cpp
+-ews4800_310
 
 nec/pc100.cpp
+-pc100
 
 nec/pc6001.cpp
+-pc6601sr
+-pc6601
+-pc6001mk2sr
+-pc6001mk2
+-pc6001a
+-pc6001
 
 nec/pc8001.cpp
+-pc8001mk2sr
+-pc8001mk2
+-pc8001
 
 nec/pc8401a.cpp
+-pc8500
+-pc8401bd
 
 nec/pc8801.cpp
+-pc8801mk2
+-pc8801mc
+-pc8801
 
 nec/pc88va.cpp
+-pc88va2
+-pc88va
 
 nec/pc9801.cpp
+-pc9801vx
+-pc9801vm
+-pc9801ux
+-pc9801uv2
+-pc9801us
+-pc9801rx
+-pc9801m2
+-pc9801fs
+-pc9801f
+-pc9801dx
+-pc9801bx2
+-pc9801
 
 nec/pc9801_epson.cpp
+-pc486se
+-pc486mu
+-pc386m
+-pc286vs
+-pc286u
 
 nec/pc9821.cpp
 -pc9821ap2              // pc9821as nw
@@ -1598,20 +2306,27 @@ nec/pc9821.cpp
 -pc9821xv13             // mnw
 
 nec/pc98ha.cpp
+-pc98lt
+-pc98ha
 
 nec/pce.cpp
 
 nec/pcfx.cpp
+-pcfxga
+-pcfx
 
 nec/pc_h98.cpp
+-pc_h98s
 
 nec/piet1.cpp
+-piet1
 
 nec/tk80bs.cpp
 
 //neogeo/neogeo.cpp           // U:arcade
 
 neogeo/neogeocd.cpp
+-neocd
 
 netronics/elf.cpp
 
@@ -1640,10 +2355,20 @@ newcrest/senterprise.cpp
 newcrest/sphinx40.cpp
 
 next/next.cpp
+-nextstc
+-nextst
+-nextsc
+-nexts2
+-nexts
+-nextctc
+-nextct
+-nextc
+-next
 
 nichibutsu/myvision.cpp
 
 nintendo/compmahj.cpp
+-compmahj
 
 nintendo/gamecube.cpp
 -gcbr
@@ -1658,37 +2383,199 @@ nintendo/gba.cpp
 -robotech
 
 nintendo/n64.cpp
+-n64dd
+-n64pal
+-n64
 
 nintendo/n64_gateway.cpp
+-n64_lodgenet
 
 nintendo/nds.cpp
+-nds
 
 nintendo/nes.cpp
+-sb486
+-fctitler
+-drpcjr
 
 nintendo/nes_clone.cpp
+-vtvsocr
+-vtvppong
+-pjoypj001
+-digezlg
+-danzkara
+-dancexpt
+-croaky
 -pv95in1            // mnw
 
 nintendo/nes_m8.cpp
 
 nintendo/nes_m82.cpp
+-m82
 
 nintendo/nes_sh6578.cpp
+-ablwikid
+-vsmaxx25
+-vsmaxx15
+-pp6578
+-bb6578
+-mousekid
+-dancmix3
+-dgun806
+-bancook
+-bandgpad
+-ts_handy11
+-bandggcn
+-cpatrolm
+-6578cjz2
+-6578cjz1
 
 nintendo/nes_vt02_vt03.cpp
+-senwld
+-vtpinball
+-vtboxing
+-protpp
+-vfootbal
+-vdogdeme
+-vdogdemo
+-tvmjfc
+-ablping
+-megapad
+-hs36red
+-hs36blk
+-cbrs8
+-mc_105te
 
 nintendo/nes_vt09.cpp
+-pumpactv
 
 nintendo/nes_vt32.cpp
+-retror30
+-lxpcpp
+-lxpcsp
+-lxpcli
+-lxpcgp
+-lxpcdp
+-lxpcg
+-lxpcs
+-lxpc
+-matet220
+-matet300
+-matet100
+-mymman
+-dgunl3202
+-dgunl3201
+-myaass
+-myaasa
+-micac250
+-tvkunio1
+-k10_5l
+-k10_2l
+-fingerd
 -lxpcfz             // mnw
 -lxpcfzcz           // mnw
 
 nintendo/nes_vt369_vtunknown.cpp
+-zonefusn
+-zl383
+-nesvt270
+-unk128vt
+-tup240
+-tetrtin
+-sealvt
+-s5_520
+-s10fake
+-s10_520
+-rtvgc300pj
+-rtvgc300fz
+-rtvgc300cr
+-rtvgc300
+-retro620
+-a6plus
+-rbbrite
+-pactin
+-otrail
+-nubsupmf
+-dgun2572
+-matetsl
+-matet10
+-dgun2577
+-dgun2593
+-dgun2561
+-myarccn
+-mog_m320
+-gcs2mgp
+-rd5_240
+-240in1ar
+-red5mam
+-hkb502a
+-hkb502
+-h12p1000
+-goretropa
+-goretrop
+-gb50_150
+-gtct885
+-gbox2020
+-f5_620
+-egame150
+-dvnimbus
+-168pcase
+-denv150
+-d9_500
+-lxcypksp
+-lxcypkpp
+-lxcypkfz
+-lxcypkdp
+-lxcap
+-lxcyber
+-lxccminn
+-lxccplan
+-lxccatv
+-lxcmcysw
+-lxcmcyspn
+-lxcmcyspa
+-lxcmcysp
+-lxcmcypj
+-lxcmcypp
+-lxcmcyppa
+-lxcmcyls
+-lxcmcyfzb
+-lxcmcyfza
+-lxcmcyfz
+-lxcmcyfd
+-lxcmcydpn
+-lxcmcydp
+-lxcmcycr
+-lxcmcyco
+-lxcmcybt
+-lxcmcyba
+-lxcmc250
+-jl2377
+-lxcmcy
+-jl1810gr
+-lexi30
+-t3_630
+-500in1hh
+-36pcase
+-unkra200
 -goretropu12        // mnw
 -goretropu13        // mnw
 -pixel246           // bad gfx
 -unk198vt           // bad gfx
 
 nintendo/nes_vt42xx.cpp
+-rfcp168
+-retro400
+-bl339
+-hhgc319
+-mc_hh210
+-gbox2022
+-gbox2019
+-g9_666
+-g7_666
+-g6_666
+-g5_500
+-g3_800
 
 nintendo/pokemini.cpp
 
@@ -1697,8 +2584,14 @@ nintendo/snes.cpp
 nintendo/vboy.cpp
 
 nintendo/vt1682.cpp
+-wowwg
+-gm235upc
+-anpnvt12
+-intg5410
+-anpncpc
 
 nokia/dbox.cpp
+-dbox
 
 nokia/mikromik.cpp
 -mm1m7             // cannot boot disk
@@ -1707,8 +2600,23 @@ nokia/mikromik.cpp
 nokia/mikromikko2.cpp
 
 nokia/nokia_3310.cpp
+-noki8890
+-noki8850
+-noki8250
+-noki8210
+-noki7110
+-noki6250
+-noki6210
+-noki5210
+-noki3410
+-noki3330
+-noki3310
+-noki3210
 
 northstar/horizon.cpp
+-vector1
+-nshrz
+-nshrz2mhz
 
 novag/accord.cpp
 
@@ -1739,6 +2647,7 @@ novag/micro2.cpp
 novag/primo.cpp
 
 novag/robotadv.cpp
+-robotadv
 
 novag/sapphire.cpp
 
@@ -1753,12 +2662,16 @@ novag/vip.cpp
 novag/zircon2.cpp
 
 novation/basssta.cpp
+-sbasssta
+-bassstr
 
 novation/drumsta.cpp
+-drumsta
 
 oberheim/dmx.cpp
 
 oberheim/ob8.cpp
+-ob8
 
 oberheim/xpander.cpp
 -xpander        // mnw
@@ -1766,49 +2679,79 @@ oberheim/xpander.cpp
 olivetti/att6300p.cpp
 
 olivetti/celint2k.cpp
+-celint2kss
 
 olivetti/m20.cpp
+-m44
+-m40
+-m20
 
 olivetti/m24.cpp
+-m240
+-m24
+-m21
 
 olivetti/olivpc1.cpp
+-olivpc1
 
 olympiaint/olyboss.cpp
+-olybossd
+-olybossc
+-bossb85
+-olybossb
+-bossa85
 
 olympiaint/olytext.cpp
+-olytext
 
 olympiaint/peoplepc.cpp
+-olypeopl
 
 omnibyte/msbc1.cpp
+-msbc1
 
 omnibyte/ob68k1a.cpp
 
 omron/luna_68k.cpp
+-luna
 
 omron/luna_88k.cpp
 
 openuni/hektor.cpp
 
 orla/hk1000.cpp
+-hk1000
 
 orla/xm200.cpp
 -xm200           // no screen
 
 osborne/osbexec.cpp
+-osbexec
 
 osborne/osborne1.cpp
 
 osborne/vixen.cpp
 
 osi/osi.cpp
+-c1pmf
 
 paia/fatman.cpp
+-fatman
 
 paia/midi2cv8.cpp
 -midi2cv8             // useless?
 -midi2cv8_vhz         // useless?
 
 palm/palm.cpp
+-visor
+-spt1740
+-spt1700
+-spt1500
+-palmvx
+-palmv
+-palmm515
+-palmm505
+-palmm130
 -palmiii        // noise
 -palmiiic       // can't pass stylus check
 -palmpers       // can't leave setup, runs slow
@@ -1818,6 +2761,7 @@ palm/palmz22.cpp
 -palmz22        // no crosshair, runs slow
 
 pc/asst128.cpp
+-asst128
 
 pc/at.cpp
 -so025d2
@@ -2182,52 +3126,170 @@ pc/at.cpp
 -zdz248
 
 pc/atpci.cpp
+-ficvt503
+-ecssi5pi
+-at586
+-at586x3
+-m55hipl
 
 pc/compc.cpp
+-compc1
+-pc10iii
+-compc10
 
 pc/ct486.cpp
+-ast611
+-ast6000
 -ct486          // can't boot floppy
 
 pc/ec184x.cpp
+-ec1845
 -ec1840         // text missing
 
 pc/europc.cpp
+-euroxt
+-europc2
+-europc
 
 pc/genpc.cpp
 
 pc/ibmpc.cpp
+-ibm5140
 -ibm5155         // no kbd
 
 pc/ibmpcjr.cpp
+-ibmpcjx
 
 pc/iskr103x.cpp
+-iskr1030m
 
 pc/mc1502.cpp
+-pk88
 -mc1502       // doesnt read boot disk
 
 pc/megapc.cpp
+-megapcpl
+-megapc
 
 pc/nforcepc.cpp
+-nforcepc
 
 pc/pc.cpp
+-zdz180
+-kyoxt
+-xiprocessor
+-vpcii
+-auvip800
+-hyo88t
+-to16
+-sx16
+-hyu16te
+-hyu16t
+-spc400d
+-sicpc1605
+-sergeysxt
+-ssam88s
+-poisk2
+-ncrpc6
+-ncrpc4i
+-pc7000
+-eaglepc2
+-kaypropc
+-olytext30
+-olystar20f
+-mononuxt2
+-mononuxt
+-nms9100
+-juko8
+-juko16
+-mpx16
+-mpu9088vf
+-ledgmodm
+-ledgmodd
+-mk88
+-micro88
+-mbc16lt
+-mbc16
+-fraking
+-ittxtra
+-iskr3104
+-hstrtpls
+-eppc
+-mc1702
+-ec1847
+-earthst
+-eaglespirit
+-eagle1600
+-comdesk
+-dgone
+-coppc21
+-coppc400
+-comport
+-nixpc01
+-cadd810
 
 pc/pcipc.cpp
+-se440bx2
+-pciagp
+-pcipctx
 
 pc/pcipc_sis.cpp
+-zito4dps
+-so4saw2
+-a486sp3
+-aa486s
+-ms4144
+-ls486e
+-jakms41
+-jwj446a
+-atc1425b
+-atc1425a
+-aoap43
+-abpv4
+-abpm4
+-abpi4
+-ch4spi
+-ch486spm
+-ft486f55
+-sis85c496
+-so30h
 
 pc/pcipc_via.cpp
+-ga6vx
+-ct6vta2
+-zidabx98
+-ls5amvp3
 
 pc/poisk1.cpp
 
 pc/ps2.cpp
+-i8530286
+-i8580111
+-i8580071
+-i8555081
+-i8550061
+-i8550021
+-i8535043
+-i8530h31
 
 pc/quakeat.cpp
+-quake
+-ga6la7
 
 pc/scatsx.cpp
+-scsxaio
+-mb1320
 
 pc/sis630.cpp
+-zidav630e
+-asuscusc
+-asuspolo
+-shutms11
+-gamecst2
+-gamecstl
 
 pc/tandy1t.cpp
+-t1000rl
 
 pc/teradrive.cpp
 -teradrive          // multiple issues
@@ -2236,6 +3298,11 @@ pc/teradrive.cpp
 pc/tosh1000.cpp
 
 philips/cdi.cpp
+-quizardff
+-gpi1200
+-cdi910
+-cdi490a
+-cdimono2
 -quizard           // U:arcade
 -quizard_10           // U:arcade
 -quizard_12           // U:arcade
@@ -2261,8 +3328,16 @@ philips/odyssey2.cpp
 philips/p2000t.cpp
 
 philips/patgen.cpp
+-pm5644l00
+-pm5644p00
+-pm5644g913
+-pm5644g00
+-pm5644g924b
+-pm5644g924
+-pm5644m00
 
 philips/philipsbo.cpp
+-pbo
 
 philips/vg5k.cpp
 
@@ -2272,8 +3347,10 @@ philips/yes.cpp
 pitronics/beta.cpp
 
 poly88/poly88.cpp
+-poly8813
 
 positron/positron.cpp
+-positron
 
 psion/mc400.cpp
 -mc200               // grey screen
@@ -2281,6 +3358,7 @@ psion/mc400.cpp
 psion/mc600.cpp
 
 psion/psion.cpp
+-psion1
 -psionp200           // wont run any sw
 -psionp200a          // wont run any sw
 -psionp250           // wont run any sw
@@ -2302,20 +3380,27 @@ psion/siena.cpp
 psion/workabout.cpp
 
 quantel/dpb7000.cpp
+-dpb7000
 
 quantel/harriet.cpp
+-harriet
 
 qume/qvt102.cpp
 -qvt102         // terminal
 -qvt102a        // terminal
 
 qume/qvt103.cpp
+-qvt103
 
 qume/qvt190.cpp
+-qvt190
 
 qume/qvt201.cpp
+-qvt201
 
 qume/qvt70.cpp
+-qvt82
+-qvt70
 
 rca/microkit.cpp
 
@@ -2324,8 +3409,10 @@ rca/studio2.cpp
 rca/vip.cpp
 
 regnecentralen/rc702.cpp
+-rc702
 
 regnecentralen/rc759.cpp
+-rc759
 
 rm/rm380z.cpp
 
@@ -2334,16 +3421,25 @@ rm/rm480z.cpp
 rm/rmnimbus.cpp
 
 robotron/a5105.cpp
+-a5105
 
 robotron/a51xx.cpp
+-a5130
+-a5120
 
 robotron/a7150.cpp
+-a7150
 
 robotron/k1003.cpp
+-k1003
 
 robotron/k8915.cpp
+-k8915
 
 robotron/rt1715.cpp
+-rt1715w
+-rt1715lc
+-rt1715
 
 robotron/z1013.cpp
 -z1013s60        // inputs
@@ -2361,78 +3457,143 @@ robotron/z9001.cpp
 rockwell/aim65.cpp
 
 rockwell/aim65_40.cpp
+-aim65_40
 
 roland/alphajuno.cpp
+-mks50
+-hs80
+-ajuno2
+-ajuno1
 
 roland/boss_se70.cpp
+-se70
 
 roland/boss_sx700.cpp
+-sx700
+-gx700
 
 roland/juno106.cpp
+-mks7
+-juno106
 
 roland/juno6.cpp
+-juno6
 
 roland/roland_cm32p.cpp
+-cm32p
 
 roland/roland_d10.cpp
+-d110
+-d10
 
 roland/roland_d50.cpp
+-d550
+-d50
+-d50o
 
 roland/roland_d70.cpp
+-d70
 
 roland/roland_jd800.cpp
+-jd800
 
 roland/roland_jv80.cpp
+-rd500
+-jv880
 
 roland/roland_jx3p.cpp
+-mks30
+-jx3p
+-gr700
 
 roland/roland_jx8p.cpp
+-mks70
+-jx8p
+-jx8po
+-jx10
 
 roland/roland_mc50.cpp
+-mc50mk2
+-mc50
+-mc300
 
 roland/roland_mt32.cpp
+-mt32
+-mt100
+-cm32l
 
 roland/roland_mt80s.cpp
+-mt80s
 
 roland/roland_pg1000.cpp
+-pg1000
 
 roland/roland_pr100.cpp
+-pr100
+-pr100_201
 
 roland/roland_r8.cpp
+-r8m
+-r8mk2
+-r8
 
 roland/roland_ra30.cpp
+-ra30
 
 roland/roland_s10.cpp
+-s220
+-s10
+-mks100
 
 roland/roland_s50.cpp
+-w30
+-s550
+-s50
 
 roland/roland_sc55.cpp
+-cm300
+-sc155
+-sc55
 
 roland/roland_sc55mk2.cpp
+-sc55mk2
 
 roland/roland_sc88.cpp
+-sc88vl
 
 roland/roland_tb303.cpp
+-tb303
 
 roland/roland_tnsc1.cpp
+-rlndtnsc1
 
 roland/roland_tnsc2.cpp
+-rlndtnsc2
 
 roland/roland_tr505.cpp
+-tr505
 
 roland/roland_tr606.cpp
+-tr606
 
 roland/roland_tr707.cpp
+-tr727
 
 roland/roland_tr808.cpp
+-tr808
 
 roland/roland_tr909.cpp
+-tr909
 
 roland/roland_u20.cpp
+-u20
+-u220
 
 rolm/r9751.cpp
+-r9751
 
 sage/sage2.cpp
+-sage2
 
 saitek/blitz.cpp
 
@@ -2497,6 +3658,7 @@ saitek/turbos24k.cpp
 samcoupe/samcoupe.cpp
 
 samsung/dvd-n5xx.cpp
+-n501
 
 samsung/spc1000.cpp
 
@@ -2511,75 +3673,213 @@ sanyo/phc20.cpp
 sanyo/phc25.cpp
 
 saturn/st17xx.cpp
+-st1714
+-st1708
+-st1707
+-st1706
+-st1705
+-st1704
+-st1703
+-st1702
+-st1701
+-st1700h
 
 sega/dcchk.cpp
+-dcacchk
 
 sega/dccons.cpp
+-dctream
+-dcdev
+-dcfish
+-dc
+-dcproto
+-dcjp
+-dceu
 
 sega/magistr16.cpp
+-magistr16
 
 sega/mdconsole.cpp
+-xeye
+-wmegam2
+-wmega
+-32x_scd
+-segacd2
+-segacd
+-multmega
+-32x_mcdj
+-32x_mcd
+-aiwamcd
+-megacd2j
+-megacd2
+-megacdj
+-megacd
+-megacda
+-32xj
+-32xe
+-laseractj
+-laseract
+-32x
+-cdx
 
 sega/megadriv_firecore.cpp
+-mdhh100
+-sarc110a
+-sarc110
+-reactmd
+-matet
+-mateta
+-mysf2
+-mypacgld
+-mypac
+-mypaca
+-mympaca
+-mympac
+-mygalaga
+-mygalag
+-mahg156
+-dcat16
+-atgame40
 -mygalagb               // mnw
 
 sega/megadriv_rad.cpp
+-rad_mncr
+-banmrid
 
 sega/megadriv_unksoc.cpp
+-ra145
 
 sega/megatech.cpp
+-mt_wwar
+-mt_wcsoc
+-mt_tout
+-mt_tlbba
+-mt_tfor2
+-mt_tetri
+-mt_stbld
+-mt_srbb
+-mt_smgp
+-mt_shang
+-mt_srage
+-mt_spman
+-mt_shar2
+-mt_soni2
+-mt_sonia
+-mt_sonic
+-mt_shnbi
+-mt_shado
+-mt_revsh
+-mt_parlg
+-mt_orun
+-mt_mystd
+-mt_mwalk
+-mt_mlh
+-mt_lastb
+-mt_kcham
+-mt_stf
+-mt_gsocr
+-mt_ggolf
+-mt_gfoot
+-mt_gaxe2
+-mt_gaxe
+-mt_gng
+-mt_fwrld
+-mt_fshrk
+-mt_fz
+-mt_eswat
+-mt_crack
+-mt_cols
+-mt_calga
+-mt_bbros
+-mt_astro
+-mt_arrow
+-mt_tgolf
+-mt_beast
+-mt_asyn
+-mt_astrm
+-mt_aftrb
 
 sega/saturn.cpp
+-vsaturn
+-saturn
+-saturneu
+-saturnkr
+-saturnjp
+-hisaturn
 
 sega/segaai.cpp
+-segaai
 
 sega/segapico.cpp
+-copera
+-picou
+-picoj
+-pico
 
 sega/segapm.cpp
+-segapm
 
 sega/sega_beena.cpp
 
 sega/sega_ferie.cpp
+-feriewt
+-feriepu
+-ferieki
 
 sega/sega_sawatte.cpp
+-sawatte
 
 sega/sg1000.cpp
 
 sega/sms.cpp
 
 sega/stvdev.cpp
+-stvdev
 
 sega/svmu.cpp
+-svmu
 
 sequential/prophet5.cpp
+-prophet5rev30
 
 sequential/prophet600.cpp
+-prpht600a
+-prpht600
 
 sequential/sixtrak.cpp
 
 sfrj/galaxy.cpp
 
 sfrj/galeb.cpp
+-galeb
 
 sfrj/hr84.cpp
 
 sfrj/idpartner.cpp
+-partnerwfg
+-partner1fg
+-partnerw
 
 sfrj/lola8a.cpp
 
 sfrj/orao.cpp
+-orao103
+-orao
 
 sfrj/pecom.cpp
 
 sfrj/pmp11.cpp
+-pmp11
 
 sfrj/tim011.cpp
 
 sfrj/tim100.cpp
 
 sgi/crimson.cpp
+-crimson
 
 sgi/indy_indigo2.cpp
+-indigo2_4415
 -indy_4610        // panic
 -indy_4613        // useless
 -indy_5015        // crashes when demo asked for
@@ -2598,36 +3898,60 @@ sgi/ip6.cpp
 -pi4d25           // can't boot sw
 
 sgi/iris.cpp
+-iris3130
+-iris1400
 
 sgi/iris_power.cpp
+-4d410
 
 sgi/o2.cpp
+-o2
 
 sgi/octane.cpp
+-octane
 
 sgi/tt.cpp
 
 sharp/fontwriter.cpp
+-fw700ger
+-fw600
 
 sharp/mz2000.cpp
+-mz80b
 
 sharp/mz2500.cpp
 
 sharp/mz3500.cpp
+-mz3500
 
 sharp/mz5500.cpp
+-mz6550
+-mz6500
+-mz5500
 
 sharp/mz700.cpp
+-mz800
+-mz1500
 
 sharp/mz80.cpp
 
 sharp/pc1500.cpp
+-pc1500
 
 sharp/pce220.cpp
+-pcg850v
 
 sharp/pocketc.cpp
+-pc1450
+-pc1403h
+-pc1403
+-pc1360
+-pc1261
+-pc1260
+-pc1245
 
 sharp/wizard.cpp
+-iq7000
 
 sharp/x1.cpp
 
@@ -2646,14 +3970,23 @@ sharp/zaurus.cpp
 -zslc760         // black screen
 
 siemens/bitel.cpp
+-feap90
+-t3210
 
 siemens/pcd.cpp
+-pcx
+-pcd
 
 siemens/pcmx2.cpp
+-pcmx2
 
 siemens/pg685.cpp
+-pg685oua12
+-pg685
+-pg675
 
 sinclair/atm.cpp
+-atm
 
 sinclair/byte.cpp
 
@@ -2670,14 +4003,28 @@ sinclair/next/specnext.cpp
 sinclair/pentagon.cpp
 
 sinclair/ql.cpp
+-ql_se
+-ql_fr
+-ql_dk
+-tonto
 
 sinclair/scorpion.cpp
+-quorum
+-profi
+-kay1024
+-bestzx
 
 sinclair/spec128.cpp
 
 sinclair/specpls3.cpp
 
 sinclair/spectrum.cpp
+-magic6
+-quorum48
+-hc88
+-hc2000
+-cobra80
+-cobrasp
 
 sinclair/sprinter.cpp
 -sprinter             // no boot sw
@@ -2690,87 +4037,129 @@ sinclair/zx.cpp
 -zx97
 
 skeleton/600cat.cpp
+-600cat
 
 skeleton/aaa.cpp
+-aaa
 
 skeleton/acd.cpp
+-acd
 
 skeleton/aceex.cpp
+-aceex2814
 
 skeleton/adacp150.cpp
+-adacp150p
 
 skeleton/aid80f.cpp
+-aid80f
 
 skeleton/airbase99.cpp
+-airbase99
 
 skeleton/alcat7100.cpp
+-alcat7100
 
 skeleton/alesis_qs.cpp
+-alesqs7
 
 skeleton/alphasma.cpp
+-asmapro
+-asma2k
 
 skeleton/alphasma3k.cpp
+-asma3k
 
 skeleton/am1000.cpp
+-am1000
 
 skeleton/amusement_6502.cpp
+-unkamus
 
 skeleton/antonelli_hd6305.cpp
+-anto2614
+-anto2495
 
 skeleton/aquaplus_piece.cpp
+-piece512k
+-piece2m
 
 skeleton/argox.cpp
+-os214
 
 skeleton/attache.cpp
 
 skeleton/aws.cpp
+-aws220
+-aws200
 
 skeleton/ax20.cpp
+-ax20
 
 skeleton/basf7100.cpp
 
 skeleton/bert.cpp
+-bert
 
 skeleton/bitgraph.cpp
+-bitgrphb
 -bitgrpha                // useless
 
 skeleton/blaucds32.cpp
+-blaucds32
 
 skeleton/bpmmicro.cpp
+-bp1200
 
 skeleton/br8641.cpp
+-br8641
 
 skeleton/busicom.cpp
 
 skeleton/c2color.cpp
+-c2color
 
 skeleton/camirf1.cpp
+-camirf1
 
 skeleton/candela.cpp
+-can09
 
 skeleton/cardinal.cpp
+-cardinal
 
 skeleton/cbnt2039.cpp
+-cbnt2039
 
 skeleton/cd100.cpp
+-cd100b
 
 skeleton/cd2650.cpp
 
 skeleton/cdc721.cpp
+-cdc721
 
 skeleton/cdsys5.cpp
+-minijook
 
 skeleton/cit1500.cpp
+-trmavia
+-teletup
 
 skeleton/ckz80.cpp
+-ckz80
 
 skeleton/clxvme186.cpp
+-clxvme186
 
 skeleton/codata.cpp
+-codata
 
 skeleton/consola_emt.cpp
+-consoemt
 
 skeleton/controlid.cpp
+-cidx628
 
 skeleton/cortex.cpp
 
@@ -2778,48 +4167,77 @@ skeleton/cosmicos.cpp
 -cosmicos               // MT09423
 
 skeleton/cp1.cpp
+-cp1
 
 skeleton/css11501sk9.cpp
+-css11501sk9
 
 skeleton/ct909e_segadvd.cpp
+-megatrix
 
 skeleton/cubieboard4.cpp
+-monkyjmp
+-cubibrd4
 
 skeleton/cxhumax.cpp
+-hxhdci2k
 
 skeleton/d400.cpp
+-d461
 
 skeleton/daruma.cpp
+-ds348
 
 skeleton/dash4.cpp
+-dash4
 
 skeleton/datacast.cpp
+-datacast
 
 skeleton/design.cpp
+-azkoyent8
+-azkoyent61a
+-azkoyent61
+-azkoyent6
+-azkoyent12
+-design6
+-designe
 
 skeleton/diablo1300.cpp
+-diablo
 
 skeleton/didact.cpp
 
 skeleton/digel804.cpp
+-ep804
+-digel804
 
 skeleton/digiblast.cpp
+-digiblst
 
 skeleton/digijet.cpp
+-digijet
 
 skeleton/digilog320.cpp
+-digilog320
 
 skeleton/digilog400.cpp
+-digilog400
 
 skeleton/digitech_gsp5.cpp
+-gsp5
 
 skeleton/dm7000.cpp
+-dm7000
+-dm5620
+-dm500
 
 skeleton/dps1.cpp
 
 skeleton/dsb46.cpp
 
 skeleton/dual68.cpp
+-dual68
 
 skeleton/e100.cpp
 
@@ -2841,136 +4259,220 @@ skeleton/easy_karaoke.cpp
 -mks4001
 
 skeleton/eks515.cpp
+-eks515
 
 skeleton/elzet80.cpp
+-elzet80p
+-elzet80k
 
 skeleton/epic14e.cpp
+-epic14e
 
 skeleton/epoch_tv_globe.cpp
+-eptvglob
+-digixar
 
 skeleton/esprit.cpp
+-esprit3
+-esprit
 
 skeleton/eurit.cpp
+-eurit30
 
 skeleton/eurocom2.cpp
+-waveterm
+-microtrol
+-eurocom2
 
 skeleton/fanucs15.cpp
+-fanucs15
 
 skeleton/fanucspmg.cpp
+-fanucspgm
+-fanucspg
 
 skeleton/fc100.cpp
+-fc100
 
 skeleton/fk1.cpp
+-fk1
 
 skeleton/fs3216.cpp
+-fs3216
 
 skeleton/ft68m.cpp
+-ft68m
 
 skeleton/gem_rp.cpp
+-rp200
 
 skeleton/gimix.cpp
 
 skeleton/gm1000.cpp
+-bh1000
+-gm1000
 
 skeleton/gnat10.cpp
+-gnat10
 
 skeleton/goupil.cpp
 
 skeleton/grfd2301.cpp
+-grfd2301
 
 skeleton/hazeltin.cpp
+-hazl1552
+-hazl1500
 
 skeleton/hazl1420.cpp
+-hazl1420
 
 skeleton/hohnadam.cpp
+-hohnadam
 
 skeleton/hprot1.cpp
+-hprot2r6
+-hprotr8a
 -hprot1             // printer
 
 skeleton/ht68k.cpp
 
 skeleton/hudson_poems.cpp
+-poemzet2
+-poemzet
+-poemgolf
+-poembase
+-marimba
+-ewalk2tv
+-poemspoo
 
 skeleton/i7000.cpp
+-i7000
 
 skeleton/icatel.cpp
 -icatel            // useless
 
 skeleton/icebox.cpp
+-icebox
 
 skeleton/iez80.cpp
+-iez80
 
 skeleton/if800.cpp
+-if800
 
 skeleton/ikt5a.cpp
+-ikt5a
 
 skeleton/imsai.cpp
+-imsai
 
 skeleton/indiana.cpp
+-indiana
 
 skeleton/is48x.cpp
+-is482
 
 skeleton/itc4.cpp
+-itc4
 
 skeleton/itt1700.cpp
+-itt1700
 
 skeleton/itt3030.cpp
+-itt3030
 
 skeleton/itt9216.cpp
+-itt9216
 
 skeleton/jade.cpp
+-jade
 
 skeleton/jonos.cpp
+-jonos
 
 skeleton/junior80.cpp
+-junior80
 
 skeleton/koto_zevio.cpp
+-dbzscout
+-dbzonep
 
 skeleton/kron.cpp
+-kron180
 
 skeleton/leadsinger2.cpp
+-leadsng2
 
 skeleton/lee1214.cpp
+-lee1214d
 
 skeleton/lee1220.cpp
+-lee1220
 
 skeleton/lft.cpp
+-lft1510
+-lft1230
 
 skeleton/lg-dvd.cpp
+-lggp40
 
 skeleton/lilith.cpp
+-lilith
 
 skeleton/lms46.cpp
+-lms46
 
 skeleton/marsvending.cpp
+-apvm110a
+-apvm110
 
 skeleton/mcc1.cpp
+-mcc1
 
 skeleton/mes.cpp
+-mes
 
 skeleton/mfabfz.cpp
+-mfabfz85
+-mfabfz
 
 skeleton/mice.cpp
+-mice2_z80
+-mice2_8085
+-mice2_6809
+-mice2_6502
+-mice_6502
 
 skeleton/mice3s68k.cpp
+-mice3s68k
 
 skeleton/micral.cpp
+-questarm
+-micral
 
 skeleton/micro20.cpp
+-micro20
 
 skeleton/micromon.cpp
+-micromon7141
 
 skeleton/micronic.cpp
+-micronic
 
 skeleton/mightyframe.cpp
+-mightfrm
 
 skeleton/milwaukee.cpp
+-mc1200
 
 skeleton/mini2440.cpp
 
 skeleton/miniframe.cpp
+-minifram
 
 skeleton/ml20.cpp
+-ml20
 
 skeleton/mmd1.cpp
 
@@ -2979,138 +4481,205 @@ skeleton/mmd2.cpp
 skeleton/mod8.cpp
 
 skeleton/modellot.cpp
+-modellot
 
 skeleton/molecular.cpp
+-molecula
 
 skeleton/ms9540.cpp
+-ms9540
 
 skeleton/mstation.cpp
+-mstation
 
 skeleton/mt735.cpp
+-mt735
 
 skeleton/mtd1256.cpp
+-mtd1256
 
 skeleton/mw4pole.cpp
+-mw4pole
 
 skeleton/mx2178.cpp
+-mx2178
 
 skeleton/mx3210.cpp
+-mx3210
 
 skeleton/mycom.cpp
+-mycom
 
 skeleton/ngen.cpp
+-ngen
+-ngen386
+-ngenb38
+-386i
 
 skeleton/nordlead.cpp
+-nordle2x
 
 skeleton/omdisv22.cpp
+-omdisv22
 
 skeleton/onyx.cpp
+-c8002
+-c5000
 
 skeleton/optomaxv.cpp
+-optomaxv
 
 skeleton/orina_stylish_plus.cpp
+-orinasp
 
 skeleton/p8k.cpp
+-p8000
+-p8000_16
 
 skeleton/palestra.cpp
+-palestra
 
 skeleton/pap2.cpp
+-pap2
 
 skeleton/pcksurfer.cpp
+-pcksurfer
 
 skeleton/pdt3100.cpp
+-pdt3100
 
 skeleton/pegasos2.cpp
+-pegasos2
 
 skeleton/pencil2.cpp
 
 skeleton/perq.cpp
+-perq
 
 skeleton/pes.cpp
 -pes               // serial comms broken
 
 skeleton/picno.cpp
+-picno2
+-picno
 
 skeleton/plan80.cpp
+-plan80
 
 skeleton/pm68k.cpp
+-pm68k
 
 skeleton/powerpack.cpp
+-powerpack
 
 skeleton/proteus3.cpp
+-proteus3
 
 skeleton/pt68k4.cpp
 
 skeleton/ptcsol.cpp
 
 skeleton/pv9234.cpp
+-pv9234
 
 skeleton/pwp14.cpp
+-pwp14
 
 skeleton/qmquasar.cpp
+-technox
+-qmquasar
 
 skeleton/qmsirius.cpp
+-qmrave
+-qmsirius
 
 skeleton/qtsbc.cpp
+-qtsbc
 
 skeleton/rd100.cpp
+-rd100
 
 skeleton/rvoice.cpp
+-rvoicepc
 
 skeleton/sacstate.cpp
+-sacstate
 
 skeleton/sansa_fuze.cpp
+-sanfuze2
 
 skeleton/sartorius.cpp
+-sart3733
 
 skeleton/sb180.cpp
 -sb180               // no sw
 
 skeleton/sb8085.cpp
+-sb8085
 
 skeleton/sbrain.cpp
+-sagafoxf80
+-sagafox
 
 skeleton/scopus.cpp
+-sagitta180
 
 skeleton/seattlecmp.cpp
 
 skeleton/semcrossw.cpp
+-semcrossw
 
 skeleton/sh4robot.cpp
+-sh4robot
 
 skeleton/shine.cpp
+-shine
 
 skeleton/si5500.cpp
+-si5500
 
 skeleton/sk101bl.cpp
+-sk101bl
 
 skeleton/slsstars.cpp
+-slsstars
 
 skeleton/softbox.cpp
 
 skeleton/solbourne.cpp
+-sols5e
 
 skeleton/squale.cpp
 
 skeleton/swyft.cpp
+-swyft
 
 skeleton/symbolics.cpp
+-s3670
 
 skeleton/synthex.cpp
+-synthex
 
 skeleton/sys2900.cpp
+-sys2900
 
 skeleton/sys9002.cpp
+-sys9002
 
 skeleton/systec.cpp
+-systec
 
 skeleton/systel1.cpp
+-systel100
 
 skeleton/tamagotchi_pix.cpp
+-tamapix
+-precur2w
 
 skeleton/tavernie.cpp
 
 skeleton/tc_manhattan.cpp
+-triplec
 
 skeleton/tecnbras.cpp
 -tecnbras             // useless
@@ -3118,18 +4687,29 @@ skeleton/tecnbras.cpp
 skeleton/teleray10.cpp
 
 skeleton/telex1192.cpp
+-telex1192
 
 skeleton/telex274.cpp
+-telex274
 
 skeleton/telex277d.cpp
+-telex277d
 
 skeleton/terak.cpp
+-terak
 
 skeleton/terco.cpp
+-t4490
 
 skeleton/terminal.cpp
+-alcat258
+-teleguide
+-loewed
+-loewe715
+-7951om
 
 skeleton/testpat.cpp
+-tp1983
 -tp1985             // useless
 
 skeleton/textelcomp.cpp
@@ -3138,30 +4718,42 @@ skeleton/ti630.cpp
 -ti630              // useless
 
 skeleton/tk635.cpp
+-tk635
 
 skeleton/tnshc08.cpp
+-tnshc08
 
 skeleton/tr175.cpp
+-tr175
 
 skeleton/tsispch.cpp
+-prose2k
+-prose2ko
 
 skeleton/tulip1.cpp
+-tulip1
 
 skeleton/tvdear.cpp
+-tvdear
 
 skeleton/unistar.cpp
+-unistar
 
 skeleton/v6809.cpp
 
 skeleton/vanguardmk1.cpp
+-vngrdmk1
 
 skeleton/vd56sp.cpp
+-vd56sp
 
 skeleton/vector3.cpp
 
 skeleton/vectrix.cpp
+-vectrix
 
 skeleton/vp415.cpp
+-vp415
 
 skeleton/webtouchone.cpp
 -wto2840sp       // crash at start
@@ -3181,7 +4773,6 @@ skeleton/zms8085.cpp
 -zephyr          // bad kbd
 
 skeleton/zorba.cpp
--zorba           // MT09435
 
 skeleton/zt8802.cpp
 -zt8802          // no screen
@@ -3195,61 +4786,109 @@ slicer/slicer.cpp
 snk/ngp.cpp
 
 sony/betacam.cpp
+-uvw1800
+-uvw1600
+-uvw1200
 
 sony/bvm.cpp
+-bvm20f1e
 
 sony/clie_db.cpp
+-t650c
 
 sony/dfs500.cpp
+-dfs500
 
 sony/dpsv55.cpp
+-dpsv55
 
 sony/librie.cpp
+-librie
 
 sony/news_38xx.cpp
+-nws3860
 
 sony/news_68k.cpp
+-nws1580
+-nws1250
 
 sony/news_68k_iop.cpp
+-nws831
 
 sony/news_r3k.cpp
 
 sony/news_r4k.cpp
+-nws5000x
 
 sony/pockstat.cpp
 
 sony/ps2sony.cpp
+-ps2
 
 sony/psx.cpp
+-psu
+-psj
+-pse
+-psa
 
 sony/pve500.cpp
+-pve500
 
 sony/smc777.cpp
+-smc777
 
 sony/umatic.cpp
+-vo5850pm
 
 sord/future32.cpp
+-future32a
 
 sord/m5.cpp
 -m5p_brno            // need roms
 
 stm/pp.cpp
+-pp
 
 stm/stmpc.cpp
+-stmpcp
+-stmpc
 
 sun/e250.cpp
+-e250
 
 sun/sun1.cpp
 
 sun/sun2.cpp
+-sun2_50
+-sun2_120
 
 sun/sun3.cpp
+-sun3_e
+-sun3_150
+-sun3_60
+-sun3_50
+-sun3_260
+-sun3_110
 
 sun/sun3x.cpp
+-sun3_460
 
 sun/sun4.cpp
+-sun4_400
+-sun4_20
+-sun4_300
+-sun4_110
+-sun4_50
+-sun4_40
+-sun4_25
+-sun_s20
+-sun4_75
+-sun_s10
+-sun4_65
+-sun4_60
 
 sun/ultra45.cpp
+-ultra45
 
 svi/svi318.cpp
 
@@ -3263,28 +4902,42 @@ swtpc/swtpc09.cpp
 swtpc/swtpc8212.cpp
 
 synertek/ktm3.cpp
+-ktm3
 
 synertek/mbc020.cpp
+-mbc020
 
 synertek/sym1.cpp
 
 ta/alphatpc16.cpp
+-alphatpc16
 
 ta/alphatpx.cpp
+-alphatp30
+-alphatp3
+-alphatp2u
+-alphatp2
+-alphatp1
 
 ta/alphatro.cpp
 
 tab/tabe22.cpp
+-tabe22
 
 taito/taitowlf.cpp
+-pf2012
+-p5txla
 
 tandberg/tdv2115l.cpp
 
 tandberg/tdv2324.cpp
+-tdv2324
 
 tangerine/alphatan.cpp
+-alphatan
 
 tangerine/hhtiger.cpp
+-hhtiger
 
 tangerine/microtan.cpp
 
@@ -3294,18 +4947,28 @@ tangerine/oric.cpp
 tatung/einstein.cpp
 
 teamconcepts/comquest.cpp
+-comquest
 
 tektronix/tek405x.cpp
+-tek4052a
+-tek4051
 
 tektronix/tek410x.cpp
+-tek4109a
+-tek4107a
 
 tektronix/tek43xx.cpp
+-tek4319
 
 tektronix/tek440x.cpp
+-tek4404
 
 tektronix/tekigw.cpp
+-tek6130
+-tek4132
 
 tektronix/tekxp33x.cpp
+-tekxp330
 
 tektronix/xd88.cpp
 -xd88_01         // no screen
@@ -3324,10 +4987,14 @@ telercas/tmc2000e.cpp
 telercas/tmc600.cpp
 
 televideo/ts3000.cpp
+-ts3000
 
 televideo/ts802.cpp
+-ts802h
+-ts802
 
 televideo/ts803.cpp
+-ts803h
 
 televideo/ts816.cpp
 
@@ -3336,24 +5003,33 @@ televideo/tv910.cpp
 televideo/tv912.cpp
 
 televideo/tv924.cpp
+-tv924
 
 televideo/tv950.cpp
+-tv950
 
 televideo/tv955.cpp
 
 televideo/tv965.cpp
+-tv965
 
 televideo/tv990.cpp
 -tv990             // terminal
 -tv995             // terminal
 
 tesla/ondra.cpp
+-ondrav
+-ondrat
 
 tesla/pmd85.cpp
+-c2717pmd
 
 tesla/pmi80.cpp
 
 tesla/sapi1.cpp
+-sapizps3a
+-sapizps3b
+-sapizps3
 
 thomson/thomson.cpp
 -mo5nr              // blank screen
@@ -3365,14 +5041,18 @@ ti/cc40.cpp
 ti/evmbug.cpp
 
 ti/exelv.cpp
+-exl100
+-exeltel
 
 ti/geneve.cpp
 -geneve        // cannot boot floppy
 -genmod        // cannot boot floppy
 
 ti/snspell.cpp
+-lantransp
 
 ti/snspellc.cpp
+-tntellp
 -mathsmag       // no screen
 -snspellc       // no screen
 -snspellca      // no screen
@@ -3384,14 +5064,28 @@ ti/spellb.cpp
 ti/ti74.cpp
 
 ti/ti85.cpp
+-ti84pcev30
+-ti84pcev15
+-ti84pce
+-ti84pcsev2
+-ti84pcse
+-ti83pcev15
+-ti83pseb
+-ti83pb
+-ti83
+-ti73b
 
 ti/ti89.cpp
 
 ti/ti931.cpp
+-ti931
 
 ti/ti990_10.cpp
+-ti990_10
 
 ti/ti990_4.cpp
+-ti990_4v
+-ti990_4
 
 ti/ti99_2.cpp
 
@@ -3403,6 +5097,7 @@ ti/ti99_4x.cpp
 ti/ti99_8.cpp
 
 ti/tipc.cpp
+-tipc
 
 ti/tm990189.cpp
 
@@ -3419,26 +5114,35 @@ tiger/k28o.cpp
 tiger/pylo.cpp
 
 tigertel/gizmondo.cpp
+-gizmondo
 
 tiki/tiki100.cpp
 
 tms/vet3000.cpp
 
 tomy/kisssite.cpp
+-kisssite
 
 tomy/tomy_princ.cpp
 
 tomy/tutor.cpp
 
 torch/quadx.cpp
+-quadxp
+-quadx
 
 torch/triplex.cpp
+-triplex
 
 toshiba/paso1600.cpp
+-paso1600
 
 toshiba/pasopia.cpp
+-pasopia
 
 toshiba/pasopia7.cpp
+-pasopia7lcd
+-pasopia7
 
 trainer/amico2k.cpp
 
@@ -3457,6 +5161,7 @@ trainer/emma2.cpp
 trainer/instruct.cpp
 
 trainer/mac3.cpp
+-mac3
 
 trainer/mcg85.cpp
 
@@ -3465,6 +5170,7 @@ trainer/mk14.cpp
 trainer/ms68k.cpp
 
 trainer/pro80.cpp
+-pro80
 
 trainer/savia84.cpp
 
@@ -3487,12 +5193,15 @@ trs/dgnalpha.cpp
 -dgnalpha
 
 trs/dgn_beta.cpp
+-dgnbeta
 
 trs/dragon.cpp
 
 trs/lnw80.cpp
+-lnw80
 
 trs/max80.cpp
+-max80
 
 trs/mc10.cpp
 
@@ -3520,6 +5229,7 @@ tryom/gammonm.cpp
 tryom/omar.cpp
 
 tvgames/actions_atj2279b.cpp
+-rbitgen
 
 tvgames/elan_ep3a19a.cpp
 
@@ -3751,28 +5461,97 @@ tvgames/generalplus_gpm453x_sdcard.cpp
 -arb605
 
 tvgames/magiceyes_pollux_vr3520f.cpp
+-didj
 
 tvgames/micom_mahjong.cpp
 
 tvgames/monkey_king_3b.cpp
+-rs70_648
+-afbp4
 
 tvgames/myaatari.cpp
+-tetrhdmi
+-pachdmi
+-myaatari
+-kuniotv
+-galghdmi
 
 tvgames/pubint_storyreader.cpp
+-pi_stry2
+-pi_stry
 
 tvgames/spg110.cpp
+-jak_wpt
+-conyping
+-conyteni
+-conyfght
+-jak_thom
+-jak_thomp
+-jak_dood
+-jak_ssmo
+-jak_sbdd
+-jak_spdmoa
+-jak_spdmo
+-sstarkar
+-easportsu
+-easports
+-jak_diso
+-jak_capb
+-jak_bobb
+-jak_bobbo
+-jak_blue
 
 tvgames/spg29x.cpp
+-zonefamf
+-hyprscan
+-bratzlfe
+-prail07
+-jak_bbsf
+-jak_bbh
 
 tvgames/spg29x_lexibook_jg7425.cpp
+-zone3d
+-ubox30
+-lx_aven
+-lx_jg7425
+-fundr200
+-lx_frozen
+-dancef2p
 
 tvgames/spg2xx.cpp
+-wordlnch
+-abltenni
+-virtten
+-virtbb
+-vtechtvssp
+-vtechtvsgr
+-wfart
+-doyousud
+-smartcyc
+-dinothun
+-rad_fb2
+-ordentv
+-tiktokmm
+-lexiart
+-lexibds
+-ban_tam2
+-dmbtjunc
+-ablkickb
+-rad_jib
+-jeuint
+-guitarfv
+-rad_crik
+-wfcentro
+-anpantv
+-jouet
 
 tvgames/spg2xx_digimake.cpp
+-rad_digi
 
 tvgames/spg2xx_dreamlife.cpp
 
 tvgames/spg2xx_ican.cpp
+-icanguit
 
 tvgames/spg2xx_jakks.cpp
 
@@ -3781,8 +5560,12 @@ tvgames/spg2xx_jakks_gkr.cpp
 tvgames/spg2xx_jakks_sharp.cpp
 
 tvgames/spg2xx_jakks_tvtouch.cpp
+-tvtchsw
+-tvtchsb
+-tvtchspd
 
 tvgames/spg2xx_lexibook.cpp
+-cybrtvbb
 
 tvgames/spg2xx_mysprtch.cpp
 
@@ -3795,26 +5578,49 @@ tvgames/spg2xx_senario.cpp
 tvgames/spg2xx_senario_poker.cpp
 
 tvgames/spg2xx_senca.cpp
+-zon32bit
+-mywicodx
 
 tvgames/spg2xx_shredmjr.cpp
 
 tvgames/spg2xx_skannerztv.cpp
+-rad_sktv
 
 tvgames/spg2xx_smarttv.cpp
+-smartvad
 
 tvgames/spg2xx_telestory.cpp
+-telestry
 
 tvgames/spg2xx_tvgogo.cpp
+-tvgogo
 
 tvgames/spg2xx_vii.cpp
 
 tvgames/spg2xx_wiwi.cpp
+-wiwi18
+-wiii3spt
+-lexifit
+-inmotion
+-foxsport
 
 tvgames/spg2xx_zone.cpp
 
 tvgames/titan_soc.cpp
+-megadri4a
+-megadri4
+-colecofl
 
 tvgames/trkfldch.cpp
+-lexitvsprt
+-trkfldch
+-teleship
+-teleshi
+-shtscore
+-my1stddr
+-trkfldchj
+-senspid
+-abl4play
 
 tvgames/tvgame.cpp
 
@@ -3968,10 +5774,16 @@ tvgames/xavix_2002.cpp
 -xavtennij        // mnw
 
 ultimachine/rambo.cpp
+-metamaq2
 
 ultratec/minicom.cpp
+-mcom4_02
+-minicom
 
 umc/pc486vl.cpp
+-tku5s
+-sy019s
+-pccm912
 
 umc/supracan.cpp
 
@@ -3982,20 +5794,31 @@ unisonic/unichamp.cpp
 unisys/univac.cpp
 
 usp/patinhofeio.cpp
+-patinho
 
 ussr/apogee.cpp
 
 ussr/argo.cpp
+-argo
 
 ussr/b2m.cpp
+-b2mrom
+-b2m
 
 ussr/bk.cpp
+-bk001001
+-bk0011m
+-bk0011
+-bk0010fd
+-bk0010
 
 ussr/cm1800.cpp
+-cm1800
 
 ussr/debut.cpp
 
 ussr/dvk_kcgd.cpp
+-dvk_kcgd
 
 ussr/dvk_ksm.cpp
 -dvk_ksm              // terminal
@@ -4007,6 +5830,7 @@ ussr/im01.cpp
 ussr/intellect02.cpp
 
 ussr/irisha.cpp
+-irisha
 
 ussr/juku.cpp
 
@@ -4015,51 +5839,83 @@ ussr/krokha.cpp
 ussr/lviv.cpp
 
 ussr/mikro80.cpp
+-radio99
+-mikro80
+-kristall2
 
 ussr/mikrosha.cpp
 
 ussr/mk85.cpp
+-mk85
 
 ussr/mk90.cpp
+-mk90
 
 ussr/mk98.cpp
+-mk98
 
 ussr/ms0515.cpp
 
 ussr/ms6102.cpp
+-ms6102
 
 ussr/okean240.cpp
+-okean240
+-okean240a
+-okean240t
 
 ussr/orion.cpp
 
 ussr/partner.cpp
+-partner
 
 ussr/pk32.cpp
+-pk32
 
 ussr/pk8000.cpp
+-pk8002
 
 ussr/pk8020.cpp
+-neiva
+-korvet
+-kontur
+-bk8t
 
 ussr/pyl601.cpp
 
 ussr/radio86.cpp
 
 ussr/sm1800.cpp
+-sm1800
 
 ussr/sm7238.cpp
 -sm7238           // terminal
 
 ussr/special.cpp
+-unga
+-specimx
+-specialm
+-specialp
+-pioner
+-lik
+-kharkovsky
+-erik
+-anakonda
 
 ussr/uknc.cpp
+-uknc
 
 ussr/unior.cpp
 
 ussr/ut88.cpp
 
 ussr/vector06.cpp
+-vec1200
+-pk6128c
+-krista2
 
 ussr/vta2000.cpp
+-vta2000
 
 vectorgraphic/vector4.cpp
 -vector4            // no sw
@@ -4086,8 +5942,10 @@ virtual/wavesynth.cpp
 -wavesynth            // no screen
 
 visual/v100.cpp
+-v100
 
 visual/v102.cpp
+-v102
 
 visual/v1050.cpp
 
@@ -4095,10 +5953,12 @@ visual/v50.cpp
 -visual50                 // terminal
 
 visual/v550.cpp
+-v550
 
 visual/xds.cpp
 
 votrax/votrhv.cpp
+-hc120
 
 votrax/votrpss.cpp
 -votrpss              // ignores user input
@@ -4106,81 +5966,187 @@ votrax/votrpss.cpp
 votrax/votrtnt.cpp
 
 vtech/clickstart.cpp
+-clikstrt
 
 vtech/crvision.cpp
 
 vtech/gamemachine.cpp
 
 vtech/geniuscolor.cpp
+-geniuscps
 
 vtech/geniusiq.cpp
+-itunlim
+-pcunlim
+-iqtv512
+-iq128
+-iq128_fr
 
 vtech/geniusjr.cpp
+-scientus
+-pcompelr
+-pitagjr
+-pitagor
+-gls
+-gln
+-gjrstar3
+-gjrstar2
+-gjrstar
+-gjmovie
+-gj5000
+-gj4000
 
 vtech/gkidabc.cpp
+-miprimlec
+-gkidabc
+-gjrprofi
 
 vtech/glcx.cpp
+-gtbmcx
+-gl8008cx
+-gl6600cx
+-bs9009cx
 
 vtech/innotv_innotabmax.cpp
+-innotv
 
 vtech/inteladv.cpp
+-inteladv
+-dyndesk
+-cars2lap
 
 vtech/iqunlim.cpp
+-iqunlimgr
+-iqunlim
 
 vtech/kidsupstar.cpp
+-kidsupstar
 
 vtech/laser3k.cpp
+-laser3k
 
 vtech/lcmate2.cpp
+-lcmate2
 
 vtech/learnwin.cpp
+-spielmast
+-learnwin
+-learnwin2
+-learnwin1
+-learnwinf
 
 vtech/magibook.cpp
+-magibooksp
 
 vtech/pc1000.cpp
+-pc1000
+-ordisava
+-misterx
 
 vtech/pc2000.cpp
+-pc2000s
+-pc2000
+-lexipcm
+-gmtt
+-glpn
+-gl5005x
+-gl5000
+-gl4004
+-gl4000
+-gl3000s
+-gl2000p
+-gl2000c
+-gl2000
+-gbs5505x
 
 vtech/pc4.cpp
+-pc4
 
 vtech/phusion.cpp
+-phusion
 
 vtech/prestige.cpp
+-snotecut
+-snotecug
+-snotecu
+-snotecex
+-snotec
+-prestige
+-pcscolor
+-gwnf
+-gmmc
+-glscolor
+-glmcolor
+-glcolor
+-gl7007sl
+-gl6000sl
 
 vtech/primusex.cpp
+-primusex
 
 vtech/socrates.cpp
+-vpainter
+-socratfc
+-socrates
+-profweis
+-iqunlimz
 
 vtech/storio.cpp
+-vreader
+-vreadercafr
+-vreadercaen
+-storionl
+-storio
+-storiofr
+-storioes
+-storioesa
+-storiode
 
 vtech/vsmile.cpp
 
 vtech/vsmileb.cpp
+-vsmileb
+-vsmilebsw
+-vsmilebs
+-vsmilebg
+-vsmilebf
+-vsmilebfp
 
 vtech/vsmilepro.cpp
+-vsmilpro
 
 vtech/vtech1.cpp
+-vz200de
 
 vtech/vtech2.cpp
 
 vtech/vtech5303.cpp
+-pawmoviesp
 
 vtech/vtech_eu3a12.cpp
+-vreadere
 
 vtech/vtech_innotab.cpp
+-innotab2
 
 wang/wangpc.cpp
 -wangpc             // can't boot disk
 
 wavemate/bullet.cpp
+-wmbulletf
+-wmbullet
 
 wavemate/jupiter.cpp
+-jupiter3
+-jupiter2
 
 westinghouse/testconsole.cpp
 
 wicat/t7000.cpp
+-t7000
 
 wicat/wicat.cpp
+-wicat
 
 wyse/wy100.cpp
 
@@ -4208,12 +6174,15 @@ wyse/wy60.cpp
 wyse/wy85.cpp
 
 xerox/alto1.cpp
+-alto1
 
 //xerox/alto2.cpp           // no sw
 
 xerox/bigbord2.cpp
+-bigbord2
 
 xerox/notetaker.cpp
+-notetakr
 
 xerox/xerox820.cpp
 
@@ -4221,6 +6190,7 @@ yamaha/fb01.cpp
 -fb01                  // no sound
 
 yamaha/tg100.cpp
+-tg100
 
 yamaha/yman1x.cpp
 -an1x            // mnw
@@ -4339,2001 +6309,8 @@ yeno/532xl.cpp
 zpa/iq151.cpp
 
 zvt/pp01.cpp
-
--4000_260
--600cat
--a2600_pop
--a5105
--a5120
--a5130
--a7150
--aaa
--ac1scch
--acd
--aceex2814
--acr20
--rbitgen
--adacp150p
--adds2020
--adm12
--adm23
--adm31
--adm36
--agat9
--aid80f
--aim65_40
--airbase99
--ax80
--vx600
--al8800b
--alcat7100
--hr16
--hr16b
--mmt8
--sr16
--alesqs7
--alfaskop4101
--alfaskop4110
--alfaskop4120
--ajuno1
--ajuno2
--hs80
--mks50
--asma2k
--asmapro
--asma3k
--alphatan
--alphatpc16
--alphatp1
--alphatp2
--alphatp2u
--alphatp3
--alphatp30
--al8800bt
--alto1
--altos2
--altos486
--altos5
--altos586
--am1000
--dialog80
--ampex210p
--ampex230p
--ampscarp
--pc20
--pc2086
--pc3086
--pc5086
--ppc512
--ppc640
--pc200
--unkamus
--amust
--anto2495
--anto2614
--anzterm
--apc
--dn5500
--dn5500_19i
--dsp5500
--basis108
--mprof3
--apple2gsmt
--apple2gsr3p
--f1
--f10
--f1e
--f2
--fp
--apxen
--piece2m
--piece512k
--mratlus
--plldium
--polyvcg
--trakcvg
--argo
--os214
--assist05
--asst128
--a1200xl
--a130xe
--a65xea
--atm
--m55hipl
--at586x3
--at586
--ecssi5pi
--ficvt503
--3b2_300
--3b2_310
--3b2_400
--3b2_600
--att4425
--att610
--att615
--att630
--att730x
--aviion_4600
--aws200
--aws220
--ax145
--ax20
--b16
--b16ex2
--b2m
--b2mrom
--banctec
--bassstr
--sbasssta
--sist1
--torch301
--torch725
--abc110
--acw443
--abc310
--econx25
--cfa3000bp
--discmate
--discmon
--bbcmarm
--bbcmaiv
--daisy
--ht280
--cfa3000
--mpc800
--mpc900
--mpc900gx
--se3010
--autoc15
--bcs3a
--bcs3b
--bcs3c
--bcs3d
--bebox2
--bebox
--bert
--uvw1200
--uvw1600
--uvw1800
--bigbord2
--t3210
--feap90
--bitgrphb
--bk0010
--bk0010fd
--bk0011
--bk0011m
--blaucds32
--blit
--se70
--gx700
--sx700
--bp1200
--br8641
--braiplus
--wmbullet
--wmbulletf
--mini5sx
--bvm20f1e
--c10
--c2color
--clipper
--c64dtv
--c64dx
--c65
--c900
--camirf1
--can09
--canons80
--canonts3
--cardinal
--casiorom
--cassvisn
--cat
--bx256hp
--cbm720_de
--cbm730
--cbnt2039
--ccs2422
--ccs300
--cd100b
--cdc721
--cdimono2
--cdi490a
--cdi910
--gpi1200
--quizardff
--minijook
--celint2kss
--ceres1
--cfx9850
--cfx9850gb
--cgc7900
--chalgear
--cit101xl
--teletup
--trmavia
--cit220p
--vp122
--ckz80
--clikstrt
--t650c
--clxvme186
--cm1800
--cmi2x
--codata
--compc10
--pc10iii
--compc1
--compmahj
--compclr2
--comquest
--cncchess3
--consoemt
--cidx628
--cortex
--cp1
--cps1mult
--pmonster
--sf2amf
--sf2stt
--3wondersbi
--varthb3
--cps2000
--crimson
--css11501sk9
--ast6000
--ast611
--ctmb1
--megatrix
--ctk2100
--cubibrd4
--monkyjmp
--hxhdci2k
--d461
--d6809
--daphor32
--ds348
--dash4
--datacast
--dbox
--dcacchk
--dceu
--dcjp
--dcproto
--dc
--dcfish
--dcdev
--dctream
--dct11em
--decmate2
--decmate3
--dectalk
--la120
--deecoseal
--designe
--design6
--azkoyent12
--azkoyent6
--azkoyent61
--azkoyent61a
--azkoyent8
--bdesignm
--dfs500
--dg10
--dg20
--dgnbeta
--diablo
--digel804
--ep804
--digiblst
--digijet
--digilog320
--digilog400
--gsp5
--dim68k
--dm500
--dm5620
--dm7000
--dmax8000
--dms5000
--dms86
--dauphin
--dpb7000
--dpsv55
--drumsta
--gaelcods
--dsb46
--dtc03
--dual68
--duet16
--n501
--dvk_kcgd
--e250
--e9161
--ec1845
--ec65
--ec65k
--ec7915
--eks515
--btm2105
--machdrum
--monomach
--elzet80k
--elzet80p
--emax
--emax2
--emaxp
--emu2
--emu3
--carnaval
--orbit9090
--phatt
--procuss
--proteus1
--proteusxr
--vintkeys
--enmirage
--epic14e
--digixar
--eptvglob
--ergo201
--esp250c
--esprit
--esprit3
--esq1
--esqm
--sq80
--eps
--eps16p
--ks32
--sq1
--sq2
--sqrack
--asr10
--asrx
--ts10
--ts12
--mr61
--mrrack
--eurit30
--eurocom2
--microtrol
--waveterm
--europc
--europc2
--euroxt
--eva11
--eva24
--evolhh
--hoppech
--buttdtct
--pokexyqz
--tomyspt
--pokesmqz
--smkatsum
--yuleyuan
--ews4800_310
--exe10102
--exeltel
--exl100
--asuscubx
--ez2d2m
--f387x
--f4431
--facit4440
--falco500e
--falco5220e
--falco5220s
--ts1
--ts2624
--fanucs15
--fanucspg
--fanucspgm
--fatman
--fc100
--fk1
--fm11
--fm16beta
--fm7740sx
--fmtowns
--fmtownsv03
--carmarty
--fmtownsftv
--fmtownshr
--fmtownsmx
--fmtownssj
--fmtownsux
--fmtmarty
--fmtmarty2
--fw600
--fw700ger
--fp1000
--fp1100
--fp200
--fp6000
--free120
--fs3216
--ft68m
--future32a
--fz1
--fz10m
--fz20m
--galeb
--rp200
--geniuscps
--iq128_fr
--iq128
--iqtv512
--pcunlim
--gj4000
--gj5000
--gjmovie
--gjrstar
--gjrstar2
--gjrstar3
--gln
--gls
--pitagor
--pitagjr
--pcompelr
--scientus
--gizmondo
--gjrprofi
--gkidabc
--miprimlec
--bs9009cx
--gl6600cx
--gl8008cx
--gtbmcx
--gm1000
--bh1000
--gnat10
--gp2x
--gp32
--grfd2301
--gwsmb35
--harriet
--hawk
--hazl1500
--hazl1552
--hazl1420
--hds200
--lchicken
--vidchal
--bombman
--gdefender
--ggdman
--ktparman
--puckimon
--tkjmaru
--wantgman
--sonicwtc
--pabball
--uspbball
--tkkongq
--tlluke2
--bigtrak
--mbdtower
--bshipb
--elecbowl
--tithermos
--bcheetah
--hhtiger
--hk1000
--hohnadam
--brailab4
--homelab3
--homelab4
--nshrz2mhz
--nshrz
--vector1
--hp165ka0
--hp16500b
--hp1650b
--hp1651b
--hp2100
--hp2622a
--hp3478a
--hp39g
--hp49gp
--hp620lx
--hp700_70
--hp700_92
--hp7596a
--hp95lx
--hp9835a
--hp9835b
--hp9845a
--hp9845s
--hp9816
--hp9k310
--hp9k320
--hp9k330
--hp9k332
--hp9k340
--hp9k360
--hp9k370
--hp9k380
--hp9k382
--hp9808a
--hprotr8a
--hprot2r6
--hpz80unk
--ht6000
--poemspoo
--ewalk2tv
--marimba
--poembase
--poemgolf
--poemzet
--poemzet2
--hunter16
--hunter1680
--hunter216
--hunter
--hunter2
--ecm6032
--ecm6127
--ehx20
--ehx20e
--entrada
--a486ap4
--i7000
--ibm3153
--ibm3477
--ibm5550
--ibm6580
--ibm5140
--ibmpcjx
--icebox
--icm3216
--partnerw
--partner1fg
--partnerwfg
--iez80
--if800
--ikt5a
--imac
--imsai
--indiana
--indigo2_4415
--in207100
--in207376
--in213
--in213ae
--innotv
--cars2lap
--dyndesk
--inteladv
--intlc8
--intlc8m80
--ip2000
--ip2400
--ip2500
--ip2700
--ip2800
--ip6000
--ip6400
--ip6700
--ip6800
--intvkbd
--ipc
--ipds
--iphone2g
--iquest
--turboex
--ttwistbq
--ttwistfb
--ttwistm
--ttwistsp
--ttwistvc
--iqunlim
--iqunlimgr
--iris1400
--iris3130
--4d410
--irisha
--is482
--isbc286
--isbc8605
--isbc86
--isbc8630
--rpc86
--sm1810
--isbc660
--iskr1030m
--itc4
--itt1700
--itt3030
--itt9216
--jade
--jaguarcd
--d2k300axp
--d2k500axp
--dpcaxp150
--jonos
--jorn720
--jr100
--jr100u
--jr200
--jr200u
--junior80
--juno106
--mks7
--juno6
--jupiter2
--jupiter3
--k1
--k1m
--k1r
--k1rii
--k1003
--k4
--k4r
--k5
--k5m
--k8915
--kaypro1
--kaypro1084
--kaypro284
--kayproiip88
--kaypro484
--kaypro484p88
--kaypro4x
--kaypronew2
--robie
--omni4
--omni2
--kc85_2
--kc85_3
--kc85_4
--kc85_5
--kidsupstar
--kisssite
--kminus
--ds2100
--ds3100
--ds5k133
--kn5000
--konin
--korg707
--ds8
--dss1
--dssmsrk
--dvp1
--dw8000
--dw8000ex
--ex8000
--korgm1ex
--korgm1
--korgm1p1
--korgm1rex
--korgm1r
--korgtritonb
--korgtritona
--korgtriton
--korgwsad
--korgwsex
--korgwssr
--korgz3
--dbzonep
--dbzscout
--kron180
--k2000
--ksp10
--ktm3
--pc8201
--pc8201a
--npc8300
--labtam
--laser3k
--lbpc
--lcmate2
--ld50
--leadsng2
--leappad
--leappadmic
--ltleappad
--mfleappad
--leapster
--leapster2
--leapsterlmx
--leapstertv
--leapexpr
--learnwinf
--learnwin1
--learnwin2
--learnwin
--spielmast
--lee1214d
--lee1220
--lft1230
--lft1510
--lggp40
--librie
--lilith
--lms46
--lnw80
--luna
--lw700i
--lwriter
--lwriter2nt
--lwriterplus
--m20
--m40
--m44
--m21
--m24
--m240
--m3
--m6805evs
--m79152pc
--m8120
--mac3
--pmac6100
--magibooksp
--didj
--magistr16
--apvm110
--apvm110a
--max80
--mbc020
--mbeett
--mbs1
--pk88
--mc8030
--mcc1
--mccpm
--mcm70
--cdx
--32x
--laseract
--laseractj
--32xe
--32xj
--megacda
--megacd
--megacdj
--megacd2
--megacd2j
--aiwamcd
--32x_mcd
--32x_mcdj
--multmega
--segacd
--segacd2
--32x_scd
--wmega
--wmegam2
--xeye
--fl100
--mdisk
--atgame40
--dcat16
--mahg156
--mygalag
--mygalaga
--mympac
--mympaca
--mypaca
--mypac
--mypacgld
--mysf2
--mateta
--matet
--reactmd
--sarc110
--sarc110a
--mdhh100
--banmrid
--rad_mncr
--ra145
--megapc
--megapcpl
--mt_aftrb
--mt_astrm
--mt_asyn
--mt_beast
--mt_tgolf
--mt_arrow
--mt_astro
--mt_bbros
--mt_calga
--mt_cols
--mt_crack
--mt_eswat
--mt_fz
--mt_fshrk
--mt_fwrld
--mt_gng
--mt_gaxe
--mt_gaxe2
--mt_gfoot
--mt_ggolf
--mt_gsocr
--mt_stf
--mt_kcham
--mt_lastb
--mt_mlh
--mt_mwalk
--mt_mystd
--mt_orun
--mt_parlg
--mt_revsh
--mt_shado
--mt_shnbi
--mt_sonic
--mt_sonia
--mt_soni2
--mt_shar2
--mt_spman
--mt_srage
--mt_shang
--mt_smgp
--mt_srbb
--mt_stbld
--mt_tetri
--mt_tfor2
--mt_tlbba
--mt_tout
--mt_wcsoc
--mt_wwar
--memorymoog
--mes
--mfabfz
--mfabfz85
--mg1
--mice_6502
--mice2_6502
--mice2_6809
--mice2_8085
--mice2_z80
--mice3s68k
--micral
--questarm
--micro20
--microbx2
--md2
--md3
--microkorg
--micromon7141
--micronic
--act5a
--mightfrm
--kristall2
--mikro80
--radio99
--mc1200
--minib
--minicom
--mcom4_02
--miniforce
--minifram
--rs3230
--rc3230
--emirage
--mits680b
--mcb_cloe
--mcb_yasmin
--mcm_creeper
--mcm_inferno
--mcm_roc
--mcp_dash
--mcp_spike
--miuchiz
--mk85
--mk90
--mk98
--mkit09a
--ml20
--modellot
--molecula
--afbp4
--rs70_648
--mpc2000xl
--mpc3000
--mpc60
--cs113
--mps1000
--mps1230
--mpz80
--ms6102
--ms9540
--msbc1
--mstation
--fsa1fm
--hbg900ap
--hbg900p
--victhc90
--victhc90a
--victhc95
--victhc95a
--hx23
--hx23f
--hx33
--mbh70
--mpc27
--nms8260
--y503iiire
--y503iiir
--y805128
--y805128r2e
--y805128r2
--y805256
--expert3i
--expert3t
--expertac
--expertdx
--fsa1gt
--fsa1st
--mt420
--mt440
--mt5510
--mt735
--mtd1256
--mtchxlgldo
--mtchxlgld
--mtchxl5ko
--mtchxl5ko2
--mtchxl5k
--mtchxlti
--multi16
--multi8
--multivision
--mupid2i
--mupid2
--ptc100
--mvme162
--mw4pole
--mx2178
--mx3210
--galghdmi
--kuniotv
--myaatari
--pachdmi
--tetrhdmi
--mycom
--mz80b
--mz3500
--mz5500
--mz6500
--mz6550
--mz1500
--mz800
--n64
--n64pal
--n64dd
--n64_lodgenet
--dator3k
--drwrt450
--drwrt100
--drwrt200
--drwrt400
--wales210
--es210_es
--nanos
--ncd16
--ncd17c
--ncd19
--ncd19c
--ncdmcx
--hmxpro
--explorapro
--nds
--kog
--mvstemp
--stakwindev
--neocd
--drpcjr
--fctitler
--sb486
--croaky
--dancexpt
--danzkara
--digezlg
--pjoypj001
--vtvppong
--vtvsocr
--m82
--6578cjz1
--6578cjz2
--cpatrolm
--bandggcn
--ts_handy11
--bandgpad
--bancook
--dgun806
--dancmix3
--mousekid
--bb6578
--pp6578
--vsmaxx15
--vsmaxx25
--ablwikid
--mc_105te
--cbrs8
--hs36blk
--hs36red
--megapad
--ablping
--tvmjfc
--vdogdemo
--vdogdeme
--vfootbal
--protpp
--vtboxing
--vtpinball
--senwld
--pumpactv
--fingerd
--k10_2l
--k10_5l
--tvkunio1
--micac250
--myaasa
--myaass
--dgunl3201
--dgunl3202
--mymman
--matet100
--matet300
--matet220
--lxpc
--lxpcs
--lxpcg
--lxpcdp
--lxpcgp
--lxpcli
--lxpcsp
--lxpcpp
--retror30
--unkra200
--36pcase
--500in1hh
--t3_630
--lexi30
--jl1810gr
--lxcmcy
--jl2377
--lxcmc250
--lxcmcyba
--lxcmcybt
--lxcmcyco
--lxcmcycr
--lxcmcydp
--lxcmcydpn
--lxcmcyfd
--lxcmcyfz
--lxcmcyfza
--lxcmcyfzb
--lxcmcyls
--lxcmcyppa
--lxcmcypp
--lxcmcypj
--lxcmcysp
--lxcmcyspa
--lxcmcyspn
--lxcmcysw
--lxccatv
--lxccplan
--lxccminn
--lxcyber
--lxcap
--lxcypkdp
--lxcypkfz
--lxcypkpp
--lxcypksp
--d9_500
--denv150
--168pcase
--dvnimbus
--egame150
--f5_620
--gbox2020
--gtct885
--gb50_150
--goretrop
--goretropa
--h12p1000
--hkb502
--hkb502a
--red5mam
--240in1ar
--rd5_240
--gcs2mgp
--mog_m320
--myarccn
--dgun2561
--dgun2593
--dgun2577
--matet10
--matetsl
--dgun2572
--nubsupmf
--otrail
--pactin
--rbbrite
--a6plus
--retro620
--rtvgc300
--rtvgc300cr
--rtvgc300fz
--rtvgc300pj
--s10_520
--s10fake
--s5_520
--sealvt
--tetrtin
--tup240
--unk128vt
--nesvt270
--zl383
--zonefusn
--g3_800
--g5_500
--g6_666
--g7_666
--g9_666
--gbox2019
--gbox2022
--mc_hh210
--hhgc319
--bl339
--retro400
--rfcp168
--newbraina
--newbrain
--newbrainmd
--nws3860
--nws1250
--nws1580
--nws831
--nws5000x
--emate
--spi7000
--motmarco
--newtonmp
--mp110
--mp120
--mp130
--mp2000
--mp2100
--newtnotp
--next
--nextc
--nextct
--nextctc
--nexts
--nexts2
--nextsc
--nextst
--nextstc
--nforcepc
--386i
--ngenb38
--ngen386
--ngen
--noki3210
--noki3310
--noki3330
--noki3410
--noki5210
--noki6210
--noki6250
--noki7110
--noki8210
--noki8250
--noki8850
--noki8890
--nordle2x
--notetakr
--ns5652
--o2
--ob8
--octane
--octopus
--okean240t
--okean240a
--okean240
--olivpc1
--bossa85
--olybossb
--bossb85
--olybossc
--olybossd
--olytext
--omdisv22
--ondrat
--ondrav
--c5000
--c8002
--optomaxv
--orao
--orinasp
--osbexec
--c1pmf
--p112
--p8000_16
--p8000
--palestra
--palmm130
--palmm505
--palmm515
--palmv
--palmvx
--spt1500
--spt1700
--spt1740
--visor
--pap2
--partner
--paso1600
--pasogo
--pasopia
--pasopia7
--pasopia7lcd
--pm5644m00
--pm5644g924
--pm5644g924b
--pm5644g00
--pm5644g913
--pm5644p00
--pm5644l00
--patinho
--ai1000
--pb1000
--pb2000c
--cadd810
--nixpc01
--comport
--coppc400
--coppc21
--dgone
--comdesk
--eagle1600
--eaglespirit
--earthst
--ec1847
--mc1702
--eppc
--hstrtpls
--iskr3104
--ittxtra
--fraking
--mbc16
--mbc16lt
--micro88
--mk88
--ledgmodd
--ledgmodm
--mpu9088vf
--mpx16
--juko16
--juko8
--nms9100
--mononuxt
--mononuxt2
--olystar20f
--olytext30
--kaypropc
--eaglepc2
--pc7000
--ncrpc4i
--ncrpc6
--poisk2
--ssam88s
--sergeysxt
--sicpc1605
--spc400d
--hyu16t
--hyu16te
--sx16
--to16
--hyo88t
--auvip800
--vpcii
--xiprocessor
--kyoxt
--zdz180
--pc100
--misterx
--ordisava
--pc1000
--pc1500
--gbs5505x
--gl2000
--gl2000c
--gl2000p
--gl3000s
--gl4000
--gl4004
--gl5000
--gl5005x
--glpn
--gmtt
--lexipcm
--pc2000
--pc2000s
--pc4
--pccm912
--sy019s
--tku5s
--pc532
--pc6001
--pc6001a
--pc6001mk2
--pc6001mk2sr
--pc6601
--pc6601sr
--pc8001
--pc8001mk2
--pc8001mk2sr
--pc8401bd
--pc8500
--pc8801
--pc8801mc
--pc8801mk2
--pc88va
--pc88va2
--pc9801
--pc9801bx2
--pc9801dx
--pc9801f
--pc9801fs
--pc9801m2
--pc9801rx
--pc9801us
--pc9801uv2
--pc9801ux
--pc9801vm
--pc9801vx
--pc286u
--pc286vs
--pc386m
--pc486mu
--pc486se
--pc98ha
--pc98lt
--pc_h98s
--pcd
--pcx
--pcg850v
--pcfx
--pcfxga
--pcipctx
--pciagp
--se440bx2
--so30h
--sis85c496
--ft486f55
--ch486spm
--ch4spi
--abpi4
--abpm4
--abpv4
--aoap43
--atc1425a
--atc1425b
--jwj446a
--jakms41
--ls486e
--ms4144
--aa486s
--a486sp3
--so4saw2
--zito4dps
--ls5amvp3
--zidabx98
--ct6vta2
--ga6vx
--pcksurfer
--pcm
--pcmx2
--pcw10
--pcw8256
--pcw8512
--pcw9256
--pcw9512
--pcw9512p
--pcw16
--pda600
--pdp11qb
--pdp11ub
--pdp11ub2
--sms1000
--pdt3100
--pegasos2
--pbem2017
--olypeopl
--perq
--mmf9000
--mmf9000_se
--superpet
--pg675
--pg685
--pg685oua12
--map1010
--pbo
--phunsy
--phusion
--csf5550
--jd364
--pickydis
--rx850
--jd363
--plets300
--plets350
--jd368
--pickytlk
--jd366
--picno
--picno2
--piet1
--pippin
--pixtermu
--pk32
--pk8002
--bk8t
--kontur
--korvet
--neiva
--plan80
--pm68k
--c2717pmd
--pmp11
--pockchal
--pc1245
--pc1260
--pc1261
--pc1360
--pc1403
--pc1403h
--pc1450
--poly1
--poly1e
--poly2
--polydev
--poly61
--poly800
--poly800mdk
--poly800ii
--poly8813
--polysix
--positron
--pwrmacg3
--powerpack
--powerstk
--pp
 -pp01
--gl6000sl
--gl7007sl
--glcolor
--glmcolor
--glscolor
--gmmc
--gwnf
--pcscolor
--prestige
--snotec
--snotecex
--snotecu
--snotecug
--snotecut
--primoc64
--primusex
--pro80
--prof180x
--prof181x
--prof80
--prophet5rev30
--prpht600
--prpht600a
--proteus
--proteus3
--i8530h31
--i8535043
--i8550021
--i8550061
--i8555081
--i8580071
--i8580111
--i8530286
--ps2
--psion1
--psa
--pse
--psj
--psu
--ptpc110
--pi_stry
--pi_stry2
--pulsarlb
--pv2000
--pv9234
--pve500
--pwp14
--pwrview
--px8
--tonto
--ql_dk
--ql_fr
--ql_se
--qmquasar
--technox
--qmsirius
--qmrave
--qtsbc
--quadx
--quadxp
--ga6la7
--quake
--qvt103
--qvt190
--qvt201
--qvt70
--qvt82
--qx10
--r100
--r9751
--radionic
--rainbow100a
--rainbow190
--metamaq2
--ravens
--ravens2
--rc702
--rc759
--rd100
--replica1
--reutapm
--ds2
--rex6000
--oz750
--a7000
--a7000p
--sarpc_j233
--rpc600
--rpc700
--sarpc
--robotadv
--cm32p
--d10
--d110
--d50o
--d50
--d550
--d70
--jd800
--jv880
--rd500
--gr700
--jx3p
--mks30
--jx10
--jx8po
--jx8p
--mks70
--mc300
--mc50
--mc50mk2
--cm32l
--mt100
--mt32
--mt80s
--pg1000
--pr100_201
--pr100
--r8
--r8mk2
--r8m
--ra30
--mks100
--s10
--s220
--s50
--s550
--w30
--cm300
--sc155
--sc55
--sc55mk2
--sc88vl
--tb303
--rlndtnsc1
--rlndtnsc2
--tr505
--tr606
--tr727
--tr808
--tr909
--u20
--u220
--rs6k7009
--rt1715
--rt1715lc
--rt1715w
--rtpc010
--rtpc015
--rtpc020
--rtpc025
--rtpca25
--rvoicepc
--rx78
--cd3000i
--cd3000xl
--s2000
--s3000
--s3000xl
--sacstate
--sage2
--sanfuze2
--sapizps3
--sapizps3b
--sapizps3a
--sart3733
--hisaturn
--saturnjp
--saturnkr
--saturneu
--saturn
--vsaturn
--sb8085
--sbc6510
--sagafox
--sagafoxf80
--sbrain
--mb1320
--scsxaio
--sagitta180
--bestzx
--kay1024
--profi
--quorum
--sdk51
--secoinsa20
--ferieki
--feriepu
--feriewt
--sawatte
--segaai
--pico
--picoj
--picou
--copera
--segapm
--semcrossw
--sh4robot
--shine
--si5500
--gamecstl
--gamecst2
--shutms11
--asuspolo
--asuscusc
--zidav630e
--sk1
--sk10
--sk2
--sk5
--sk101bl
--slsstars
--sm1800
--smc777
--lantransp
--tntellp
--iqunlimz
--profweis
--socrates
--socratfc
--vpainter
--sols5e
--moogsource
--anakonda
--erik
--kharkovsky
--lik
--pioner
--specialp
--specialm
--specimx
--unga
--cobrasp
--cobra80
--hc2000
--hc88
--quorum48
--magic6
--jak_blue
--jak_bobbo
--jak_bobb
--jak_capb
--jak_diso
--easports
--easportsu
--sstarkar
--jak_spdmo
--jak_spdmoa
--jak_sbdd
--jak_ssmo
--jak_dood
--jak_thomp
--jak_thom
--conyfght
--conyteni
--conyping
--jak_wpt
--jak_bbh
--jak_bbsf
--prail07
--bratzlfe
--hyprscan
--zonefamf
--dancef2p
--lx_frozen
--fundr200
--lx_jg7425
--lx_aven
--ubox30
--zone3d
--jouet
--anpantv
--wfcentro
--rad_crik
--guitarfv
--jeuint
--rad_jib
--ablkickb
--dmbtjunc
--ban_tam2
--lexibds
--lexiart
--tiktokmm
--ordentv
--rad_fb2
--dinothun
--smartcyc
--doyousud
--wfart
--vtechtvsgr
--vtechtvssp
--virtbb
--virtten
--abltenni
 
--wordlnch
--rad_digi
--icanguit
--tvtchspd
--tvtchsb
--tvtchsw
--cybrtvbb
--mywicodx
--zon32bit
--rad_sktv
--smartvad
--telestry
--tvgogo
--foxsport
--inmotion
--lexifit
--wiii3spt
--wiwi18
--st1700h
--st1701
--st1702
--st1703
--st1704
--st1705
--st1706
--st1707
--st1708
--st1714
--class200
--cutepet
--dphh8213
--bbl338
--bbl380
--mc_cb203
--dphh8633
--dphh8661
--pg118
--ppg118
--qpet
--retro150
--retro150a
--table108
--toumapet
--touma560
--touma568
--executel
--stmpc
--stmpcp
--storiode
--storioesa
--storioes
--storiofr
--storio
--storionl
--vreadercaen
--vreadercafr
--vreader
--stvdev          // no screen
--sun2_120
--sun2_50
--sun3_110
--sun3_260
--sun3_50
--sun3_60
--sun3_150
--sun3_e
--sun3_460      // no screen
--sun4_60         // no screen
--sun4_65
--sun_s10         // MT09256
--sun4_75         // no screen
--sun_s20         // MT09256
--sun4_25
--sun4_40
--sun4_50
--sun4_110        // no screen
--sun4_300        // no screen
--sun4_20         // sun4_300
--sun4_400        // no screen
--jd5000
--jd367
--jd362
--jd320
--jd361
--jd360
--svmu
--swyft
--sx1010
--sx240           // no screen
--s3670           // no screen
--synthex         // no screen
--sys1121
--sys2900
--sys9002
--systec
--systel100       // no sw
--t7000
--tabe22
--p5txla
--pf2012
--precur2w
--tamapix
--t1000rl
--triplec         // no screen
--td831           // no screen
--tdv2324
--tek4051
--tek4052a
--tek4107a
--tek4109a
--tek4319
--tek4404
--tek4132
--tek6130
--tekxp330
--telex1192       // no screen
--telex274        // no screen
--telex277d       // no screen
--terak
--t4490           // no screen
--7951om          // no screen
--loewe715        // no screen
--loewed          // no screen
--teleguide       // no screen
--alcat258        // no screen
--tp1983
--tg100           // no screen
--tpad600         // no screen
--tpad600e        // no screen
--tpad600x        // no screen
--tpad760xd       // no screen
--tpad770z        // no screen
--tpad850         // no screen
--ti73b
--ti83
--ti83pb
--ti83pseb
--ti83pcev15
--ti84pcse
--ti84pcsev2
--ti84pce
--ti84pcev15
--ti84pcev30
--ti931
--ti990_10
--ti990_4
--ti990_4v
--tipc
--colecofl
--megadri4        // black screen
--megadri4a       // black screen
--tk635
--tnshc08         // no screen
--tr175
--tricep
--triplex         // no sw
-//-triton72      // nw parent
--triumec         // no screen
--abl4play
--senspid
--trkfldchj
--my1stddr
--shtscore
--teleshi
--teleship
--trkfldch
--lexitvsprt
--ts3000        // no screen
--ts802
--ts802h          // ts802 nw
--ts803h
--prose2ko
--prose2k
--tulip1          // no sw
--tv924           // black screen
--tv950
--tv965
--tvdear          // no screen
--tx0_64kw
--tx0_8kw
--tx0_8kwo
--uknc            // black screen
--ultim809
--ultra45         // no screen
--vo5850pm        // no screen
--unistar
--3b1
--uvax1           // no screen
--uvax2           // no screen
--mv3400          // no screen
--mv3500          // no screen
--mv3100m10
--v100            // black screen
--v102            // black screen
--v550            // black screen
--vngrdmk1        // no screen
--vax785
--vd56sp          // no screen
--vdm79322        // no screen
--krista2         // black screen
--pk6128c         // black screen
--vec1200         // black screen
--vectrix         // no screen
--vegaplus        // black screen
--vocalizer       // no sound
--hc120           // no screen
--vp415           // MT09024
--vp60            // black screen
--vsmilebfp       // mnw
--vsmilebf        // mnw
--vsmilebg        // mnw
--vsmilebs        // mnw
--vsmilebsw       // mnw
--vsmileb         // mnw
--vsmilpro        // no screen
--anpncpc         // mnw
--intg5410        // mnw
--anpnvt12        // mnw
--gm235upc        // mnw
--wowwg           // mnw
--vta2000         // mnw, regressed
--vz200de         // roms missing
--pawmoviesp      // black screen
--vreadere        // grey screen
--innotab2           // black screen
--wicat           // can't boot disk
--iq7000          // black screen
--wrinkles        // no screen
-
--bk001001
--itunlim
--kaypro2x
--orao103
+//exceptions + to add - to remove from imported list
 
 +neogeo
