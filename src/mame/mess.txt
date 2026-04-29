@@ -1,40 +1,14 @@
-access/acvirus.cpp
--virusa
--virusb
--virusc
--viruscl
--virusrck
--virusrckxl
+//access/acvirus.cpp // randomly crash
 
 acorn/aa310.cpp
+-aa305
 -aa3010
 -aa3010_de
--aa3020
--aa4
--aa4000
--aa500
--aa500d
--aa5000
--aa5000a
 -aa680
 -am4
--ar140
 -ar225
--ar260
--av20dev
--aa305
--aa310
--aa4101
--aa4201
--aa440
--aa4401
--aa540
--aa3000
 
 acorn/accomm.cpp
--accommb
--accomm
--accommi
 -accommp
 
 acorn/acrnsys.cpp
@@ -42,21 +16,19 @@ acorn/acrnsys.cpp
 acorn/acrnsys1.cpp
 
 acorn/atom.cpp
--atomrr
 -atomes
+-atomrr
 
 acorn/bbcb.cpp
 -torch725
 -torch301
--sist1
--torchf           // can't read disk or crashes
 
 acorn/bbcbp.cpp
--cfa3000bp
--econx25
+-abc110
 -abc310
 -acw443
--abc110
+-cfa3000bp
+-econx25
 
 acorn/bbcm.cpp
 -se3010
@@ -65,7 +37,6 @@ acorn/bbcm.cpp
 -mpc800
 -cfa3000
 -ht280
--daisy
 -bbcmaiv
 -bbcmarm
 -discmon
@@ -81,30 +52,17 @@ acorn/electron.cpp
 
 acorn/eurocube.cpp
 
-acorn/reutapm.cpp
--reutapm
+//acorn/reutapm.cpp  // useless
 
-acorn/riscpc.cpp
--sarpc
--rpc700
--rpc600
--sarpc_j233
--a7000p
--a7000
+//acorn/riscpc.cpp   // black screen
 
 act/apricot.cpp
 
-act/apricotf.cpp
--f2
--f1e
--f10
--f1
+//act/apricotf.cpp  // disks boot but no inputs
 
-act/apricotp.cpp
--fp
+//act/apricotp.cpp  // black screen
 
 act/apxen.cpp
--apxen
 
 act/victor9k.cpp
 
@@ -112,153 +70,86 @@ adc/super6.cpp
 
 adc/superslave.cpp
 
-adds/4000_260.cpp
--4000_260
+//adds/4000_260.cpp    // black screen
 
-adds/adds2020.cpp
--adds2020
+//adds/adds2020.cpp    // black screen
 
-adds/multivision.cpp
--multivision
+//adds/multivision.cpp   // no memory
 
-adds/vp60.cpp
--vp60
+//adds/vp60.cpp         // black screen
 
 agat/agat.cpp
--agat9
 
-akai/akaiax80.cpp
--ax80
+//akai/akaiax80.cpp    // no screen
 
-akai/akaivx600.cpp
--vx600
+//akai/akaivx600.cpp   // no screen
 
-akai/mpc2000.cpp
--mpc2000xl
+//akai/mpc2000.cpp     // no sound
 
-akai/mpc3000.cpp
--mpc3000
+//akai/mpc3000.cpp     // no sound
 
-akai/mpc60.cpp
--mpc60
+//akai/mpc60.cpp       // no sound
 
 akai/s3000.cpp
--s3000xl
--s3000
--s2000
--cd3000xl
--cd3000i
 
-alesis/alesis.cpp
--sr16
--mmt8
--hr16b
--hr16
+//alesis/alesis.cpp    // no sound
 
-alesis/midiverb.cpp
--midifex         // useless?
+//alesis/midiverb.cpp  // useless
 
-altos/altos2.cpp
--altos2
+//altos/altos2.cpp     // black screen
 
-altos/altos486.cpp
--altos486
+//altos/altos486.cpp   // does nothing
 
 altos/altos5.cpp
--altos5
 
 altos/altos586.cpp
--altos586
 
 altos/altos8600.cpp
 
 amiga/amiga.cpp
--a1000n
--a1000
--a1200n
--a1200
--a2000n
--a2000
 -a3000n
 -a3000
--a400030n
--a400030
--a4000n
--a4000
 -a4000tn
 -a4000t
--a500n
--a500
--a500pn
--a500p
--a600n
--a600
--cd32n
--cd32
--cdtvn
--cdtv
+-aa3020  // aa3010 nw
+-aa4000  // aa3010 nw
 
-amirix/wxstar4000.cpp
--wxstar4k        // black screen
+//amirix/wxstar4000.cpp  // black screen
 
-ampex/ampex.cpp
--dialog80
+//ampex/ampex.cpp       // black screen
 
-ampex/ampex210.cpp
--ampex230p
--ampex210p
+//ampex/ampex210.cpp    // black screen
 
 ampro/ampro.cpp
 
-ampro/lb186.cpp
--lb186           // no sw, shows nothing
+//ampro/lb186.cpp   // no sw, shows nothing
 
 ampro/lbpc.cpp
--lbpc
 
 amstrad/amstrad.cpp
--al520ex
 
 amstrad/amstr_pc.cpp
--pc200
--ppc640
--ppc512
--pc5086
--pc3086
 -pc2086
--pc20
+-pc3086
+-pc5086
 
 amstrad/nc.cpp
 
 amstrad/pc1512.cpp
--pc1512hd10         // won't boot floppy
--pc1512hd20         // won't boot floppy
 
-amstrad/pcw.cpp
--pcw9512p
--pcw9512
--pcw9256
--pcw8512
--pcw8256
--pcw10
+//amstrad/pcw.cpp   // black screen
 
-amstrad/pcw16.cpp
--pcw16
+//amstrad/pcw16.cpp   // black screen
 
 amstrad/pda600.cpp
--pda600
 
 apf/apf.cpp
 
 apollo/apollo.cpp
--dsp5500
--dn5500_19i
--dn5500
 
 apple/apple1.cpp
 
 apple/apple2.cpp
--basis108
 
 apple/apple2e.cpp
 -mprof3
@@ -269,22 +160,13 @@ apple/apple2gs.cpp
 
 apple/apple3.cpp
 
-apple/imacg3.cpp
--imac
+//apple/imacg3.cpp   // crash
 
-apple/iphone2g.cpp
--iphone2g
+//apple/iphone2g.cpp  // black screen
 
-apple/lisa.cpp
--lisa               // crashes
--lisa2              // no sw
--lisa210            // no sw
--macxl              // no sw
+//apple/lisa.cpp      // MT09454
 
-apple/lwriter.cpp
--lwriterplus
--lwriter2nt
--lwriter
+//apple/lwriter.cpp   // printers
 
 apple/mac128.cpp
 
@@ -300,8 +182,7 @@ apple/maclc.cpp
 
 apple/maclc3.cpp
 
-apple/macpdm.cpp
--pmac6100
+//apple/macpdm.cpp     // silent exit with floppy
 
 apple/macprtb.cpp
 
@@ -310,7 +191,7 @@ apple/macpwrbk030.cpp
 apple/macpwrbkmsc.cpp
 
 apple/macquadra605.cpp
--maclc575                // black screen
+-maclc575                // MT09455
 
 apple/macquadra630.cpp
 
@@ -318,23 +199,11 @@ apple/macquadra700.cpp
 
 apple/macquadra800.cpp
 
-apple/newton.cpp
--newtnotp
--mp2100
--mp2000
--mp130
--mp120
--mp110
--newtonmp
--motmarco
--spi7000
--emate
+//apple/newton.cpp     // no screen
 
-apple/pippin.cpp
--pippin
+//apple/pippin.cpp     // no screen
 
-apple/powermacg3.cpp
--pwrmacg3
+//apple/powermacg3.cpp   // white screen
 
 apple/tk2000.cpp
 
@@ -347,19 +216,12 @@ appliedconcepts/ggm.cpp
 appliedconcepts/prodigy.cpp
 
 arcadia/arcadia.cpp
--trakcvg
--polyvcg
--plldium
--mratlus
 
 atari/a2600.cpp
--a2600_pop
 
 atari/a7800.cpp
 
 atari/atari400.cpp
--a65xea
--a130xe
 -a1200xl
 
 atari/atarist.cpp
@@ -378,13 +240,6 @@ atari/atarist.cpp
 -megaste_se
 -megaste_uk
 -megaste
--st_fr
--st_de
--st_nl
--st_es
--st_se
--st_sg
--st_uk
 -ste_fr
 -ste_de
 -ste_it
@@ -425,31 +280,19 @@ atari/lynx.cpp
 
 atari/pofo.cpp
 
-att/att3b2.cpp
--3b2_600
--3b2_400
--3b2_310
--3b2_300
+//att/att3b2.cpp     // no screen
 
-att/att4425.cpp
--att4425
+//att/att4425.cpp    // inputs
 
-att/att610.cpp
--att615
--att610
+//att/att610.cpp    // black screen
 
-att/att630.cpp
--att730x
--att630
+//att/att630.cpp    // inputs
 
-att/blit.cpp
--blit
+//att/blit.cpp     // white screen
 
-att/unixpc.cpp
--3b1
+//att/unixpc.cpp   // black screen
 
-ausnz/amust.cpp
--amust
+//ausnz/amust.cpp   // cannot boot disk
 
 ausnz/applix.cpp
 
@@ -463,8 +306,7 @@ ausnz/datum.cpp
 
 ausnz/dg680.cpp
 
-ausnz/dmax8000.cpp
--dmax8000
+//ausnz/dmax8000.cpp  // cannot boot disk
 
 ausnz/eacc.cpp
 
@@ -472,8 +314,7 @@ ausnz/eti660.cpp
 
 ausnz/excali64.cpp
 
-ausnz/labtam.cpp
--labtam
+//ausnz/labtam.cpp   // no sw
 
 ausnz/magnum.cpp
 
@@ -485,46 +326,34 @@ ausnz/pegasus.cpp
 ausnz/pipbug.cpp
 
 ausnz/poly.cpp
--polydev
 -poly2
--poly1e
--poly1
+-polydev
 
 ausnz/proteus.cpp
--proteus
 
-ausnz/pulsar.cpp
--pulsarlb
+ausnz/pulsar.cpp    // cannot boot disk
 
 ausnz/super80.cpp
 
 ausnz/tec1.cpp
 
-banctec/banctec.cpp
--banctec
+//banctec/banctec.cpp   // useless
 
-bandai/design_master.cpp
--bdesignm
+//bandai/design_master.cpp  // black screen
 
 bandai/rx78.cpp
 
 bandai/sv8000.cpp
 
-bandai/wswan.cpp
--pockchv2           // start button nw
+bandai/wswan.cpp    // no sw works
 
-be/bebox.cpp
--bebox
--bebox2
+//be/bebox.cpp    // no sw
 
-beehive/microb.cpp
--dm3270            // terminal
+beehive/microb.cpp    // terminal
 
-benesse/challenge_gear.cpp
--chalgear
+//benesse/challenge_gear.cpp   // white screen
 
-benesse/pockchal.cpp
--pockchal
+//benesse/pockchal.cpp    // black screen
 
 bitcorp/gamate.cpp
 
@@ -536,35 +365,27 @@ booth/apexc.cpp
 
 brainchild/pls1000.cpp
 
-brother/ax145.cpp
--ax145
+//brother/ax145.cpp   // mnw
 
 brother/lw30.cpp
 
 brother/lw350.cpp
 
-brother/lw700i.cpp
--lw700i
+//brother/lw700i.cpp   // white screen
 
-brother/lw840.cpp
--lw840               // white screen
+//brother/lw840.cpp    // white screen
 
 brother/pn8800fxb.cpp
 
-burroughs/anzterm.cpp
--anzterm
+//burroughs/anzterm.cpp   // black screen
 
-burroughs/td831.cpp
--td831
+//burroughs/td831.cpp   // no screen
 
 camputers/camplynx.cpp
 
-canon/canon_s80.cpp
--canonts3
--canons80
+//canon/canon_s80.cpp   // electric typewriter
 
 canon/cat.cpp
--cat
 
 canon/x07.cpp
 
