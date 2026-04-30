@@ -345,7 +345,7 @@ bandai/rx78.cpp
 
 bandai/sv8000.cpp
 
-bandai/wswan.cpp    // no sw works
+bandai/wswan.cpp    // pockchv2:no sw works
 
 //be/bebox.cpp    // no sw
 
@@ -652,65 +652,39 @@ eaca/cgenie.cpp
 elektor/avrmax.cpp
 
 elektor/ec65.cpp
--ec65k
--ec65
+-ec65k             // black screen
 
 elektor/elekscmp.cpp
 
 elektor/junior.cpp
 
-elektron/elektronmono.cpp
--monomach
--machdrum
+//elektron/elektronmono.cpp  // no screen
 
-emusys/emax.cpp
--emaxp
--emax2
--emax
+//emusys/emax.cpp   // inputs, no sw
 
-emusys/emu2.cpp
--emu2
+//emusys/emu2.cpp   // no screen
 
-emusys/emu3.cpp
--emu3
+//emusys/emu3.cpp   // no sw
 
-emusys/emu68k.cpp
--vintkeys
--proteusxr
--proteus1
--procuss
--phatt
--orbit9090
--carnaval
+//emusys/emu68k.cpp   // inputs
 
-ensoniq/enmirage.cpp
--enmirage
+//ensoniq/enmirage.cpp   // no sw
 
-ensoniq/esq1.cpp
--sq80
--esqm
--esq1
+//ensoniq/esq1.cpp     // no sound or mnw
 
 ensoniq/esq5505.cpp
--sqrack
--sq2
--sq1
--ks32
--eps16p
--eps
+-sqrack        // no sound
+-sq2           // mnw
+-sq1           // no sound
+-ks32          // mnw
+-eps16p        // no sw
+-eps           // no sw
 
-ensoniq/esqasr.cpp
--asrx
--asr10
+//ensoniq/esqasr.cpp  // blank screen
 
-ensoniq/esqkt.cpp
--ts12
--ts10
--kt76             // no sound
+//ensoniq/esqkt.cpp    // inputs
 
-ensoniq/esqmr.cpp
--mrrack
--mr61
+//ensoniq/esqmr.cpp   // blank screen
 
 enterprise/ep64.cpp
 
@@ -718,77 +692,53 @@ entex/advision.cpp
 
 entex/sag.cpp
 
-epoch/cassvisn.cpp
--cassvisn
+//epoch/cassvisn.cpp   // mnw
 
 epoch/gamepock.cpp
 
 epoch/scv.cpp
 
-epson/hx20.cpp
--ehx20e
--ehx20
--ecm6127
--ecm6032
+//epson/hx20.cpp     // grey screen
 
 epson/px4.cpp
 
-epson/px8.cpp
--px8
+//epson/px8.cpp     // grey screen
 
 epson/qx10.cpp
--qx10
 
-ericsson/alfaskop41xx.cpp
--alfaskop4120
--alfaskop4110
--alfaskop4101
+//ericsson/alfaskop41xx.cpp  // no screen or mnw
 
-ericsson/e9161.cpp
--e9161
+//ericsson/e9161.cpp    // no screen
 
 ericsson/eispc.cpp
 
-esprit/esp250c.cpp
--esp250c
+//esprit/esp250c.cpp    // mnw
 
 esprit/executive10.cpp
--exe10102
 
 excalibur/ivant.cpp
 
 excalibur/ivanto.cpp
 
 excalibur/mirage.cpp
--emirage
 
 exidy/sorcerer.cpp
 
 facit/f4431.cpp
--f4431
 
-facit/facit4440.cpp
--facit4440
+//facit/facit4440.cpp    // inputs
 
 fairchild/channelf.cpp
 
-fairchild/f387x.cpp
--f387x
+//fairchild/f387x.cpp   // mnw
 
-fairlight/cmi.cpp
--cmi2x
+//fairlight/cmi.cpp     // no sw
 
-falco/falco500.cpp
--falco5220s
--falco5220e
--falco500e
+//falco/falco500.cpp   // inputs or black screen
 
 falco/falcots.cpp
--ts2624
--ts1
 
-falco/falcots28.cpp
--ts28                // terminal
+//falco/falcots28.cpp   // inputs
 
 fidelity/bridgeb.cpp
 
@@ -822,9 +772,7 @@ fidelity/excel.cpp
 
 fidelity/msc.cpp
 
-fidelity/phantom.cpp
--cphantom              // stops when it loses a piece
--fphantom              // stops when it loses a piece
+//fidelity/phantom.cpp  // mech
 
 fidelity/sc12.cpp
 
@@ -838,31 +786,17 @@ fidelity/vcc.cpp
 
 fidelity/vsc.cpp
 
-force/miniforce.cpp
--miniforce
+//force/miniforce.cpp  // cmds unknown
 
 fujitsu/fm7.cpp
--fm7740sx
--fm16beta
--fm11
+-fm16beta    // black screen
+-fm11        // black screen
 
 fujitsu/fmtowns.cpp
--fmtmarty2
--fmtmarty
--fmtownsux
--fmtownssj
--fmtownsmx
--fmtownshr
--fmtownsftv
--carmarty
--fmtownsv03
--fmtowns
 
-fujitsu/secoinsa20.cpp
--secoinsa20
+//fujitsu/secoinsa20.cpp  // no screen
 
-gaelco/ds5002fp_programmer.cpp
--gaelcods
+//gaelco/ds5002fp_programmer.cpp  // no screen
 
 gamepark/gp2x.cpp
 -gp2x
