@@ -4,6 +4,8 @@ acorn/aa310.cpp
 -aa305
 -aa3010
 -aa3010_de
+-aa3020  // aa3010 nw
+-aa4000  // aa3010 nw
 -aa680
 -am4
 -ar225
@@ -111,8 +113,6 @@ amiga/amiga.cpp
 -a3000
 -a4000tn
 -a4000t
--aa3020  // aa3010 nw
--aa4000  // aa3010 nw
 
 //amirix/wxstar4000.cpp  // black screen
 
@@ -373,7 +373,7 @@ brother/lw350.cpp
 
 //brother/lw700i.cpp   // white screen
 
-//brother/lw840.cpp    // white screen
+//brother/lw840.cpp    // MT09456
 
 brother/pn8800fxb.cpp
 
@@ -393,29 +393,21 @@ cantab/jupace.cpp
 
 //capcom/cps1.cpp             // U:arcade
 
-casio/casio_rompack.cpp
--casiorom
+//casio/casio_rompack.cpp    // no screen
 
 casio/casloopy.cpp
 
 casio/cfx9850.cpp
--cfx9850gb
--cfx9850
 
-casio/cps2000.cpp
--cps2000
+//casio/cps2000.cpp       // no screen
 
-casio/ct8000.cpp
--ctmb1
--ct8000          // inputs
--ctfk1           // inputs
+//casio/ct8000.cpp    // ctmb1 no screen, others no sound
 
-casio/ctk2000.cpp
--ctk2100
+//casio/ctk2000.cpp   // inputs
 
 casio/ctk551.cpp
--ctk551          // mouse nw
--ctk601          // mouse nw
+-ctk551          // inputs
+-ctk601          // inputs
 -gz70sp          // no screen
 
 casio/cz1.cpp
@@ -426,86 +418,46 @@ casio/cz101.cpp
 casio/cz230s.cpp
 -sz1              // no sound
 
-casio/dg20.cpp
--dg20
--dg10
+//casio/dg20.cpp   // no screen
 
-casio/fp1100.cpp
--fp1100
--fp1000
+//casio/fp1100.cpp  // fp1000 black screen, fp1100 inputs
 
 casio/fp200.cpp
--fp200
 
 casio/fp6000.cpp
--fp6000
 
-casio/fz1.cpp
--fz20m
--fz10m
--fz1
+//casio/fz1.cpp     // no sound
 
-casio/ht6000.cpp
--ht6000
+//casio/ht6000.cpp   // no screen
 
-casio/ld50.cpp
--ld50
+//casio/ld50.cpp   // no sound
 
 casio/pb1000.cpp
--pb2000c
--pb1000
--ai1000
 
-casio/pickytlk.cpp
--jd366
--pickytlk
--jd368
--plets350
--plets300
--jd363
--rx850
--pickydis
--jd364
--csf5550
+//casio/pickytlk.cpp   // inputs
 
 casio/pv1000.cpp
 
 casio/pv2000.cpp
--pv2000
 
 casio/rz1.cpp
 
-casio/sk1.cpp
--sk5
--sk2
--sk10
--sk1
+//casio/sk1.cpp   // no screen
 
-casio/superjr.cpp
--jd360
--jd361
--jd320
--jd362
--jd367
--jd5000
+//casio/superjr.cpp   // inputs
 
-casio/sx1000.cpp
--sx1010
+//casio/sx1000.cpp    // mnw
 
-casio/wk1800.cpp
--wk1600           // no sound
--wk1800           // no sound
+//casio/wk1800.cpp    // inputs
 
 casio/zoomer.cpp
 
 cce/mc1000.cpp
 
 ccs/ccs2810.cpp
--ccs300
--ccs2422
+-ccs300           // no sw
 
-ceres/ceres.cpp
--ceres1
+//ceres/ceres.cpp    // black screen
 
 chess/ave_arb.cpp
 
@@ -515,8 +467,7 @@ chess/conchess.cpp
 
 chess/conic_cchess2.cpp
 
-chess/conic_cchess3.cpp
--cncchess3
+//chess/conic_cchess3.cpp    // no screen
 
 chess/regence.cpp
 
@@ -528,46 +479,35 @@ chessking/pmicrodx.cpp
 
 chessking/triomphe.cpp
 
-chromatics/cgc7900.cpp
--cgc7900
+//chromatics/cgc7900.cpp    // mnw
 
 citoh/cit101.cpp
--cit101               // terminal
--cit101e              // terminal
 
-citoh/cit101xl.cpp
--cit101xl
+//citoh/cit101xl.cpp    // black screen
 
-citoh/cit220.cpp
--vp122
--cit220p
+//citoh/cit220.cpp      // inputs
 
 coleco/adam.cpp
 
 coleco/coleco.cpp
 
-coleco/wrinkles.cpp
--wrinkles
+//coleco/wrinkles.cpp   // no screen
 
 commodore/c128.cpp
 
 commodore/c64.cpp
--clipper
+-clipper             // black screen
 
-commodore/c64dtv.cpp
--c64dtv
+//commodore/c64dtv.cpp   // black screen
 
 commodore/c65.cpp
--c65
--c64dx
 
 commodore/c900.cpp
--c900
 
 commodore/cbm2.cpp
--cbm730
--cbm720_de
--bx256hp
+-bx256hp           // hangs when enter pressed
+-cbm720_de         // bad gfx
+-cbm730            // hangs when enter pressed
 
 commodore/chessmate.cpp
 
@@ -575,14 +515,12 @@ commodore/clcd.cpp
 
 commodore/kim1.cpp
 
-commodore/mps1230.cpp
--mps1230
--mps1000
+//commodore/mps1230.cpp  // no screen
 
 commodore/pet.cpp
--superpet
--mmf9000_se
--mmf9000
+-mmf9000           // inputs
+-mmf9000_se        // inputs
+-superpet          // inputs
 
 commodore/plus4.cpp
 
@@ -590,41 +528,27 @@ commodore/vic10.cpp
 
 commodore/vic20.cpp
 
-compugraphic/pwrview.cpp
--pwrview
+//compugraphic/pwrview.cpp   // black screen
 
 comx/comx35.cpp
 
-concept/concept.cpp
--concept                // no sw
+//concept/concept.cpp     // no sw
 
-conitec/prof180x.cpp
--prof181x
--prof180x
+//conitec/prof180x.cpp    // black screen
 
-conitec/prof80.cpp
--prof80
+//conitec/prof80.cpp     // black screen
 
-cromemco/c10.cpp
--c10
+//cromemco/c10.cpp       // inputs
 
 cromemco/mcb216.cpp
 
-cybiko/cybiko.cpp
--cybikov1
--cybikov2
--cybikoxt
+//cybiko/cybiko.cpp  // hangs while booting
 
 dai/dai.cpp
 
 ddr/ac1.cpp
--ac1scch
 
 ddr/bcs3.cpp
--bcs3d
--bcs3c
--bcs3b
--bcs3a
 
 ddr/c80.cpp
 
@@ -637,10 +561,6 @@ ddr/huebler.cpp
 ddr/jtc.cpp
 
 ddr/kc.cpp
--kc85_5
--kc85_4
--kc85_3
--kc85_2
 
 ddr/kramermc.cpp
 
@@ -652,14 +572,11 @@ ddr/llc2.cpp
 
 ddr/mc8020.cpp
 
-ddr/mc8030.cpp
--mc8030
+//ddr/mc8030.cpp      // inputs
 
-ddr/nanos.cpp
--nanos
+//ddr/nanos.cpp      // black screen
 
 ddr/pcm.cpp
--pcm
 
 ddr/poly880.cpp
 
@@ -667,100 +584,64 @@ ddr/sc2.cpp
 
 ddr/slc1.cpp
 
-ddr/sprachmg.cpp
--sprachmg         // useless
+//ddr/sprachmg.cpp     // inputs
 
 ddr/vcs80.cpp
 
 dec/dct11em.cpp
--dct11em
 
-dec/decmate2.cpp
--decmate3
--decmate2
+//dec/decmate2.cpp    // no sw
 
 dec/dectalk.cpp
--dectalk
 
-dec/decwritr.cpp
--la120
+//dec/decwritr.cpp   // printer
 
-dec/dtc03.cpp
--dtc03
+//dec/dtc03.cpp      // not talking
 
-dec/jensen.cpp
--dpcaxp150
--d2k500axp
--d2k300axp
+//dec/jensen.cpp    // no screen
 
-dec/kn01.cpp
--ds3100
--ds2100
+//dec/kn01.cpp      // mnw
 
 dec/kn02.cpp
--ds5k133
 
 dec/pdp1.cpp
 
-dec/pdp11.cpp
--sms1000
--pdp11ub2
--pdp11ub
--pdp11qb
+//dec/pdp11.cpp   // useless
 
 dec/rainbow.cpp
--rainbow190
--rainbow100a
+-rainbow190      // mnw
 
-dec/uvax1.cpp
--uvax1
+//dec/uvax1.cpp    // no screen
 
-dec/uvax2.cpp
--uvax2
+//dec/uvax2.cpp    // no screen
 
-dec/uvax3.cpp
--mv3500
--mv3400
+//dec/uvax3.cpp    // no screen
 
-dec/uvax3100.cpp
--mv3100m10
+//dec/uvax3100.cpp  // black screen
 
-dec/vax11.cpp
--vax785
+//dec/vax11.cpp    // black screen
 
 dec/vk100.cpp
 
 dec/vt100.cpp
 
-dec/vt220.cpp
--vt220a           // black screen
--vt220           // black screen
+//dec/vt220.cpp    // black screen
 
-dec/vt240.cpp
--mc7105          // nw terminal
--vt240           // nw terminal
+//dec/vt240.cpp   // inputs
 
-dec/vt320.cpp
--vt320           // black screen
--vt330           // black screen
+//dec/vt320.cpp   // black screen
 
 dec/vt52.cpp
 
-dec/vt520.cpp
--vt420           // black screen
--vt520           // black screen
+//dec/vt520.cpp   // black screen
 
-dec/vt62.cpp
--vt62           // black screen
+//dec/vt62.cpp     // black screen
 
 dg/aviion88k.cpp
--aviion_4600
 
-dms/dms5000.cpp
--dms5000
+//dms/dms5000.cpp  // black screen
 
 dms/dms86.cpp
--dms86
 
 dms/zsbc3.cpp
 
@@ -5433,12 +5314,7 @@ tvgames/titan_soc.cpp
 -colecofl
 
 tvgames/trkfldch.cpp
--lexitvsprt
 -trkfldch
--teleship
--teleshi
--shtscore
--my1stddr
 -trkfldchj
 -senspid
 -abl4play
