@@ -798,65 +798,41 @@ fujitsu/fmtowns.cpp
 
 //gaelco/ds5002fp_programmer.cpp  // no screen
 
-gamepark/gp2x.cpp
--gp2x
+//gamepark/gp2x.cpp      // mnw
 
 gamepark/gp32.cpp
--gp32
 
-gridcomp/gridcomp.cpp
--grid1101                // no sw
--grid1109                // no sw
--grid1121                // no sw
--grid1129                // no sw
--grid1131                // no sw
--grid1139                // no sw
+//gridcomp/gridcomp.cpp   // no sw
 
 grundy/newbrain.cpp
--newbrainmd
--newbrain
--newbraina
+-newbrainmd           // black screen
 
 handheld/chessking.cpp
 
 handheld/dbridgec.cpp
 
-handheld/evolution_handheld.cpp
--yuleyuan
--smkatsum
--pokesmqz
--tomyspt
--pokexyqz
--buttdtct
--hoppech
--evolhh
+//handheld/evolution_handheld.cpp   // black screen
 
 handheld/gameking.cpp
 
 //handheld/generalplus_gp3x_unknown.cpp     // black screen
 
 handheld/generalplus_gpce4.cpp
--digicolr              // fatal err
--siddr
--tagalaga
--mapacman
--parcade
--taspinv
--taturtf
+-siddr         // black screen
+-tagalaga       // black screen
+-parcade       // black screen
+-taspinv       // black screen
+-taturtf       // black screen
 
-handheld/generalplus_gpel31xx.cpp
--tamameet
+//handheld/generalplus_gpel31xx.cpp   // black screen
 
 handheld/gmaster.cpp
 
-handheld/gw35th.cpp
--gwsmb35
--gwzeldan              // black screen
+//handheld/gw35th.cpp  // black screen
 
 handheld/hh_cop400.cpp
--vidchal
--lchicken
--lightfgt
+-vidchal           // useless
+-lightfgt          // useless
 -plus1                // no screen
 
 handheld/hh_cops1.cpp
@@ -864,26 +840,16 @@ handheld/hh_cops1.cpp
 handheld/hh_e0c6200.cpp
 
 handheld/hh_hmcs40.cpp
--wantgman
--tkjmaru
--puckimon
--ktparman
--ggdman
--gdefender
--bombman
 
 handheld/hh_ht11xx.cpp
 
-handheld/hh_mediatek_mt6260a.cpp
--sonicwtc
+//handheld/hh_mediatek_mt6260a.cpp   // black screen
 
 handheld/hh_melps4.cpp
 
 handheld/hh_mn1400.cpp
 
 handheld/hh_pic16.cpp
--uspbball
--pabball
 -sfxphasor             // no screen
 
 handheld/hh_pps41.cpp
@@ -893,20 +859,18 @@ handheld/hh_rw5000.cpp
 handheld/hh_sm510.cpp
 
 handheld/hh_smc1k.cpp
--tlluke2
--tkkongq
 
 handheld/hh_tms1k.cpp
--bcheetah
--tithermos
--elecbowl
--bshipb
--mbdtower
--bigtrak
--cchime                  // no screen
--mathmarv                // nothing?
--mathmagi                // nothing?
--wtalker                 // no screen
+-bcheetah         // useless
+-tithermos        // useless
+-elecbowl         // useless
+-bshipb           // useless
+-mbdtower         // useless
+-bigtrak          // useless
+-cchime           // no screen
+-mathmarv         // useless
+-mathmagi         // useless
+-wtalker          // no screen
 
 handheld/hh_ucom4.cpp
 
@@ -914,48 +878,36 @@ handheld/lk3000.cpp
 
 handheld/monty.cpp
 
-handheld/pensebem.cpp
--pbem2017
+//handheld/pensebem.cpp   // mnw
 
 handheld/rzone.cpp
 
 handheld/scrablex.cpp
 
 handheld/st2302u_bbl_rom.cpp
--bbl338
--dphh8213
--cutepet
--class200
+-bbl338         // black screen
+-cutepet        // mnw
+-class200       // black screen
 
 handheld/st2302u_bbl_spi.cpp
--touma568
--touma560
--toumapet
--table108
--retro150a
--retro150
--qpet
--ppg118
--pg118
--dphh8661
--dphh8633
--mc_cb203
--bbl380
+-touma568       // fatal
+-touma560       // fatal
+-toumapet       // fatal
+-qpet           // fatal
+-mc_cb203       // black screen
+-bbl380         // black screen
 
 handheld/talkingbb.cpp
 
-handheld/talkingfb.cpp
--talkingfb             // no screen
+//handheld/talkingfb.cpp  // no screen
 
 handheld/teammate.cpp
 
-handheld/vegaplus.cpp
--vegaplus
+//handheld/vegaplus.cpp  // black screen
 
 handheld/wildfire.cpp
 
-hds/hds200.cpp
--hds200
+//hds/hds200.cpp      // mnw
 
 heathzenith/et3400.cpp
 
@@ -967,14 +919,11 @@ heathzenith/h89.cpp
 
 heathzenith/mdt60.cpp
 
-heathzenith/z100.cpp
--z100            // mnw
+//heathzenith/z100.cpp   // mnw
 
-heathzenith/z22.cpp
--z22             // mnw
+//heathzenith/z22.cpp    // mnw
 
-heathzenith/z29.cpp
--z29             // black screen
+//heathzenith/z29.cpp    // black screen
 
 hec2hrp/hec2hrp.cpp
 
@@ -1020,16 +969,13 @@ hegenerglaser/roma2.cpp
 
 hegenerglaser/smondial.cpp
 
-hitachi/b16.cpp
--b16ex2
--b16
+//hitachi/b16.cpp // no sw, black screen
 
 hitachi/bmjr.cpp
 
 hitachi/bml3.cpp
 
 hitachi/mbs1.cpp
--mbs1
 
 homebrew/4004clk.cpp
 
@@ -1037,11 +983,9 @@ homebrew/68ksbc.cpp
 
 homebrew/chaos.cpp
 
-homebrew/d6809.cpp
--d6809
+//homebrew/d6809.cpp   // no sw
 
-homebrew/dcebridge.cpp
--dcebridge             // useless
+//homebrew/dcebridge.cpp  // useless
 
 homebrew/gigatron.cpp
 
@@ -1055,9 +999,7 @@ homebrew/gsz80.cpp
 
 homebrew/homez80.cpp
 
-homebrew/lft_chiptune.cpp
--hwchiptn                // no screen
--powernin                // no screen
+//homebrew/lft_chiptune.cpp  // no screen
 
 homebrew/lft_craft.cpp
 
@@ -1065,24 +1007,19 @@ homebrew/lft_phasor.cpp
 
 homebrew/linux4004.cpp
 
-homebrew/minib.cpp
--minib
+//homebrew/minib.cpp  // inputs
 
 homebrew/mk1forth.cpp
 
-homebrew/p112.cpp
--p112
+//homebrew/p112.cpp  // black screen
 
-homebrew/pc532.cpp
--pc532
+//homebrew/pc532.cpp  // no sw
 
 homebrew/phunsy.cpp
 
 homebrew/pimps.cpp
 
 homebrew/ravens.cpp
--ravens2
--ravens
 
 homebrew/rc2014.cpp
 -rc2014bppro           // no screen
@@ -1093,19 +1030,13 @@ homebrew/rc2014.cpp
 -sc116               // no screen
 -sc133               // no screen
 
-homebrew/sbc6510.cpp
--sbc6510
+//homebrew/sbc6510.cpp    // useless
 
-homebrew/sitcom.cpp
--sitcom            // useless
--sitcomtmr         // useless
+//homebrew/sitcom.cpp    // useless
 
-homebrew/test_t400.cpp
--test410           // useless
--test420           // useless
+//homebrew/test_t400.cpp   // useless
 
-homebrew/ultim809.cpp
--ultim809
+//homebrew/ultim809.cpp    // useless
 
 homebrew/uzebox.cpp
 
@@ -1113,103 +1044,72 @@ homebrew/z80clock.cpp
 
 homebrew/z80dev.cpp
 
-homebrew/zexall.cpp
--zexall
+//homebrew/zexall.cpp  // useless
 
-homelab/braiplus.cpp
--braiplus
+//homelab/braiplus.cpp  // no screen
 
 homelab/homelab.cpp
--homelab4
--homelab3
--brailab4
 
-hp/hp16500.cpp
--hp1651b
--hp1650b
--hp16500b
--hp165ka0
+//hp/hp16500.cpp  // mnw
 
-hp/hp2100.cpp
--hp2100
+//hp/hp2100.cpp  // no screen
 
-hp/hp2620.cpp
--hp2622a
+//hp/hp2620.cpp  // black screen
 
 hp/hp2640.cpp
 
-hp/hp3478a.cpp
--hp3478a
+//hp/hp3478a.cpp  // useless
 
 hp/hp48.cpp
--hp39g
--hp49g
+-hp39g      // blank screen
+-hp49g      // useless
 
-hp/hp49gp.cpp
--hp49gp
+//hp/hp49gp.cpp  // black screen
 
-hp/hp620lx.cpp
--hp620lx
+//hp/hp620lx.cpp // black screen
 
-hp/hp64k.cpp
--hp64k
+//hp/hp64k.cpp   // mnw
 
-hp/hp700.cpp
--hp700_92
--hp700_70
+//hp/hp700.cpp  // no screen
 
-hp/hp7596a.cpp
--hp7596a
+//hp/hp7596a.cpp  // no screen
 
 hp/hp80.cpp
 
-hp/hp95lx.cpp
--hp95lx
+//hp/hp95lx.cpp  // inputs
 
 hp/hp9825.cpp
 
 hp/hp9845.cpp
--hp9845s
--hp9845a
--hp9835b
--hp9835a
+-hp9845s    // black screen
+-hp9845a    // black screen
+-hp9835b    // black screen
+-hp9835a    // black screen
 
 hp/hp98x6.cpp
 
-hp/hp9k.cpp
--hp9816
+//hp/hp9k.cpp   // inputs
 
 hp/hp9k_3xx.cpp
--hp9k382
--hp9k380
--hp9k370
--hp9k360
--hp9k340
--hp9k332
--hp9k330
--hp9k320
--hp9k310
+-hp9k382      // cannot boot disk
+-hp9k380      // cannot boot disk
+-hp9k370      // cannot boot disk
+-hp9k360      // cannot boot disk
+-hp9k340      // cannot boot disk
+-hp9k310      // cannot boot disk
 
 hp/hpz80unk.cpp
--hpz80unk
 
 hp/hp_ipc.cpp
--hp9808a
+-hp9808a      // cannot boot disk
 
-hp/jornada.cpp
--jorn720
+//hp/jornada.cpp   // mnw
 
-husky/hawk.cpp
--hawk
+//husky/hawk.cpp   // black screen
 
-husky/hunter16.cpp
--hunter216
--hunter1680
--hunter16
+//husky/hunter16.cpp   // inputs or grey screen
 
 husky/hunter2.cpp
--hunter2
--hunter
 
 husky/husky.cpp
 
