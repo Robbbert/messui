@@ -31,13 +31,13 @@ a stream of quad descriptors.
 
 Each quad has a reference color (shared across vertices), and for each vertex the tuple: (screenx,screeny,z-code).
 The z-code scalar accounts for depth bias.  Quads are sorted by z-code before rendering quads, and depth cueing
-is used to shade pixels according to their depth.
+is used to shade quads according to their depth.
 
 -------------------
 
 TODO:
-- polygon glitches/flicker
 - is there a video_enable flag? or at least one for the bitmap layer (see screen transitions)
+- some z-fighting issues, eg. signs and car rearwing (the problem is in namcos21_3d_device)
 - verify video timing, PCB videos do suggest exactly 60Hz
 - winrungp: some missing bitmap layer gfx due to underdumps of the gpu program roms (see attract mode
   when it's supposed to show "TRIANGLE" curve text, and the congratulations screen after winning)
@@ -476,7 +476,7 @@ void namcos21_state::bitmap_draw(bitmap_ind16 &bitmap, const rectangle &cliprect
 	printf("| %04x\n", m_gpu_color);
 #endif
 
-	int const yscroll = -cliprect.top() + (s16)m_gpu_register[1];
+	int const yscroll = m_gpu_register[1] - cliprect.top();
 	int const xscroll = m_gpu_register[0] & 0xff;
 	int const base = 0x1000 | (m_gpu_color << 8 & 0xf00);
 
@@ -593,7 +593,7 @@ void namcos21_state::master_map(address_map &map)
 	map(0x260000, 0x26ffff).ram(); // unused?
 	map(0x280000, 0x281fff).w(m_namcos21_dsp, FUNC(namcos21_dsp_device::dspbios_w));
 	map(0x380000, 0x38000f).rw(m_namcos21_dsp, FUNC(namcos21_dsp_device::dspcomram_control_r), FUNC(namcos21_dsp_device::dspcomram_control_w));
-	map(0x3c0000, 0x3c1fff).rw(m_namcos21_dsp, FUNC(namcos21_dsp_device::m68k_dspcomram_r), FUNC(namcos21_dsp_device::m68k_dspcomram_w));
+	map(0x3c0000, 0x3c0fff).rw(m_namcos21_dsp, FUNC(namcos21_dsp_device::m68k_dspcomram_r), FUNC(namcos21_dsp_device::m68k_dspcomram_w));
 	map(0x400000, 0x400001).w(m_namcos21_dsp, FUNC(namcos21_dsp_device::pointram_control_w));
 	map(0x440000, 0x440001).rw(m_namcos21_dsp, FUNC(namcos21_dsp_device::pointram_data_r), FUNC(namcos21_dsp_device::pointram_data_w));
 }
@@ -828,6 +828,9 @@ void namcos21_state::winrun(machine_config &config)
 	M68000(config, m_slave, 49.152_MHz_XTAL / 4); // Slave
 	m_slave->set_addrmap(AS_PROGRAM, &namcos21_state::slave_map);
 
+	M68000(config, m_gpu, 49.152_MHz_XTAL / 4); // Graphics coprocessor
+	m_gpu->set_addrmap(AS_PROGRAM, &namcos21_state::gpu_map);
+
 	MC6809E(config, m_audiocpu, 49.152_MHz_XTAL / 24); // Sound
 	m_audiocpu->set_addrmap(AS_PROGRAM, &namcos21_state::sound_map);
 
@@ -854,9 +857,6 @@ void namcos21_state::winrun(machine_config &config)
 	NAMCOS21_DSP(config, m_namcos21_dsp, 0);
 	m_namcos21_dsp->set_renderer_tag("namcos21_3d");
 
-	M68000(config, m_gpu, 49.152_MHz_XTAL / 4); // graphics coprocessor
-	m_gpu->set_addrmap(AS_PROGRAM, &namcos21_state::gpu_map);
-
 	NAMCO_C148(config, m_master_intc, 0, m_maincpu, true);
 	m_master_intc->link_c148_device(m_slave_intc);
 	m_master_intc->out_ext1_callback().set(FUNC(namcos21_state::sound_reset_w));
@@ -866,9 +866,11 @@ void namcos21_state::winrun(machine_config &config)
 	m_slave_intc->link_c148_device(m_master_intc);
 
 	NAMCO_C148(config, m_gpu_intc, 0, m_gpu, false);
+	m_gpu_intc->in_ext_callback().set([this](){ return m_screen->frame_number() & 1; });
+
 	NAMCO_C139(config, m_sci, 0);
 
-	config.set_maximum_quantum(attotime::from_hz(6000)); // 100 CPU slices per frame
+	config.set_maximum_quantum(attotime::from_hz(60000));
 
 	NVRAM(config, "nvram", nvram_device::DEFAULT_ALL_1);
 
