@@ -1113,95 +1113,64 @@ husky/hunter2.cpp
 
 husky/husky.cpp
 
-ibm/ibm3153.cpp
--ibm3153
+//ibm/ibm3153.cpp   // black screen
 
-ibm/ibm3477.cpp
--ibm3477
+//ibm/ibm3477.cpp   // black screen
 
 ibm/ibm5100.cpp
 
-ibm/ibm5550.cpp
--ibm5550
+//ibm/ibm5550.cpp   // black screen
 
-ibm/ibm6580.cpp
--ibm6580
+//ibm/ibm6580.cpp   // blank screen
 
-ibm/ptpc110.cpp
--ptpc110
+//ibm/ptpc110.cpp   // mnw
 
-ibm/rs6000_type7xxx.cpp
--rs6k7009
+//ibm/rs6000_type7xxx.cpp  // no screen
 
-ibm/rtpc.cpp
--rtpca25
--rtpc025
--rtpc020
--rtpc015
--rtpc010
+//ibm/rtpc.cpp   // mnw
 
-ibm/thinkpad600.cpp
--tpad770z
--tpad760xd
--tpad600x
--tpad600e
--tpad600
+//ibm/thinkpad600.cpp   // no screen
 
-ibm/thinkpad8xx.cpp
--tpad850
+//ibm/thinkpad8xx.cpp   // no screen
 
-informer/informer_207_100.cpp
--in207100
+//informer/informer_207_100.cpp   // inputs
 
 informer/informer_207_376.cpp
--in207376
 
 informer/informer_213.cpp
--in213ae
--in213
+-in213      // mnw
 
 intel/basic52.cpp
 
-intel/i420ex.cpp
--a486ap4
--entrada
+//intel/i420ex.cpp  // cannot boot disk, mnw
 
 intel/imds2.cpp
 
 intel/intellec4.cpp
 
-intel/intellec8.cpp
--intlc8m80
--intlc8
+//intel/intellec8.cpp // no screen
 
 intel/ipc.cpp
--ipc
+-ipc         // mnw
 
-intel/ipds.cpp
--ipds
+//intel/ipds.cpp // black screen
 
 intel/isbc.cpp
--sm1810
--rpc86
--isbc8630
--isbc86
--isbc8605
--isbc286
+-rpc86       // blank screen
+-isbc8630    // mnw or no sw
+-isbc86      // mnw
+-isbc8605    // mnw or no sw
+-isbc286     // blank screen
 
-intel/isbc660.cpp
--isbc660
+//intel/isbc660.cpp  // no screen
 
 intel/isbc8010.cpp
 
 intel/isbc8030.cpp
 
 intel/rex6000.cpp
--oz750
--rex6000
--ds2
 
-intel/sdk51.cpp
--sdk51
+//intel/sdk51.cpp  // no screen
 
 intel/sdk80.cpp
 
@@ -1209,178 +1178,93 @@ intel/sdk85.cpp
 
 intel/sdk86.cpp
 
-intergraph/interpro.cpp
--ip6800
--ip6700
--ip6400
--ip6000
--ip2800
--ip2700
--ip2500
--ip2400
--ip2000
+//intergraph/interpro.cpp  // mnw
 
 interton/vc4000.cpp
 
 isc/compucolor.cpp
--compclr2
 
-kawai/acr20.cpp
--acr20
+//kawai/acr20.cpp  // no screen
 
-kawai/k1.cpp
--k1rii
--k1r
--k1m
--k1
+//kawai/k1.cpp  // no screen
 
-kawai/k4.cpp
--k4r
--k4
+//kawai/k4.cpp  // no screen
 
-kawai/k5.cpp
--k5m
--k5
+//kawai/k5.cpp  // no screen
 
-kawai/ksp10.cpp
--ksp10
+//kawai/ksp10.cpp  // no screen
 
-kawai/r100.cpp
--r100
+//kawai/r100.cpp   // no sound
 
-kawai/sx240.cpp
--sx240
+//kawai/sx240.cpp // no screen
 
 kaypro/kaypro.cpp
--kaypro2x
--omni2
--omni4
--robie
--kaypronew2
--kaypro4x
--kaypro484p88
--kaypro484
--kayproiip88
--kaypro284
--kaypro1084
--kaypro1
+-omni4      // no sw
+-robie      // no sw
+-kaypronew2 // no sw
+-kaypro4x   // no sw
+-kaypro1    // no sw
 
 koei/pasogo.cpp
--pasogo
 
 kontron/kdt6.cpp
 
-korg/korgds8.cpp
--ds8
--korg707
+//korg/korgds8.cpp  // mnw, no sw
 
-korg/korgdss1.cpp
--dssmsrk
--dss1
+//korg/korgdss1.cpp   // mnw
 
-korg/korgdvp1.cpp
--dvp1
+//korg/korgdvp1.cpp   // no screen
 
-korg/korgdw8k.cpp
--ex8000
--dw8000ex
--dw8000
+//korg/korgdw8k.cpp  // no screen
 
-korg/korgm1.cpp
--korgm1r
--korgm1rex
--korgm1p1
--korgm1
--korgm1ex
+//korg/korgm1.cpp   // no sound
 
-korg/korgtriton.cpp
--korgtriton
--korgtritona
--korgtritonb
+//korg/korgtriton.cpp  // no sound
 
-korg/korgws.cpp
--korgwssr
--korgwsex
--korgwsad
+//korg/korgws.cpp     // no screen
 
-korg/korgz3.cpp
--korgz3
+//korg/korgz3.cpp    // no screen
 
-korg/microkorg.cpp
--microkorg
+//korg/microkorg.cpp  // no screen
 
-korg/poly61.cpp
--poly61
+//korg/poly61.cpp     // no screen
 
-korg/poly800.cpp
--poly800ii
--poly800mdk
--poly800
+//korg/poly800.cpp   // no screen
 
-korg/polysix.cpp
--polysix
+//korg/polysix.cpp   // no screen
 
-kurzweil/krz2000.cpp
--k2000
+//kurzweil/krz2000.cpp  // inputs
 
-kyber/kminus.cpp
--kminus
+//kyber/kminus.cpp   // inputs
 
 kyocera/kyocera.cpp
--npc8300
--pc8201a
--pc8201
+-npc8300     // grey screen
 
-leapfrog/iquest.cpp
--ttwistvc
--ttwistsp
--ttwistm
--ttwistfb
--ttwistbq
--turboex
--iquest
+//leapfrog/iquest.cpp // black screen, some no sw
 
-leapfrog/leappad.cpp
--mfleappad
--ltleappad
--leappadmic
--leappad
+//leapfrog/leappad.cpp // no screen
 
-leapfrog/leapster.cpp
--leapstertv
--leapsterlmx
--leapster2
--leapster
+//leapfrog/leapster.cpp // black screen
 
-leapfrog/leapster_explorer.cpp
--leapexpr
+//leapfrog/leapster_explorer.cpp   // black screen
 
-learsiegler/adm11.cpp
--adm12
+//learsiegler/adm11.cpp  // inputs
 
-learsiegler/adm23.cpp
--adm23
+//learsiegler/adm23.cpp  // black screen
 
-learsiegler/adm31.cpp
--adm31
+//learsiegler/adm31.cpp  // black screen
 
-learsiegler/adm36.cpp
--adm36
+//learsiegler/adm36.cpp  // black screen
 
-liberty/freedom120.cpp
--free120
+//liberty/freedom120.cpp  // no screen
 
-liberty/freedom200.cpp
--free200             // terminal
--free220             // terminal
+//liberty/freedom200.cpp  // inputs
 
 linn/linndrum.cpp
 
 lsi/m3.cpp
--m3
 
-lsi/octopus.cpp
--octopus
+//lsi/octopus.cpp    // mnw
 
 luxor/abc1600.cpp
 
@@ -1388,25 +1272,17 @@ luxor/abc80.cpp
 
 luxor/abc80x.cpp
 
-luxor/x37.cpp
--x37             // does nothing
+//luxor/x37.cpp   // cannot boot disk
 
-makerbot/replicator.cpp
--replica1
+//makerbot/replicator.cpp  // inputs
 
-matsushita/duet16.cpp
--duet16
+//matsushita/duet16.cpp    // no sw
 
 matsushita/jr100.cpp
--jr100u
--jr100
 
 matsushita/jr200.cpp
--jr200u
--jr200
 
-matsushita/kn5000.cpp
--kn5000
+//matsushita/kn5000.cpp // no sound, no sw
 
 matsushita/myb3k.cpp
 
@@ -1415,73 +1291,48 @@ mattel/aquarius.cpp
 mattel/chess.cpp
 
 mattel/intv.cpp
--intvkbd
 
 mattel/juicebox.cpp
 
-mattel/pixtermu.cpp
--pixtermu
+//mattel/pixtermu.cpp      // no screen
 
-mc/mc68000.cpp
--mc68000           // no sw
+//mc/mc68000.cpp        // no sw
 
 mc/mccpm.cpp
--mccpm
 
 mchester/ssem.cpp
 
 memotech/mtx.cpp
 
-mera/ec7915.cpp
--ec7915
+//mera/ec7915.cpp     // no screen
 
-mera/konin.cpp
--konin
+//mera/konin.cpp      // blank screen
 
-mera/m79152pc.cpp
--m79152pc
+//mera/m79152pc.cpp   // mnw
 
-mera/vdm7932x.cpp
--vdm79322
+//mera/vdm7932x.cpp   // no screen
 
-merit/mtouchxl.cpp
--mtchxlti
--mtchxl5k
--mtchxl5ko2
--mtchxl5ko
--mtchxlgld
--mtchxlgldo
+//merit/mtouchxl.cpp  // U:arcade
 
-mg1/mg1.cpp
--mg1
+//mg1/mg1.cpp        // mnw
 
 microcraft/dim68k.cpp
--dim68k
 
 microkey/primo.cpp
--primoc64
 
 microsoft/jazz.cpp
--mmr4000be             //black screen
--mmr4000le             //black screen
 
-microsoft/xbox.cpp
--xbox        // mnw
+//microsoft/xbox.cpp   // mnw
 
-microterm/ergo201.cpp
--ergo201
+//microterm/ergo201.cpp // black screen
 
-microterm/microterm_f8.cpp
--act5a
+//microterm/microterm_f8.cpp   // inputs
 
-microterm/mt420.cpp
--mt420
+//microterm/mt420.cpp   // black screen
 
-microterm/mt440.cpp
--mt440
+//microterm/mt440.cpp  // no screen
 
-microterm/mt5510.cpp
--mt5510
+//microterm/mt5510.cpp  // black screen
 
 midway/astrohome.cpp
 
@@ -1495,74 +1346,37 @@ miltonbradley/vectrex.cpp
 
 mips/mips_i2000.cpp
 
-mips/mips_r3030.cpp
--rc3230
--rs3230
+//mips/mips_r3030.cpp // black screen
 
-misc/3do.cpp
--3dobios
--3do_fc1
--3do_fc2
--3do_fz1e
--3do_fz1j
--3do_fz1
--3do_fz10e
--3do_fz10j
--3do_fz10
--3do_gdo101
--3do_hc21
--3do_try
--alg3do
--md23do
--orbatak
--sht3do
+//misc/3do.cpp // mnw
 
-misc/adi_vt52.cpp
--adi_vt52           // mnw
+//misc/adi_vt52.cpp    // mnw
 
 misc/ctvboy.cpp
 
-misc/daphor32.cpp
--daphor32
+//misc/daphor32.cpp    // inputs
 
-misc/deecoseal.cpp
--deecoseal
+//misc/deecoseal.cpp   // mnw
 
-misc/ds2000.cpp
--ds2000          // useless
+//misc/ds2000.cpp     // useless
 
-misc/eva.cpp
--eva24
--eva11
+//misc/eva.cpp    // no screen
 
-misc/ez2d.cpp
--ez2d2m
--asuscubx
+//misc/ez2d.cpp // black screen
 
 misc/h01x.cpp
 
-misc/jaminator.cpp
--jaminator               // no screen
+//misc/jaminator.cpp    // no screen
 
 misc/macbug.cpp
 
-misc/mcm70.cpp
--mcm70
+//misc/mcm70.cpp    // inputs
 
 misc/microbox2.cpp
--microbx2
 
 misc/mindset.cpp
 
-misc/miuchiz.cpp
--miuchiz
--mcp_spike
--mcp_dash
--mcm_roc
--mcm_inferno
--mcm_creeper
--mcb_yasmin
--mcb_cloe
+//misc/miuchiz.cpp   // blue screen
 
 misc/monon_color.cpp
 
@@ -1570,82 +1384,56 @@ misc/mtu130.cpp
 
 misc/nabupc.cpp
 
-misc/stc3910.cpp
--executel
+//misc/stc3910.cpp   // no sw
 
 misc/triton.cpp
 //-triton72      // nw parent
 
 misc/videoart.cpp
 
-misc/vocalizer.cpp
--vocalizer
+//misc/vocalizer.cpp   // inputs
 
 misc/wren.cpp
 
 misc/z80ne.cpp
 
-mit/tx0.cpp
--tx0_8kwo
--tx0_8kw
--tx0_64kw
+//mit/tx0.cpp  // mnw
 
-mits/al8800b.cpp
--al8800b
+//mits/al8800b.cpp   // no screen
 
 mits/altair.cpp
--al8800bt
 
 mits/mits680b.cpp
--mits680b
 
-mitsubishi/multi16.cpp
--multi16
+//mitsubishi/multi16.cpp // mnw
 
 mitsubishi/multi8.cpp
--multi8
 
-mitsubishi/trium.cpp
--triumec
+//mitsubishi/trium.cpp  // no screen
 
-moog/memorymoog.cpp
--memorymoog
+//moog/memorymoog.cpp    // no screen
 
-moog/source.cpp
--moogsource
+//moog/source.cpp   // no sound
 
-morrow/microdec.cpp
--md3
--md2
+//morrow/microdec.cpp // cannot boot disk
 
 morrow/mpz80.cpp
--mpz80
 
-morrow/tricep.cpp
--tricep
+//morrow/tricep.cpp  // no sw
 
-motorola/ampscarp.cpp
--ampscarp
+//motorola/ampscarp.cpp   // no screen
 
 motorola/assist05.cpp
--assist05
 
 motorola/exorciser.cpp
 
-motorola/exorterm.cpp
--exorterm155             // terminal
+//motorola/exorterm.cpp     // inputs
 
-motorola/m6805evs.cpp
--m6805evs
+//motorola/m6805evs.cpp    // no screen
 
-motorola/m68705prg.cpp
--705p3prg               // mech
--705p5prg               // mech
--705r3prg               // mech
--705u3prg               // mech
+//motorola/m68705prg.cpp   // mech
 
-motorola/m8120.cpp
--m8120
+//motorola/m8120.cpp   // blank screen
 
 motorola/mekd1.cpp
 
@@ -1655,19 +1443,15 @@ motorola/mekd3.cpp
 
 motorola/mekd4.cpp
 
-motorola/mekd5.cpp
--mekd5                 // inputs
+//motorola/mekd5.cpp   // inputs
 
 motorola/mex68kecb.cpp
 
 motorola/mvme162.cpp
--mvme162
 
-motorola/powerstack.cpp
--powerstk
+//motorola/powerstack.cpp  // no screen
 
-motorola/sys1121.cpp
--sys1121
+//motorola/sys1121.cpp   // blank screen
 
 motorola/uchroma68.cpp
 
@@ -1681,54 +1465,29 @@ msx/msx1_bruc100.cpp
 msx/msx1_v9938.cpp
 
 msx/msx2.cpp
--y805256
--y805128r2
--y805128r2e
--y805128
--y503iiir
--y503iiire
--nms8260
--mpc27
--mbh70
--hx33
--hx23f
--hx23
--victhc95a
--victhc95
--victhc90a
--victhc90
--hbg900p
--hbg900ap
--fsa1fm
+-y503iiir        // mnw
+-y503iiire       // mnw
+-nms8260         // mnw
+-fsa1fm          // mnw
 
 msx/msx2p.cpp
--expertdx
--expertac
--expert3t
--expert3i
+-expertdx       // mnw
+-expertac       // mnw
 
-msx/msxtr.cpp
--fsa1st
--fsa1gt
+//msx/msxtr.cpp  // mnw
 
 multitech/mkit09.cpp
--mkit09a
 
 multitech/mpf1.cpp
--cs113
+-cs113      // mech
 
 multitech/mpf1p.cpp
 
 multitech/mpf1_88.cpp
 
-mupid/mdisk.cpp
--mdisk
--fl100
+//mupid/mdisk.cpp  // no screen
 
-mupid/mupid2.cpp
--ptc100
--mupid2
--mupid2i
+//mupid/mupid2.cpp  // no screen
 
 nakajima/nakajies.cpp
 -es210_es
