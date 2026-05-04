@@ -299,7 +299,7 @@ void vt3xx_soc_base_device::vt369_map(address_map &map)
 
 	map(0x418a, 0x418a).r(FUNC(vt3xx_soc_base_device::vt369_418a_r));
 
-	// gb50_150 uses this before accessing the SD card
+	// UART block similar to VT268 (used by gb50_150 for diagnostic output when accessing the SD card)
 	map(0x4199, 0x4199).r(FUNC(vt3xx_soc_base_device::vt369_4199_uart_status_r));
 	map(0x419d, 0x419d).w(FUNC(vt3xx_soc_base_device::vt369_419d_uart_data_w));
 
