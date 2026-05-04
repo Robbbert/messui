@@ -1455,10 +1455,7 @@ motorola/mvme162.cpp
 
 motorola/uchroma68.cpp
 
-msx/msx1.cpp
--cpc50a               // black screen
--cpc50b               // black screen
--cpc51                // black screen
+msx/msx1.cpp      // need cart
 
 msx/msx1_bruc100.cpp
 
@@ -1493,42 +1490,32 @@ nakajima/nakajies.cpp
 
 nascom/nascom1.cpp
 
-natsemi/icm3216.cpp
--icm3216        // no sw
+//natsemi/icm3216.cpp    // no sw
 
 natsemi/ns32kdb.cpp
 
-natsemi/ns5652.cpp
--ns5652         // no screen
+//natsemi/ns5652.cpp     // no screen
 
 natsemi/sys16.cpp
 
 ncd/ncd68k.cpp
 -ncd17c       // inputs
 
-ncd/ncd88k.cpp
--ncdmcx       // inputs
--ncd19c       // inputs
+//ncd/ncd88k.cpp // inputs
 
-ncd/ncdmips.cpp
--hmxpro       // freezes
+//ncd/ncdmips.cpp   // freezes mame
 
-ncd/ncdppc.cpp
--explorapro   // black screen
+//ncd/ncdppc.cpp  // black screen
 
 ncr/dmv.cpp
 
-nec/apc.cpp
--apc          // mnw
+//nec/apc.cpp     // mnw
 
-nec/bungo.cpp
--mini5sx      // mnw
+//nec/bungo.cpp   // mnw
 
-nec/ews4800.cpp
--ews4800_310   // no screen
+//nec/ews4800.cpp  // no screen
 
-nec/pc100.cpp
--pc100        // mnw
+//nec/pc100.cpp     // mnw
 
 nec/pc6001.cpp
 -pc6001mk2sr   // fatal
@@ -1539,30 +1526,17 @@ nec/pc8401a.cpp
 
 nec/pc8801.cpp
 
-nec/pc88va.cpp
--pc88va2   // pc88va nw
--pc88va    // mnw
+//nec/pc88va.cpp  // pc88va nw, so pc88va2 omitted
 
 nec/pc9801.cpp
--pc9801vx
--pc9801vm
--pc9801ux
--pc9801uv2
--pc9801us
--pc9801rx
--pc9801m2
--pc9801fs
--pc9801f
--pc9801dx
--pc9801bx2
--pc9801
+-pc9801us    // mnw
+-pc9801bx2   // mnw
 
 nec/pc9801_epson.cpp
--pc486se
--pc486mu
--pc386m
--pc286vs
--pc286u
+-pc486se     // mnw
+-pc486mu     // mnw
+-pc386m      // mnw
+-pc286u      // black screen
 
 nec/pc9821.cpp
 -pc9821ap2              // pc9821as nw
@@ -1579,27 +1553,21 @@ nec/pc9821.cpp
 -pc9821xv13             // mnw
 
 nec/pc98ha.cpp
--pc98lt
--pc98ha
 
 nec/pce.cpp
 
-nec/pcfx.cpp
--pcfxga
--pcfx
+//nec/pcfx.cpp    // mnw
 
-nec/pc_h98.cpp
--pc_h98s
+//nec/pc_h98.cpp  // black screen
 
-nec/piet1.cpp
--piet1
+//nec/piet1.cpp   // black screen
 
 nec/tk80bs.cpp
 
 //neogeo/neogeo.cpp           // U:arcade
 
 neogeo/neogeocd.cpp
--neocd
+-neocd           // mnw
 
 netronics/elf.cpp
 
@@ -1627,52 +1595,29 @@ newcrest/senterprise.cpp
 
 newcrest/sphinx40.cpp
 
-next/next.cpp
--nextstc
--nextst
--nextsc
--nexts2
--nexts
--nextctc
--nextct
--nextc
--next
+//next/next.cpp  // mnw, nextc fatal
 
 nichibutsu/myvision.cpp
 
-nintendo/compmahj.cpp
--compmahj
+//nintendo/compmahj.cpp  // no screen
 
-nintendo/gamecube.cpp
--gcbr
--gceu
--gcjp
--gcus
+//nintendo/gamecube.cpp  // black screen
 
 nintendo/gb.cpp
--mduckspa
 
 nintendo/gba.cpp
--robotech
+-robotech      // black screen
 
 nintendo/n64.cpp
--n64dd
--n64pal
--n64
 
 nintendo/n64_gateway.cpp
--n64_lodgenet
 
-nintendo/nds.cpp
--nds
+//nintendo/nds.cpp  // black screen
 
 nintendo/nes.cpp
--sb486
--fctitler
--drpcjr
 
 nintendo/nes_clone.cpp
--vtvsocr
+-vtvsocr        // inputs
 -vtvppong
 -pjoypj001
 -digezlg
@@ -1683,28 +1628,22 @@ nintendo/nes_clone.cpp
 
 nintendo/nes_m8.cpp
 
-nintendo/nes_m82.cpp
--m82
+//nintendo/nes_m82.cpp  // inputs
 
 nintendo/nes_sh6578.cpp
--ablwikid
--vsmaxx25
--vsmaxx15
 -pp6578
 -bb6578
 -mousekid
 -dancmix3
--dgun806
 -bancook
 -bandgpad
--ts_handy11
 -bandggcn
 -cpatrolm
 -6578cjz2
 -6578cjz1
 
 nintendo/nes_vt02_vt03.cpp
--senwld
+-senwld          // mech
 -vtpinball
 -vtboxing
 -protpp
@@ -1717,10 +1656,9 @@ nintendo/nes_vt02_vt03.cpp
 -hs36red
 -hs36blk
 -cbrs8
--mc_105te
 
 nintendo/nes_vt09.cpp
--pumpactv
+-pumpactv        // inputs
 
 nintendo/nes_vt32.cpp
 -retror30
@@ -1857,39 +1795,22 @@ nintendo/snes.cpp
 nintendo/vboy.cpp
 
 nintendo/vt1682.cpp
--wowwg
 -gm235upc
 -anpnvt12
 -intg5410
 -anpncpc
 
-nokia/dbox.cpp
--dbox
+//nokia/dbox.cpp  // black screen
 
 nokia/mikromik.cpp
--mm1m7             // cannot boot disk
--mm1m7g            // cannot boot disk
+-mm1m7             // MT09457
+-mm1m7g            // MT09457
 
 nokia/mikromikko2.cpp
 
-nokia/nokia_3310.cpp
--noki8890
--noki8850
--noki8250
--noki8210
--noki7110
--noki6250
--noki6210
--noki5210
--noki3410
--noki3330
--noki3310
--noki3210
+//nokia/nokia_3310.cpp    // mnw
 
-northstar/horizon.cpp
--vector1
--nshrz
--nshrz2mhz
+//northstar/horizon.cpp  // switems rejected
 
 novag/accord.cpp
 
@@ -1920,7 +1841,6 @@ novag/micro2.cpp
 novag/primo.cpp
 
 novag/robotadv.cpp
--robotadv
 
 novag/sapphire.cpp
 
@@ -1934,20 +1854,15 @@ novag/vip.cpp
 
 novag/zircon2.cpp
 
-novation/basssta.cpp
--sbasssta
--bassstr
+//novation/basssta.cpp  // no screen
 
-novation/drumsta.cpp
--drumsta
+//novation/drumsta.cpp // no screen
 
 oberheim/dmx.cpp
 
-oberheim/ob8.cpp
--ob8
+//oberheim/ob8.cpp   // no screen
 
-oberheim/xpander.cpp
--xpander        // mnw
+//oberheim/xpander.cpp // mnw, no sound
 
 olivetti/att6300p.cpp
 
