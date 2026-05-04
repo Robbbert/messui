@@ -1490,80 +1490,58 @@ multitech/mpf1_88.cpp
 //mupid/mupid2.cpp  // no screen
 
 nakajima/nakajies.cpp
--es210_es
--wales210
--drwrt400
--drwrt200
--drwrt100
--drwrt450
--dator3k
 
 nascom/nascom1.cpp
 
 natsemi/icm3216.cpp
--icm3216
+-icm3216        // no sw
 
 natsemi/ns32kdb.cpp
 
 natsemi/ns5652.cpp
--ns5652
+-ns5652         // no screen
 
 natsemi/sys16.cpp
 
 ncd/ncd68k.cpp
--ncd19
--ncd17c
--ncd16
+-ncd17c       // inputs
 
 ncd/ncd88k.cpp
--ncdmcx
--ncd19c
+-ncdmcx       // inputs
+-ncd19c       // inputs
 
 ncd/ncdmips.cpp
--hmxpro
+-hmxpro       // freezes
 
 ncd/ncdppc.cpp
--explorapro
+-explorapro   // black screen
 
 ncr/dmv.cpp
 
 nec/apc.cpp
--apc
+-apc          // mnw
 
 nec/bungo.cpp
--mini5sx
+-mini5sx      // mnw
 
 nec/ews4800.cpp
--ews4800_310
+-ews4800_310   // no screen
 
 nec/pc100.cpp
--pc100
+-pc100        // mnw
 
 nec/pc6001.cpp
--pc6601sr
--pc6601
--pc6001mk2sr
--pc6001mk2
--pc6001a
--pc6001
+-pc6001mk2sr   // fatal
 
 nec/pc8001.cpp
--pc8001mk2sr
--pc8001mk2
--pc8001
 
 nec/pc8401a.cpp
--pc8500
--pc8401bd
 
 nec/pc8801.cpp
--pc8801mk2
--pc8801mc
--pc8801
 
 nec/pc88va.cpp
--pc88va2
--pc88va
+-pc88va2   // pc88va nw
+-pc88va    // mnw
 
 nec/pc9801.cpp
 -pc9801vx
