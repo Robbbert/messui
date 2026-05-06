@@ -947,6 +947,8 @@ hegenerglaser/mm1.cpp
 
 hegenerglaser/mm2.cpp
 
+hegenerglaser/mm6.cpp
+
 hegenerglaser/modena.cpp
 
 hegenerglaser/modular.cpp
@@ -1866,93 +1868,66 @@ oberheim/dmx.cpp
 
 olivetti/att6300p.cpp
 
-olivetti/celint2k.cpp
--celint2kss
+//olivetti/celint2k.cpp    // inputs
 
-olivetti/m20.cpp
--m44
--m40
--m20
+//olivetti/m20.cpp   // black screen;m20 cannot boot disk
 
-olivetti/m24.cpp
--m240
--m24
--m21
+//olivetti/m24.cpp   //m240 blank screen; others cannot boot disk
 
-olivetti/olivpc1.cpp
--olivpc1
+//olivetti/olivpc1.cpp  // cannot boot disk
 
-olympiaint/olyboss.cpp
--olybossd
--olybossc
--bossb85
--olybossb
--bossa85
+//olympiaint/olyboss.cpp  // no sw
 
-olympiaint/olytext.cpp
--olytext
+//olympiaint/olytext.cpp  // black screen
 
-olympiaint/peoplepc.cpp
--olypeopl
+//olympiaint/peoplepc.cpp  // no sw
 
-omnibyte/msbc1.cpp
--msbc1
+//omnibyte/msbc1.cpp   // no screen
 
 omnibyte/ob68k1a.cpp
 
-omron/luna_68k.cpp
--luna
+//omron/luna_68k.cpp   // no sw
 
 omron/luna_88k.cpp
 
 openuni/hektor.cpp
 
-orla/hk1000.cpp
--hk1000
+//orla/hk1000.cpp    // no screen
 
-orla/xm200.cpp
--xm200           // no screen
+//orla/xm200.cpp     // no screen
 
 osborne/osbexec.cpp
--osbexec
 
 osborne/osborne1.cpp
 
 osborne/vixen.cpp
 
 osi/osi.cpp
--c1pmf
 
-paia/fatman.cpp
--fatman
+//paia/fatman.cpp    // no sound
 
-paia/midi2cv8.cpp
--midi2cv8             // useless?
--midi2cv8_vhz         // useless?
+//paia/midi2cv8.cpp  // useless
 
 palm/palm.cpp
--visor
--spt1740
--spt1700
--spt1500
--palmvx
--palmv
--palmm515
--palmm505
--palmm130
--palmiii        // noise
--palmiiic       // can't pass stylus check
--palmpers       // can't leave setup, runs slow
--palmpro        // can't leave setup, runs slow
+-visor         // grey screen
+-spt1740       // grey screen
+-spt1700       // grey screen
+-spt1500       // mnw
+-palmvx        // black screen
+-palmv         // mnw
+-palmm515      // black screen
+-palmm505      // blank screen
+-palmm130      // blank screen
+-palmiii        // works but horrible noise
+-palmpers       // works, need artwork for apps buttons
+-palmpro        // works, need artwork for apps buttons
 
-palm/palmz22.cpp
--palmz22        // no crosshair, runs slow
+//palm/palmz22.cpp  // inputs, runs slow
 
 pc/asst128.cpp
--asst128
 
-pc/at.cpp
--so025d2
+pc/at.cpp         // to be checked
+-so025d2       // mnw
 -so025k2
 -so025r2
 -cdtekg2
@@ -2313,28 +2288,28 @@ pc/at.cpp
 -ocxt286
 -zdz248
 
-pc/atpci.cpp
+pc/atpci.cpp    // to be checked
 -ficvt503
 -ecssi5pi
 -at586
 -at586x3
 -m55hipl
 
-pc/compc.cpp
+pc/compc.cpp    // to be checked
 -compc1
 -pc10iii
 -compc10
 
-pc/ct486.cpp
--ast611
--ast6000
+pc/ct486.cpp    // check again
+-ast611         // nonstop beep, black screen
+-ast6000        // mnw
 -ct486          // can't boot floppy
 
 pc/ec184x.cpp
--ec1845
--ec1840         // text missing
+-ec1845         // keeps rebooting
+-ec1840         // keeps rebooting
 
-pc/europc.cpp
+pc/europc.cpp   // to be checked
 -euroxt
 -europc2
 -europc
@@ -2342,27 +2317,25 @@ pc/europc.cpp
 pc/genpc.cpp
 
 pc/ibmpc.cpp
--ibm5140
+-ibm5140         // nonstop beep, black screen
 -ibm5155         // no kbd
 
 pc/ibmpcjr.cpp
--ibmpcjx
+-ibmpcjx        // random crash
 
-pc/iskr103x.cpp
+pc/iskr103x.cpp    // to be checked
 -iskr1030m
 
-pc/mc1502.cpp
--pk88
--mc1502       // doesnt read boot disk
+//pc/mc1502.cpp  // pk88 black screen;mc1502 doesnt read boot disk
 
-pc/megapc.cpp
+pc/megapc.cpp   // to be checked
 -megapcpl
 -megapc
 
-pc/nforcepc.cpp
+pc/nforcepc.cpp  // to be checked
 -nforcepc
 
-pc/pc.cpp
+pc/pc.cpp    // to be checked
 -zdz180
 -kyoxt
 -xiprocessor
@@ -2416,12 +2389,12 @@ pc/pc.cpp
 -nixpc01
 -cadd810
 
-pc/pcipc.cpp
+pc/pcipc.cpp    // to be checked
 -se440bx2
 -pciagp
 -pcipctx
 
-pc/pcipc_sis.cpp
+pc/pcipc_sis.cpp    // to be checked
 -zito4dps
 -so4saw2
 -a486sp3
@@ -2442,7 +2415,7 @@ pc/pcipc_sis.cpp
 -sis85c496
 -so30h
 
-pc/pcipc_via.cpp
+pc/pcipc_via.cpp    // to be checked
 -ga6vx
 -ct6vta2
 -zidabx98
@@ -2450,7 +2423,7 @@ pc/pcipc_via.cpp
 
 pc/poisk1.cpp
 
-pc/ps2.cpp
+pc/ps2.cpp         // to be checked
 -i8530286
 -i8580111
 -i8580071
@@ -2460,15 +2433,15 @@ pc/ps2.cpp
 -i8535043
 -i8530h31
 
-pc/quakeat.cpp
+pc/quakeat.cpp    // to be checked
 -quake
 -ga6la7
 
-pc/scatsx.cpp
+pc/scatsx.cpp    // to be checked
 -scsxaio
 -mb1320
 
-pc/sis630.cpp
+pc/sis630.cpp    // to be checked
 -zidav630e
 -asuscusc
 -asuspolo
@@ -2477,20 +2450,17 @@ pc/sis630.cpp
 -gamecstl
 
 pc/tandy1t.cpp
--t1000rl
+-t1000rl            // gfx
 
-pc/teradrive.cpp
--teradrive          // multiple issues
--teradrive3         // multiple issues
+//pc/teradrive.cpp    // multiple issues
 
 pc/tosh1000.cpp
 
 philips/cdi.cpp
--quizardff
--gpi1200
--cdi910
--cdi490a
--cdimono2
+-gpi1200           // black screen
+-cdi910            // black screen
+-cdi490a           // black screen
+-cdimono2          // black screen
 -quizard           // U:arcade
 -quizard_10           // U:arcade
 -quizard_12           // U:arcade
@@ -2507,38 +2477,28 @@ philips/cdi.cpp
 -quizardi           // U:arcade
 -quizardi_12           // U:arcade
 -quizardi_17           // U:arcade
+-quizardff           // U:arcade
 
-philips/minitel_2_rpic.cpp
--minitel2            // black screen, no sw
+//philips/minitel_2_rpic.cpp  // black screen, no sw
 
 philips/odyssey2.cpp
 
 philips/p2000t.cpp
 
-philips/patgen.cpp
--pm5644l00
--pm5644p00
--pm5644g913
--pm5644g00
--pm5644g924b
--pm5644g924
--pm5644m00
+//philips/patgen.cpp    // useless
 
-philips/philipsbo.cpp
--pbo
+//philips/philipsbo.cpp  // no sw
 
 philips/vg5k.cpp
 
-philips/yes.cpp
--yes             // black screen
+//philips/yes.cpp   // black screen
 
 pitronics/beta.cpp
 
 poly88/poly88.cpp
--poly8813
+-poly8813            // mnw
 
-positron/positron.cpp
--positron
+//positron/positron.cpp   // no sw
 
 psion/mc400.cpp
 -mc200               // grey screen
@@ -2567,28 +2527,19 @@ psion/siena.cpp
 
 psion/workabout.cpp
 
-quantel/dpb7000.cpp
--dpb7000
+//quantel/dpb7000.cpp   // no sw
 
-quantel/harriet.cpp
--harriet
+//quantel/harriet.cpp   // no media support
 
-qume/qvt102.cpp
--qvt102         // terminal
--qvt102a        // terminal
+//qume/qvt102.cpp    // inputs
 
-qume/qvt103.cpp
--qvt103
+//qume/qvt103.cpp    // black screen
 
-qume/qvt190.cpp
--qvt190
+//qume/qvt190.cpp     // inputs
 
-qume/qvt201.cpp
--qvt201
+//qume/qvt201.cpp    // black screen
 
-qume/qvt70.cpp
--qvt82
--qvt70
+//qume/qvt70.cpp   // qvt82 black screen;qvt70 inputs
 
 rca/microkit.cpp
 
@@ -2596,11 +2547,9 @@ rca/studio2.cpp
 
 rca/vip.cpp
 
-regnecentralen/rc702.cpp
--rc702
+//regnecentralen/rc702.cpp  // cannot boot disk
 
-regnecentralen/rc759.cpp
--rc759
+//regnecentralen/rc759.cpp  // cannot boot disk
 
 rm/rm380z.cpp
 
@@ -2609,179 +2558,99 @@ rm/rm480z.cpp
 rm/rmnimbus.cpp
 
 robotron/a5105.cpp
--a5105
 
-robotron/a51xx.cpp
--a5130
--a5120
+//robotron/a51xx.cpp  // black screen
 
-robotron/a7150.cpp
--a7150
+//robotron/a7150.cpp  // sw crashes
 
-robotron/k1003.cpp
--k1003
+//robotron/k1003.cpp   // mnw
 
-robotron/k8915.cpp
--k8915
+//robotron/k8915.cpp  // no media support
 
-robotron/rt1715.cpp
--rt1715w
--rt1715lc
--rt1715
+//robotron/rt1715.cpp   // black screen
 
 robotron/z1013.cpp
 -z1013s60        // inputs
 -z1013k76        // inputs
 -z1013k69        // inputs
 
-robotron/z9001.cpp
--kc85_111        // no sw
--kc87_10         // no sw
--kc87_11         // no sw
--kc87_20         // no sw
--kc87_21         // no sw
--z9001           // no sw
+//robotron/z9001.cpp  // no sw
 
 rockwell/aim65.cpp
 
-rockwell/aim65_40.cpp
--aim65_40
+//rockwell/aim65_40.cpp  // blank screen
 
-roland/alphajuno.cpp
--mks50
--hs80
--ajuno2
--ajuno1
+//roland/alphajuno.cpp   // mnw
 
-roland/boss_se70.cpp
--se70
+//roland/boss_se70.cpp  // no screen
 
-roland/boss_sx700.cpp
--sx700
--gx700
+//roland/boss_sx700.cpp  // no screen
 
-roland/juno106.cpp
--mks7
--juno106
+//roland/juno106.cpp  // no screen
 
-roland/juno6.cpp
--juno6
+//roland/juno6.cpp // no screen
 
-roland/roland_cm32p.cpp
--cm32p
+//roland/roland_cm32p.cpp  // inputs
 
-roland/roland_d10.cpp
--d110
--d10
+//roland/roland_d10.cpp //d110 no sound;d10 inputs
 
-roland/roland_d50.cpp
--d550
--d50
--d50o
+//roland/roland_d50.cpp  // no screen
 
-roland/roland_d70.cpp
--d70
+//roland/roland_d70.cpp  // ramcard missing
 
-roland/roland_jd800.cpp
--jd800
+//roland/roland_jd800.cpp // no screen
 
-roland/roland_jv80.cpp
--rd500
--jv880
+//roland/roland_jv80.cpp  // no screen
 
-roland/roland_jx3p.cpp
--mks30
--jx3p
--gr700
+//roland/roland_jx3p.cpp  // no screen
 
-roland/roland_jx8p.cpp
--mks70
--jx8p
--jx8po
--jx10
+//roland/roland_jx8p.cpp  // no screen
 
-roland/roland_mc50.cpp
--mc50mk2
--mc50
--mc300
+//roland/roland_mc50.cpp  // no screen
 
-roland/roland_mt32.cpp
--mt32
--mt100
--cm32l
+//roland/roland_mt32.cpp  // no sound
 
-roland/roland_mt80s.cpp
--mt80s
+//roland/roland_mt80s.cpp  // no screen
 
-roland/roland_pg1000.cpp
--pg1000
+//roland/roland_pg1000.cpp  // no sound
 
-roland/roland_pr100.cpp
--pr100
--pr100_201
+//roland/roland_pr100.cpp  // no screen
 
-roland/roland_r8.cpp
--r8m
--r8mk2
--r8
+//roland/roland_r8.cpp  // no screen
 
-roland/roland_ra30.cpp
--ra30
+//roland/roland_ra30.cpp // no screen
 
-roland/roland_s10.cpp
--s220
--s10
--mks100
+//roland/roland_s10.cpp  // no sound
 
-roland/roland_s50.cpp
--w30
--s550
--s50
+//roland/roland_s50.cpp   // no sw
 
-roland/roland_sc55.cpp
--cm300
--sc155
--sc55
+//roland/roland_sc55.cpp  // no screen
 
-roland/roland_sc55mk2.cpp
--sc55mk2
+//roland/roland_sc55mk2.cpp // no screen
 
-roland/roland_sc88.cpp
--sc88vl
+//roland/roland_sc88.cpp  // no screen
 
-roland/roland_tb303.cpp
--tb303
+//roland/roland_tb303.cpp   // mnw
 
-roland/roland_tnsc1.cpp
--rlndtnsc1
+//roland/roland_tnsc1.cpp   // no screen
 
-roland/roland_tnsc2.cpp
--rlndtnsc2
+//roland/roland_tnsc2.cpp   // no screen
 
-roland/roland_tr505.cpp
--tr505
+//roland/roland_tr505.cpp  // no screen
 
-roland/roland_tr606.cpp
--tr606
+//roland/roland_tr606.cpp   // no screen
 
 roland/roland_tr707.cpp
--tr727
 
-roland/roland_tr808.cpp
--tr808
+//roland/roland_tr808.cpp  // no screen
 
-roland/roland_tr909.cpp
--tr909
+//roland/roland_tr909.cpp  // no screen
 
-roland/roland_u20.cpp
--u20
--u220
+//roland/roland_u20.cpp   // no screen
 
-rolm/r9751.cpp
--r9751
+//rolm/r9751.cpp       // cannot boot disk
 
-sage/sage2.cpp
--sage2
+//sage/sage2.cpp      // cannot boot disk
 
 saitek/blitz.cpp
 
@@ -2845,8 +2714,7 @@ saitek/turbos24k.cpp
 
 samcoupe/samcoupe.cpp
 
-samsung/dvd-n5xx.cpp
--n501
+//samsung/dvd-n5xx.cpp // black screen
 
 samsung/spc1000.cpp
 
@@ -2860,55 +2728,25 @@ sanyo/phc20.cpp
 
 sanyo/phc25.cpp
 
-saturn/st17xx.cpp
--st1714
--st1708
--st1707
--st1706
--st1705
--st1704
--st1703
--st1702
--st1701
--st1700h
+//saturn/st17xx.cpp // black screen
 
-sega/dcchk.cpp
--dcacchk
+//sega/dcchk.cpp    // useless
 
-sega/dccons.cpp
--dctream
--dcdev
--dcfish
--dc
--dcproto
--dcjp
--dceu
+//sega/dccons.cpp  // mnw
 
 sega/magistr16.cpp
--magistr16
 
 sega/mdconsole.cpp
--xeye
--wmegam2
--wmega
--32x_scd
--segacd2
--segacd
--multmega
--32x_mcdj
--32x_mcd
--aiwamcd
--megacd2j
--megacd2
--megacdj
--megacd
--megacda
--32xj
--32xe
--laseractj
--laseract
--32x
--cdx
+-xeye      // fatal
+-wmegam2    //
+-wmega      //
+-32x_scd    //
+-32x_mcdj   //
+-32x_mcd    //
+-megacdj    //
+-megacda    //
+-laseractj  //
+-laseract   //
 
 sega/megadriv_firecore.cpp
 -mdhh100
@@ -2919,7 +2757,6 @@ sega/megadriv_firecore.cpp
 -mateta
 -mysf2
 -mypacgld
--mypac
 -mypaca
 -mympaca
 -mympac
@@ -2935,7 +2772,6 @@ sega/megadriv_rad.cpp
 -banmrid
 
 sega/megadriv_unksoc.cpp
--ra145
 
 sega/megatech.cpp
 -mt_wwar
@@ -3028,7 +2864,7 @@ sega/svmu.cpp
 -svmu
 
 sequential/prophet5.cpp
--prophet5rev30
+-prophet5r30
 
 sequential/prophet600.cpp
 -prpht600a
@@ -3215,452 +3051,280 @@ sinclair/spectrum.cpp
 -cobrasp
 
 sinclair/sprinter.cpp
--sprinter             // no boot sw
+-sprinter             // no sw
 
 sinclair/timex.cpp
 
 sinclair/z88.cpp
 
 sinclair/zx.cpp
--zx97
+-zx97      // mnw
 
-skeleton/600cat.cpp
--600cat
+//skeleton/600cat.cpp   // useless
 
-skeleton/aaa.cpp
--aaa
+//skeleton/aaa.cpp   // black screen
 
-skeleton/acd.cpp
--acd
+//skeleton/acd.cpp   // no screen
 
-skeleton/aceex.cpp
--aceex2814
+//skeleton/aceex.cpp    // no screen
 
-skeleton/adacp150.cpp
--adacp150p
+//skeleton/adacp150.cpp     // useless
 
-skeleton/aid80f.cpp
--aid80f
+//skeleton/aid80f.cpp    // no screen
 
-skeleton/airbase99.cpp
--airbase99
+//skeleton/airbase99.cpp // no sound
 
-skeleton/alcat7100.cpp
--alcat7100
+//skeleton/alcat7100.cpp   // black screen
 
-skeleton/alesis_qs.cpp
--alesqs7
+//skeleton/alesis_qs.cpp    // no screen
 
-skeleton/alphasma.cpp
--asmapro
--asma2k
+//skeleton/alphasma.cpp    // useless
 
-skeleton/alphasma3k.cpp
--asma3k
+//skeleton/alphasma3k.cpp    // no screen
 
-skeleton/am1000.cpp
--am1000
+//skeleton/am1000.cpp   // no screen
 
-skeleton/amusement_6502.cpp
--unkamus
+//skeleton/amusement_6502.cpp   // no screen
 
-skeleton/antonelli_hd6305.cpp
--anto2614
--anto2495
+//skeleton/antonelli_hd6305.cpp   // no screen
 
-skeleton/aquaplus_piece.cpp
--piece512k
--piece2m
+//skeleton/aquaplus_piece.cpp  // no screen
 
-skeleton/argox.cpp
--os214
+//skeleton/argox.cpp   // no screen
 
 skeleton/attache.cpp
 
-skeleton/aws.cpp
--aws220
--aws200
+//skeleton/aws.cpp    // mnw
 
-skeleton/ax20.cpp
--ax20
+//skeleton/ax20.cpp    // no sw
 
 skeleton/basf7100.cpp
 
 skeleton/bert.cpp
--bert
 
-skeleton/bitgraph.cpp
--bitgrphb
--bitgrpha                // useless
+//skeleton/bitgraph.cpp      // useless
 
-skeleton/blaucds32.cpp
--blaucds32
+//skeleton/blaucds32.cpp  // no screen
 
-skeleton/bpmmicro.cpp
--bp1200
+//skeleton/bpmmicro.cpp   // no screen
 
-skeleton/br8641.cpp
--br8641
+//skeleton/br8641.cpp  // no screen
 
 skeleton/busicom.cpp
 
-skeleton/c2color.cpp
--c2color
+//skeleton/c2color.cpp  // black screen
 
-skeleton/camirf1.cpp
--camirf1
+//skeleton/camirf1.cpp   // freeze, useless
 
 skeleton/candela.cpp
--can09
+-can09       // mnw
 
-skeleton/cardinal.cpp
--cardinal
+//skeleton/cardinal.cpp   // black screen
 
-skeleton/cbnt2039.cpp
--cbnt2039
+//skeleton/cbnt2039.cpp    // no screen
 
-skeleton/cd100.cpp
--cd100b
+//skeleton/cd100.cpp   // no screen
 
 skeleton/cd2650.cpp
 
-skeleton/cdc721.cpp
--cdc721
+//skeleton/cdc721.cpp    // inputs
 
-skeleton/cdsys5.cpp
--minijook
+//skeleton/cdsys5.cpp   // no screen
 
-skeleton/cit1500.cpp
--trmavia
--teletup
+//skeleton/cit1500.cpp // no screen
 
-skeleton/ckz80.cpp
--ckz80
+//skeleton/ckz80.cpp    // no sw
 
-skeleton/clxvme186.cpp
--clxvme186
+//skeleton/clxvme186.cpp   // no screen
 
-skeleton/codata.cpp
--codata
+//skeleton/codata.cpp    // no media support
 
-skeleton/consola_emt.cpp
--consoemt
+//skeleton/consola_emt.cpp  // blank screen
 
-skeleton/controlid.cpp
--cidx628
+//skeleton/controlid.cpp     // mnw
 
 skeleton/cortex.cpp
 
-skeleton/cosmicos.cpp
--cosmicos               // MT09423
+//skeleton/cosmicos.cpp      // MT09423
 
 skeleton/cp1.cpp
--cp1
 
-skeleton/css11501sk9.cpp
--css11501sk9
+//skeleton/css11501sk9.cpp   // no screen
 
-skeleton/ct909e_segadvd.cpp
--megatrix
+//skeleton/ct909e_segadvd.cpp   // black screen
 
-skeleton/cubieboard4.cpp
--monkyjmp
--cubibrd4
+//skeleton/cubieboard4.cpp   // no screen
 
-skeleton/cxhumax.cpp
--hxhdci2k
+//skeleton/cxhumax.cpp   // blank screen
 
-skeleton/d400.cpp
--d461
+//skeleton/d400.cpp  // black screen
 
-skeleton/daruma.cpp
--ds348
+//skeleton/daruma.cpp  // no screen
 
-skeleton/dash4.cpp
--dash4
+//skeleton/dash4.cpp  // no screen
 
-skeleton/datacast.cpp
--datacast
+//skeleton/datacast.cpp    // useless
 
-skeleton/design.cpp
--azkoyent8
--azkoyent61a
--azkoyent61
--azkoyent6
--azkoyent12
--design6
--designe
+//skeleton/design.cpp  // no screen or useless
 
-skeleton/diablo1300.cpp
--diablo
+//skeleton/diablo1300.cpp  // no screen
 
 skeleton/didact.cpp
 
-skeleton/digel804.cpp
--ep804
--digel804
+//skeleton/digel804.cpp   // useless
 
-skeleton/digiblast.cpp
--digiblst
+//skeleton/digiblast.cpp   // black screen
 
-skeleton/digijet.cpp
--digijet
+//skeleton/digijet.cpp    // no screen
 
-skeleton/digilog320.cpp
--digilog320
+//skeleton/digilog320.cpp   // diag screen
 
-skeleton/digilog400.cpp
--digilog400
+//skeleton/digilog400.cpp   // no screen
 
-skeleton/digitech_gsp5.cpp
--gsp5
+//skeleton/digitech_gsp5.cpp   // no screen
 
-skeleton/dm7000.cpp
--dm7000
--dm5620
--dm500
+//skeleton/dm7000.cpp  // mnw
 
 skeleton/dps1.cpp
 
 skeleton/dsb46.cpp
 
-skeleton/dual68.cpp
--dual68
+//skeleton/dual68.cpp  // no media support
 
 skeleton/e100.cpp
 
-skeleton/easy_karaoke.cpp
--dks7000c
--dks7000p
--easykara
--karamsg
--bkarastf
--bkarast
--bkarasta
--bkarastb
--bkarastc
--bkarastd
--bkaraste
--karams
--karatvsta
--karatvst
--mks4001
+//skeleton/easy_karaoke.cpp  // black screen
 
-skeleton/eks515.cpp
--eks515
+//skeleton/eks515.cpp   // black screen
 
-skeleton/elzet80.cpp
--elzet80p
--elzet80k
+//skeleton/elzet80.cpp    // no screen
 
-skeleton/epic14e.cpp
--epic14e
+//skeleton/epic14e.cpp    // inputs
 
-skeleton/epoch_tv_globe.cpp
--eptvglob
--digixar
+//skeleton/epoch_tv_globe.cpp  // black screen
 
-skeleton/esprit.cpp
--esprit3
--esprit
+//skeleton/esprit.cpp //esprit3 black screen;esprit inputs
 
-skeleton/eurit.cpp
--eurit30
+//skeleton/eurit.cpp    // telephone
 
-skeleton/eurocom2.cpp
--waveterm
--microtrol
--eurocom2
+//skeleton/eurocom2.cpp //waveterm inputs;microtrol no sw;eurocom2 cmds unknown
 
-skeleton/fanucs15.cpp
--fanucs15
+//skeleton/fanucs15.cpp  // no screen
 
-skeleton/fanucspmg.cpp
--fanucspgm
--fanucspg
+//skeleton/fanucspmg.cpp //fanucspgm mnw;fanucspg inputs, no sw
 
 skeleton/fc100.cpp
--fc100
 
-skeleton/fk1.cpp
--fk1
+//skeleton/fk1.cpp   // black screen
 
-skeleton/fs3216.cpp
--fs3216
+//skeleton/fs3216.cpp   // no sw
 
 skeleton/ft68m.cpp
--ft68m
 
-skeleton/gem_rp.cpp
--rp200
+//skeleton/gem_rp.cpp   // no screen
 
 skeleton/gimix.cpp
 
-skeleton/gm1000.cpp
--bh1000
--gm1000
+//skeleton/gm1000.cpp // no sound
 
-skeleton/gnat10.cpp
--gnat10
+//skeleton/gnat10.cpp   // no screen
 
 skeleton/goupil.cpp
 
-skeleton/grfd2301.cpp
--grfd2301
+//skeleton/grfd2301.cpp // no media support
 
-skeleton/hazeltin.cpp
--hazl1552
--hazl1500
+//skeleton/hazeltin.cpp  // mnw
 
-skeleton/hazl1420.cpp
--hazl1420
+//skeleton/hazl1420.cpp  // black screen
 
-skeleton/hohnadam.cpp
--hohnadam
+//skeleton/hohnadam.cpp   // no screen
 
-skeleton/hprot1.cpp
--hprot2r6
--hprotr8a
--hprot1             // printer
+//skeleton/hprot1.cpp  // printer
 
 skeleton/ht68k.cpp
 
-skeleton/hudson_poems.cpp
--poemzet2
--poemzet
--poemgolf
--poembase
--marimba
--ewalk2tv
--poemspoo
+//skeleton/hudson_poems.cpp   // mnw
 
-skeleton/i7000.cpp
--i7000
+//skeleton/i7000.cpp      // useless
 
-skeleton/icatel.cpp
--icatel            // useless
+//skeleton/icatel.cpp     // useless
 
 skeleton/icebox.cpp
--icebox
 
-skeleton/iez80.cpp
--iez80
+//skeleton/iez80.cpp  // mnw
 
-skeleton/if800.cpp
--if800
+//skeleton/if800.cpp  // black screen
 
-skeleton/ikt5a.cpp
--ikt5a
+//skeleton/ikt5a.cpp  // black screen
 
 skeleton/imsai.cpp
--imsai
 
 skeleton/indiana.cpp
--indiana
 
-skeleton/is48x.cpp
--is482
+//skeleton/is48x.cpp   // black screen
 
-skeleton/itc4.cpp
--itc4
+//skeleton/itc4.cpp     // no screen
 
-skeleton/itt1700.cpp
--itt1700
+//skeleton/itt1700.cpp  // mnw
 
 skeleton/itt3030.cpp
--itt3030
 
-skeleton/itt9216.cpp
--itt9216
+//skeleton/itt9216.cpp  // no screen
 
 skeleton/jade.cpp
--jade
 
 skeleton/jonos.cpp
--jonos
 
-skeleton/junior80.cpp
--junior80
+//skeleton/junior80.cpp   // no screen
 
-skeleton/koto_zevio.cpp
--dbzscout
--dbzonep
+//skeleton/koto_zevio.cpp  // no screen
 
-skeleton/kron.cpp
--kron180
+//skeleton/kron.cpp   // inputs
 
-skeleton/leadsinger2.cpp
--leadsng2
+//skeleton/leadsinger2.cpp  // black screen
 
-skeleton/lee1214.cpp
--lee1214d
+//skeleton/lee1214.cpp    // no screen
 
-skeleton/lee1220.cpp
--lee1220
+//skeleton/lee1220.cpp  // black screen
 
 skeleton/lft.cpp
--lft1510
--lft1230
+-lft1230        // blank screen
 
-skeleton/lg-dvd.cpp
--lggp40
+//skeleton/lg-dvd.cpp  // no screen
 
-skeleton/lilith.cpp
--lilith
+//skeleton/lilith.cpp   // no screen
 
-skeleton/lms46.cpp
--lms46
+//skeleton/lms46.cpp   // no screen
 
-skeleton/marsvending.cpp
--apvm110a
--apvm110
+//skeleton/marsvending.cpp   // no screen
 
-skeleton/mcc1.cpp
--mcc1
+//skeleton/mcc1.cpp  // no screen
 
-skeleton/mes.cpp
--mes
+//skeleton/mes.cpp  // no media support
 
 skeleton/mfabfz.cpp
--mfabfz85
--mfabfz
 
-skeleton/mice.cpp
--mice2_z80
--mice2_8085
--mice2_6809
--mice2_6502
--mice_6502
+//skeleton/mice.cpp  // mnw
 
-skeleton/mice3s68k.cpp
--mice3s68k
+//skeleton/mice3s68k.cpp   // no screen
 
-skeleton/micral.cpp
--questarm
--micral
+//skeleton/micral.cpp  // mnw
 
-skeleton/micro20.cpp
--micro20
+//skeleton/micro20.cpp  // mnw
 
-skeleton/micromon.cpp
--micromon7141
+//skeleton/micromon.cpp     // no screen
 
-skeleton/micronic.cpp
--micronic
+//skeleton/micronic.cpp    // inputs
 
-skeleton/mightyframe.cpp
--mightfrm
+//skeleton/mightyframe.cpp     // no screen
 
-skeleton/milwaukee.cpp
--mc1200
+//skeleton/milwaukee.cpp   // mnw
 
 skeleton/mini2440.cpp
 
-skeleton/miniframe.cpp
--minifram
+//skeleton/miniframe.cpp    // no screen
 
-skeleton/ml20.cpp
--ml20
+//skeleton/ml20.cpp     // useless
 
 skeleton/mmd1.cpp
 
@@ -3668,415 +3332,278 @@ skeleton/mmd2.cpp
 
 skeleton/mod8.cpp
 
-skeleton/modellot.cpp
--modellot
+//skeleton/modellot.cpp     // mnw
 
-skeleton/molecular.cpp
--molecula
+//skeleton/molecular.cpp  // black screen
 
-skeleton/ms9540.cpp
--ms9540
+//skeleton/ms9540.cpp    // blank screen
 
-skeleton/mstation.cpp
--mstation
+//skeleton/mstation.cpp  // mnw
 
-skeleton/mt735.cpp
--mt735
+//skeleton/mt735.cpp    // no screen
 
-skeleton/mtd1256.cpp
--mtd1256
+//skeleton/mtd1256.cpp // inputs
 
-skeleton/mw4pole.cpp
--mw4pole
+//skeleton/mw4pole.cpp    // no screen
 
-skeleton/mx2178.cpp
--mx2178
+//skeleton/mx2178.cpp  // inputs
 
-skeleton/mx3210.cpp
--mx3210
+//skeleton/mx3210.cpp   // no screen
 
 skeleton/mycom.cpp
--mycom
 
-skeleton/ngen.cpp
--ngen
--ngen386
--ngenb38
--386i
+//skeleton/ngen.cpp   // mnw or black screen
 
-skeleton/nordlead.cpp
--nordle2x
+//skeleton/nordlead.cpp  // no screen
 
-skeleton/omdisv22.cpp
--omdisv22
+//skeleton/omdisv22.cpp  // no screen
 
-skeleton/onyx.cpp
--c8002
--c5000
+//skeleton/onyx.cpp   // mnw
 
-skeleton/optomaxv.cpp
--optomaxv
+//skeleton/optomaxv.cpp     // inputs
 
-skeleton/orina_stylish_plus.cpp
--orinasp
+//skeleton/orina_stylish_plus.cpp  // no screen
 
-skeleton/p8k.cpp
--p8000
--p8000_16
+//skeleton/p8k.cpp //p8000 no sw;p8000_16 mnw
 
-skeleton/palestra.cpp
--palestra
+//skeleton/palestra.cpp  // black screen
 
-skeleton/pap2.cpp
--pap2
+//skeleton/pap2.cpp  // no screen
 
-skeleton/pcksurfer.cpp
--pcksurfer
+//skeleton/pcksurfer.cpp   // no screen
 
-skeleton/pdt3100.cpp
--pdt3100
+//skeleton/pdt3100.cpp    // no screen
 
-skeleton/pegasos2.cpp
--pegasos2
+//skeleton/pegasos2.cpp  // MT09016
 
 skeleton/pencil2.cpp
 
-skeleton/perq.cpp
--perq
+//skeleton/perq.cpp  // no screen
 
-skeleton/pes.cpp
--pes               // serial comms broken
+//skeleton/pes.cpp   // serial comms broken
 
-skeleton/picno.cpp
--picno2
--picno
+//skeleton/picno.cpp  // no screen
 
 skeleton/plan80.cpp
--plan80
 
 skeleton/pm68k.cpp
--pm68k
 
-skeleton/powerpack.cpp
--powerpack
+//skeleton/powerpack.cpp // no screen
 
 skeleton/proteus3.cpp
--proteus3
 
 skeleton/pt68k4.cpp
 
 skeleton/ptcsol.cpp
 
-skeleton/pv9234.cpp
--pv9234
+//skeleton/pv9234.cpp  // black screen
 
-skeleton/pwp14.cpp
--pwp14
+//skeleton/pwp14.cpp  // black screen
 
-skeleton/qmquasar.cpp
--technox
--qmquasar
+//skeleton/qmquasar.cpp    // no sound
 
-skeleton/qmsirius.cpp
--qmrave
--qmsirius
+//skeleton/qmsirius.cpp //qmrave no sound;qmsirius white screen
 
-skeleton/qtsbc.cpp
--qtsbc
+//skeleton/qtsbc.cpp   // no media support
 
-skeleton/rd100.cpp
--rd100
+//skeleton/rd100.cpp   // no sound
 
-skeleton/rvoice.cpp
--rvoicepc
+//skeleton/rvoice.cpp     // blank screen
 
-skeleton/sacstate.cpp
--sacstate
+//skeleton/sacstate.cpp    // unusable
 
-skeleton/sansa_fuze.cpp
--sanfuze2
+//skeleton/sansa_fuze.cpp  // no screen
 
-skeleton/sartorius.cpp
--sart3733
+//skeleton/sartorius.cpp   // no screen
 
 skeleton/sb180.cpp
--sb180               // no sw
 
-skeleton/sb8085.cpp
--sb8085
+//skeleton/sb8085.cpp   // black screen
 
 skeleton/sbrain.cpp
--sagafoxf80
--sagafox
 
-skeleton/scopus.cpp
--sagitta180
+//skeleton/scopus.cpp     // mnw
 
 skeleton/seattlecmp.cpp
 
-skeleton/semcrossw.cpp
--semcrossw
+//skeleton/semcrossw.cpp   // no screen
 
-skeleton/sh4robot.cpp
--sh4robot
+//skeleton/sh4robot.cpp   // no screen
 
 skeleton/shine.cpp
--shine
 
-skeleton/si5500.cpp
--si5500
+//skeleton/si5500.cpp    // no screen
 
-skeleton/sk101bl.cpp
--sk101bl
+//skeleton/sk101bl.cpp     // useless
 
-skeleton/slsstars.cpp
--slsstars
+//skeleton/slsstars.cpp      // no screen
 
 skeleton/softbox.cpp
 
-skeleton/solbourne.cpp
--sols5e
+//skeleton/solbourne.cpp   // no screen
 
 skeleton/squale.cpp
 
-skeleton/swyft.cpp
--swyft
+//skeleton/swyft.cpp    // white screen
 
-skeleton/symbolics.cpp
--s3670
+//skeleton/symbolics.cpp      // no screen
 
-skeleton/synthex.cpp
--synthex
+//skeleton/synthex.cpp  // no screen
 
-skeleton/sys2900.cpp
--sys2900
+//skeleton/sys2900.cpp   // black screen
 
-skeleton/sys9002.cpp
--sys9002
+//skeleton/sys9002.cpp    // mnw
 
-skeleton/systec.cpp
--systec
+//skeleton/systec.cpp    // no media support
 
-skeleton/systel1.cpp
--systel100
+//skeleton/systel1.cpp     // inputs
 
-skeleton/tamagotchi_pix.cpp
--tamapix
--precur2w
+//skeleton/tamagotchi_pix.cpp // black screen
 
 skeleton/tavernie.cpp
 
-skeleton/tc_manhattan.cpp
--triplec
+//skeleton/tc_manhattan.cpp   // no screen
 
-skeleton/tecnbras.cpp
--tecnbras             // useless
+//skeleton/tecnbras.cpp      // useless
 
 skeleton/teleray10.cpp
 
-skeleton/telex1192.cpp
--telex1192
+//skeleton/telex1192.cpp     // no screen
 
-skeleton/telex274.cpp
--telex274
+//skeleton/telex274.cpp     // no screen
 
-skeleton/telex277d.cpp
--telex277d
+//skeleton/telex277d.cpp     // no screen
 
-skeleton/terak.cpp
--terak
+//skeleton/terak.cpp    // black screen
 
-skeleton/terco.cpp
--t4490
+//skeleton/terco.cpp     // no screen
 
-skeleton/terminal.cpp
--alcat258
--teleguide
--loewed
--loewe715
--7951om
+//skeleton/terminal.cpp  // no screen
 
-skeleton/testpat.cpp
--tp1983
--tp1985             // useless
+//skeleton/testpat.cpp  // useless
 
 skeleton/textelcomp.cpp
 
-skeleton/ti630.cpp
--ti630              // useless
+//skeleton/ti630.cpp  // useless
 
-skeleton/tk635.cpp
--tk635
+//skeleton/tk635.cpp   // mnw
 
-skeleton/tnshc08.cpp
--tnshc08
+//skeleton/tnshc08.cpp   // no screen
 
-skeleton/tr175.cpp
--tr175
+//skeleton/tr175.cpp // black screen
 
-skeleton/tsispch.cpp
--prose2k
--prose2ko
+//skeleton/tsispch.cpp // no sound
 
-skeleton/tulip1.cpp
--tulip1
+//skeleton/tulip1.cpp // inputs, no sw
 
-skeleton/tvdear.cpp
--tvdear
+//skeleton/tvdear.cpp  // no screen
 
-skeleton/unistar.cpp
--unistar
+//skeleton/unistar.cpp   // inputs
 
 skeleton/v6809.cpp
 
-skeleton/vanguardmk1.cpp
--vngrdmk1
+//skeleton/vanguardmk1.cpp  // no screen
 
-skeleton/vd56sp.cpp
--vd56sp
+//skeleton/vd56sp.cpp  // no screen
 
 skeleton/vector3.cpp
 
-skeleton/vectrix.cpp
--vectrix
+//skeleton/vectrix.cpp    // no screen
 
-skeleton/vp415.cpp
--vp415
+//skeleton/vp415.cpp   // MT09024
 
-skeleton/webtouchone.cpp
--wto2840sp       // crash at start
+//skeleton/webtouchone.cpp   // black screen
 
-skeleton/xbase09.cpp
--xbase09         // no screen
+//skeleton/xbase09.cpp  // no screen
 
 skeleton/xor100.cpp
 
-skeleton/zeebo_qualcomm_adreno130.cpp
--zeebo           // black screen
+//skeleton/zeebo_qualcomm_adreno130.cpp  // black screen
 
-skeleton/zfirenze.cpp
--zfirenze        // no screen
+//skeleton/zfirenze.cpp    // no screen
 
 skeleton/zms8085.cpp
--zephyr          // bad kbd
 
 skeleton/zorba.cpp
 
-skeleton/zt8802.cpp
--zt8802          // no screen
+//skeleton/zt8802.cpp   // no screen
 
-skeleton/zvenezia.cpp
--zunknecta       // no screen
--zvenezia        // no screen
+//skeleton/zvenezia.cpp  // no screen
 
 slicer/slicer.cpp
 
 snk/ngp.cpp
 
-sony/betacam.cpp
--uvw1800
--uvw1600
--uvw1200
+//sony/betacam.cpp   // no screen
 
-sony/bvm.cpp
--bvm20f1e
+//sony/bvm.cpp   // no screen
 
-sony/clie_db.cpp
--t650c
+//sony/clie_db.cpp   // black screen
 
-sony/dfs500.cpp
--dfs500
+//sony/dfs500.cpp   // no sound
 
-sony/dpsv55.cpp
--dpsv55
+//sony/dpsv55.cpp    // no sound
 
-sony/librie.cpp
--librie
+//sony/librie.cpp    // black screen
 
 sony/news_38xx.cpp
--nws3860
 
 sony/news_68k.cpp
--nws1580
--nws1250
+-nws1250       // blank screen
 
 sony/news_68k_iop.cpp
--nws831
 
 sony/news_r3k.cpp
 
 sony/news_r4k.cpp
--nws5000x
 
 sony/pockstat.cpp
 
-sony/ps2sony.cpp
--ps2
+//sony/ps2sony.cpp   // black screen
 
 sony/psx.cpp
--psu
--psj
--pse
--psa
 
-sony/pve500.cpp
--pve500
+//sony/pve500.cpp    // mnw
 
 sony/smc777.cpp
--smc777
 
-sony/umatic.cpp
--vo5850pm
+//sony/umatic.cpp   // no screen
 
-sord/future32.cpp
--future32a
+//sord/future32.cpp  // black screen, no sw
 
 sord/m5.cpp
--m5p_brno            // need roms
+-m5p_brno            // mnw
 
 stm/pp.cpp
--pp
 
-stm/stmpc.cpp
--stmpcp
--stmpc
+//stm/stmpc.cpp // black screen
 
-sun/e250.cpp
--e250
+//sun/e250.cpp // no screen
 
 sun/sun1.cpp
 
-sun/sun2.cpp
--sun2_50
--sun2_120
+//sun/sun2.cpp   // no media support
 
-sun/sun3.cpp
--sun3_e
--sun3_150
--sun3_60
--sun3_50
--sun3_260
--sun3_110
+//sun/sun3.cpp  // no sw
 
 sun/sun3x.cpp
--sun3_460
+-sun3_460   // no screen
 
 sun/sun4.cpp
--sun4_400
--sun4_20
--sun4_300
--sun4_110
--sun4_50
--sun4_40
--sun4_25
--sun_s20
--sun4_75
--sun_s10
--sun4_65
--sun4_60
+-sun4_20    // sun4_300 nw
+-sun4_400   // no screen
+-sun4_300   // no screen
+-sun4_110   // no screen
+-sun4_50    // black screen
+-sun4_40    // white screen
+-sun4_25    // white screen
+-sun_s20    // MT09256
+-sun4_75    // no screen
+-sun_s10    // MT09256
+-sun4_65    // white screen
+-sun4_60    // no screen
 
-sun/ultra45.cpp
--ultra45
+//sun/ultra45.cpp     // no screen
 
 svi/svi318.cpp
 
@@ -4089,11 +3616,9 @@ swtpc/swtpc09.cpp
 
 swtpc/swtpc8212.cpp
 
-synertek/ktm3.cpp
--ktm3
+//synertek/ktm3.cpp  // black screen
 
 synertek/mbc020.cpp
--mbc020
 
 synertek/sym1.cpp
 
@@ -4510,6 +4035,7 @@ tvgames/generalplus_gpl16250_rom.cpp
 -gameu90
 -jak_prr
 -jak_tpir
+-typo176        // need roms
 
 tvgames/generalplus_gpl16250_romram.cpp
 -tomycar
@@ -4681,8 +4207,6 @@ tvgames/spg110.cpp
 -jak_spdmoa
 -jak_spdmo
 -sstarkar
--easportsu
--easports
 -jak_diso
 -jak_capb
 -jak_bobb
@@ -4838,6 +4362,7 @@ tvgames/xavix.cpp
 -isinger          // mnw
 -jarajal          // mnw
 -ltv_tam          // mnw
+-multiplt         // inputs
 -tak_daig          // mnw
 -tak_beyu          // mnw
 -tak_beyb          // mnw
