@@ -3622,92 +3622,61 @@ synertek/mbc020.cpp
 
 synertek/sym1.cpp
 
-ta/alphatpc16.cpp
--alphatpc16
+//ta/alphatpc16.cpp    // unknown cmds
 
 ta/alphatpx.cpp
--alphatp30
--alphatp3
--alphatp2u
--alphatp2
--alphatp1
+-alphatp1       // inputs
 
 ta/alphatro.cpp
 
-tab/tabe22.cpp
--tabe22
+//tab/tabe22.cpp    // inputs
 
-taito/taitowlf.cpp
--pf2012
--p5txla
+//taito/taitowlf.cpp  //p5txla inputs
 
 tandberg/tdv2115l.cpp
 
-tandberg/tdv2324.cpp
--tdv2324
+//tandberg/tdv2324.cpp   // black screen
 
-tangerine/alphatan.cpp
--alphatan
+//tangerine/alphatan.cpp    // useless
 
-tangerine/hhtiger.cpp
--hhtiger
+//tangerine/hhtiger.cpp    // black screen
 
 tangerine/microtan.cpp
 
 tangerine/oric.cpp
--telstrat            // can't boot disk
+-telstrat            // cannot boot disk
 
 tatung/einstein.cpp
 
-teamconcepts/comquest.cpp
--comquest
+//teamconcepts/comquest.cpp   // black screen
 
-tektronix/tek405x.cpp
--tek4052a
--tek4051
+//tektronix/tek405x.cpp   // black screen
 
-tektronix/tek410x.cpp
--tek4109a
--tek4107a
+//tektronix/tek410x.cpp  // black screen
 
-tektronix/tek43xx.cpp
--tek4319
+//tektronix/tek43xx.cpp   // black screen
 
-tektronix/tek440x.cpp
--tek4404
+//tektronix/tek440x.cpp    // inputs
 
-tektronix/tekigw.cpp
--tek6130
--tek4132
+//tektronix/tekigw.cpp    // no sw
 
-tektronix/tekxp33x.cpp
--tekxp330
+//tektronix/tekxp33x.cpp  // black screen
 
-tektronix/xd88.cpp
--xd88_01         // no screen
+//tektronix/xd88.cpp   // no screen
 
 telenova/compis.cpp
 
-telercas/tmc1800.cpp
--nano              // no sw
--osc1000b          // no sw
--tmc1800           // no sw
--tmc2000           // no sw
+//telercas/tmc1800.cpp    // no sw
 
-telercas/tmc2000e.cpp
--tmc2000e          // no sw
+//telercas/tmc2000e.cpp   // no sw
 
 telercas/tmc600.cpp
 
-televideo/ts3000.cpp
--ts3000
+//televideo/ts3000.cpp   // no screen
 
-televideo/ts802.cpp
--ts802h
--ts802
+//televideo/ts802.cpp  // mnw; ts802: ts802h nw
 
-televideo/ts803.cpp
--ts803h
+//televideo/ts803.cpp   // no sw
 
 televideo/ts816.cpp
 
@@ -3715,37 +3684,28 @@ televideo/tv910.cpp
 
 televideo/tv912.cpp
 
-televideo/tv924.cpp
--tv924
+//televideo/tv924.cpp   // black screen
 
-televideo/tv950.cpp
--tv950
+//televideo/tv950.cpp   // nonstop beep
 
 televideo/tv955.cpp
 
-televideo/tv965.cpp
--tv965
+//televideo/tv965.cpp    // inputs
 
-televideo/tv990.cpp
--tv990             // terminal
--tv995             // terminal
+//televideo/tv990.cpp   // beeps
 
 tesla/ondra.cpp
--ondrav
--ondrat
 
 tesla/pmd85.cpp
--c2717pmd
 
 tesla/pmi80.cpp
 
 tesla/sapi1.cpp
--sapizps3a
--sapizps3b
--sapizps3
+-sapizps3a     // mnw
+-sapizps3b     // mnw
+-sapizps3      // mnw
 
 thomson/thomson.cpp
--mo5nr              // blank screen
 
 ti/avigo.cpp
 
@@ -3754,15 +3714,12 @@ ti/cc40.cpp
 ti/evmbug.cpp
 
 ti/exelv.cpp
--exl100
--exeltel
+-exeltel       // mnw
 
-ti/geneve.cpp
--geneve        // cannot boot floppy
--genmod        // cannot boot floppy
+//ti/geneve.cpp   // cannot boot floppy
 
 ti/snspell.cpp
--lantransp
+-lantransp     // hangs when enter pressed
 
 ti/snspellc.cpp
 -tntellp
@@ -3770,53 +3727,45 @@ ti/snspellc.cpp
 -snspellc       // no screen
 -snspellca      // no screen
 -snwrite        // no screen
--vocaid         // nothing?
+-vocaid         // mnw
 
 ti/spellb.cpp
 
 ti/ti74.cpp
 
 ti/ti85.cpp
--ti84pcev30
--ti84pcev15
--ti84pce
--ti84pcsev2
--ti84pcse
--ti83pcev15
--ti83pseb
--ti83pb
--ti83
--ti73b
+-ti84pcev30    // blank screen
+-ti84pcev15    // blank screen
+-ti84pce    // blank screen
+-ti84pcsev2    // blank screen
+-ti84pcse    // blank screen
+-ti83pcev15    // blank screen
+-ti83pseb    // blank screen
+-ti83pb    // blank screen
+-ti83    // blank screen
+-ti73b    // blank screen
 
 ti/ti89.cpp
 
-ti/ti931.cpp
--ti931
+//ti/ti931.cpp   // mnw
 
-ti/ti990_10.cpp
--ti990_10
+//ti/ti990_10.cpp // black screen
 
-ti/ti990_4.cpp
--ti990_4v
--ti990_4
+//ti/ti990_4.cpp  // white screen
 
 ti/ti99_2.cpp
 
-ti/ti99_4p.cpp
--ti99_4p       // black screen
+//ti/ti99_4p.cpp   // black screen
 
 ti/ti99_4x.cpp
 
 ti/ti99_8.cpp
 
-ti/tipc.cpp
--tipc
+//ti/tipc.cpp   // mnw
 
 ti/tm990189.cpp
 
-tiger/bingobear.cpp
--bbear                // no screen
--monkmonk             // no screen
+//tiger/bingobear.cpp    // no screen
 
 tiger/gamecom.cpp
 
@@ -3826,36 +3775,28 @@ tiger/k28o.cpp
 
 tiger/pylo.cpp
 
-tigertel/gizmondo.cpp
--gizmondo
+//tigertel/gizmondo.cpp    // no screen
 
 tiki/tiki100.cpp
 
 tms/vet3000.cpp
 
-tomy/kisssite.cpp
--kisssite
+//tomy/kisssite.cpp     // no screen
 
 tomy/tomy_princ.cpp
 
 tomy/tutor.cpp
 
-torch/quadx.cpp
--quadxp
--quadx
+//torch/quadx.cpp    // no screen
 
-torch/triplex.cpp
--triplex
+//torch/triplex.cpp   // no sw
 
-toshiba/paso1600.cpp
--paso1600
+//toshiba/paso1600.cpp   // black screen
 
 toshiba/pasopia.cpp
--pasopia
 
 toshiba/pasopia7.cpp
--pasopia7lcd
--pasopia7
+-pasopia7lcd     // bad screen
 
 trainer/amico2k.cpp
 
@@ -3874,7 +3815,6 @@ trainer/emma2.cpp
 trainer/instruct.cpp
 
 trainer/mac3.cpp
--mac3
 
 trainer/mcg85.cpp
 
@@ -3883,7 +3823,6 @@ trainer/mk14.cpp
 trainer/ms68k.cpp
 
 trainer/pro80.cpp
--pro80
 
 trainer/savia84.cpp
 
@@ -3902,19 +3841,15 @@ trs/coco12.cpp
 
 trs/coco3.cpp
 
-trs/dgnalpha.cpp
--dgnalpha
+//trs/dgnalpha.cpp    // mnw
 
-trs/dgn_beta.cpp
--dgnbeta
+//trs/dgn_beta.cpp    // no sw
 
 trs/dragon.cpp
 
 trs/lnw80.cpp
--lnw80
 
-trs/max80.cpp
--max80
+//trs/max80.cpp    // black screen
 
 trs/mc10.cpp
 
@@ -3931,7 +3866,7 @@ trs/trs80dt1.cpp
 trs/trs80m2.cpp
 
 trs/trs80m3.cpp
--trs80m4p          // can't boot disk
+-trs80m4p          // cannot boot disk
 
 trs/vis.cpp
 
