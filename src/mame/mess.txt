@@ -1,4 +1,4 @@
-//access/acvirus.cpp // randomly crash
+//access/acvirus.cpp // mnw
 
 acorn/aa310.cpp
 -aa305
@@ -2974,43 +2974,26 @@ sharp/pocketc.cpp
 -pc1260
 -pc1245
 
-sharp/wizard.cpp
--iq7000
+//sharp/wizard.cpp    // black screen
 
 sharp/x1.cpp
 
-sharp/x1twin.cpp
--x1twin          // can't boot disk
+//sharp/x1twin.cpp    // can't boot disk
 
 sharp/x68k.cpp
 
-sharp/zaurus.cpp
--zsl5500         // no screen
--zsl5600         // black screen
--zslc1000        // black screen
--zslc3000        // black screen
--zslc500         // black screen
--zslc750         // black screen
--zslc760         // black screen
+//sharp/zaurus.cpp    // black screen
 
-siemens/bitel.cpp
--feap90
--t3210
+//siemens/bitel.cpp   // no screen
 
-siemens/pcd.cpp
--pcx
--pcd
+//siemens/pcd.cpp     // mnw
 
-siemens/pcmx2.cpp
--pcmx2
+//siemens/pcmx2.cpp   // no screen
 
-siemens/pg685.cpp
--pg685oua12
--pg685
--pg675
+//siemens/pg685.cpp   // no sw
 
 sinclair/atm.cpp
--atm
+-atm           // blank screen
 
 sinclair/byte.cpp
 
@@ -3722,7 +3705,7 @@ ti/snspell.cpp
 -lantransp     // hangs when enter pressed
 
 ti/snspellc.cpp
--tntellp
+-tntellp        // inputs
 -mathsmag       // no screen
 -snspellc       // no screen
 -snspellca      // no screen
@@ -3877,7 +3860,7 @@ tryom/gammonm.cpp
 tryom/omar.cpp
 
 tvgames/actions_atj2279b.cpp
--rbitgen
+-rbitgen         // black screen
 
 tvgames/elan_ep3a19a.cpp
 
@@ -3970,7 +3953,6 @@ tvgames/generalplus_gpl16250_rom.cpp
 -gameu90
 -jak_prr
 -jak_tpir
--typo176        // need roms
 
 tvgames/generalplus_gpl16250_romram.cpp
 -tomycar
@@ -4110,7 +4092,7 @@ tvgames/generalplus_gpm453x_sdcard.cpp
 -arb605
 
 tvgames/magiceyes_pollux_vr3520f.cpp
--didj
+-didj           // black screen
 
 tvgames/micom_mahjong.cpp
 
@@ -4198,7 +4180,7 @@ tvgames/spg2xx_digimake.cpp
 tvgames/spg2xx_dreamlife.cpp
 
 tvgames/spg2xx_ican.cpp
--icanguit
+-icanguit     // mech
 
 tvgames/spg2xx_jakks.cpp
 
@@ -4267,166 +4249,162 @@ tvgames/trkfldch.cpp
 tvgames/tvgame.cpp
 
 tvgames/xavix.cpp
--bistro          // mnw
+-bistro
 -taikodp             // nothing?
--ekara          // mnw
--ekaraa          // mnw
--ekarag          // mnw
--ekaraj          // mnw
--ekaramix          // mnw
--ekaraphs          // mnw
--ekaras          // mnw
--epitch          // mnw
--epo_crok          // mnw
--epo_dmon          // mnw
--epo_efdx          // mnw
--epo_epp3          // mnw
--epo_esht          // mnw
--epo_fish          // mnw
--epo_hamd          // mnw
--epo_stad          // mnw
--epo_strk          // mnw
--epo_strkp          // mnw
--epo_tenn          // mnw
--evio          // mnw
--gcslottv          // mnw
--gungunad          // mnw
--gungunrv          // mnw
--hikara          // mnw
--hippofr          // mnw
--isinger          // mnw
--jarajal          // mnw
--ltv_tam          // mnw
+-ekara
+-ekaraa
+-ekarag
+-ekaraj
+-ekaramix
+-ekaraphs
+-ekaras
+-epitch
+-epo_crok
+-epo_dmon
+-epo_efdx
+-epo_epp3
+-epo_esht
+-epo_fish
+-epo_hamd
+-epo_stad
+-epo_strk
+-epo_strkp
+-epo_tenn
+-evio
+-gcslottv
+-gungunad
+-gungunrv
+-hikara
+-hippofr
+-isinger
+-jarajal
+-ltv_tam
 -multiplt         // inputs
--tak_daig          // mnw
--tak_beyu          // mnw
--tak_beyb          // mnw
--tak_comt          // mnw
--rad_bassp          // mnw
--rad_boxp          // mnw
--rad_mtrkp          // mnw
--rad_pingp          // mnw
--rad_madf          // mnw
--tomshoot          // mnw
--rad_bb          // mnw
--rad_bb2          // mnw
--rad_bass          // mnw
--rad_box          // mnw
--rad_hnt          // mnw
--rad_hnt2          // mnw
--rad_fb          // mnw
--rad_mtrk          // mnw
--rad_ping          // mnw
--rad_rh          // mnw
--rad_socr          // mnw
--epo_eppk          // mnw
--epo_epps          // mnw
--epo_esdx          // mnw
--epo_epp          // mnw
--epo_epp2          // mnw
--tom_tvho          // mnw
--epo_mj          // mnw
--epo_mail          // mnw
--has_wamg          // mnw
--tvpc_dor          // mnw
--tvpc_hk          // mnw
--tvpc_tom          // mnw
--tvpc_ham          // mnw
--tak_zuba          // mnw
+-tak_daig
+-tak_beyu
+-tak_beyb
+-tak_comt
+-rad_bassp
+-rad_boxp
+-rad_mtrkp
+-rad_pingp
+-rad_madf
+-tomshoot
+-rad_bb
+-rad_bb2
+-rad_bass
+-rad_box
+-rad_hnt
+-rad_hnt2
+-rad_fb
+-rad_mtrk
+-rad_ping
+-rad_rh
+-rad_socr
+-epo_eppk
+-epo_epps
+-epo_esdx
+-epo_epp
+-epo_epp2
+-tom_tvho
+-epo_mj
+-epo_mail
+-has_wamg
+-tvpc_dor
+-tvpc_hk
+-tvpc_tom
+-tvpc_ham
+-tak_zuba
 
 tvgames/xavix2.cpp
--dombikec          // mnw
--domfitad          // mnw
--epo_dtcj          // mnw
--epo_dab2j          // mnw
--epo_ssk2          // mnw
--ban_dbz          // mnw
--ban_db2j          // mnw
--ban_bldj          // mnw
--ban_naru          // mnw
--epo_sskj          // mnw
--epo_dabj          // mnw
--epo_pabj          // mnw
+-dombikec
+-domfitad
+-epo_dtcj
+-epo_dab2j
+-epo_ssk2
+-ban_dbz
+-ban_db2j
+-ban_bldj
+-ban_naru
+-epo_sskj
+-epo_dabj
+-epo_pabj
 
 tvgames/xavix_2000.cpp
--ban_omt          // mnw
--ban_onep          // mnw
--drgqst          // mnw
--duelmast          // mnw
--epo_bowl          // mnw
--epo_ebox          // mnw
--epo_es2j          // mnw
--epo_golf          // mnw
--epo_hamc          // mnw
--epo_mini          // mnw
--tak_chq          // mnw
--tom_dpgm          // mnw
--ttv_lotr          // mnw
--ttv_sw          // mnw
--ttv_swj          // mnw
+-ban_omt
+-ban_onep
+-drgqst
+-duelmast
+-epo_bowl
+-epo_ebox
+-epo_es2j
+-epo_golf
+-epo_hamc
+-epo_mini
+-tak_chq
+-tom_dpgm
+-ttv_lotr
+-ttv_sw
+-ttv_swj
 
 tvgames/xavix_2002.cpp
--anpanmdx        // mnw
--apmj2009        // mnw
--ban_bkgj        // mnw
--ban_dn1j        // mnw
--ban_gkrj        // mnw
--ban_kksj        // mnw
--ban_ordj        // mnw
--ban_pr2j        // mnw
--ban_ult        // mnw
--ban_um2j        // mnw
--ban_utmj        // mnw
--domdance        // mnw
--domfitch        // mnw
--domfitex        // mnw
--domstepc        // mnw
--doradraw        // mnw
--epo_doka        // mnw
--epo_kabj        // mnw
--epo_ntpj        // mnw
--epo_rgfj        // mnw
--epo_tfit        // mnw
--maxheart        // mnw
--ndpbj        // mnw
--ndpmj        // mnw
--suprtvpc        // mnw
--suprtvpcdo        // mnw
--suprtvpchk        // mnw
--suprtvpcln        // mnw
--tmy_rkmj        // mnw
--tmy_thom        // mnw
--udance        // mnw
--xavaero        // mnw
--xavbaseb        // mnw
--xavbasebj        // mnw
--xavbassf        // mnw
--xavbowl        // mnw
--xavbowlj        // mnw
--xavbox        // mnw
--xavboxj        // mnw
--xavcheck        // mnw
--xavgolf        // mnw
--xavgolfj        // mnw
--xavjmat        // mnw
--xavmusic        // mnw
--xavmusicj        // mnw
--xavpowrk        // mnw
--xavpkjr        // mnw
--xavtenni        // mnw
--xavtennij        // mnw
+-anpanmdx
+-apmj2009
+-ban_bkgj
+-ban_dn1j
+-ban_gkrj
+-ban_kksj
+-ban_ordj
+-ban_pr2j
+-ban_ult
+-ban_um2j
+-ban_utmj
+-domdance
+-domfitch
+-domfitex
+-domstepc
+-doradraw
+-epo_doka
+-epo_kabj
+-epo_ntpj
+-epo_rgfj
+-epo_tfit
+-maxheart
+-ndpbj
+-ndpmj
+-suprtvpc
+-suprtvpcdo
+-suprtvpchk
+-suprtvpcln
+-tmy_rkmj
+-tmy_thom
+-udance
+-xavaero
+-xavbaseb
+-xavbasebj
+-xavbassf
+-xavbowl
+-xavbowlj
+-xavbox
+-xavboxj
+-xavcheck
+-xavgolf
+-xavgolfj
+-xavjmat
+-xavmusic
+-xavmusicj
+-xavpowrk
+-xavpkjr
+-xavtenni
+-xavtennij
 
-ultimachine/rambo.cpp
--metamaq2
+//ultimachine/rambo.cpp   // no screen
 
-ultratec/minicom.cpp
--mcom4_02
--minicom
+//ultratec/minicom.cpp  //mcom4_02 bad screen;minicom inputs
 
 umc/pc486vl.cpp
--tku5s
--sy019s
--pccm912
+-tku5s      // cannot boot disk
+-pccm912    // cannot boot disk
 
 umc/supracan.cpp
 
@@ -4436,35 +4414,24 @@ unisonic/unichamp.cpp
 
 unisys/univac.cpp
 
-usp/patinhofeio.cpp
--patinho
+//usp/patinhofeio.cpp    // white screen
 
 ussr/apogee.cpp
 
 ussr/argo.cpp
--argo
 
 ussr/b2m.cpp
--b2mrom
--b2m
+-b2mrom       // cannot boot disk
 
-ussr/bk.cpp
--bk001001
--bk0011m
--bk0011
--bk0010fd
--bk0010
+//ussr/bk.cpp  // bk0010 nw
 
 ussr/cm1800.cpp
--cm1800
 
 ussr/debut.cpp
 
-ussr/dvk_kcgd.cpp
--dvk_kcgd
+//ussr/dvk_kcgd.cpp  // inputs
 
-ussr/dvk_ksm.cpp
--dvk_ksm              // terminal
+//ussr/dvk_ksm.cpp   // inputs
 
 ussr/ie15.cpp
 
@@ -4473,7 +4440,6 @@ ussr/im01.cpp
 ussr/intellect02.cpp
 
 ussr/irisha.cpp
--irisha
 
 ussr/juku.cpp
 
@@ -4482,141 +4448,100 @@ ussr/krokha.cpp
 ussr/lviv.cpp
 
 ussr/mikro80.cpp
--radio99
--mikro80
--kristall2
 
 ussr/mikrosha.cpp
 
-ussr/mk85.cpp
--mk85
+//ussr/mk85.cpp  // black screen
 
-ussr/mk90.cpp
--mk90
+//ussr/mk90.cpp  // black screen
 
-ussr/mk98.cpp
--mk98
+//ussr/mk98.cpp  // no idea what it says
 
 ussr/ms0515.cpp
 
-ussr/ms6102.cpp
--ms6102
+//ussr/ms6102.cpp // blank screen
 
-ussr/okean240.cpp
--okean240
--okean240a
--okean240t
+//ussr/okean240.cpp  // no media support;okean240t test program
 
 ussr/orion.cpp
 
 ussr/partner.cpp
--partner
 
 ussr/pk32.cpp
--pk32
 
 ussr/pk8000.cpp
--pk8002
+-pk8002       // blank screen
 
 ussr/pk8020.cpp
--neiva
--korvet
--kontur
--bk8t
+-bk8t      // no idea what it says
 
 ussr/pyl601.cpp
 
 ussr/radio86.cpp
 
-ussr/sm1800.cpp
--sm1800
+//ussr/sm1800.cpp  // blank screen,inputs
 
-ussr/sm7238.cpp
--sm7238           // terminal
+//ussr/sm7238.cpp   // mnw
 
 ussr/special.cpp
--unga
--specimx
--specialm
--specialp
--pioner
--lik
--kharkovsky
--erik
--anakonda
 
-ussr/uknc.cpp
--uknc
+//ussr/uknc.cpp   // black screen
 
 ussr/unior.cpp
 
 ussr/ut88.cpp
 
 ussr/vector06.cpp
--vec1200
--pk6128c
--krista2
+-vec1200       // black screen
+-pk6128c       // black screen
+-krista2       // black screen
 
-ussr/vta2000.cpp
--vta2000
+//ussr/vta2000.cpp  // inputs, screen too wide
 
-vectorgraphic/vector4.cpp
--vector4            // no sw
+//vectorgraphic/vector4.cpp   // no sw
 
-verifone/tranz330.cpp
--tranz330           // useless
+//verifone/tranz330.cpp    // useless
 
 vidbrain/vidbrain.cpp
 
 videoton/tvc.cpp
 
-virtual/ldplayer.cpp
--simldv1000              // U:not a system
--simpr8210               // U:not a system
+//virtual/ldplayer.cpp   // U:not a system
 
-virtual/utdsp563xx.cpp
--utdsp563xx             // U:not a system
+//virtual/utdsp563xx.cpp // U:test program
 
-//virtual/utm6502.cpp          // U:not a system
+//virtual/utm6502.cpp    // U:not a system
 
 virtual/vgmplay.cpp
 
-virtual/wavesynth.cpp
--wavesynth            // no screen
+//virtual/wavesynth.cpp    // no screen
 
-visual/v100.cpp
--v100
+//visual/v100.cpp    // black screen
 
-visual/v102.cpp
--v102
+//visual/v102.cpp    // black screen
 
 visual/v1050.cpp
 
-visual/v50.cpp
--visual50                 // terminal
+//visual/v50.cpp     // inputs
 
-visual/v550.cpp
--v550
+//visual/v550.cpp    // black screen
 
 visual/xds.cpp
 
 votrax/votrhv.cpp
--hc120
+-hc120             // no screen
 
-votrax/votrpss.cpp
--votrpss              // ignores user input
+//votrax/votrpss.cpp   // ignores user input
 
 votrax/votrtnt.cpp
 
-vtech/clickstart.cpp
--clikstrt
+//vtech/clickstart.cpp    // inputs
 
 vtech/crvision.cpp
 
 vtech/gamemachine.cpp
 
-vtech/geniuscolor.cpp
--geniuscps
+//vtech/geniuscolor.cpp  // black screen
 
 vtech/geniusiq.cpp
 -itunlim
