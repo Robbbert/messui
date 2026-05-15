@@ -826,6 +826,45 @@ handheld/generalplus_gpce4.cpp
 
 //handheld/generalplus_gpel31xx.cpp   // black screen
 
+handheld/generalplus_gpl162xx_lcdtype.cpp
+
+handheld/generalplus_gpl951xx.cpp
+-bfdigdug
+-fixitflx
+-flufflav
+-pokebala
+-pokgoget
+-bfgalaga
+-dsgnpal
+-bubltea
+-pokemech
+-segapet3
+-segapet3a
+-segapet1
+-segapet1a
+-segapet2
+-segapet2a
+-segaptdx
+-bfmpac
+-bfpacman
+-pockrmsr
+-pokeissh
+-punij1m
+-punij1pk
+-punij1pu
+-punij2pk
+-punirune
+-punirunea
+-punistar
+-punifrnd
+-bfspyhnt
+-smkgacha
+-smkcatch
+-smkguras
+-smkgurasa
+-bftetris
+-wiwcs
+
 handheld/gmaster.cpp
 
 //handheld/gw35th.cpp  // black screen
@@ -2864,7 +2903,6 @@ sega/svmu.cpp
 -svmu
 
 sequential/prophet5.cpp
--prophet5r30
 
 sequential/prophet600.cpp
 -prpht600a
@@ -3066,6 +3104,8 @@ sinclair/zx.cpp
 //skeleton/alphasma3k.cpp    // no screen
 
 //skeleton/am1000.cpp   // no screen
+
+//skeleton/amlogic_aml7212.cpp   // black screen
 
 //skeleton/amusement_6502.cpp   // no screen
 
@@ -3988,11 +4028,6 @@ tvgames/generalplus_gpl16250_spi.cpp
 -pokegac2y
 -vmastspi
 
-tvgames/generalplus_gpl162xx_lcdtype.cpp
--bkid218
--pcp8718
--pcp8728
-
 tvgames/generalplus_gpl32612.cpp
 -anp2020t                       // black screen
 -disbestf                       // black screen
@@ -4040,42 +4075,6 @@ tvgames/generalplus_gpl32612.cpp
 -jak_ddhp
 -froz2dct
 -airobo
-
-tvgames/generalplus_gpl951xx.cpp
--bfdigdug
--fixitflx
--flufflav
--pokebala
--pokgoget
--bfgalaga
--dsgnpal
--bubltea
--pokemech
--segapet3
--segapet3a
--segapet1
--segapet1a
--segapet2
--segapet2a
--segaptdx
--bfmpac
--bfpacman
--pockrmsr
--pokeissh
--punij1m
--punij1pk
--punij1pu
--punij2pk
--punirune
--punistar
--punifrnd
--bfspyhnt
--smkgacha
--smkcatch
--smkguras
--smkgurasa
--bftetris
--wiwcs
 
 tvgames/generalplus_gpm453x_nand.cpp
 -leapland
