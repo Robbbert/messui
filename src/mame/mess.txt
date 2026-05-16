@@ -1225,6 +1225,8 @@ interton/vc4000.cpp
 
 isc/compucolor.cpp
 
+jpm/guab.cpp       // arcade swlist
+
 //kawai/acr20.cpp  // no screen
 
 //kawai/k1.cpp  // no screen
@@ -2495,6 +2497,8 @@ pc/tandy1t.cpp
 
 pc/tosh1000.cpp
 
+pce/tourvis.cpp    // arcade swlist
+
 philips/cdi.cpp
 -gpi1200           // black screen
 -cdi910            // black screen
@@ -2558,7 +2562,7 @@ psion/psion3.cpp
 
 psion/psion3a.cpp
 
-psion/psion5.cpp
+psion/psion5mx.cpp
 
 psion/psionhc.cpp
 
@@ -3540,6 +3544,8 @@ skeleton/vector3.cpp
 //skeleton/xbase09.cpp  // no screen
 
 skeleton/xor100.cpp
+
+//skeleton/yeno_ks56c1660.cpp   // black screen
 
 //skeleton/zeebo_qualcomm_adreno130.cpp  // black screen
 
@@ -4696,176 +4702,116 @@ vtech/vtech_eu3a12.cpp
 vtech/vtech_innotab.cpp
 -innotab2
 
-wang/wangpc.cpp
--wangpc             // can't boot disk
+//wang/wangpc.cpp      // can't boot disk
 
 wavemate/bullet.cpp
--wmbulletf
--wmbullet
+-wmbulletf        // blank screen
 
 wavemate/jupiter.cpp
--jupiter3
--jupiter2
+-jupiter2        // blank screen
 
 westinghouse/testconsole.cpp
 
-wicat/t7000.cpp
--t7000
+//wicat/t7000.cpp   // blank screen
 
-wicat/wicat.cpp
--wicat
+//wicat/wicat.cpp  // cannot boot disk
 
 wyse/wy100.cpp
 
-wyse/wy150.cpp
--wy120           // black screen
--wy150           // black screen
--wy160           // black screen
--wy325           // black screen
+//wyse/wy150.cpp     // black screen
 
-wyse/wy30p.cpp
--wy30p           // black screen
+//wyse/wy30p.cpp    // black screen
 
 wyse/wy50.cpp
 -wy50            // mnw
 
-wyse/wy55.cpp
--wy185es         // black screen
--wy55           // black screen
--wy65           // black screen
+//wyse/wy55.cpp  // black screen
 
-wyse/wy60.cpp
--wy60a           // mnw
--wy60            // mnw
+//wyse/wy60.cpp   // mnw
 
 wyse/wy85.cpp
 
-xerox/alto1.cpp
--alto1
+//xerox/alto1.cpp   // no screen
 
 //xerox/alto2.cpp           // no sw
 
 xerox/bigbord2.cpp
--bigbord2
 
-xerox/notetaker.cpp
--notetakr
+//xerox/notetaker.cpp    // black screen
 
 xerox/xerox820.cpp
 
-yamaha/fb01.cpp
--fb01                  // no sound
+//yamaha/fb01.cpp        // no sound
 
-yamaha/tg100.cpp
--tg100
+//yamaha/tg100.cpp       // no screen
 
-yamaha/yman1x.cpp
--an1x            // mnw
+//yamaha/yman1x.cpp      // mnw
 
-yamaha/ymdx100.cpp
--dx100                 // no sound
+//yamaha/ymdx100.cpp     // no sound
 
-yamaha/ymdx11.cpp
--dx11            // mnw
+//yamaha/ymdx11.cpp     // mnw
 
-yamaha/ymdx7.cpp
--dx7             // mnw
+//yamaha/ymdx7.cpp       // mnw
 
-yamaha/ymdx9.cpp
--dx9             // mnw
+//yamaha/ymdx9.cpp      // mnw
 
-yamaha/ymmu10.cpp
--mu10             // no screen
+//yamaha/ymmu10.cpp     // no screen
 
-yamaha/ymmu100.cpp
--mu100           // mnw
--mu100r          // mnw
--mu100b          // no screen
+//yamaha/ymmu100.cpp     // mnw;mu100b no screen
 
-yamaha/ymmu128.cpp
--mu128           // mnw
+//yamaha/ymmu128.cpp     // mnw
 
 yamaha/ymmu15.cpp
 
-yamaha/ymmu2000.cpp
--mu1000          // mnw
--mu2000          // mnw
--mu500           // mnw
+//yamaha/ymmu2000.cpp    // mnw
 
 yamaha/ymmu5.cpp
 
 yamaha/ymmu50.cpp
 
-yamaha/ymmu80.cpp
--mu80            // mnw
+//yamaha/ymmu80.cpp    // mnw
 
-yamaha/ymmu90.cpp
--mu90            // mnw
--mu90b           // no screen
+//yamaha/ymmu90.cpp  // no screen
 
-yamaha/ympcs30.cpp
--pcs30           // no screen
+//yamaha/ympcs30.cpp    // no screen
 
-yamaha/ymps400.cpp
--ps400           // no screen
+//yamaha/ymps400.cpp     // no screen
 
 yamaha/ympsr11.cpp
 
 yamaha/ympsr150.cpp
 
-yamaha/ympsr16.cpp
--psr16           // no screen
--psr36           // no screen
--pss480          // no screen
--pss680          // no screen
--pss780          // no screen
+//yamaha/ympsr16.cpp   // no screen
 
-yamaha/ympsr2000.cpp
--psr2000         // mnw
+//yamaha/ympsr2000.cpp   // mnw
 
-yamaha/ympsr260.cpp
--psr160          // mnw
--psr260          // mnw
--psr79           // mnw
+//yamaha/ympsr260.cpp    // mnw
 
-yamaha/ympsr340.cpp
--psr340          // mnw
+//yamaha/ympsr340.cpp    // mnw
 
-yamaha/ympsr40.cpp
--psr40           // no screen
+//yamaha/ympsr40.cpp  // no screen
 
-yamaha/ympsr400.cpp
--psr500          // no screen
+//yamaha/ympsr400.cpp    // no screen
 
-yamaha/ympsr540.cpp
--psr540          // mnw
+//yamaha/ympsr540.cpp     // mnw
 
 yamaha/ympsr60.cpp
 
-yamaha/ympss170.cpp
--pss170           // does nothing
+//yamaha/ympss170.cpp    // does nothing
 
-yamaha/ymqs300.cpp
--eosb900         // mnw
--qs300           // mnw
+//yamaha/ymqs300.cpp     // mnw
 
-yamaha/ymqy70.cpp
--qy70            // mnw
+//yamaha/ymqy70.cpp     // mnw
 
-yamaha/ymrx15.cpp
--rx15            // mnw
+//yamaha/ymrx15.cpp      // mnw
 
-yamaha/ymsy35.cpp
--sy35            // no screen
+//yamaha/ymsy35.cpp     // no screen
 
-yamaha/ymtx81z.cpp
--tx81z           // no sound
+//yamaha/ymtx81z.cpp    // no sound
 
-yamaha/ymvl1.cpp
--vl1             // mnw
+//yamaha/ymvl1.cpp      // mnw
 
-yamaha/ymvl70.cpp
--vl70            // mnw
+//yamaha/ymvl70.cpp     // mnw
 
 yeno/301xl.cpp
 
@@ -4876,7 +4822,6 @@ yeno/532xl.cpp
 zpa/iq151.cpp
 
 zvt/pp01.cpp
--pp01
 
 //exceptions + to add - to remove from imported list
 
