@@ -1337,7 +1337,7 @@ mattel/intv.cpp
 
 mattel/juicebox.cpp
 
-//mattel/pixtermu.cpp      // no screen
+mattel/pixtermu.cpp     // touch button random
 
 //mc/mc68000.cpp        // no sw
 
@@ -1603,7 +1603,7 @@ nec/pce.cpp
 
 //nec/pc_h98.cpp  // black screen
 
-//nec/piet1.cpp   // black screen
+//nec/piet1.cpp   // grey screen
 
 nec/tk80bs.cpp
 
@@ -2563,6 +2563,20 @@ psion/psion3.cpp
 psion/psion3a.cpp
 
 psion/psion5mx.cpp
+-mako               // need roms
+-mc218              // need roms
+-mc218_de              // need roms
+-mc218_fr              // need roms
+-revo                 // need roms
+-revo_de                 // need roms
+-revo_fr                 // need roms
+-psion5mx               // need roms
+-psion5mxp               // need roms
+-psion5mx_fr               // need roms
+-psion5mxp_de               // need roms
+
+psion/psion7.cpp     // mouse click nw
+-netbook             // black screen
 
 psion/psionhc.cpp
 
@@ -4035,52 +4049,53 @@ tvgames/generalplus_gpl16250_spi.cpp
 -vmastspi
 
 tvgames/generalplus_gpl32612.cpp
+-airobo
 -anp2020t                       // black screen
+-anpanm19
+-anpncp17
+-anpntb18
+-arcadege
+-bananlap
+-bananlapa
+-banaquap
+-bandolap
+-bandplap
+-bandslap
+-banpear
+-chiikpc
+-dinopc
 -disbestf                       // black screen
 -displpc                        // black screen
+-dmnslayg
+-doraet17
 -doralpc                        // black screen
+-froz2dct
+-jak_dchp
+-jak_ddhp
+-jak_prhp
+-jak_swbstrik
+-jak_tmnthp
+-jpad                           // black screen
 -jpaddp
 -kidizmb
 -kidizmp
+-neopad
+-pdcm2
+-pocketmp
+-pocketmr
+-pokepeac
+-rotom2
 -saikyopc
--arcadege
--dinopc
+-segcarsh
+-segdis16
+-smatomo
+-spicanot
 -sumikpc
 -sumikpcp
 -sumipc21
--pdcm2
--pocketmp
--pokepeac
--pocketmr
--jak_prhp
--banpear
--neopad
--smatomo
--spicanot
--jak_swbstrik
--jak_tmnthp
--banaquap
--zippityuk
--zippity
--anpncp17
--bananlapa
--anpntb18
--anpanm19
--bananlap
--rotom2
--chiikpc
--jak_dchp
--dmnslayg
 -tmydistb
--bandslap
--bandplap
--segcarsh
--segdis16
--doraet17
--bandolap
--jak_ddhp
--froz2dct
--airobo
+-zippity
+-zippityuk
 
 tvgames/generalplus_gpm453x_nand.cpp
 -leapland
@@ -4549,158 +4564,70 @@ vtech/gamemachine.cpp
 //vtech/geniuscolor.cpp  // black screen
 
 vtech/geniusiq.cpp
--itunlim
--pcunlim
--iqtv512
--iq128
--iq128_fr
 
-vtech/geniusjr.cpp
--scientus
--pcompelr
--pitagjr
--pitagor
--gls
--gln
--gjrstar3
--gjrstar2
--gjrstar
--gjmovie
--gj5000
--gj4000
+//vtech/geniusjr.cpp   // fatal err at start, or no screen
 
-vtech/gkidabc.cpp
--miprimlec
--gkidabc
--gjrprofi
+//vtech/gkidabc.cpp    // no screen
 
-vtech/glcx.cpp
--gtbmcx
--gl8008cx
--gl6600cx
--bs9009cx
+//vtech/glcx.cpp  // black screen
 
-vtech/innotv_innotabmax.cpp
--innotv
+//vtech/innotv_innotabmax.cpp  // black screen
 
-vtech/inteladv.cpp
--inteladv
--dyndesk
--cars2lap
+//vtech/inteladv.cpp    // no screen
 
-vtech/iqunlim.cpp
--iqunlimgr
--iqunlim
+//vtech/iqunlim.cpp  // stuck at logo
 
-vtech/kidsupstar.cpp
--kidsupstar
+//vtech/kidsupstar.cpp   // black screen
 
 vtech/laser3k.cpp
--laser3k
 
 vtech/lcmate2.cpp
--lcmate2
 
-vtech/learnwin.cpp
--spielmast
--learnwin
--learnwin2
--learnwin1
--learnwinf
+//vtech/learnwin.cpp    // no screen
 
-vtech/magibook.cpp
--magibooksp
+//vtech/magibook.cpp    // no screen
 
 vtech/pc1000.cpp
--pc1000
--ordisava
--misterx
 
 vtech/pc2000.cpp
--pc2000s
--pc2000
--lexipcm
--gmtt
--glpn
--gl5005x
--gl5000
--gl4004
--gl4000
--gl3000s
--gl2000p
--gl2000c
--gl2000
--gbs5505x
+-lexipcm     // grey screen
+-gmtt        // grey screen
+-glpn        // mnw
+-gl5005x     // grey screen
+-gl5000      // stuck at logo
+-gbs5505x    // grey screen
 
 vtech/pc4.cpp
--pc4
 
-vtech/phusion.cpp
--phusion
+//vtech/phusion.cpp  // black screen
 
 vtech/prestige.cpp
--snotecut
--snotecug
--snotecu
--snotecex
--snotec
--prestige
--pcscolor
--gwnf
--gmmc
--glscolor
--glmcolor
--glcolor
--gl7007sl
--gl6000sl
+-gwnf     // green screen
+-gmmc     // green screen
 
 vtech/primusex.cpp
--primusex
 
 vtech/socrates.cpp
--vpainter
--socratfc
--socrates
--profweis
--iqunlimz
+-vpainter      // inputs
 
-vtech/storio.cpp
--vreader
--vreadercafr
--vreadercaen
--storionl
--storio
--storiofr
--storioes
--storioesa
--storiode
+//vtech/storio.cpp   // black screen
 
 vtech/vsmile.cpp
 
 vtech/vsmileb.cpp
--vsmileb
--vsmilebsw
--vsmilebs
--vsmilebg
--vsmilebf
--vsmilebfp
 
-vtech/vsmilepro.cpp
--vsmilpro
+//vtech/vsmilepro.cpp  // no screen
 
 vtech/vtech1.cpp
--vz200de
+-vz200de       // all roms undumped
 
 vtech/vtech2.cpp
 
-vtech/vtech5303.cpp
--pawmoviesp
+//vtech/vtech5303.cpp   // black screen
 
-vtech/vtech_eu3a12.cpp
--vreadere
+//vtech/vtech_eu3a12.cpp    // grey screen
 
-vtech/vtech_innotab.cpp
--innotab2
+//vtech/vtech_innotab.cpp    // black screen
 
 //wang/wangpc.cpp      // can't boot disk
 
