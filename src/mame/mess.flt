@@ -1226,6 +1226,8 @@ interton/vc4000.cpp
 isc/compucolor.cpp
 
 jpm/guab.cpp       // arcade swlist
+-crisscrs          // no sw
+-ttrail            // no sw
 
 //kawai/acr20.cpp  // no screen
 
@@ -2549,7 +2551,7 @@ psion/mc400.cpp
 psion/mc600.cpp
 
 psion/psion.cpp
--psion1
+-psion1              // grey screen
 -psionp200           // wont run any sw
 -psionp200a          // wont run any sw
 -psionp250           // wont run any sw
@@ -2795,15 +2797,15 @@ sega/magistr16.cpp
 
 sega/mdconsole.cpp
 -xeye      // fatal
--wmegam2    //
--wmega      //
--32x_scd    //
--32x_mcdj   //
--32x_mcd    //
--megacdj    //
--megacda    //
--laseractj  //
--laseract   //
+-wmegam2
+-wmega
+-32x_scd
+-32x_mcdj
+-32x_mcd
+-megacdj
+-megacda
+-laseractj
+-laseract
 
 sega/megadriv_firecore.cpp
 -mdhh100
@@ -2822,7 +2824,7 @@ sega/megadriv_firecore.cpp
 -mahg156
 -dcat16
 -atgame40
--mygalagb               // mnw
+-mygalagb
 
 sega/megadriv_rad.cpp
 -rad_mncr
@@ -2964,18 +2966,11 @@ sgi/indy_indigo2.cpp
 -indy_4613        // useless
 -indy_5015        // crashes when demo asked for
 
-sgi/ip12.cpp
--indigo           // no sw
--pi4d30           // black screen, no sw
--pi4d35           // no sw
+//sgi/ip12.cpp    // no sw;pi4d30 black screen
 
-sgi/ip20.cpp
--indigo_r4000     // no sw
--indigo_r4400     // black screen, no sw
+//sgi/ip20.cpp    // no sw;indigo_r4400 black screen
 
-sgi/ip6.cpp
--pi4d20           // can't boot sw
--pi4d25           // can't boot sw
+//sgi/ip6.cpp    // can't boot sw
 
 sgi/iris.cpp
 -iris3130
@@ -2984,51 +2979,37 @@ sgi/iris.cpp
 sgi/iris_power.cpp
 -4d410
 
-sgi/o2.cpp
--o2
+//sgi/o2.cpp     // no screen
 
-sgi/octane.cpp
--octane
+//sgi/octane.cpp  // no screen
 
 sgi/tt.cpp
 
-sharp/fontwriter.cpp
--fw700ger
--fw600
+//sharp/fontwriter.cpp  // black screen
 
 sharp/mz2000.cpp
--mz80b
 
 sharp/mz2500.cpp
 
-sharp/mz3500.cpp
--mz3500
+//sharp/mz3500.cpp   // inputs, cannot boot disk
 
-sharp/mz5500.cpp
--mz6550
--mz6500
--mz5500
+//sharp/mz5500.cpp   // inputs;mz6500,mz6550  cannot boot disk
 
 sharp/mz700.cpp
--mz800
--mz1500
+-mz800        // corrupts itself while loading a tape
+-mz1500       // corrupts itself while loading a tape, loud foghorn
 
 sharp/mz80.cpp
 
-sharp/pc1500.cpp
--pc1500
+//sharp/pc1500.cpp  // stuck at some error?
 
 sharp/pce220.cpp
--pcg850v
 
 sharp/pocketc.cpp
--pc1450
--pc1403h
--pc1403
--pc1360
--pc1261
--pc1260
--pc1245
+-pc1450       // inputs
+-pc1360       // grey screen
+-pc1261       // mnw
+-pc1260       // mnw
 
 //sharp/wizard.cpp    // black screen
 
@@ -3066,31 +3047,27 @@ sinclair/next/specnext.cpp
 sinclair/pentagon.cpp
 
 sinclair/ql.cpp
--ql_se
--ql_fr
--ql_dk
--tonto
+-ql_se       // black screen
+-ql_fr       // black screen
+-ql_dk       // black screen
+-tonto       // black screen
 
 sinclair/scorpion.cpp
--quorum
--profi
--kay1024
--bestzx
+-quorum       // mnw
+-bestzx       // mnw
 
 sinclair/spec128.cpp
 
 sinclair/specpls3.cpp
 
 sinclair/spectrum.cpp
--magic6
--quorum48
--hc88
--hc2000
--cobra80
--cobrasp
+-magic6        // inputs
+-quorum48      // inputs
+-hc88          // grey screen
+-cobra80       // black screen
+-cobrasp       // black screen
 
-sinclair/sprinter.cpp
--sprinter             // no sw
+//sinclair/sprinter.cpp   // no sw
 
 sinclair/timex.cpp
 
@@ -4030,7 +4007,8 @@ tvgames/generalplus_gpl16250_romram.cpp
 -wrlshunt
 
 tvgames/generalplus_gpl16250_spi.cpp
--starbuck                       // black screen
+-starbuck         // black screen
+-wildking         // black screen
 -anpanbd
 -anpanm15
 -anpaneng
