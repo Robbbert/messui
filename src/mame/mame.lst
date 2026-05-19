@@ -590,6 +590,9 @@ sr16
 midifex
 midiverb
 
+@source:alesis/qs.cpp
+alesqs7
+
 @source:alliedleisure/ace.cpp
 ace
 
@@ -22992,6 +22995,7 @@ hayaosi2
 hayaosi3
 hayaosi3a
 kirarast
+kirarasta
 p47aces
 p47acesa
 suchie2
@@ -43882,9 +43886,6 @@ airbase99
 @source:skeleton/alcat7100.cpp
 alcat7100
 
-@source:skeleton/alesis_qs.cpp
-alesqs7
-
 @source:skeleton/alphasma.cpp
 asma2k
 asmapro
@@ -44358,6 +44359,7 @@ kron180
 
 
 @source:skeleton/lanmao.cpp
+daolang
 gongfuxm
 lanmao
 ljian
@@ -44365,6 +44367,7 @@ lzhudie
 msaiche
 panda2
 pkzw
+qiandd
 tzwang
 xqingwa
 whujiang
