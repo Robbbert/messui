@@ -98,6 +98,8 @@ akai/s3000.cpp
 
 //alesis/midiverb.cpp  // useless
 
+//alesis/qs.cpp        // no screen
+
 //altos/altos2.cpp     // black screen
 
 //altos/altos486.cpp   // does nothing
@@ -828,42 +830,7 @@ handheld/generalplus_gpce4.cpp
 
 handheld/generalplus_gpl162xx_lcdtype.cpp
 
-handheld/generalplus_gpl951xx.cpp
--bfdigdug
--fixitflx
--flufflav
--pokebala
--pokgoget
--bfgalaga
--dsgnpal
--bubltea
--pokemech
--segapet3
--segapet3a
--segapet1
--segapet1a
--segapet2
--segapet2a
--segaptdx
--bfmpac
--bfpacman
--pockrmsr
--pokeissh
--punij1m
--punij1pk
--punij1pu
--punij2pk
--punirune
--punirunea
--punistar
--punifrnd
--bfspyhnt
--smkgacha
--smkcatch
--smkguras
--smkgurasa
--bftetris
--wiwcs
+//handheld/generalplus_gpl951xx.cpp    // haze mnw
 
 handheld/gmaster.cpp
 
@@ -2797,187 +2764,98 @@ sega/magistr16.cpp
 
 sega/mdconsole.cpp
 -xeye      // fatal
--wmegam2
--wmega
--32x_scd
--32x_mcdj
--32x_mcd
--megacdj
--megacda
--laseractj
--laseract
+-wmegam2   // fatal
+-wmega     // won't play
+-32x_scd   // stuck at logo
+-32x_mcdj  // stuck at logo
+-32x_mcd   // stuck at logo
+-megacdj   // won't play
+-megacda   // won't play
+-laseractj // stuck at logo
+-laseract  // stuck at logo
 
-sega/megadriv_firecore.cpp
--mdhh100
--sarc110a
--sarc110
--reactmd
--matet
--mateta
--mysf2
--mypacgld
--mypaca
--mympaca
--mympac
--mygalaga
--mygalag
--mahg156
+sega/megadriv_firecore.cpp   // bad gfx
 -dcat16
--atgame40
+-mahg156
+-mdhh100
+-mygalag
+-mygalaga
 -mygalagb
+-mysf2
+-reactmd
+-sarc110
+-sarc110a
 
 sega/megadriv_rad.cpp
--rad_mncr
+-rad_mncr   // inputs
 -banmrid
 
 sega/megadriv_unksoc.cpp
 
-sega/megatech.cpp
--mt_wwar
--mt_wcsoc
--mt_tout
--mt_tlbba
--mt_tfor2
--mt_tetri
--mt_stbld
--mt_srbb
--mt_smgp
--mt_shang
--mt_srage
--mt_spman
--mt_shar2
--mt_soni2
--mt_sonia
--mt_sonic
--mt_shnbi
--mt_shado
--mt_revsh
--mt_parlg
--mt_orun
--mt_mystd
--mt_mwalk
--mt_mlh
--mt_lastb
--mt_kcham
--mt_stf
--mt_gsocr
--mt_ggolf
--mt_gfoot
--mt_gaxe2
--mt_gaxe
--mt_gng
--mt_fwrld
--mt_fshrk
--mt_fz
--mt_eswat
--mt_crack
--mt_cols
--mt_calga
--mt_bbros
--mt_astro
--mt_arrow
--mt_tgolf
--mt_beast
--mt_asyn
--mt_astrm
--mt_aftrb
+//sega/megatech.cpp  // U:arcade
 
 sega/saturn.cpp
--vsaturn
--saturn
--saturneu
--saturnkr
--saturnjp
--hisaturn
 
 sega/segaai.cpp
--segaai
 
 sega/segapico.cpp
--copera
--picou
--picoj
--pico
 
-sega/segapm.cpp
--segapm
+//sega/segapm.cpp     // black screen
 
 sega/sega_beena.cpp
 
-sega/sega_ferie.cpp
--feriewt
--feriepu
--ferieki
+//sega/sega_ferie.cpp  // mnw
 
-sega/sega_sawatte.cpp
--sawatte
+//sega/sega_sawatte.cpp   // no screen
 
 sega/sg1000.cpp
 
 sega/sms.cpp
 
-sega/stvdev.cpp
--stvdev
+//sega/stvdev.cpp    // no screen
 
-sega/svmu.cpp
--svmu
+//sega/svmu.cpp    // sw game not start
 
 sequential/prophet5.cpp
 
-sequential/prophet600.cpp
--prpht600a
--prpht600
+//sequential/prophet600.cpp  // inputs
 
 sequential/sixtrak.cpp
 
 sfrj/galaxy.cpp
 
 sfrj/galeb.cpp
--galeb
 
 sfrj/hr84.cpp
 
-sfrj/idpartner.cpp
--partnerwfg
--partner1fg
--partnerw
+//sfrj/idpartner.cpp   // no sw
 
 sfrj/lola8a.cpp
 
 sfrj/orao.cpp
--orao103
--orao
 
 sfrj/pecom.cpp
 
-sfrj/pmp11.cpp
--pmp11
+//sfrj/pmp11.cpp    // need sw, instructions
 
 sfrj/tim011.cpp
 
 sfrj/tim100.cpp
 
-sgi/crimson.cpp
--crimson
+//sgi/crimson.cpp  // stuck while booting
 
 sgi/indy_indigo2.cpp
--indigo2_4415
--indy_4610        // panic
--indy_4613        // useless
--indy_5015        // crashes when demo asked for
+-indy_4613        // cannot boot from hd
 
 //sgi/ip12.cpp    // no sw;pi4d30 black screen
 
 //sgi/ip20.cpp    // no sw;indigo_r4400 black screen
 
-//sgi/ip6.cpp    // can't boot sw
+//sgi/ip6.cpp    // cannot boot sw
 
 sgi/iris.cpp
--iris3130
--iris1400
 
-sgi/iris_power.cpp
--4d410
+//sgi/iris_power.cpp  // no screen
 
 //sgi/o2.cpp     // no screen
 
@@ -3091,8 +2969,6 @@ sinclair/zx.cpp
 //skeleton/airbase99.cpp // no sound
 
 //skeleton/alcat7100.cpp   // black screen
-
-//skeleton/alesis_qs.cpp    // no screen
 
 //skeleton/alphasma.cpp    // useless
 
@@ -3736,7 +3612,7 @@ ti/evmbug.cpp
 ti/exelv.cpp
 -exeltel       // mnw
 
-//ti/geneve.cpp   // cannot boot floppy
+//ti/geneve.cpp   // cannot boot disk
 
 ti/snspell.cpp
 -lantransp     // hangs when enter pressed
@@ -3896,8 +3772,7 @@ tryom/gammonm.cpp
 
 tryom/omar.cpp
 
-tvgames/actions_atj2279b.cpp
--rbitgen         // black screen
+//tvgames/actions_atj2279b.cpp   // black screen
 
 tvgames/elan_ep3a19a.cpp
 
@@ -3917,59 +3792,13 @@ tvgames/elan_eu3a05.cpp
 -pvmil8
 -pvwwcas
 
-tvgames/elan_eu3a14.cpp
--rad_bb3p
--rad_baskp
--rad_foot
--rad_hnt3p
--rad_rsgp
--rad_rsgpa
--rad_gtg
--spidtt
--teentit
--batvgc
--tsbuzz
--rad_bb3
--rad_bask
--rad_hnt3
--rad_rsg
+//tvgames/elan_eu3a14.cpp  // haze mnw
 
-tvgames/generalplus_gp327902.cpp
--tomyeggb                       // black screen
--chikawac
--tomyegg
--tomyegga
--fairicam
--smkmikkea
--smkmikke
--smksagas
--smksagasa
+//tvgames/generalplus_gp327902.cpp  // haze mnw
 
-tvgames/generalplus_gpl16250_mobigo.cpp
--mobigos
--mobigo
--mobigo2
+//tvgames/generalplus_gpl16250_mobigo.cpp  // haze mnw
 
-tvgames/generalplus_gpl16250_nand.cpp
--jak_camp
--jak_car2
--jak_duck
--mgtfit
--jak_gtg
--jak_hmg2
--jak_hmhsm
--jak_hmpt
--jak_hsmg2
--kiugames
--beambox
--jak_sspop
--jak_swc
--jak_tsm
--jak_umdf
--vbaby
--jak_wdbg
--jak_wdzh
--wlsair60
+//tvgames/generalplus_gpl16250_nand.cpp  // haze mnw
 
 tvgames/generalplus_gpl16250_rom.cpp
 -fpsport
@@ -3991,123 +3820,25 @@ tvgames/generalplus_gpl16250_rom.cpp
 -jak_prr
 -jak_tpir
 
-tvgames/generalplus_gpl16250_romram.cpp
--tomycar
--lazertag
--paccon
--jak_pf
--jak_prft
--jak_sinv
--jak_smwm
--jak_s500
--jak_swcl
--jak_tink
--jak_totm
--jak_ths
--wrlshunt
+//tvgames/generalplus_gpl16250_romram.cpp  // haze mnw
 
-tvgames/generalplus_gpl16250_spi.cpp
--starbuck         // black screen
--wildking         // black screen
--anpanbd
--anpanm15
--anpaneng
--prailpls
--bk139in1
--lxcymls
--lxcympp
--lxcymsm
--lxcyrace
--bkrankp
--jspodred
--dgun3944
--pokegach
--pokegac2
--pokegac2y
--vmastspi
+//tvgames/generalplus_gpl16250_spi.cpp   // haze mnw
 
-tvgames/generalplus_gpl32612.cpp
--airobo
--anp2020t                       // black screen
--anpanm19
--anpncp17
--anpntb18
--arcadege
--bananlap
--bananlapa
--banaquap
--bandolap
--bandplap
--bandslap
--banpear
--chiikpc
--dinopc
--disbestf                       // black screen
--displpc                        // black screen
--dmnslayg
--doraet17
--doralpc                        // black screen
--froz2dct
--jak_dchp
--jak_ddhp
--jak_prhp
--jak_swbstrik
--jak_tmnthp
--jpad                           // black screen
--jpaddp
--kidizmb
--kidizmp
--neopad
--pdcm2
--pocketmp
--pocketmr
--pokepeac
--rotom2
--saikyopc
--segcarsh
--segdis16
--smatomo
--spicanot
--sumikpc
--sumikpcp
--sumipc21
--tmydistb
--zippity
--zippityuk
+//tvgames/generalplus_gpl32612.cpp   // haze mnw
 
-tvgames/generalplus_gpm453x_nand.cpp
--leapland
--leappawp
+//tvgames/generalplus_gpm453x_nand.cpp  // haze mnw
 
-tvgames/generalplus_gpm453x_sdcard.cpp
--bodygun                        // black screen
--kaximond                       // need chd
--lx_jg7420
--lx_jg7440
--rizstals
--ardancem
--intrtvg
--arb605
+//tvgames/generalplus_gpm453x_sdcard.cpp   // haze mnw
 
-tvgames/magiceyes_pollux_vr3520f.cpp
--didj           // black screen
+//tvgames/magiceyes_pollux_vr3520f.cpp    // black screen
 
 tvgames/micom_mahjong.cpp
 
-tvgames/monkey_king_3b.cpp
--rs70_648
--afbp4
+//tvgames/monkey_king_3b.cpp   // black screen
 
-tvgames/myaatari.cpp
--tetrhdmi
--pachdmi
--myaatari
--kuniotv
--galghdmi
+//tvgames/myaatari.cpp    // haze mnw
 
-tvgames/pubint_storyreader.cpp
--pi_stry2
--pi_stry
+//tvgames/pubint_storyreader.cpp   // haze mnw
 
 tvgames/spg110.cpp
 -jak_wpt
@@ -4128,22 +3859,9 @@ tvgames/spg110.cpp
 -jak_bobbo
 -jak_blue
 
-tvgames/spg29x.cpp
--zonefamf
--hyprscan
--bratzlfe
--prail07
--jak_bbsf
--jak_bbh
+//tvgames/spg29x.cpp    // haze mnw
 
-tvgames/spg29x_lexibook_jg7425.cpp
--zone3d
--ubox30
--lx_aven
--lx_jg7425
--fundr200
--lx_frozen
--dancef2p
+//tvgames/spg29x_lexibook_jg7425.cpp  // haze mnw
 
 tvgames/spg2xx.cpp
 -wordlnch
@@ -4172,8 +3890,7 @@ tvgames/spg2xx.cpp
 -anpantv
 -jouet
 
-tvgames/spg2xx_digimake.cpp
--rad_digi
+//tvgames/spg2xx_digimake.cpp  // inputs
 
 tvgames/spg2xx_dreamlife.cpp
 
@@ -4186,10 +3903,7 @@ tvgames/spg2xx_jakks_gkr.cpp
 
 tvgames/spg2xx_jakks_sharp.cpp
 
-tvgames/spg2xx_jakks_tvtouch.cpp
--tvtchsw
--tvtchsb
--tvtchspd
+//tvgames/spg2xx_jakks_tvtouch.cpp   // haze mnw
 
 tvgames/spg2xx_lexibook.cpp
 -cybrtvbb
@@ -4210,17 +3924,13 @@ tvgames/spg2xx_senca.cpp
 
 tvgames/spg2xx_shredmjr.cpp
 
-tvgames/spg2xx_skannerztv.cpp
--rad_sktv
+//tvgames/spg2xx_skannerztv.cpp  // mech
 
-tvgames/spg2xx_smarttv.cpp
--smartvad
+//tvgames/spg2xx_smarttv.cpp   // black screen
 
 tvgames/spg2xx_telestory.cpp
--telestry
 
-tvgames/spg2xx_tvgogo.cpp
--tvgogo
+//tvgames/spg2xx_tvgogo.cpp  // unable to start
 
 tvgames/spg2xx_vii.cpp
 
@@ -4233,10 +3943,7 @@ tvgames/spg2xx_wiwi.cpp
 
 tvgames/spg2xx_zone.cpp
 
-tvgames/titan_soc.cpp
--megadri4a
--megadri4
--colecofl
+//tvgames/titan_soc.cpp  // haze mnw
 
 tvgames/trkfldch.cpp
 -trkfldch
@@ -4248,7 +3955,7 @@ tvgames/tvgame.cpp
 
 tvgames/xavix.cpp
 -bistro
--taikodp             // nothing?
+-taikodp             // inputs
 -ekara
 -ekaraa
 -ekarag
@@ -4314,19 +4021,7 @@ tvgames/xavix.cpp
 -tvpc_ham
 -tak_zuba
 
-tvgames/xavix2.cpp
--dombikec
--domfitad
--epo_dtcj
--epo_dab2j
--epo_ssk2
--ban_dbz
--ban_db2j
--ban_bldj
--ban_naru
--epo_sskj
--epo_dabj
--epo_pabj
+//tvgames/xavix2.cpp   // haze mnw
 
 tvgames/xavix_2000.cpp
 -ban_omt
