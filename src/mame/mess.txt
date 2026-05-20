@@ -2532,17 +2532,6 @@ psion/psion3.cpp
 psion/psion3a.cpp
 
 psion/psion5mx.cpp
--mako               // need roms
--mc218              // need roms
--mc218_de              // need roms
--mc218_fr              // need roms
--revo                 // need roms
--revo_de                 // need roms
--revo_fr                 // need roms
--psion5mx               // need roms
--psion5mxp               // need roms
--psion5mx_fr               // need roms
--psion5mxp_de               // need roms
 
 psion/psion7.cpp     // mouse click nw
 -netbook             // black screen
@@ -3485,19 +3474,19 @@ sun/sun1.cpp
 sun/sun3x.cpp
 -sun3_460   // no screen
 
-sun/sun4.cpp
--sun4_20    // sun4_300 nw
--sun4_400   // no screen
--sun4_300   // no screen
--sun4_110   // no screen
--sun4_50    // black screen
--sun4_40    // white screen
--sun4_25    // white screen
--sun_s20    // MT09256
--sun4_75    // no screen
--sun_s10    // MT09256
--sun4_65    // white screen
--sun4_60    // no screen
+//sun/sun4.cpp    // keep notes
+//-sun_s10    // MT09256
+//-sun_s20    // MT09256
+//-sun4_20    // sun4_300 nw
+//-sun4_25    // white screen
+//-sun4_40    // white screen
+//-sun4_50    // black screen
+//-sun4_60    // no screen
+//-sun4_65    // white screen
+//-sun4_75    // no screen
+//-sun4_110   // no screen
+//-sun4_300   // no screen
+//-sun4_400   // no screen
 
 //sun/ultra45.cpp     // no screen
 
