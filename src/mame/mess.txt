@@ -96,7 +96,7 @@ akai/s3000.cpp
 
 //alesis/alesis.cpp    // no sound
 
-//alesis/midiverb.cpp  // useless
+//alesis/midiverb.cpp  // W:useless
 
 //alesis/qs.cpp        // no screen
 
@@ -124,7 +124,7 @@ amiga/amiga.cpp
 
 ampro/ampro.cpp
 
-//ampro/lb186.cpp   // no sw, shows nothing
+//ampro/lb186.cpp   // WM:no sw, shows nothing
 
 ampro/lbpc.cpp
 
@@ -166,7 +166,7 @@ apple/apple3.cpp
 
 //apple/iphone2g.cpp  // black screen
 
-//apple/lisa.cpp      // MT09454
+//apple/lisa.cpp      // W:MT09454
 
 //apple/lwriter.cpp   // printers
 
@@ -193,7 +193,7 @@ apple/macpwrbk030.cpp
 apple/macpwrbkmsc.cpp
 
 apple/macquadra605.cpp
--maclc575                // MT09455
+-maclc575                // W:MT09455
 
 apple/macquadra630.cpp
 
@@ -375,7 +375,7 @@ brother/lw350.cpp
 
 //brother/lw700i.cpp   // white screen
 
-//brother/lw840.cpp    // MT09456
+//brother/lw840.cpp    // W:MT09456
 
 brother/pn8800fxb.cpp
 
@@ -403,22 +403,22 @@ casio/cfx9850.cpp
 
 //casio/cps2000.cpp       // no screen
 
-//casio/ct8000.cpp    // ctmb1 no screen, others no sound
+casio/ct8000.cpp
+-ctmb1 //no screen
 
 //casio/ctk2000.cpp   // inputs
 
 casio/ctk551.cpp
--ctk551          // inputs
--ctk601          // inputs
--gz70sp          // no screen
+-ctk551          // W:inputs
+-ctk601          // W:inputs
+-gz70sp          // W:no screen
 
 casio/cz1.cpp
--mz1            // no sound
 
 casio/cz101.cpp
 
 casio/cz230s.cpp
--sz1              // no sound
+-sz1              // W:no sound
 
 //casio/dg20.cpp   // no screen
 
@@ -450,7 +450,7 @@ casio/rz1.cpp
 
 //casio/sx1000.cpp    // mnw
 
-//casio/wk1800.cpp    // inputs
+//casio/wk1800.cpp    // W:inputs
 
 casio/zoomer.cpp
 
@@ -534,7 +534,7 @@ commodore/vic20.cpp
 
 comx/comx35.cpp
 
-//concept/concept.cpp     // no sw
+concept/concept.cpp
 
 //conitec/prof180x.cpp    // black screen
 
@@ -544,7 +544,7 @@ comx/comx35.cpp
 
 cromemco/mcb216.cpp
 
-//cybiko/cybiko.cpp  // hangs while booting
+//cybiko/cybiko.cpp  // W:hangs while booting
 
 dai/dai.cpp
 
@@ -586,7 +586,7 @@ ddr/sc2.cpp
 
 ddr/slc1.cpp
 
-//ddr/sprachmg.cpp     // inputs
+ddr/sprachmg.cpp
 
 ddr/vcs80.cpp
 
@@ -629,7 +629,7 @@ dec/vt100.cpp
 
 //dec/vt220.cpp    // black screen
 
-//dec/vt240.cpp   // inputs
+//dec/vt240.cpp   // W:inputs
 
 //dec/vt320.cpp   // black screen
 
@@ -684,7 +684,7 @@ ensoniq/esq5505.cpp
 
 //ensoniq/esqasr.cpp  // blank screen
 
-//ensoniq/esqkt.cpp    // inputs
+//ensoniq/esqkt.cpp    // W:inputs
 
 //ensoniq/esqmr.cpp   // blank screen
 
@@ -740,7 +740,7 @@ fairchild/channelf.cpp
 
 falco/falcots.cpp
 
-//falco/falcots28.cpp   // inputs
+//falco/falcots28.cpp   // W:inputs
 
 fidelity/bridgeb.cpp
 
@@ -774,7 +774,7 @@ fidelity/excel.cpp
 
 fidelity/msc.cpp
 
-//fidelity/phantom.cpp  // mech
+//fidelity/phantom.cpp  // W:sulks
 
 fidelity/sc12.cpp
 
@@ -804,7 +804,7 @@ fujitsu/fmtowns.cpp
 
 gamepark/gp32.cpp
 
-//gridcomp/gridcomp.cpp   // no sw
+//gridcomp/gridcomp.cpp   // W:no sw
 
 grundy/newbrain.cpp
 -newbrainmd           // black screen
@@ -838,8 +838,8 @@ handheld/gmaster.cpp
 
 handheld/hh_cop400.cpp
 -vidchal           // useless
--lightfgt          // useless
--plus1                // no screen
+-lightfgt          // W:useless
+-plus1                // W:no screen
 
 handheld/hh_cops1.cpp
 
@@ -856,7 +856,7 @@ handheld/hh_melps4.cpp
 handheld/hh_mn1400.cpp
 
 handheld/hh_pic16.cpp
--sfxphasor             // no screen
+-sfxphasor             // W:no screen
 
 handheld/hh_pps41.cpp
 
@@ -867,16 +867,15 @@ handheld/hh_sm510.cpp
 handheld/hh_smc1k.cpp
 
 handheld/hh_tms1k.cpp
--bcheetah         // useless
--tithermos        // useless
--elecbowl         // useless
+-bcheetah         // W:mech
+-bigtrak          // W:mech
 -bshipb           // useless
--mbdtower         // useless
--bigtrak          // useless
--cchime           // no screen
--mathmarv         // useless
--mathmagi         // useless
--wtalker          // no screen
+-cchime           // W:no screen
+-elecbowl         // useless
+-mathmagi         // W:useless
+-mathmarv         // W:useless
+-tithermos        // useless
+-wtalker          // W:no screen
 
 handheld/hh_ucom4.cpp
 
@@ -905,7 +904,7 @@ handheld/st2302u_bbl_spi.cpp
 
 handheld/talkingbb.cpp
 
-//handheld/talkingfb.cpp  // no screen
+//handheld/talkingfb.cpp  // W:no screen
 
 handheld/teammate.cpp
 
@@ -993,7 +992,7 @@ homebrew/chaos.cpp
 
 //homebrew/d6809.cpp   // no sw
 
-//homebrew/dcebridge.cpp  // useless
+//homebrew/dcebridge.cpp  // W:useless
 
 homebrew/gigatron.cpp
 
@@ -1007,7 +1006,7 @@ homebrew/gsz80.cpp
 
 homebrew/homez80.cpp
 
-//homebrew/lft_chiptune.cpp  // no screen
+//homebrew/lft_chiptune.cpp  // W:no screen
 
 homebrew/lft_craft.cpp
 
@@ -1030,19 +1029,19 @@ homebrew/pimps.cpp
 homebrew/ravens.cpp
 
 homebrew/rc2014.cpp
--rc2014bppro           // no screen
--rc2014bp5           // no screen
--rc2014bp8           // no screen
--sc105               // no screen
--sc112               // no screen
--sc116               // no screen
--sc133               // no screen
+-rc2014bppro           // W:no screen
+-rc2014bp5           // W:no screen
+-rc2014bp8           // W:no screen
+-sc105               // W:no screen
+-sc112               // W:no screen
+-sc116               // W:no screen
+-sc133               // W:no screen
 
 //homebrew/sbc6510.cpp    // useless
 
-//homebrew/sitcom.cpp    // useless
+//homebrew/sitcom.cpp    // W:useless
 
-//homebrew/test_t400.cpp   // useless
+//homebrew/test_t400.cpp   // W:useless
 
 //homebrew/ultim809.cpp    // useless
 
@@ -1052,7 +1051,7 @@ homebrew/z80clock.cpp
 
 homebrew/z80dev.cpp
 
-//homebrew/zexall.cpp  // useless
+//homebrew/zexall.cpp  // W:useless
 
 //homelab/braiplus.cpp  // no screen
 
@@ -1070,13 +1069,13 @@ hp/hp2640.cpp
 
 hp/hp48.cpp
 -hp39g      // blank screen
--hp49g      // useless
+-hp49g      // W:useless
 
 //hp/hp49gp.cpp  // black screen
 
 //hp/hp620lx.cpp // black screen
 
-//hp/hp64k.cpp   // mnw
+//hp/hp64k.cpp   // WM:mnw
 
 //hp/hp700.cpp  // no screen
 
@@ -1270,7 +1269,7 @@ kyocera/kyocera.cpp
 
 //liberty/freedom120.cpp  // no screen
 
-//liberty/freedom200.cpp  // inputs
+//liberty/freedom200.cpp  // W:inputs
 
 linn/linndrum.cpp
 
@@ -1308,7 +1307,7 @@ mattel/juicebox.cpp
 
 mattel/pixtermu.cpp     // touch button random
 
-//mc/mc68000.cpp        // no sw
+//mc/mc68000.cpp        // W:no sw
 
 mc/mccpm.cpp
 
@@ -1348,7 +1347,7 @@ microsoft/jazz.cpp
 
 midway/astrohome.cpp
 
-//miltonbradley/grandmaster.cpp   // no screen
+//miltonbradley/grandmaster.cpp   // W:sulks
 
 miltonbradley/microvision.cpp
 
@@ -1362,7 +1361,7 @@ mips/mips_i2000.cpp
 
 //misc/3do.cpp // mnw
 
-//misc/adi_vt52.cpp    // mnw
+//misc/adi_vt52.cpp    // W:mnw
 
 misc/ctvboy.cpp
 
@@ -1370,7 +1369,7 @@ misc/ctvboy.cpp
 
 //misc/deecoseal.cpp   // mnw
 
-//misc/ds2000.cpp     // useless
+misc/ds2000.cpp
 
 //misc/eva.cpp    // no screen
 
@@ -1378,7 +1377,7 @@ misc/ctvboy.cpp
 
 misc/h01x.cpp
 
-//misc/jaminator.cpp    // no screen
+//misc/jaminator.cpp    // W:no screen
 
 misc/macbug.cpp
 
@@ -1439,11 +1438,11 @@ motorola/assist05.cpp
 
 motorola/exorciser.cpp
 
-//motorola/exorterm.cpp     // inputs
+//motorola/exorterm.cpp     // W:inputs
 
 //motorola/m6805evs.cpp    // no screen
 
-//motorola/m68705prg.cpp   // mech
+//motorola/m68705prg.cpp   // W:mech
 
 //motorola/m8120.cpp   // blank screen
 
@@ -1455,7 +1454,7 @@ motorola/mekd3.cpp
 
 motorola/mekd4.cpp
 
-//motorola/mekd5.cpp   // inputs
+//motorola/mekd5.cpp   // WM:inputs
 
 motorola/mex68kecb.cpp
 
@@ -1551,7 +1550,7 @@ nec/pc9801_epson.cpp
 -pc286u      // black screen
 
 nec/pc9821.cpp
--pc9821ap2              // pc9821as nw
+-pc9821ap2              // W:pc9821as nw
 -pc9821as               // mnw
 -pc9821ce               // asks for floppy but can't boot
 -pc9821cx3              // mnw
@@ -1586,6 +1585,8 @@ netronics/elf.cpp
 netronics/exp85.cpp
 
 newcrest/chess2001.cpp
+
+newcrest/chess3008.cpp
 
 newcrest/computachess.cpp
 
@@ -1815,8 +1816,8 @@ nintendo/vt1682.cpp
 //nokia/dbox.cpp  // black screen
 
 nokia/mikromik.cpp
--mm1m7             // MT09457
--mm1m7g            // MT09457
+-mm1m7             // W:MT09457
+-mm1m7g            // W:MT09457
 
 nokia/mikromikko2.cpp
 
@@ -1916,7 +1917,7 @@ osi/osi.cpp
 
 //paia/fatman.cpp    // no sound
 
-//paia/midi2cv8.cpp  // useless
+//paia/midi2cv8.cpp  // W:useless
 
 palm/palm.cpp
 -visor         // grey screen
@@ -1928,11 +1929,11 @@ palm/palm.cpp
 -palmm515      // black screen
 -palmm505      // blank screen
 -palmm130      // blank screen
--palmiii        // works but horrible noise
--palmpers       // works, need artwork for apps buttons
--palmpro        // works, need artwork for apps buttons
+-palmiii        // WM:works but horrible noise
+-palmpers       // W:works, need artwork for apps buttons
+-palmpro        // W:works, need artwork for apps buttons
 
-//palm/palmz22.cpp  // inputs, runs slow
+//palm/palmz22.cpp  // W:inputs, runs slow
 
 pc/asst128.cpp
 
@@ -2313,11 +2314,9 @@ pc/compc.cpp    // to be checked
 pc/ct486.cpp    // check again
 -ast611         // nonstop beep, black screen
 -ast6000        // mnw
--ct486          // can't boot floppy
+-ct486          // W:can't boot disk
 
 pc/ec184x.cpp
--ec1845         // keeps rebooting
--ec1840         // keeps rebooting
 
 pc/europc.cpp   // to be checked
 -euroxt
@@ -2328,7 +2327,7 @@ pc/genpc.cpp
 
 pc/ibmpc.cpp
 -ibm5140         // nonstop beep, black screen
--ibm5155         // no kbd
+-ibm5155         // WM:inputs
 
 pc/ibmpcjr.cpp
 -ibmpcjx        // random crash
@@ -2336,7 +2335,8 @@ pc/ibmpcjr.cpp
 pc/iskr103x.cpp    // to be checked
 -iskr1030m
 
-//pc/mc1502.cpp  // pk88 black screen;mc1502 doesnt read boot disk
+pc/mc1502.cpp
+-pk88         // black screen
 
 pc/megapc.cpp   // to be checked
 -megapcpl
@@ -2462,7 +2462,7 @@ pc/sis630.cpp    // to be checked
 pc/tandy1t.cpp
 -t1000rl            // gfx
 
-//pc/teradrive.cpp    // multiple issues
+pc/teradrive.cpp
 
 pc/tosh1000.cpp
 
@@ -2491,7 +2491,7 @@ philips/cdi.cpp
 -quizardi_17           // U:arcade
 -quizardff           // U:arcade
 
-//philips/minitel_2_rpic.cpp  // black screen, no sw
+//philips/minitel_2_rpic.cpp  // W:black screen, no sw
 
 philips/odyssey2.cpp
 
@@ -2513,19 +2513,19 @@ poly88/poly88.cpp
 //positron/positron.cpp   // no sw
 
 psion/mc400.cpp
--mc200               // grey screen
+-mc200               // W:grey screen
 
 psion/mc600.cpp
 
 psion/psion.cpp
 -psion1              // grey screen
--psionp200           // wont run any sw
--psionp200a          // wont run any sw
--psionp250           // wont run any sw
--psionp350           // wont run any sw
--psionp432           // wont run any sw
--psionp464           // wont run any sw
--psionxp             // wont run any sw
+-psionp200           // W:wont run any sw
+-psionp200a          // W:wont run any sw
+-psionp250           // W:wont run any sw
+-psionp350           // W:wont run any sw
+-psionp432           // W:wont run any sw
+-psionp464           // W:wont run any sw
+-psionxp             // W:wont run any sw
 
 psion/psion3.cpp
 
@@ -2546,7 +2546,7 @@ psion/workabout.cpp
 
 //quantel/harriet.cpp   // no media support
 
-//qume/qvt102.cpp    // inputs
+//qume/qvt102.cpp    // W:inputs
 
 //qume/qvt103.cpp    // black screen
 
@@ -2582,7 +2582,7 @@ robotron/a5105.cpp
 
 //robotron/k8915.cpp  // no media support
 
-//robotron/rt1715.cpp   // black screen
+//robotron/rt1715.cpp   // WM:black screen
 
 robotron/z1013.cpp
 -z1013s60        // inputs
@@ -2833,14 +2833,13 @@ sfrj/tim100.cpp
 
 //sgi/crimson.cpp  // stuck while booting
 
-sgi/indy_indigo2.cpp
--indy_4613        // cannot boot from hd
+//sgi/indy_indigo2.cpp  //WM:panic attack on 2nd boot
 
-//sgi/ip12.cpp    // no sw;pi4d30 black screen
+//sgi/ip12.cpp    // WM:no sw;pi4d30,pi4d35 black screen
 
-//sgi/ip20.cpp    // no sw;indigo_r4400 black screen
+//sgi/ip20.cpp    // WM:no sw;indigo_r4400 black screen
 
-//sgi/ip6.cpp    // cannot boot sw
+//sgi/ip6.cpp    // W:cannot boot sw
 
 sgi/iris.cpp
 
@@ -2934,7 +2933,7 @@ sinclair/spectrum.cpp
 -cobra80       // black screen
 -cobrasp       // black screen
 
-//sinclair/sprinter.cpp   // no sw
+//sinclair/sprinter.cpp   // W:no sw
 
 sinclair/timex.cpp
 
@@ -2985,7 +2984,7 @@ skeleton/basf7100.cpp
 
 skeleton/bert.cpp
 
-//skeleton/bitgraph.cpp      // useless
+//skeleton/bitgraph.cpp      // W:useless
 
 //skeleton/blaucds32.cpp  // no screen
 
@@ -3028,7 +3027,7 @@ skeleton/cd2650.cpp
 
 skeleton/cortex.cpp
 
-//skeleton/cosmicos.cpp      // MT09423
+//skeleton/cosmicos.cpp      // W:MT09423
 
 skeleton/cp1.cpp
 
@@ -3122,7 +3121,7 @@ skeleton/goupil.cpp
 
 //skeleton/hohnadam.cpp   // no screen
 
-//skeleton/hprot1.cpp  // printer
+//skeleton/hprot1.cpp  // W:printer
 
 skeleton/ht68k.cpp
 
@@ -3130,7 +3129,7 @@ skeleton/ht68k.cpp
 
 //skeleton/i7000.cpp      // useless
 
-//skeleton/icatel.cpp     // useless
+//skeleton/icatel.cpp     // W:useless
 
 skeleton/icebox.cpp
 
@@ -3263,7 +3262,7 @@ skeleton/pencil2.cpp
 
 //skeleton/perq.cpp  // no screen
 
-//skeleton/pes.cpp   // serial comms broken
+//skeleton/pes.cpp   // W:serial comms broken
 
 //skeleton/picno.cpp  // no screen
 
@@ -3347,7 +3346,7 @@ skeleton/tavernie.cpp
 
 //skeleton/tc_manhattan.cpp   // no screen
 
-//skeleton/tecnbras.cpp      // useless
+//skeleton/tecnbras.cpp      // W:useless
 
 skeleton/teleray10.cpp
 
@@ -3363,11 +3362,11 @@ skeleton/teleray10.cpp
 
 //skeleton/terminal.cpp  // no screen
 
-//skeleton/testpat.cpp  // useless
+//skeleton/testpat.cpp  // W:useless
 
 skeleton/textelcomp.cpp
 
-//skeleton/ti630.cpp  // useless
+//skeleton/ti630.cpp  // W:useless
 
 //skeleton/tk635.cpp   // mnw
 
@@ -3457,7 +3456,7 @@ sony/smc777.cpp
 //sord/future32.cpp  // black screen, no sw
 
 sord/m5.cpp
--m5p_brno            // mnw
+-m5p_brno            // W:mnw
 
 stm/pp.cpp
 
@@ -3497,7 +3496,7 @@ svision/svision.cpp
 swtpc/swtpc.cpp
 
 swtpc/swtpc09.cpp
--swtpc09o          // no sw
+-swtpc09o          // W:no sw
 
 swtpc/swtpc8212.cpp
 
@@ -3529,7 +3528,7 @@ tandberg/tdv2115l.cpp
 tangerine/microtan.cpp
 
 tangerine/oric.cpp
--telstrat            // cannot boot disk
+-telstrat            // W:cannot boot disk
 
 tatung/einstein.cpp
 
@@ -3551,7 +3550,7 @@ tatung/einstein.cpp
 
 telenova/compis.cpp
 
-//telercas/tmc1800.cpp    // no sw
+//telercas/tmc1800.cpp    // W:no sw
 
 //telercas/tmc2000e.cpp   // no sw
 
@@ -3577,7 +3576,7 @@ televideo/tv955.cpp
 
 //televideo/tv965.cpp    // inputs
 
-//televideo/tv990.cpp   // beeps
+//televideo/tv990.cpp   // W:beeps
 
 tesla/ondra.cpp
 
@@ -3601,18 +3600,18 @@ ti/evmbug.cpp
 ti/exelv.cpp
 -exeltel       // mnw
 
-//ti/geneve.cpp   // cannot boot disk
+//ti/geneve.cpp   // W:cannot boot disk
 
 ti/snspell.cpp
 -lantransp     // hangs when enter pressed
 
 ti/snspellc.cpp
 -tntellp        // inputs
--mathsmag       // no screen
--snspellc       // no screen
--snspellca      // no screen
--snwrite        // no screen
--vocaid         // mnw
+-mathsmag       // W:no screen
+-snspellc       // W:no screen
+-snspellca      // W:no screen
+-snwrite        // W:no screen
+-vocaid         // W:mnw
 
 ti/spellb.cpp
 
@@ -3640,7 +3639,7 @@ ti/ti89.cpp
 
 ti/ti99_2.cpp
 
-//ti/ti99_4p.cpp   // black screen
+//ti/ti99_4p.cpp   // W:black screen
 
 ti/ti99_4x.cpp
 
@@ -3650,7 +3649,7 @@ ti/ti99_8.cpp
 
 ti/tm990189.cpp
 
-//tiger/bingobear.cpp    // no screen
+//tiger/bingobear.cpp    // W:no screen
 
 tiger/gamecom.cpp
 
@@ -3722,11 +3721,11 @@ trainer/zapcomputer.cpp
 trs/agvision.cpp
 
 trs/coco12.cpp
--t4426              // useless
+-t4426              // W:useless
 
 trs/coco3.cpp
 
-//trs/dgnalpha.cpp    // mnw
+//trs/dgnalpha.cpp    // W:mnw
 
 //trs/dgn_beta.cpp    // no sw
 
@@ -3944,7 +3943,7 @@ tvgames/tvgame.cpp
 
 tvgames/xavix.cpp
 -bistro
--taikodp             // inputs
+-taikodp             // W:inputs
 -ekara
 -ekaraa
 -ekarag
@@ -4105,7 +4104,7 @@ ussr/argo.cpp
 ussr/b2m.cpp
 -b2mrom       // cannot boot disk
 
-//ussr/bk.cpp  // bk0010 nw
+//ussr/bk.cpp  // W:bk0010 nw
 
 ussr/cm1800.cpp
 
@@ -4113,7 +4112,7 @@ ussr/debut.cpp
 
 //ussr/dvk_kcgd.cpp  // inputs
 
-//ussr/dvk_ksm.cpp   // inputs
+//ussr/dvk_ksm.cpp   // W:inputs
 
 ussr/ie15.cpp
 
@@ -4163,7 +4162,7 @@ ussr/radio86.cpp
 
 //ussr/sm1800.cpp  // blank screen,inputs
 
-//ussr/sm7238.cpp   // mnw
+//ussr/sm7238.cpp   // W:mnw
 
 ussr/special.cpp
 
@@ -4180,9 +4179,9 @@ ussr/vector06.cpp
 
 //ussr/vta2000.cpp  // inputs, screen too wide
 
-//vectorgraphic/vector4.cpp   // no sw
+//vectorgraphic/vector4.cpp   // W:no sw
 
-//verifone/tranz330.cpp    // useless
+//verifone/tranz330.cpp    // W:useless
 
 vidbrain/vidbrain.cpp
 
@@ -4196,7 +4195,7 @@ videoton/tvc.cpp
 
 virtual/vgmplay.cpp
 
-//virtual/wavesynth.cpp    // no screen
+//virtual/wavesynth.cpp    // W:no screen
 
 //visual/v100.cpp    // black screen
 
@@ -4204,7 +4203,7 @@ virtual/vgmplay.cpp
 
 visual/v1050.cpp
 
-//visual/v50.cpp     // inputs
+//visual/v50.cpp     // W:inputs
 
 //visual/v550.cpp    // black screen
 
@@ -4213,7 +4212,7 @@ visual/xds.cpp
 votrax/votrhv.cpp
 -hc120             // no screen
 
-//votrax/votrpss.cpp   // ignores user input
+//votrax/votrpss.cpp   // W:ignores user input
 
 votrax/votrtnt.cpp
 
@@ -4291,7 +4290,7 @@ vtech/vtech2.cpp
 
 //vtech/vtech_innotab.cpp    // black screen
 
-//wang/wangpc.cpp      // can't boot disk
+//wang/wangpc.cpp      // W:cannot boot disk
 
 wavemate/bullet.cpp
 -wmbulletf        // blank screen
@@ -4322,7 +4321,7 @@ wyse/wy85.cpp
 
 //xerox/alto1.cpp   // no screen
 
-//xerox/alto2.cpp           // no sw
+//xerox/alto2.cpp           // W:no sw
 
 xerox/bigbord2.cpp
 
@@ -4330,13 +4329,13 @@ xerox/bigbord2.cpp
 
 xerox/xerox820.cpp
 
-//yamaha/fb01.cpp        // no sound
+//yamaha/fb01.cpp        // W:no sound
 
 //yamaha/tg100.cpp       // no screen
 
 //yamaha/yman1x.cpp      // mnw
 
-//yamaha/ymdx100.cpp     // no sound
+//yamaha/ymdx100.cpp     // W:no sound
 
 //yamaha/ymdx11.cpp     // mnw
 
@@ -4344,7 +4343,7 @@ xerox/xerox820.cpp
 
 //yamaha/ymdx9.cpp      // mnw
 
-//yamaha/ymmu10.cpp     // no screen
+//yamaha/ymmu10.cpp     // W:no screen
 
 //yamaha/ymmu100.cpp     // mnw;mu100b no screen
 
@@ -4386,7 +4385,7 @@ yamaha/ympsr150.cpp
 
 yamaha/ympsr60.cpp
 
-//yamaha/ympss170.cpp    // does nothing
+//yamaha/ympss170.cpp    // W:does nothing
 
 //yamaha/ymqs300.cpp     // mnw
 
@@ -4396,7 +4395,7 @@ yamaha/ympsr60.cpp
 
 //yamaha/ymsy35.cpp     // no screen
 
-//yamaha/ymtx81z.cpp    // no sound
+//yamaha/ymtx81z.cpp    // W:no sound
 
 //yamaha/ymvl1.cpp      // mnw
 

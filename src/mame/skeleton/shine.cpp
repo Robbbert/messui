@@ -68,6 +68,8 @@ private:
 	void shine_mem(address_map &map) ATTR_COLD;
 	uint8_t via0_pa_r();
 	void via0_pb_w(uint8_t data);
+	uint8_t via1_pb_r();
+	void via1_pb_w(uint8_t data);
 	void floppy_w(uint8_t data);
 	uint8_t vdg_videoram_r(offs_t offset);
 
@@ -211,6 +213,20 @@ void shine_state::via0_pb_w(uint8_t data)
 }
 
 
+uint8_t shine_state::via1_pb_r()
+{
+	return (m_cass->input() > 0.1) ? 0xff : 0x7f;
+}
+
+void shine_state::via1_pb_w(uint8_t data)
+{
+	m_cass->change_state(
+		(BIT(data,6)) ? CASSETTE_MOTOR_DISABLED : CASSETTE_MOTOR_ENABLED, CASSETTE_MASK_MOTOR);
+
+	m_cass->output(BIT(data, 7) ? -1.0 : +1.0);
+}
+
+
 void shine_state::floppy_w(uint8_t data)
 {
 	floppy_image_device *floppy = nullptr;
@@ -277,6 +293,8 @@ void shine_state::shine(machine_config &config)
 
 	MOS6522(config, m_via[1], 1000000);
 	m_via[1]->irq_handler().set(m_irqs, FUNC(input_merger_device::in_w<1>));
+	m_via[1]->readpb_handler().set(FUNC(shine_state::via1_pb_r));
+	m_via[1]->writepb_handler().set(FUNC(shine_state::via1_pb_w));
 
 	CENTRONICS(config, m_centronics, centronics_devices, "printer");
 
@@ -286,7 +304,7 @@ void shine_state::shine(machine_config &config)
 	FLOPPY_CONNECTOR(config, m_floppy[1], "525qd", FLOPPY_525_QD, false, floppy_image_device::default_mfm_floppy_formats).enable_sound(true);
 
 	CASSETTE(config, m_cass);
-	m_cass->set_default_state(CASSETTE_STOPPED | CASSETTE_MOTOR_ENABLED | CASSETTE_SPEAKER_ENABLED);
+	m_cass->set_default_state(CASSETTE_PLAY | CASSETTE_MOTOR_ENABLED | CASSETTE_SPEAKER_ENABLED);
 	m_cass->add_route(ALL_OUTPUTS, "mono", 0.05);
 }
 
