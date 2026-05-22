@@ -2491,7 +2491,7 @@ philips/cdi.cpp
 -quizardi_17           // U:arcade
 -quizardff           // U:arcade
 
-//philips/minitel_2_rpic.cpp  // W:black screen, no sw
+philips/minitel_2_rpic.cpp  // use bios 4 for demo
 
 philips/odyssey2.cpp
 
@@ -2513,7 +2513,7 @@ poly88/poly88.cpp
 //positron/positron.cpp   // no sw
 
 psion/mc400.cpp
--mc200               // W:grey screen
+-mc200               // WM:grey screen
 
 psion/mc600.cpp
 
@@ -2525,7 +2525,7 @@ psion/psion.cpp
 -psionp350           // W:wont run any sw
 -psionp432           // W:wont run any sw
 -psionp464           // W:wont run any sw
--psionxp             // W:wont run any sw
+-psionxp             // W:only the demo works
 
 psion/psion3.cpp
 
@@ -3456,7 +3456,7 @@ sony/smc777.cpp
 //sord/future32.cpp  // black screen, no sw
 
 sord/m5.cpp
--m5p_brno            // W:mnw
+-m5p_brno            // WM:inputs
 
 stm/pp.cpp
 
@@ -3528,7 +3528,7 @@ tandberg/tdv2115l.cpp
 tangerine/microtan.cpp
 
 tangerine/oric.cpp
--telstrat            // W:cannot boot disk
+-telstrat            // WM:cannot boot disk
 
 tatung/einstein.cpp
 
@@ -3600,7 +3600,7 @@ ti/evmbug.cpp
 ti/exelv.cpp
 -exeltel       // mnw
 
-//ti/geneve.cpp   // W:cannot boot disk
+ti/geneve.cpp
 
 ti/snspell.cpp
 -lantransp     // hangs when enter pressed
@@ -3725,7 +3725,7 @@ trs/coco12.cpp
 
 trs/coco3.cpp
 
-//trs/dgnalpha.cpp    // W:mnw
+//trs/dgnalpha.cpp    // WM:mnw
 
 //trs/dgn_beta.cpp    // no sw
 
@@ -3943,7 +3943,7 @@ tvgames/tvgame.cpp
 
 tvgames/xavix.cpp
 -bistro
--taikodp             // W:inputs
+-taikodp             // WM:inputs
 -ekara
 -ekaraa
 -ekarag
@@ -4162,7 +4162,7 @@ ussr/radio86.cpp
 
 //ussr/sm1800.cpp  // blank screen,inputs
 
-//ussr/sm7238.cpp   // W:mnw
+//ussr/sm7238.cpp   // W:blank screen
 
 ussr/special.cpp
 
@@ -4290,7 +4290,7 @@ vtech/vtech2.cpp
 
 //vtech/vtech_innotab.cpp    // black screen
 
-//wang/wangpc.cpp      // W:cannot boot disk
+//wang/wangpc.cpp      // WM:cannot boot disk
 
 wavemate/bullet.cpp
 -wmbulletf        // blank screen
