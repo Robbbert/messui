@@ -339,6 +339,8 @@ ausnz/super80.cpp
 
 ausnz/tec1.cpp
 
+bally/astrohome.cpp
+
 //banctec/banctec.cpp   // useless
 
 //bandai/design_master.cpp  // black screen
@@ -1344,8 +1346,6 @@ microsoft/jazz.cpp
 //microterm/mt440.cpp  // no screen
 
 //microterm/mt5510.cpp  // black screen
-
-midway/astrohome.cpp
 
 //miltonbradley/grandmaster.cpp   // W:sulks
 
