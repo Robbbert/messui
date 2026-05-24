@@ -51,21 +51,42 @@ static TREEICON treeIconNames[] =
 {
 	{ IDI_FOLDER_OPEN,         "foldopen" },
 	{ IDI_FOLDER,              "folder" },
+	{ IDI_FOLDER_ALLGAMES,     "allgames" },
 	{ IDI_FOLDER_AVAILABLE,    "foldavail" },
-	{ IDI_FOLDER_MANUFACTURER, "foldmanu" },
-	{ IDI_FOLDER_UNAVAILABLE,  "foldunav" },
-	{ IDI_FOLDER_YEAR,         "foldyear" },
-	{ IDI_FOLDER_SOURCE,       "foldsrc" },
-	{ IDI_FOLDER_HORIZONTAL,   "horz" },
-	{ IDI_FOLDER_VERTICAL,     "vert" },
-	{ IDI_MANUFACTURER,        "manufact" },
-	{ IDI_FOLDER_WORKING,      "working" },
-	{ IDI_FOLDER_NONWORKING,   "nonwork" },
-	{ IDI_YEAR,                "year" },
-	{ IDI_SOUND,               "sound" },
-	{ IDI_CPU,                 "cpu" },
+	{ IDI_FOLDER_BIOS,         "foldcsb" },
+	{ IDI_FOLDER_CLONES,       "foldclone" },
+	{ IDI_FOLDER_CPU,          "foldcsb" },
+	{ IDI_FOLDER_DUMP,         "foldcsb" },
+	{ IDI_FOLDER_FPS,          "foldfps" },
 	{ IDI_FOLDER_HARDDISK,     "harddisk" },
-	{ IDI_SOURCE,              "source" }
+	{ IDI_FOLDER_HORIZONTAL,   "horz" },
+	{ IDI_FOLDER_IMPERFECT,    "foldimp" },
+	{ IDI_FOLDER_LIGHTGUN,     "foldgun" },
+	{ IDI_FOLDER_MANUFACTURER, "foldmanu" },
+	{ IDI_FOLDER_MECHANICAL,   "mechanical" },
+	{ IDI_FOLDER_MONITOR,      "multimon" },
+	{ IDI_FOLDER_NONWORKING,   "nonwork" },
+	{ IDI_FOLDER_ORIGINALS,    "foldorig" },
+	{ IDI_FOLDER_RASTER,       "foldrast" },
+	{ IDI_FOLDER_RESOL,        "foldres" },
+	{ IDI_FOLDER_SAMPLES,      "foldsamp" },
+	{ IDI_FOLDER_SAVESTATE,    "savestate" },
+	{ IDI_FOLDER_SOUND,        "foldsamp" },
+	{ IDI_FOLDER_SOURCE,       "foldsrc" },
+	{ IDI_FOLDER_TRACKBALL,    "foldball" },
+	{ IDI_FOLDER_UNAVAILABLE,  "foldunav" },
+	{ IDI_FOLDER_VECTOR,       "foldvect" },
+	{ IDI_FOLDER_VERTICAL,     "vert" },
+	{ IDI_FOLDER_WORKING,      "working" },
+	{ IDI_FOLDER_YEAR,         "foldyear" },
+	{ IDI_BIOS,                "bios" },
+	{ IDI_CHIP,                "chip" },
+	{ IDI_CPU,                 "cpu" },
+	{ IDI_MANUFACTURER,        "manufact" },
+	{ IDI_MONITOR,             "monitor" },
+	{ IDI_SOUND,               "sound" },
+	{ IDI_SOURCE,              "source" },
+	{ IDI_YEAR,                "year" },
 };
 
 /***************************************************************************
@@ -480,7 +501,7 @@ void CreateScreenFolders(int parent_index)
 		if (i == start_folder-1)
 		{
 			// nope, it's a screen file we haven't seen before, make it.
-			LPTREEFOLDER lpTemp = NewFolder(s, m_next_folder_id, parent_index, IDI_SCREEN, GetFolderFlags(m_numFolders));
+			LPTREEFOLDER lpTemp = NewFolder(s, m_next_folder_id, parent_index, IDI_MONITOR, GetFolderFlags(m_numFolders));
 			if (!lpTemp)
 				continue;
 			m_ExtraFolderData[m_next_folder_id] = (EXFOLDERDATA*)malloc(m_folderBytes);
@@ -931,7 +952,7 @@ void CreateBIOSFolders(int parent_index)
 		if (i == start_folder-1)
 		{
 			LPTREEFOLDER lpTemp = NewFolder(driver_list::driver(nParentIndex).type.fullname(),
-				m_next_folder_id++, parent_index, IDI_CPU, GetFolderFlags(m_numFolders));
+				m_next_folder_id++, parent_index, IDI_BIOS, GetFolderFlags(m_numFolders));
 			if (lpTemp)
 			{
 				AddFolder(lpTemp);
@@ -977,7 +998,7 @@ void CreateCPUFolders(int parent_index)
 				// are we forced to create a folder?
 				if (folder == NULL)
 				{
-					LPTREEFOLDER lpTemp = NewFolder(dev_name, m_next_folder_id, parent_index, IDI_CPU, GetFolderFlags(m_numFolders));
+					LPTREEFOLDER lpTemp = NewFolder(dev_name, m_next_folder_id, parent_index, IDI_CHIP, GetFolderFlags(m_numFolders));
 					if (!lpTemp)
 						continue;
 					m_ExtraFolderData[m_next_folder_id] = (EXFOLDERDATA*)malloc(m_folderBytes);

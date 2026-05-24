@@ -58,6 +58,7 @@
 #define IDI_FOLDER_VECTOR               134
 #define IDI_FOLDER_YEAR                 135
 #define IDI_FOLDER_WORKING              136
+#define IDI_BIOS                        137
 #define IDI_CHIP                        138
 #define IDI_CPU                         139
 #define IDI_KEYBOARD                    140
