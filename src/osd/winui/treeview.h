@@ -17,7 +17,8 @@ typedef struct
 	const char *m_lpTitle; // Folder Title
 	const char *short_name;  // for saving in the .ini
 	UINT        m_nFolderId; // ID
-	UINT        m_nIconId; // if >= 0, resource id of icon (IDI_xxx), otherwise index in image list
+	UINT        m_nIconId; // icon for parent folder. if >= 0, IDI_xxx, otherwise index in image list
+	UINT        m_nIconId2; // icon for subfolders
 	DWORD       m_dwUnset; // Excluded filters
 	DWORD       m_dwSet;   // Implied filters
 	BOOL        m_process;      // 1 = process only if rebuilding the cache
@@ -124,8 +125,8 @@ typedef enum
 
 typedef struct
 {
-	LPSTR m_lpTitle;              // String contains the folder name
-	LPTSTR m_lptTitle;            // String contains the folder name as TCHAR*
+	LPSTR       m_lpTitle;        // String contains the folder name
+	LPTSTR      m_lptTitle;       // String contains the folder name as TCHAR*
 	UINT        m_nFolderId;      // Index / Folder ID number
 	int         m_nParent;        // Parent folder index in treeFolders[]
 	int         m_nIconId;        // negative icon index into the ImageList, or IDI_xxx resource id

@@ -132,6 +132,7 @@ static void FreeExtraFolders();
 static void SetExtraIcons(char *name, int *id);
 static BOOL TryAddExtraFolderAndChildren(int parent_index);
 static BOOL TrySaveExtraFolder(LPTREEFOLDER lpFolder);
+static void LoadExternalFolders(int parent_index, int id);
 static void SaveExternalFolders(int parent_index, const char *fname);
 
 /***************************************************************************
@@ -325,13 +326,15 @@ BOOL GameFiltered(int nGame, DWORD dwMask)
 	LPTREEFOLDER lpParent = NULL;
 
 	//Filter out the Bioses on all Folders, except for the Bios Folder
-	if( lpFolder->m_nFolderId != FOLDER_BIOS )
+	if(lpFolder && lpFolder->m_nFolderId != FOLDER_BIOS)
 	{
-//      if( !( (driver_list::driver(nGame).flags & MACHINE_IS_BIOS_ROOT ) == 0) )
-//          return true;
-		if( driver_list::driver(nGame).name[0] == '_' )
+		if(DriverIsBios(nGame))
 			return true;
 	}
+
+	if(driver_list::driver(nGame).name[0] == '_')
+		return true;
+
 	// Filter games--return true if the game should be HIDDEN in this view
 	if( GetFilterInherit() )
 	{
@@ -467,7 +470,7 @@ void CreateSourceFolders(int parent_index)
 		}
 	}
 	SetNumOptionFolders(k-1);
-	const char *fname = "Source";
+	const char *fname = "source";
 	SaveExternalFolders(parent_index, fname);
 }
 
@@ -524,7 +527,7 @@ void CreateScreenFolders(int parent_index)
 		}
 	}
 	SetNumOptionFolders(k-1);
-	const char *fname = "Screen";
+	const char *fname = "screens";
 	SaveExternalFolders(parent_index, fname);
 }
 
@@ -585,7 +588,7 @@ void CreateManufacturerFolders(int parent_index)
 			}
 		}
 	}
-	const char *fname = "Manufacturer";
+	const char *fname = "manufacturer";
 	SaveExternalFolders(parent_index, fname);
 }
 
@@ -913,6 +916,9 @@ static const char *TrimManufacturer(const char *s)
 #pragma GCC diagnostic warning "-Wstringop-truncation"
 #endif
 
+// A Bios folder contains the games that use that bios.
+// MESSUI has no games that need a bios, but left here in case it happens one day.
+// All Bioses use software lists instead.
 void CreateBIOSFolders(int parent_index)
 {
 	printf("creating bios folders\n");fflush(stdout);
@@ -960,8 +966,8 @@ void CreateBIOSFolders(int parent_index)
 			}
 		}
 	}
-	const char *fname = "BIOS";
-	SaveExternalFolders(parent_index, fname);
+	//const char *fname = "bios";
+	//SaveExternalFolders(parent_index, fname);
 }
 
 void CreateCPUFolders(int parent_index)
@@ -1028,7 +1034,7 @@ void CreateCPUFolders(int parent_index)
 			}
 		}
 	}
-	const char *fname = "CPU";
+	const char *fname = "cpu";
 	SaveExternalFolders(parent_index, fname);
 }
 
@@ -1098,7 +1104,7 @@ void CreateSoundFolders(int parent_index)
 			}
 		}
 	}
-	const char *fname = "Sound";
+	const char *fname = "sound";
 	SaveExternalFolders(parent_index, fname);
 }
 
@@ -1349,7 +1355,7 @@ void CreateDumpingFolders(int parent_index)
 		if (bNoDump)
 			AddGame(lpNo,jj);
 	}
-	const char *fname = "Dumping";
+	const char *fname = "dumping";
 	SaveExternalFolders(parent_index, fname);
 }
 
@@ -1408,7 +1414,7 @@ void CreateYearFolders(int parent_index)
 			AddGame(lpTemp, jj);
 		}
 	}
-	const char *fname = "Year";
+	const char *fname = "year";
 	SaveExternalFolders(parent_index, fname);
 }
 
@@ -1482,7 +1488,7 @@ void CreateResolutionFolders(int parent_index)
 			}
 		}
 	}
-	const char *fname = "Resolution";
+	const char *fname = "resolution";
 	SaveExternalFolders(parent_index, fname);
 }
 
@@ -1553,7 +1559,7 @@ void CreateFPSFolders(int parent_index)
 			}
 		}
 	}
-	const char *fname = "Refresh";
+	const char *fname = "fps";
 	SaveExternalFolders(parent_index, fname);
 }
 
@@ -1820,6 +1826,19 @@ BOOL InitFolders()
 		}
 	}
 
+	// cached top level folders
+	for (i = 0; m_lpFolderData[i].m_lpTitle; i++)
+	{
+		if (!RequiredDriverCache() && m_lpFolderData[i].m_process)
+		{
+			LPCFOLDERDATA fData = &m_lpFolderData[i];
+			/* get the saved folder flags */
+			dwFolderFlags = GetFolderFlags(m_numFolders);
+			/* create the folder with parent-level icon */
+			AddFolder(NewFolder(fData->m_lpTitle, fData->m_nFolderId, -1, fData->m_nIconId, dwFolderFlags));
+		}
+	}
+
 	m_numExtraFolders = InitExtraFolders();
 
 	for (i = 0; i < m_numExtraFolders; i++)
@@ -1861,6 +1880,14 @@ BOOL InitFolders()
 			{
 				if (RequiredDriverCache() && lpFolderData->m_process) // rebuild cache
 					lpFolderData->m_pfnCreateFolders(i);
+				else
+				if (!RequiredDriverCache() && lpFolderData->m_process) // reload cache
+				{
+					UINT ico2 = lpFolderData->m_nIconId2;
+					if (ico2 == 0)
+						ico2 = lpFolderData->m_nIconId;
+					LoadExternalFolders(i, ico2);
+				}
 				else
 				if (!lpFolderData->m_process) // build every time (CreateDeficiencyFolders)
 					lpFolderData->m_pfnCreateFolders(i);
@@ -2170,7 +2197,7 @@ static int InitExtraFolders()
 				{
 					int icon[2] = { 0, 0 };
 					char *p, *name;
-					while (fgets(buf, 511, fp))
+					while (fgets(buf, 63, fp))
 					{
 						if (buf[0] == '[')
 						{
@@ -2182,7 +2209,7 @@ static int InitExtraFolders()
 							name = &buf[1];
 							if (!strcmp(name, "FOLDER_SETTINGS"))
 							{
-								while (fgets(buf, 511, fp))
+								while (fgets(buf, 63, fp))
 								{
 									name = strtok(buf, " =\r\n");
 									if (name == NULL)
@@ -2304,7 +2331,7 @@ BOOL TryAddExtraFolderAndChildren(int parent_index)
 	if (fp == NULL)
 		return false;
 
-	while ( fgets(readbuf, 511, fp) )
+	while ( fgets(readbuf, 63, fp) )
 	{
 		/* do we have [...] ? */
 
@@ -2640,6 +2667,88 @@ int GetTreeViewIconIndex(int icon_id)
 	return -1;
 }
 
+static void LoadExternalFolders(int parent_index, int id)
+{
+	const char* fname = NULL;
+	LPTREEFOLDER lpFolder = m_treeFolders[parent_index];
+
+	for (int j = 0; m_lpFolderData[j].m_lpTitle; j++)
+		if (strcmp(lpFolder->m_lpTitle, m_lpFolderData[j].m_lpTitle)==0)
+			fname = m_lpFolderData[j].short_name;
+
+	if (fname == NULL)
+		return;
+
+	string val = dir_get_value(24);
+	char s[val.size()+1];
+	strcpy(s, val.c_str());
+	char *fdir = strtok(s, ";"); // get first dir
+
+	char filename[MAX_PATH];
+	snprintf(filename, std::size(filename), "%s\\%s", fdir, fname);
+	FILE *f = fopen(filename, "r");
+
+	if (f == NULL)
+		return;
+
+	char readbuf[256];
+	char *name = NULL;
+	LPTREEFOLDER lpTemp = NULL;
+	int current_id = lpFolder->m_nFolderId;
+
+	while (fgets(readbuf, 63, f))
+	{
+		/* do we have [...] ? */
+		if (readbuf[0] == '[')
+		{
+			char *p = strchr(readbuf, ']');
+			
+			if (p == NULL)
+				continue;
+
+			*p = '\0';
+			name = &readbuf[1];
+
+			/* is it [FOLDER_SETTINGS]? */
+			if (strcmp(name, "FOLDER_SETTINGS") == 0)
+			{
+				current_id = -1;
+				continue;
+			}
+			else
+			{
+				/* is it [ROOT_FOLDER]? */
+				if (!strcmp(name, "ROOT_FOLDER"))
+				{
+					current_id = lpFolder->m_nFolderId;
+					lpTemp = lpFolder;
+				}
+				else
+				{
+					current_id = m_next_folder_id++;
+					lpTemp = NewFolder(name, current_id, parent_index, id, GetFolderFlags(m_numFolders));
+					AddFolder(lpTemp);
+				}
+			}
+		}
+		else if (current_id != -1)
+		{
+			/* string on a line by itself -- game name */
+			name = strtok(readbuf, " \t\r\n");
+
+			if (name == NULL)
+			{
+				current_id = -1;
+				continue;
+			}
+
+			AddGame(lpTemp, GetGameNameIndex(name));
+		}
+	}
+
+	fclose(f);
+}
+
 static void SaveExternalFolders(int parent_index, const char *fname)
 {
 	string val = dir_get_value(24);
@@ -2661,7 +2770,7 @@ static void SaveExternalFolders(int parent_index, const char *fname)
 	}
 
 	// create/truncate file
-	string filename = fdir + string("\\") + fname + string(".ini");
+	string filename = fdir + string("\\") + fname;
 	FILE *f = fopen(filename.c_str(), "w");
 	if (f == NULL)
 	{

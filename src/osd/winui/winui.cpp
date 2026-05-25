@@ -5702,6 +5702,9 @@ static int GetIconForDriver(int nItem)
 		else
 		if (IsAuditResultNo(audit_result))
 			iconRoms = FindIconIndex(IDI_LV_RN);  // roms missing
+		else
+		if (DriverIsBios(nItem))
+			iconRoms = FindIconIndex(IDI_LV_BW);  // bios, any status
 	}
 
 	if (iconRoms == 0)
@@ -5709,10 +5712,6 @@ static int GetIconForDriver(int nItem)
 		iconRoms =  FindIconIndex(IDI_LV_PW);  // start assuming it's a working parent
 
 		// see order of icons in layout.cpp g_iconData
-		// Working bios
-		if (DriverIsBios(nItem))
-			iconRoms = FindIconIndex(IDI_LV_BW);
-
 		// Show red if NOT WORKING
 		if (DriverIsBroken(nItem))
 		{
@@ -5763,7 +5762,6 @@ static int GetIconForDriver(int nItem)
 
 	return iconRoms;
 }
-
 
 static BOOL HandleTreeContextMenu(HWND hWnd, WPARAM wParam, LPARAM lParam)
 {

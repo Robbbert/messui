@@ -1575,11 +1575,6 @@ nec/pce.cpp
 
 nec/tk80bs.cpp
 
-//neogeo/neogeo.cpp           // U:arcade
-
-neogeo/neogeocd.cpp
--neocd           // mnw
-
 netronics/elf.cpp
 
 netronics/exp85.cpp
@@ -3415,6 +3410,11 @@ skeleton/zorba.cpp
 //skeleton/zvenezia.cpp  // no screen
 
 slicer/slicer.cpp
+
+//snk/neogeo.cpp           // U:arcade
+
+snk/neogeocd.cpp
+-neocd           // mnw
 
 snk/ngp.cpp
 
