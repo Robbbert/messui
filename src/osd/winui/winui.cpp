@@ -3138,7 +3138,7 @@ static BOOL TreeViewNotify(LPNMHDR nm)
 			TV_DISPINFO *ptvdi = (TV_DISPINFO *)nm;
 			LPTREEFOLDER folder = (LPTREEFOLDER)ptvdi->item.lParam;
 
-			if (folder->m_dwFlags & F_CUSTOM)
+			if (folder->m_dwFlags & FI_CUSTOM)
 			{
 				// user can edit custom folder names
 				g_in_treeview_edit = true;
@@ -4147,7 +4147,7 @@ static BOOL MameCommand(HWND hwnd,int id, HWND hwndCtl, UINT codeNotify)
 			folder = GetSelectedFolder();
 			if( folder )
 			{
-				if (folder->m_nFolderId == FOLDER_AVAILABLE )
+				if (folder->m_nFolderId == FOLDER_AVAIL )
 					ResetListView();
 			}
 		}
@@ -4163,7 +4163,7 @@ static BOOL MameCommand(HWND hwnd,int id, HWND hwndCtl, UINT codeNotify)
 		{
 			folder = GetSelectedFolder();
 			if (folder)
-				if (folder->m_dwFlags & F_INIEDIT)
+				if (folder->m_dwFlags & FI_INIEDIT)
 				{
 					LPCFOLDERDATA data = FindFilter(folder->m_nFolderId);
 					if (data)
@@ -5704,7 +5704,7 @@ static int GetIconForDriver(int nItem)
 			iconRoms = FindIconIndex(IDI_LV_RN);  // roms missing
 		else
 		if (DriverIsBios(nItem))
-			iconRoms = FindIconIndex(IDI_LV_BW);  // bios, any status
+			iconRoms = FindIconIndex(IDI_LV_BIOS);  // bios, any status
 	}
 
 	if (iconRoms == 0)
@@ -5878,7 +5878,7 @@ static void UpdateMenu(HMENU hMenu)
 		EnableMenuItem(hMenu, ID_CONTEXT_SELECT_RANDOM, MF_GRAYED);
 	}
 
-	if (lpFolder->m_dwFlags & F_CUSTOM)
+	if (lpFolder->m_dwFlags & FI_CUSTOM)
 	{
 		EnableMenuItem(hMenu,ID_CONTEXT_REMOVE_CUSTOM,MF_ENABLED);
 		EnableMenuItem(hMenu,ID_CONTEXT_RENAME_CUSTOM,MF_ENABLED);
@@ -5890,7 +5890,7 @@ static void UpdateMenu(HMENU hMenu)
 	}
 	//const char* pParent = GetFolderNameByID(lpFolder->m_nParent+1);
 
-	if (lpFolder->m_dwFlags & F_INIEDIT)
+	if (lpFolder->m_dwFlags & FI_INIEDIT)
 		EnableMenuItem(hMenu,ID_FOLDER_PROPERTIES,MF_ENABLED);
 	else
 		EnableMenuItem(hMenu,ID_FOLDER_PROPERTIES,MF_GRAYED);
@@ -6241,7 +6241,7 @@ static void RemoveGameCustomFolder(int driver_index)
 
 	for (int i=0;i<num_folders;i++)
 	{
-		if (folders[i]->m_dwFlags & F_CUSTOM && folders[i]->m_nFolderId == GetCurrentFolderID())
+		if (folders[i]->m_dwFlags & FI_CUSTOM && folders[i]->m_nFolderId == GetCurrentFolderID())
 		{
 			int current_pick_index;
 
@@ -6382,7 +6382,7 @@ static void ButtonUpListViewDrag(POINTS p)
 			return;
 
 		folder = GetCurrentFolder();
-		if (folder->m_dwFlags & F_CUSTOM)
+		if (folder->m_dwFlags & FI_CUSTOM)
 		{
 			/* dragged out of a custom folder, so let's remove it */
 			RemoveCurrentGameCustomFolder();

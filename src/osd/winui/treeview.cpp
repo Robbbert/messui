@@ -49,44 +49,50 @@ typedef struct
 
 static TREEICON treeIconNames[] =
 {
-	{ IDI_FOLDER_OPEN,         "foldopen" },
-	{ IDI_FOLDER,              "folder" },
-	{ IDI_FOLDER_ALLGAMES,     "allgames" },
-	{ IDI_FOLDER_AVAILABLE,    "foldavail" },
-	{ IDI_FOLDER_BIOS,         "foldcsb" },
-	{ IDI_FOLDER_CLONES,       "foldclone" },
-	{ IDI_FOLDER_CPU,          "foldcsb" },
-	{ IDI_FOLDER_DUMP,         "foldcsb" },
-	{ IDI_FOLDER_FPS,          "foldfps" },
-	{ IDI_FOLDER_HARDDISK,     "harddisk" },
-	{ IDI_FOLDER_HORIZONTAL,   "horz" },
-	{ IDI_FOLDER_IMPERFECT,    "foldimp" },
-	{ IDI_FOLDER_LIGHTGUN,     "foldgun" },
-	{ IDI_FOLDER_MANUFACTURER, "foldmanu" },
-	{ IDI_FOLDER_MECHANICAL,   "mechanical" },
-	{ IDI_FOLDER_MONITOR,      "multimon" },
-	{ IDI_FOLDER_NONWORKING,   "nonwork" },
-	{ IDI_FOLDER_ORIGINALS,    "foldorig" },
-	{ IDI_FOLDER_RASTER,       "foldrast" },
-	{ IDI_FOLDER_RESOL,        "foldres" },
-	{ IDI_FOLDER_SAMPLES,      "foldsamp" },
-	{ IDI_FOLDER_SAVESTATE,    "savestate" },
-	{ IDI_FOLDER_SOUND,        "foldsamp" },
-	{ IDI_FOLDER_SOURCE,       "foldsrc" },
-	{ IDI_FOLDER_TRACKBALL,    "foldball" },
-	{ IDI_FOLDER_UNAVAILABLE,  "foldunav" },
-	{ IDI_FOLDER_VECTOR,       "foldvect" },
-	{ IDI_FOLDER_VERTICAL,     "vert" },
-	{ IDI_FOLDER_WORKING,      "working" },
-	{ IDI_FOLDER_YEAR,         "foldyear" },
-	{ IDI_BIOS,                "bios" },
-	{ IDI_CHIP,                "chip" },
-	{ IDI_CPU,                 "cpu" },
-	{ IDI_MANUFACTURER,        "manufact" },
-	{ IDI_MONITOR,             "monitor" },
-	{ IDI_SOUND,               "sound" },
-	{ IDI_SOURCE,              "source" },
-	{ IDI_YEAR,                "year" },
+	{ IDI_FP_OPEN,         "fp-open" },
+	{ IDI_FP_DEF,          "fp-closed" },
+	{ IDI_FP_ALL,          "fp-all" },
+	{ IDI_FP_ARCADE,       "fp-arcade" },
+	{ IDI_FP_AVAIL,        "fp-avail" },
+	{ IDI_FP_BIOS,         "fp-bios" },
+	{ IDI_FP_CLONES,       "fp-clone" },
+	{ IDI_FP_CPU,          "fp-cpu" },
+	{ IDI_FP_CUSTOM,       "fp-custom" },
+	{ IDI_FP_DUMP,         "fp-dump" },
+	{ IDI_FP_FPS,          "fp-fps" },
+	{ IDI_FP_HARDDISK,     "fp-hard" },
+	{ IDI_FP_HORI,         "fp-horz" },
+	{ IDI_FP_IMP,          "fp-imp" },
+	{ IDI_FP_LIGHTGUN,     "fp-lgun" },
+	{ IDI_FP_MANU,         "fp-manu" },
+	{ IDI_FP_MECH,         "fp-mech" },
+	{ IDI_FP_MODIFIED,     "fp-modi" },
+	{ IDI_FP_MONITOR,      "fp-monit" },
+	{ IDI_FP_MOUSE,        "fp-mouse" },
+	{ IDI_FP_NONMECH,      "fp-nmech" },
+	{ IDI_FP_NW,           "fp-nw" },
+	{ IDI_FP_PARENTS,      "fp-parent" },
+	{ IDI_FP_RASTER,       "fp-raster" },
+	{ IDI_FP_RESOL,        "fp-resol" },
+	{ IDI_FP_SAMPLES,      "fp-sample" },
+	{ IDI_FP_SAVESTATE,    "fp-savest" },
+	{ IDI_FP_SOUND,        "fp-sound" },
+	{ IDI_FP_SOURCE,       "fp-source" },
+	{ IDI_FP_STEREO,       "fp-stereo" },
+	{ IDI_FP_TRACKBALL,    "fp-track" },
+	{ IDI_FP_UNAVAIL,      "fp-unav" },
+	{ IDI_FP_VECTOR,       "fp-vector" },
+	{ IDI_FP_VERT,         "fp-vert" },
+	{ IDI_FP_W,            "fp-w" },
+	{ IDI_FP_YEAR,         "fp-year" },
+	{ IDI_FC_BIOS,         "fc-bios" },
+	{ IDI_FC_CHIP,         "fc-chip" },
+	{ IDI_FC_CPU,          "fc-cpu" },
+	{ IDI_FC_MANU,         "fc-manu" },
+	{ IDI_FC_MONITOR,      "fc-monit" },
+	{ IDI_FC_SOUND,        "fc-sound" },
+	{ IDI_FC_SOURCE,       "fc-source" },
+	{ IDI_FC_YEAR,         "fc-year" },
 };
 
 /***************************************************************************
@@ -215,7 +221,7 @@ void ResetFilters()
 {
 	if (m_treeFolders)
 		for (int i = 0; i < (int)m_numFolders; i++)
-			m_treeFolders[i]->m_dwFlags &= ~F_MASK;
+			m_treeFolders[i]->m_dwFlags &= ~FI_MASK;
 }
 
 void InitTree(LPCFOLDERDATA lpFolderData, LPCFILTER_ITEM lpFilterList)
@@ -365,11 +371,11 @@ BOOL GameFiltered(int nGame, DWORD dwMask)
 		return true;
 	}
 	// Are there filters set on this folder?
-	if ((dwMask & F_MASK) == 0)
+	if ((dwMask & FI_MASK) == 0)
 		return false;
 
 	// Filter out clones?
-	if (dwMask & F_CLONES && DriverIsClone(nGame))
+	if (dwMask & FI_CLONES && DriverIsClone(nGame))
 		return true;
 
 	for (int i = 0; m_lpFilterList[i].m_dwFilterType; i++)
@@ -447,7 +453,7 @@ void CreateSourceFolders(int parent_index)
 		if (i == start_folder-1)
 		{
 			// nope, it's a source file we haven't seen before, make it.
-			LPTREEFOLDER lpTemp = NewFolder(s, m_next_folder_id, parent_index, IDI_SOURCE, GetFolderFlags(m_numFolders));
+			LPTREEFOLDER lpTemp = NewFolder(s, m_next_folder_id, parent_index, IDI_FC_SOURCE, GetFolderFlags(m_numFolders));
 			if (!lpTemp)
 				continue;
 			m_ExtraFolderData[m_next_folder_id] = (EXFOLDERDATA*)malloc(m_folderBytes);
@@ -456,7 +462,7 @@ void CreateSourceFolders(int parent_index)
 			memset(m_ExtraFolderData[m_next_folder_id], 0, m_folderBytes);
 
 			m_ExtraFolderData[m_next_folder_id]->m_nFolderId = m_next_folder_id;
-			m_ExtraFolderData[m_next_folder_id]->m_nIconId = IDI_SOURCE;
+			m_ExtraFolderData[m_next_folder_id]->m_nIconId = IDI_FC_SOURCE;
 			m_ExtraFolderData[m_next_folder_id]->m_nParent = lpFolder->m_nFolderId;
 			m_ExtraFolderData[m_next_folder_id]->m_nSubIconId = -1;
 			strcpy( m_ExtraFolderData[m_next_folder_id]->m_szTitle, s );
@@ -504,7 +510,7 @@ void CreateScreenFolders(int parent_index)
 		if (i == start_folder-1)
 		{
 			// nope, it's a screen file we haven't seen before, make it.
-			LPTREEFOLDER lpTemp = NewFolder(s, m_next_folder_id, parent_index, IDI_MONITOR, GetFolderFlags(m_numFolders));
+			LPTREEFOLDER lpTemp = NewFolder(s, m_next_folder_id, parent_index, IDI_FC_MONITOR, GetFolderFlags(m_numFolders));
 			if (!lpTemp)
 				continue;
 			m_ExtraFolderData[m_next_folder_id] = (EXFOLDERDATA*)malloc(m_folderBytes);
@@ -513,7 +519,7 @@ void CreateScreenFolders(int parent_index)
 			memset(m_ExtraFolderData[m_next_folder_id], 0, m_folderBytes);
 
 			m_ExtraFolderData[m_next_folder_id]->m_nFolderId = m_next_folder_id;
-			m_ExtraFolderData[m_next_folder_id]->m_nIconId = IDI_SCREEN;
+			m_ExtraFolderData[m_next_folder_id]->m_nIconId = IDI_FC_MONITOR;
 			m_ExtraFolderData[m_next_folder_id]->m_nParent = lpFolder->m_nFolderId;
 			m_ExtraFolderData[m_next_folder_id]->m_nSubIconId = -1;
 			strcpy( m_ExtraFolderData[m_next_folder_id]->m_szTitle, s );
@@ -568,7 +574,7 @@ void CreateManufacturerFolders(int parent_index)
 				if (i == start_folder-1)
 				{
 					// nope, it's a manufacturer we haven't seen before, make it.
-					LPTREEFOLDER lpTemp = NewFolder(t, m_next_folder_id, parent_index, IDI_MANUFACTURER, GetFolderFlags(m_numFolders));
+					LPTREEFOLDER lpTemp = NewFolder(t, m_next_folder_id, parent_index, IDI_FC_MANU, GetFolderFlags(m_numFolders));
 					if (!lpTemp)
 						continue;
 					m_ExtraFolderData[m_next_folder_id] = (EXFOLDERDATA*)malloc(m_folderBytes);
@@ -577,7 +583,7 @@ void CreateManufacturerFolders(int parent_index)
 					memset(m_ExtraFolderData[m_next_folder_id], 0, m_folderBytes);
 
 					m_ExtraFolderData[m_next_folder_id]->m_nFolderId = m_next_folder_id;
-					m_ExtraFolderData[m_next_folder_id]->m_nIconId = IDI_MANUFACTURER;
+					m_ExtraFolderData[m_next_folder_id]->m_nIconId = IDI_FC_MANU;
 					m_ExtraFolderData[m_next_folder_id]->m_nParent = lpFolder->m_nFolderId;
 					m_ExtraFolderData[m_next_folder_id]->m_nSubIconId = -1;
 					strcpy( m_ExtraFolderData[m_next_folder_id]->m_szTitle, s );
@@ -958,7 +964,7 @@ void CreateBIOSFolders(int parent_index)
 		if (i == start_folder-1)
 		{
 			LPTREEFOLDER lpTemp = NewFolder(driver_list::driver(nParentIndex).type.fullname(),
-				m_next_folder_id++, parent_index, IDI_BIOS, GetFolderFlags(m_numFolders));
+				m_next_folder_id++, parent_index, IDI_FC_BIOS, GetFolderFlags(m_numFolders));
 			if (lpTemp)
 			{
 				AddFolder(lpTemp);
@@ -1004,7 +1010,7 @@ void CreateCPUFolders(int parent_index)
 				// are we forced to create a folder?
 				if (folder == NULL)
 				{
-					LPTREEFOLDER lpTemp = NewFolder(dev_name, m_next_folder_id, parent_index, IDI_CHIP, GetFolderFlags(m_numFolders));
+					LPTREEFOLDER lpTemp = NewFolder(dev_name, m_next_folder_id, parent_index, IDI_FC_CPU, GetFolderFlags(m_numFolders));
 					if (!lpTemp)
 						continue;
 					m_ExtraFolderData[m_next_folder_id] = (EXFOLDERDATA*)malloc(m_folderBytes);
@@ -1012,7 +1018,7 @@ void CreateCPUFolders(int parent_index)
 						continue;
 					memset(m_ExtraFolderData[m_next_folder_id], 0, m_folderBytes);
 					m_ExtraFolderData[m_next_folder_id]->m_nFolderId = m_next_folder_id;
-					m_ExtraFolderData[m_next_folder_id]->m_nIconId = IDI_CPU;
+					m_ExtraFolderData[m_next_folder_id]->m_nIconId = IDI_FC_CPU;
 					m_ExtraFolderData[m_next_folder_id]->m_nParent = m_treeFolders[parent_index]->m_nFolderId;
 					m_ExtraFolderData[m_next_folder_id]->m_nSubIconId = -1;
 					strcpy( m_ExtraFolderData[m_next_folder_id]->m_szTitle, dev_name );
@@ -1073,7 +1079,7 @@ void CreateSoundFolders(int parent_index)
 				// are we forced to create a folder?
 				if (folder == NULL)
 				{
-					LPTREEFOLDER lpTemp = NewFolder(dev_name, m_next_folder_id, parent_index, IDI_SOUND, GetFolderFlags(m_numFolders));
+					LPTREEFOLDER lpTemp = NewFolder(dev_name, m_next_folder_id, parent_index, IDI_FC_SOUND, GetFolderFlags(m_numFolders));
 					if (!lpTemp)
 						continue;
 					m_ExtraFolderData[m_next_folder_id] = (EXFOLDERDATA*)malloc(m_folderBytes);
@@ -1082,7 +1088,7 @@ void CreateSoundFolders(int parent_index)
 					memset(m_ExtraFolderData[m_next_folder_id], 0, m_folderBytes);
 
 					m_ExtraFolderData[m_next_folder_id]->m_nFolderId = m_next_folder_id;
-					m_ExtraFolderData[m_next_folder_id]->m_nIconId = IDI_SOUND;
+					m_ExtraFolderData[m_next_folder_id]->m_nIconId = IDI_FC_SOUND;
 					m_ExtraFolderData[m_next_folder_id]->m_nParent = m_treeFolders[parent_index]->m_nFolderId;
 					m_ExtraFolderData[m_next_folder_id]->m_nSubIconId = -1;
 					strcpy( m_ExtraFolderData[m_next_folder_id]->m_szTitle, dev_name );
@@ -1116,7 +1122,7 @@ void CreateDeficiencyFolders(int parent_index)
 
 	// create our subfolders
 	LPTREEFOLDER lpProt, lpWrongCol, lpImpCol, lpImpGraph, lpMissSnd, lpImpSnd, lpFlip, lpArt;
-	lpProt = NewFolder("Unemulated Protection", m_next_folder_id, parent_index, IDI_FOLDER, GetFolderFlags(m_numFolders));
+	lpProt = NewFolder("Unemulated Protection", m_next_folder_id, parent_index, IDI_FP_IMP, GetFolderFlags(m_numFolders));
 	if (!lpProt)
 		return;
 	m_ExtraFolderData[m_next_folder_id] = (EXFOLDERDATA*)malloc(m_folderBytes);
@@ -1125,13 +1131,13 @@ void CreateDeficiencyFolders(int parent_index)
 	memset(m_ExtraFolderData[m_next_folder_id], 0, m_folderBytes);
 
 	m_ExtraFolderData[m_next_folder_id]->m_nFolderId = m_next_folder_id;
-	m_ExtraFolderData[m_next_folder_id]->m_nIconId = IDI_FOLDER;
+	m_ExtraFolderData[m_next_folder_id]->m_nIconId = IDI_FP_IMP;
 	m_ExtraFolderData[m_next_folder_id]->m_nParent = lpFolder->m_nFolderId;
 	m_ExtraFolderData[m_next_folder_id]->m_nSubIconId = -1;
 	strcpy( m_ExtraFolderData[m_next_folder_id]->m_szTitle, "Unemulated Protection" );
 	m_ExtraFolderData[m_next_folder_id++]->m_dwFlags = 0;
 	AddFolder(lpProt);
-	lpWrongCol = NewFolder("Wrong Colors", m_next_folder_id, parent_index, IDI_FOLDER, GetFolderFlags(m_numFolders));
+	lpWrongCol = NewFolder("Wrong Colors", m_next_folder_id, parent_index, IDI_FP_IMP, GetFolderFlags(m_numFolders));
 	if (!lpWrongCol)
 		return;
 	m_ExtraFolderData[m_next_folder_id] = (EXFOLDERDATA*)malloc(m_folderBytes);
@@ -1140,14 +1146,14 @@ void CreateDeficiencyFolders(int parent_index)
 	memset(m_ExtraFolderData[m_next_folder_id], 0, m_folderBytes);
 
 	m_ExtraFolderData[m_next_folder_id]->m_nFolderId = m_next_folder_id;
-	m_ExtraFolderData[m_next_folder_id]->m_nIconId = IDI_FOLDER;
+	m_ExtraFolderData[m_next_folder_id]->m_nIconId = IDI_FP_IMP;
 	m_ExtraFolderData[m_next_folder_id]->m_nParent = lpFolder->m_nFolderId;
 	m_ExtraFolderData[m_next_folder_id]->m_nSubIconId = -1;
 	strcpy( m_ExtraFolderData[m_next_folder_id]->m_szTitle, "Wrong Colors" );
 	m_ExtraFolderData[m_next_folder_id++]->m_dwFlags = 0;
 	AddFolder(lpWrongCol);
 
-	lpImpCol = NewFolder("Imperfect Colors", m_next_folder_id, parent_index, IDI_FOLDER, GetFolderFlags(m_numFolders));
+	lpImpCol = NewFolder("Imperfect Colors", m_next_folder_id, parent_index, IDI_FP_IMP, GetFolderFlags(m_numFolders));
 	if (!lpImpCol)
 		return;
 	m_ExtraFolderData[m_next_folder_id] = (EXFOLDERDATA*)malloc(m_folderBytes);
@@ -1156,14 +1162,14 @@ void CreateDeficiencyFolders(int parent_index)
 	memset(m_ExtraFolderData[m_next_folder_id], 0, m_folderBytes);
 
 	m_ExtraFolderData[m_next_folder_id]->m_nFolderId = m_next_folder_id;
-	m_ExtraFolderData[m_next_folder_id]->m_nIconId = IDI_FOLDER;
+	m_ExtraFolderData[m_next_folder_id]->m_nIconId = IDI_FP_IMP;
 	m_ExtraFolderData[m_next_folder_id]->m_nParent = lpFolder->m_nFolderId;
 	m_ExtraFolderData[m_next_folder_id]->m_nSubIconId = -1;
 	strcpy( m_ExtraFolderData[m_next_folder_id]->m_szTitle, "Imperfect Colors" );
 	m_ExtraFolderData[m_next_folder_id++]->m_dwFlags = 0;
 	AddFolder(lpImpCol);
 
-	lpImpGraph = NewFolder("Imperfect Graphics", m_next_folder_id, parent_index, IDI_FOLDER, GetFolderFlags(m_numFolders));
+	lpImpGraph = NewFolder("Imperfect Graphics", m_next_folder_id, parent_index, IDI_FP_IMP, GetFolderFlags(m_numFolders));
 	if (!lpImpGraph)
 		return;
 	m_ExtraFolderData[m_next_folder_id] = (EXFOLDERDATA*)malloc(m_folderBytes);
@@ -1172,14 +1178,14 @@ void CreateDeficiencyFolders(int parent_index)
 	memset(m_ExtraFolderData[m_next_folder_id], 0, m_folderBytes);
 
 	m_ExtraFolderData[m_next_folder_id]->m_nFolderId = m_next_folder_id;
-	m_ExtraFolderData[m_next_folder_id]->m_nIconId = IDI_FOLDER;
+	m_ExtraFolderData[m_next_folder_id]->m_nIconId = IDI_FP_IMP;
 	m_ExtraFolderData[m_next_folder_id]->m_nParent = lpFolder->m_nFolderId;
 	m_ExtraFolderData[m_next_folder_id]->m_nSubIconId = -1;
 	strcpy( m_ExtraFolderData[m_next_folder_id]->m_szTitle, "Imperfect Graphics" );
 	m_ExtraFolderData[m_next_folder_id++]->m_dwFlags = 0;
 	AddFolder(lpImpGraph);
 
-	lpMissSnd = NewFolder("Missing Sound", m_next_folder_id, parent_index, IDI_FOLDER, GetFolderFlags(m_numFolders));
+	lpMissSnd = NewFolder("Missing Sound", m_next_folder_id, parent_index, IDI_FP_SOUND, GetFolderFlags(m_numFolders));
 	if (!lpMissSnd)
 		return;
 	m_ExtraFolderData[m_next_folder_id] = (EXFOLDERDATA*)malloc(m_folderBytes);
@@ -1188,14 +1194,14 @@ void CreateDeficiencyFolders(int parent_index)
 	memset(m_ExtraFolderData[m_next_folder_id], 0, m_folderBytes);
 
 	m_ExtraFolderData[m_next_folder_id]->m_nFolderId = m_next_folder_id;
-	m_ExtraFolderData[m_next_folder_id]->m_nIconId = IDI_FOLDER;
+	m_ExtraFolderData[m_next_folder_id]->m_nIconId = IDI_FP_SOUND;
 	m_ExtraFolderData[m_next_folder_id]->m_nParent = lpFolder->m_nFolderId;
 	m_ExtraFolderData[m_next_folder_id]->m_nSubIconId = -1;
 	strcpy( m_ExtraFolderData[m_next_folder_id]->m_szTitle, "Missing Sound" );
 	m_ExtraFolderData[m_next_folder_id++]->m_dwFlags = 0;
 	AddFolder(lpMissSnd);
 
-	lpImpSnd = NewFolder("Imperfect Sound", m_next_folder_id, parent_index, IDI_FOLDER, GetFolderFlags(m_numFolders));
+	lpImpSnd = NewFolder("Imperfect Sound", m_next_folder_id, parent_index, IDI_FP_SOUND, GetFolderFlags(m_numFolders));
 	if (!lpImpSnd)
 		return;
 	m_ExtraFolderData[m_next_folder_id] = (EXFOLDERDATA*)malloc(m_folderBytes);
@@ -1204,14 +1210,14 @@ void CreateDeficiencyFolders(int parent_index)
 	memset(m_ExtraFolderData[m_next_folder_id], 0, m_folderBytes);
 
 	m_ExtraFolderData[m_next_folder_id]->m_nFolderId = m_next_folder_id;
-	m_ExtraFolderData[m_next_folder_id]->m_nIconId = IDI_FOLDER;
+	m_ExtraFolderData[m_next_folder_id]->m_nIconId = IDI_FP_SOUND;
 	m_ExtraFolderData[m_next_folder_id]->m_nParent = lpFolder->m_nFolderId;
 	m_ExtraFolderData[m_next_folder_id]->m_nSubIconId = -1;
 	strcpy( m_ExtraFolderData[m_next_folder_id]->m_szTitle, "Imperfect Sound" );
 	m_ExtraFolderData[m_next_folder_id++]->m_dwFlags = 0;
 	AddFolder(lpImpSnd);
 
-	lpFlip = NewFolder("No Cocktail", m_next_folder_id, parent_index, IDI_FOLDER, GetFolderFlags(m_numFolders));
+	lpFlip = NewFolder("No Cocktail", m_next_folder_id, parent_index, IDI_FP_IMP, GetFolderFlags(m_numFolders));
 	if (!lpFlip)
 		return;
 	m_ExtraFolderData[m_next_folder_id] = (EXFOLDERDATA*)malloc(m_folderBytes);
@@ -1220,14 +1226,14 @@ void CreateDeficiencyFolders(int parent_index)
 	memset(m_ExtraFolderData[m_next_folder_id], 0, m_folderBytes);
 
 	m_ExtraFolderData[m_next_folder_id]->m_nFolderId = m_next_folder_id;
-	m_ExtraFolderData[m_next_folder_id]->m_nIconId = IDI_FOLDER;
+	m_ExtraFolderData[m_next_folder_id]->m_nIconId = IDI_FP_IMP;
 	m_ExtraFolderData[m_next_folder_id]->m_nParent = lpFolder->m_nFolderId;
 	m_ExtraFolderData[m_next_folder_id]->m_nSubIconId = -1;
 	strcpy( m_ExtraFolderData[m_next_folder_id]->m_szTitle, "No Cocktail" );
 	m_ExtraFolderData[m_next_folder_id++]->m_dwFlags = 0;
 	AddFolder(lpFlip);
 
-	lpArt = NewFolder("Requires Artwork", m_next_folder_id, parent_index, IDI_FOLDER, GetFolderFlags(m_numFolders));
+	lpArt = NewFolder("Requires Artwork", m_next_folder_id, parent_index, IDI_FP_IMP, GetFolderFlags(m_numFolders));
 	if (!lpArt)
 		return;
 	m_ExtraFolderData[m_next_folder_id] = (EXFOLDERDATA*)malloc(m_folderBytes );
@@ -1236,7 +1242,7 @@ void CreateDeficiencyFolders(int parent_index)
 	memset(m_ExtraFolderData[m_next_folder_id], 0, m_folderBytes);
 
 	m_ExtraFolderData[m_next_folder_id]->m_nFolderId = m_next_folder_id;
-	m_ExtraFolderData[m_next_folder_id]->m_nIconId = IDI_FOLDER;
+	m_ExtraFolderData[m_next_folder_id]->m_nIconId = IDI_FP_IMP;
 	m_ExtraFolderData[m_next_folder_id]->m_nParent = lpFolder->m_nFolderId;
 	m_ExtraFolderData[m_next_folder_id]->m_nSubIconId = -1;
 	strcpy( m_ExtraFolderData[m_next_folder_id]->m_szTitle, "Requires Artwork" );
@@ -1286,7 +1292,7 @@ void CreateDumpingFolders(int parent_index)
 
 	// create our two subfolders
 	LPTREEFOLDER lpBad, lpNo;
-	lpBad = NewFolder("Bad Dump", m_next_folder_id, parent_index, IDI_FOLDER_DUMP, GetFolderFlags(m_numFolders));
+	lpBad = NewFolder("Bad Dump", m_next_folder_id, parent_index, IDI_FP_DUMP, GetFolderFlags(m_numFolders));
 	if (!lpBad)
 		return;
 	m_ExtraFolderData[m_next_folder_id] = (EXFOLDERDATA*)malloc(m_folderBytes);
@@ -1295,13 +1301,13 @@ void CreateDumpingFolders(int parent_index)
 	memset(m_ExtraFolderData[m_next_folder_id], 0, m_folderBytes);
 
 	m_ExtraFolderData[m_next_folder_id]->m_nFolderId = m_next_folder_id;
-	m_ExtraFolderData[m_next_folder_id]->m_nIconId = IDI_FOLDER_DUMP;
+	m_ExtraFolderData[m_next_folder_id]->m_nIconId = IDI_FP_DUMP;
 	m_ExtraFolderData[m_next_folder_id]->m_nParent = lpFolder->m_nFolderId;
 	m_ExtraFolderData[m_next_folder_id]->m_nSubIconId = -1;
 	strcpy( m_ExtraFolderData[m_next_folder_id]->m_szTitle, "Bad Dump" );
 	m_ExtraFolderData[m_next_folder_id++]->m_dwFlags = 0;
 	AddFolder(lpBad);
-	lpNo = NewFolder("No Dump", m_next_folder_id, parent_index, IDI_FOLDER_DUMP, GetFolderFlags(m_numFolders));
+	lpNo = NewFolder("No Dump", m_next_folder_id, parent_index, IDI_FP_DUMP, GetFolderFlags(m_numFolders));
 	if (!lpNo)
 		return;
 	m_ExtraFolderData[m_next_folder_id] = (EXFOLDERDATA*)malloc(m_folderBytes);
@@ -1310,7 +1316,7 @@ void CreateDumpingFolders(int parent_index)
 	memset(m_ExtraFolderData[m_next_folder_id], 0, m_folderBytes);
 
 	m_ExtraFolderData[m_next_folder_id]->m_nFolderId = m_next_folder_id;
-	m_ExtraFolderData[m_next_folder_id]->m_nIconId = IDI_FOLDER_DUMP;
+	m_ExtraFolderData[m_next_folder_id]->m_nIconId = IDI_FP_DUMP;
 	m_ExtraFolderData[m_next_folder_id]->m_nParent = lpFolder->m_nFolderId;
 	m_ExtraFolderData[m_next_folder_id]->m_nSubIconId = -1;
 	strcpy( m_ExtraFolderData[m_next_folder_id]->m_szTitle, "No Dump" );
@@ -1396,7 +1402,7 @@ void CreateYearFolders(int parent_index)
 		{
 			// nope, it's a year we haven't seen before, make it.
 			LPTREEFOLDER lpTemp;
-			lpTemp = NewFolder(s, m_next_folder_id, parent_index, IDI_YEAR, GetFolderFlags(m_numFolders));
+			lpTemp = NewFolder(s, m_next_folder_id, parent_index, IDI_FC_YEAR, GetFolderFlags(m_numFolders));
 			if (!lpTemp)
 				continue;
 			m_ExtraFolderData[m_next_folder_id] = (EXFOLDERDATA*)malloc(m_folderBytes);
@@ -1405,7 +1411,7 @@ void CreateYearFolders(int parent_index)
 			memset(m_ExtraFolderData[m_next_folder_id], 0, m_folderBytes);
 
 			m_ExtraFolderData[m_next_folder_id]->m_nFolderId = m_next_folder_id;
-			m_ExtraFolderData[m_next_folder_id]->m_nIconId = IDI_YEAR;
+			m_ExtraFolderData[m_next_folder_id]->m_nIconId = IDI_FC_YEAR;
 			m_ExtraFolderData[m_next_folder_id]->m_nParent = lpFolder->m_nFolderId;
 			m_ExtraFolderData[m_next_folder_id]->m_nSubIconId = -1;
 			strcpy( m_ExtraFolderData[m_next_folder_id]->m_szTitle, s );
@@ -1467,7 +1473,7 @@ void CreateResolutionFolders(int parent_index)
 					if (i == start_folder-1)
 					{
 						// nope, it's a screen we haven't seen before, make it.
-						LPTREEFOLDER lpTemp = NewFolder(Screen, m_next_folder_id++, parent_index, IDI_SCREEN, GetFolderFlags(m_numFolders));
+						LPTREEFOLDER lpTemp = NewFolder(Screen, m_next_folder_id++, parent_index, IDI_FC_MONITOR, GetFolderFlags(m_numFolders));
 						if (!lpTemp)
 							continue;
 						m_ExtraFolderData[m_next_folder_id] = (EXFOLDERDATA*)malloc(m_folderBytes);
@@ -1476,7 +1482,7 @@ void CreateResolutionFolders(int parent_index)
 						memset(m_ExtraFolderData[m_next_folder_id], 0, m_folderBytes);
 
 						m_ExtraFolderData[m_next_folder_id]->m_nFolderId = m_next_folder_id;
-						m_ExtraFolderData[m_next_folder_id]->m_nIconId = IDI_SCREEN;
+						m_ExtraFolderData[m_next_folder_id]->m_nIconId = IDI_FC_MONITOR;
 						m_ExtraFolderData[m_next_folder_id]->m_nParent = lpFolder->m_nFolderId;
 						m_ExtraFolderData[m_next_folder_id]->m_nSubIconId = -1;
 						strcpy( m_ExtraFolderData[m_next_folder_id]->m_szTitle, Screen );
@@ -1538,7 +1544,7 @@ void CreateFPSFolders(int parent_index)
 					if (i == start_folder-1)
 					{
 						// nope, it's a screen we haven't seen before, make it.
-						LPTREEFOLDER lpTemp = NewFolder(Screen, m_next_folder_id++, parent_index, IDI_SCREEN, GetFolderFlags(m_numFolders));
+						LPTREEFOLDER lpTemp = NewFolder(Screen, m_next_folder_id++, parent_index, IDI_FP_FPS, GetFolderFlags(m_numFolders));
 						if (!lpTemp)
 							continue;
 						m_ExtraFolderData[m_next_folder_id] = (EXFOLDERDATA*)malloc(m_folderBytes);
@@ -1547,7 +1553,7 @@ void CreateFPSFolders(int parent_index)
 						memset(m_ExtraFolderData[m_next_folder_id], 0, m_folderBytes);
 
 						m_ExtraFolderData[m_next_folder_id]->m_nFolderId = m_next_folder_id;
-						m_ExtraFolderData[m_next_folder_id]->m_nIconId = IDI_SCREEN;
+						m_ExtraFolderData[m_next_folder_id]->m_nIconId = IDI_FP_FPS;
 						m_ExtraFolderData[m_next_folder_id]->m_nParent = lpFolder->m_nFolderId;
 						m_ExtraFolderData[m_next_folder_id]->m_nSubIconId = -1;
 						strcpy( m_ExtraFolderData[m_next_folder_id]->m_szTitle, Screen );
@@ -1739,7 +1745,7 @@ static BOOL AddFolder(LPTREEFOLDER lpFolder)
 
 	/* Is there an folder.ini that can be edited? */
 	if (FolderHasIni(lpFolder))
-		lpFolder->m_dwFlags |= F_INIEDIT;
+		lpFolder->m_dwFlags |= FI_INIEDIT;
 
 	m_treeFolders[m_numFolders] = lpFolder;
 	m_numFolders++;
@@ -1895,7 +1901,7 @@ BOOL InitFolders()
 		}
 		else
 		{
-			if ((lpFolder->m_dwFlags & F_CUSTOM) == 0)
+			if ((lpFolder->m_dwFlags & FI_CUSTOM) == 0)
 			{
 				printf("Internal inconsistency with non-built-in folder, but not custom\n");
 				continue;
@@ -1936,7 +1942,7 @@ static BOOL CreateTreeIcons()
 
 		if (ImageList_AddIcon (m_hTreeSmall, hIcon) == -1)
 		{
-			ErrorMsg("Error creating icon on regular folder, %i %i",i,hIcon != NULL);
+			ErrorMsg("Error creating icon ''%s'' on regular folder, %i %i",treeIconNames[i].lpName,i,hIcon != NULL);
 			return false;
 		}
 	}
@@ -1945,7 +1951,7 @@ static BOOL CreateTreeIcons()
 	for (i = 0; i < m_numExtraIcons; i++)
 	{
 		if ((hIcon = LoadIconFromFile(m_ExtraFolderIcons[i])) == 0)
-			hIcon = LoadIcon (hInst, MAKEINTRESOURCE(IDI_FOLDER));
+			hIcon = LoadIcon (hInst, MAKEINTRESOURCE(IDI_FP_DEF));
 
 		if (ImageList_AddIcon(m_hTreeSmall, hIcon) == -1)
 		{
@@ -2097,7 +2103,7 @@ static LRESULT CALLBACK TreeWndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM 
 			case WM_KEYDOWN :
 				if (wParam == VK_F2)
 				{
-					if (m_lpCurrentFolder->m_dwFlags & F_CUSTOM)
+					if (m_lpCurrentFolder->m_dwFlags & FI_CUSTOM)
 					{
 						TreeView_EditLabel(hWnd,TreeView_GetSelection(hWnd));
 						return true;
@@ -2156,7 +2162,7 @@ static int InitExtraFolders()
 	struct _finddata_t files;
 	int             i, count = 0;
 	char *          ext;
-	char            buf[512];
+	char            buf[64];
 	char            curdir[MAX_PATH];
 	const std::string    t = dir_get_value(24);
 	const std::string  emu_path = GetEmuPath();
@@ -2197,7 +2203,7 @@ static int InitExtraFolders()
 				{
 					int icon[2] = { 0, 0 };
 					char *p, *name;
-					while (fgets(buf, 63, fp))
+					while (fgets(buf, 64, fp))
 					{
 						if (buf[0] == '[')
 						{
@@ -2209,7 +2215,7 @@ static int InitExtraFolders()
 							name = &buf[1];
 							if (!strcmp(name, "FOLDER_SETTINGS"))
 							{
-								while (fgets(buf, 63, fp))
+								while (fgets(buf, 64, fp))
 								{
 									name = strtok(buf, " =\r\n");
 									if (name == NULL)
@@ -2246,12 +2252,12 @@ static int InitExtraFolders()
 
 							memset(m_ExtraFolderData[count], 0, m_folderBytes);
 
-							strncpy(m_ExtraFolderData[count]->m_szTitle, buf, 63);
+							strncpy(m_ExtraFolderData[count]->m_szTitle, buf, 64);
 							m_ExtraFolderData[count]->m_nFolderId   = m_next_folder_id++;
 							m_ExtraFolderData[count]->m_nParent     = -1;
-							m_ExtraFolderData[count]->m_dwFlags     = F_CUSTOM;
-							m_ExtraFolderData[count]->m_nIconId     = icon[0] ? -icon[0] : IDI_FOLDER;
-							m_ExtraFolderData[count]->m_nSubIconId  = icon[1] ? -icon[1] : IDI_FOLDER;
+							m_ExtraFolderData[count]->m_dwFlags     = FI_CUSTOM;
+							m_ExtraFolderData[count]->m_nIconId     = icon[0] ? -icon[0] : IDI_FP_CUSTOM;
+							m_ExtraFolderData[count]->m_nSubIconId  = icon[1] ? -icon[1] : IDI_FP_DEF;
 							//printf("extra folder with icon %i, subicon %i\n",
 							//m_ExtraFolderData[count]->m_nIconId,
 							//m_ExtraFolderData[count]->m_nSubIconId);
@@ -2369,7 +2375,7 @@ BOOL TryAddExtraFolderAndChildren(int parent_index)
 					   and the flags for this folder as read from the registry */
 					//printf("creating %s sub-folder ",name);fflush(stdout);
 					lpTemp = NewFolder(name,current_id,parent_index, m_ExtraFolderData[id]->m_nSubIconId,
-						GetFolderFlags(m_numFolders) | F_CUSTOM);
+						GetFolderFlags(m_numFolders) | FI_CUSTOM);
 					if (!lpTemp)
 						continue;
 					m_ExtraFolderData[current_id] = (EXFOLDERDATA*)malloc(m_folderBytes);
@@ -2518,7 +2524,7 @@ BOOL TryRenameCustomFolder(LPTREEFOLDER lpFolder, const char *new_name)
 
 void AddToCustomFolder(LPTREEFOLDER lpFolder,int driver_index)
 {
-	if ((lpFolder->m_dwFlags & F_CUSTOM) == 0)
+	if ((lpFolder->m_dwFlags & FI_CUSTOM) == 0)
 	{
 		win_message_box_utf8(GetMainWindow(),"Unable to add game to non-custom folder", MAMEUINAME,MB_OK | MB_ICONERROR);
 		return;
@@ -2534,7 +2540,7 @@ void AddToCustomFolder(LPTREEFOLDER lpFolder,int driver_index)
 
 void RemoveFromCustomFolder(LPTREEFOLDER lpFolder,int driver_index)
 {
-	if ((lpFolder->m_dwFlags & F_CUSTOM) == 0)
+	if ((lpFolder->m_dwFlags & FI_CUSTOM) == 0)
 	{
 		win_message_box_utf8(GetMainWindow(),"Unable to remove game from non-custom folder", MAMEUINAME,MB_OK | MB_ICONERROR);
 		return;
@@ -2597,11 +2603,11 @@ BOOL TrySaveExtraFolder(LPTREEFOLDER lpFolder)
 		// negative values for icons means it's custom, so save 'em
 		if (extra_folder->m_nIconId < 0)
 		{
-			fprintf(fp, "RootFolderIcon %s\n", m_ExtraFolderIcons[(-extra_folder->m_nIconId) - ICON_MAX]);
+			fprintf(fp, "RootFolderIcon = %s\n", m_ExtraFolderIcons[(-extra_folder->m_nIconId) - ICON_MAX]);
 		}
 		if (extra_folder->m_nSubIconId < 0)
 		{
-			fprintf(fp,"SubFolderIcon %s\n", m_ExtraFolderIcons[(-extra_folder->m_nSubIconId) - ICON_MAX]);
+			fprintf(fp,"SubFolderIcon = %s\n", m_ExtraFolderIcons[(-extra_folder->m_nSubIconId) - ICON_MAX]);
 		}
 
 		/* need to loop over all our TREEFOLDERs--first the root one, then each child. Start with the root */
@@ -2780,8 +2786,8 @@ static void SaveExternalFolders(int parent_index, const char *fname)
 
 	// Populate the file
 	fprintf(f, "[FOLDER_SETTINGS]\n");
-	fprintf(f, "RootFolderIcon custom\n");
-	fprintf(f, "SubFolderIcon custom\n");
+	fprintf(f, "RootFolderIcon = custom\n");
+	fprintf(f, "SubFolderIcon = custom\n");
 
 	/* need to loop over all our TREEFOLDERs--first the root one, then each child.
 	start with the root */
