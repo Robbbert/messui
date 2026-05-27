@@ -57,11 +57,11 @@ static TREEICON treeIconNames[] =
 	{ IDI_FP_BIOS,         "fp-bios" },
 	{ IDI_FP_CLONES,       "fp-clone" },
 	{ IDI_FP_CPU,          "fp-cpu" },
-	{ IDI_FP_CUSTOM,       "fp-custom" },
+	{ IDI_FP_CUSTOM,       "custom" },
 	{ IDI_FP_DUMP,         "fp-dump" },
 	{ IDI_FP_FPS,          "fp-fps" },
 	{ IDI_FP_HARDDISK,     "fp-hard" },
-	{ IDI_FP_HORI,         "fp-horz" },
+	{ IDI_FP_HORI,         "fp-hori" },
 	{ IDI_FP_IMP,          "fp-imp" },
 	{ IDI_FP_LIGHTGUN,     "fp-lgun" },
 	{ IDI_FP_MANU,         "fp-manu" },
@@ -1852,15 +1852,17 @@ BOOL InitFolders()
 		LPEXFOLDERDATA fExData = m_ExtraFolderData[i];
 		// OR in the saved folder flags
 		dwFolderFlags = fExData->m_dwFlags | GetFolderFlags(m_numFolders);
-		// create the folder, but if we are building the cache, the name must not be a pre-built one
+		// Custom folder must not have the same name as in inbuilt one
 		int k = 0;
-		if (RequiredDriverCache())
-			for (int j = 0; m_lpFolderData[j].m_lpTitle; j++)
-				if (strcmp(fExData->m_szTitle, m_lpFolderData[j].m_lpTitle)==0)
-					k++;
+		for (int j = 0; m_lpFolderData[j].m_lpTitle; j++)
+			if (strcmp(fExData->m_szTitle, m_lpFolderData[j].m_lpTitle)==0)
+				k++;
 
 		if (k == 0)
+		{
+			//printf("Creating custom folder: %s with iconid %d\n",fExData->m_szTitle,fExData->m_nIconId);
 			AddFolder(NewFolder(fExData->m_szTitle,fExData->m_nFolderId,fExData->m_nParent, fExData->m_nIconId,dwFolderFlags));
+		}
 	}
 
 // creates child folders of all the top level folders, including custom ones
@@ -1923,7 +1925,7 @@ BOOL InitFolders()
 	return true;
 }
 
-// create iconlist and Treeview control
+// This shows the tree icons. If it fails, then we get a W2K folder structure.
 static BOOL CreateTreeIcons()
 {
 	HICON hIcon;
@@ -1933,29 +1935,44 @@ static BOOL CreateTreeIcons()
 	int numIcons = ICON_MAX + m_numExtraIcons;
 	m_hTreeSmall = ImageList_Create (16, 16, ILC_COLORDDB | ILC_MASK, numIcons, numIcons);
 
+	// Icons for inbuilt folders
 	//printf("Trying to load %i normal icons\n",ICON_MAX);
 	for (i = 0; i < ICON_MAX; i++)
 	{
+		// Try an internal icon
 		hIcon = LoadIconFromFile(treeIconNames[i].lpName);
 		if (!hIcon)
 			hIcon = LoadIcon(hInst, MAKEINTRESOURCE(treeIconNames[i].nResourceID));
 
+		// Add icon to imagelist
 		if (ImageList_AddIcon (m_hTreeSmall, hIcon) == -1)
 		{
-			ErrorMsg("Error creating icon ''%s'' on regular folder, %i %i",treeIconNames[i].lpName,i,hIcon != NULL);
+			ErrorMsg("Error creating icon ''%s'' on regular folder.",treeIconNames[i].lpName);
 			return false;
 		}
 	}
 
+	// Icons specified in custom ini files
 	//printf("Trying to load %i extra custom-folder icons\n",numExtraIcons);
 	for (i = 0; i < m_numExtraIcons; i++)
 	{
-		if ((hIcon = LoadIconFromFile(m_ExtraFolderIcons[i])) == 0)
-			hIcon = LoadIcon (hInst, MAKEINTRESOURCE(IDI_FP_DEF));
+		// First try standalone .ico file
+		hIcon = LoadIconFromFile(m_ExtraFolderIcons[i]);
 
+		// If no good, try an internal icon
+		if (!hIcon)
+			for (int j = 0; j < std::size(treeIconNames); j++)
+				if (strcmp(m_ExtraFolderIcons[i], treeIconNames[j].lpName)==0)
+					hIcon = LoadIcon(hInst, MAKEINTRESOURCE(treeIconNames[j].nResourceID));
+
+		// If no good, use custom.ico
+		if (!hIcon)
+			hIcon = LoadIcon (hInst, MAKEINTRESOURCE(IDI_FP_CUSTOM));
+
+		// Add icon to imagelist
 		if (ImageList_AddIcon(m_hTreeSmall, hIcon) == -1)
 		{
-			ErrorMsg("Error creating icon on extra folder, %i %i",i,hIcon != NULL);
+			ErrorMsg("Error creating icon ''%s'' on extra folder",m_ExtraFolderIcons[i]);
 			return false;
 		}
 	}
@@ -2171,16 +2188,18 @@ static int InitExtraFolders()
 	//printf("Not zeroing %d bytes\n",int(MAX_EXTRA_FOLDERS * MAX_EXTRA_SUBFOLDERS * m_folderBytes));
 	memset(m_ExtraFolderData, 0, (MAX_EXTRA_FOLDERS * MAX_EXTRA_SUBFOLDERS)* sizeof(LPEXFOLDERDATA));
 
-	/* NPW 9-Feb-2003 - MSVC stat() doesn't like stat() called with an empty string */
+	// folders path not set
 	if (!dir)
 		return 0;
 
-	// Why create the directory if it doesn't exist, just return 0 folders.
+	// specified folder not exist
 	if (stat(dir, &stat_buffer) != 0)
 		return 0;
 
+	// remember where we are - should be emu root
 	_getcwd(curdir, MAX_PATH);
 
+	// change to folders dir
 	chdir(dir);
 
 	for (i = 0; i < MAX_EXTRA_FOLDERS; i++)
@@ -2189,6 +2208,7 @@ static int InitExtraFolders()
 	m_numExtraIcons = 0;
 	intptr_t hLong = 0L;
 
+	// process all the ini files in the current folder
 	if ( (hLong = _findfirst("*.ini", &files)) == -1L )
 	{ }
 	else
@@ -2259,8 +2279,8 @@ static int InitExtraFolders()
 							m_ExtraFolderData[count]->m_nIconId     = icon[0] ? -icon[0] : IDI_FP_CUSTOM;
 							m_ExtraFolderData[count]->m_nSubIconId  = icon[1] ? -icon[1] : IDI_FP_DEF;
 							//printf("extra folder with icon %i, subicon %i\n",
-							//m_ExtraFolderData[count]->m_nIconId,
-							//m_ExtraFolderData[count]->m_nSubIconId);
+								//m_ExtraFolderData[count]->m_nIconId,
+								//m_ExtraFolderData[count]->m_nSubIconId);
 							count++;
 						}
 					}

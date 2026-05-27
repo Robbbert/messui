@@ -5,7 +5,7 @@
 What is MESSUI?
 ===============
 
-MESSUI is an easy-to-use frontend of MESS, for Windows 7 SP 1 and later.
+MESSUI is an easy-to-use frontend of MESS, for Windows 10 and later.
 
 
 
@@ -29,7 +29,7 @@ Where can I find out more?
 =============
 
 * [Official MAME Development Team Site](http://mamedev.org/)
-* [MAME Testers](http://mametesters.org/) (official bug tracker)
+* [MAME Testers](http://mametesters.org/) (official MAME bug tracker)
 * [Official MESSUI site](http://messui.1emulation.com/)
 * [Official MESSUI forum](http://1emulation.com/forums/forum/125-mameui) (bugs, requests, discussion)
 
