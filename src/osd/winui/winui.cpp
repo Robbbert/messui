@@ -4964,7 +4964,6 @@ static void CreateIcons()
 {
 	DWORD dwSmallIconSize = GetShellSmallIconSize();
 	DWORD dwLargeIconSize = GetShellLargeIconSize();
-	HICON hIcon;
 	int icon_count = 0;
 	int grow = 5000;
 
@@ -5010,14 +5009,15 @@ static void CreateIcons()
 	CreateMessIcons(); // messui.cpp
 
 	// Now set up header specific stuff
-	hHeaderImages = ImageList_Create(8,8,ILC_COLORDDB | ILC_MASK,2,2);
-	hIcon = LoadIcon(hInst,MAKEINTRESOURCE(IDI_HEADER_UP));
-	ImageList_AddIcon(hHeaderImages,hIcon);
-	hIcon = LoadIcon(hInst,MAKEINTRESOURCE(IDI_HEADER_DOWN));
-	ImageList_AddIcon(hHeaderImages,hIcon);
+	// This doesn't seem to be used
+//	hHeaderImages = ImageList_Create(8,8,ILC_COLORDDB | ILC_MASK,2,2);
+//	HICON hIcon = LoadIcon(hInst,MAKEINTRESOURCE(IDI_HEADER_UP));
+//	ImageList_AddIcon(hHeaderImages,hIcon);
+//	hIcon = LoadIcon(hInst,MAKEINTRESOURCE(IDI_HEADER_DOWN));
+//	ImageList_AddIcon(hHeaderImages,hIcon);
 
-	for (int i = 0; i < sizeof(s_nPickers) / sizeof(s_nPickers[0]); i++)
-		Picker_SetHeaderImageList(GetDlgItem(hMain, s_nPickers[i]), hHeaderImages);
+//	for (int i = 0; i < sizeof(s_nPickers) / sizeof(s_nPickers[0]); i++)
+//		Picker_SetHeaderImageList(GetDlgItem(hMain, s_nPickers[i]), hHeaderImages);
 }
 
 

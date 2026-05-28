@@ -94,6 +94,8 @@ agat/agat.cpp
 
 akai/s3000.cpp
 
+//akai/x7000.cpp       // no sound;s612 no screen
+
 //alesis/alesis.cpp    // no sound
 
 //alesis/midiverb.cpp  // W:useless
@@ -414,6 +416,8 @@ casio/ctk551.cpp
 -ctk551          // W:inputs
 -ctk601          // W:inputs
 -gz70sp          // W:no screen
+
+//casio/ctrc1.cpp     // no screen
 
 casio/cz1.cpp
 
@@ -3098,6 +3102,8 @@ skeleton/fc100.cpp
 
 skeleton/ft68m.cpp
 
+//skeleton/galpro.cpp  // need roms
+
 //skeleton/gem_rp.cpp   // no screen
 
 skeleton/gimix.cpp
@@ -3433,7 +3439,7 @@ snk/ngp.cpp
 sony/news_38xx.cpp
 
 sony/news_68k.cpp
--nws1250       // blank screen
+-nws1250       // blank screen; need roms
 
 sony/news_68k_iop.cpp
 
