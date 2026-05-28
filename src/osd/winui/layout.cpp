@@ -54,7 +54,7 @@ extern const FOLDERDATA g_folderData[] =
 	{"Non Mechanical",  "nonmechanical",     FOLDER_NONMECH,   IDI_FP_NONMECH,   0,              0,          0,          0, NULL,                       DriverIsMechanical,      FALSE },
 	{"Not Working",     "nonworking",        FOLDER_NW,        IDI_FP_NW,        0,              FI_NW,      FI_W,       0, NULL,                       DriverIsBroken,          TRUE },
 	{"Parents",         "parents",           FOLDER_PARENTS,   IDI_FP_PARENTS,   0,              FI_PARENTS, FI_CLONES,  0, NULL,                       DriverIsClone,           FALSE },
-	//{"Raster",          "raster",            FOLDER_RASTER,    IDI_FP_RASTER,    0,              FI_RASTER,  FI_VECTOR,  0, NULL,                       DriverIsVector,          FALSE, OPTIONS_RASTER },
+//	{"Raster",          "raster",            FOLDER_RASTER,    IDI_FP_RASTER,    0,              FI_RASTER,  FI_VECTOR,  0, NULL,                       DriverIsVector,          FALSE, OPTIONS_RASTER },
 	{"Resolution",      "resolution",        FOLDER_RESOL,     IDI_FP_RESOL,     IDI_FP_DEF,     0,          0,          1, CreateResolutionFolders },
 	{"Samples",         "samples",           FOLDER_SAMPLES,   IDI_FP_SAMPLES,   0,              0,          0,          0, NULL,                       DriverUsesSamples,       TRUE },
 	{"Save State",      "savestate",         FOLDER_SAVESTATE, IDI_FP_SAVESTATE, 0,              0,          0,          0, NULL,                       DriverSupportsSaveState, TRUE },

@@ -1852,7 +1852,7 @@ BOOL InitFolders()
 		LPEXFOLDERDATA fExData = m_ExtraFolderData[i];
 		// OR in the saved folder flags
 		dwFolderFlags = fExData->m_dwFlags | GetFolderFlags(m_numFolders);
-		// Custom folder must not have the same name as in inbuilt one
+		// Custom folder must not have the same name as an inbuilt one
 		int k = 0;
 		for (int j = 0; m_lpFolderData[j].m_lpTitle; j++)
 			if (strcmp(fExData->m_szTitle, m_lpFolderData[j].m_lpTitle)==0)

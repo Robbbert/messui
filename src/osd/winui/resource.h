@@ -28,12 +28,12 @@
 #define IDS_VIEW_CUSTOMIZEFIELDS        91
 #define ID_TOOLBAR_EDIT                 92
 #define IDI_MAMEUI                      100
-#define IDI_HEADER_UP                   990
-#define IDI_HEADER_DOWN                 991
+#define IDI_HEADER_UP                   100
+#define IDI_HEADER_DOWN                 102
 #define IDB_ABOUT                       200
 #define IDB_TOOLBAR                     201
 #define IDB_SPLASH                      202
-#define IDB_WEB_PAGE                    272
+#define IDB_WEB_PAGE                    203
 #define IDA_TAB_KEYS                    300
 #define IDD_MAIN                        301
 #define IDD_STARTUP                     302
