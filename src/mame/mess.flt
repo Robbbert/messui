@@ -1081,7 +1081,7 @@ hp/hp48.cpp
 
 //hp/hp620lx.cpp // black screen
 
-//hp/hp64k.cpp   // WM:mnw
+//hp/hp64k.cpp   // W:MT09476
 
 //hp/hp700.cpp  // no screen
 
@@ -1458,7 +1458,7 @@ motorola/mekd3.cpp
 
 motorola/mekd4.cpp
 
-//motorola/mekd5.cpp   // WM:inputs
+motorola/mekd5.cpp
 
 motorola/mex68kecb.cpp
 
@@ -1862,6 +1862,8 @@ novag/sdiamond.cpp
 
 novag/sexpert.cpp
 
+//novag/ssaphire.cpp    // no screen
+
 novag/vip.cpp
 
 novag/zircon2.cpp
@@ -1928,7 +1930,7 @@ palm/palm.cpp
 -palmm515      // black screen
 -palmm505      // blank screen
 -palmm130      // blank screen
--palmiii        // WM:works but horrible noise
+-palmiii        // W:MT09468
 -palmpers       // W:works, need artwork for apps buttons
 -palmpro        // W:works, need artwork for apps buttons
 
@@ -2326,7 +2328,7 @@ pc/genpc.cpp
 
 pc/ibmpc.cpp
 -ibm5140         // nonstop beep, black screen
--ibm5155         // WM:inputs
+-ibm5155         // W:MT09469
 
 pc/ibmpcjr.cpp
 -ibmpcjx        // random crash
@@ -2512,7 +2514,6 @@ poly88/poly88.cpp
 //positron/positron.cpp   // no sw
 
 psion/mc400.cpp
--mc200               // WM:grey screen
 
 psion/mc600.cpp
 
@@ -2581,7 +2582,7 @@ robotron/a5105.cpp
 
 //robotron/k8915.cpp  // no media support
 
-//robotron/rt1715.cpp   // WM:black screen
+//robotron/rt1715.cpp   // W:rt1715w works, but parent rt1715 does not
 
 robotron/z1013.cpp
 -z1013s60        // inputs
@@ -2834,9 +2835,9 @@ sfrj/tim100.cpp
 
 //sgi/indy_indigo2.cpp  //WM:panic attack on 2nd boot
 
-//sgi/ip12.cpp    // WM:no sw;pi4d30,pi4d35 black screen
+//sgi/ip12.cpp    // W:M09471:no sw;pi4d30 black screen
 
-//sgi/ip20.cpp    // WM:no sw;indigo_r4400 black screen
+//sgi/ip20.cpp    // W:M09470:no sw;indigo_r4400 black screen
 
 //sgi/ip6.cpp    // W:cannot boot sw
 
@@ -3439,7 +3440,7 @@ snk/ngp.cpp
 sony/news_38xx.cpp
 
 sony/news_68k.cpp
--nws1250       // blank screen; need roms
+-nws1250       // WM289:blank screen
 
 sony/news_68k_iop.cpp
 
@@ -3462,7 +3463,6 @@ sony/smc777.cpp
 //sord/future32.cpp  // black screen, no sw
 
 sord/m5.cpp
--m5p_brno            // WM:inputs
 
 stm/pp.cpp
 
