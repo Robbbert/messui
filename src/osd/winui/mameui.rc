@@ -461,7 +461,7 @@ IDI_FP_VERT             ICON                    "res\\fp-vert.ico"
 IDI_FP_VECTOR           ICON                    "res\\fp-vector.ico"
 IDI_FP_YEAR             ICON                    "res\\fp-year.ico"
 IDI_FP_W                ICON                    "res\\fp-w.ico"
-// Child Tree children
+// Tree folder children
 IDI_FC_BIOS             ICON                    "res\\fc-bios.ico"
 IDI_FC_CHIP             ICON                    "res\\fc-chip.ico"
 IDI_FC_CPU              ICON                    "res\\fc-cpu.ico"
