@@ -5692,7 +5692,7 @@ int FindIconIndexByName(const char *icon_name)
 
 static int GetIconForDriver(int nItem)
 {
-	int iconRoms = 0;
+	int iconRoms = -1;
 
 	if (DriverUsesRoms(nItem))
 	{
@@ -5707,7 +5707,7 @@ static int GetIconForDriver(int nItem)
 			iconRoms = FindIconIndex(IDI_LV_BIOS);  // bios, any status
 	}
 
-	if (iconRoms == 0)
+	if (iconRoms == -1)
 	{
 		iconRoms =  FindIconIndex(IDI_LV_PW);  // start assuming it's a working parent
 
