@@ -422,6 +422,28 @@ LPCFILTER_ITEM GetFilterList()
     private functions
  ***************************************************************************/
 
+void CreateSaveStateFolders(int parent_index)
+{
+	LPTREEFOLDER lpFolder = m_treeFolders[parent_index];
+	LPTREEFOLDER lpSupported, lpUnsupported;
+
+	// no games in top level folder
+	SetAllBits(lpFolder->m_lpGameBits,false);
+	// create our two subfolders
+	lpSupported = NewFolder("Supported", m_next_folder_id++, parent_index, IDI_FP_SAVESTATE, GetFolderFlags(m_numFolders));
+	lpUnsupported = NewFolder("Unsupported", m_next_folder_id++, parent_index, IDI_FP_SAVESTATE, GetFolderFlags(m_numFolders));
+	AddFolder(lpSupported);
+	AddFolder(lpUnsupported);
+
+	for (int jj = 0; jj < driver_list::total(); jj++)
+	{
+		if (DriverSupportsSaveState(jj))
+			AddGame(lpSupported, jj);
+		else
+			AddGame(lpUnsupported, jj);
+	}
+}
+
 void CreateSourceFolders(int parent_index)
 {
 	printf("creating source folders\n");fflush(stdout);
