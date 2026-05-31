@@ -1862,7 +1862,7 @@ novag/sdiamond.cpp
 
 novag/sexpert.cpp
 
-//novag/ssaphire.cpp    // no screen
+//novag/ssapphire.cpp    // no screen
 
 novag/vip.cpp
 
@@ -3440,7 +3440,6 @@ snk/ngp.cpp
 sony/news_38xx.cpp
 
 sony/news_68k.cpp
--nws1250       // WM289:blank screen
 
 sony/news_68k_iop.cpp
 
