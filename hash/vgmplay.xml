@@ -139838,7 +139838,7 @@ license:CC0-1.0
 	</software>
 
 	<software name="yiear_nes">
-		<description>Yie Ar Kung Fu (NES)</description>
+		<description>Yie Ar Kung-Fu (NES)</description>
 		<year>1985</year>
 		<publisher>Konami</publisher>
 		<info name="cores" value="NES APU (RP2A03)"/>

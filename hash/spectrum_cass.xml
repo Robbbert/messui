@@ -54823,7 +54823,7 @@ Side B: Once Upon a Lily Pad
 	</software>
 
 	<software name="bravesta">
-		<description>Brave Starr</description>
+		<description>BraveStarr</description>
 		<year>1987</year>
 		<publisher>Go!</publisher>
 		<part name="cass" interface="spectrum_cass">
@@ -54834,7 +54834,7 @@ Side B: Once Upon a Lily Pad
 	</software>
 
 	<software name="bravesta_a" cloneof="bravesta">
-		<description>Brave Starr (Kixx)</description>
+		<description>BraveStarr (Kixx)</description>
 		<year>1987</year>
 		<publisher>Kixx</publisher>
 		<part name="cass" interface="spectrum_cass">
@@ -54845,7 +54845,7 @@ Side B: Once Upon a Lily Pad
 	</software>
 
 	<software name="bravesta_b" cloneof="bravesta">
-		<description>Brave Starr (Erbe)</description>
+		<description>BraveStarr (Erbe)</description>
 		<year>1987</year>
 		<publisher>Erbe Software</publisher>
 		<part name="cass" interface="spectrum_cass">
