@@ -3730,7 +3730,7 @@ trs/coco12.cpp
 
 trs/coco3.cpp
 
-//trs/dgnalpha.cpp    // WM:mnw
+//trs/dgnalpha.cpp    // W:MT09477
 
 //trs/dgn_beta.cpp    // no sw
 
@@ -3948,7 +3948,6 @@ tvgames/tvgame.cpp
 
 tvgames/xavix.cpp
 -bistro
--taikodp             // WM:inputs
 -ekara
 -ekaraa
 -ekarag
@@ -4295,7 +4294,7 @@ vtech/vtech2.cpp
 
 //vtech/vtech_innotab.cpp    // black screen
 
-//wang/wangpc.cpp      // WM:cannot boot disk
+//wang/wangpc.cpp      // W:MT09478
 
 wavemate/bullet.cpp
 -wmbulletf        // blank screen
