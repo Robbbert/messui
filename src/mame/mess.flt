@@ -889,6 +889,8 @@ handheld/lk3000.cpp
 
 handheld/monty.cpp
 
+//handheld/mylife.cpp     // need roms (mylife,mylifei)
+
 //handheld/pensebem.cpp   // mnw
 
 handheld/rzone.cpp

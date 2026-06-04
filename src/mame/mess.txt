@@ -126,7 +126,7 @@ amiga/amiga.cpp
 
 ampro/ampro.cpp
 
-//ampro/lb186.cpp   // WM:no sw, shows nothing
+//ampro/lb186.cpp   // W:MT09479
 
 ampro/lbpc.cpp
 
@@ -888,6 +888,8 @@ handheld/hh_ucom4.cpp
 handheld/lk3000.cpp
 
 handheld/monty.cpp
+
+//handheld/mylife.cpp     // need roms (mylife,mylifei)
 
 //handheld/pensebem.cpp   // mnw
 
@@ -2833,11 +2835,11 @@ sfrj/tim100.cpp
 
 //sgi/crimson.cpp  // stuck while booting
 
-//sgi/indy_indigo2.cpp  //WM:panic attack on 2nd boot
+//sgi/indy_indigo2.cpp  //W:MT09428 black screen
 
-//sgi/ip12.cpp    // W:M09471:no sw;pi4d30 black screen
+//sgi/ip12.cpp    // W:MT09471:no sw;pi4d30 black screen
 
-//sgi/ip20.cpp    // W:M09470:no sw;indigo_r4400 black screen
+//sgi/ip20.cpp    // W:MT09470:no sw;indigo_r4400 black screen
 
 //sgi/ip6.cpp    // W:cannot boot sw
 
