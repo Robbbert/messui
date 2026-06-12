@@ -83938,7 +83938,7 @@ stick to CPC-Power disks, when available)
 
 	<!-- Identifying Thundercats - The Lost Eye Of Thundera (UK) (1987) [Original].zip... --> <!-- CPC Power -->
 	<software name="thunderc" supported="no">
-		<description>Thundercats - The Lost Eye of Thundera (UK) [Original]</description>
+		<description>ThunderCats: The Lost Eye of Thundera (UK) [Original]</description>
 		<year>1987</year>
 		<publisher>&lt;unknown&gt;</publisher>
 		<part name="flop1" interface="floppy_3">
@@ -83950,7 +83950,7 @@ stick to CPC-Power disks, when available)
 
 	<!-- Identifying Thundercats - The Lost Eye Of Thundera (UK) (1987).zip... --> <!-- CPC Power -->
 	<software name="thunderc01" cloneof="thunderc" supported="no">
-		<description>Thundercats - The Lost Eye of Thundera (UK)</description>
+		<description>ThunderCats: The Lost Eye of Thundera (UK)</description>
 		<year>1987</year>
 		<publisher>&lt;unknown&gt;</publisher>
 		<part name="flop1" interface="floppy_3">
@@ -150620,7 +150620,7 @@ stick to CPC-Power disks, when available)
 
 	<!-- Identifying Thundercats (1987)(Elite Systems)[cr Aragorn][t Aragorn].dsk... --> <!-- Mostly GoodCPC -->
 	<software name="thunderc02" cloneof="thunderc" supported="no">
-		<description>Thundercats (Elite Systems)[cr Aragorn][t Aragorn]</description>
+		<description>ThunderCats (Elite Systems)[cr Aragorn][t Aragorn]</description>
 		<year>1987</year>
 		<publisher>&lt;unknown&gt;</publisher>
 		<part name="flop1" interface="floppy_3">
@@ -187731,7 +187731,7 @@ stick to CPC-Power disks, when available)
 
 	<!-- Identifying Thundercats (UK) (1987) [b1].dsk... --> <!-- GoodCPC -->
 	<!--<software name="thunderc03" cloneof="thunderc" supported="no">
-	    <description>Thundercats (UK) [b1]</description>
+	    <description>ThunderCats (UK) [b1]</description>
 	    <year>1987</year>
 	    <publisher>&lt;unknown&gt;</publisher>
 	    <part name="flop1" interface="floppy_3">
@@ -216587,7 +216587,7 @@ stick to CPC-Power disks, when available)
 
 	<!-- Identifying Thundercats (nongoodcpc).dsk... --> <!-- NonGoodCPC -->
 	<software name="thunderc04" cloneof="thunderc" supported="no">
-		<description>Thundercats</description>
+		<description>ThunderCats</description>
 		<year>19??</year>
 		<publisher>&lt;unknown&gt;</publisher>
 		<part name="flop1" interface="floppy_3">

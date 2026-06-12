@@ -126,7 +126,7 @@ amiga/amiga.cpp
 
 ampro/ampro.cpp
 
-//ampro/lb186.cpp   // W:MT09479
+ampro/lb186.cpp
 
 ampro/lbpc.cpp
 
@@ -1159,6 +1159,8 @@ intel/basic52.cpp
 
 //intel/i420ex.cpp  // cannot boot disk, mnw
 
+intel/i430lx.cpp
+
 intel/imds2.cpp
 
 intel/intellec4.cpp
@@ -1701,92 +1703,65 @@ nintendo/nes_vt32.cpp
 -lxpcfzcz           // mnw
 
 nintendo/nes_vt369_vtunknown.cpp
--zonefusn
--zl383
--nesvt270
--unk128vt
--tup240
--tetrtin
--sealvt
--s5_520
--s10fake
--s10_520
--rtvgc300pj
--rtvgc300fz
--rtvgc300cr
--rtvgc300
--retro620
--a6plus
--rbbrite
--pactin
--otrail
--nubsupmf
--dgun2572
--matetsl
--matet10
--dgun2577
--dgun2593
--dgun2561
--myarccn
--mog_m320
--gcs2mgp
--rd5_240
--240in1ar
--red5mam
--hkb502a
--hkb502
--h12p1000
--goretropa
--goretrop
--gb50_150
--gtct885
--gbox2020
--f5_620
--egame150
--dvnimbus
--168pcase
--denv150
--d9_500
--lxcypksp
--lxcypkpp
--lxcypkfz
--lxcypkdp
--lxcap
--lxcyber
--lxccminn
--lxccplan
--lxccatv
--lxcmcysw
--lxcmcyspn
+-168pcase   
+-240in1ar   
+-500in1hh   
+-a6plus     
+-d9_500     
+-denv150    
+-dgun2572   
+-dgun2577   
+-dgun2593   
+-dvnimbus   
+-egame150   
+-f5_620     
+-gb50_150   
+-gbox2020   
+-goretrop   
+-goretropa  
+-goretropu12
+-goretropu13
+-gtct885    
+-h12p1000   
+-hkb502     
+-hkb502a    
+-lpgm240    
+-lxcap      
+-lxcmcysp 
 -lxcmcyspa
--lxcmcysp
--lxcmcypj
--lxcmcypp
--lxcmcyppa
--lxcmcyls
--lxcmcyfzb
--lxcmcyfza
--lxcmcyfz
--lxcmcyfd
--lxcmcydpn
--lxcmcydp
--lxcmcycr
--lxcmcyco
--lxcmcybt
--lxcmcyba
--lxcmc250
--jl2377
--lxcmcy
--jl1810gr
--lexi30
--t3_630
--500in1hh
--36pcase
--unkra200
--goretropu12        // mnw
--goretropu13        // mnw
--pixel246           // bad gfx
--unk198vt           // bad gfx
+-lxcyber  
+-lxcypkdp 
+-lxcypkfz 
+-lxcypkpp 
+-lxcypksp 
+-matet10  
+-matetsl  
+-mog_m320 
+-myarccn  
+-nesvt270 
+-nubsupmf 
+-orb240   
+-otrail   
+-pactin   
+-pixel246 
+-rbbrite  
+-rd5_240  
+-red5mam  
+-retro620 
+-rsps300  
+-s10_520   
+-s10fake   
+-s5_520    
+-t3_630    
+-tui240    
+-tup240    
+-unk128vt  
+-unk198vt  
+-unkra200  
+-urban240  
+-vibes240  
+-vibes240a 
+-zl383     
 
 nintendo/nes_vt42xx.cpp
 -rfcp168
@@ -3732,7 +3707,7 @@ trs/coco12.cpp
 
 trs/coco3.cpp
 
-//trs/dgnalpha.cpp    // W:MT09477
+trs/dgnalpha.cpp
 
 //trs/dgn_beta.cpp    // no sw
 
@@ -4296,7 +4271,7 @@ vtech/vtech2.cpp
 
 //vtech/vtech_innotab.cpp    // black screen
 
-//wang/wangpc.cpp      // W:MT09478
+wang/wangpc.cpp
 
 wavemate/bullet.cpp
 -wmbulletf        // blank screen
