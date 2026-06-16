@@ -3773,7 +3773,6 @@ tvgames/elan_eu3a05.cpp
 tvgames/generalplus_gpl16250_rom.cpp
 -fpsport
 -jak_spmm
--beijuehh
 -jak_bj
 -bornkidh
 -dressmtv
