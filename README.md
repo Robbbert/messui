@@ -5,7 +5,7 @@
 What is MESSUI?
 ===============
 
-MESSUI is an easy-to-use frontend of MESS, for Windows 10 and later.
+MESSUI is an easy-to-use frontend of MESS, for Windows 10 build 1607, 64-bit and later.
 
 
 
