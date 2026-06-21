@@ -1509,7 +1509,7 @@ nakajima/nakajies.cpp
 
 nascom/nascom1.cpp
 
-//natsemi/icm3216.cpp    // no sw
+natsemi/icm3216.cpp
 
 natsemi/ns32kdb.cpp
 
