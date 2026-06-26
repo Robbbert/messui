@@ -94,6 +94,8 @@ agat/agat.cpp
 
 akai/s3000.cpp
 
+//akai/s900.cpp        // no sound
+
 //akai/x7000.cpp       // no sound;s612 no screen
 
 //alesis/alesis.cpp    // no sound
@@ -195,7 +197,6 @@ apple/macpwrbk030.cpp
 apple/macpwrbkmsc.cpp
 
 apple/macquadra605.cpp
--maclc575                // W:MT09455
 
 apple/macquadra630.cpp
 
@@ -500,6 +501,8 @@ coleco/adam.cpp
 coleco/coleco.cpp
 
 //coleco/wrinkles.cpp   // no screen
+
+colonial/sb80.cpp
 
 commodore/c128.cpp
 
@@ -1659,19 +1662,20 @@ nintendo/nes_sh6578.cpp
 -6578cjz1
 
 nintendo/nes_vt02_vt03.cpp
--senwld          // mech
--vtpinball
--vtboxing
+-ablping
+-cbrs8
+-hs36blk
+-hs36red
+-lg600fr         // inputs
+-megapad
 -protpp
--vfootbal
+-senwld          // mech
+-tvmjfc
 -vdogdeme
 -vdogdemo
--tvmjfc
--ablping
--megapad
--hs36red
--hs36blk
--cbrs8
+-vtboxing
+-vfootbal
+-vtpinball
 
 nintendo/nes_vt09.cpp
 -pumpactv        // inputs
@@ -3510,7 +3514,7 @@ tandberg/tdv2115l.cpp
 tangerine/microtan.cpp
 
 tangerine/oric.cpp
--telstrat            // WM:cannot boot disk
+-telstrat            // W:MT09489
 
 tatung/einstein.cpp
 
@@ -3663,6 +3667,8 @@ toshiba/pasopia.cpp
 
 toshiba/pasopia7.cpp
 -pasopia7lcd     // bad screen
+
+//toshiba/t250.cpp      // W:no sw
 
 trainer/amico2k.cpp
 
@@ -4308,6 +4314,7 @@ xerox/bigbord2.cpp
 //xerox/notetaker.cpp    // black screen
 
 xerox/xerox820.cpp
+-bigboard5               // black screen
 
 //yamaha/fb01.cpp        // W:no sound
 
