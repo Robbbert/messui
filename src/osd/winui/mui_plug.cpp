@@ -19,13 +19,13 @@ Determine which plugins are valid, which ones are wanted and which ones are not 
 =================================================================================================== */
 #include "emu.h"
 #include "mui_plug.h"
+#include <windows.h>
 
 #include "fileio.h"
 #include "osdcore.h"
 #include "options.h"
 #include "path.h"
 #include "emuopts.h"
-//#include "mameopts.h"
 
 #include <rapidjson/document.h>
 #include <rapidjson/error/en.h>
@@ -196,32 +196,52 @@ static std::vector<std::string> split(const std::string &text, char sep)
 }
 
 
+//-------------------------------------------------
+//  scan_directory
+//-------------------------------------------------
+
+void mui_plugin_options::scan_directory(const std::string &path, bool recursive)
+{
+	// first try to open as a directory
+	osd::directory::ptr directory = osd::directory::open(path);
+	if (directory)
+	{
+		// iterate over all files in the directory
+		for (const osd::directory::entry *entry = directory->read(); entry != nullptr; entry = directory->read())
+		{
+			if (entry->type == osd::directory::entry::entry_type::FILE && !strcmp(entry->name, "plugin.json"))
+			{
+				load_plugin(util::path_concat(path, entry->name));
+			}
+			else
+			if (entry->type == osd::directory::entry::entry_type::DIR)
+			{
+				if (recursive && strcmp(entry->name, ".") && strcmp(entry->name, ".."))
+					scan_directory(util::path_concat(path, entry->name), recursive);
+			}
+		}
+	}
+}
+
+
 //-----------------------------------------------
 //  get_plugins_list - find all eligible plugins
-//  TODO: how to decide for game or global
 //-----------------------------------------------
 
-void mui_plugin_options::get_plugins_list()
+void mui_plugin_options::get_plugins_list(windows_options& o)
 {
 	// scan all plugin directories - discard duplicates
-	path_iterator iter(emu_options().plugins_path());
+	path_iterator iter(o.plugins_path());
 	std::string path;
 
 	while (iter.next(path))
 	{
-		// try to open as a directory - we don't support files or subdirectories
-		osd::directory::ptr directory = osd::directory::open(path);
-		if (directory)
-		{
-			// iterate over all files in the directory
-			for (const osd::directory::entry *entry = directory->read(); entry != nullptr; entry = directory->read())
-				if (entry->type == osd::directory::entry::entry_type::FILE && !strcmp(entry->name, "plugin.json"))
-					load_plugin(util::path_concat(path, entry->name));
-		}
+		// scan the directory recursively
+		scan_directory(path, true);
 	}
 
 	// parse plugin.ini
-	emu_file file(emu_options().ini_path(), OPEN_FLAG_READ);
+	emu_file file(o.ini_path(), OPEN_FLAG_READ);
 	if (!file.open("plugin.ini"))
 	{
 		try
@@ -235,7 +255,7 @@ void mui_plugin_options::get_plugins_list()
 	}
 
 	// process includes - ignore unknowns
-	for (const std::string &incl : split(emu_options().plugin(), ','))
+	for (const std::string &incl : split(o.plugin(), ','))
 	{
 		plugin *p = find(incl);
 		if (p)
@@ -243,12 +263,13 @@ void mui_plugin_options::get_plugins_list()
 	}
 
 	// process excludes - ignore unknowns
-	for (const std::string &excl : split(emu_options().no_plugin(), ','))
+	for (const std::string &excl : split(o.no_plugin(), ','))
 	{
 		plugin *p = find(excl);
 		if (p)
 			p->m_start = false;
 	}
+
 	// At this point we have the final list of what is in and what is out
 	// Print it to make sure
 	printf("FINAL LIST OF PLUGINS\n");
@@ -257,5 +278,32 @@ void mui_plugin_options::get_plugins_list()
 }
 
 
+//----------------------------------------------------
+//  get_enabled_list - get string of enabled plugins
+//----------------------------------------------------
+
+std::pair<std::string, std::string>mui_plugin_options::get_lists(windows_options& o)
+{
+	get_plugins_list(o);
+
+	std::string ret1, ret2;
+	for (plugin &p : m_plugins)
+	{
+		if (ret2.empty())
+			ret2 = p.m_name;
+		else
+			ret2 = ret2 + "," + p.m_name;
+
+		if (p.m_start == true)
+		{
+			if (ret1.empty())
+				ret1 = p.m_name;
+			else
+				ret1 = ret1 + "," + p.m_name;
+		}
+	}
+
+	return std::make_pair(ret1, ret2);
+}
 
 
