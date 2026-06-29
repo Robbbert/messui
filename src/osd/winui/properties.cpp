@@ -1216,11 +1216,11 @@ INT_PTR CALLBACK GameOptionsProc(HWND hDlg, UINT Msg, WPARAM wParam, LPARAM lPar
 				changed = ResetLUAScript(hDlg);
 				break;
 
-			case IDC_SELECT_PLUGIN:
+			case IDC_PLUGIN_SELECT:
 				changed = SelectPlugins(hDlg);
 				break;
 
-			case IDC_RESET_PLUGIN:
+			case IDC_PLUGIN_RESET:
 				changed = ResetPlugins(hDlg);
 				break;
 
@@ -1733,7 +1733,7 @@ static void OptionsToProp(HWND hWnd, windows_options& o)
 		}
 	}
 
-	hCtrl = GetDlgItem(hWnd, IDC_PLUGIN);
+	hCtrl = GetDlgItem(hWnd, IDC_PLUGIN_LIST);
 
 	if (hCtrl)
 	{
@@ -2462,8 +2462,8 @@ static void BuildDataMap(void)
 	datamap_add(properties_datamap, IDC_LUASCRIPT,				DM_STRING,	OPTION_AUTOBOOT_SCRIPT);
 	datamap_add(properties_datamap, IDC_BOOTDELAY,				DM_INT,		OPTION_AUTOBOOT_DELAY);
 	datamap_add(properties_datamap, IDC_BOOTDELAYDISP,			DM_INT,		OPTION_AUTOBOOT_DELAY);
-	datamap_add(properties_datamap, IDC_PLUGINS,				DM_BOOL,	OPTION_PLUGINS);
-	datamap_add(properties_datamap, IDC_PLUGIN,					DM_STRING,	OPTION_PLUGIN);
+	datamap_add(properties_datamap, IDC_PLUGIN_ENABLE,			DM_BOOL,	OPTION_PLUGINS);
+	datamap_add(properties_datamap, IDC_PLUGIN_LIST,			DM_STRING,	OPTION_PLUGIN);
 	datamap_add(properties_datamap, IDC_NVRAM_SAVE,				DM_BOOL,	OPTION_NVRAM_SAVE);
 	datamap_add(properties_datamap, IDC_REWIND,					DM_BOOL,	OPTION_REWIND);
 	datamap_add(properties_datamap, IDC_DRC_CORE,				DM_BOOL,	OPTION_DRC);
@@ -3094,7 +3094,7 @@ static void InitializeLanguageUI(HWND hWnd)
 
 static void InitializePluginsUI(HWND hWnd)
 {
-	HWND hCtrl = GetDlgItem(hWnd, IDC_SELECT_PLUGIN);
+	HWND hCtrl = GetDlgItem(hWnd, IDC_PLUGIN_SELECT);
 
 	if (hCtrl)
 	{
@@ -3351,7 +3351,7 @@ static bool SelectPlugins(HWND hWnd)
 {
 	bool changed = false;
 	bool already_enabled = false;
-	HWND hcontrol = GetDlgItem(hWnd, IDC_SELECT_PLUGIN);
+	HWND hcontrol = GetDlgItem(hWnd, IDC_PLUGIN_SELECT);
 	if (!hcontrol)
 		return changed;
 
@@ -3364,8 +3364,8 @@ static bool SelectPlugins(HWND hWnd)
 	const char* value = t1.c_str();
 
 	char *token = NULL;
-	char buffer[990];  // hold all plugins
-	char plugins[24][32]; // number of possible plugins, max length of name
+	char buffer[1024];  // hold all plugins
+	char plugins[32][32]; // number of possible plugins, max length of name
 	int num_plugins = 0;
 
 	strcpy(buffer, value);
@@ -3388,9 +3388,9 @@ static bool SelectPlugins(HWND hWnd)
 	if (strcmp(value, "") == 0)
 	{
 		emu_set_value(m_CurrentOpts, OPTION_PLUGIN, new_value);
-		win_set_window_text_utf8(GetDlgItem(hWnd, IDC_PLUGIN), new_value);
+		win_set_window_text_utf8(GetDlgItem(hWnd, IDC_PLUGIN_LIST), new_value);
 		changed = true;
-		ComboBox_SetCurSel(GetDlgItem(hWnd, IDC_SELECT_PLUGIN), -1);
+		ComboBox_SetCurSel(GetDlgItem(hWnd, IDC_PLUGIN_SELECT), -1);
 		return changed;	
 	}
 
@@ -3408,19 +3408,19 @@ static bool SelectPlugins(HWND hWnd)
 		char new_option[256];
 		snprintf(new_option, std::size(new_option), "%s,%s", value, new_value);
 		emu_set_value(m_CurrentOpts, OPTION_PLUGIN, new_option);
-		win_set_window_text_utf8(GetDlgItem(hWnd, IDC_PLUGIN), new_option);
+		win_set_window_text_utf8(GetDlgItem(hWnd, IDC_PLUGIN_LIST), new_option);
 		changed = true;
 	}
 
-	ComboBox_SetCurSel(GetDlgItem(hWnd, IDC_SELECT_PLUGIN), -1);
+	ComboBox_SetCurSel(GetDlgItem(hWnd, IDC_PLUGIN_SELECT), -1);
 	return changed;
 }
 
 static bool ResetPlugins(HWND hWnd)
 {
 	emu_set_value(m_CurrentOpts, OPTION_PLUGIN, "");
-	win_set_window_text_utf8(GetDlgItem(hWnd, IDC_PLUGIN), "None");
-	ComboBox_SetCurSel(GetDlgItem(hWnd, IDC_SELECT_PLUGIN), -1);
+	win_set_window_text_utf8(GetDlgItem(hWnd, IDC_PLUGIN_LIST), "None");
+	ComboBox_SetCurSel(GetDlgItem(hWnd, IDC_PLUGIN_SELECT), -1);
 	return true;
 }
 
