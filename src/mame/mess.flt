@@ -2182,8 +2182,6 @@ pc/at.cpp         // to be checked
 -at
 -at386
 -at386sx
--at486
--ibm5170
 -ibm5170a
 -atturbo
 -ibm5162
@@ -2296,7 +2294,6 @@ pc/compc.cpp    // to be checked
 pc/ct486.cpp    // check again
 -ast611         // nonstop beep, black screen
 -ast6000        // mnw
--ct486          // W:can't boot disk
 
 pc/ec184x.cpp
 

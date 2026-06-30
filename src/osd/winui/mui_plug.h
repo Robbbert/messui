@@ -34,6 +34,7 @@ public:
 
 	// public access
 	std::pair<std::string, std::string> get_lists(windows_options& o);
+	std::pair<std::string, std::string> split_into_lists(windows_options& o, int nGame, std::string chosen);
 
 	// accessors
 	std::list<plugin> &plugins() { return m_plugins; }
@@ -42,13 +43,12 @@ public:
 private:
 	// methods
 	void scan_directory(const std::string &path, bool recursive);
-	void get_plugins_list(windows_options& o);
 	bool load_plugin(const std::string &path);
 	plugin *find(const std::string &name);
 
 	// INI functionality
 	void parse_ini_file(util::core_file &inifile);
-//	std::string output_ini() const;
+	std::string output_ini() const;
 
 	std::list<plugin> m_plugins;
 };

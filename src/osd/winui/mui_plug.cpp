@@ -177,6 +177,17 @@ void mui_plugin_options::parse_ini_file(util::core_file &inifile)
 
 
 //-------------------------------------------------
+//  output_ini
+//-------------------------------------------------
+
+std::string mui_plugin_options::output_ini() const
+{
+	core_options opts = create_core_options(*this);
+	return opts.output_ini();
+}
+
+
+//-------------------------------------------------
 //  split - a fancy strtok
 //-------------------------------------------------
 
@@ -224,16 +235,19 @@ void mui_plugin_options::scan_directory(const std::string &path, bool recursive)
 }
 
 
-//-----------------------------------------------
-//  get_plugins_list - find all eligible plugins
-//-----------------------------------------------
+//----------------------------------------------------
+//  get_lists -
+//       ret1 = enabled plugins for string list
+//       ret2 = all valid plugins for dropdown list
+//----------------------------------------------------
 
-void mui_plugin_options::get_plugins_list(windows_options& o)
+std::pair<std::string, std::string>mui_plugin_options::get_lists(windows_options& o)
 {
+	m_plugins.clear();
+	std::string path, ret1, ret2;
+
 	// scan all plugin directories - discard duplicates
 	path_iterator iter(o.plugins_path());
-	std::string path;
-
 	while (iter.next(path))
 	{
 		// scan the directory recursively
@@ -254,46 +268,37 @@ void mui_plugin_options::get_plugins_list(windows_options& o)
 		}
 	}
 
-	// process includes - ignore unknowns
-	for (const std::string &incl : split(o.plugin(), ','))
+	// process "plugin" - ignore unknowns
+	for (const std::string &plug : split(o.plugin(), ','))
 	{
-		plugin *p = find(incl);
+		plugin *p = find(plug);
 		if (p)
 			p->m_start = true;
 	}
 
-	// process excludes - ignore unknowns
-	for (const std::string &excl : split(o.no_plugin(), ','))
+	// process "noplugin" - ignore unknowns
+	for (const std::string &plug : split(o.no_plugin(), ','))
 	{
-		plugin *p = find(excl);
+		plugin *p = find(plug);
 		if (p)
 			p->m_start = false;
 	}
 
 	// At this point we have the final list of what is in and what is out
 	// Print it to make sure
-	printf("FINAL LIST OF PLUGINS\n");
-	for (plugin &p : m_plugins)
-		printf("%s = %d\n",p.m_name.c_str(),p.m_start);
-}
+	//printf("FINAL LIST OF PLUGINS\n");
+	//for (plugin &p : m_plugins)
+		//printf("%s = %d\n",p.m_name.c_str(),p.m_start);
 
-
-//----------------------------------------------------
-//  get_enabled_list - get string of enabled plugins
-//----------------------------------------------------
-
-std::pair<std::string, std::string>mui_plugin_options::get_lists(windows_options& o)
-{
-	get_plugins_list(o);
-
-	std::string ret1, ret2;
 	for (plugin &p : m_plugins)
 	{
+		// List of valid plugins
 		if (ret2.empty())
 			ret2 = p.m_name;
 		else
 			ret2 = ret2 + "," + p.m_name;
 
+		// List of enabled plugins
 		if (p.m_start == true)
 		{
 			if (ret1.empty())
@@ -306,4 +311,106 @@ std::pair<std::string, std::string>mui_plugin_options::get_lists(windows_options
 	return std::make_pair(ret1, ret2);
 }
 
+
+//-----------------------------------------------------
+//  split_into_lists -
+//       ret1 = "plugin"
+//       ret2 = "noplugin"
+//  if global, the above lists are made empty,
+//   and plugin.ini gets updated instead
+//-----------------------------------------------------
+
+std::pair<std::string, std::string>mui_plugin_options::split_into_lists(windows_options& o, int nGame, std::string chosen)
+{
+	m_plugins.clear();
+	std::string path, ret1, ret2;
+
+	// scan all plugin directories - discard duplicates
+	path_iterator iter(o.plugins_path());
+	while (iter.next(path))
+	{
+		// scan the directory recursively
+		scan_directory(path, true);
+	}
+
+	// To begin, set all false
+	for (plugin &p : m_plugins)
+		p.m_start = false;
+
+	if (nGame < 0)
+	{
+		// Global - update plugin.ini, return empty lists
+
+		// The ones in the incoming string are validated and set true
+		for (const std::string &plug : split(chosen, ','))
+		{
+			plugin *p = find(plug);
+			if (p)
+				p->m_start = true;
+		}
+
+		// convert to ini format
+		std::string plugins(output_ini());
+
+		// write new plugin.ini
+		emu_file file(o.ini_path(), OPEN_FLAG_WRITE | OPEN_FLAG_CREATE | OPEN_FLAG_CREATE_PATHS);
+		if (file.open("plugin.ini"))
+			osd_printf_error("Unable to create plugin.ini, changes lost\n");
+		else
+			file.puts(plugins);
+	}
+	else
+	{
+		// per-game - compare string against plugin.ini, return delta
+
+		// parse plugin.ini
+		emu_file file(o.ini_path(), OPEN_FLAG_READ);
+		if (!file.open("plugin.ini"))
+		{
+			try
+			{
+				parse_ini_file((util::core_file&)file);
+			}
+			catch (options_exception &)
+			{
+				osd_printf_error("Plugin.ini not usable, ignored\n");
+			}
+		}
+
+		// "plugin" entries - ignore ones not exist
+		for (const std::string &plug : split(chosen, ','))
+		{
+			plugin *p = find(plug);
+			if (p)
+			{
+				if (p->m_start == false)
+				{
+					if (ret1.empty())
+						ret1 = plug;
+					else
+						ret1 = ret1 + "," + plug;
+				}
+			}
+		}
+
+		// "noplugin" entries - ignore ones not exist
+		chosen = "," + chosen + ",";
+		for (plugin &p : m_plugins)
+		{
+			if (p.m_start == true)
+			{
+				std::size_t found = chosen.find("," + p.m_name + ",");
+				if (found == std::string::npos)
+				{
+					if (ret2.empty())
+						ret2 = p.m_name;
+					else
+						ret2 = ret2 + "," + p.m_name;
+				}
+			}
+		}
+	}
+
+	return std::make_pair(ret1, ret2);
+}
 

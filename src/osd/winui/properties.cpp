@@ -207,7 +207,6 @@ bool m_swpath_changed = 0;
 #endif
 
 #define MAX_PLUGINS 32
-#define MAX_PLUGIN_LENGTH 32
 windows_options m_CurrentOpts;
 static datamap *properties_datamap;
 
@@ -1708,11 +1707,7 @@ static void OptionsToProp(HWND hWnd, windows_options& o)
 	if (hCtrl)
 	{
 		c = emu_get_value(o, OPTION_JOYSTICK_MAP);
-
-		if (c.empty())
-			win_set_window_text_utf8(hCtrl, "Default");
-		else
-			win_set_window_text_utf8(hCtrl, c.c_str());
+		win_set_window_text_utf8(hCtrl, c.empty() ? "Default" : c.c_str());
 	}
 
 	hCtrl = GetDlgItem(hWnd, IDC_LUASCRIPT);
@@ -1739,17 +1734,13 @@ static void OptionsToProp(HWND hWnd, windows_options& o)
 	}
 
 	std::string cc;
-	hCtrl = GetDlgItem(hWnd, IDC_PLUGIN_LIST);    // The string list of enabled plugins
+	hCtrl = GetDlgItem(hWnd, IDC_PLUGIN_LIST);    // The string list editbox of enabled plugins
 
 	if (hCtrl)
 	{
 		std::tie(c, cc) = mui_plugin_options().get_lists(o);
 		plugin_chosen = c;
-
-		if (c.empty())
-			win_set_window_text_utf8(hCtrl, "None");
-		else
-			win_set_window_text_utf8(hCtrl, c.c_str());
+		win_set_window_text_utf8(hCtrl, c.empty() ? "None" : c.c_str());
 	}
 
 	hCtrl = GetDlgItem(hWnd, IDC_PLUGIN_SELECT);   // The dropdown list of existing plugins
@@ -1769,7 +1760,11 @@ static void OptionsToProp(HWND hWnd, windows_options& o)
 		{
 			while (token != NULL)
 			{
-				plugin_names[count] = token;
+				if (count < MAX_PLUGINS)
+					plugin_names[count] = token;
+				else
+					printf("Properties.cpp: MAX_PLUGINS < %d\n",count);
+
 				t_s = ui_wstring_from_utf8(token);
 				if( t_s )
 					if (ComboBox_InsertString(hCtrl, count++, win_tstring_strdup(t_s)) == CB_ERR)
@@ -1786,11 +1781,7 @@ static void OptionsToProp(HWND hWnd, windows_options& o)
 	if (hCtrl)
 	{
 		c = emu_get_value(o, OSDOPTION_BGFX_SCREEN_CHAINS);
-
-		if (c.empty())
-			win_set_window_text_utf8(hCtrl, "Default");
-		else
-			win_set_window_text_utf8(hCtrl, c.c_str());
+		win_set_window_text_utf8(hCtrl, c.empty() ? "Default" : c.c_str());
 	}
 
 	/* snapshot size */
@@ -3375,17 +3366,14 @@ static bool SelectPlugins(HWND hWnd)
 	}
 	else
 	{
-		// already there, remove it
+		// already there, remove it and the next comma
 		plugin_chosen.erase(found, strlen(new_value)+1);
 	}
 
 	emu_set_value(m_CurrentOpts, OPTION_PLUGIN, plugin_chosen);
-	if (plugin_chosen.empty())
-		win_set_window_text_utf8(GetDlgItem(hWnd, IDC_PLUGIN_LIST), "None");
-	else
-		win_set_window_text_utf8(GetDlgItem(hWnd, IDC_PLUGIN_LIST), plugin_chosen.c_str());
+	win_set_window_text_utf8(GetDlgItem(hWnd, IDC_PLUGIN_LIST),
+		plugin_chosen.empty() ? "None" : plugin_chosen.c_str());
 	changed = true;
-
 	ComboBox_SetCurSel(GetDlgItem(hWnd, IDC_PLUGIN_SELECT), -1);
 	return changed;
 }
