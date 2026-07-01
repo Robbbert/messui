@@ -1323,6 +1323,14 @@ INT_PTR CALLBACK GameOptionsProc(HWND hDlg, UINT Msg, WPARAM wParam, LPARAM lPar
 					//return true;
 				//}
 
+				// Process plugins, stop stupid compile error
+				{
+					std::string plugin, noplugin;
+					std::tie(plugin, noplugin) = mui_plugin_options().split_into_lists(m_CurrentOpts, g_nGame, plugin_chosen);
+					emu_set_value(m_CurrentOpts, OPTION_PLUGIN, plugin);
+					emu_set_value(m_CurrentOpts, OPTION_NO_PLUGIN, noplugin);
+				}
+
 				// Read the datamap
 				UpdateOptions(hDlg, properties_datamap, m_CurrentOpts);
 
@@ -3124,6 +3132,8 @@ static void InitializePluginsUI(HWND hWnd)
 	HWND hCtrl = GetDlgItem(hWnd, IDC_PLUGIN_SELECT);
 	ComboBox_SetCurSel(hCtrl, -1);
 	ComboBox_SetCueBannerText(hCtrl, TEXT("Select a plugin"));
+	std::string plugin_all;  // dummy placeholder
+	std::tie(plugin_chosen, plugin_all) = mui_plugin_options().get_lists(m_CurrentOpts);
 }
 
 static void InitializeGLSLFilterUI(HWND hWnd)
@@ -3370,7 +3380,6 @@ static bool SelectPlugins(HWND hWnd)
 		plugin_chosen.erase(found, strlen(new_value)+1);
 	}
 
-	emu_set_value(m_CurrentOpts, OPTION_PLUGIN, plugin_chosen);
 	win_set_window_text_utf8(GetDlgItem(hWnd, IDC_PLUGIN_LIST),
 		plugin_chosen.empty() ? "None" : plugin_chosen.c_str());
 	changed = true;
@@ -3381,7 +3390,6 @@ static bool SelectPlugins(HWND hWnd)
 static bool ResetPlugins(HWND hWnd)
 {
 	plugin_chosen.clear();
-	emu_set_value(m_CurrentOpts, OPTION_PLUGIN, plugin_chosen);
 	win_set_window_text_utf8(GetDlgItem(hWnd, IDC_PLUGIN_LIST), "None");
 	ComboBox_SetCurSel(GetDlgItem(hWnd, IDC_PLUGIN_SELECT), -1);
 	return true;
