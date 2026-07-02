@@ -470,9 +470,6 @@ IDI_FC_MONITOR          ICON                    "res\\fc-monit.ico"
 IDI_FC_SOUND            ICON                    "res\\fc-sound.ico"
 IDI_FC_SOURCE           ICON                    "res\\fc-source.ico"
 IDI_FC_YEAR             ICON                    "res\\fc-year.ico"
-// Winui
-//IDI_HEADER_UP           ICON                    "res\\header_up.ico"
-//IDI_HEADER_DOWN         ICON                    "res\\header_down.ico"
 
 /////////////////////////////////////////////////////////////////////////////
 //
