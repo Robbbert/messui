@@ -1031,7 +1031,7 @@ homebrew/mk1forth.cpp
 
 //homebrew/p112.cpp  // black screen
 
-//homebrew/pc532.cpp  // no sw
+homebrew/pc532.cpp
 
 homebrew/phunsy.cpp
 
@@ -4311,7 +4311,20 @@ xerox/bigbord2.cpp
 //xerox/notetaker.cpp    // black screen
 
 xerox/xerox820.cpp
--bigboard5               // black screen
+-bigboard                // W:no sw
+-bigboard5               // bigboard nw
+-mk82                    // W:no sw
+-mk83                    // cannot boot disk
+-mojmikro                // W:no sw
+-x168                    // W:inputs
+-x1685                   // W:inputs
+-x168em                  // W:need roms
+-x168s                   // W:inputs
+-x820                    // W:bigboard nw
+-x820ii                  // W:no sw
+-x820ii5                 // W:need roms
+-x820iilp                // W:inputs
+-x820iis                 // W:need roms
 
 //yamaha/fb01.cpp        // W:no sound
 

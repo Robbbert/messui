@@ -337,7 +337,7 @@ std::pair<std::string, std::string>mui_plugin_options::split_into_lists(windows_
 	for (plugin &p : m_plugins)
 		p.m_start = false;
 
-	if (nGame < 0)
+	if (nGame == -1)
 	{
 		// Global - update plugin.ini, return empty lists
 
