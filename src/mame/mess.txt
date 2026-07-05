@@ -892,7 +892,7 @@ handheld/lk3000.cpp
 
 handheld/monty.cpp
 
-//handheld/mylife.cpp     // need roms (mylife,mylifei)
+//handheld/mylife.cpp     // black screen
 
 //handheld/pensebem.cpp   // mnw
 
@@ -3077,11 +3077,11 @@ skeleton/fc100.cpp
 
 //skeleton/fk1.cpp   // black screen
 
-//skeleton/fs3216.cpp   // no sw
+//skeleton/fs3216.cpp   // inputs, no sw
 
 skeleton/ft68m.cpp
 
-//skeleton/galpro.cpp  // need roms
+skeleton/galpro.cpp     // useless
 
 //skeleton/gem_rp.cpp   // no screen
 
