@@ -1540,7 +1540,8 @@ ncr/dmv.cpp
 //nec/pc100.cpp     // mnw
 
 nec/pc6001.cpp
--pc6001mk2sr   // fatal
+-pc6001mk2sr   // fatal (only choice 6 works)
+-pc6601sr       // need roms; pc6001mk2sr nw
 
 nec/pc8001.cpp
 
@@ -4311,7 +4312,6 @@ xerox/bigbord2.cpp
 //xerox/notetaker.cpp    // black screen
 
 xerox/xerox820.cpp
--x820iilp                // W:inputs
 
 //yamaha/fb01.cpp        // W:no sound
 
@@ -4390,6 +4390,8 @@ yeno/301xl.cpp
 yeno/416xl.cpp
 
 yeno/532xl.cpp
+
+//zilog/s8k.cpp       // need roms, all sets
 
 zpa/iq151.cpp
 
