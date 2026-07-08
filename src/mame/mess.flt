@@ -1541,7 +1541,7 @@ ncr/dmv.cpp
 
 nec/pc6001.cpp
 -pc6001mk2sr   // fatal (only choice 6 works)
--pc6601sr       // need roms; pc6001mk2sr nw
+-pc6601sr       // fatal (only choice 5 works); pc6001mk2sr nw
 
 nec/pc8001.cpp
 
@@ -4391,7 +4391,7 @@ yeno/416xl.cpp
 
 yeno/532xl.cpp
 
-//zilog/s8k.cpp       // need roms, all sets
+zilog/s8k.cpp
 
 zpa/iq151.cpp
 
