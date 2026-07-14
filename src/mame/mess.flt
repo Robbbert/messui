@@ -1921,7 +1921,6 @@ palm/palm.cpp
 pc/asst128.cpp
 
 pc/at.cpp         // to be checked
--so025d2       // mnw
 -so025k2
 -so025r2
 -cdtekg2
@@ -1933,10 +1932,8 @@ pc/at.cpp         // to be checked
 -suntac303
 -toptek286
 -k286i
--chn333sc
 -lion3500
 -pt581392
--386sc2c
 -um82c491f
 -opti495slc
 -opti495xlc
@@ -1949,27 +1946,19 @@ pc/at.cpp         // to be checked
 -sisrabb
 -um82c481af
 -um82c493f
--386sc
--zeos386sx
 -dfi386
 -4nd04a
--386schg
--alim1217
 -op82c283
 -op82c291
 -scamp386sx
--sh386sx20
 -tower386sx
 -c386sx16
 -dfi386sx
 -c386sx25
 -uni386w
 -3siud
--fic4386vchd
--fic4386vcv
 -486apio
 -abae4
--fic486kvd
 -alim1489
 -op82c392
 -sis85c471
@@ -1985,7 +1974,7 @@ pc/at.cpp         // to be checked
 -ficvipio
 -ficvipio2
 -486igb21
--mmbo4088
+-mmbo4088     // start here
 -ch4slez1
 -ed486vl3h
 -486wb6a3
