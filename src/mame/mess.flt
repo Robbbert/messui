@@ -92,6 +92,8 @@ agat/agat.cpp
 
 //akai/mpc60.cpp       // no sound
 
+//akai/s1000.cpp       // no sound
+
 akai/s3000.cpp
 
 //akai/s900.cpp        // no sound
@@ -372,15 +374,15 @@ booth/apexc.cpp
 
 brainchild/pls1000.cpp
 
-//brother/ax145.cpp   // mnw
+//brother/ax145.cpp   // inputs
 
 brother/lw30.cpp
 
 brother/lw350.cpp
 
-//brother/lw700i.cpp   // white screen
+//brother/lw700i.cpp   // inputs
 
-//brother/lw840.cpp    // W:MT09456
+brother/lw840.cpp    // keep getting disk errors
 
 brother/pn8800fxb.cpp
 
@@ -409,7 +411,7 @@ casio/cfx9850.cpp
 //casio/cps2000.cpp       // no screen
 
 casio/ct8000.cpp
--ctmb1 //no screen
+-ctmb1                    //no screen
 
 //casio/ctk2000.cpp   // inputs
 
@@ -429,7 +431,7 @@ casio/cz230s.cpp
 
 //casio/dg20.cpp   // no screen
 
-//casio/fp1100.cpp  // fp1000 black screen, fp1100 inputs
+//casio/fp1100.cpp  // fp1000=black screen;fp1100=inputs
 
 casio/fp200.cpp
 
@@ -455,7 +457,7 @@ casio/rz1.cpp
 
 //casio/superjr.cpp   // inputs
 
-//casio/sx1000.cpp    // mnw
+//casio/sx1000.cpp    // inputs
 
 //casio/wk1800.cpp    // W:inputs
 
@@ -488,7 +490,7 @@ chessking/pmicrodx.cpp
 
 chessking/triomphe.cpp
 
-//chromatics/cgc7900.cpp    // mnw
+//chromatics/cgc7900.cpp    // trap err
 
 citoh/cit101.cpp
 
@@ -611,7 +613,7 @@ dec/dectalk.cpp
 
 //dec/jensen.cpp    // no screen
 
-//dec/kn01.cpp      // mnw
+dec/kn01.cpp
 
 dec/kn02.cpp
 
@@ -659,6 +661,8 @@ dms/zsbc3.cpp
 drc/zrt80.cpp
 
 eaca/cgenie.cpp
+
+//eaca/genie3.cpp        // W:black screen, no sw
 
 elektor/avrmax.cpp
 
@@ -1058,6 +1062,8 @@ homebrew/rc2014.cpp
 
 homebrew/uzebox.cpp
 
+homebrew/we816.cpp
+
 homebrew/z80clock.cpp
 
 homebrew/z80dev.cpp
@@ -1296,7 +1302,7 @@ luxor/abc80.cpp
 
 luxor/abc80x.cpp
 
-//luxor/x37.cpp   // cannot boot disk
+//luxor/x37.cpp   // W:fd=black screen;hd=cannot boot
 
 //makerbot/replicator.cpp  // inputs
 
@@ -3401,6 +3407,8 @@ snk/ngp.cpp
 
 //sony/dfs500.cpp   // no sound
 
+//sony/dpsd7.cpp     // inputs, badgfx, no sound
+
 //sony/dpsv55.cpp    // no sound
 
 //sony/librie.cpp    // black screen
@@ -3737,6 +3745,8 @@ tryom/omar.cpp
 
 //tvgames/actions_atj2279b.cpp   // black screen
 
+//tvgames/bk139in1.cpp           // black screen
+
 tvgames/elan_ep3a19a.cpp
 
 tvgames/elan_eu3a05.cpp
@@ -3760,6 +3770,8 @@ tvgames/elan_eu3a05.cpp
 //tvgames/generalplus_gp327902.cpp  // haze mnw
 
 //tvgames/generalplus_gpl16250_mobigo.cpp  // haze mnw
+
+//tvgames/generalplus_gpl16250_mobigo2.cpp   // black screen
 
 //tvgames/generalplus_gpl16250_nand.cpp  // haze mnw
 
@@ -4301,18 +4313,18 @@ xerox/bigbord2.cpp
 //xerox/notetaker.cpp    // black screen
 
 xerox/xerox820.cpp
--x168                   // inputs
--x1685                   // inputs
--x168s                   // inputs
--x820ii                   // inputs
--x820ii5                 // inputs
--x820iis                // inputs
--x820iilp               // x820ii nw
--x168em                 // x820ii nw
+-x168                     // W:inputs
+-x1685                    // W:inputs
+-x168s                    // W:inputs
+-x820ii                   // W:inputs
+-x820ii5                  // W:inputs
+-x820iis                  // W:inputs
+-x820iilp                 // W:x820ii nw
+-x168em                   // W:x820ii nw
 
 //yamaha/fb01.cpp        // W:no sound
 
-//yamaha/tg100.cpp       // no screen
+//yamaha/tg100.cpp       // W:no sound
 
 //yamaha/yman1x.cpp      // mnw
 
