@@ -46,6 +46,7 @@
 #include "mui_audit.h"
 #include "directories.h"
 #include "mui_opts.h"
+#include "mui_plug.h"
 #include "emu_opts.h"
 #include "properties.h"
 #include "columnedit.h"
@@ -831,8 +832,6 @@ static DWORD RunMAME(int nGameIndex, const play_options *playopts)
 	// set some startup options
 	global_opts.set_value(OPTION_PLUGINDATAPATH, GetEmuPath(), OPTION_PRIORITY_HIGH);
 	global_opts.set_value(OPTION_LANGUAGE, GetLanguageUI(), OPTION_PRIORITY_HIGH);
-	//global_opts.set_value(OPTION_PLUGINS, GetEnablePlugins(), OPTION_PRIORITY_HIGH);
-	//global_opts.set_value(OPTION_PLUGIN, GetPlugins(), OPTION_PRIORITY_HIGH);
 	global_opts.set_value(OPTION_SYSTEMNAME, name, OPTION_PRIORITY_HIGH);
 
 	// set any specified play options
@@ -1756,6 +1755,11 @@ static BOOL Win32UI_init(HINSTANCE hInstance, LPWSTR lpCmdLine, int nCmdShow)
 	InitMessPicker(); // messui.cpp
 	printf("Win32UI_init: About to InitListView\n");fflush(stdout);
 	InitListView();
+
+	// Create default plugin.ini if it doesn't already exist
+	windows_options o;
+	mui_plugin_options().init_plug(o);
+
 	SetFocus(hwndList);
 
 	/* Reset the font */
