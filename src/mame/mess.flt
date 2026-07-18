@@ -1009,6 +1009,8 @@ homebrew/chaos.cpp
 
 //homebrew/dcebridge.cpp  // W:useless
 
+homebrew/et532.cpp        // need roms
+
 homebrew/gigatron.cpp
 
 homebrew/gs6502.cpp
