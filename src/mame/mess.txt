@@ -4315,14 +4315,6 @@ xerox/bigbord2.cpp
 //xerox/notetaker.cpp    // black screen
 
 xerox/xerox820.cpp
--x168                     // W:inputs
--x1685                    // W:inputs
--x168s                    // W:inputs
--x820ii                   // W:inputs
--x820ii5                  // W:inputs
--x820iis                  // W:inputs
--x820iilp                 // W:x820ii nw
--x168em                   // W:x820ii nw
 
 //yamaha/fb01.cpp        // W:no sound
 
