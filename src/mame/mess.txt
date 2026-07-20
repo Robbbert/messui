@@ -2871,6 +2871,8 @@ sharp/x68k.cpp
 
 //siemens/pg685.cpp   // no sw
 
+//siemens/s97801.cpp   // blank screen
+
 sinclair/atm.cpp
 -atm           // blank screen
 
