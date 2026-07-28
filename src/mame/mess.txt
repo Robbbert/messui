@@ -3721,6 +3721,7 @@ trs/dgnalpha.cpp
 trs/dragon.cpp
 
 trs/lnw80.cpp
+-mxcomp               // need roms
 
 //trs/max80.cpp    // black screen
 
