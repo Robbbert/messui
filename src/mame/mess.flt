@@ -664,7 +664,7 @@ drc/zrt80.cpp
 
 eaca/cgenie.cpp
 
-//eaca/genie3.cpp        // W:black screen, no sw
+eaca/genie3.cpp
 
 elektor/avrmax.cpp
 
@@ -1482,6 +1482,8 @@ motorola/mex68kecb.cpp
 motorola/mvme162.cpp
 
 //motorola/powerstack.cpp  // no screen
+
+//motorola/startac70.cpp   // need roms
 
 //motorola/sys1121.cpp   // blank screen
 
@@ -2873,7 +2875,7 @@ sharp/x68k.cpp
 
 //siemens/pg685.cpp   // no sw
 
-//siemens/s97801.cpp   // blank screen
+//siemens/s97801.cpp   // W:blank screen
 
 sinclair/atm.cpp
 -atm           // blank screen
@@ -3285,6 +3287,7 @@ skeleton/sb180.cpp
 //skeleton/sb8085.cpp   // black screen
 
 skeleton/sbrain.cpp
+-sist600                  // cannot boot disk, F3 nw
 
 //skeleton/scopus.cpp     // mnw
 
@@ -3680,6 +3683,8 @@ trainer/bob85.cpp
 trainer/crei680.cpp
 
 trainer/cvicny.cpp
+
+trainer/dgp80.cpp
 
 trainer/dolphunk.cpp
 
