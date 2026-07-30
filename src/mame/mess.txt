@@ -1483,7 +1483,7 @@ motorola/mvme162.cpp
 
 //motorola/powerstack.cpp  // no screen
 
-//motorola/startac70.cpp   // need roms
+//motorola/startac70.cpp   // no screen
 
 //motorola/sys1121.cpp   // blank screen
 
@@ -1986,9 +1986,8 @@ pc/at.cpp         // to be checked
 -ficvipio
 -ficvipio2
 -486igb21
--mmbo4088     // start here
+-mmbo4088
 -ch4slez1
--ed486vl3h
 -486wb6a3
 -4dmshl3g
 -4dmuhl3s
@@ -2004,7 +2003,6 @@ pc/at.cpp         // to be checked
 -n8810m20
 -a433cc
 -abah4
--abav4
 -abax4
 -abpb4
 -abpw4
@@ -2040,7 +2038,7 @@ pc/at.cpp         // to be checked
 -bay1000c
 -bi025c
 -dvbslan
--ctcc386mx
+-ctcc386mx     // start here with >pc %1
 -anch386s
 -ch48633c
 -ch491e
@@ -2281,26 +2279,23 @@ pc/at.cpp         // to be checked
 -ocxt286
 -zdz248
 
-pc/atpci.cpp    // to be checked
+pc/atpci.cpp
 -ficvt503
 -ecssi5pi
--at586
 -at586x3
--m55hipl
 
-pc/compc.cpp    // to be checked
+pc/compc.cpp    // not support hd
 -compc1
 -pc10iii
 -compc10
 
-pc/ct486.cpp    // check again
--ast611         // nonstop beep, black screen
--ast6000        // mnw
+pc/ct486.cpp
+-ast611
+-ast6000
 
 pc/ec184x.cpp
 
-pc/europc.cpp   // to be checked
--euroxt
+pc/europc.cpp
 -europc2
 -europc
 
@@ -2313,18 +2308,16 @@ pc/ibmpc.cpp
 pc/ibmpcjr.cpp
 -ibmpcjx        // random crash
 
-pc/iskr103x.cpp    // to be checked
--iskr1030m
+pc/iskr103x.cpp
+-iskr1030m    // not support hd
 
 pc/mc1502.cpp
 -pk88         // black screen
 
-pc/megapc.cpp   // to be checked
+pc/megapc.cpp
 -megapcpl
--megapc
 
-pc/nforcepc.cpp  // to be checked
--nforcepc
+//pc/nforcepc.cpp   // mnw
 
 pc/pc.cpp    // to be checked
 -zdz180
@@ -2406,11 +2399,8 @@ pc/pcipc_sis.cpp    // to be checked
 -sis85c496
 -so30h
 
-pc/pcipc_via.cpp    // to be checked
--ga6vx
+pc/pcipc_via.cpp
 -ct6vta2
--zidabx98
--ls5amvp3
 
 pc/poisk1.cpp
 
@@ -2424,13 +2414,9 @@ pc/ps2.cpp         // to be checked
 -i8535043
 -i8530h31
 
-pc/quakeat.cpp    // to be checked
--quake
--ga6la7
+//pc/quakeat.cpp    // black screen
 
-pc/scatsx.cpp    // to be checked
--scsxaio
--mb1320
+pc/scatsx.cpp
 
 pc/sis630.cpp    // to be checked
 -zidav630e
@@ -3726,7 +3712,6 @@ trs/dgnalpha.cpp
 trs/dragon.cpp
 
 trs/lnw80.cpp
--mxcomp               // need roms
 
 //trs/max80.cpp    // black screen
 
