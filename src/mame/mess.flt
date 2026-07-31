@@ -2038,7 +2038,7 @@ pc/at.cpp         // to be checked
 -bay1000c
 -bi025c
 -dvbslan
--ctcc386mx     // start here with >pc %1
+-ctcc386mx
 -anch386s
 -ch48633c
 -ch491e
@@ -2055,7 +2055,6 @@ pc/at.cpp         // to be checked
 -gc10a
 -ec1842
 -ec1849
--ecs8517
 -ecs38632
 -ecs386a
 -amient2
@@ -2072,9 +2071,7 @@ pc/at.cpp         // to be checked
 -exp4044
 -f4dxluc4
 -ficeli6ii
--frx386c
 -o286foxii
--ocfoxm
 -frxc402
 -fu340
 -ecsfx3000
@@ -2095,7 +2092,7 @@ pc/at.cpp         // to be checked
 -hot409
 -hot419
 -hot433
--isa386c
+-isa386c     // start here with >pc %1
 -isa386u30
 -a486isa
 -a486sio
