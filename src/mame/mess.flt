@@ -2092,29 +2092,15 @@ pc/at.cpp         // to be checked
 -hot409
 -hot419
 -hot433
--isa386c     // start here with >pc %1
 -isa386u30
--a486isa
--a486sio
--a486sv2
 -jwj403tg
--ocjagii
--ocjagv
 -mijx30gp
 -kma202f
--kma300g
 -mokp386sx
--mkp286
--mokp386
--kt216wb5
 -c286lt
 -c386sxlt
 -alaleolx
--lm103s
--ilm396b
 -olim203
--pccm205
--pccm209
 -pccm216
 -m250e
 -m290
@@ -2122,14 +2108,11 @@ pc/at.cpp         // to be checked
 -pccm317
 -pccm321
 -pccm326
--pccm396f
 -pccm915i
 -pccm919
--magb233
 -magb236
 -amibaby
 -mat286
--mb1212c
 -mb133340
 -mb1433aeap
 -mb1433ucv
@@ -2144,8 +2127,7 @@ pc/at.cpp         // to be checked
 -md4duvc
 -megapcpla
 -micral45
--snomi286
--minisys2k
+-minisys2k     // start here with >pc %1 
 -ms4125
 -ms4132
 -ms4134
@@ -2370,9 +2352,8 @@ pc/pc.cpp    // to be checked
 -nixpc01
 -cadd810
 
-pc/pcipc.cpp    // to be checked
+pc/pcipc.cpp
 -se440bx2
--pciagp
 -pcipctx
 
 pc/pcipc_sis.cpp    // to be checked
@@ -2415,11 +2396,9 @@ pc/ps2.cpp         // to be checked
 
 pc/scatsx.cpp
 
-pc/sis630.cpp    // to be checked
--zidav630e
--asuscusc
+pc/sis630.cpp
+-asuscusc       // freeze
 -asuspolo
--shutms11
 -gamecst2
 -gamecstl
 
