@@ -116,6 +116,8 @@ altos/altos5.cpp
 
 altos/altos586.cpp
 
+//altos/altos8000.cpp    // no sw
+
 altos/altos8600.cpp
 
 amiga/amiga.cpp
@@ -2127,7 +2129,7 @@ pc/at.cpp         // to be checked
 -md4duvc
 -megapcpla
 -micral45
--minisys2k     // start here with >pc %1 
+-minisys2k 
 -ms4125
 -ms4132
 -ms4134
@@ -2135,13 +2137,10 @@ pc/at.cpp         // to be checked
 -ms4145
 -edmv035f
 -nat48pv
--neat
--ct386sx
 -twinnet
 -olyport40
 -op386wb
 -php3239
--p386dx40
 -p386sx25pw
 -ocpanii
 -tmpat48av
@@ -2159,11 +2158,8 @@ pc/at.cpp         // to be checked
 -wpc250
 -ncrpc8
 -at
--at386
 -at386sx
--ibm5170a
 -atturbo
--ibm5162
 -pc2386
 -ataripc4
 -ataripc5
@@ -2179,11 +2175,10 @@ pc/at.cpp         // to be checked
 -pcd204
 -a486sp3g
 -pci48af
--pck486dx
 -pem2530
 -pg750
 -pg750eisa
--pkm0038s
+-pkm0038s     // start here with >pc %1
 -pm486pu
 -comportii
 -comportiii
@@ -2382,15 +2377,7 @@ pc/pcipc_via.cpp
 
 pc/poisk1.cpp
 
-pc/ps2.cpp         // to be checked
--i8530286
--i8580111
--i8580071
--i8555081
--i8550061
--i8550021
--i8535043
--i8530h31
+//pc/ps2.cpp         // black screen
 
 //pc/quakeat.cpp    // black screen
 
