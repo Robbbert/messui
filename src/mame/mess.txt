@@ -2178,10 +2178,10 @@ pc/at.cpp         // to be checked
 -pem2530
 -pg750
 -pg750eisa
--pkm0038s     // start here with >pc %1
+-pkm0038s
 -pm486pu
--comportii
--comportiii
+-comportii        // not support hd
+-comportiii       // not support hd
 -ppm3333p
 -prolite286
 -ibm2011
@@ -2190,7 +2190,6 @@ pc/at.cpp         // to be checked
 -ibm2121rd
 -ibm2123
 -ibm2133
--pt319a
 -pt430
 -pt432b
 -pwaih4077c
@@ -2198,7 +2197,6 @@ pc/at.cpp         // to be checked
 -pwb7270e
 -px486p3
 -qdu386dx
--ktx20t02
 -peas286
 -csl286
 -comslt286
@@ -2217,7 +2215,7 @@ pc/at.cpp         // to be checked
 -tam25p2
 -tam3340ma0
 -t4000
--td4ipaio
+-td4ipaio     // start here with >pc %1
 -td60c
 -td70a
 -td70n
