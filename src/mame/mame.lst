@@ -33611,6 +33611,9 @@ z80net
 z80netb
 z80netf
 
+@source:mit/cadr.cpp
+cadr
+
 @source:mit/tx0.cpp
 tx0_64kw
 tx0_8kwo
@@ -41292,7 +41295,7 @@ zombrvne
 zombrvno
 zunou
 
-@source:sega/saturn.cpp
+@source:sega/sat_console.cpp
 hisaturn
 saturn
 saturneu
