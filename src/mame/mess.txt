@@ -182,7 +182,7 @@ apple/apple3.cpp
 
 apple/mac128.cpp
 
-//apple/maccatalyst.cpp     // need roms, all sets
+apple/maccatalyst.cpp     // mouse buttons nw
 
 apple/macii.cpp
 
