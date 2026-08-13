@@ -2491,7 +2491,8 @@ rca/studio2.cpp
 
 rca/vip.cpp
 
-//regnecentralen/rc702.cpp  // cannot boot disk
+regnecentralen/rc702.cpp
+-rc703                 // no sw
 
 //regnecentralen/rc759.cpp  // cannot boot disk
 
