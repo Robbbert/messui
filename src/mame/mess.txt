@@ -196,7 +196,7 @@ apple/maclc.cpp
 
 apple/maclc3.cpp
 
-//apple/macpdm.cpp     // silent exit with floppy
+//apple/macpdm.cpp     // W:silent exit with floppy
 
 apple/macprtb.cpp
 
@@ -1406,13 +1406,13 @@ misc/h01x.cpp
 
 misc/macbug.cpp
 
-//misc/mcm70.cpp    // inputs
+//misc/mcm70.cpp             // inputs
 
 misc/microbox2.cpp
 
 misc/mindset.cpp
 
-//misc/miuchiz.cpp   // blue screen
+//misc/miuchiz.cpp           // blue screen
 
 misc/monon_color.cpp
 
@@ -1420,56 +1420,57 @@ misc/mtu130.cpp
 
 misc/nabupc.cpp
 
-//misc/stc3910.cpp   // no sw
+//misc/stc3910.cpp           // no sw
 
 misc/triton.cpp
-//-triton72      // nw parent
 
 misc/videoart.cpp
 
-//misc/vocalizer.cpp   // inputs
+//misc/vocalizer.cpp         // inputs
 
 misc/wren.cpp
 
 misc/z80ne.cpp
 
-//mit/tx0.cpp  // mnw
+//mit/cadr.cpp               // need roms
 
-//mits/al8800b.cpp   // no screen
+//mit/tx0.cpp                // mnw
+
+//mits/al8800b.cpp           // no screen
 
 mits/altair.cpp
 
 mits/mits680b.cpp
 
-//mitsubishi/multi16.cpp // mnw
+//mitsubishi/multi16.cpp     // mnw
 
 mitsubishi/multi8.cpp
 
-//mitsubishi/trium.cpp  // no screen
+//mitsubishi/trium.cpp       // no screen
 
-//moog/memorymoog.cpp    // no screen
+//moog/memorymoog.cpp        // no screen
 
-//moog/source.cpp   // no sound
+//moog/source.cpp            // no sound
 
-//morrow/microdec.cpp // cannot boot disk
+//morrow/microdec.cpp        // cannot boot disk
 
 morrow/mpz80.cpp
 
-//morrow/tricep.cpp  // no sw
+//morrow/tricep.cpp          // no sw
 
-//motorola/ampscarp.cpp   // no screen
+//motorola/ampscarp.cpp      // no screen
 
 motorola/assist05.cpp
 
 motorola/exorciser.cpp
 
-//motorola/exorterm.cpp     // W:inputs
+//motorola/exorterm.cpp      // W:inputs
 
-//motorola/m6805evs.cpp    // no screen
+//motorola/m6805evs.cpp      // no screen
 
-//motorola/m68705prg.cpp   // W:mech
+//motorola/m68705prg.cpp     // W:mech
 
-//motorola/m8120.cpp   // blank screen
+//motorola/m8120.cpp         // blank screen
 
 motorola/mekd1.cpp
 
@@ -2492,7 +2493,7 @@ rca/studio2.cpp
 rca/vip.cpp
 
 regnecentralen/rc702.cpp
--rc703                 // no sw
+-rc703                 // W:no sw
 
 //regnecentralen/rc759.cpp  // cannot boot disk
 
@@ -2713,7 +2714,7 @@ sega/megadriv_unksoc.cpp
 
 //sega/megatech.cpp  // U:arcade
 
-sega/saturn.cpp
+sega/sat_console.cpp
 
 sega/segaai.cpp
 
