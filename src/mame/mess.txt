@@ -164,7 +164,6 @@ apple/apple1.cpp
 apple/apple2.cpp
 
 apple/apple2e.cpp
--mprof3
 
 apple/apple2gs.cpp
 -apple2gsr3p
@@ -214,7 +213,7 @@ apple/macquadra800.cpp
 
 //apple/newton.cpp     // no screen
 
-//apple/pippin.cpp     // no screen
+apple/pippin.cpp
 
 //apple/powermacg3.cpp   // white screen
 
@@ -1881,7 +1880,9 @@ olivetti/att6300p.cpp
 
 //olivetti/celint2k.cpp    // inputs
 
-//olivetti/m20.cpp   // black screen;m20 cannot boot disk
+olivetti/m20.cpp
+-m40                  // black screen
+-m44                  // black screen
 
 //olivetti/m24.cpp   //m240 blank screen; others cannot boot disk
 
@@ -2218,8 +2219,7 @@ pc/at.cpp         // to be checked
 -tam25p2
 -tam3340ma0
 -t4000
--td4ipaio     // start here with >pc %1
--td60c
+-td4ipaio
 -td70a
 -td70n
 -alator2
@@ -2233,7 +2233,6 @@ pc/at.cpp         // to be checked
 -u3911v3
 -ec4913
 -ec4915aio
--lsucm486v30
 -ecsum386
 -um486
 -um486v
@@ -2295,7 +2294,7 @@ pc/megapc.cpp
 //pc/nforcepc.cpp   // mnw
 
 pc/pc.cpp    // to be checked
--zdz180
+-zdz180     // start here with >xt %1
 -kyoxt
 -xiprocessor
 -vpcii
