@@ -21860,6 +21860,7 @@ tct2pa
 tripslot
 tshs
 tshs101
+tswx
 tswxp
 xypdk
 xyxcxysj
@@ -39795,6 +39796,9 @@ sslam
 sslama
 sslamb
 
+@source:plexus/p20.cpp
+p20
+
 @source:poly88/poly88.cpp
 poly88
 poly8813
@@ -46859,6 +46863,7 @@ rygar3
 rygarj
 rygarj2
 silkworm
+silkwormg
 silkwormj
 silkwormp
 silkwormb
