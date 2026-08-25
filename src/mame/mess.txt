@@ -1321,6 +1321,8 @@ matsushita/jr200.cpp
 
 //matsushita/kn5000.cpp // no sound, no sw
 
+//matsushita/kn7000.cpp    // no screen
+
 matsushita/myb3k.cpp
 
 mattel/aquarius.cpp
@@ -1460,6 +1462,8 @@ morrow/mpz80.cpp
 //motorola/ampscarp.cpp      // no screen
 
 motorola/assist05.cpp
+
+//motorola/execphone2.cpp    // no screen
 
 motorola/exorciser.cpp
 
@@ -1860,21 +1864,25 @@ novag/sdiamond.cpp
 
 novag/sexpert.cpp
 
-//novag/ssapphire.cpp    // no screen
+//novag/ssapphire.cpp       // no screen
 
 novag/vip.cpp
 
 novag/zircon2.cpp
 
-//novation/basssta.cpp  // no screen
+//novation/basssta.cpp      // no screen
 
-//novation/drumsta.cpp // no screen
+//novation/drumsta.cpp     // no screen
 
 oberheim/dmx.cpp
 
-//oberheim/ob8.cpp   // no screen
+//oberheim/matrix6.cpp    // no screen
 
-//oberheim/xpander.cpp // mnw, no sound
+//oberheim/ob8.cpp        // no screen
+
+//oberheim/obsx.cpp       // no screen
+
+//oberheim/xpander.cpp    // mnw, no sound
 
 olivetti/att6300p.cpp
 
@@ -2437,6 +2445,8 @@ philips/vg5k.cpp
 
 pitronics/beta.cpp
 
+//plexus/p20.cpp      // fail selftest&hangs
+
 poly88/poly88.cpp
 -poly8813            // mnw
 
@@ -2674,6 +2684,8 @@ sanyo/phc20.cpp
 sanyo/phc25.cpp
 
 //saturn/st17xx.cpp // black screen
+
+seequa/chameleon.cpp
 
 //sega/dcchk.cpp    // useless
 
