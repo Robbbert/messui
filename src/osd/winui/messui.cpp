@@ -388,7 +388,7 @@ static int GetMessIcon(int drvindex, string nSoftwareType)
 	// It's also the reason it takes so long to populate the loose software list.
 	HICON hIcon = 0;
 	const game_driver *drv;
-	char buffer[256];
+	char buffer[256]{};
 	const char *iconname;
 
 	if ((nSoftwareType >= 0) && (nSoftwareType < std::size(s_devices)))
@@ -399,7 +399,7 @@ static int GetMessIcon(int drvindex, string nSoftwareType)
 			drv = &driver_list::driver(drvindex);
 			while (drv)
 			{
-				_snprintf(buffer, std::size(buffer), "%s/%s", drv->name, iconname);
+				snprintf(buffer, std::size(buffer), "%s/%s", drv->name, iconname);
 				hIcon = LoadIconFromFile(buffer);
 				if (hIcon)
 					break;
@@ -439,7 +439,7 @@ static std::pair<int, string> ProcessSWDir(int drvindex)
 	}
 
 	BOOL b_dir = false;
-	char dir0[2048] = { };
+	char dir0[2048]{};
 	string global_swpath = dir_get_value(13);
 	printf("ProcessSWDir: A: Driver = %s; Global swpath = %s\n",driver_list::driver(drvindex).type.fullname(),global_swpath.c_str());fflush(stdout);
 	if (!global_swpath.empty())
@@ -456,7 +456,7 @@ static std::pair<int, string> ProcessSWDir(int drvindex)
 	printf("ProcessSWDir: C: Global path is %s\n",b_dir ? "valid" : "invalid");fflush(stdout);
 	windows_options o;
 	load_options(o, OPTIONS_GAME, drvindex, 0);
-	char dir1[2048] = { };
+	char dir1[2048]{};
 	char* t1;
 	string local_swpath = o.value(OPTION_SWPATH);
 	printf("ProcessSWDir: D: local path = %s\n",local_swpath.c_str());fflush(stdout);
@@ -691,7 +691,7 @@ void MView_Refresh(HWND hwndMView)
 
 	struct MViewInfo *pMViewInfo;
 	LPCTSTR pszSelection;
-	TCHAR szBuffer[MAX_PATH];
+	TCHAR szBuffer[MAX_PATH]{};
 
 	pMViewInfo = GetMViewInfo(hwndMView);
 	// test
@@ -1271,9 +1271,9 @@ static void MessSetupDevice(common_file_dialog_proc cfd, const device_image_inte
 	// allocate the machine config
 	machine_config config(driver_list::driver(drvindex), MameUIGlobal());
 
-	mess_image_type imagetypes[256];
+	mess_image_type imagetypes[256]{};
 	SetupImageTypes(&config, imagetypes, std::size(imagetypes), true, dev);
-	TCHAR filename[MAX_PATH];
+	TCHAR filename[MAX_PATH]{};
 	BOOL bResult = CommonFileImageDialog(t_s, cfd, filename, &config, imagetypes);
 	free(t_s);
 	CleanupImageTypes(imagetypes, std::size(imagetypes));
@@ -1897,7 +1897,7 @@ static void MView_ButtonClick(HWND hwndMView, struct MViewEntry *pEnt, HWND hwnd
 	struct MViewInfo *pMViewInfo;
 	RECT r;
 	BOOL software = false, passes_tests = false;
-	TCHAR szPath[MAX_PATH];
+	TCHAR szPath[MAX_PATH]{};
 	string opt_name = pEnt->dev->instance_name();
 	pMViewInfo = GetMViewInfo(hwndMView);
 

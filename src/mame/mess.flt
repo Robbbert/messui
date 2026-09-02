@@ -423,6 +423,7 @@ casio/ct8000.cpp
 casio/ctk551.cpp
 -ctk551          // W:inputs
 -ctk601          // W:inputs
+-ctk630          // need roms
 -gz70sp          // W:no screen
 
 //casio/ctrc1.cpp     // no screen
@@ -735,6 +736,8 @@ ericsson/eispc.cpp
 //esprit/esp250c.cpp    // mnw
 
 esprit/executive10.cpp
+
+//excalibur/grandmaster.cpp   // machine player does nothing
 
 excalibur/ivant.cpp
 
@@ -1433,7 +1436,7 @@ misc/wren.cpp
 
 misc/z80ne.cpp
 
-//mit/cadr.cpp               // need roms
+mit/cadr.cpp               // swlist nw, use as loose
 
 //mit/tx0.cpp                // mnw
 
@@ -1652,7 +1655,7 @@ nintendo/n64.cpp
 
 nintendo/n64_gateway.cpp
 
-//nintendo/nds.cpp  // black screen
+nintendo/nds.cpp
 
 nintendo/nes.cpp
 
@@ -3570,16 +3573,13 @@ ti/spellb.cpp
 ti/ti74.cpp
 
 ti/ti85.cpp
--ti84pcev30    // blank screen
--ti84pcev15    // blank screen
--ti84pce    // blank screen
--ti84pcsev2    // blank screen
--ti84pcse    // blank screen
--ti83pcev15    // blank screen
--ti83pseb    // blank screen
--ti83pb    // blank screen
--ti83    // blank screen
--ti73b    // blank screen
+-ti83pcev15         // blank screen
+-ti83pseb           // W:blank screen
+-ti84pce            // blank screen
+-ti84pcev15         // blank screen
+-ti84pcev30         // blank screen
+-ti84pcev50         // blank screen
+-ti84pcev61         // blank screen
 
 ti/ti89.cpp
 

@@ -30,10 +30,6 @@
 #include "treeview.h"
 #include "splitters.h"
 
-#ifdef _MSC_VER
-#define snprintf _snprintf
-#endif
-
 typedef std::string string;
 
 /***************************************************************************
@@ -185,7 +181,7 @@ static COLORREF options_get_color(const char *name)
 
 static void options_set_color(const char *name, COLORREF value)
 {
-	char value_str[32];
+	char value_str[32]{};
 
 	if (value == (COLORREF) -1)
 		snprintf(value_str, std::size(value_str), "%d", (int) value);
@@ -371,12 +367,12 @@ static LPBITS GetShowFolderFlags(LPBITS bits)
 
 	extern const FOLDERDATA g_folderData[];
 	char s[val.size()+1];
-	snprintf(s, val.size()+1, "%s", val.c_str());
+	strcpy(s, val.c_str());
 	char *token = strtok(s, ",");
 	int j;
 	while (token)
 	{
-		for (j=0; g_folderData[j].m_lpTitle; j++)
+		for (j=0; g_folderData[j].short_name; j++)
 		{
 			if (strcmp(g_folderData[j].short_name,token) == 0)
 			{
@@ -422,7 +418,7 @@ void SetShowFolder(int folder, BOOL show)
 			if (num_saved != 0)
 				str.append(",");
 
-			for (j=0; g_folderData[j].m_lpTitle; j++)
+			for (j=0; g_folderData[j].short_name; j++)
 			{
 				if (g_folderData[j].m_nFolderId == i)
 				{
@@ -538,7 +534,7 @@ void SetCustomColor(int iIndex, COLORREF uColor)
 	if ((iIndex < 0) || (iIndex > 15))
 		return;
 
-	COLORREF custom_color[16];
+	COLORREF custom_color[16]{};
 	CusColorDecodeString(settings.getter(MUIOPTION_CUSTOM_COLOR), custom_color);
 	custom_color[iIndex] = uColor;
 	settings.setter(MUIOPTION_CUSTOM_COLOR, CusColorEncodeString(custom_color));
@@ -549,7 +545,7 @@ COLORREF GetCustomColor(int iIndex)
 	if ((iIndex < 0) || (iIndex > 15))
 		return (COLORREF)RGB(0,0,0);
 
-	COLORREF custom_color[16];
+	COLORREF custom_color[16]{};
 
 	CusColorDecodeString(settings.getter(MUIOPTION_CUSTOM_COLOR), custom_color);
 
@@ -859,9 +855,9 @@ void GetTextPlayTime(int drvindex, char *buf)
 		second -= 60*minute;
 
 		if (hour == 0)
-			sprintf(buf, "%d:%02d", minute, second );
+			snprintf(buf, sizeof(buf), "%d:%02d", minute, second );
 		else
-			sprintf(buf, "%d:%02d:%02d", hour, minute, second );
+			snprintf(buf, sizeof(buf), "%d:%02d:%02d", hour, minute, second );
 	}
 }
 
@@ -1037,7 +1033,7 @@ input_seq* Get_ui_key_quit()
 
 static int GetUIJoy(const char *option_name, int joycodeIndex)
 {
-	int joycodes[4];
+	int joycodes[4]{};
 
 	if ((joycodeIndex < 0) || (joycodeIndex > 3))
 		joycodeIndex = 0;
@@ -1047,7 +1043,7 @@ static int GetUIJoy(const char *option_name, int joycodeIndex)
 
 static void SetUIJoy(const char *option_name, int joycodeIndex, int val)
 {
-	int joycodes[4];
+	int joycodes[4]{};
 
 	if ((joycodeIndex < 0) || (joycodeIndex > 3))
 		joycodeIndex = 0;
@@ -1247,9 +1243,9 @@ static void CusColorDecodeString(string ss, COLORREF *value)
 {
 	const char *str = ss.c_str();
 	char *s, *p;
-	char tmpStr[256];
+	char tmpStr[256]{};
 
-	strcpy(tmpStr, str);
+	snprintf(tmpStr, sizeof(tmpStr), "%s", str);
 	p = tmpStr;
 
 	for (int i = 0; p && i < 16; i++)
@@ -1279,13 +1275,13 @@ static string ColumnEncodeStringWithCount(const int *value, int count)
 static void ColumnDecodeStringWithCount(string ss, int *value, int count)
 {
 	const char *str = ss.c_str();
-	char *s, *p;
-	char tmpStr[256];
-
 	if (str == NULL)
 		return;
 
-	strcpy(tmpStr, str);
+	char *s, *p;
+	char tmpStr[256]{};
+
+	snprintf(tmpStr, sizeof(tmpStr), "%s", str);
 	p = tmpStr;
 
 	for (int i = 0; p && i < count; i++)
@@ -1315,9 +1311,9 @@ static void SplitterDecodeString(string ss, int *value)
 {
 	const char *str = ss.c_str();
 	char *s, *p;
-	char tmpStr[256];
+	char tmpStr[256]{};
 
-	strcpy(tmpStr, str);
+	snprintf(tmpStr, sizeof(tmpStr), "%s", str);
 	p = tmpStr;
 
 	for (int i = 0; p && i < GetSplitterCount(); i++)
@@ -1369,8 +1365,8 @@ static string FontEncodeString(const LOGFONT *f)
 	if( !utf8_FaceName )
 		return "";
 
-	char s[200];
-	sprintf(s, "%li,%li,%li,%li,%li,%i,%i,%i,%i,%i,%i,%i,%i,%s",
+	char s[200]{};
+	snprintf(s, sizeof(s), "%li,%li,%li,%li,%li,%i,%i,%i,%i,%i,%i,%i,%i,%s",
 			f->lfHeight,
 			f->lfWidth,
 			f->lfEscapement,
@@ -1415,7 +1411,7 @@ static void TabFlagsDecodeString(string ss, int *data)
 {
 	const char *str = ss.c_str();
 	int j = 0;
-	char s[2000];
+	char s[2000]{};
 	char *token;
 
 	snprintf(s, std::size(s), "%s", str);
@@ -1485,14 +1481,14 @@ void LoadFolderFlags()
 {
 	LPTREEFOLDER lpFolder;
 	int i, numFolders = GetNumFolders();
-
+#if 0
 	for (i = 0; i < numFolders; i++)
 	{
 		lpFolder = GetFolder(i);
 
 		if (lpFolder)
 		{
-			char folder_name[400];
+			char folder_name[400]{};
 			char *ptr;
 
 			// Convert spaces to underscores
@@ -1509,7 +1505,7 @@ void LoadFolderFlags()
 			string option_name = string(folder_name) + "_filters";
 		}
 	}
-
+#endif
 	// These are added to our UI ini
 	// The normal read will skip them.
 
@@ -1520,18 +1516,9 @@ void LoadFolderFlags()
 
 		if (lpFolder)
 		{
-			char folder_name[400];
-
 			// Convert spaces to underscores
-			strcpy(folder_name, lpFolder->m_lpTitle);
-			char *ptr = folder_name;
-			while (*ptr && *ptr != '\0')
-			{
-				if ((*ptr == ' ') || (*ptr == '-'))
-					*ptr = '_';
-
-				ptr++;
-			}
+			string folder_name = lpFolder->m_lpTitle;
+			std::replace(folder_name.begin(), folder_name.end(), ' ', '_');
 			string option_name = string(folder_name) + "_filters";
 
 			// get entry and decode it
@@ -1553,19 +1540,9 @@ static void AddFolderFlags()
 		lpFolder = GetFolder(i);
 		if (lpFolder)
 		{
-			char folder_name[400];
-
 			// Convert spaces to underscores
-			strcpy(folder_name, lpFolder->m_lpTitle);
-			char *ptr = folder_name;
-			while (*ptr && *ptr != '\0')
-			{
-				if ((*ptr == ' ') || (*ptr == '-'))
-					*ptr = '_';
-
-				ptr++;
-			}
-
+			string folder_name = lpFolder->m_lpTitle;
+			std::replace(folder_name.begin(), folder_name.end(), ' ', '_');
 			string option_name = string(folder_name) + "_filters";
 
 			// store entry

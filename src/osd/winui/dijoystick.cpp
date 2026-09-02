@@ -751,8 +751,8 @@ const char * DirectXDecodeError(HRESULT errorval)
 			return g_ErrorCode[i].szError;
 		}
 	}
-	static char tmp[64];
-	sprintf(tmp, "UNKNOWN: 0x%x", (unsigned int)errorval);
+	static char tmp[64]{};
+	snprintf(tmp, sizeof(tmp), "UNKNOWN: 0x%x", (unsigned int)errorval);
 	return tmp;
 }
 
