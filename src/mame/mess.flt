@@ -841,6 +841,7 @@ handheld/gameking.cpp
 //handheld/generalplus_gp3x_unknown.cpp     // black screen
 
 handheld/generalplus_gpce4.cpp
+-l2lelmo       // fatal
 -siddr         // black screen
 -tagalaga       // black screen
 -parcade       // black screen
@@ -924,6 +925,7 @@ handheld/st2302u_bbl_spi.cpp
 -qpet           // fatal
 -mc_cb203       // black screen
 -bbl380         // black screen
+-tchib158
 
 handheld/talkingbb.cpp
 
@@ -1579,10 +1581,11 @@ nec/pc9801.cpp
 -pc9801bx2   // mnw
 
 nec/pc9801_epson.cpp
--pc486se     // mnw
--pc486mu     // mnw
--pc386m      // mnw
 -pc286u      // black screen
+-pc386m      // mnw
+-pc386v
+-pc486mu     // mnw
+-pc486se     // mnw
 
 nec/pc9821.cpp
 -pc9821ap2              // W:pc9821as nw
@@ -1729,13 +1732,14 @@ nintendo/nes_vt32.cpp
 -fingerd
 -lxpcfz             // mnw
 -lxpcfzcz           // mnw
+-tvkunio2
 
 nintendo/nes_vt369_vtunknown.cpp
--168pcase   
--240in1ar   
--500in1hh   
--a6plus     
--d9_500     
+-168pcase
+-500in1hh
+-a6plus
+-asthh
+-d9_500
 -denv150    
 -dgun2572   
 -dgun2577   
@@ -1753,7 +1757,6 @@ nintendo/nes_vt369_vtunknown.cpp
 -h12p1000   
 -hkb502     
 -hkb502a    
--lpgm240    
 -lxcap      
 -lxcmcysp 
 -lxcmcyspa
@@ -1767,29 +1770,22 @@ nintendo/nes_vt369_vtunknown.cpp
 -mog_m320 
 -myarccn  
 -nesvt270 
--nubsupmf 
--orb240   
+-nubsupmf
 -otrail   
 -pactin   
 -pixel246 
--rbbrite  
--rd5_240  
+-rbbrite
 -red5mam  
--retro620 
--rsps300  
--s10_520   
--s10fake   
--s5_520    
--t3_630    
--tui240    
--tup240    
--unk128vt  
--unk198vt  
--unkra200  
--urban240  
--vibes240  
--vibes240a 
--zl383     
+-retro620
+-rsps300
+-s10_520
+-s10fake
+-s5_520
+-t3_630
+-unk128vt
+-unk198vt
+-unkra200
+-zl383
 
 nintendo/nes_vt42xx.cpp
 -rfcp168
@@ -2709,6 +2705,7 @@ sega/mdconsole.cpp
 -laseract  // stuck at logo
 
 sega/megadriv_firecore.cpp   // bad gfx
+-bfmk
 -dcat16
 -mahg156
 -mdhh100
@@ -3766,6 +3763,7 @@ tvgames/generalplus_gpl16250_rom.cpp
 -gameu90
 -jak_prr
 -jak_tpir
+-tfmat
 
 //tvgames/generalplus_gpl16250_romram.cpp  // haze mnw
 
@@ -3811,31 +3809,34 @@ tvgames/spg110.cpp
 //tvgames/spg29x_lexibook_jg7425.cpp  // haze mnw
 
 tvgames/spg2xx.cpp
--wordlnch
+-ablkickb
 -abltenni
--virtten
--virtbb
--vtechtvssp
--vtechtvsgr
--wfart
--doyousud
--smartcyc
+-anpantv
+-ban_tam2
 -dinothun
--rad_fb2
--ordentv
--tiktokmm
+-dmbtjunc
+-doyousud
+-dvlaptop
+-guitarfv
+-jeuint
+-jouet
 -lexiart
 -lexibds
--ban_tam2
--dmbtjunc
--ablkickb
--rad_jib
--jeuint
--guitarfv
+-nvpoker
+-ordentv
 -rad_crik
+-rad_fb2
+-rad_jib
+-smartcyc
+-stvscri
+-tiktokmm
+-vtechtvsgr
+-vtechtvssp
+-virtbb
+-virtten
+-wfart
 -wfcentro
--anpantv
--jouet
+-wordlnch
 
 //tvgames/spg2xx_digimake.cpp  // inputs
 
@@ -3866,8 +3867,9 @@ tvgames/spg2xx_senario.cpp
 tvgames/spg2xx_senario_poker.cpp
 
 tvgames/spg2xx_senca.cpp
--zon32bit
+-movesyst
 -mywicodx
+-zon32bit
 
 tvgames/spg2xx_shredmjr.cpp
 
