@@ -919,6 +919,7 @@ handheld/st2302u_bbl_rom.cpp
 -class200       // black screen
 
 handheld/st2302u_bbl_spi.cpp
+-rocoball       // fatal
 -touma568       // fatal
 -touma560       // fatal
 -toumapet       // fatal
