@@ -183,6 +183,8 @@ apple/mac128.cpp
 
 apple/maccatalyst.cpp     // mouse buttons nw
 
+apple/maccordyceps.cpp
+
 apple/macii.cpp
 
 apple/maciici.cpp
@@ -423,7 +425,6 @@ casio/ct8000.cpp
 casio/ctk551.cpp
 -ctk551          // W:inputs
 -ctk601          // W:inputs
--ctk630          // need roms
 -gz70sp          // W:no screen
 
 //casio/ctrc1.cpp     // no screen
@@ -737,7 +738,7 @@ ericsson/eispc.cpp
 
 esprit/executive10.cpp
 
-//excalibur/grandmaster.cpp   // machine player does nothing
+excalibur/grandmaster.cpp
 
 excalibur/ivant.cpp
 
@@ -2583,7 +2584,11 @@ rockwell/aim65.cpp
 
 //roland/roland_sc55mk2.cpp // no screen
 
-//roland/roland_sc88.cpp  // no screen
+roland/roland_sc88.cpp
+-vegspro                   // no screen
+
+roland/roland_sc8850.cpp
+-sc8820                      // no screen
 
 //roland/roland_tb303.cpp   // mnw
 
