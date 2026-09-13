@@ -204,6 +204,7 @@ apple/macprtb.cpp
 apple/macpwrbk030.cpp
 
 apple/macpwrbkmsc.cpp
+-macpb150                 // need roms
 
 apple/macquadra605.cpp
 
