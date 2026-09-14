@@ -2692,6 +2692,7 @@ sanyo/phc25.cpp
 //saturn/st17xx.cpp // black screen
 
 seequa/chameleon.cpp
+-champroto               // need roms
 
 //sega/dcchk.cpp    // useless
 
