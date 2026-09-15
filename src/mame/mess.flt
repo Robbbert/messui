@@ -204,7 +204,7 @@ apple/macprtb.cpp
 apple/macpwrbk030.cpp
 
 apple/macpwrbkmsc.cpp
--macpb150                 // need roms
+-macpb150                 // W:inputs
 
 apple/macquadra605.cpp
 
@@ -1565,6 +1565,8 @@ ncr/dmv.cpp
 
 //nec/ews4800.cpp  // no screen
 
+//nec/mobilepro.cpp         // black screen
+
 //nec/pc100.cpp     // mnw
 
 nec/pc6001.cpp
@@ -2441,6 +2443,8 @@ philips/p2000t.cpp
 
 //philips/philipsbo.cpp  // no sw
 
+//philips/velo.cpp        // black screen
+
 philips/vg5k.cpp
 
 //philips/yes.cpp   // black screen
@@ -2581,6 +2585,8 @@ rockwell/aim65.cpp
 
 //roland/roland_s50.cpp   // no sw
 
+//roland/roland_sb55.cpp    // W:no sound
+
 //roland/roland_sc55.cpp  // no screen
 
 //roland/roland_sc55mk2.cpp // no screen
@@ -2692,7 +2698,7 @@ sanyo/phc25.cpp
 //saturn/st17xx.cpp // black screen
 
 seequa/chameleon.cpp
--champroto               // need roms
+-champroto               // white screen
 
 //sega/dcchk.cpp    // useless
 
