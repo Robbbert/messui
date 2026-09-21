@@ -218,7 +218,7 @@ apple/macquadra700.cpp
 
 apple/macquadra800.cpp
 
-apple/macquadraav.cpp
+apple/macquadraav.cpp       // macqd840av need opt rom
 
 //apple/newton.cpp     // no screen
 
@@ -896,6 +896,9 @@ handheld/hh_pps41.cpp
 handheld/hh_rw5000.cpp
 
 handheld/hh_sm510.cpp
+-gnw_climber                 // need roms
+-gnw_climbern                // gnw_climber nw
+-gnw_zelda                   // need roms
 
 handheld/hh_smc1k.cpp
 
@@ -916,7 +919,7 @@ handheld/lk3000.cpp
 
 handheld/monty.cpp
 
-//handheld/mylife.cpp     // black screen
+//handheld/mylife.cpp     // black screen; myrelife need roms
 
 //handheld/pensebem.cpp   // mnw
 
