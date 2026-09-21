@@ -181,9 +181,13 @@ apple/apple3.cpp
 
 apple/mac128.cpp
 
+apple/macalchemy.cpp
+
 apple/maccatalyst.cpp     // mouse buttons nw
 
 apple/maccordyceps.cpp
+
+apple/macgazelle.cpp
 
 apple/macii.cpp
 
@@ -213,6 +217,8 @@ apple/macquadra630.cpp
 apple/macquadra700.cpp
 
 apple/macquadra800.cpp
+
+apple/macquadraav.cpp
 
 //apple/newton.cpp     // no screen
 
@@ -555,9 +561,12 @@ comx/comx35.cpp
 
 concept/concept.cpp
 
-//conitec/prof180x.cpp    // black screen
+conitec/prof180x.cpp
+-prof180xp                 // need roms
 
-//conitec/prof80.cpp     // black screen
+//conitec/prof181x.cpp       // need roms; validation err
+
+conitec/prof80.cpp
 
 //cromemco/c10.cpp       // inputs
 
@@ -2462,6 +2471,8 @@ psion/mc400.cpp
 
 psion/mc600.cpp
 
+psion/osaris.cpp
+
 psion/psion.cpp
 -psion1              // grey screen
 -psionp200           // W:wont run any sw
@@ -2477,6 +2488,7 @@ psion/psion3.cpp
 psion/psion3a.cpp
 
 psion/psion5mx.cpp
+-conan                // sw nw
 
 psion/psion7.cpp     // mouse click nw
 -netbook             // black screen
@@ -2499,7 +2511,7 @@ psion/workabout.cpp
 
 //qume/qvt201.cpp    // black screen
 
-//qume/qvt70.cpp   // qvt82 black screen;qvt70 inputs
+//qume/qvt70.cpp   // qvt82 black screen;qvt70 W:inputs
 
 rca/microkit.cpp
 
@@ -2617,7 +2629,7 @@ roland/roland_tr707.cpp
 
 //rolm/r9751.cpp       // cannot boot disk
 
-//sage/sage2.cpp      // cannot boot disk
+sage/sage2.cpp
 
 saitek/blitz.cpp
 
@@ -3133,6 +3145,8 @@ skeleton/lft.cpp
 -lft1230        // blank screen
 
 //skeleton/lg-dvd.cpp  // no screen
+
+//skeleton/licocai.cpp     // inputs
 
 //skeleton/lilith.cpp   // no screen
 
@@ -3825,6 +3839,7 @@ tvgames/spg110.cpp
 tvgames/spg2xx.cpp
 -ablkickb
 -abltenni
+-anpannou                  // need roms
 -anpantv
 -ban_tam2
 -dinothun
