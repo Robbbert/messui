@@ -34308,8 +34308,6 @@ funcube5
 gal3
 
 @source:namco/galaga.cpp
-battles
-battles2
 bosco
 bosco1
 bosco1o
@@ -34330,14 +34328,6 @@ galagao
 gallag
 gatsbee
 nebulbee
-sxevious
-sxeviousj
-xevios
-xevious
-xeviousa
-xeviousb
-xeviousc
-xeviousd
 
 @source:namco/gaplus.cpp
 galaga3
@@ -34991,6 +34981,18 @@ sos
 warpwarp
 warpwarpr
 warpwarpr2
+
+@source:namco/xevious.cpp
+battles
+battles2
+sxevious
+sxeviousj
+xevios
+xevious
+xeviousa
+xeviousb
+xeviousc
+xeviousd
 
 @source:nasco/crgolf.cpp
 crgolf
@@ -37665,6 +37667,7 @@ cdi490a
 cdi910
 cdibios
 cdimono1
+cdimono1n
 cdimono2
 gpi1200
 quizard
@@ -40068,6 +40071,10 @@ soldivid
 soldividk
 tgm2
 tgm2p
+
+@source:psion/geofox.cpp
+geofox
+geofox_us
 
 @source:psion/mc400.cpp
 mc200
