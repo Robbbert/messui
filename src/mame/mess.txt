@@ -220,6 +220,8 @@ apple/macquadra800.cpp
 
 apple/macquadraav.cpp       // macqd840av need opt rom
 
+//apple/mactanzania.cpp     // W:badgfx
+
 //apple/newton.cpp     // no screen
 
 apple/pippin.cpp
@@ -896,9 +898,6 @@ handheld/hh_pps41.cpp
 handheld/hh_rw5000.cpp
 
 handheld/hh_sm510.cpp
--gnw_climber                 // need roms
--gnw_climbern                // gnw_climber nw
--gnw_zelda                   // need roms
 
 handheld/hh_smc1k.cpp
 
@@ -919,7 +918,7 @@ handheld/lk3000.cpp
 
 handheld/monty.cpp
 
-//handheld/mylife.cpp     // black screen; myrelife need roms
+//handheld/mylife.cpp     // black screen
 
 //handheld/pensebem.cpp   // mnw
 
@@ -1344,6 +1343,8 @@ matsushita/jr200.cpp
 //matsushita/kn7000.cpp    // no screen
 
 matsushita/myb3k.cpp
+
+//matsushita/wsa1.cpp      // bad sound
 
 mattel/aquarius.cpp
 
@@ -2516,6 +2517,8 @@ psion/workabout.cpp
 
 //qume/qvt70.cpp   // qvt82 black screen;qvt70 W:inputs
 
+//radiobulletin/cosmicos.cpp      // W:MT09423
+
 rca/microkit.cpp
 
 rca/studio2.cpp
@@ -3000,8 +3003,6 @@ skeleton/cd2650.cpp
 
 skeleton/cortex.cpp
 
-//skeleton/cosmicos.cpp      // W:MT09423
-
 skeleton/cp1.cpp
 
 //skeleton/css11501sk9.cpp   // no screen
@@ -3375,8 +3376,6 @@ skeleton/vector3.cpp
 //skeleton/webtouchone.cpp   // black screen
 
 //skeleton/xbase09.cpp  // no screen
-
-skeleton/xor100.cpp
 
 //skeleton/yeno_ks56c1660.cpp   // black screen
 
@@ -4320,6 +4319,8 @@ xerox/bigbord2.cpp
 //xerox/notetaker.cpp    // black screen
 
 xerox/xerox820.cpp
+
+xor/xor100.cpp
 
 //yamaha/fb01.cpp        // W:no sound
 
