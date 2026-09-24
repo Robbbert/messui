@@ -2427,6 +2427,7 @@ philips/cdi.cpp
 -gpi1200           // black screen
 -cdi910            // black screen
 -cdi490a           // black screen
+-cdimono1n         // need roms
 -cdimono2          // black screen
 -quizard           // U:arcade
 -quizard_10           // U:arcade
