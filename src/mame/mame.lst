@@ -34288,6 +34288,14 @@ bellybmbr
 dangbar
 sspanic
 
+@source:namco/digdug.cpp
+digdug
+digdug1
+digdugat
+digdugat1
+digsid
+dzigzag
+
 @source:namco/dkmb.cpp
 dkmb
 
@@ -34314,12 +34322,6 @@ bosco1o
 bosco3
 boscomd
 boscomdo
-digdug
-digdug1
-digdugat
-digdugat1
-digsid
-dzigzag
 galaga
 galagamf
 galagamk
