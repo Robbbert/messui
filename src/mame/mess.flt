@@ -218,7 +218,7 @@ apple/macquadra700.cpp
 
 apple/macquadra800.cpp
 
-apple/macquadraav.cpp       // macqd840av need opt rom
+apple/macquadraav.cpp
 
 //apple/mactanzania.cpp     // W:badgfx
 
@@ -534,9 +534,6 @@ commodore/c65.cpp
 commodore/c900.cpp
 
 commodore/cbm2.cpp
--bx256hp           // hangs when enter pressed
--cbm720_de         // bad gfx
--cbm730            // hangs when enter pressed
 
 commodore/chessmate.cpp
 
@@ -547,9 +544,6 @@ commodore/kim1.cpp
 //commodore/mps1230.cpp  // no screen
 
 commodore/pet.cpp
--mmf9000           // inputs
--mmf9000_se        // inputs
--superpet          // inputs
 
 commodore/plus4.cpp
 
@@ -564,9 +558,8 @@ comx/comx35.cpp
 concept/concept.cpp
 
 conitec/prof180x.cpp
--prof180xp                 // need roms
 
-//conitec/prof181x.cpp       // need roms; validation err
+//conitec/prof181x.cpp       // no screen
 
 conitec/prof80.cpp
 
@@ -736,7 +729,7 @@ epoch/scv.cpp
 
 epson/px4.cpp
 
-//epson/px8.cpp     // grey screen
+epson/px8.cpp     // most software won't run
 
 epson/qx10.cpp
 
@@ -1518,7 +1511,7 @@ motorola/mvme162.cpp
 
 motorola/uchroma68.cpp
 
-msx/msx1.cpp      // need cart
+msx/msx1.cpp
 
 msx/msx1_bruc100.cpp
 
@@ -1963,7 +1956,7 @@ palm/palm.cpp
 
 pc/asst128.cpp
 
-pc/at.cpp         // to be checked
+pc/at.cpp
 -so025k2
 -so025r2
 -cdtekg2
@@ -2424,11 +2417,10 @@ pc/tosh1000.cpp
 pce/tourvis.cpp    // arcade swlist
 
 philips/cdi.cpp
--gpi1200           // black screen
--cdi910            // black screen
 -cdi490a           // black screen
--cdimono1n         // need roms
+-cdi910            // black screen
 -cdimono2          // black screen
+-gpi1200           // black screen
 -quizard           // U:arcade
 -quizard_10           // U:arcade
 -quizard_12           // U:arcade
@@ -2465,6 +2457,8 @@ philips/vg5k.cpp
 
 pitronics/beta.cpp
 
+psion/geofox.cpp      // mouse problems
+
 //plexus/p20.cpp      // fail selftest&hangs
 
 poly88/poly88.cpp
@@ -2491,6 +2485,8 @@ psion/psion.cpp
 psion/psion3.cpp
 
 psion/psion3a.cpp
+
+psion/psion5.cpp      // don't press insert
 
 psion/psion5mx.cpp
 -conan                // sw nw
@@ -3842,7 +3838,7 @@ tvgames/spg110.cpp
 tvgames/spg2xx.cpp
 -ablkickb
 -abltenni
--anpannou                  // need roms
+-anpannou                  // inputs
 -anpantv
 -ban_tam2
 -dinothun

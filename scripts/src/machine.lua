@@ -77,6 +77,7 @@ files {
 	MAME_DIR .. "src/devices/imagedev/wafadrive.h",
 	MAME_DIR .. "src/devices/imagedev/avivideo.cpp",
 	MAME_DIR .. "src/devices/imagedev/avivideo.h",
+	MAME_DIR .. "src/mame/epson/px8_hle.cpp",
 }
 
 
