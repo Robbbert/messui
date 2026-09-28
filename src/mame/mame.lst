@@ -44095,6 +44095,9 @@ hazl1420
 @source:skeleton/hkcastle.cpp
 hkcastle
 
+@source:skeleton/hkfbingo.cpp
+hkfbingo
+
 @source:skeleton/hohnadam.cpp
 hohnadam
 
