@@ -26,9 +26,9 @@ protected:
 		const char *mfr, const char *product, const char *rev, uint8_t data)
 		: scsicd512_device(mconfig, type, tag, owner, 0)
 	{
-		strncpy(m_manufacturer, mfr, 8);
-		strncpy(m_product, product, 16);
-		strncpy(m_revision, rev, 4);
+		snprintf(m_manufacturer, 8, "%s", mfr);
+		snprintf(m_product, 16, "%s", product);
+		snprintf(m_revision, 4, "%s", rev);
 		m_data = data;
 	}
 

@@ -634,6 +634,7 @@ dec/pdp1.cpp
 //dec/pdp11.cpp   // useless
 
 dec/rainbow.cpp
+-rainbow100a      // inputs
 -rainbow190      // mnw
 
 //dec/uvax1.cpp    // no screen
