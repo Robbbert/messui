@@ -70,8 +70,6 @@ act/victor9k.cpp
 
 adc/super6.cpp
 
-adc/superslave.cpp
-
 //adds/4000_260.cpp    // black screen
 
 //adds/adds2020.cpp    // black screen
@@ -3605,6 +3603,8 @@ ti/ti85.cpp
 -ti84pcev30         // blank screen
 -ti84pcev50         // blank screen
 -ti84pcev61         // blank screen
+
+//ti/ti80.cpp        // need roms
 
 ti/ti89.cpp
 
