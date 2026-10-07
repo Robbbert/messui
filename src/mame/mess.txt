@@ -523,7 +523,6 @@ colonial/sb80.cpp
 commodore/c128.cpp
 
 commodore/c64.cpp
--clipper             // black screen
 
 //commodore/c64dtv.cpp   // black screen
 
@@ -1018,6 +1017,8 @@ hitachi/mbs1.cpp
 homebrew/4004clk.cpp
 
 homebrew/68ksbc.cpp
+
+//homebrew/arduboy.cpp    // no sw
 
 homebrew/chaos.cpp
 
@@ -3604,7 +3605,7 @@ ti/ti85.cpp
 -ti84pcev50         // blank screen
 -ti84pcev61         // blank screen
 
-//ti/ti80.cpp        // need roms
+ti/ti80.cpp
 
 ti/ti89.cpp
 
