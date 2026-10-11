@@ -30301,7 +30301,7 @@ stonebal2
 stonebal2o
 ultennis
 ultennisj
-wstrnsht
+westerns
 
 @source:misc/astrafr.cpp
 as_acp
@@ -34713,6 +34713,7 @@ puzzball
 puzzballa
 sekaikh
 sekaikha
+shamisen
 slotouji
 slotoujia
 squizchs
@@ -35182,8 +35183,9 @@ pc9801vm
 pc9801vx
 
 @source:nec/pc9801_epson.cpp
-pc286vs
+pc286ls
 pc286u
+pc286vs
 pc386m
 pc386v
 pc486se

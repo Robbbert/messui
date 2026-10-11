@@ -1592,6 +1592,7 @@ nec/pc9801.cpp
 -pc9801bx2   // mnw
 
 nec/pc9801_epson.cpp
+-pc286ls      // need roms
 -pc286u      // black screen
 -pc386m      // mnw
 -pc386v
