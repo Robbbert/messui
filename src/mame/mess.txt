@@ -1148,6 +1148,10 @@ hp/hp_ipc.cpp
 
 //hp/jornada.cpp   // mnw
 
+//humax/cxhumax.cpp   // blank screen
+
+//humax/irci5400.cpp    // no screen
+
 //husky/hawk.cpp   // black screen
 
 //husky/hunter16.cpp   // inputs or grey screen
@@ -1592,7 +1596,7 @@ nec/pc9801.cpp
 -pc9801bx2   // mnw
 
 nec/pc9801_epson.cpp
--pc286ls      // need roms
+-pc286ls      // foreign error at start
 -pc286u      // black screen
 -pc386m      // mnw
 -pc386v
@@ -3009,8 +3013,6 @@ skeleton/cp1.cpp
 
 //skeleton/cubieboard4.cpp   // no screen
 
-//skeleton/cxhumax.cpp   // blank screen
-
 //skeleton/d400.cpp  // black screen
 
 //skeleton/daruma.cpp  // no screen
@@ -3351,7 +3353,7 @@ skeleton/textelcomp.cpp
 
 //skeleton/tr175.cpp // black screen
 
-//skeleton/tsispch.cpp // no sound
+//skeleton/tsispch.cpp // W:inputs
 
 //skeleton/tulip1.cpp // inputs, no sw
 
