@@ -17552,6 +17552,7 @@ prof181x
 
 @source:cosmo/cosmo_ls9310.cpp
 exfever
+exfevera
 
 @source:cosmo/pkscram.cpp
 pkscram
@@ -18460,6 +18461,7 @@ animaljrj
 animaljrs
 daichuka
 daichukaa
+daichukab
 daimyojn
 daireach
 ddenlovj
@@ -21286,6 +21288,9 @@ sc112
 sc116
 sc133
 sc203
+
+@source:homebrew/sbc6120.cpp
+sbc6120
 
 @source:homebrew/sbc6510.cpp
 sbc6510
@@ -30781,7 +30786,7 @@ re800ea
 re800v1
 re800v1a
 re800v3
-rulamiky
+rula
 winner81
 winner81b
 winner81c
@@ -32693,6 +32698,15 @@ fruitstbi
 goldnjkr
 goldnjkra
 
+@source:misc/mpu2000.cpp
+gw606
+gw603
+gw562
+gw558
+gw557
+gw552
+gw545
+
 @source:misc/mtu130.cpp
 mtu130
 
@@ -33420,6 +33434,9 @@ quizoa
 @source:misc/quizpun2.cpp
 quizpun
 quizpun2
+
+@source:misc/ramstar.cpp
+ramstar
 
 @source:misc/rawthrillspc.cpp
 doodljmp
@@ -36270,6 +36287,7 @@ fatfurspb
 kinstsnes
 mk3snes
 snes4sl
+snes4sl94
 snes4sln
 
 @source:nintendo/spacefb.cpp
@@ -37462,6 +37480,9 @@ ecssi5pi
 @source:pc/champ2.cpp
 champ2
 
+@source:pc/cmltgame.cpp
+cmltgame
+
 @source:pc/compc.cpp
 compc10
 pc10iii
@@ -37529,6 +37550,9 @@ megapcpl
 
 @source:pc/nforcepc.cpp
 nforcepc
+
+@source:pc/octavian_g650.cpp
+sweetstr
 
 @source:pc/pangofun.cpp
 pangofun
@@ -37729,6 +37753,7 @@ paranoia
 
 @source:pce/tourvis.cpp
 tourvis
+tourvisv1
 
 @source:pce/uapce.cpp
 aliencr
@@ -40435,6 +40460,10 @@ d550
 
 @source:roland/roland_d70.cpp
 d70
+
+@source:roland/roland_dep5.cpp
+dep5
+re3
 
 @source:roland/roland_jd800.cpp
 jd800
@@ -44490,9 +44519,6 @@ qmsirius
 @source:skeleton/qtsbc.cpp
 qtsbc
 
-@source:skeleton/ramstar.cpp
-ramstar
-
 @source:skeleton/rd100.cpp
 rd100
 
@@ -47306,7 +47332,7 @@ tmc1800
 tmc2000
 
 @source:telercas/tmc600.cpp
-tmc600s2
+tmc600
 
 @source:telercas/tmc2000e.cpp
 tmc2000e
