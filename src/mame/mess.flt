@@ -3537,7 +3537,6 @@ telenova/compis.cpp
 //telercas/tmc2000e.cpp   // no sw
 
 telercas/tmc600.cpp
--tmc600                  // need roms
 
 //televideo/ts3000.cpp   // no screen
 

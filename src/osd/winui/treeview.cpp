@@ -446,7 +446,7 @@ void CreateSaveStateFolders(int parent_index)
 
 void CreateSourceFolders(int parent_index)
 {
-	printf("creating source folders\n");fflush(stdout);
+	printf("CreateSourceFolders: begin\n");fflush(stdout);
 	int i, k=0;
 	int nGames = driver_list::total();
 	int start_folder = m_numFolders;
@@ -499,11 +499,13 @@ void CreateSourceFolders(int parent_index)
 		}
 	}
 	SetNumOptionFolders(k-1);
+	printf("CreateSourceFolders: end\n");
+	fflush(stdout);
 }
 
 void CreateScreenFolders(int parent_index)
 {
-	printf("creating screen folders\n");fflush(stdout);
+	printf("CreateScreenFolders: begin\n");fflush(stdout);
 	int i, k=0;
 	int nGames = driver_list::total();
 	int start_folder = m_numFolders;
@@ -555,12 +557,14 @@ void CreateScreenFolders(int parent_index)
 		}
 	}
 	SetNumOptionFolders(k-1);
+	printf("CreateScreenFolders: end\n");
+	fflush(stdout);
 }
 
 
 void CreateManufacturerFolders(int parent_index)
 {
-	printf("creating manufacturer folders\n");fflush(stdout);
+	printf("CreateManufacturerFolders: begin\n");fflush(stdout);
 	int i;
 	int nGames = driver_list::total();
 	int start_folder = m_numFolders;
@@ -617,6 +621,8 @@ void CreateManufacturerFolders(int parent_index)
 			}
 		}
 	}
+	printf("CreateManufacturerFolders: end\n");
+	fflush(stdout);
 }
 
 /* Make a reasonable name out of the one found in the driver array */
@@ -749,7 +755,7 @@ static const char *ParseManufacturer(const char *s, int *pParsedChars )
 // MESSUI only: has no games that need a bios, all Bioses use software lists instead.
 void CreateBIOSFolders(int parent_index)
 {
-	printf("creating bios folders\n");fflush(stdout);
+	printf("CreateBIOSFolders: begin\n");fflush(stdout);
 	int i, nGames = driver_list::total();
 	int start_folder = m_numFolders;
 	const game_driver *drv;
@@ -794,11 +800,13 @@ void CreateBIOSFolders(int parent_index)
 			}
 		}
 	}
+	printf("CreateBIOSFolders: end\n");
+	fflush(stdout);
 }
 
 void CreateCPUFolders(int parent_index)
 {
-	printf("creating cpu folders\n");fflush(stdout);
+	printf("CreateCPUFolders: begin\n");fflush(stdout);
 	int device_folder_count = 0;
 	LPTREEFOLDER device_folders[1024]{};
 	LPTREEFOLDER folder;
@@ -851,8 +859,9 @@ void CreateCPUFolders(int parent_index)
 					device_folders[device_folder_count++] = folder;
 					if (device_folder_count >= std::size(device_folders))
 					{
-						printf("CreateCPUFolders buffer overrun: %d\n",device_folder_count);
+						printf("CreateCPUFolders: **buffer overrun**: %d, folder truncated\n",device_folder_count);
 						fflush(stdout);
+						return;
 					}
 				}
 
@@ -861,13 +870,15 @@ void CreateCPUFolders(int parent_index)
 			}
 		}
 	}
+	printf("CreateCPUFolders: used %d of %d available\n",device_folder_count,(int)std::size(device_folders));
+	fflush(stdout);
 }
 
 void CreateSoundFolders(int parent_index)
 {
-	printf("creating sound folders\n");fflush(stdout);
+	printf("CreateSoundFolders: begin\n");fflush(stdout);
 	int device_folder_count = 0;
-	LPTREEFOLDER device_folders[512]{};
+	LPTREEFOLDER device_folders[600]{};
 	LPTREEFOLDER folder;
 	int nFolder = m_numFolders;
 
@@ -920,8 +931,9 @@ void CreateSoundFolders(int parent_index)
 					device_folders[device_folder_count++] = folder;
 					if (device_folder_count >= std::size(device_folders))
 					{
-						printf("CreateSoundFolders buffer overrun: %d\n",device_folder_count);
+						printf("CreateSoundFolders: **buffer overrun**: %d, folder truncated\n",device_folder_count);
 						fflush(stdout);
+						return;
 					}
 				}
 
@@ -930,11 +942,13 @@ void CreateSoundFolders(int parent_index)
 			}
 		}
 	}
+	printf("CreateSoundFolders: used %d of %d available\n",device_folder_count,(int)std::size(device_folders));
+	fflush(stdout);
 }
 
 void CreateDeficiencyFolders(int parent_index)
 {
-	printf("creating deficient folders\n");fflush(stdout);
+	printf("CreateDeficiencyFolders: begin\n");fflush(stdout);
 	int nGames = driver_list::total();
 	LPTREEFOLDER lpFolder = m_treeFolders[parent_index];
 
@@ -1104,11 +1118,13 @@ void CreateDeficiencyFolders(int parent_index)
 		if (BIT(cache, 10))
 			AddGame(lpArt,jj);
 	}
+	printf("CreateDeficiencyFolders: end\n");
+	fflush(stdout);
 }
 
 void CreateDumpingFolders(int parent_index)
 {
-	printf("creating dumping folders\n");fflush(stdout);
+	printf("CreateDumpingFolders: begin\n");fflush(stdout);
 	BOOL bBadDump  = false;
 	BOOL bNoDump = false;
 	int nGames = driver_list::total();
@@ -1189,12 +1205,14 @@ void CreateDumpingFolders(int parent_index)
 		if (bNoDump)
 			AddGame(lpNo,jj);
 	}
+	printf("CreateDumpingFolders: end\n");
+	fflush(stdout);
 }
 
 
 void CreateYearFolders(int parent_index)
 {
-	printf("creating year folders\n");fflush(stdout);
+	printf("CreateYearFolders: begin\n");fflush(stdout);
 	int i,jj;
 	int nGames = driver_list::total();
 	int start_folder = m_numFolders;
@@ -1247,11 +1265,13 @@ void CreateYearFolders(int parent_index)
 			AddGame(lpTemp, jj);
 		}
 	}
+	printf("CreateYearFolders: end\n");
+	fflush(stdout);
 }
 
 void CreateResolutionFolders(int parent_index)
 {
-	printf("creating resolution folders\n");fflush(stdout);
+	printf("CreateResolutionFolders: begin\n");fflush(stdout);
 	int i,jj;
 	int nGames = driver_list::total();
 	int start_folder = m_numFolders;
@@ -1320,11 +1340,13 @@ void CreateResolutionFolders(int parent_index)
 			}
 		}
 	}
+	printf("CreateResolutionFolders: end\n");
+	fflush(stdout);
 }
 
 void CreateFPSFolders(int parent_index)
 {
-	printf("creating fps folders\n");fflush(stdout);
+	printf("CreateFPSFolders: begin\n");fflush(stdout);
 	int i,jj;
 	int nGames = driver_list::total();
 	int start_folder = m_numFolders;
@@ -1390,6 +1412,8 @@ void CreateFPSFolders(int parent_index)
 			}
 		}
 	}
+	printf("CreateFPSFolders: end\n");
+	fflush(stdout);
 }
 
 
