@@ -1071,6 +1071,8 @@ homebrew/rc2014.cpp
 -sc116               // W:no screen
 -sc133               // W:no screen
 
+//homebrew/sbc6120.cpp    // W:inputs
+
 //homebrew/sbc6510.cpp    // useless
 
 //homebrew/sitcom.cpp    // W:useless
@@ -2578,6 +2580,8 @@ rockwell/aim65.cpp
 //roland/roland_d50.cpp  // no screen
 
 //roland/roland_d70.cpp  // ramcard missing
+
+//roland/roland_dep5.cpp    // no sound
 
 //roland/roland_jd800.cpp // no screen
 
