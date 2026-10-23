@@ -1233,7 +1233,7 @@ intel/sdk86.cpp
 
 interton/vc4000.cpp
 
-isc/compucolor.cpp
+//isc/compucolor.cpp     // crash at start
 
 jpm/guab.cpp       // arcade swlist
 -crisscrs          // no sw
