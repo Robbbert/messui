@@ -2016,7 +2016,7 @@ LPTREEFOLDER GetFolderByName(int nParentId, const char *pszFolderName)
 	//Enumerate Children
 	for(int i = 0; i < m_numFolders/* ||m_treeFolders[i] != NULL*/; i++)
 	{
-		if (!strcmp(m_treeFolders[i]->m_lpTitle, pszFolderName))
+		if (0 == strcmp(m_treeFolders[i]->m_lpTitle, pszFolderName))
 		{
 			int nParent = m_treeFolders[i]->m_nParent;
 			if ((nParent >= 0) && m_treeFolders[nParent]->m_nFolderId == nParentId)
@@ -2086,7 +2086,7 @@ static int InitExtraFolders()
 
 							*p = '\0';
 							name = &buf[1];
-							if (!strcmp(name, "FOLDER_SETTINGS"))
+							if (0 == strcmp(name, "FOLDER_SETTINGS"))
 							{
 								while (fgets(buf, MAX_TITLE_LENGTH, fp))
 								{
@@ -2094,13 +2094,13 @@ static int InitExtraFolders()
 									if (name == NULL)
 										break;
 
-									if (!strcmp(name, "RootFolderIcon"))
+									if (0 == strcmp(name, "RootFolderIcon"))
 									{
 										name = strtok(NULL, " =\r\n");
 										if (name != NULL)
 											SetExtraIcons(name, &icon[0]);
 									}
-									if (!strcmp(name, "SubFolderIcon"))
+									if (0 == strcmp(name, "SubFolderIcon"))
 									{
 										name = strtok(NULL, " =\r\n");
 										if (name != NULL)
@@ -2237,7 +2237,7 @@ BOOL TryAddExtraFolderAndChildren(int parent_index)
 			{
 				/* it it [ROOT_FOLDER]? */
 
-				if (!strcmp(name, "ROOT_FOLDER"))
+				if (0 == strcmp(name, "ROOT_FOLDER"))
 				{
 					current_id = lpFolder->m_nFolderId;
 					lpTemp = lpFolder;
@@ -2593,7 +2593,7 @@ static bool LoadCacheFolder(int parent_index, int id)
 			else
 			{
 				/* is it [ROOT_FOLDER]? */
-				if (!strcmp(name, "ROOT_FOLDER"))
+				if (0 == strcmp(name, "ROOT_FOLDER"))
 				{
 					current_id = lpFolder->m_nFolderId;
 					lpTemp = lpFolder;
