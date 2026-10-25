@@ -945,6 +945,7 @@ handheld/wildfire.cpp
 //hds/hds200.cpp      // mnw
 
 heathzenith/et3400.cpp
+-et3400a                 // need roms
 
 heathzenith/h19.cpp
 
@@ -3303,8 +3304,6 @@ skeleton/shine.cpp
 
 //skeleton/slsstars.cpp      // no screen
 
-skeleton/softbox.cpp
-
 //skeleton/solbourne.cpp   // no screen
 
 skeleton/squale.cpp
@@ -3443,6 +3442,8 @@ sony/smc777.cpp
 //sord/future32.cpp  // black screen, no sw
 
 sord/m5.cpp
+
+sse/softbox.cpp
 
 stm/pp.cpp
 
