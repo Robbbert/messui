@@ -1844,7 +1844,7 @@ static BOOL Win32UI_init(HINSTANCE hInstance, LPWSTR lpCmdLine, int nCmdShow)
 	}
 
 	ShowWindow(hMain, nCmdShow);
-
+	UpdateWindow(hMain);
 
 	switch (GetViewMode())
 	{
@@ -5311,8 +5311,10 @@ static void MamePlayGameWithOptions(int nGame, const play_options *playopts)
 		Picker_Sort(hwndList);
 
 	UpdateStatusBar();
-
 	ShowWindow(hMain, SW_SHOW);
+	UpdateWindow(hMain);
+	SetActiveWindow(hMain);
+	SetForegroundWindow(hMain);
 	SetFocus(hwndList);
 
 	if (g_pJoyGUI)
