@@ -134,7 +134,7 @@ option_resolution::entry *option_resolution::find(const std::string &identifier)
 	auto iter = std::find_if(
 		m_entries.begin(),
 		m_entries.end(),
-		[&](const entry &e) { return 0 == strcmp(e.identifier(), identifier.c_str()); });
+		[&](const entry &e) { return !strcmp(e.identifier(), identifier.c_str()); });
 
 	return iter != m_entries.end()
 		? &*iter

@@ -983,7 +983,7 @@ private:
 		};
 		static int already_hit = 0;
 		int i = 0;
-		printf("START OF CRASH DUMP\n");fflush(stdout);
+		printf("\nSTART OF CRASH DUMP\n");fflush(stdout);
 
 		// if we're hitting this recursively, just exit
 		if (already_hit)

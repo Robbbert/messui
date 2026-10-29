@@ -525,4 +525,5 @@ void mbc6_device::install_ram()
 
 } // namespace bus::gameboy
 
+
 DEFINE_DEVICE_TYPE_PRIVATE(GB_ROM_MBC6, device_gb_cart_interface, bus::gameboy::mbc6_device, "gb_rom_mbc6", "Game Boy MBC6 Cartridge")
