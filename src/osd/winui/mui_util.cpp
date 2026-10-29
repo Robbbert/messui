@@ -94,11 +94,10 @@ void __cdecl ErrorMsg(const char* fmt, ...)
 	char buf2[5000]{};
 	va_list va;
 	va_start(va, fmt);
-	vsnprintf(buf, sizeof(buf), fmt, va);
+	vsnprintf(buf, std::size(buf), fmt, va);
 	win_message_box_utf8(GetActiveWindow(), buf, MAMEUINAME, MB_OK | MB_ICONERROR);
 
-	//strcpy(buf2, MAMEUINAME ": ");
-	snprintf(buf2, sizeof(buf2), "MAMEUINAME : %s\n",buf);
+	snprintf(buf2, std::size(buf2), "MAMEUINAME : %s\n", buf);
 
 	WriteFile(GetStdHandle(STD_OUTPUT_HANDLE), buf2, strlen(buf2), &dwWritten, NULL);
 
@@ -119,7 +118,7 @@ void __cdecl dprintf(const char* fmt, ...)
 	char buf[5000]{};
 	va_list va;
 	va_start(va, fmt);
-	vsnprintf(buf,sizeof(buf),fmt,va);
+	vsnprintf(buf, std::size(buf), fmt, va);
 	win_output_debug_string_utf8(buf);
 	va_end(va);
 }
@@ -351,7 +350,7 @@ char* MyStrStrI(const char* pFirst, const char* pSrch)
 
 char * ConvertToWindowsNewlines(const char *source)
 {
-	static char buf[2048 * 2048];
+	static char buf[2048 * 2048]{};
 	char *dest;
 
 	dest = buf;
@@ -380,7 +379,7 @@ const char * GetDriverFilename(int drvindex)
 	if (drvindex >= 0)
 	{
 		string driver = string(core_filename_extract_base(driver_list::driver(drvindex).type.source()));
-		snprintf(tmp, sizeof(tmp), "%s", driver.c_str());
+		snprintf(tmp, std::size(tmp), "%s", driver.c_str());
 	}
 	return tmp;
 }
@@ -869,7 +868,6 @@ DWORD win_get_current_directory_utf8(size_t bufferlength, char* buffer)
 	if( !utf8_buffer )
 		return 0;
 
-	//strncpy(buffer, utf8_buffer, bufferlength);
 	snprintf(buffer, bufferlength, "%s", utf8_buffer);
 
 	free(utf8_buffer);

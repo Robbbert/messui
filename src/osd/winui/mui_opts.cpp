@@ -366,7 +366,7 @@ static LPBITS GetShowFolderFlags(LPBITS bits)
 		return bits;
 
 	extern const FOLDERDATA g_folderData[];
-	char s[val.size()+1];
+	char s[val.size()+1]{};
 	strcpy(s, val.c_str());
 	char *token = strtok(s, ",");
 	int j;
@@ -844,7 +844,7 @@ void IncrementPlayTime(int drvindex, uint32_t playtime)
 		IncrementPlayVariable(drvindex, "time", playtime);
 }
 
-void GetTextPlayTime(int drvindex, char *buf)
+void GetTextPlayTime(int drvindex, char *buf, size_t size)
 {
 	if ((drvindex >= 0) && (drvindex < driver_list::total()))
 	{
@@ -855,9 +855,9 @@ void GetTextPlayTime(int drvindex, char *buf)
 		second -= 60*minute;
 
 		if (hour == 0)
-			snprintf(buf, sizeof(buf), "%d:%02d", minute, second );
+			snprintf(buf, size, "%d:%02d", minute, second );
 		else
-			snprintf(buf, sizeof(buf), "%d:%02d:%02d", hour, minute, second );
+			snprintf(buf, size, "%d:%02d:%02d", hour, minute, second );
 	}
 }
 
@@ -1245,7 +1245,7 @@ static void CusColorDecodeString(string ss, COLORREF *value)
 	char *s, *p;
 	char tmpStr[256]{};
 
-	snprintf(tmpStr, sizeof(tmpStr), "%s", str);
+	snprintf(tmpStr, std::size(tmpStr), "%s", str);
 	p = tmpStr;
 
 	for (int i = 0; p && i < 16; i++)
@@ -1274,14 +1274,14 @@ static string ColumnEncodeStringWithCount(const int *value, int count)
 
 static void ColumnDecodeStringWithCount(string ss, int *value, int count)
 {
-	const char *str = ss.c_str();
-	if (str == NULL)
+	if (ss.empty())
 		return;
 
+	const char *str = ss.c_str();
 	char *s, *p;
 	char tmpStr[256]{};
 
-	snprintf(tmpStr, sizeof(tmpStr), "%s", str);
+	snprintf(tmpStr, std::size(tmpStr), "%s", str);
 	p = tmpStr;
 
 	for (int i = 0; p && i < count; i++)
@@ -1313,7 +1313,7 @@ static void SplitterDecodeString(string ss, int *value)
 	char *s, *p;
 	char tmpStr[256]{};
 
-	snprintf(tmpStr, sizeof(tmpStr), "%s", str);
+	snprintf(tmpStr, std::size(tmpStr), "%s", str);
 	p = tmpStr;
 
 	for (int i = 0; p && i < GetSplitterCount(); i++)
@@ -1366,7 +1366,7 @@ static string FontEncodeString(const LOGFONT *f)
 		return "";
 
 	char s[200]{};
-	snprintf(s, sizeof(s), "%li,%li,%li,%li,%li,%i,%i,%i,%i,%i,%i,%i,%i,%s",
+	snprintf(s, std::size(s), "%li,%li,%li,%li,%li,%i,%i,%i,%i,%i,%i,%i,%i,%s",
 			f->lfHeight,
 			f->lfWidth,
 			f->lfEscapement,
@@ -1480,37 +1480,12 @@ DWORD GetFolderFlags(int folder_index)
 void LoadFolderFlags()
 {
 	LPTREEFOLDER lpFolder;
-	int i, numFolders = GetNumFolders();
-#if 0
-	for (i = 0; i < numFolders; i++)
-	{
-		lpFolder = GetFolder(i);
-
-		if (lpFolder)
-		{
-			char folder_name[400]{};
-			char *ptr;
-
-			// Convert spaces to underscores
-			strcpy(folder_name, lpFolder->m_lpTitle);
-			ptr = folder_name;
-			while (*ptr && *ptr != '\0')
-			{
-				if ((*ptr == ' ') || (*ptr == '-'))
-					*ptr = '_';
-
-				ptr++;
-			}
-
-			string option_name = string(folder_name) + "_filters";
-		}
-	}
-#endif
+	int numFolders = GetNumFolders();
 	// These are added to our UI ini
 	// The normal read will skip them.
 
 	// retrieve the stored values
-	for (i = 0; i < numFolders; i++)
+	for (int i = 0; i < numFolders; i++)
 	{
 		lpFolder = GetFolder(i);
 

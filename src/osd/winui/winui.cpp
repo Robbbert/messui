@@ -4686,7 +4686,7 @@ static const TCHAR *GamePicker_GetItemString(HWND hwndPicker, int nItem, int nCo
 
 		case COLUMN_PLAYTIME:
 			/* Source drivers */
-			GetTextPlayTime(nItem, playtime_buf);
+			GetTextPlayTime(nItem, playtime_buf, std::size(playtime_buf));
 			utf8_s = playtime_buf;
 			break;
 

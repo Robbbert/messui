@@ -530,7 +530,7 @@ static BOOL LoadDIB(const char *filename, HGLOBAL *phDIB, HPALETTE *pPal, int pi
 
 	// we need to split the filename into the game name (system_name), and the software-list item name (file_name)
 	char tempfile[2048]{};
-	snprintf(tempfile, sizeof(tempfile), "%s", filename);
+	snprintf(tempfile, std::size(tempfile), "%s", filename);
 	char* system_name = strtok(tempfile, ":");
 	char* file_name = strtok(NULL, ":");
 
@@ -554,7 +554,7 @@ static BOOL LoadDIB(const char *filename, HGLOBAL *phDIB, HPALETTE *pPal, int pi
 			default:
 				ext = ".png";
 		}
-		snprintf(fullpath, sizeof(fullpath), "%s", t.c_str());
+		snprintf(fullpath, std::size(fullpath), "%s", t.c_str());
 		string fname;
 		buffer = 0;
 		success = false;
