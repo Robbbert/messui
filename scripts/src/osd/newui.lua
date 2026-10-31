@@ -19,6 +19,8 @@ function maintargetosdoptions(_target,_subtarget)
 	configuration { "mingw*-gcc" }
 		linkoptions {
 			"-municode",
+			"-lmingw32",
+			"-Wl,--allow-multiple-definition",
 		}
 
 	configuration { }
@@ -37,7 +39,12 @@ function maintargetosdoptions(_target,_subtarget)
 		"comctl32",
 		"comdlg32",
 		"psapi",
+		"shcore",
 		"ole32",
+--		"shell32",
+		"uxtheme",
+		"uuid",
+		"shlwapi",
 	}
 
 -- needs same resources as messui, because dropdown menus are in mameui.rc
@@ -140,22 +147,24 @@ project ("osd_" .. _OPTIONS["osd"])
 		MAME_DIR .. "src/osd/modules/render/drawgdi.h",
 		MAME_DIR .. "src/osd/modules/render/drawnone.cpp",
 		MAME_DIR .. "src/osd/modules/render/drawnone.h",
+		MAME_DIR .. "src/osd/modules/osdwindow.cpp",
+		MAME_DIR .. "src/osd/modules/osdwindow.h",
 		MAME_DIR .. "src/osd/windows/winvideo.cpp",
 		MAME_DIR .. "src/osd/windows/winvideo.h",
 		MAME_DIR .. "src/osd/windows/window.cpp",
 		MAME_DIR .. "src/osd/windows/window.h",
-		MAME_DIR .. "src/osd/modules/osdwindow.cpp",
-		MAME_DIR .. "src/osd/modules/osdwindow.h",
 		MAME_DIR .. "src/osd/windows/winmain.cpp",
 		MAME_DIR .. "src/osd/windows/winmain.h",
+		MAME_DIR .. "src/osd/windows/winopts.cpp",
 		MAME_DIR .. "src/osd/osdepend.h",
 		MAME_DIR .. "src/osd/winui/newui.cpp",
-		MAME_DIR .. "src/osd/windows/winmain.cpp",
-		MAME_DIR .. "src/osd/windows/winopts.cpp",
+		MAME_DIR .. "src/osd/winui/main.cpp",
 		MAME_DIR .. "src/osd/modules/debugger/win/consolewininfo.cpp",
 		MAME_DIR .. "src/osd/modules/debugger/win/consolewininfo.h",
 		MAME_DIR .. "src/osd/modules/debugger/win/debugbaseinfo.cpp",
 		MAME_DIR .. "src/osd/modules/debugger/win/debugbaseinfo.h",
+		MAME_DIR .. "src/osd/modules/debugger/win/debuggerprefs.cpp",
+		MAME_DIR .. "src/osd/modules/debugger/win/debuggerprefs.h",
 		MAME_DIR .. "src/osd/modules/debugger/win/debugviewinfo.cpp",
 		MAME_DIR .. "src/osd/modules/debugger/win/debugviewinfo.h",
 		MAME_DIR .. "src/osd/modules/debugger/win/debugwininfo.cpp",
@@ -226,7 +235,7 @@ project ("ocore_" .. _OPTIONS["osd"])
 		MAME_DIR .. "src/osd/osdcore.h",
 		MAME_DIR .. "src/osd/strconv.cpp",
 		MAME_DIR .. "src/osd/strconv.h",
-		MAME_DIR .. "src/osd/windows/main.cpp",
+		-- MAME_DIR .. "src/osd/windows/main.cpp",
 		MAME_DIR .. "src/osd/osdsync.cpp",
 		MAME_DIR .. "src/osd/osdsync.h",
 		MAME_DIR .. "src/osd/windows/winutf8.cpp",

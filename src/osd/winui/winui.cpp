@@ -943,7 +943,7 @@ int MameUIMain(HINSTANCE hInstance, LPWSTR lpCmdLine, int nCmdShow)
 	}
 	// printf's not allowed before here, else they get into mame queries
 
-	printf("MESSUI starting\n");fflush(stdout);
+	printf(MAMEUINAME " starting\n");fflush(stdout);
 
 	diagnostics_module::get_instance()->init_crash_diagnostics();
 	hSplash = CreateDialog(hInstance, MAKEINTRESOURCE(IDD_STARTUP), hMain, StartupProc);
@@ -1008,7 +1008,7 @@ void GetRealColumnOrder(int order[])
 	int nColumnMax = Picker_GetNumColumns(hwndList);
 
 	/* Get the Column Order and save it */
-	ListView_GetColumnOrderArray(hwndList, nColumnMax, tmpOrder);
+	(void)ListView_GetColumnOrderArray(hwndList, nColumnMax, tmpOrder);
 
 	for (int i = 0; i < nColumnMax; i++)
 		order[i] = Picker_GetRealColumnFromViewColumn(hwndList, tmpOrder[i]);
@@ -1108,11 +1108,11 @@ HICON LoadIconFromFile(const char *iconname)
 	char* s1 = strtok(s, ";");
 	while (s1 && !hIcon)
 	{
-		snprintf(tmpStr, sizeof(tmpStr), "%s/%s.ico", s1, iconname);
+		snprintf(tmpStr, std::size(tmpStr), "%s/%s.ico", s1, iconname);
 		if (stat(tmpStr, &file_stat) != 0 || (hIcon = win_extract_icon_utf8(hInst, tmpStr, 0)) == 0)
 		{
-			snprintf(tmpStr, sizeof(tmpStr), "%s/icons.zip", s1);
-			snprintf(tmpIcoName, sizeof(tmpIcoName), "%s.ico", iconname);
+			snprintf(tmpStr, std::size(tmpStr), "%s/icons.zip", s1);
+			snprintf(tmpIcoName, std::size(tmpIcoName), "%s.ico", iconname);
 
 			if (!util::archive_file::open_zip(tmpStr, zip))
 			{
@@ -1131,8 +1131,8 @@ HICON LoadIconFromFile(const char *iconname)
 			}
 			else
 			{
-				snprintf(tmpStr, sizeof(tmpStr), "%s/icons.7z", s1);
-				snprintf(tmpIcoName, sizeof(tmpIcoName), "%s.ico", iconname);
+				snprintf(tmpStr, std::size(tmpStr), "%s/icons.7z", s1);
+				snprintf(tmpIcoName, std::size(tmpIcoName), "%s.ico", iconname);
 
 				if (!util::archive_file::open_7z(tmpStr, zip))
 				{
@@ -1402,14 +1402,14 @@ void ResizePickerControls(HWND hWnd)
 char *ModifyThe(const char *str)
 {
 	static int  bufno = 0;
-	static char buffer[4][2048];
+	static char buffer[4][2048]{};
 
 	if (strncmp(str, "The ", 4) == 0)
 	{
 		char *s, *p;
 		char temp[2048]{};
 
-		snprintf(temp, sizeof(temp), "%s", &str[4]);
+		snprintf(temp, std::size(temp), "%s", &str[4]);
 
 		bufno = (bufno + 1) % 4;
 
@@ -1420,15 +1420,10 @@ char *ModifyThe(const char *str)
 		if (p)
 			p[-1] = '\0';
 
-		//strcpy(s, temp);
-		snprintf(s, sizeof(s), "%s", temp);
-		strcat(s, ", The");
-
 		if (p)
-		{
-			strcat(s, " ");
-			strcat(s, p);
-		}
+			sprintf(s, "%s, the %s", temp, p);
+		else
+			sprintf(s, "%s, the", temp);
 
 		return s;
 	}
@@ -2188,7 +2183,7 @@ static LRESULT CALLBACK MameWindowProc(HWND hWnd, UINT message, WPARAM wParam, L
 			{
 				int nGameIndex, nParentIndex = -1;
 				char szFileName[256]{};
-				snprintf(szFileName, sizeof(szFileName), "%s", (LPCSTR) lParam);
+				snprintf(szFileName, std::size(szFileName), "%s", (LPCSTR) lParam);
 				char* s = strchr(szFileName, '.');
 				if (s)
 					*s = '\0';
@@ -2236,7 +2231,6 @@ static LRESULT CALLBACK MameWindowProc(HWND hWnd, UINT message, WPARAM wParam, L
 			lvfi.lParam = nGameIndex;
 
 			i = ListView_FindItem(hwndList, -1, &lvfi);
-
 			if (i != -1)
 				(void)ListView_RedrawItems(hwndList, i, i);
 		}
@@ -2985,7 +2979,7 @@ static void EnableSelection(int nGame)
 
 	//printf("EnableSelection: C\n");fflush(stdout);
 	TCHAR buf[200]{};
-	_sntprintf(buf, sizeof(buf) / sizeof(buf[0]), g_szPlayGameString, t_description);
+	_sntprintf(buf, std::size(buf), g_szPlayGameString, t_description);
 	MENUITEMINFO mmi;
 	mmi.cbSize = sizeof(mmi);
 	mmi.fMask = MIIM_TYPE;
@@ -3009,7 +3003,7 @@ static void EnableSelection(int nGame)
 	if (items)
 	{
 		char t[8]{};
-		snprintf(t, sizeof(t), "%d", items);
+		snprintf(t, std::size(t), "%d", items);
 		SetStatusBarText(3, t);
 	}
 	else
@@ -3261,7 +3255,7 @@ static void check_for_GUI_action()
 			case ID_GAME_PROPERTIES:
 			case ID_CONTEXT_FILTERS:
 			case ID_UI_START:
-				KeyboardStateClear(); /* because we won't receive KeyUp mesage when we lose focus */
+				KeyboardStateClear(); // because we won't receive KeyUp message when we lose focus
 				break;
 			default:
 				break;
@@ -3984,13 +3978,11 @@ static BOOL MameCommand(HWND hwnd,int id, HWND hwndCtl, UINT codeNotify)
 				if ((!_stricmp(buf.c_str(), SEARCH_PROMPT) && !_stricmp(g_SearchText, "")) ||
 					(!_stricmp(g_SearchText, SEARCH_PROMPT) && !_stricmp(buf.c_str(), "")))
 				{
-					//strcpy(g_SearchText, buf.c_str());
-					snprintf(g_SearchText, sizeof(g_SearchText), "%s", buf.c_str());
+					snprintf(g_SearchText, std::size(g_SearchText), "%s", buf.c_str());
 				}
 				else
 				{
-					//strcpy(g_SearchText, buf.c_str());
-					snprintf(g_SearchText, sizeof(g_SearchText), "%s", buf.c_str());
+					snprintf(g_SearchText, std::size(g_SearchText), "%s", buf.c_str());
 					ResetListView();
 				}
 				break;
@@ -4322,7 +4314,7 @@ static BOOL MameCommand(HWND hwnd,int id, HWND hwndCtl, UINT codeNotify)
 			{
 				// INI
 				string t = dir_get_value(7);
-				char buf7[t.size()+1];
+				char buf7[t.size()+1]{};
 				strcpy(buf7, t.c_str());
 				char * t_dir = strtok(buf7, ";");
 				while (t_dir)
@@ -4334,7 +4326,7 @@ static BOOL MameCommand(HWND hwnd,int id, HWND hwndCtl, UINT codeNotify)
 				}
 				// CFG
 				t = dir_get_value(14);
-				char buf14[t.size()+1];
+				char buf14[t.size()+1]{};
 				strcpy(buf14, t.c_str());
 				t_dir = strtok(buf14, ";");
 				while (t_dir)
@@ -4346,7 +4338,7 @@ static BOOL MameCommand(HWND hwnd,int id, HWND hwndCtl, UINT codeNotify)
 				}
 				// NVRAM
 				t = dir_get_value(15);
-				char buf15[t.size()+1];
+				char buf15[t.size()+1]{};
 				strcpy(buf15, t.c_str());
 				t_dir = strtok(buf15, ";");
 				while (t_dir)
@@ -4358,7 +4350,7 @@ static BOOL MameCommand(HWND hwnd,int id, HWND hwndCtl, UINT codeNotify)
 				}
 				// Save states
 				t = dir_get_value(17);
-				char buf17[t.size()+1];
+				char buf17[t.size()+1]{};
 				strcpy(buf17, t.c_str());
 				t_dir = strtok(buf17, ";");
 				while (t_dir)
@@ -4382,7 +4374,7 @@ static BOOL MameCommand(HWND hwnd,int id, HWND hwndCtl, UINT codeNotify)
 				string t2 = GetGameHistory(nGame);
 				std::ofstream outfile (filename, std::ios::out | std::ios::trunc);
 				size_t size = t2.size();
-				char t1[size+1];
+				char t1[size+1]{};
 				strcpy(t1, t2.c_str());
 				outfile.write(t1, size);
 				outfile.close();
@@ -4775,7 +4767,6 @@ static int GamePicker_FindItemParent(HWND hwndPicker, int nItem)
 static void InitListView()
 {
 	LVBKIMAGE bki;
-	//TCHAR path[MAX_PATH]{};
 	TCHAR* t_bgdir;
 
 	static const struct PickerCallbacks s_gameListCallbacks =
@@ -5004,14 +4995,14 @@ static void CreateIcons()
 
 	// Now set up header specific stuff
 	// This doesn't seem to be used
-//	hHeaderImages = ImageList_Create(8,8,ILC_COLORDDB | ILC_MASK,2,2);
-//	HICON hIcon = LoadIcon(hInst,MAKEINTRESOURCE(IDI_HEADER_UP));
-//	ImageList_AddIcon(hHeaderImages,hIcon);
-//	hIcon = LoadIcon(hInst,MAKEINTRESOURCE(IDI_HEADER_DOWN));
-//	ImageList_AddIcon(hHeaderImages,hIcon);
+	//hHeaderImages = ImageList_Create(8,8,ILC_COLORDDB | ILC_MASK,2,2);
+	//HICON hIcon = LoadIcon(hInst,MAKEINTRESOURCE(IDI_HEADER_UP));
+	//ImageList_AddIcon(hHeaderImages,hIcon);
+	//hIcon = LoadIcon(hInst,MAKEINTRESOURCE(IDI_HEADER_DOWN));
+	//ImageList_AddIcon(hHeaderImages,hIcon);
 
-//	for (int i = 0; i < sizeof(s_nPickers) / sizeof(s_nPickers[0]); i++)
-//		Picker_SetHeaderImageList(GetDlgItem(hMain, s_nPickers[i]), hHeaderImages);
+	//for (int i = 0; i < sizeof(s_nPickers) / sizeof(s_nPickers[0]); i++)
+		//Picker_SetHeaderImageList(GetDlgItem(hMain, s_nPickers[i]), hHeaderImages);
 }
 
 
@@ -5122,7 +5113,7 @@ static HICON GetSelectedPickItemIcon()
 	lvi.iItem = GetSelectedPick();
 	lvi.iSubItem = 0;
 	lvi.mask = LVIF_IMAGE;
-	ListView_GetItem(hwndList, &lvi);
+	(void)ListView_GetItem(hwndList, &lvi);
 	return ImageList_GetIcon(hLarge, lvi.iImage, ILD_TRANSPARENT);
 }
 
@@ -5263,7 +5254,7 @@ void SetStatusBarTextF(int part_index, const char *fmt, ...)
 	va_list va;
 
 	va_start(va, fmt);
-	vsnprintf(buf, sizeof(buf), fmt, va);
+	vsnprintf(buf, std::size(buf), fmt, va);
 	va_end(va);
 
 	SetStatusBarText(part_index, buf);
@@ -5276,7 +5267,7 @@ static void CLIB_DECL ATTR_PRINTF(1,2) MameMessageBox(const char *fmt, ...)
 	va_list va;
 
 	va_start(va, fmt);
-	vsnprintf(buf, sizeof(buf), fmt, va);
+	vsnprintf(buf, std::size(buf), fmt, va);
 	win_message_box_utf8(GetMainWindow(), buf, MAMEUINAME, MB_OK | MB_ICONERROR);
 	va_end(va);
 }
@@ -5333,7 +5324,7 @@ static void MamePlayBackGame()
 
 	char filename[MAX_PATH]{};
 
-	snprintf(filename, sizeof(filename), "%s", driver_list::driver(nGame).name);
+	snprintf(filename, std::size(filename), "%s", driver_list::driver(nGame).name);
 
 	if (CommonFileDialog(GetOpenFileName, filename, FILETYPE_INPUT_FILES))
 	{
@@ -5345,8 +5336,8 @@ static void MamePlayBackGame()
 
 		char path[MAX_PATH]{};
 		char fname[MAX_PATH]{};
-		snprintf(path, sizeof(path), "%s%s",drive,dir);
-		snprintf(fname, sizeof(fname), "%s%s",bare_fname,ext);
+		snprintf(path, std::size(path), "%s%s",drive,dir);
+		snprintf(fname, std::size(fname), "%s%s",bare_fname,ext);
 		if (path[strlen(path)-1] == '\\')
 			path[strlen(path)-1] = 0; // take off trailing back slash
 
@@ -5406,8 +5397,8 @@ static void MameLoadState()
 
 	char filename[MAX_PATH]{};
 	char selected_filename[MAX_PATH]{};
-	snprintf(filename, sizeof(filename), "%s", driver_list::driver(nGame).name);
-	snprintf(selected_filename, sizeof(selected_filename), "%s", driver_list::driver(nGame).name);
+	snprintf(filename, std::size(filename), "%s", driver_list::driver(nGame).name);
+	snprintf(selected_filename, std::size(selected_filename), "%s", driver_list::driver(nGame).name);
 
 	if (CommonFileDialog(GetOpenFileName, filename, FILETYPE_SAVESTATE_FILES))
 	{
@@ -5420,8 +5411,8 @@ static void MameLoadState()
 		// parse path
 		char path[MAX_PATH]{};
 		char fname[MAX_PATH]{};
-		snprintf(path, sizeof(path), "%s%s", drive, dir);
-		snprintf(fname, sizeof(fname), "%s%s", bare_fname, ext);
+		snprintf(path, std::size(path), "%s%s", drive, dir);
+		snprintf(fname, std::size(fname), "%s%s", bare_fname, ext);
 		if (path[strlen(path)-1] == '\\')
 			path[strlen(path)-1] = 0; // take off trailing back slash
 
@@ -5454,7 +5445,7 @@ static void MamePlayRecordGame()
 		return;
 
 	char filename[MAX_PATH]{};
-	snprintf(filename, sizeof(filename), "%s", driver_list::driver(nGame).name);
+	snprintf(filename, std::size(filename), "%s", driver_list::driver(nGame).name);
 
 	if (CommonFileDialog(GetSaveFileName, filename, FILETYPE_INPUT_FILES))
 	{
@@ -5465,7 +5456,7 @@ static void MamePlayRecordGame()
 		_splitpath(filename, drive, dir, fname, ext);
 
 		char path[MAX_PATH]{};
-		snprintf(path, sizeof(path), "%s%s", drive, dir);
+		snprintf(path, std::size(path), "%s%s", drive, dir);
 		if (path[strlen(path)-1] == '\\')
 			path[strlen(path)-1] = 0; // take off trailing back slash
 
@@ -5502,7 +5493,7 @@ static void MamePlayRecordWave()
 		return;
 
 	char filename[MAX_PATH]{};
-	snprintf(filename, sizeof(filename), "%s", driver_list::driver(nGame).name);
+	snprintf(filename, std::size(filename), "%s", driver_list::driver(nGame).name);
 
 	if (CommonFileDialog(GetSaveFileName, filename, FILETYPE_WAVE_FILES))
 	{
@@ -5522,7 +5513,7 @@ static void MamePlayRecordMNG()
 		return;
 
 	char filename[MAX_PATH]{};
-	snprintf(filename, sizeof(filename), "%s", driver_list::driver(nGame).name);
+	snprintf(filename,std::size(filename), "%s", driver_list::driver(nGame).name);
 
 	if (CommonFileDialog(GetSaveFileName, filename, FILETYPE_MNG_FILES))
 	{
@@ -5533,7 +5524,7 @@ static void MamePlayRecordMNG()
 		_splitpath(filename, drive, dir, fname, ext);
 
 		char path[MAX_PATH]{};
-		snprintf(path, sizeof(path), "%s%s", drive, dir);
+		snprintf(path, std::size(path), "%s%s", drive, dir);
 		if (path[strlen(path)-1] == '\\')
 			path[strlen(path)-1] = 0; // take off trailing back slash
 
@@ -5554,7 +5545,7 @@ static void MamePlayRecordAVI()
 		return;
 
 	char filename[MAX_PATH]{};
-	snprintf(filename, sizeof(filename), "%s", driver_list::driver(nGame).name);
+	snprintf(filename, std::size(filename), "%s", driver_list::driver(nGame).name);
 
 	if (CommonFileDialog(GetSaveFileName, filename, FILETYPE_AVI_FILES))
 	{
@@ -5565,7 +5556,7 @@ static void MamePlayRecordAVI()
 		_splitpath(filename, drive, dir, fname, ext);
 
 		char path[MAX_PATH]{};
-		snprintf(path, sizeof(path), "%s%s", drive, dir);
+		snprintf(path, std::size(path), "%s%s", drive, dir);
 		if (path[strlen(path)-1] == '\\')
 			path[strlen(path)-1] = 0; // take off trailing back slash
 
@@ -5621,7 +5612,7 @@ static void AdjustMetrics()
 	HWND hWnd = GetWindow(hMain, GW_CHILD);
 	while(hWnd)
 	{
-		if (GetClassName(hWnd, szClass, sizeof(szClass) / sizeof(szClass[0])))
+		if (GetClassName(hWnd, szClass, std::size(szClass)))
 		{
 			if (!_tcscmp(szClass, TEXT("SysListView32")))
 			{

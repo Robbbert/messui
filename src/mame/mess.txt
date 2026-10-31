@@ -199,14 +199,14 @@ apple/maclc.cpp
 
 apple/maclc3.cpp
 
-//apple/macpdm.cpp     // W:silent exit with floppy
+apple/macpdm.cpp
 
 apple/macprtb.cpp
 
 apple/macpwrbk030.cpp
 
 apple/macpwrbkmsc.cpp
--macpb150                 // W:inputs
+-macpb150                 // W:boots but keys are wrong
 
 apple/macquadra605.cpp
 
@@ -218,7 +218,7 @@ apple/macquadra800.cpp
 
 apple/macquadraav.cpp
 
-//apple/mactanzania.cpp     // W:badgfx
+apple/mactanzania.cpp
 
 //apple/newton.cpp     // no screen
 
@@ -920,7 +920,6 @@ handheld/scrablex.cpp
 handheld/st2302u_bbl_rom.cpp
 -bbl338         // black screen
 -cutepet        // mnw
--class200       // black screen
 
 handheld/st2302u_bbl_spi.cpp
 -rocoball       // fatal
@@ -945,7 +944,6 @@ handheld/wildfire.cpp
 //hds/hds200.cpp      // mnw
 
 heathzenith/et3400.cpp
--et3400a                 // need roms
 
 heathzenith/h19.cpp
 
@@ -959,7 +957,7 @@ heathzenith/mdt60.cpp
 
 //heathzenith/z22.cpp    // mnw
 
-//heathzenith/z29.cpp    // black screen
+heathzenith/z29.cpp
 
 hec2hrp/hec2hrp.cpp
 
@@ -1444,6 +1442,8 @@ misc/nabupc.cpp
 
 //misc/stc3910.cpp           // no sw
 
+//misc/tr175.cpp             // W:unusable
+
 misc/triton.cpp
 
 misc/videoart.cpp
@@ -1890,7 +1890,7 @@ novag/zircon2.cpp
 
 //novation/basssta.cpp      // no screen
 
-//novation/drumsta.cpp     // no screen
+novation/drumsta.cpp
 
 oberheim/dmx.cpp
 
@@ -3353,8 +3353,6 @@ skeleton/textelcomp.cpp
 //skeleton/tk635.cpp   // mnw
 
 //skeleton/tnshc08.cpp   // no screen
-
-//skeleton/tr175.cpp // black screen
 
 //skeleton/tsispch.cpp // W:inputs
 
