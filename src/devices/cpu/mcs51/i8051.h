@@ -171,7 +171,7 @@ protected:
 	int m_cur_irq_prio;    // Holds value of the current IRQ Priority Level; -1 if no irq
 	u8 m_irq_active;       // mask which irq levels are serviced
 	u8 m_irq_prio[8];      // interrupt priority
-	u8 m_irq_delayed;      // flags set in an instruction's last cycle, polled after the next one
+	u8 m_irq_delayed;      // interrupt sources excluded from the next poll
 
 	u8 m_forced_inputs[4]; // allow read even if configured as output
 
@@ -330,6 +330,13 @@ protected:
 	void check_irqs();
 	void burn_cycles(int cycles);
 	u8 pending_irq_flags(u8 int_mask);
+	virtual u8 interrupt_mask();
+	virtual void interrupt_taken();
+	virtual bool instruction_enabled() const;
+	virtual void prepare_instruction(u8 op);
+	virtual void update_peripherals();
+	virtual bool timer1_split_uses_input() const;
+	bool timer_running(u32 timer) const;
 	void acall(u8 r);
 	void set_reg(u8 r, u8 v);
 	u8 r_reg(u8 r);
