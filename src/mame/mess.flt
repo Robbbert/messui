@@ -538,8 +538,6 @@ commodore/clcd.cpp
 
 commodore/kim1.cpp
 
-//commodore/mps1230.cpp  // no screen
-
 commodore/pet.cpp
 
 commodore/plus4.cpp
@@ -953,11 +951,11 @@ heathzenith/h89.cpp
 
 heathzenith/mdt60.cpp
 
-//heathzenith/z100.cpp   // mnw
+//heathzenith/z100.cpp   // cannot boot floppy
 
-//heathzenith/z22.cpp    // mnw
+heathzenith/z22.cpp
 
-heathzenith/z29.cpp
+//heathzenith/z29.cpp          // useless
 
 hec2hrp/hec2hrp.cpp
 
@@ -1292,7 +1290,6 @@ kontron/kdt6.cpp
 //kyber/kminus.cpp   // inputs
 
 kyocera/kyocera.cpp
--npc8300     // grey screen
 
 //leapfrog/iquest.cpp // black screen, some no sw
 
@@ -1419,6 +1416,8 @@ misc/ds2000.cpp
 //misc/eva.cpp    // no screen
 
 //misc/ez2d.cpp // black screen
+
+misc/gamebox.cpp
 
 misc/h01x.cpp
 
@@ -2608,7 +2607,7 @@ rockwell/aim65.cpp
 
 //roland/roland_s10.cpp  // no sound
 
-//roland/roland_s50.cpp   // no sw
+//roland/roland_s50.cpp   // W:no sw
 
 //roland/roland_sb55.cpp    // W:no sound
 
