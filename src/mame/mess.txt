@@ -169,7 +169,7 @@ apple/apple2gs.cpp
 
 apple/apple3.cpp
 
-//apple/imacg3.cpp   // crash
+//apple/imacg3.cpp   // cannot boot hd, no swlist for floppies
 
 //apple/iphone2g.cpp  // black screen
 
@@ -1230,7 +1230,7 @@ intel/sdk86.cpp
 
 interton/vc4000.cpp
 
-//isc/compucolor.cpp     // crash at start
+isc/compucolor.cpp
 
 jpm/guab.cpp       // arcade swlist
 -crisscrs          // no sw
