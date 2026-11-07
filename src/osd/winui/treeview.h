@@ -149,7 +149,7 @@ typedef struct
 
 void FreeFolders();
 void ResetFilters();
-void InitTree(LPCFOLDERDATA lpFolderData, LPCFILTER_ITEM lpFilterList);
+int InitTree(LPCFOLDERDATA lpFolderData, LPCFILTER_ITEM lpFilterList);
 void SetCurrentFolder(LPTREEFOLDER lpFolder);
 UINT GetCurrentFolderID();
 

@@ -224,11 +224,12 @@ static void SwitchFullScreenMode();
 static HBRUSH hBrush = NULL;
 //static HBRUSH hBrushDlg = NULL;
 static HDC hDC = NULL;
-static HWND	hSplash = NULL;
-static HWND	hProgress = NULL;
+static HWND hSplash = NULL;
+static HWND hProgress = NULL;
 static intptr_t CALLBACK StartupProc(HWND hDlg, UINT uMsg, WPARAM wParam, LPARAM lParam);
 static bool m_lock = false;    // prevent MAME from being launched twice by accident, and crashing the entire app.
 static bool bEnableIndent = false;
+static int InbuiltFolders = 0;
 
 static bool CommonListDialog(common_file_dialog_proc cfd);
 static void SaveGameListToFile(char *szFile);
@@ -573,7 +574,7 @@ static const GUISequence GUISequenceControl[]=
 #define NUM_GUI_SEQUENCES (sizeof(GUISequenceControl) / sizeof(GUISequenceControl[0]))
 
 
-static UINT    lastColumnClick   = 0;
+static UINT    lastColumnClick = 0;
 static WNDPROC g_lpHistoryWndProc = NULL;
 static WNDPROC g_lpPictureFrameWndProc = NULL;
 static WNDPROC g_lpPictureWndProc = NULL;
@@ -582,7 +583,7 @@ static POPUPSTRING popstr[MAX_MENUS + 1];
 
 /* Tool and Status bar variables */
 static HWND hStatusBar = 0;
-static HWND s_hToolBar   = 0;
+static HWND s_hToolBar = 0;
 
 /* Used to recalculate the main window layout */
 static int  bottomMargin = 0;
@@ -1743,8 +1744,8 @@ static BOOL Win32UI_init(HINSTANCE hInstance, LPWSTR lpCmdLine, int nCmdShow)
 
 	SendMessage(hProgress, PBM_SETPOS, 85, 0);
 	printf("Win32UI_init: About to init tree\n");fflush(stdout);
-	InitTree(g_folderData, g_filterList);
-	printf("Win32UI_init: Did init tree\n");fflush(stdout);
+	InbuiltFolders = InitTree(g_folderData, g_filterList);
+	printf("Win32UI_init: Did init tree, found %d inbuilt folders\n",InbuiltFolders);fflush(stdout);
 	SendMessage(hProgress, PBM_SETPOS, 100, 0);
 
 	/* Initialize listview columns */
@@ -2119,7 +2120,7 @@ static LRESULT CALLBACK MameWindowProc(HWND hWnd, UINT message, WPARAM wParam, L
 			if (lpNmHdr->hwndFrom == hTreeView)
 				return TreeViewNotify(lpNmHdr);
 
-			GetClassName(lpNmHdr->hwndFrom, szClass, sizeof(szClass) / sizeof(szClass[0]));
+			GetClassName(lpNmHdr->hwndFrom, szClass, std::size(szClass));
 			if (!_tcscmp(szClass, TEXT("SysListView32")))
 				return Picker_HandleNotify(lpNmHdr);
 			if (!_tcscmp(szClass, TEXT("SysTabControl32")))
@@ -2131,7 +2132,7 @@ static LRESULT CALLBACK MameWindowProc(HWND hWnd, UINT message, WPARAM wParam, L
 		{
 			LPDRAWITEMSTRUCT lpDis = (LPDRAWITEMSTRUCT)lParam;
 
-			GetClassName(lpDis->hwndItem, szClass, sizeof(szClass) / sizeof(szClass[0]));
+			GetClassName(lpDis->hwndItem, szClass, std::size(szClass));
 			if (!_tcscmp(szClass, TEXT("SysListView32")))
 				Picker_HandleDrawItem(GetDlgItem(hMain, lpDis->CtlID), lpDis);
 		}
@@ -3739,7 +3740,7 @@ static void PickFont()
 		hWnd = GetWindow(hMain, GW_CHILD);
 		while(hWnd)
 		{
-			if (GetClassName(hWnd, szClass, sizeof(szClass) / sizeof(szClass[0])))
+			if (GetClassName(hWnd, szClass, std::size(szClass)))
 			{
 				if (!_tcscmp(szClass, TEXT("SysListView32")))
 					(void)ListView_SetTextColor(hWnd, textColor);
@@ -4677,7 +4678,6 @@ static const TCHAR *GamePicker_GetItemString(HWND hwndPicker, int nItem, int nCo
 			break;
 
 		case COLUMN_PLAYTIME:
-			/* Source drivers */
 			GetTextPlayTime(nItem, playtime_buf, std::size(playtime_buf));
 			utf8_s = playtime_buf;
 			break;
@@ -5942,7 +5942,7 @@ void InitTreeContextMenu(HMENU hTreeMenu)
 
 	hMenu = mii.hSubMenu;
 
-	for (int i=0; g_folderData[i].short_name; i++)
+	for (int i=0; i < InbuiltFolders; i++)
 	{
 		if (!g_folderData[i].m_process)
 		{

@@ -375,10 +375,10 @@ char * ConvertToWindowsNewlines(const char *source)
  */
 const char * GetDriverFilename(int drvindex)
 {
-	static char tmp[2048]{};
+	static char tmp[MAX_PATH]{};
 	if (drvindex >= 0)
 	{
-		string driver = string(core_filename_extract_base(driver_list::driver(drvindex).type.source()));
+		string driver = string(core_filename_extract_base(driver_list::driver(drvindex).type.source(), false));
 		snprintf(tmp, std::size(tmp), "%s", driver.c_str());
 	}
 	return tmp;
