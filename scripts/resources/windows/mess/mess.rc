@@ -12,3 +12,6 @@
 1                       24      MOVEABLE PURE   "mess.man"
 
 2                       ICON    DISCARDABLE     "mess.ico"
+
+#define RCMESS
+#include "winui/ui.rc"

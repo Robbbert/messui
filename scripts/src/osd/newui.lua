@@ -1,88 +1,104 @@
 -- license:BSD-3-Clause
--- copyright-holders:Robbbert
+-- copyright-holders:MAMEdev Team
 
 ---------------------------------------------------------------------------
 --
 --   newui.lua
 --
---   Rules for the building for Windows
+--   Rules for the building for Windows with NewUI
 --
 ---------------------------------------------------------------------------
 
 dofile("modules.lua")
 
-premake.make.linkoptions_after = false;
 
 function maintargetosdoptions(_target,_subtarget)
 	osdmodulestargetconf()
 
-	configuration { "mingw*-gcc" }
-		linkoptions {
-			"-municode",
-			"-lmingw32",
-			"-Wl,--allow-multiple-definition",
+	configuration { "mingw*" }
+		links {
+			"mingw32",
 		}
 
 	configuration { }
 
-	if _OPTIONS["DIRECTINPUT"] == "8" then
+	if _OPTIONS["USE_SDL"] == "1" then
 		links {
-			"dinput8",
+			"SDL2",
+			"imm32",
+			"version",
 		}
-	else
+	end
+
+	if _OPTIONS["USE_SDL3"] == "1" then
 		links {
-			"dinput",
+			"SDL3",
+			"imm32",
+			"version",
 		}
 	end
 
 	links {
+		"bcrypt",
 		"comctl32",
 		"comdlg32",
+		"dinput8",
+		"ole32",
 		"psapi",
 		"shcore",
-		"ole32",
---		"shell32",
-		"uxtheme",
-		"uuid",
 		"shlwapi",
-	}
-
--- needs same resources as messui, because dropdown menus are in mameui.rc
-	override_resources = true;
-	rctarget = _subtarget;
-	local rcfile = MAME_DIR .. "src/osd/winui/" .. _subtarget .. ".rc"
-	local uifile = MAME_DIR .. "src/osd/winui/mameui.rc"
-
-	if not os.isfile(rcfile) then
-		print(string.format("***** %s not found *****",rcfile))
-		os.exit();
-	end
-
-	if not os.isfile(uifile) then
-		print(string.format("***** %s not found *****",uifile))
-		os.exit();
-	end
-
-	files {
-		rcfile,
-	}
-	dependency {
-		{ "$(OBJDIR)/".._subtarget..".res" ,  GEN_DIR  .. "resource/".._subtarget.."vers.rc", true  },
+		"uuid",
 	}
 end
 
 
 newoption {
-	trigger = "DIRECTINPUT",
-	description = "Minimum DirectInput version to support",
+	trigger = "USE_SDL",
+	description = "Enable SDL2 sound output and joystick input",
 	allowed = {
-		{ "7",  "Support DirectInput 7 or later"  },
-		{ "8",  "Support DirectInput 8 or later" },
+		{ "0",  "Disable SDL2 sound/joystick"  },
+		{ "1",  "Enable SDL2 sound/joystick"   },
 	},
 }
 
-if not _OPTIONS["DIRECTINPUT"] then
-	_OPTIONS["DIRECTINPUT"] = "8"
+if not _OPTIONS["USE_SDL"] then
+	_OPTIONS["USE_SDL"] = "0"
+end
+
+newoption {
+	trigger = "USE_SDL3",
+	description = "Enable SDL3 sound output and joystick input",
+	allowed = {
+		{ "0",  "Disable SDL3 sound/joystick"  },
+		{ "1",  "Enable SDL3 sound/joystick"   },
+	},
+}
+
+if not _OPTIONS["USE_SDL3"] then
+	_OPTIONS["USE_SDL3"] = "0"
+end
+
+newoption {
+	trigger = "CYGWIN_BUILD",
+	description = "Build with Cygwin tools",
+	allowed = {
+		{ "0",  "Build with MinGW tools"   },
+		{ "1",  "Build with Cygwin tools"  },
+	},
+}
+
+if not _OPTIONS["CYGWIN_BUILD"] then
+	_OPTIONS["CYGWIN_BUILD"] = "0"
+end
+
+
+if _OPTIONS["CYGWIN_BUILD"] == "1" then
+	buildoptions {
+		"-mmo-cygwin",
+	}
+	linkoptions {
+		"-mno-cygwin",
+	}
 end
 
 
@@ -104,28 +120,19 @@ project ("qtdbg_" .. _OPTIONS["osd"])
 
 project ("osd_" .. _OPTIONS["osd"])
 	uuid (os.uuid("osd_" .. _OPTIONS["osd"]))
-	kind "StaticLib"
+	kind (LIBTYPE)
 
 	dofile("windows_cfg.lua")
 	osdmodulesbuild()
 
 	defines {
 		"DIRECT3D_VERSION=0x0900",
+		"DIRECTINPUT_VERSION=0x0800",
 	}
-
-	if _OPTIONS["DIRECTINPUT"] == "8" then
-		defines {
-			"DIRECTINPUT_VERSION=0x0800",
-		}
-	else
-		defines {
-			"DIRECTINPUT_VERSION=0x0700",
-		}
-	end
 
 	includedirs {
 		MAME_DIR .. "src/emu",
-		MAME_DIR .. "src/devices",
+		MAME_DIR .. "src/devices", -- accessing imagedev from debugger
 		MAME_DIR .. "src/osd",
 		MAME_DIR .. "src/lib",
 		MAME_DIR .. "src/lib/util",
@@ -136,29 +143,29 @@ project ("osd_" .. _OPTIONS["osd"])
 		MAME_DIR .. "src/osd/windows",
 	}
 
+	if _OPTIONS["gcc"]~=nil and string.find(_OPTIONS["gcc"], "clang") then
+		buildoptions_cpp {
+			"-Wno-ignored-attributes",-- many instances in ImGui
+		}
+	end
+
 	files {
-		MAME_DIR .. "src/osd/modules/render/d3d/d3dintf.h",
 		MAME_DIR .. "src/osd/modules/render/d3d/d3dhlsl.cpp",
 		MAME_DIR .. "src/osd/modules/render/d3d/d3dcomm.h",
 		MAME_DIR .. "src/osd/modules/render/d3d/d3dhlsl.h",
 		MAME_DIR .. "src/osd/modules/render/drawd3d.cpp",
 		MAME_DIR .. "src/osd/modules/render/drawd3d.h",
-		MAME_DIR .. "src/osd/modules/render/drawgdi.cpp",
-		MAME_DIR .. "src/osd/modules/render/drawgdi.h",
-		MAME_DIR .. "src/osd/modules/render/drawnone.cpp",
-		MAME_DIR .. "src/osd/modules/render/drawnone.h",
-		MAME_DIR .. "src/osd/modules/osdwindow.cpp",
-		MAME_DIR .. "src/osd/modules/osdwindow.h",
 		MAME_DIR .. "src/osd/windows/winvideo.cpp",
 		MAME_DIR .. "src/osd/windows/winvideo.h",
 		MAME_DIR .. "src/osd/windows/window.cpp",
 		MAME_DIR .. "src/osd/windows/window.h",
+		MAME_DIR .. "src/osd/modules/osdwindow.cpp",
+		MAME_DIR .. "src/osd/modules/osdwindow.h",
 		MAME_DIR .. "src/osd/windows/winmain.cpp",
 		MAME_DIR .. "src/osd/windows/winmain.h",
 		MAME_DIR .. "src/osd/windows/winopts.cpp",
+		MAME_DIR .. "src/osd/windows/winopts.h",
 		MAME_DIR .. "src/osd/osdepend.h",
-		MAME_DIR .. "src/osd/winui/newui.cpp",
-		MAME_DIR .. "src/osd/winui/main.cpp",
 		MAME_DIR .. "src/osd/modules/debugger/win/consolewininfo.cpp",
 		MAME_DIR .. "src/osd/modules/debugger/win/consolewininfo.h",
 		MAME_DIR .. "src/osd/modules/debugger/win/debugbaseinfo.cpp",
@@ -177,10 +184,10 @@ project ("osd_" .. _OPTIONS["osd"])
 		MAME_DIR .. "src/osd/modules/debugger/win/disasmwininfo.h",
 		MAME_DIR .. "src/osd/modules/debugger/win/editwininfo.cpp",
 		MAME_DIR .. "src/osd/modules/debugger/win/editwininfo.h",
-		MAME_DIR .. "src/osd/modules/debugger/win/logviewinfo.cpp",
-		MAME_DIR .. "src/osd/modules/debugger/win/logviewinfo.h",
 		MAME_DIR .. "src/osd/modules/debugger/win/logwininfo.cpp",
 		MAME_DIR .. "src/osd/modules/debugger/win/logwininfo.h",
+		MAME_DIR .. "src/osd/modules/debugger/win/logviewinfo.cpp",
+		MAME_DIR .. "src/osd/modules/debugger/win/logviewinfo.h",
 		MAME_DIR .. "src/osd/modules/debugger/win/memoryviewinfo.cpp",
 		MAME_DIR .. "src/osd/modules/debugger/win/memoryviewinfo.h",
 		MAME_DIR .. "src/osd/modules/debugger/win/memorywininfo.cpp",
@@ -190,16 +197,14 @@ project ("osd_" .. _OPTIONS["osd"])
 		MAME_DIR .. "src/osd/modules/debugger/win/uimetrics.cpp",
 		MAME_DIR .. "src/osd/modules/debugger/win/uimetrics.h",
 		MAME_DIR .. "src/osd/modules/debugger/win/debugwin.h",
+		MAME_DIR .. "src/osd/winui/newui.cpp",
 	}
 
 
 project ("ocore_" .. _OPTIONS["osd"])
 	uuid (os.uuid("ocore_" .. _OPTIONS["osd"]))
-	kind "StaticLib"
+	kind (LIBTYPE)
 
-	options {
-		"ForceCPP",
-	}
 	removeflags {
 		"SingleOutputDir",
 	}
@@ -213,21 +218,23 @@ project ("ocore_" .. _OPTIONS["osd"])
 		MAME_DIR .. "src/osd/modules/file",
 		MAME_DIR .. "src/lib",
 		MAME_DIR .. "src/lib/util",
+		ext_includedir("asio"),
 	}
 
 	BASE_TARGETOS = "win32"
 	SDLOS_TARGETOS = "win32"
-	SYNC_IMPLEMENTATION = "windows"
 
 	includedirs {
 		MAME_DIR .. "src/osd/windows",
-		MAME_DIR .. "src/lib/winpcap",
 	}
 
 	files {
+		MAME_DIR .. "src/osd/asio.cpp",
+		MAME_DIR .. "src/osd/asio.h",
 		MAME_DIR .. "src/osd/eigccppc.h",
 		MAME_DIR .. "src/osd/eigccx86.h",
 		MAME_DIR .. "src/osd/eivc.h",
+		MAME_DIR .. "src/osd/eivcarm.h",
 		MAME_DIR .. "src/osd/eivcx86.h",
 		MAME_DIR .. "src/osd/eminline.h",
 		MAME_DIR .. "src/osd/osdcomm.h",
@@ -235,7 +242,6 @@ project ("ocore_" .. _OPTIONS["osd"])
 		MAME_DIR .. "src/osd/osdcore.h",
 		MAME_DIR .. "src/osd/strconv.cpp",
 		MAME_DIR .. "src/osd/strconv.h",
-		-- MAME_DIR .. "src/osd/windows/main.cpp",
 		MAME_DIR .. "src/osd/osdsync.cpp",
 		MAME_DIR .. "src/osd/osdsync.h",
 		MAME_DIR .. "src/osd/windows/winutf8.cpp",
@@ -263,11 +269,13 @@ if _OPTIONS["with-tools"] then
 		uuid ("061293ca-7290-44ac-b2b5-5913ae8dc9c0")
 		kind "ConsoleApp"
 
-		options {
-			"ForceCPP",
+		flags {
+			"Symbols", -- always include minimum symbols for executables
 		}
 
-		targetdir(MAME_DIR)
+		if _OPTIONS["SEPARATE_BIN"]~="1" then
+			targetdir(MAME_DIR)
+		end
 
 		links {
 			"ocore_" .. _OPTIONS["osd"],
@@ -276,7 +284,7 @@ if _OPTIONS["with-tools"] then
 		includedirs {
 			MAME_DIR .. "src/osd",
 		}
-		
+
 		files {
 			MAME_DIR .. "src/osd/windows/ledutil.cpp",
 		}
