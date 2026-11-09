@@ -1191,6 +1191,7 @@ intel/basic52.cpp
 //intel/i420ex.cpp  // cannot boot disk, mnw
 
 intel/i430lx.cpp
+-pcd5h
 
 intel/imds2.cpp
 
