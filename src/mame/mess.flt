@@ -1633,6 +1633,7 @@ nec/pce.cpp
 nec/tk80bs.cpp
 
 netronics/elf.cpp
+-elf2                  // need roms
 
 netronics/exp85.cpp
 
