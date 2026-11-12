@@ -1682,14 +1682,16 @@ nintendo/nds.cpp
 nintendo/nes.cpp
 
 nintendo/nes_clone.cpp
+-croaky         // inputs
+-dancexpt       // useless
+-flshdnce       // useless
+-glkdance       // useless
+-nvbaseb        // mech
+-pjoypj001      // gfx
+-pv95in1        // mnw
+-rumblstn       // gfx
 -vtvsocr        // inputs
--vtvppong
--pjoypj001
--digezlg
--danzkara
--dancexpt
--croaky
--pv95in1            // mnw
+-vtvppong       // inputs
 
 nintendo/nes_m8.cpp
 
@@ -1849,6 +1851,10 @@ novag/accord.cpp
 novag/cexpert.cpp
 
 novag/cforte.cpp
+-cforte                   // need roms
+-cfortea                  // need roms
+-cforteb                  // need roms
+-cfortec                  // need roms
 
 novag/cnchess.cpp
 
