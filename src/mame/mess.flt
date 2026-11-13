@@ -3742,6 +3742,8 @@ trs/trs80.cpp
 trs/trs80dt1.cpp
 
 trs/trs80m2.cpp
+-tandy6khd         // need sw
+-trs80m16bhd       // need sw
 
 trs/trs80m3.cpp
 -trs80m4p          // cannot boot disk
