@@ -1851,10 +1851,10 @@ novag/accord.cpp
 novag/cexpert.cpp
 
 novag/cforte.cpp
--cforte                   // need roms
--cfortea                  // need roms
+-cfortea                  // cforteb
+-cfortea1                  // need roms
 -cforteb                  // need roms
--cfortec                  // need roms
+-cforteb1                 // need roms
 
 novag/cnchess.cpp
 
