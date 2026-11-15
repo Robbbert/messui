@@ -955,7 +955,7 @@ heathzenith/mdt60.cpp
 
 heathzenith/z22.cpp
 
-//heathzenith/z29.cpp          // useless
+//heathzenith/z29.cpp          // W:useless
 
 hec2hrp/hec2hrp.cpp
 
@@ -1412,6 +1412,8 @@ misc/ctvboy.cpp
 
 //misc/deecoseal.cpp   // mnw
 
+misc/digiblast.cpp
+
 misc/ds2000.cpp
 
 //misc/eva.cpp    // no screen
@@ -1684,12 +1686,11 @@ nintendo/nes.cpp
 nintendo/nes_clone.cpp
 -croaky         // inputs
 -dancexpt       // useless
--flshdnce       // useless
--glkdance       // useless
--nvbaseb        // mech
+-flshdnce       // W:useless
+-glkdance       // W:useless
+-nvbaseb        // W:mech
 -pjoypj001      // gfx
 -pv95in1        // mnw
--rumblstn       // gfx
 -vtvsocr        // inputs
 -vtvppong       // inputs
 
@@ -1851,10 +1852,6 @@ novag/accord.cpp
 novag/cexpert.cpp
 
 novag/cforte.cpp
--cfortea                  // cforteb
--cfortea1                  // need roms
--cforteb                  // need roms
--cforteb1                 // need roms
 
 novag/cnchess.cpp
 
@@ -3040,8 +3037,6 @@ skeleton/didact.cpp
 
 //skeleton/digel804.cpp   // useless
 
-//skeleton/digiblast.cpp   // black screen
-
 //skeleton/digijet.cpp    // no screen
 
 //skeleton/digilog320.cpp   // diag screen
@@ -3531,7 +3526,7 @@ tatung/einstein.cpp
 
 //tektronix/tek43xx.cpp   // black screen
 
-//tektronix/tek440x.cpp    // inputs
+//tektronix/tek440x.cpp    // W:inputs
 
 //tektronix/tekigw.cpp    // no sw
 
@@ -3742,8 +3737,6 @@ trs/trs80.cpp
 trs/trs80dt1.cpp
 
 trs/trs80m2.cpp
--tandy6khd         // need sw
--trs80m16bhd       // need sw
 
 trs/trs80m3.cpp
 -trs80m4p          // cannot boot disk
