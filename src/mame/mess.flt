@@ -445,6 +445,8 @@ casio/cz230s.cpp
 
 //casio/dg20.cpp   // no screen
 
+//casio/dh100.cpp    // W:no screen
+
 //casio/fp1100.cpp  // fp1000=black screen;fp1100=inputs
 
 casio/fp200.cpp
@@ -949,6 +951,8 @@ heathzenith/h8.cpp
 
 heathzenith/h89.cpp
 
+//heathzenith/h9.cpp         // need roms
+
 heathzenith/mdt60.cpp
 
 //heathzenith/z100.cpp   // cannot boot floppy
@@ -956,6 +960,10 @@ heathzenith/mdt60.cpp
 heathzenith/z22.cpp
 
 //heathzenith/z29.cpp          // W:useless
+
+//heathzenith/z39.cpp          // black screen
+
+//heathzenith/z49.cpp          // black screen
 
 hec2hrp/hec2hrp.cpp
 
@@ -1176,6 +1184,8 @@ ibm/ibm5100.cpp
 //ibm/rtpc.cpp   // mnw
 
 //ibm/thinkpad600.cpp   // no screen
+
+//ibm/thinkpad750.cpp   // no screen
 
 //ibm/thinkpad8xx.cpp   // no screen
 
@@ -1779,7 +1789,6 @@ nintendo/nes_vt369_vtunknown.cpp
 -h12p1000
 -hkb502
 -hkb502a
--jl2350            // need roms
 -lxcap
 -lxcmcysp
 -lxcmcyspa
@@ -2756,8 +2765,6 @@ sega/megadriv_firecore.cpp   // bad gfx
 -mygalaga
 -mygalagb
 -mysf2
--pxp3              // need roms
--pxp3a             // need roms
 -reactmd
 -sarc110
 -sarc110a
@@ -4011,24 +4018,7 @@ tvgames/xavix.cpp
 
 //tvgames/xavix2.cpp   // haze mnw
 
-tvgames/xavix_2000.cpp
--ban_omt
--ban_onep
--drgqst
--duelmast
--epo_bowl
--epo_ebox
--epo_es2j
--epo_golf
--epo_hamc
--epo_mini
--tak_chq
--tom_dpgm
--ttv_lotr
--ttv_sw
--ttv_swj
-
-tvgames/xavix_2002.cpp
+tvgames/xavix_superxavix.cpp
 -anpanmdx
 -apmj2009
 -ban_bkgj
@@ -4078,6 +4068,23 @@ tvgames/xavix_2002.cpp
 -xavpkjr
 -xavtenni
 -xavtennij
+
+tvgames/xavix_xavix2000.cpp
+-ban_omt
+-ban_onep
+-drgqst
+-duelmast
+-epo_bowl
+-epo_ebox
+-epo_es2j
+-epo_golf
+-epo_hamc
+-epo_mini
+-tak_chq
+-tom_dpgm
+-ttv_lotr
+-ttv_sw
+-ttv_swj
 
 //ultimachine/rambo.cpp   // no screen
 
