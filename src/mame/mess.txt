@@ -951,7 +951,7 @@ heathzenith/h8.cpp
 
 heathzenith/h89.cpp
 
-//heathzenith/h9.cpp         // need roms
+heathzenith/h9.cpp
 
 heathzenith/mdt60.cpp
 
@@ -1790,6 +1790,7 @@ nintendo/nes_vt369_vtunknown.cpp
 -hkb502
 -hkb502a
 -lxcap
+-lxcmcybao             // need roms
 -lxcmcysp
 -lxcmcyspa
 -lxcyber
@@ -3902,6 +3903,7 @@ tvgames/spg2xx_jakks_sharp.cpp
 
 tvgames/spg2xx_lexibook.cpp
 -cybrtvbb
+-maxicybr                       // need roms
 
 tvgames/spg2xx_mysprtch.cpp
 
